@@ -283,10 +283,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
                                 continue;
                             }
-                            $image_path = Document::getImage(
-                                GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
-                                'mail'
-                            );
+                            $image_path = Document::getImage(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
@@ -360,7 +357,6 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                                 $image_path = Document::getImage(
                                     GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
-                                    'mail',
                                     $custom_width,
                                     $custom_height
                                 );
@@ -518,10 +514,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             }
             $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
             if (Document::isImage($path)) {
-                $path = Document::getImage(
-                    $path,
-                    'mailattachment'
-                );
+                $path = Document::getImage($path);
             }
 
             $mail->attachFromPath($path, $document->fields['filename']);
