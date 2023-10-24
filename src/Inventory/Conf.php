@@ -361,642 +361,657 @@ class Conf extends CommonGLPI
         echo __('Enable inventory');
         echo "</label>";
         echo "</th>";
-        echo "<td width='360'>";
+        echo "<td colspan='3'>";
+        echo '<div class="row">';
+        echo '<div class="col-md-auto d-flex align-items-center">';
         Html::showCheckbox([
             'name'      => 'enabled_inventory',
             'id'        => 'enabled_inventory',
             'checked'   => $config['enabled_inventory']
         ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th colspan='4'>";
-        echo __('Import options');
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='import_volume'>";
-        echo \Item_Disk::createTabEntry(\Item_Disk::getTypeName(Session::getPluralNumber()), 0, \Item_Disk::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td width='360'>";
-        Html::showCheckbox([
-            'name'      => 'import_volume',
-            'id'        => 'import_volume',
-            'checked'   => $config['import_volume']
-        ]);
-        echo "</td>";
-
-        echo "<td>";
-        echo "<label for='import_software'>";
-        echo \Software::createTabEntry(\Software::getTypeName(Session::getPluralNumber()), 0, \Software::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_software',
-            'id'        => 'import_software',
-            'checked'   => $config['import_software']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='import_monitor'>";
-        echo \Monitor::createTabEntry(\Monitor::getTypeName(Session::getPluralNumber()), 0, \Monitor::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_monitor',
-            'id'        => 'import_monitor',
-            'checked'   => $config['import_monitor']
-        ]);
-        echo "</td>";
-
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='import_printer'>";
-        echo \Printer::createTabEntry(\Printer::getTypeName(Session::getPluralNumber()), 0, \Printer::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_printer',
-            'id'        => 'import_printer',
-            'checked'   => $config['import_printer']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='import_peripheral'>";
-        echo \Peripheral::createTabEntry(\Peripheral::getTypeName(Session::getPluralNumber()), 0, \Peripheral::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_peripheral',
-            'id'        => 'import_peripheral',
-            'checked'   => $config['import_peripheral']
-        ]);
-        echo "</td>";
-
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='import_antivirus'>";
-        echo \ComputerAntivirus::createTabEntry(\ComputerAntivirus::getTypeName(Session::getPluralNumber()), 0, \ComputerAntivirus::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_antivirus',
-            'id'        => 'import_antivirus',
-            'checked'   => $config['import_antivirus']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='import_process'>";
-        echo \Item_Process::createTabEntry(\Item_Process::getTypeName(Session::getPluralNumber()), 0, \Item_Process::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td width='360'>";
-        Html::showCheckbox([
-            'name'      => 'import_process',
-            'id'        => 'import_process',
-            'checked'   => $config['import_process']
-        ]);
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='import_env'>";
-        echo \Item_Environment::createTabEntry(\Item_Environment::getTypeName(Session::getPluralNumber()), 0, \Item_Environment::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td width='360'>";
-        Html::showCheckbox([
-            'name'      => 'import_env',
-            'id'        => 'import_env',
-            'checked'   => $config['import_env']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='import_unmanaged'>";
-        echo \Unmanaged::createTabEntry(\Unmanaged::getTypeName(Session::getPluralNumber()), 0, \Unmanaged::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_unmanaged',
-            'id'        => 'import_unmanaged',
-            'checked'   => $config['import_unmanaged'] ?? 1
-        ]);
-        echo "</td>";
-
-        echo "</td>";
-        echo "<td>";
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='dropdown_states_id_default$rand'>";
-        echo \State::createTabEntry(__('Default status'), 0, \State::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-
-        \Dropdown::show(
-            'State',
-            [
-                'name'   => 'states_id_default',
-                'id'     => 'states_id_default',
-                'value'  => $config['states_id_default'],
-                'toadd'  => ['-1' => __('Do not change')],
-                'rand' => $rand
-            ]
-        );
-        echo "</td>";
-
-        echo "<td><label for='dropdown_inventory_frequency$rand'>";
-        echo self::createTabEntry(__('Inventory frequency (in hours)'), 0, self::getType());
-        echo "</label></td><td>";
-        \Dropdown::showNumber(
-            "inventory_frequency",
-            [
-                'value' => $config['inventory_frequency'],
-                'min' => 1,
-                'max' => 240,
-                'rand' => $rand
-            ]
-        );
-
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-
-        echo "<td>";
-        echo "<label for='dropdown_entities_id_id_default$rand'>";
-        echo \Entity::createTabEntry(__('Default entity'), 0, \Entity::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-
-        \Dropdown::show(
-            'Entity',
-            [
-                'name'   => 'entities_id_default',
-                'id'     => 'entities_id_default',
-                'value'  => $config['entities_id_default'] ?? 0,
-                'rand' => $rand
-            ]
-        );
-        echo "</td>";
-
-        echo "<td>";
-        echo "<label for='import_monitor_on_partial_sn'>";
-        echo \Monitor::createTabEntry(__('Import monitor on serial partial match'), 0, \Monitor::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_monitor_on_partial_sn',
-            'id'        => 'import_monitor_on_partial_sn',
-            'checked'   => $config['import_monitor_on_partial_sn']
-        ]);
-
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='4'>";
-        echo __('Related configurations');
-        echo "</th>";
-        echo "</tr>";
-        echo "<tr class='tab_bg_1'>";
-
-        foreach (['Asset', 'Entity'] as $col_name) {
-            $col_class = 'RuleImport' . $col_name . 'Collection';
-            $collection = new $col_class();
-            $rules = $collection->getRuleClass();
-            echo "<td colspan='2'>";
-            echo \Rule::createTabEntry(sprintf(
-                "<a href='%s'>%s</a>",
-                $rules::getSearchURL(),
-                $collection->getTitle()
-            ), 0, \Rule::getType());
+        echo '</div>';
+        echo '<div class="col">';
+        if ($config['enabled_inventory'] == false) {
+            echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
+            echo "<span class='ms-2'>";
+            echo "<i class='fas fa-info-circle'> </i> &nbsp;";
+            echo __("The inventory is disabled, remember to activate it if necessary");
+            echo "</span>";
+            echo "</div>";
+        } else {
+            echo '</div>';
+            echo '</div>';
             echo "</td>";
-        }
-        echo "</tr>";
+            echo "</tr>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
+            echo "<tr>";
+            echo "<th colspan='4'>";
+            echo __('Import options');
+            echo "</th>";
+            echo "</tr>";
 
-        echo \NetworkPort::createTabEntry(sprintf(
-            "<a href='%s'>%s</a>",
-            NetworkPortType::getSearchURL(),
-            NetworkPortType::getTypeName()
-        ), 0, \NetworkPort::getType());
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='import_volume'>";
+            echo \Item_Disk::createTabEntry(\Item_Disk::getTypeName(Session::getPluralNumber()), 0, \Item_Disk::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td width='360'>";
+            Html::showCheckbox([
+                'name'      => 'import_volume',
+                'id'        => 'import_volume',
+                'checked'   => $config['import_volume']
+            ]);
+            echo "</td>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='4'>";
-        echo \ComputerVirtualMachine::getTypeName(Session::getPluralNumber());
-        echo "</th>";
-        echo "</tr>";
+            echo "<td>";
+            echo "<label for='import_software'>";
+            echo \Software::createTabEntry(\Software::getTypeName(Session::getPluralNumber()), 0, \Software::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_software',
+                'id'        => 'import_software',
+                'checked'   => $config['import_software']
+            ]);
+            echo "</td>";
+            echo "</tr>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='import_vm'>";
-        echo \ComputerVirtualMachine::createTabEntry(__('Import virtual machines'), 0, \ComputerVirtualMachine::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'import_vm',
-            'id'        => 'import_vm',
-            'checked'   => $config['import_vm']
-        ]);
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='dropdown_vm_type$rand'>";
-        echo \ComputerType::createTabEntry(\ComputerType::getTypeName(1), 0, \ComputerType::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        \Dropdown::show(
-            'ComputerType',
-            [
-                'name'   => 'vm_type',
-                'id'     => 'vm_type',
-                'value'  => $config['vm_type'],
-                'rand' => $rand
-            ]
-        );
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='import_monitor'>";
+            echo \Monitor::createTabEntry(\Monitor::getTypeName(Session::getPluralNumber()), 0, \Monitor::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_monitor',
+                'id'        => 'import_monitor',
+                'checked'   => $config['import_monitor']
+            ]);
+            echo "</td>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='vm_as_computer'>";
-        echo \Computer::createTabEntry(__('Create computer for virtual machines'), 0, \Computer::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'vm_as_computer',
-            'id'        => 'vm_as_computer',
-            'checked'   => $config['vm_as_computer']
-        ]);
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='vm_components'>";
-        echo \ComputerVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, \ComputerVirtualMachine::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'vm_components',
-            'id'        => 'vm_components',
-            'checked'   => $config['vm_components']
-        ]);
-        echo "</td>";
-        echo "</tr>";
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='import_printer'>";
+            echo \Printer::createTabEntry(\Printer::getTypeName(Session::getPluralNumber()), 0, \Printer::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_printer',
+                'id'        => 'import_printer',
+                'checked'   => $config['import_printer']
+            ]);
+            echo "</td>";
+            echo "</tr>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='4' style='text-align:right;'>";
-        echo "<span class='red'>" . __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='import_peripheral'>";
+            echo \Peripheral::createTabEntry(\Peripheral::getTypeName(Session::getPluralNumber()), 0, \Peripheral::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_peripheral',
+                'id'        => 'import_peripheral',
+                'checked'   => $config['import_peripheral']
+            ]);
+            echo "</td>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan='4'>";
-        echo CommonDevice::getTypeName(Session::getPluralNumber());
-        echo "</th>";
-        echo "</tr>";
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='import_antivirus'>";
+            echo \ComputerAntivirus::createTabEntry(\ComputerAntivirus::getTypeName(Session::getPluralNumber()), 0, \ComputerAntivirus::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_antivirus',
+                'id'        => 'import_antivirus',
+                'checked'   => $config['import_antivirus']
+            ]);
+            echo "</td>";
+            echo "</tr>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_processor'>";
-        echo \DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), 0, \DeviceProcessor::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_processor',
-            'id'        => 'component_processor',
-            'checked'   => $config['component_processor']
-        ]);
-        echo "</td>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='import_process'>";
+            echo \Item_Process::createTabEntry(\Item_Process::getTypeName(Session::getPluralNumber()), 0, \Item_Process::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td width='360'>";
+            Html::showCheckbox([
+                'name'      => 'import_process',
+                'id'        => 'import_process',
+                'checked'   => $config['import_process']
+            ]);
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='import_env'>";
+            echo \Item_Environment::createTabEntry(\Item_Environment::getTypeName(Session::getPluralNumber()), 0, \Item_Environment::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td width='360'>";
+            Html::showCheckbox([
+                'name'      => 'import_env',
+                'id'        => 'import_env',
+                'checked'   => $config['import_env']
+            ]);
+            echo "</td>";
+            echo "</tr>";
 
-        echo "<td>";
-        echo "<label for='component_harddrive'>";
-        echo \DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), 0, \DeviceHardDrive::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_harddrive',
-            'id'        => 'component_harddrive',
-            'checked'   => $config['component_harddrive']
-        ]);
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='import_unmanaged'>";
+            echo \Unmanaged::createTabEntry(\Unmanaged::getTypeName(Session::getPluralNumber()), 0, \Unmanaged::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_unmanaged',
+                'id'        => 'import_unmanaged',
+                'checked'   => $config['import_unmanaged'] ?? 1
+            ]);
+            echo "</td>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_memory'>";
-        echo \DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), 0, \DeviceMemory::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_memory',
-            'id'        => 'component_memory',
-            'checked'   => $config['component_memory']
-        ]);
-        echo "</td>";
+            echo "</td>";
+            echo "<td>";
+            echo "</td>";
+            echo "</tr>";
 
-        echo "<td>";
-        echo "<label for='component_soundcard'>";
-        echo \DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), 0, \DeviceSoundCard::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_soundcard',
-            'id'        => 'component_soundcard',
-            'checked'   => $config['component_soundcard']
-        ]);
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='dropdown_states_id_default$rand'>";
+            echo \State::createTabEntry(__('Default status'), 0, \State::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
 
-        echo "</td>";
-        echo "</tr>";
+            \Dropdown::show(
+                'State',
+                [
+                    'name'   => 'states_id_default',
+                    'id'     => 'states_id_default',
+                    'value'  => $config['states_id_default'],
+                    'toadd'  => ['-1' => __('Do not change')],
+                    'rand' => $rand
+                ]
+            );
+            echo "</td>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_networkcard'>";
-        echo \DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), 0, \DeviceNetworkCard::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_networkcard',
-            'id'        => 'component_networkcard',
-            'checked'   => $config['component_networkcard']
-        ]);
-        echo "</td>";
+            echo "<td><label for='dropdown_inventory_frequency$rand'>";
+            echo self::createTabEntry(__('Inventory frequency (in hours)'), 0, self::getType());
+            echo "</label></td><td>";
+            \Dropdown::showNumber(
+                "inventory_frequency",
+                [
+                    'value' => $config['inventory_frequency'],
+                    'min' => 1,
+                    'max' => 240,
+                    'rand' => $rand
+                ]
+            );
 
-        echo "<td>";
-        echo "<label for='component_networkcardvirtual'>";
-        echo \DeviceNetworkCard::createTabEntry(__('Virtual network cards'), 0, \DeviceNetworkCard::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_networkcardvirtual',
-            'id'        => 'component_networkcardvirtual',
-            'checked'   => $config['component_networkcardvirtual']
-        ]);
+            echo "</td>";
+            echo "</tr>";
 
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_graphiccard'>";
-        echo \DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), 0, \DeviceGraphicCard::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_graphiccard',
-            'id'        => 'component_graphiccard',
-            'checked'   => $config['component_graphiccard']
-        ]);
-        echo "</td>";
+            echo "<td>";
+            echo "<label for='dropdown_entities_id_id_default$rand'>";
+            echo \Entity::createTabEntry(__('Default entity'), 0, \Entity::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
 
-        echo "<td>";
-        echo "<label for='component_simcard'>";
-        echo \DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), 0, \DeviceSimcard::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_simcard',
-            'id'        => 'component_simcard',
-            'checked'   => $config['component_simcard']
-        ]);
-        echo "</td>";
+            \Dropdown::show(
+                'Entity',
+                [
+                    'name'   => 'entities_id_default',
+                    'id'     => 'entities_id_default',
+                    'value'  => $config['entities_id_default'] ?? 0,
+                    'rand' => $rand
+                ]
+            );
+            echo "</td>";
 
-        echo "</tr>";
+            echo "<td>";
+            echo "<label for='import_monitor_on_partial_sn'>";
+            echo \Monitor::createTabEntry(__('Import monitor on serial partial match'), 0, \Monitor::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_monitor_on_partial_sn',
+                'id'        => 'import_monitor_on_partial_sn',
+                'checked'   => $config['import_monitor_on_partial_sn']
+            ]);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_drive'>";
-        echo \DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), 0, \DeviceDrive::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_drive',
-            'id'        => 'component_drive',
-            'checked'   => $config['component_drive']
-        ]);
-        echo "</td>";
+            echo "</td>";
+            echo "</tr>";
 
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='component_networkdrive'>";
-        echo \DeviceDrive::createTabEntry(__('Network drives'), 0, \DeviceDrive::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_networkdrive',
-            'id'        => 'component_networkdrive',
-            'checked'   => $config['component_networkdrive']
-        ]);
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th colspan='4'>";
+            echo __('Related configurations');
+            echo "</th>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_drive'>";
-        echo \DeviceDrive::createTabEntry(__('Removable drives'), 0, \DeviceDrive::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_removablemedia',
-            'id'        => 'component_removablemedia',
-            'checked'   => $config['component_removablemedia']
-        ]);
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='component_powersupply'>";
-        echo \DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), 0, \DevicePowerSupply::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_powersupply',
-            'id'        => 'component_powersupply',
-            'checked'   => $config['component_powersupply']
-        ]);
-        echo "</td>";
-
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>";
-        echo "<label for='component_control'>";
-        echo \DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), 0, \DeviceControl::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_control',
-            'id'        => 'component_control',
-            'checked'   => $config['component_control']
-        ]);
-        echo "</td>";
-
-        echo "</td>";
-        echo "<td>";
-        echo "<label for='component_battery'>";
-        echo \DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), 0, \DeviceBattery::getType());
-        echo "</label>";
-        echo "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'      => 'component_battery',
-            'id'        => 'component_battery',
-            'checked'   => $config['component_battery']
-        ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<th colspan=4 >" . __('Agent cleanup') . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td>";
-        echo \Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, \Agent::getType());
-        echo "</td><td width='20%'>";
-        Dropdown::showNumber(
-            'stale_agents_delay',
-            [
-                'value' => $config['stale_agents_delay'] ?? 0,
-                'min'   => 1,
-                'max'   => 1000,
-                'toadd' => ['0' => __('Disabled')]
-            ]
-        );
-        echo "</td><td>";
-        echo \Agent::createTabEntry(_n('Action', 'Actions', 1), 0, \Agent::getType());
-        echo "</><td width='20%'>";
-        //action
-        $action = self::getDefaults()['stale_agents_action'];
-        if (isset($config['stale_agents_action'])) {
-            $action = $config['stale_agents_action'];
-        }
-        $rand = Dropdown::showFromArray(
-            'stale_agents_action',
-            self::getStaleAgentActions(),
-            [
-                'values' => importArrayFromDB($action),
-                'on_change' => 'changestatus();',
-                'multiple' => true
-            ]
-        );
-        //if action == action_status => show blocation else hide blocaction
-        echo Html::scriptBlock("
-         function changestatus() {
-            if ($('#dropdown_stale_agents_action$rand').val() != 0) {
-               $('#blocaction1').show();
-               $('#blocaction2').show();
-            } else {
-               $('#blocaction1').hide();
-               $('#blocaction2').hide();
+            foreach (['Asset', 'Entity'] as $col_name) {
+                $col_class = 'RuleImport' . $col_name . 'Collection';
+                $collection = new $col_class();
+                $rules = $collection->getRuleClass();
+                echo "<td colspan='2'>";
+                echo \Rule::createTabEntry(sprintf(
+                    "<a href='%s'>%s</a>",
+                    $rules::getSearchURL(),
+                    $collection->getTitle()
+                ), 0, \Rule::getType());
+                echo "</td>";
             }
-         }
-         changestatus();
+            echo "</tr>";
 
-      ");
-        echo "</td>";
-        echo "</tr>";
-        //blocaction with status
-        echo "<tr class='tab_bg_1'><td colspan=2></td>";
-        echo "<td>";
-        echo "<span id='blocaction1' style='display:none'>";
-        echo __('Change the status');
-        echo "</span>";
-        echo "</td>";
-        echo "<td width='20%'>";
-        echo "<span id='blocaction2' style='display:none'>";
-        State::dropdown(
-            [
-                'name'   => 'stale_agents_status',
-                'value'  => $config['stale_agents_status'] ?? -1,
-                'entity' => $_SESSION['glpiactive_entity'],
-                'toadd'  => [-1 => __('No change')]
-            ]
-        );
-        echo "</span>";
-        echo "</td>";
-        echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
 
-        $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
-        $odd = true;
-        $in_row = true;
-        /**
-         * @var string $plugin
-         * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
-         */
-        foreach ($plugin_actions as $plugin => $actions) {
-            if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
-                foreach ($actions as $action) {
-                    if (!is_callable($action['render_callback'] ?? null)) {
-                        trigger_error(
-                            sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
-                            E_USER_WARNING
-                        );
-                        continue;
-                    }
+            echo \NetworkPort::createTabEntry(sprintf(
+                "<a href='%s'>%s</a>",
+                NetworkPortType::getSearchURL(),
+                NetworkPortType::getTypeName()
+            ), 0, \NetworkPort::getType());
+            echo "</td>";
+            echo "</tr>";
 
-                    if ($odd) {
-                        echo "<tr class='tab_bg_1'>";
-                    }
-                    $field = $action['render_callback']($config);
-                    if (!empty($field)) {
-                        echo "<td>";
-                        echo $action['label'] ?? '';
-                        echo "</td>";
-                        echo "<td width='20%'>";
-                        echo $field;
-                        echo "</td>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th colspan='4'>";
+            echo \ComputerVirtualMachine::getTypeName(Session::getPluralNumber());
+            echo "</th>";
+            echo "</tr>";
 
-                        if (!$odd) {
-                            echo "</tr>";
-                            $in_row = false;
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='import_vm'>";
+            echo \ComputerVirtualMachine::createTabEntry(__('Import virtual machines'), 0, \ComputerVirtualMachine::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'import_vm',
+                'id'        => 'import_vm',
+                'checked'   => $config['import_vm']
+            ]);
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='dropdown_vm_type$rand'>";
+            echo \ComputerType::createTabEntry(\ComputerType::getTypeName(1), 0, \ComputerType::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            \Dropdown::show(
+                'ComputerType',
+                [
+                    'name'   => 'vm_type',
+                    'id'     => 'vm_type',
+                    'value'  => $config['vm_type'],
+                    'rand' => $rand
+                ]
+            );
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='vm_as_computer'>";
+            echo \Computer::createTabEntry(__('Create computer for virtual machines'), 0, \Computer::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'vm_as_computer',
+                'id'        => 'vm_as_computer',
+                'checked'   => $config['vm_as_computer']
+            ]);
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='vm_components'>";
+            echo \ComputerVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, \ComputerVirtualMachine::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'vm_components',
+                'id'        => 'vm_components',
+                'checked'   => $config['vm_components']
+            ]);
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='4' style='text-align:right;'>";
+            echo "<span class='red'>" . __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!') . "</span>";
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<th colspan='4'>";
+            echo CommonDevice::getTypeName(Session::getPluralNumber());
+            echo "</th>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_processor'>";
+            echo \DeviceProcessor::createTabEntry(DeviceProcessor::getTypeName(Session::getPluralNumber()), 0, \DeviceProcessor::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_processor',
+                'id'        => 'component_processor',
+                'checked'   => $config['component_processor']
+            ]);
+            echo "</td>";
+
+            echo "<td>";
+            echo "<label for='component_harddrive'>";
+            echo \DeviceHardDrive::createTabEntry(DeviceHardDrive::getTypeName(Session::getPluralNumber()), 0, \DeviceHardDrive::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_harddrive',
+                'id'        => 'component_harddrive',
+                'checked'   => $config['component_harddrive']
+            ]);
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_memory'>";
+            echo \DeviceMemory::createTabEntry(DeviceMemory::getTypeName(Session::getPluralNumber()), 0, \DeviceMemory::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_memory',
+                'id'        => 'component_memory',
+                'checked'   => $config['component_memory']
+            ]);
+            echo "</td>";
+
+            echo "<td>";
+            echo "<label for='component_soundcard'>";
+            echo \DeviceSoundCard::createTabEntry(DeviceSoundCard::getTypeName(Session::getPluralNumber()), 0, \DeviceSoundCard::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_soundcard',
+                'id'        => 'component_soundcard',
+                'checked'   => $config['component_soundcard']
+            ]);
+
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_networkcard'>";
+            echo \DeviceNetworkCard::createTabEntry(DeviceNetworkCard::getTypeName(Session::getPluralNumber()), 0, \DeviceNetworkCard::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_networkcard',
+                'id'        => 'component_networkcard',
+                'checked'   => $config['component_networkcard']
+            ]);
+            echo "</td>";
+
+            echo "<td>";
+            echo "<label for='component_networkcardvirtual'>";
+            echo \DeviceNetworkCard::createTabEntry(__('Virtual network cards'), 0, \DeviceNetworkCard::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_networkcardvirtual',
+                'id'        => 'component_networkcardvirtual',
+                'checked'   => $config['component_networkcardvirtual']
+            ]);
+
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_graphiccard'>";
+            echo \DeviceGraphicCard::createTabEntry(DeviceGraphicCard::getTypeName(Session::getPluralNumber()), 0, \DeviceGraphicCard::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_graphiccard',
+                'id'        => 'component_graphiccard',
+                'checked'   => $config['component_graphiccard']
+            ]);
+            echo "</td>";
+
+            echo "<td>";
+            echo "<label for='component_simcard'>";
+            echo \DeviceSimcard::createTabEntry(DeviceSimcard::getTypeName(Session::getPluralNumber()), 0, \DeviceSimcard::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_simcard',
+                'id'        => 'component_simcard',
+                'checked'   => $config['component_simcard']
+            ]);
+            echo "</td>";
+
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_drive'>";
+            echo \DeviceDrive::createTabEntry(DeviceDrive::getTypeName(Session::getPluralNumber()), 0, \DeviceDrive::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_drive',
+                'id'        => 'component_drive',
+                'checked'   => $config['component_drive']
+            ]);
+            echo "</td>";
+
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='component_networkdrive'>";
+            echo \DeviceDrive::createTabEntry(__('Network drives'), 0, \DeviceDrive::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_networkdrive',
+                'id'        => 'component_networkdrive',
+                'checked'   => $config['component_networkdrive']
+            ]);
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_drive'>";
+            echo \DeviceDrive::createTabEntry(__('Removable drives'), 0, \DeviceDrive::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_removablemedia',
+                'id'        => 'component_removablemedia',
+                'checked'   => $config['component_removablemedia']
+            ]);
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='component_powersupply'>";
+            echo \DevicePowerSupply::createTabEntry(DevicePowerSupply::getTypeName(Session::getPluralNumber()), 0, \DevicePowerSupply::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_powersupply',
+                'id'        => 'component_powersupply',
+                'checked'   => $config['component_powersupply']
+            ]);
+            echo "</td>";
+
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='component_control'>";
+            echo \DeviceControl::createTabEntry(DeviceControl::getTypeName(Session::getPluralNumber()), 0, \DeviceControl::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_control',
+                'id'        => 'component_control',
+                'checked'   => $config['component_control']
+            ]);
+            echo "</td>";
+
+            echo "</td>";
+            echo "<td>";
+            echo "<label for='component_battery'>";
+            echo \DeviceBattery::createTabEntry(DeviceBattery::getTypeName(Session::getPluralNumber()), 0, \DeviceBattery::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td>";
+            Html::showCheckbox([
+                'name'      => 'component_battery',
+                'id'        => 'component_battery',
+                'checked'   => $config['component_battery']
+            ]);
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<th colspan=4 >" . __('Agent cleanup') . "</th></tr>";
+            echo "<tr class='tab_bg_1'><td>";
+            echo \Agent::createTabEntry(__('Update agents who have not contacted the server for (in days)'), 0, \Agent::getType());
+            echo "</td><td width='20%'>";
+            Dropdown::showNumber(
+                'stale_agents_delay',
+                [
+                    'value' => $config['stale_agents_delay'] ?? 0,
+                    'min'   => 1,
+                    'max'   => 1000,
+                    'toadd' => ['0' => __('Disabled')]
+                ]
+            );
+            echo "</td><td>";
+            echo \Agent::createTabEntry(_n('Action', 'Actions', 1), 0, \Agent::getType());
+            echo "</><td width='20%'>";
+            //action
+            $action = self::getDefaults()['stale_agents_action'];
+            if (isset($config['stale_agents_action'])) {
+                $action = $config['stale_agents_action'];
+            }
+            $rand = Dropdown::showFromArray(
+                'stale_agents_action',
+                self::getStaleAgentActions(),
+                [
+                    'values' => importArrayFromDB($action),
+                    'on_change' => 'changestatus();',
+                    'multiple' => true
+                ]
+            );
+            //if action == action_status => show blocation else hide blocaction
+            echo Html::scriptBlock("
+            function changestatus() {
+                if ($('#dropdown_stale_agents_action$rand').val() != 0) {
+                $('#blocaction1').show();
+                $('#blocaction2').show();
+                } else {
+                $('#blocaction1').hide();
+                $('#blocaction2').hide();
+                }
+            }
+            changestatus();
+
+        ");
+            echo "</td>";
+            echo "</tr>";
+            //blocaction with status
+            echo "<tr class='tab_bg_1'><td colspan=2></td>";
+            echo "<td>";
+            echo "<span id='blocaction1' style='display:none'>";
+            echo __('Change the status');
+            echo "</span>";
+            echo "</td>";
+            echo "<td width='20%'>";
+            echo "<span id='blocaction2' style='display:none'>";
+            State::dropdown(
+                [
+                    'name'   => 'stale_agents_status',
+                    'value'  => $config['stale_agents_status'] ?? -1,
+                    'entity' => $_SESSION['glpiactive_entity'],
+                    'toadd'  => [-1 => __('No change')]
+                ]
+            );
+            echo "</span>";
+            echo "</td>";
+            echo "</tr>";
+
+            $plugin_actions = $PLUGIN_HOOKS[Hooks::STALE_AGENT_CONFIG] ?? [];
+            $odd = true;
+            $in_row = true;
+            /**
+             * @var string $plugin
+             * @phpstan-var array{label: string, item_action: boolean, render_callback: callable, action_callback: callable}[] $actions
+             */
+            foreach ($plugin_actions as $plugin => $actions) {
+                if (is_array($actions) && \Plugin::isPluginActive($plugin)) {
+                    foreach ($actions as $action) {
+                        if (!is_callable($action['render_callback'] ?? null)) {
+                            trigger_error(
+                                sprintf('Invalid plugin "%s" render callback for "%s" hook.', $plugin, Hooks::STALE_AGENT_CONFIG),
+                                E_USER_WARNING
+                            );
+                            continue;
                         }
-                        $odd = !$odd;
+
+                        if ($odd) {
+                            echo "<tr class='tab_bg_1'>";
+                        }
+                        $field = $action['render_callback']($config);
+                        if (!empty($field)) {
+                            echo "<td>";
+                            echo $action['label'] ?? '';
+                            echo "</td>";
+                            echo "<td width='20%'>";
+                            echo $field;
+                            echo "</td>";
+
+                            if (!$odd) {
+                                echo "</tr>";
+                                $in_row = false;
+                            }
+                            $odd = !$odd;
+                        }
                     }
                 }
             }
-        }
-        if ($in_row) {
-            echo "</tr>";
+            if ($in_row) {
+                echo "</tr>";
+            }
         }
 
         if ($canedit) {
