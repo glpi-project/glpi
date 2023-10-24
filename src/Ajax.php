@@ -378,7 +378,7 @@ JAVASCRIPT;
                     if (url_hash.length > 0) {
                         // as we load content by ajax, when full page was ready, the anchor was not present
                         // se we recall it to force the scroll.
-                        window.location.hash = url_hash;
+                        window.location.href = url_hash;
 
                         // animate parent with a flash
                         $(url_hash).closest('.timeline-item')
