@@ -65,6 +65,7 @@ if (isset($_GET['file']) && isset($_GET['is_custom_theme']) && $_GET['is_custom_
     $theme = ThemeManager::getInstance()->getTheme($_GET['file']);
 
     if (!$theme) {
+        trigger_error(sprintf('Unable to find theme `%s`.', $_GET['file']), E_USER_WARNING);
         $theme = ThemeManager::getInstance()->getTheme(ThemeManager::DEFAULT_THEME);
     }
 
