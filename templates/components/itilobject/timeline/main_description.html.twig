@@ -35,6 +35,7 @@
 {% set entry_rand = random() %}
 
 <div class="timeline-item mb-3 ITILContent"
+     id="{{ item.getType() }}_{{ item.fields['id'] }}"
      data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
    <div class="row">
       <div class="col-auto d-flex flex-column ">
@@ -56,6 +57,10 @@
 
                   {% if canupdate %}
                     <div class="dropdown ms-auto timeline-item-buttons">
+                        <a class="anchor-link btn btn-sm btn-ghost-secondary timeline-more-actions" href="#{{ item.getType() ~ '_' ~ item.fields['id'] }}" aria-label="{{ __('Link to this %s')|format(item.getType()) }}">
+                           <i class="ti ti-link"></i>
+                        </a>
+
                         <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas ti ti-dots-vertical"></i>
                         </button>

@@ -98,6 +98,9 @@
 
       {% if actions|length %}
          <div class="dropdown ms-2">
+            <a class="anchor-link btn btn-sm btn-ghost-secondary timeline-more-actions" href="#{{ entry['type'] ~ '_' ~ entry_i['id'] }}" aria-label="{{ __('Link to this %s')|format(entry['type']|itemtype_name) }}">
+               <i class="ti ti-link"></i>
+            </a>
             <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
                <i class="ti ti-dots-vertical"></i>
             </button>
