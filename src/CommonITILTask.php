@@ -309,7 +309,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             $timestart              = strtotime($input["begin"]);
             $timeend                = strtotime($input["end"]);
-            $input["actiontime"]    = $timeend - $timestart;
+
+            // This piece of code was added to ensure a bi-directional link between the task duration and the planned duration.
+            // It is true that these two fields are a bit redundant when task planning is enabled.
+            if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
+                // If actiontime is set, compute end date
+                $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
+            } else {
+                // If actiontime is not set, compute it
+                $input["actiontime"] = $timeend - $timestart;
+            }
 
             unset($input["plan"]);
 
@@ -523,7 +532,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             $timestart              = strtotime($input["begin"]);
             $timeend                = strtotime($input["end"]);
-            $input["actiontime"]    = $timeend - $timestart;
+
+            // This piece of code was added to ensure a bi-directional link between the task duration and the planned duration.
+            // It is true that these two fields are a bit redundant when task planning is enabled.
+            if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
+                // If actiontime is set, compute end date
+                $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
+            } else {
+                // If actiontime is not set, compute it
+                $input["actiontime"] = $timeend - $timestart;
+            }
 
             unset($input["plan"]);
             if (!$this->test_valid_date($input)) {
