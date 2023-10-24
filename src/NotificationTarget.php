@@ -1220,6 +1220,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getUrlBase()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $url_base = trim(Entity::getUsedConfig('url_base', $this->getEntity(), '', ''));
