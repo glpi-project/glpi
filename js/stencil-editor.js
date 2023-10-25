@@ -105,18 +105,41 @@ const StencilEditor = function (container, rand, zones_definition) {
             });
 
         // keyboard events
-        $('#zone_label-' + rand)
-            .on('keypress', function (e) {
+        $(document)
+            .on('keyup', function (e) {
                 var keycode = (e.keyCode ? e.keyCode : e.which);
-                if (keycode == 13) {
-                    _this.saveZoneData();
+
+                // Check if one of the cropper as a selection
+                const hasSelection = croppers.some(function (cropper) {
+                    return cropper.getCropperSelection() !== undefined
+                        && cropper.getCropperSelection().height > 0
+                        && cropper.getCropperSelection().width > 0;
+                });
+
+                if (hasSelection) {
+                    if (keycode == 13) {
+                        _this.saveZoneData();
+                        e.preventDefault();
+                    } else if (keycode == 27) {
+                        _this.editorDisable();
+                        e.preventDefault();
+                    }
                 }
-            });
-        $('#zone_number-' + rand)
+            })
             .on('keypress', function (e) {
                 var keycode = (e.keyCode ? e.keyCode : e.which);
+
                 if (keycode == 13) {
-                    _this.saveZoneData();
+                    const hasSelection = croppers.some(function (cropper) {
+                        return cropper.getCropperSelection() !== undefined
+                            && cropper.getCropperSelection().height > 0
+                            && cropper.getCropperSelection().width > 0;
+                    });
+
+                    if (hasSelection) {
+                        _this.saveZoneData();
+                        e.preventDefault();
+                    }
                 }
             });
     }();
@@ -221,7 +244,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // indicate visually that data are saved
         $(container).find(".set-zone-data[data-zone-index=" + zoneIndex + "]")
-            .removeClass('btn-outline-secondary')
+            .removeClass('btn-warning')
             .addClass('btn-success')
             .find('i').removeClass('ti-file-unknown').addClass('ti-check');
 
