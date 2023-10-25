@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global bootstrap */
+
 import GenericView from './GenericView.js';
 
 // Explicitly bind to window so Jest tests work properly
@@ -38,9 +40,14 @@ window.GLPI = window.GLPI || {};
 window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.Table = class Table extends GenericView {
+    // track sort/order changes globally
+    sort_state = {
+        sort: [],
+        order: []
+    };
 
     constructor(result_view_element_id, push_history = true, forced_params = {}) {
-        const element_id = $('#'+result_view_element_id).find('table.search-results').attr('id');
+        const element_id = $('#'+result_view_element_id).parent().find('table.search-results').attr('id');
         super(element_id);
 
         this.push_history = push_history;
@@ -131,6 +138,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
             target_column.attr('data-sort-num', undefined);
         }
 
+        this.setSortStateFromColumns();
         this.refreshResults();
     }
 
@@ -164,9 +172,12 @@ window.GLPI.Search.Table = class Table extends GenericView {
         };
 
         try {
-            const sort_state = this.getSortState();
             const limit = $(form_el).find('select.search-limit-dropdown').first().val();
-            const search_form_values = $(ajax_container).closest('.search-container').find('.search-form-container').serializeArray();
+            let search_form_values = $(ajax_container).closest('.search-container').find('.search-form-container').serializeArray();
+            // Drop sort and order from search form values as we rely on the data on the table headers as the source of truth
+            search_form_values = search_form_values.filter((v) => {
+                return v['name'] !== 'sort[]' && v['name'] !== 'order[]';
+            });
             let search_criteria = {};
             search_form_values.forEach((v) => {
                 search_criteria[v['name']] = v['value'];
@@ -188,16 +199,16 @@ window.GLPI.Search.Table = class Table extends GenericView {
                     itemtype: this.getItemtype(),
                     glpilist_limit: limit,
                 };
-                if (sort_state !== null) {
-                    search_data['sort'] = sort_state['sort'];
-                    search_data['order'] = sort_state['order'];
+                if (this.sort_state !== null) {
+                    search_data['sort'] = this.sort_state['sort'];
+                    search_data['order'] = this.sort_state['order'];
                 }
 
                 search_data = Object.assign(search_data, search_criteria, this.forced_params, search_overrides);
             }
 
             if (this.push_history) {
-                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, sort_state, search_overrides)));
+                history.pushState('', '', '?' + $.param(Object.assign(search_criteria, this.sort_state, search_overrides)));
             }
 
             $.ajax({
@@ -260,30 +271,106 @@ window.GLPI.Search.Table = class Table extends GenericView {
             e.preventDefault();
             this.onSearch();
         });
+
+        $(ajax_container).on('click', '.trigger-sort', (e) => {
+            e.preventDefault();
+            this.setSortStateFromSelects();
+            this.refreshResults();
+        });
+        $(ajax_container).on('click', '.sort-reset', (e) => {
+            e.preventDefault();
+            this.resetSortState();
+            this.refreshResults();
+        });
+
+        $(ajax_container).on('click', '.sort-container .add_sort', (e) => {
+            const sort_container = ajax_container.find('.sort-container');
+            e.preventDefault();
+            this.setSortStateFromSelects();
+            const sort_count = this.sort_state['sort'].length;
+            const idor_token = sort_container.find('input[name="_idor_token"]').val();
+            $.post(CFG_GLPI.root_doc + '/ajax/search.php', {
+                action: 'display_sort_criteria',
+                itemtype: this.getItemtype(),
+                num: sort_count + 1,
+                p: this.sort_state,
+                _idor_token: idor_token,
+                used: this.sort_state['sort'],
+            }).done((content) => {
+                sort_container.find('.list-group').append(content);
+                this.setSortStateFromSelects();
+            });
+        });
+
+        $(ajax_container).on('change', 'select[name^="sort"], select[name^="order"]', (e) => {
+            e.preventDefault();
+            this.setSortStateFromSelects();
+        });
+
+        $(ajax_container).on('click', '.sort-container .remove-order-criteria', (e) => {
+            e.preventDefault();
+
+            // force removal of tooltip
+            const tooltip = bootstrap.Tooltip.getInstance($(e.currentTarget)[0]);
+            if (tooltip !== null) {
+                tooltip.dispose();
+            }
+
+            const rowID = $(e.currentTarget).data('rowid');
+            $('#' + rowID).remove();
+
+            this.setSortStateFromSelects();
+        });
     }
 
     getItemtype() {
         return this.getElement().closest('form').attr('data-search-itemtype');
     }
 
-    getSortState() {
+    resetSortState() {
+        this.sort_state = {
+            sort: [],
+            order: []
+        };
+    }
+
+    setSortStateFromColumns() {
         const columns = this.getElement().find('thead th[data-searchopt-id]:not([data-searchopt-id=""])[data-sort-order]:not([data-sort-order=""])');
         if (columns.length === 0) {
             return null;
         }
-        const sort_state = {
-            sort: [],
-            order: []
-        };
+
+        this.resetSortState();
+
         columns.each((i, c) => {
             const col = $(c);
 
             const order = col.attr('data-sort-order');
             if (order !== 'nosort') {
-                sort_state['sort'][col.attr('data-sort-num') || 0] = col.attr('data-searchopt-id');
-                sort_state['order'][col.attr('data-sort-num') || 0] = order;
+                this.sort_state['sort'][col.attr('data-sort-num') || 0] = col.attr('data-searchopt-id');
+                this.sort_state['order'][col.attr('data-sort-num') || 0] = order;
             }
         });
-        return sort_state;
+        return this.sort_state;
+    }
+
+    setSortStateFromSelects() {
+        const sort = [];
+        const order = [];
+
+        $('select[name^="sort"]').each(function() {
+            sort.push($(this).val());
+        });
+        $('select[name^="order"]').each(function() {
+            order.push($(this).val());
+        });
+
+        this.resetSortState();
+
+        // fill with new values
+        $.each(sort, (i, v) => {
+            this.sort_state['sort'][i] = v;
+            this.sort_state['order'][i] = order[i];
+        });
     }
 };

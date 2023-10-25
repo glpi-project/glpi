@@ -105,6 +105,35 @@ final class QueryBuilder implements SearchInputInterface
         ]);
     }
 
+
+    /**
+     * Print generic ordering form
+     *
+     * Params need to parsed before using Search::manageParams function
+     *
+     * @param string $itemtype  Type to display the form
+     * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
+     *
+     * @return void
+     **/
+    public static function showGenericSort($itemtype, array $params)
+    {
+        $p = [
+            'sort' => [],
+            'order' => [],
+        ];
+
+        foreach ($params as $key => $val) {
+            $p[$key] = $val;
+        }
+
+        TemplateRenderer::getInstance()->display('components/search/query_builder/sort/main.html.twig', [
+            'itemtype'            => $itemtype,
+            'normalized_itemtype' => Toolbox::getNormalizedItemtype($itemtype),
+            'p'                   => $p,
+        ]);
+    }
+
     /**
      * Display first part of criteria (field + searchtype, just after link)
      * will call displaySearchoptionValue for the next part (value)
@@ -492,6 +521,73 @@ final class QueryBuilder implements SearchInputInterface
         ]);
     }
 
+
+    /**
+     * Display a sort-criteria field set, this function should be called by ajax/search.php
+     *
+     * @since 10.1
+     *
+     * @param  array  $request @see displayCriteria method
+     *
+     * @return void
+     */
+    public static function displaySortCriteria($request = [])
+    {
+        if (
+            !isset($request["itemtype"])
+            || !isset($request["num"])
+        ) {
+            return;
+        }
+
+        $num         = (int) $request['num'];
+        $p           = $request['p'] ?? [];
+
+        $sorts      = $p['sort'] ?? [];
+        $orders     = $p['order'] ?? [];
+        $used       = $request['used'] ?? [];
+        $soptions   = SearchOption::getCleanedOptions($request["itemtype"]);
+        $soption_id = $sorts[$num] ?? '';
+        $soption    = $soptions[$soption_id] ?? [];
+
+        $order = [
+            'soption_id' => $soption_id,
+            'name'       => $soption['name'] ?? '',
+            'order'      => $orders[$num] ?? 'ASC',
+        ];
+
+        $randrow     = mt_rand();
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
+        $rowid       = 'orderrow' . $normalized_itemtype . $randrow;
+
+        $values   = [];
+        reset($soptions);
+        $group = '';
+        foreach ($soptions as $key => $val) {
+            // print groups
+            if (!is_array($val)) {
+                $group = $val;
+            } else if (count($val) == 1) {
+                $group = $val['name'];
+            } else {
+                if (
+                    (!isset($val['nosearch']) || ($val['nosearch'] == false))
+                ) {
+                    $values[$group][$key] = $val["name"];
+                }
+            }
+        }
+
+        TemplateRenderer::getInstance()->display('components/search/query_builder/sort/criteria.html.twig', [
+            'itemtype' => $request["itemtype"],
+            'num'      => $num,
+            'order'    => $order,
+            'rowid'    => $rowid,
+            'values'   => $values,
+            'used'     => array_combine($used, $used),
+        ]);
+    }
+
     /**
      * Display a group of nested criteria.
      * A group (parent) criteria  can contains children criteria (who also cantains children, etc)
@@ -504,6 +600,7 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function displayCriteriaGroup($request = [])
     {
+
         $num         = (int) $request['num'];
         $p           = $request['p'];
         $randrow     = mt_rand();
@@ -679,6 +776,12 @@ final class QueryBuilder implements SearchInputInterface
             if (isset($_SESSION['glpisearch'][$itemtype])) {
                 unset($_SESSION['glpisearch'][$itemtype]);
             }
+
+            // if we ask for reset but without precising particular bookmark
+            // then remove current active bookmark
+            if (!isset($params['savedsearches_id'])) {
+                unset($_SESSION['glpi_loaded_savedsearch']);
+            }
         }
 
         if (
@@ -716,6 +819,17 @@ final class QueryBuilder implements SearchInputInterface
         }
 
         return $params;
+    }
+
+
+    /**
+     * Remove the active saved search in session
+     *
+     * @return void
+     */
+    public static function resetActiveSavedSearch()
+    {
+        unset($_SESSION['glpi_loaded_savedsearch']);
     }
 
     /**

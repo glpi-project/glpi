@@ -631,7 +631,10 @@ final class SearchEngine
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         $output::showPreSearchDisplay($itemtype);
 
-        $search_input_class::showGenericSearch($itemtype, $params);
+        if ($_SESSION['glpishow_search_form']) {
+            $search_input_class::showGenericSearch($itemtype, $params);
+        }
+
         $params = $output::prepareInputParams($itemtype, $params);
         if ((int) $params['browse'] === 1 && \Toolbox::hasTrait($itemtype, TreeBrowse::class)) {
             $itemtype::showBrowseView($itemtype, $params);

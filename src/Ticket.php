@@ -136,54 +136,6 @@ class Ticket extends CommonITILObject
     }
 
 
-    public static function getAdditionalMenuLinks()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $links = parent::getAdditionalMenuLinks();
-        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
-            $opt = [];
-            $opt['reset']         = 'reset';
-            $opt['criteria'][0]['field']      = 55; // validation status
-            $opt['criteria'][0]['searchtype'] = 'equals';
-            $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
-            $opt['criteria'][0]['link']       = 'AND';
-
-            $opt['criteria'][1]['field']      = 59; // validation aprobator
-            $opt['criteria'][1]['searchtype'] = 'equals';
-            $opt['criteria'][1]['value']      = Session::getLoginUserID();
-            $opt['criteria'][1]['link']       = 'AND';
-
-            $opt['criteria'][2]['field']      = 52; // global validation status
-            $opt['criteria'][2]['searchtype'] = 'equals';
-            $opt['criteria'][2]['value']      = CommonITILValidation::WAITING;
-            $opt['criteria'][2]['link']       = 'AND';
-
-            $opt['criteria'][3]['field']      = 12; // ticket status
-            $opt['criteria'][3]['searchtype'] = 'equals';
-            $opt['criteria'][3]['value']      = Ticket::CLOSED;
-            $opt['criteria'][3]['link']       = 'AND NOT';
-
-            $opt['criteria'][4]['field']      = 12; // ticket status
-            $opt['criteria'][4]['searchtype'] = 'equals';
-            $opt['criteria'][4]['value']      = Ticket::SOLVED;
-            $opt['criteria'][4]['link']       = 'AND NOT';
-
-            $pic_validate = '
-            <i class="ti ti-eye-check" title="' . __s('Tickets waiting for your approval') . '"></i>
-            <span class="d-none d-xxl-block">
-               ' . __s('Tickets waiting for your approval') . '
-            </span>
-         ';
-
-            $links[$pic_validate] = Ticket::getSearchURL(false) . '?' . Toolbox::append_params($opt);
-        }
-
-        return $links;
-    }
-
-
     public function canAssign()
     {
         if (

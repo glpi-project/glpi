@@ -1,0 +1,75 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+
+{% set idor_display_criteria = idor_token(itemtype) %}
+
+<div class="card card-sm sort-container">
+    <input type="hidden" name="_idor_token" value="{{ idor_display_criteria }}" />
+    <div class="list-group list-group-flush list-group-hoverable" id="sort-criteria-list-{{ rand }}">
+        {% if p['sort'] is not array %}
+            {% set p = p|merge({
+                'sort': [p['sort']]
+            }) %}
+        {% endif %}
+        {% for i in p['sort']|keys %}
+            {{ call("Glpi\\Search\\Input\\QueryBuilder::displaySortCriteria", [{
+                itemtype: itemtype,
+                num: i,
+                p: p
+            }]) }}
+        {% endfor %}
+        <a id="more-criteria{{ rand }}" role="button" class="normalcriteria fold-search list-group-item p-2 b-0 d-none"></a>
+    </div>
+
+    <div class="card-footer d-flex sort_actions">
+        <button id="addsort{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1 add_sort" type="button">
+            <i class="ti ti-square-plus"></i>
+            <span class="d-none d-sm-block">{{ __('Add another sort') }}</span>
+        </button>
+
+        <div class="btn-group ms-auto me-1">
+            <button class="btn btn-sm btn-primary trigger-sort" type="button" name="sort">
+                <i class="ti ti-arrows-sort"></i>
+                <span class="d-none d-sm-block">{{ __("Sort") }}</span>
+            </button>
+
+            <button class="btn btn-sm btn-icon px-2 sort-reset" type="button"
+                data-bs-toggle="tooltip" data-bs-placement="bottom"
+                title="{{ __('Reset sort') }}">
+                <i class="ti ti-square-x"></i>
+            </a>
+        </div>
+    </div>
+</div>

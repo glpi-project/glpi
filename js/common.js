@@ -888,6 +888,10 @@ var templateSelection = function (selection) {
     return _elt;
 };
 
+var dropdownTemplateHtml = function (option) {
+    return $(`<span>${option.text}</span>`);
+};
+
 var templateItilStatus = function(option) {
     if (option === false) {
         // Option is false when element does not match searched terms

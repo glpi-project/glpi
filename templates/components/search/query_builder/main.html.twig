@@ -31,10 +31,11 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set is_ajax = _request['searchform_id'] is defined and _request['searchform_id'] is not null %}
 {% set rand = random() %}
 {% set mainform = mainform is not defined ? true : mainform %}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
-{% set card_class = mainform ? 'search-form card card-sm mb-4' : 'border d-inline-block ms-1' %}
+{% set card_class = mainform ? 'search-form card card-sm' : 'border d-inline-block ms-1' %}
 {% set hide_criteria = not(p.hide_criteria is defined and not p.hide_criteria) %}
 {% set extra_actions_templates = p.extra_actions_templates|default([]) %}
 {% set hide_controls = p.hide_controls is defined and p.hide_controls %}
@@ -86,43 +87,46 @@
       <input type="hidden" name="params[showmassiveactions]" value="{{ showmassiveactions ? "1" : "0" }}">
 
       <div class="card-footer d-flex search_actions">
-         <button id="addsearchcriteria{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
+         <button id="addsearchcriteria{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
             <i class="ti ti-square-plus"></i>
             <span class="d-none d-sm-block">{{ __('rule') }}</span>
          </button>
          {% if linked is defined and linked|length > 0 %}
-            <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
+            <button id="addmetasearchcriteria{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
                <i class="ti ti-circle-plus"></i>
                <span class="d-none d-sm-block">{{ __('global rule') }}</span>
             </button>
          {% endif %}
-         <button id="addcriteriagroup{{ rand }}" class="btn btn-sm btn-outline-secondary me-1" type="button">
+         <button id="addcriteriagroup{{ rand }}" class="btn btn-sm btn-ghost-secondary me-1" type="button">
             <i class="ti ti-code-plus"></i>
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
-            {% if (showaction) %}
-               {# Display submit button #}
-               <button class="btn btn-sm btn-primary me-1" type="submit" name="{{ p['actionname'] }}">
-                  <i class="ti ti-list-search"></i>
-                  <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
-               </button>
-            {% endif %}
-            {% if p['showbookmark'] %}
-               {{ include('pages/tools/savedsearch/save_button.html.twig', {
-                  type: constant('SavedSearch::SEARCH'),
-                  itemtype: itemtype,
-                  active: _get['savedsearches_id'] is defined
-               }) }}
-            {% endif %}
-            {% if p['showreset'] %}
-               <a class="btn btn-ghost-secondary btn-icon btn-sm me-1 search-reset" data-bs-toggle="tooltip" data-bs-placement="bottom"
-                  href="{{ p['target'] ~ ('?' in p['target'] ? '&amp;' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
-                  <i class="ti ti-circle-x"></i>
-               </a>
-            {% elseif p['forcereset'] %}
-               <input type="hidden" name="reset" value="reset">
-            {% endif %}
+            <span class="ms-auto btn-group">
+                {% if (showaction) %}
+                {# Display submit button #}
+                <button class="btn btn-sm btn-primary" type="submit" name="{{ p['actionname'] }}">
+                    <i class="ti ti-search"></i>
+                    <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
+                </button>
+                {% endif %}
+                {% if p['showbookmark'] %}
+                {{ include('pages/tools/savedsearch/save_button.html.twig', {
+                    type: constant('SavedSearch::SEARCH'),
+                    itemtype: itemtype,
+                    active: _get['savedsearches_id'] is defined
+                }) }}
+                {% endif %}
+                {% if p['showreset'] %}
+                <a class="btn btn-sm btn-icon px-2 search-reset"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom"
+                   href="{{ p['target'] ~ ('?' in p['target'] ? '&amp;' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
+                    <i class="ti ti-square-x"></i>
+                </a>
+                {% elseif p['forcereset'] %}
+                <input type="hidden" name="reset" value="reset">
+                {% endif %}
+            </span>
          {% endif %}
          {% for template, params in extra_actions_templates %}
             {% include template with params %}
@@ -179,15 +183,17 @@
          });
 
          {% if mainform and not hide_criteria %}
-            const toggle_fold_search = function(show_search) {
-                $('#searchcriteria{{ rand }}').closest('.search-form').toggle(show_search);
-            };
-            // Init search_criteria state
-            const search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
-            if (search_criteria_visibility !== undefined && search_criteria_visibility !== 'false') {
-                $('.fold-search').click();
-            }
-            $(document).on("click", ".remove-search-criteria", function() {
+            {% if not is_ajax %}
+                const toggle_fold_search = function(show_search) {
+                    $('#searchcriteria{{ rand }}').closest('.search-form').toggle(show_search);
+                };
+                // Init search_criteria state
+                const search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
+                if (search_criteria_visibility !== undefined && search_criteria_visibility !== 'false') {
+                    $('.fold-search').click();
+                }
+            {% endif %}
+            $(document).off('click', '.remove-search-criteria').on("click", ".remove-search-criteria", function() {
                 // force removal of tooltip
                 const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
                 if (tooltip !== null) {

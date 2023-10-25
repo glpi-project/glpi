@@ -37,6 +37,9 @@ namespace Glpi\Search\Output;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
+use Glpi\Search\CriteriaFilter;
+use Glpi\Search\SearchOption;
+use SavedSearch;
 use Ticket;
 
 /**
@@ -107,6 +110,69 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         \Session::initNavigateListItems($data['itemtype'], '', $href);
 
+        // search if any saved search is active
+        $soptions = SearchOption::getOptionsForItemtype($itemtype);
+        $active_search_name = '';
+        $active_savedsearch = false;
+        if (isset($_SESSION['glpi_loaded_savedsearch'])) {
+            $savedsearch = new SavedSearch();
+            $savedsearch->getFromDB($_SESSION['glpi_loaded_savedsearch']);
+            if ($itemtype === $savedsearch->fields['itemtype']) {
+                $active_search_name = $savedsearch->getName();
+                $active_savedsearch = true;
+            }
+        } else if (count($data['search']['criteria']) > 0) {
+            // check if it isn't the default search
+            $default = CriteriaFilter::getDefaultSearch($itemtype);
+            if ($default != $data['search']['criteria']) {
+                $used_fields = array_column($data['search']['criteria'], 'field');
+                $used_fields = array_unique($used_fields);
+
+                // remove view field
+                $is_view_fields = in_array('view', $used_fields);
+                if ($is_view_fields) {
+                    unset($used_fields[array_search('view', $used_fields)]);
+                }
+
+                $used_soptions = array_intersect_key($soptions, array_flip($used_fields));
+                $used_soptions_names = array_column($used_soptions, 'name');
+
+                if ($is_view_fields) {
+                    $used_soptions_names[] = _n('View', 'Views', 1);
+                }
+
+                // check also if there any default filters
+                if ($defaultfilter = \DefaultFilter::getSearchCriteria($itemtype)) {
+                    array_unshift($used_soptions_names, $defaultfilter['name']);
+                }
+
+                // remove latitute and longitude if as map is enabled
+                if ($data['search']['as_map'] == 1) {
+                    unset($used_soptions_names[array_search(__('Latitude'), $used_soptions_names)]);
+                    unset($used_soptions_names[array_search(__('Longitude'), $used_soptions_names)]);
+                }
+
+                $active_search_name = sprintf(__("Filtered by %s"), implode(', ', $used_soptions_names));
+            }
+        }
+
+        $active_sort_name = "";
+        $active_sort = false;
+        // should be sorted (0 => 0 : is the default value -> no sort)
+        if (count($data['search']['sort']) > 0 && $data['search']['sort'] != [0 => 0]) {
+            $used_fields = array_unique($data['search']['sort']);
+            $used_fields = array_filter($used_fields, fn($value) => !is_null($value) && $value !== '');
+
+            $used_soptions_names = [];
+            foreach ($used_fields as $sopt_id) {
+                $used_soptions_names[] = $soptions[$sopt_id]['name'];
+            }
+
+            $active_sort_name = sprintf(__("Sorted by %s"), implode(', ', $used_soptions_names));
+
+            $active_sort = true;
+        }
+
         $rand = mt_rand();
         TemplateRenderer::getInstance()->display('components/search/display_data.html.twig', [
             'data'                => $data,
@@ -143,6 +209,11 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'may_be_located'      => $item instanceof \CommonDBTM && $item->maybeLocated(),
             'may_be_browsed'      => $item !== null && \Toolbox::hasTrait($item, \Glpi\Features\TreeBrowse::class),
             'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),
+            'original_params'     => $params,
+            'active_savedsearch'  => $active_savedsearch,
+            'active_search_name'  => $active_search_name,
+            'active_sort_name'    => $active_sort_name,
+            'active_sort'         => $active_sort,
         ] + ($params['extra_twig_params'] ?? []));
 
         // Add items in item list

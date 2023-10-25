@@ -178,6 +178,8 @@
       (constant('CommonITILObject::TIMELINE_ORDER_REVERSE')): __('Reverse order (old items on bottom, recent on top)')
    }, __('Timeline order'), field_options) }}
 
+   {{ fields.dropdownYesNo('show_search_form', config['show_search_form'], __('Show search form above results'), field_options) }}
+
    {% if get_current_interface() == 'central' %}
       {{ fields.smallTitle(__('Assistance'), 'ti ti-headset') }}
 

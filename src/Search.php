@@ -378,10 +378,11 @@ class Search
         QueryBuilder::showGenericSearch($itemtype, $params);
     }
 
+
     /**
      * Display a criteria field set, this function should be called by ajax/search.php
      *
-     * @since 9.4
+     * @since 10.1
      *
      * @param  array  $request we should have these keys of parameters:
      *                            - itemtype: main itemtype for criteria, sub one for metacriteria
@@ -458,6 +459,24 @@ class Search
     public static function displaySearchoptionValue($request = [])
     {
         return QueryBuilder::displaySearchoptionValue($request);
+    }
+
+
+    /**
+     * Display a criteria field set, this function should be called by ajax/search.php
+     *
+     * @since 9.4
+     *
+     * @param  array  $request we should have these keys of parameters:
+     *                            - itemtype: main itemtype for criteria, sub one for metacriteria
+     *                            - num: index of the criteria
+     *                            - p: params of showGenericSearch method
+     *
+     * @return void
+     */
+    public static function displaySortCriteria($request = [])
+    {
+        QueryBuilder::displaySortCriteria($request);
     }
 
 
