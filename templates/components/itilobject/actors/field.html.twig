@@ -58,6 +58,7 @@
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
+            data-is-notify="{{ actor['is_notify'] ?? 1}}"
             data-default-email="{{ actor['default_email'] ?? '' }}"
             data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
@@ -86,6 +87,7 @@
          var title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
          var use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
          var alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
+         var is_notify = element.data('is-notify') ?? option.is_notify ?? 1;
 
          var icon = "";
          var fk   = "";
@@ -123,15 +125,18 @@
 
          var actions = "";
          {% if canupdate %}
-         if (['User', 'Supplier', 'Email'].includes(itemtype)
+         if (['User', 'Group', 'Supplier', 'Email'].includes(itemtype)
             && is_selection) {
             var fa_class = "far";
-            if (use_notif) {
+            var notif_title = itemtype == 'Group' ? "{{__('Email followup (from group settings)')}}": "{{__('Email followup')}}";
+            debugger;
+            if (is_notify != 0 && use_notif) {
                fa_class = "fas";
+               notif_title = "{{__('Email followup')}}";
             }
             actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Email followup') }}"
+                              title="${notif_title}"
                               type="button">
                <i class="${fa_class} fa-bell notify-icon"></i>
             </button>`;
@@ -298,16 +303,15 @@
       // manage actors change
       var updateActors{{ rand }} = function() {
          var data = $("#actor_{{ rand }}").select2('data');
-
          var new_actors = [];
          data.forEach(function(selection) {
             var element = $(selection.element);
-
             var itemtype  = selection.itemtype ?? element.data('itemtype');
             var items_id  = selection.items_id ?? element.data('items-id');
             var use_notif = selection.use_notification  ?? element.data('use-notification')  ?? false;
             var def_email = selection.default_email ?? element.data('default-email') ?? '';
             var alt_email = selection.alternative_email ?? element.data('alternative-email') ?? '';
+            var is_notify = selection.is_notify ?? '';
 
             if (itemtype == "Email") {
                itemtype  = "User";
@@ -321,6 +325,7 @@
                use_notification: use_notif,
                default_email: def_email,
                alternative_email: alt_email,
+               is_notify: is_notify,
             });
          });
 

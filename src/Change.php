@@ -938,12 +938,14 @@ class Change extends CommonITILObject
                 'alternative_email' => ''
             ],
             '_groups_id_requester'       => 0,
+            '_groups_id_requester_notif' => ['use_notification'  => [$default_use_notif]],
             '_users_id_assign'           => 0,
             '_users_id_assign_notif'     => [
                 'use_notification'  => $default_use_notif,
                 'alternative_email' => ''
             ],
             '_groups_id_assign'          => 0,
+            '_groups_id_assign_notif'   => ['use_notification'  => [$default_use_notif]],
             '_users_id_observer'         => 0,
             '_users_id_observer_notif'   => [
                 'use_notification'  => $default_use_notif,
@@ -954,6 +956,7 @@ class Change extends CommonITILObject
                 'alternative_email' => ''
             ],
             '_groups_id_observer'        => 0,
+            '_groups_id_observer_notif' => ['use_notification'  => [$default_use_notif]],
             '_suppliers_id_assign'       => 0,
             'priority'                   => 3,
             'urgency'                    => 3,

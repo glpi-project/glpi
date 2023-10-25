@@ -3120,7 +3120,8 @@ JAVASCRIPT;
                             'text' => $outputval,
                             'level' => (int)$level,
                             'title' => $title,
-                            'selection_text' => $selection_text
+                            'selection_text' => $selection_text,
+                            'is_notify' => $data['is_notify']
                         ];
                         $count++;
                     }
@@ -4202,6 +4203,7 @@ JAVASCRIPT;
                         $children['items_id'] = $children['id'];
                         $children['id']       = "Group_" . $children['id'];
                         $children['itemtype'] = "Group";
+                        $children['use_notification'] = $children['is_notify'];
                     }
                 }
 
