@@ -246,6 +246,9 @@ class Planning extends CommonGLPI
 
             case static::DONE:
                 return __('Done');
+
+            default:
+                return '';
         }
     }
 
@@ -259,9 +262,12 @@ class Planning extends CommonGLPI
      */
     public static function getStatusIcon($status): string
     {
+        $label = htmlspecialchars(Planning::getState($status), ENT_QUOTES);
+        if (empty($label)) {
+            return '';
+        }
         $class = Planning::getStatusClass($status);
         $color = Planning::getStatusColor($status);
-        $label = htmlspecialchars(Planning::getState($status), ENT_QUOTES);
         return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
     }
 
