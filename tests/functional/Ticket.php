@@ -6156,6 +6156,77 @@ HTML
         $this->array($tasks_content)->isEqualTo($expected_tasks);
     }
 
+    /**
+     * Check that when a ticket has multiple timeline items with the same creation date, they are ordered by ID
+     * @return void
+     * @see https://github.com/glpi-project/glpi/issues/15761
+     */
+    public function testGetTimelineItemsSameDate()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $this->integer($tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+
+        $task = new \TicketTask();
+        $date = date('Y-m-d H:i:s');
+        // Create one task with a different creation date after the others
+        $this->integer($task->add([
+            'tickets_id' => $tickets_id,
+            'content' => __FUNCTION__ . 'after',
+            'date_creation' => date('Y-m-d H:i:s', strtotime('+1 second', strtotime($date))),
+        ]))->isGreaterThan(0);
+        // Create one task with a different creation date before the others
+        $this->integer($task->add([
+            'tickets_id' => $tickets_id,
+            'content' => __FUNCTION__ . 'before',
+            'date_creation' => date('Y-m-d H:i:s', strtotime('-1 second', strtotime($date))),
+        ]))->isGreaterThan(0);
+        for ($i = 0; $i < 20; $i++) {
+            $this->integer($task->add([
+                'tickets_id' => $tickets_id,
+                'content' => __FUNCTION__,
+                'date_creation' => $date,
+            ]))->isGreaterThan(0);
+        }
+
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $timeline_items = $ticket->getTimelineItems();
+
+        // Ensure that the tasks are ordered by creation date. And, if they have the same creation date, by ID
+        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === \TicketTask::class));
+        // Check tasks are in order of creation date
+        $creation_dates = array_map(static fn($entry) => $entry['item']['date_creation'], $tasks);
+        $sorted_dates = $creation_dates;
+        sort($sorted_dates);
+        $this->array($creation_dates)->isEqualTo($sorted_dates);
+        // Check tasks with same creation date are ordered by ID
+        $same_date_tasks = array_filter($tasks, static fn($entry) => $entry['item']['date_creation'] === $date);
+        $ids = array_map(static fn($entry) => $entry['item']['id'], $same_date_tasks);
+        $sorted_ids = $ids;
+        sort($sorted_ids, SORT_NUMERIC);
+        $this->array(array_values($ids))->isEqualTo(array_values($sorted_ids));
+
+        // Check reverse timeline order
+        $timeline_items = $ticket->getTimelineItems(['sort_by_date_desc' => true]);
+        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === \TicketTask::class));
+        $creation_dates = array_map(static fn($entry) => $entry['item']['date_creation'], $tasks);
+        $sorted_dates = $creation_dates;
+        sort($sorted_dates);
+        $sorted_dates = array_reverse($sorted_dates);
+        $this->array($creation_dates)->isEqualTo($sorted_dates);
+        $same_date_tasks = array_filter($tasks, static fn($entry) => $entry['item']['date_creation'] === $date);
+        $ids = array_map(static fn($entry) => $entry['item']['id'], $same_date_tasks);
+        $sorted_ids = $ids;
+        sort($sorted_ids, SORT_NUMERIC);
+        $sorted_ids = array_reverse($sorted_ids);
+        $this->array(array_values($ids))->isEqualTo(array_values($sorted_ids));
+    }
 
     /**
      * Data provider for the testCountActors function
