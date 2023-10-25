@@ -570,7 +570,7 @@ final class ManagementController extends AbstractController
             $document = new Document();
             if ($document->getFromDB($request->getAttribute('id'))) {
                 if ($document->canViewFile()) {
-                    return $document->send(null, true);
+                    return $document->send(true);
                 }
                 return self::getAccessDeniedErrorResponse();
             }

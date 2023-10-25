@@ -535,12 +535,9 @@ class Document extends CommonDBTM
      * @return Response|void
      * @phpstan-return $return_response ? Response : void
      **/
-    public function send($context = null, bool $return_response = false)
+    public function send(bool $return_response = false)
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
-        if ($context !== null) {
-            $file = self::getImage($file, $context);
-        }
         $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
         if ($response !== null) {
             return $response;
@@ -1805,21 +1802,95 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Get image path.
+     * Get resized image path.
+     * Will call image resize if needed.
+     *
+     * @since 10.0.1
+     *
+     * @param string  $path    Original path
+     * @param integer $width   width
+     * @param integer $height  height
+     *
+     * @return string Image path on disk
+     */
+    public static function getResizedImagePath(string $path, int $width = null, int $height = null): string
+    {
+        //no resize needed for mail attachment
+        if (is_null($height) && is_null($width)) {
+        //no resize needed
+            return $path;
+        }
+
+        $infos = pathinfo($path);
+        // output images with possible transparency to png, other to jpg
+        $extension = in_array(strtolower($infos['extension']), ['png', 'gif']) ? 'png' : 'jpg';
+        $context_path = sprintf(
+            '%1$s_%2$s-%3$s.%4$s',
+            $infos['dirname'] . '/' . $infos['filename'],
+            $width,
+            $height,
+            $extension
+        );
+
+    //let's check if file already exists
+        if (file_exists($context_path)) {
+            return $context_path;
+        }
+
+    //do resize
+        $result = Toolbox::resizePicture(
+            $path,
+            $context_path,
+            $width,
+            $height,
+            0,
+            0,
+            0,
+            0,
+            ($width > $height ? $width : $height)
+        );
+        return ($result ? $context_path : $path);
+    }
+
+
+
+    /**
+     * Get image path for a specified context.
      * Will call image resize if needed.
      *
      * @since 9.2.1
      *
      * @param string  $path    Original path
+     * @param string  $context Context
      * @param integer $mwidth  Maximal width
      * @param integer $mheight Maximal height
      *
      * @return string Image path on disk
+     *
+     * @deprecated 10.1.0
      */
-    public static function getImage($path, $mwidth = null, $mheight = null)
+    public static function getImage($path, $context, $mwidth = null, $mheight = null)
     {
-        //no resize needed for mail attachment
-        if (is_null($mheight) && is_null($mwidth)) {
+        Toolbox::deprecated('Using getImage() is deprecated.');
+
+        if ($mwidth === null || $mheight === null) {
+            switch ($context) {
+                case 'mail':
+                    $mwidth  = $mwidth ?? 400;
+                    $mheight = $mheight ?? 300;
+                    break;
+                case 'timeline':
+                    $mwidth  = $mwidth ?? 100;
+                    $mheight = $mheight ?? 100;
+                    break;
+                default:
+                    throw new \RuntimeException("Unknown context $context!");
+            }
+        }
+
+       //let's see if original image needs resize
+        $img_infos  = getimagesize($path);
+        if (!($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
            //no resize needed
             return $path;
         }
@@ -1854,6 +1925,7 @@ class Document extends CommonDBTM
         );
         return ($result ? $context_path : $path);
     }
+
 
     /**
      * Give cron information
