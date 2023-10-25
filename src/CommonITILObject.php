@@ -7302,12 +7302,15 @@ abstract class CommonITILObject extends CommonDBTM
 
         Plugin::doHook(Hooks::SHOW_IN_TIMELINE, ['item' => $this, 'timeline' => &$timeline]);
 
-       //sort timeline items by date
+        //sort timeline items by date. If items have the same date, sort by id
         $reverse = $params['sort_by_date_desc'];
         usort($timeline, function ($a, $b) use ($reverse) {
             $date_a = $a['item']['date_creation'] ?? $a['item']['date'];
             $date_b = $b['item']['date_creation'] ?? $b['item']['date'];
             $diff = strtotime($date_a) - strtotime($date_b);
+            if ($diff === 0) {
+                $diff = $a['item']['id'] - $b['item']['id'];
+            }
             return $reverse ? 0 - $diff : $diff;
         });
 
