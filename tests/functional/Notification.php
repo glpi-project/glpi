@@ -501,14 +501,9 @@ HTML,
         $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
         $this->array($queued_notifications)->hasSize(1);
 
-
         \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
         \NotificationEventMailing::send($queued_notifications);
         \NotificationEventMailing::setMailer(null);
-
-        var_dump(\Toolbox::getSize(memory_get_usage()));
-        var_dump(\Toolbox::getSize(memory_get_usage(true)));
-        var_dump(\Toolbox::getSize(memory_get_peak_usage(true)));
 
         $this->integer(memory_get_usage())->isLessThan(50000000);           // less than 50 Mb
         $this->integer(memory_get_usage(true))->isLessThan(50000000);       // less than 50 Mb
