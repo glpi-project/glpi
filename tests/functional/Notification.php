@@ -501,13 +501,13 @@ HTML,
         $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
         $this->array($queued_notifications)->hasSize(1);
 
+        $s = memory_get_usage();
+
         \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
         \NotificationEventMailing::send($queued_notifications);
         \NotificationEventMailing::setMailer(null);
 
-        $this->integer(memory_get_usage())->isLessThan(50000000);           // less than 50 Mb
-        $this->integer(memory_get_usage(true))->isLessThan(50000000);       // less than 50 Mb
-        $this->integer(memory_get_peak_usage())->isLessThan(55000000);      // less than 55 Mb
+        $this->integer(memory_get_peak_usage() - $s)->isLessThan(15000000);           // less than 15 Mb
 
         $attachments = $transport->sent_email->getAttachments();
         $this->array($attachments)->hasSize(count($expected_attachments));
