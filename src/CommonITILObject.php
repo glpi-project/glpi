@@ -405,8 +405,9 @@ abstract class CommonITILObject extends CommonDBTM
                     $group_obj = new Group();
                     if ($group_obj->getFromDB($groups_id)) {
                         $actors[] = [
-                            'items_id' => $group_obj->fields['id'],
-                            'itemtype' => 'Group',
+                            'items_id'  => $group_obj->fields['id'],
+                            'itemtype'  => 'Group',
+                            'is_notify' => $group_obj->fields['is_notify'],
                             'text'     => $group_obj->getName(),
                             'title'    => $group_obj->getRawCompleteName(),
                         ];
@@ -498,7 +499,7 @@ abstract class CommonITILObject extends CommonDBTM
                     'itemtype'          => 'User',
                     'text'              => $name,
                     'title'             => $name,
-                    'use_notification'  => $user['use_notification'],
+                    'use_notification'  => $user['use_notification'], 
                     'default_email'     => UserEmail::getDefaultForUser($user['users_id']),
                     'alternative_email' => $user['alternative_email'],
                 ];
@@ -509,9 +510,11 @@ abstract class CommonITILObject extends CommonDBTM
                 $group_obj = new Group();
                 if ($group_obj->getFromDB($group['groups_id'])) {
                     $actors[] = [
-                        'id'       => $group['id'],
-                        'items_id' => $group['groups_id'],
-                        'itemtype' => 'Group',
+                        'id'                => $group['id'],
+                        'items_id'          => $group['groups_id'],
+                        'itemtype'          => 'Group',
+                        'use_notification'  => $group['use_notification'],
+                        'is_notify'         => $group_obj->fields['is_notify'],
                         'text'     => $group_obj->getName(),
                         'title'    => $group_obj->getRawCompleteName(),
                     ];
@@ -8843,7 +8846,7 @@ abstract class CommonITILObject extends CommonDBTM
                                 'items_id' => $actor_id,
                                 'type'     => $actor_type_value,
                             ];
-                            if ($actor_itemtype !== Group::class && array_key_exists($actors_notif_input_key, $this->input)) {
+                            if (array_key_exists($actors_notif_input_key, $this->input)) {
                                 // Expected format
                                 // '_users_id_requester_notif' => [
                                 //     'use_notification'  => [1, 0],
@@ -9007,19 +9010,14 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                     $found = true;
 
-                    if ($actor['itemtype'] === Group::class) {
-                        // Do not check for modifications on "group" actors (they do not have notification settings to update)
-                        continue;
-                    }
-
                     // check if modifications exists
                     if (
                         (
-                            array_key_exists('use_notification', $actor)
+                            array_key_exists('use_notification', $actor) && array_key_exists('use_notification', $existing)
                             && $actor['use_notification'] != $existing['use_notification']
                         )
                         || (
-                            array_key_exists('alternative_email', $actor)
+                            array_key_exists('alternative_email', $actor) && array_key_exists('alternative_email', $existing)
                             && $actor['alternative_email'] != $existing['alternative_email']
                         )
                     ) {
@@ -10545,23 +10543,20 @@ abstract class CommonITILObject extends CommonDBTM
                     if (!array_key_exists($input_key, $input) || !is_array($input[$input_key])) {
                         $input[$input_key] = !empty($input[$input_key]) ? [$input[$input_key]] : [];
                     }
-
-                    if ($actor_itemtype !== Group::class) {
-                        if (!array_key_exists($notif_key, $input) || !is_array($input[$notif_key])) {
-                            $input[$notif_key] = [
-                                'use_notification'  => [],
-                                'alternative_email' => [],
-                            ];
-                        }
-                        foreach (['use_notification', 'alternative_email'] as $param_key) {
-                            if (
-                                !array_key_exists($param_key, $input[$notif_key])
-                                || $input[$notif_key][$param_key] === ''
-                            ) {
-                                $input[$notif_key][$param_key] = [];
-                            } elseif (!is_array($input[$notif_key][$param_key])) {
-                                $input[$notif_key][$param_key] = [$input[$notif_key][$param_key]];
-                            }
+                    if (!array_key_exists($notif_key, $input) || !is_array($input[$notif_key])) {
+                        $input[$notif_key] = [
+                            'use_notification'  => [],
+                            'alternative_email' => [],
+                        ];
+                    }
+                    foreach (['use_notification', 'alternative_email'] as $param_key) {
+                        if (
+                            !array_key_exists($param_key, $input[$notif_key])
+                            || $input[$notif_key][$param_key] === ''
+                        ) {
+                            $input[$notif_key][$param_key] = [];
+                        } elseif (!is_array($input[$notif_key][$param_key])) {
+                            $input[$notif_key][$param_key] = [$input[$notif_key][$param_key]];
                         }
                     }
                     $input[sprintf('%s_deleted', $input_key)] = [];
@@ -10585,7 +10580,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                     $input[$input_key][$value_key] = $actor['items_id'];
 
-                    if ($actor_itemtype !== Group::class && array_key_exists('use_notification', $actor)) {
+                    if (array_key_exists('use_notification', $actor)) {
                         $input[$notif_key]['use_notification'][$value_key]  = $actor['use_notification'];
                         $input[$notif_key]['alternative_email'][$value_key] = $actor['alternative_email'] ?? '';
                     }
