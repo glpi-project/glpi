@@ -106,7 +106,7 @@
                     </div>
                 </div>
                 <div class="col-auto">
-                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary">
+                    <button type="button" id="save-zone-data-{{ rand }}" class="btn btn-primary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['save_zone_data_label']|default(__("Save zone data")) ~ " (Enter)" }}">
                         <i class="ti ti-device-floppy"></i>
                         {% if params.save_zone_data_label is defined %}
                             <span>{{ params['save_zone_data_label'] }}</span>
@@ -114,7 +114,7 @@
                             <span>{{ __("Save zone data") }}</span>
                         {% endif %}
                     </button>
-                    <button type="button" id="cancel-zone-data-{{ rand }}" class="btn btn-outline-danger">
+                    <button type="button" id="cancel-zone-data-{{ rand }}" class="btn btn-outline-danger" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ __("Cancel") ~ " (Esc)" }}">
                         <i class="ti ti-x"></i>
                         <span>{{ __("Cancel") }}</span>
                     </button>
