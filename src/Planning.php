@@ -246,6 +246,9 @@ class Planning extends CommonGLPI
 
             case static::DONE:
                 return __('Done');
+
+            default:
+                return '';
         }
     }
 
