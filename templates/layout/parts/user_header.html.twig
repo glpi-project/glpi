@@ -105,6 +105,12 @@
                   <i class="fas fa-user-cog"></i>
                   {{ __('My settings') }}
                </a>
+               {% if is_super_admin %}
+                  <a href="{{ path('/front/discover.php') }}" class="dropdown-item lessons-menu-entry" title="{{ __('My lessons') }}">
+                     <i class="ti ti-book"></i>
+                     {{ __('My lessons') }}
+                  </a>
+               {% endif %}
                <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
                   <i class="ti fa-fw ti-logout"></i>
                   {{ __('Logout') }}

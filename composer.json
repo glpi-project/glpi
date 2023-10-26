@@ -9,6 +9,12 @@
         "issues": "https://github.com/glpi-project/glpi/issues",
         "docs": "https://github.com/glpi-project/doc"
     },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/glpi-project/lessons.git"
+        }
+    ],
     "require": {
         "php": ">=8.1",
         "ext-ctype": "*",
@@ -34,6 +40,7 @@
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.0",
         "glpi-project/inventory_format": "^1.1",
+        "glpi-project/lessons": "dev-feature/lessons",
         "guzzlehttp/guzzle": "^7.8",
         "guzzlehttp/psr7": "^2.6",
         "html2text/html2text": "^4.3",

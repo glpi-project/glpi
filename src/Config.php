@@ -1125,6 +1125,9 @@ class Config extends CommonDBTM
             [
                 'name' => 'webonyx/graphql-php',
                 'check' => 'GraphQL\\GraphQL'
+            ],
+            [
+                'name' => 'glpi-project/lessons',
             ]
         ];
         return $deps;

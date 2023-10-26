@@ -1537,6 +1537,7 @@ $RELATION = [
         '_glpi_dashboards_dashboards'   => 'users_id',
         'glpi_dashboards_filters'       => 'users_id',
         'glpi_databaseinstances'        => 'users_id_tech',
+        'glpi_discovers_discovers_users' => 'users_id',
         '_glpi_displaypreferences'      => 'users_id',
         'glpi_domains'                  => 'users_id_tech',
         'glpi_domainrecords'            => 'users_id_tech',
