@@ -163,6 +163,9 @@ const StencilEditor = function (container, rand, zones_definition) {
     _this.editorEnable = function (current_zone) {
         let zone = zones[current_zone] ?? { 'side': 0 };
 
+        // Hide tooltips to avoid bug : tooltip doesn't disappear when dom is altered
+        $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('hide');
+
         $(container).find('.set-zone-data').removeClass('btn-warning'); // remove old active definition
         $(container).find(".defined-zone").remove();
         $(container).find(".set-zone-data[data-zone-index=" + current_zone + "]").addClass('btn-warning');
@@ -315,6 +318,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 data-zone-index="${zone_number}"
                 data-bs-toggle="tooltip"
                 data-bs-title="${_.escape(zone['label'])}"
+                data-bs-placement="auto"
                 style="left: ${zone['x_percent']}%; top: ${zone['y_percent']}%; width: ${zone['width_percent']}%; height: ${zone['height_percent']}%;">
                     <span class="zone-number" style="max-height: 90%;
                         max-width: 90%;
@@ -329,6 +333,9 @@ const StencilEditor = function (container, rand, zones_definition) {
                 </a>
             `);
         }
+
+        // Enable tooltips
+        $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('enable');
     };
 
     // add a new zone
@@ -365,7 +372,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 'id': $(container).find('input[name=id]').val(),
                 '_no_message': 1, // prevent Session::addMessageAfterRedirect()
             },
-            success: function (data) {
+            success: function () {
                 // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
                 $('form#stencil-editor-form-' + rand + ' button[name="remove-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
                 $('form#stencil-editor-form-' + rand + ' button.set-zone-data').sort(function (a, b) {
