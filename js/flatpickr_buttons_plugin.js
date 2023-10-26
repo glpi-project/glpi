@@ -45,6 +45,15 @@ window.CustomFlatpickrButtons = (config = {}) => {
                 onClick: (e, fp) => {
                     fp.setDate(new Date());
                 }
+            },
+            {
+                label: __('Save'),
+                attributes: {
+                    'class': 'btn btn-primary'
+                },
+                onClick: (e, fp) => {
+                    fp.close();
+                }
             }];
         }
 
