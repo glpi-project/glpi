@@ -57,7 +57,7 @@ class DBmysqlIterator extends DbTestCase
         $this->when($this->it->execute($req))
             ->error()
             ->withType(E_USER_DEPRECATED)
-            ->withMessage('Direct query usage calling DBmysqlIterator is strongly discouraged! Use DBmysql::doQuery() instead.')
+            ->withMessage('Direct query usage calling DBmysqlIterator is strongly discouraged! Use DB::request() instead.')
             ->exists();
         $this->string($this->it->getSql())->isIdenticalTo($req);
 
@@ -65,7 +65,7 @@ class DBmysqlIterator extends DbTestCase
         $this->when($this->it->execute($req))
             ->error()
             ->withType(E_USER_DEPRECATED)
-            ->withMessage('Direct query usage calling DBmysqlIterator is strongly discouraged! Use DBmysql::doQuery() instead.')
+            ->withMessage('Direct query usage calling DBmysqlIterator is strongly discouraged! Use DB::request() instead.')
             ->exists();
         $this->string($this->it->getSql())->isIdenticalTo($req);
     }
