@@ -162,12 +162,45 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the parameters to pass to the stencil template
      *
+     * Available parameters:
+     * - nb_zones_label (only for editor)
+     * - define_zones_label (only for editor)
+     * - zone_label (only for editor)
+     * - zone_number_label (only for editor)
+     * - save_zone_data_label (only for editor)
+     * - add_zone_label (only for editor)
+     * - remove_zone_label (only for editor)
+     * - anchor_id (only for display)
+     *
      * @param bool $editor
      * @return array
      */
     public function getParams(bool $editor): array
     {
         return [];
+    }
+
+    /**
+     * Returns the maximum number of zones allowed for the stencil
+     *
+     * @return int
+     */
+    public function getMaxZoneNumber(): int
+    {
+        return 128;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        // Check if the "nb_zones" property is set
+        if (!isset($input['nb_zones'])) {
+            return [];
+        }
+
+        // Limits the number of zones to the maximum allowed number of zones.
+        $input['nb_zones'] = min($input['nb_zones'], $this->getMaxZoneNumber());
+
+        return $input;
     }
 
     /**

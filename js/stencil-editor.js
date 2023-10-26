@@ -34,12 +34,21 @@
 // Needed for JS lint validation
 /* global _ */
 
+/**
+ * Creates a new StencilEditor instance.
+ *
+ * @constructor
+ * @param {HTMLElement} container - The container element for the editor.
+ * @param {string} rand - A random string used for generating unique IDs.
+ * @param {Object} zones_definition - The initial definition of zones.
+ * @returns {StencilEditor} A new StencilEditor instance.
+ */
 const StencilEditor = function (container, rand, zones_definition) {
-    let zones = zones_definition;
+    var zones = zones_definition;
 
-    let croppers = [];
+    var croppers = [];
 
-    let _this = this;
+    var _this = this;
 
     _this.init = function () {
 
@@ -84,6 +93,12 @@ const StencilEditor = function (container, rand, zones_definition) {
             })
             .on('click', '#cancel-zone-data-' + rand, function () {
                 _this.editorDisable();
+            })
+            .on('click', 'button[name="add-new-zone"]', function () {
+                _this.addNewZone();
+            })
+            .on('click', 'button[name="remove-zone"]', function () {
+                _this.removeZone();
             });
 
         $('#clear-data-' + rand)
@@ -289,6 +304,7 @@ const StencilEditor = function (container, rand, zones_definition) {
         _this.redoZones();
     };
 
+    // redraw zones
     _this.redoZones = function () {
         $(container).find(".defined-zone").remove();
 
@@ -313,5 +329,49 @@ const StencilEditor = function (container, rand, zones_definition) {
                 </a>
             `);
         }
+    };
+
+    // add a new zone
+    _this.addNewZone = function () {
+        $.ajax({
+            type: 'POST',
+            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            data: {
+                'add-new-zone': '',
+                'id': $(container).find('input[name=id]').val(),
+                '_no_message': 1, // prevent Session::addMessageAfterRedirect()
+            },
+            success: function () {
+                // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
+                $('form#stencil-editor-form-' + rand + ' button[name="add-new-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
+
+                var index = $('form#stencil-editor-form-' + rand + ' button.set-zone-data').length + 1;
+                var template = $('#zone-number-template');
+                var newZoneButton = $(template.html());
+                $(newZoneButton).attr('data-zone-index', index);
+                $(newZoneButton).find('span').text(index);
+                newZoneButton.insertBefore(template);
+            },
+        });
+    };
+
+    // remove a zone
+    _this.removeZone = function () {
+        $.ajax({
+            type: 'POST',
+            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            data: {
+                'remove-zone': '',
+                'id': $(container).find('input[name=id]').val(),
+                '_no_message': 1, // prevent Session::addMessageAfterRedirect()
+            },
+            success: function (data) {
+                // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
+                $('form#stencil-editor-form-' + rand + ' button[name="remove-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
+                $('form#stencil-editor-form-' + rand + ' button.set-zone-data').sort(function (a, b) {
+                    return $(a).data('zone-index') - $(b).data('zone-index');
+                }).last().remove();
+            },
+        });
     };
 };

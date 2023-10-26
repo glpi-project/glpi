@@ -46,7 +46,7 @@
 
         {% if id <= 0 %}
             <label for="nb_zones" class="form-label">{{ params['nb_zones_label']|default(__("Set number of zones")) }}</label>
-            <input type="number" id="nb_zones-{{ rand }}" name="nb_zones" class="form-control d-inline-block" style="width: 65px" min="1" value="{{ nb_zones }}">
+            <input type="number" id="nb_zones-{{ rand }}" name="nb_zones" class="form-control d-inline-block" style="width: 65px" min="1" max="{{ stencil.getMaxZoneNumber() }}" value="{{ nb_zones }}">
 
         {% else %}
             <label class="form-label">
@@ -67,11 +67,18 @@
                         </button>
                     {% endfor %}
 
+                    <template id="zone-number-template">
+                        <button type="button" class="btn btn-sm btn-icon btn-outline-secondary px-1 set-zone-data" style="min-width: 4%;">
+                            <span class="overflow-hidden"></span>
+                            <i class="ti ti-file-unknown ms-1"></i>
+                        </button>
+                    </template>
+
                     <div class="d-flex gap-1 justify-content-center" style="min-width: 4%;">
-                        <button type="submit" name="add-new-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['add_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-secondary px-1">
+                        <button type="button" name="add-new-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['add_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-secondary px-1">
                             <i class="ti ti-plus"></i>
                         </button>
-                        <button type="submit" name="remove-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['remove_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-danger px-1">
+                        <button type="button" name="remove-zone" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="{{ params['remove_zone_label'] ?? __("Add zone") }}" class="btn btn-sm btn-ghost-danger px-1">
                             <i class="ti ti-minus"></i>
                         </button>
                     </div>
