@@ -140,7 +140,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         if ($is_legacy) {
             Toolbox::deprecated(
-                'Direct query usage calling DBmysqlIterator is strongly discouraged! Use DB::request() instead.',
+                'Direct query usage is strongly discouraged!.',
                 false
             );
             $this->sql = $table;
