@@ -42,6 +42,7 @@ use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
 use Html;
 use Plugin;
+use Session;
 use Toolbox;
 
 class View extends CommonGLPI
@@ -455,6 +456,8 @@ HTML;
             $networkmail  = GLPI_NETWORK_MAIL;
             $refresh_lbl  = __("Refresh plugin list");
             $search_label = __("Filter plugin list");
+            $url = "'" . Plugin::getFormURL() . "'";
+            $fields = "{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '" . Session::getNewCSRFToken() . "', 'value' : 2}";
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
@@ -465,6 +468,9 @@ HTML;
                             <div class='controls'>
                                 $sort_controls
                                 <i class='ti ti-refresh refresh-plugin-list' title='{$refresh_lbl}'></i>
+                            </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="defaultplugininterface" onchange="submitGetLink({$url}, {$fields})">
                             </div>
                         </div>
                         <ul class='plugins'>
