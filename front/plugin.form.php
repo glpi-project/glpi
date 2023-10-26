@@ -41,6 +41,13 @@ include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);
 
+if (isset($_POST['formIdentifier']) && $_POST['formIdentifier'] === 'change_default_interfaceform'){
+    Config::setConfigurationValues('core', [
+        'marketplace_replace_plugins' => $_POST['value']
+    ]);
+    Html::back();
+}
+
 $plugin = new Plugin();
 
 $id     = isset($_POST['id']) && is_numeric($_POST['id']) ? (int)$_POST['id'] : null;

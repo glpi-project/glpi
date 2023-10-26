@@ -458,6 +458,10 @@ HTML;
             $search_label = __("Filter plugin list");
             $url = "'" . Plugin::getFormURL() . "'";
             $fields = "{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '" . Session::getNewCSRFToken() . "', 'value' : 2}";
+            $default = '';
+            if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 2) {
+                $default = 'checked disabled';
+            };
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
@@ -470,7 +474,7 @@ HTML;
                                 <i class='ti ti-refresh refresh-plugin-list' title='{$refresh_lbl}'></i>
                             </div>
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="defaultplugininterface" onchange="submitGetLink({$url}, {$fields})">
+                                <input class="form-check-input" type="checkbox" id="defaultplugininterface" onchange="submitGetLink({$url}, {$fields})" {$default}>
                             </div>
                         </div>
                         <ul class='plugins'>
