@@ -139,9 +139,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
 
         if ($is_legacy) {
-           //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-           //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
-           //}
+            Toolbox::deprecated(
+                'Direct query usage calling DBmysqlIterator is strongly discouraged! Use DB::request() instead.',
+                false
+            );
             $this->sql = $table;
         } else {
            // Modern way

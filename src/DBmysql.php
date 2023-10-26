@@ -1139,9 +1139,9 @@ class DBmysql
     {
        // No translation, used in sysinfo
         $ret = [];
-        $req = $this->request("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
+        $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
-        if (($data = $req->current())) {
+        if (($data = $req->fetch_array())) {
             if ($data['stype']) {
                 $ret['Server Software'] = $data['stype'];
             }
@@ -1798,7 +1798,8 @@ class DBmysql
      */
     public function getVersion()
     {
-        $req = $this->request('SELECT version()')->current();
+        $res = $this->doQuery('SELECT version()');
+        $req = $res->fetch_array();
         $raw = $req['version()'];
         return $raw;
     }

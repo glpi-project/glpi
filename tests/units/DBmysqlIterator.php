@@ -54,12 +54,20 @@ class DBmysqlIterator extends DbTestCase
     public function testQuery()
     {
         $req = 'SELECT Something FROM Somewhere';
-        $it = $this->it->execute($req);
-        $this->string($it->getSql())->isIdenticalTo($req);
+        $this->when($this->it->execute($req))
+            ->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Direct query usage calling DBmysqlIterator is strongly discouraged! Use DB::request() instead.')
+            ->exists();
+        $this->string($this->it->getSql())->isIdenticalTo($req);
 
         $req = 'SELECT @@sql_mode as mode';
-        $it = $this->it->execute($req);
-        $this->string($it->getSql())->isIdenticalTo($req);
+        $this->when($this->it->execute($req))
+            ->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Direct query usage calling DBmysqlIterator is strongly discouraged! Use DB::request() instead.')
+            ->exists();
+        $this->string($this->it->getSql())->isIdenticalTo($req);
     }
 
 
