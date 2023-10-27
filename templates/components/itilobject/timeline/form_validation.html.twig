@@ -264,6 +264,27 @@
                 ) }}
             </div>
 
+             {% set pending_reasons %}
+                 {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
+                 <span
+                         class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
+                         id="pending-reasons-control-{{ rand }}"
+                 >
+                  <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
+                        data-bs-toggle="tooltip" data-bs-placement="top" role="button">
+                     <i class="fas fa-pause me-2"></i>
+                     <label class="form-check form-switch mt-2">
+                        <input type="hidden"   name="pending" value="0" />
+                        <input type="checkbox" name="pending" value="1" class="form-check-input"
+                               id="enable-pending-reasons-{{ rand }}"
+                               role="button"
+                              {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
+                              data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
+                     </label>
+                  </span>
+               </span>
+             {% endset %}
+
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
 
             <div class="d-flex justify-content-center card-footer">
@@ -272,6 +293,7 @@
                      <i class="fas fa-plus"></i>
                      <span>{{ _x('button', 'Add') }}</span>
                   </button>
+                   {{ pending_reasons|raw }}
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                   <button class="btn btn-primary me-2" type="submit" name="update">
