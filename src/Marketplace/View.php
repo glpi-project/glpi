@@ -464,7 +464,7 @@ HTML;
             } else if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 1) {
                 $displaybutton = 'd-none';
             }
-            $label = __("Default Plugin Page");
+            $label = __("Default View");
 
 
             $marketplace  = <<<HTML
@@ -478,7 +478,7 @@ HTML;
                                 <i class='ti ti-refresh refresh-plugin-list' title='{$refresh_lbl}'></i>
                             </div>
                             <div class="form-check form-switch pe-2 {$displaybutton}">
-                                <label class="fw-bold text-secondary"> {$label} </label>
+                                <label class="text-secondary"> {$label} </label>
                                 <input class="form-check-input" type="checkbox" id="defaultplugininterface"
                                 onchange="submitGetLink({$url}, {$fields})" {$default}>
                             </div>
