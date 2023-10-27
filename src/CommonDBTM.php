@@ -211,7 +211,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if (!isset(self::$tables_of[$classname]) || empty(self::$tables_of[$classname])) {
-            self::$tables_of[$classname] = getTableForItemType($classname);
+            self::$tables_of[$classname] = (new DbUtils())->getExpectedTableNameForClass($classname);
         }
 
         return self::$tables_of[$classname];

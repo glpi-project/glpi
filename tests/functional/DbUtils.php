@@ -169,10 +169,45 @@ class DbUtils extends DbTestCase
         ];
     }
 
+    protected function getTableForItemTypeProvider()
+    {
+        $table_types_mapping = array_map(
+            function ($entry) {
+                return array_slice($entry, 0, 2); // remove the useless `is_valid` param
+            },
+            $this->dataTableType()
+        );
+
+        $table_types_mapping[] = ['glpi_configs', \NotificationSetting::class];
+
+        $known_classes = $this->getClasses();
+
+        foreach ($known_classes as $known_class) {
+            if (is_a($known_class, \NotificationTarget::class, true)) {
+                // Classes that extends NotificationTarget are always using the `glpi_notificationtargets` table
+                $table_types_mapping[] = ['glpi_notificationtargets', $known_class];
+            }
+            if (is_a($known_class, \Rule::class, true) && !in_array($known_class, [\OlaLevel::class, \SlaLevel::class])) {
+                // Classes that extends Rule are always using the `glpi_rules` table
+                $table_types_mapping[] = ['glpi_rules', $known_class];
+            }
+            if (is_a($known_class, \RuleCollection::class, true)) {
+                // Classes that extends RuleCollection are always using the `glpi_rules` table
+                $table_types_mapping[] = ['glpi_rules', $known_class];
+            }
+        }
+
+        // specific cases of classes that extends Rule
+        $table_types_mapping[] = ['glpi_olalevels', \OlaLevel::class];
+        $table_types_mapping[] = ['glpi_slalevels', \SlaLevel::class];
+
+        return $table_types_mapping;
+    }
+
     /**
-     * @dataProvider dataTableType
+     * @dataProvider getTableForItemTypeProvider
      **/
-    public function testGetTableForItemType($table, $type, $is_valid_type)
+    public function testGetTableForItemType($table, $type)
     {
         $this
          ->if($this->newTestedInstance)
@@ -181,6 +216,17 @@ class DbUtils extends DbTestCase
 
        //keep testing old method from db.function
         $this->string(getTableForItemType($type))->isIdenticalTo($table);
+    }
+
+    /**
+     * @dataProvider dataTableType
+     **/
+    public function testGetExpectedTableNameForClass($table, $type, $is_valid_type)
+    {
+        $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->string($this->testedInstance->getExpectedTableNameForClass($type))->isIdenticalTo($table);
     }
 
     /**
