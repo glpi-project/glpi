@@ -462,6 +462,7 @@ HTML;
             if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 2) {
                 $default = 'checked disabled';
             };
+            $label = __("Default Plugin Page");
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
@@ -473,8 +474,10 @@ HTML;
                                 $sort_controls
                                 <i class='ti ti-refresh refresh-plugin-list' title='{$refresh_lbl}'></i>
                             </div>
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="defaultplugininterface" onchange="submitGetLink({$url}, {$fields})" {$default}>
+                            <div class="form-check form-switch pe-2">
+                                <label class="fw-bold text-secondary"> {$label} </label>
+                                <input class="form-check-input" type="checkbox" id="defaultplugininterface"
+                                onchange="submitGetLink({$url}, {$fields})" {$default}>
                             </div>
                         </div>
                         <ul class='plugins'>

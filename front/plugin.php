@@ -48,17 +48,6 @@ Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugin");
 
 \Glpi\Marketplace\View::showFeatureSwitchDialog();
 
-
-$url = "'" . Plugin::getFormURL() . "'";
-$fields = "{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '" . Session::getNewCSRFToken() . "', 'value' : 3}";
-
-echo '
-   <div class="form-check form-switch">
-      <input class="form-check-input" type="checkbox" id="defaultplugininterface" onchange="submitGetLink(' . $url . ',' . $fields . ')">
-      <label class="form-check-label" for="defaultplugininterface">Plugins Default</label>
-   </div>
-';
-
 $catalog_btn = '<div class="center my-2">'
    . '<a href="http://plugins.glpi-project.org" class="btn btn-primary" target="_blank">'
    . "<i class='fas fa-eye'></i>"
