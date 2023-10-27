@@ -60,7 +60,6 @@ class OperatingSystemKernel extends CommonDropdown
     {
         return [
             'OperatingSystemKernel$main'  => 'Kernel',
-            'Log$1'                       => 'Historical'
         ];
     }
 

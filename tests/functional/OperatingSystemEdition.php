@@ -68,7 +68,6 @@ class OperatingSystemEdition extends CommonDropdown
     {
         return [
             'OperatingSystemEdition$main' => 'Edition',
-            'Log$1'                       => 'Historical'
         ];
     }
 
