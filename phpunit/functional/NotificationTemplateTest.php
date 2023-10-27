@@ -35,7 +35,13 @@
 namespace tests\units;
 
 use DbTestCase;
+use NotificationTarget;
+use NotificationTargetTicket;
+use NotificationTemplate;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Ticket;
+use TicketTask;
+use User;
 
 /* Test for inc/notificationtemplate.class.php */
 
@@ -134,5 +140,65 @@ HTML,
         $instance = new \NotificationTemplate();
         $result = $this->callPrivateMethod($instance, 'convertRelativeGlpiLinksToAbsolute', $content);
         $this->assertEquals($expected, $result);
+    }
+
+    public function testTemplateDataIsAdaptedToTimezone(): void
+    {
+        $this->login();
+
+        $date = $this->setCurrentTime('10:00:00', '2025-07-22');
+
+        $entity_id = $this->getTestRootEntity(true);
+        $user_id = getItemByTypeName(User::class, TU_USER, true);
+
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'             => __FUNCTION__,
+                'content'          => __FUNCTION__,
+                'entities_id'      => $entity_id,
+                '_users_id_assign' => $user_id,
+            ]
+        );
+
+        $task = $this->createItem(
+            TicketTask::class,
+            [
+                'state'         => \Planning::TODO,
+                'tickets_id'    => $ticket->getID(),
+                'actiontime'    => HOUR_TIMESTAMP,
+                'content'       => __FUNCTION__,
+                'users_id_tech' => $user_id,
+                'date'          => '2025-07-23 09:00:00',
+            ]
+        );
+
+        $user_infos = [
+            'language' => 'en_GB',
+            'additionnaloption' => [
+                'usertype' => NotificationTarget::GLPI_USER,
+            ],
+            'username' => TU_USER,
+            'email' => 'mail@example.com',
+        ];
+
+        $target = new NotificationTargetTicket($entity_id, 'new', $ticket, []);
+
+        $template = getItemByTypeName(NotificationTemplate::class, 'Tickets');
+
+        // Check generated dates without timezone
+        $tid = $template->getTemplateByLanguage($target, $user_infos, 'new', ['item' => $ticket]);
+        $notification_data = $template->getDataToSend($target, $tid, 'mail@example.com', $user_infos, []);
+
+        $this->assertStringContainsString('Opening date : 2025-07-22 10:00', $notification_data['content_text']);
+        $this->assertStringContainsString('[2025-07-23 09:00]', $notification_data['content_text']);
+
+        // Check generated dates with a specific timezone
+        $user_infos['additionnaloption']['timezone'] = 'Pacific/Fiji'; // +12 hours
+        $tid = $template->getTemplateByLanguage($target, $user_infos, 'new', ['item' => $ticket]);
+        $notification_data = $template->getDataToSend($target, $tid, 'mail@example.com', $user_infos, []);
+
+        $this->assertStringContainsString('Opening date : 2025-07-22 22:00', $notification_data['content_text']);
+        $this->assertStringContainsString('[2025-07-23 21:00]', $notification_data['content_text']);
     }
 }
