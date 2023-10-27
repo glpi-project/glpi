@@ -194,41 +194,59 @@ final class DbUtils
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Force singular for itemtype : States case
-        $itemtype = $this->getSingular($itemtype);
+        if (!isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
+            $table = is_a($itemtype, CommonDBTM::class, true)
+                ? $itemtype::getTable()
+                : $this->getExpectedTableNameForClass($itemtype);
 
-        if (isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
-            return $CFG_GLPI['glpitablesitemtype'][$itemtype];
-        } else {
-            $prefix = "glpi_";
-
-            if ($plug = isPluginItemType($itemtype)) {
-               /* PluginFooBar   => glpi_plugin_foos_bars */
-               /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
-                $prefix .= "plugin_" . strtolower($plug['plugin']) . "_";
-                $table   = strtolower($plug['class']);
-            } else {
-                $table = strtolower($itemtype);
-                if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
-                    $table = substr($table, \strlen(NS_GLPI));
-                }
-            }
-            $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
-            if (strstr($table, '_')) {
-                $split = explode('_', $table);
-
-                foreach ($split as $key => $part) {
-                    $split[$key] = $this->getPlural($part);
-                }
-                $table = implode('_', $split);
-            } else {
-                $table = $this->getPlural($table);
-            }
-
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]      = $prefix . $table;
-            $CFG_GLPI['glpiitemtypetables'][$prefix . $table] = $itemtype;
-            return $prefix . $table;
+            $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
+            $CFG_GLPI['glpiitemtypetables'][$table]    = $itemtype;
         }
+
+        return $CFG_GLPI['glpitablesitemtype'][$itemtype];
+    }
+
+    /**
+     * Returns expected table name for a given class.
+     * /!\ This method will only compute the expected table name and will not take into account any
+     * table name override made by the class itself.
+     *
+     * @param string $classname
+     * @return string
+     */
+    public function getExpectedTableNameForClass(string $classname): string
+    {
+        $dbu = new DbUtils();
+
+        // Force singular for itemtype : States case
+        $singular = $dbu->getSingular($classname);
+
+        $prefix = "glpi_";
+
+        if ($plug = isPluginItemType($singular)) {
+            /* PluginFooBar   => glpi_plugin_foos_bars */
+            /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
+            $prefix .= "plugin_" . strtolower($plug['plugin']) . "_";
+            $table   = strtolower($plug['class']);
+        } else {
+            $table = strtolower($singular);
+            if (substr($singular, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+                $table = substr($table, \strlen(NS_GLPI));
+            }
+        }
+        $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
+        if (strstr($table, '_')) {
+            $split = explode('_', $table);
+
+            foreach ($split as $key => $part) {
+                $split[$key] = $dbu->getPlural($part);
+            }
+            $table = implode('_', $split);
+        } else {
+            $table = $dbu->getPlural($table);
+        }
+
+        return $prefix . $table;
     }
 
 
