@@ -393,6 +393,7 @@ class ITILFollowup extends CommonDBChild
         }
        // if ($input["_isadmin"] && $input["_type"]!="update") {
         if (isset($input["add_close"])) {
+            $input['_disablenotif'] = true;
             $input['_close'] = 1;
             $input['_no_reopen'] = 1;
             if (empty($input['content'])) {
