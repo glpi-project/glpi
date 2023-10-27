@@ -1211,6 +1211,9 @@ class NotificationTarget extends CommonDBChild
      **/
     public function getReplyTo(): array
     {
+        if (!$this->allowResponse()) {
+            return Config::getNoReplyEmailSender($this->getEntity());
+        }
         return Config::getReplyToEmailSender($this->getEntity());
     }
 
