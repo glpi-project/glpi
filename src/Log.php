@@ -87,6 +87,9 @@ class Log extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!self::canView()) {
+            return '';
+        }
 
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -298,6 +301,10 @@ class Log extends CommonDBTM
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if (!self::canView()) {
+            return;
+        }
 
         $itemtype = $item->getType();
         $items_id = $item->getField('id');

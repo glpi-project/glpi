@@ -96,8 +96,6 @@ class Document extends DbTestCase
             'Document$main'   => 'Document',
             'Document_Item$1' => 'Associated items',
             'Document_Item$2' => 'Documents',
-            'Log$1'           => 'Historical'
-
         ];
         $this
          ->given($this->newTestedInstance)

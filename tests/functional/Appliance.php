@@ -45,7 +45,6 @@ class Appliance extends DbTestCase
             'Appliance$main'     => 'Appliance',
             'Impact$1'           => 'Impact analysis',
             'ManualLink$1'       => 'Links',
-            'Log$1'              => 'Historical',
         ];
         $this
          ->given($this->newTestedInstance)

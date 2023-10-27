@@ -60,7 +60,6 @@ class OperatingSystemArchitecture extends CommonDropdown
     {
         return [
             'OperatingSystemArchitecture$main'  => 'Operating system architecture',
-            'Log$1'                             => 'Historical'
         ];
     }
 

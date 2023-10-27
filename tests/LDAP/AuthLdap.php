@@ -256,8 +256,8 @@ class AuthLDAP extends DbTestCase
     {
         $ldap     = new \AuthLDAP();
         $tabs     = $ldap->defineTabs();
-        $expected = ['AuthLDAP$main' => 'LDAP directory',
-            'Log$1'         => 'Historical'
+        $expected = [
+            'AuthLDAP$main' => 'LDAP directory',
         ];
         $this->array($tabs)->isIdenticalTo($expected);
     }
