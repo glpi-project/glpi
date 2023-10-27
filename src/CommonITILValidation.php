@@ -311,9 +311,11 @@ abstract class CommonITILValidation extends CommonDBChild
         // Handle uploaded documents
         $this->input = $this->addFiles($this->input);
 
-        if (isset($this->input['itemtype'])
+        if (
+            isset($this->input['itemtype'])
             && $this->input['itemtype'] == "Ticket"
-            && $this->input['pending'] == 1) {
+            && $this->input['pending'] == 1
+        ) {
             $object     = new Ticket();
             $object->getFromDB($this->input['tickets_id']);
             $update['status'] = CommonITILObject::WAITING;
