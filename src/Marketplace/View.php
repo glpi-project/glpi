@@ -458,11 +458,14 @@ HTML;
             $search_label = __("Filter plugin list");
             $url = "'" . Plugin::getFormURL() . "'";
             $fields = "{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '" . Session::getNewCSRFToken() . "', 'value' : 2}";
-            $default = '';
+            $default = $displaybutton = '';
             if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 2) {
                 $default = 'checked disabled';
-            };
+            } else if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 1) {
+                $displaybutton = 'd-none';
+            }
             $label = __("Default Plugin Page");
+
 
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
@@ -474,7 +477,7 @@ HTML;
                                 $sort_controls
                                 <i class='ti ti-refresh refresh-plugin-list' title='{$refresh_lbl}'></i>
                             </div>
-                            <div class="form-check form-switch pe-2">
+                            <div class="form-check form-switch pe-2 {$displaybutton}">
                                 <label class="fw-bold text-secondary"> {$label} </label>
                                 <input class="form-check-input" type="checkbox" id="defaultplugininterface"
                                 onchange="submitGetLink({$url}, {$fields})" {$default}>

@@ -61,16 +61,18 @@
                {% if normalized_itemtype == 'Plugin' %}
                   {% set url = call('Plugin::getFormURL', []) %}
                   {% set config_value = call('Config::getConfigurationValues', ['core', ['marketplace_replace_plugins']]) %}
-                  {% if config_value['marketplace_replace_plugins'] == '3' %}
-                     {% set checked = 'checked disabled' %}
-                  {% else %}
-                     {% set checked = '' %}
+                  {% if config_value['marketplace_replace_plugins'] != '1' %}
+                     {% if config_value['marketplace_replace_plugins'] == '3' %}
+                        {% set checked = 'checked disabled' %}
+                     {% else %}
+                        {% set checked = '' %}
+                     {% endif %}
+                     <div class="form-check form-switch">
+                        <label class="fw-bold text-secondary"> {{ __("Default Plugin Page") }}</label>
+                        <input class="form-check-input" type="checkbox" id="defaultplugininterface"
+                        onchange="submitGetLink('{{ url }}',{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '{{ csrf_token() }}', 'value' : 3})" {{ checked }}>
+                     </div>
                   {% endif %}
-                  <div class="form-check form-switch">
-                     <label class="fw-bold text-secondary"> {{ __("Default Plugin Page") }}</label>
-                     <input class="form-check-input" type="checkbox" id="defaultplugininterface"
-                     onchange="submitGetLink('{{ url }}',{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '{{ csrf_token() }}', 'value' : 3})" {{ checked }}>
-                  </div>
                {% endif %}
             {% endif %}
          </div>
