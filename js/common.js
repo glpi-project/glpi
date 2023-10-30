@@ -1167,19 +1167,19 @@ function relativeDate(str) {
         tmp;
 
     return (tmp = Math.round(s)) === 1 ? __('just now')
-        : m < 1.01 ? '%s seconds ago'.replace('%s', tmp)
+        : m < 1.01 ? __('%s seconds ago').replace('%s', tmp)
             : (tmp = Math.round(m)) === 1 ? __('a minute ago')
-                : h < 1.01 ? '%s minutes ago'.replace('%s', tmp)
+                : h < 1.01 ? __('%s minutes ago').replace('%s', tmp)
                     : (tmp = Math.round(h)) === 1 ? __('an hour ago')
                         : d < 1.01 ? __('%s hours ago').replace('%s', tmp)
                             : (tmp = Math.round(d)) === 1 ? __('yesterday')
-                                : w < 1.01 ? '%s days ago'.replace('%s', tmp)
+                                : w < 1.01 ? __('%s days ago').replace('%s', tmp)
                                     : (tmp = Math.floor(w)) === 1 ? __('a week ago')
-                                        : mo < 1.01 ? '%s weeks ago'.replace('%s', tmp)
+                                        : mo < 1.01 ? __('%s weeks ago').replace('%s', tmp)
                                             : (tmp = Math.floor(mo)) === 1 ? __('a month ago')
-                                                : y < 1 ? '%s months ago'.replace('%s', tmp)
+                                                : y < 1 ? __('%s months ago').replace('%s', tmp)
                                                     : (tmp = Math.floor(y)) === 1 ? __('a year ago')
-                                                        : '%s years ago'.replace('%s', tmp);
+                                                        : __('%s years ago').replace('%s', tmp);
 }
 
 /**
