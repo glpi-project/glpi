@@ -4412,8 +4412,8 @@ JAVASCRIPT;
         // compute priority if is new ticket and user have no right to change priority
         if ($this->isNewItem() && !$canpriority) {
             $this->fields['priority'] = $this->computePriority(
-                $this->fields['urgency'] ?? 3,
-                $this->fields['impact'] ?? 3
+                $this->fields['urgency'] ?: $predefined_fields['urgency'] ?? 3 /* Medium */,
+                $this->fields['impact'] ?: $predefined_fields['impact']  ?? 3 /* Medium */
             );
         }
 
