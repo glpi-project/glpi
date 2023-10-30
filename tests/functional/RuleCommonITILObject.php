@@ -46,6 +46,7 @@ use Group_User;
 use ITILCategory;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Location;
 use Rule;
 use RuleAction;
 use RuleBuilder;
@@ -2653,5 +2654,56 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
         $itil_object->getFromDB($itil_object->getID());
         $this->integer($itil_object->fields['urgency'])->isEqualTo($urgency_if_rule_triggered);
+    }
+
+    /**
+     * Test that the "Code representing the ticket category" criterion works correctly
+     * even when the category has been modified just before.
+     *
+     * @return void
+     */
+    public function testCategoryCodeCriterionAfterCategoryModification(): void
+    {
+        // Get the root entity
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        // Create a category
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => 'Test category',
+            'code' => 'test_category',
+            'entities_id' => $entity,
+        ]);
+
+        // Create a location
+        $location = $this->createItem(Location::class, [
+            'name' => 'Test location',
+            'entities_id' => $entity,
+        ]);
+
+        // Create two rules
+        $builder = new RuleBuilder('Test category code criterion rule');
+        $builder
+            ->addCriteria('urgency', Rule::PATTERN_IS, 5)
+            ->addAction('assign', 'itilcategories_id', $category->getID());
+        $this->createRule($builder, $this->getTestedClass());
+
+        $builder
+            ->addCriteria('itilcategories_id_code', Rule::PATTERN_IS, $category->fields['code'])
+            ->addAction('assign', 'locations_id', $location->getID());
+        $this->createRule($builder, $this->getTestedClass());
+
+        // Create a itil object with "Very high" urgency
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name' => 'Test ITIL',
+            'content' => 'Test ITIL content',
+            'urgency' => 5, // Assuming 5 is "Very high"
+            'entities_id' => $entity,
+        ]);
+
+        // Check if the category "Test category" is assigned
+        $this->integer($itil_object->fields['itilcategories_id'])->isEqualTo($category->getID());
+
+        // Check if the location "Test location" is assigned
+        $this->integer($itil_object->fields['locations_id'])->isEqualTo($location->getID());
     }
 }

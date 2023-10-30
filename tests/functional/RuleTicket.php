@@ -39,6 +39,8 @@ use Contract;
 use ContractType;
 use ITILFollowup;
 use ITILFollowupTemplate;
+use Location;
+use Rule;
 use RuleAction;
 use Ticket_Contract;
 

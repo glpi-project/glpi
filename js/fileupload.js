@@ -198,7 +198,8 @@ const setRichTextEditorContent = function(editor_id, content) {
         editor.setContent('');
         // use paste command to force images registering
         editor.execCommand('mceInsertClipboardContent', false, {
-            html: content
+            html: content,
+            internal: true, // disable some filterings operations that would remove styles (maybe a bug)
         });
         // force trigger of event handlers that will save editor contents
         // and remove "required" state

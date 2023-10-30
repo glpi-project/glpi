@@ -110,6 +110,14 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
             }
         }
 
+        // Required for rules on category code triggered by others rules
+        if (isset($input['itilcategories_id']) && $input['itilcategories_id']) {
+            $itilcategory = ITILCategory::getById($input['itilcategories_id']);
+            if ($itilcategory) {
+                $input['itilcategories_id_code'] = $itilcategory->fields['code'];
+            }
+        }
+
         return $input;
     }
 }

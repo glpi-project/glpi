@@ -104,7 +104,8 @@
       {# Update cache #}
       {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
 
-      <div class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
+      {% set anchor = entry['type'] ~ '_' ~ entry_i['id'] %}
+      <div id="{{ anchor }}" class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
 

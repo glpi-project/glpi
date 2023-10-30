@@ -1121,6 +1121,11 @@ class GLPIKanbanRights {
                 // This is unreliable as js object keys are not ordered.
                 // To fix this, we'll convert data into an array which can be
                 // reliably sorted.
+                Object.keys(data).forEach(function(key) {
+                    if (data[key].id === undefined) {
+                        data[key].id = key;
+                    }
+                });
                 let sorted_data = Object.values(data); // Cast Object to array
                 const collator = new Intl.Collator(undefined, {
                     numeric: true,
