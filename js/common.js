@@ -1171,7 +1171,7 @@ function relativeDate(str) {
             : (tmp = Math.round(m)) === 1 ? __('a minute ago')
                 : h < 1.01 ? '%s minutes ago'.replace('%s', tmp)
                     : (tmp = Math.round(h)) === 1 ? __('an hour ago')
-                        : d < 1.01 ? '%s hours ago'.replace('%s', tmp)
+                        : d < 1.01 ? __('%s hours ago').replace('%s', tmp)
                             : (tmp = Math.round(d)) === 1 ? __('yesterday')
                                 : w < 1.01 ? '%s days ago'.replace('%s', tmp)
                                     : (tmp = Math.floor(w)) === 1 ? __('a week ago')
