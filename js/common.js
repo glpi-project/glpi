@@ -1177,7 +1177,7 @@ function relativeDate(str) {
                                     : (tmp = Math.floor(w)) === 1 ? __('a week ago')
                                         : mo < 1.01 ? '%s weeks ago'.replace('%s', tmp)
                                             : (tmp = Math.floor(mo)) === 1 ? __('a month ago')
-                                                : y < 1 ? '%s month ago'.replace('%s', tmp)
+                                                : y < 1 ? '%s months ago'.replace('%s', tmp)
                                                     : (tmp = Math.floor(y)) === 1 ? __('a year ago')
                                                         : '%s years ago'.replace('%s', tmp);
 }
