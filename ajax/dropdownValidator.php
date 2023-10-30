@@ -37,13 +37,14 @@
  * @since 0.85
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
-
-/** @global array $CFG_GLPI */
 
 if (isset($_POST["validatortype"])) {
     switch ($_POST["validatortype"]) {

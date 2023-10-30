@@ -40,6 +40,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Sanitizer;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');

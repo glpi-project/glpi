@@ -33,6 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var array $CFG_GLPI
+ * @var \DBmysql $DB
+ */
+global $CFG_GLPI, $DB;
+
 include('../inc/includes.php');
 
 Session::checkRight("reports", READ);

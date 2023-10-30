@@ -35,6 +35,12 @@
 
 include('../inc/includes.php');
 
+/**
+ * @var \DBmysql $DB
+ * @var array $_UPOST
+ */
+global $DB, $_UPOST;
+
 $dropdown = new Entity();
 
 // Root entity : no delete

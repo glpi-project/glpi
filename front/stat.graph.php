@@ -38,6 +38,12 @@ use Glpi\Stat\Data\Graph\StatDataSatisfactionSurvey;
 use Glpi\Stat\Data\Graph\StatDataTicketAverageTime;
 use Glpi\Stat\Data\Graph\StatDataTicketNumber;
 
+/**
+ * @var array $CFG_GLPI
+ * @var \DBmysql $DB
+ */
+global $CFG_GLPI, $DB;
+
 include('../inc/includes.php');
 
 Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "helpdesk", "stat");

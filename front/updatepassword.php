@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.

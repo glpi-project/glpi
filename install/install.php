@@ -46,6 +46,10 @@ define('GLPI_ROOT', realpath('..'));
 include_once(GLPI_ROOT . "/inc/based_config.php");
 include_once(GLPI_ROOT . "/inc/db.function.php");
 
+/**
+ * @var \GLPI $GLPI
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
 global $GLPI, $GLPI_CACHE;
 
 $GLPI = new GLPI();
@@ -100,6 +104,7 @@ function footer_html()
 // choose language
 function choose_language()
 {
+    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
    // fix missing param for js drodpown
@@ -397,6 +402,7 @@ function step4($databasename, $newdatabasename)
 //send telemetry information
 function step6()
 {
+    /** @var \DBmysql $DB */
     global $DB;
 
     include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
@@ -472,6 +478,7 @@ function update1($dbname)
     if (empty($dbname)) {
         $error = __('Please select a database.');
     } else {
+        /** @var \DBmysql $DB */
         global $DB;
         $DB = DBConnection::getDbInstanceUsingParameters($host, $user, $password, $dbname);
         $update = new Update($DB);
@@ -527,6 +534,7 @@ Session::loadLanguage('', false);
  **/
 function checkConfigFile()
 {
+    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
     if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

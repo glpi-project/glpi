@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var \DBmysql $DB */
+global $DB;
+
 if (strpos($_SERVER['PHP_SELF'], "dropdownRubDocument.php")) {
     $AJAX_INCLUDE = 1;
     include('../inc/includes.php');
@@ -41,8 +44,6 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownRubDocument.php")) {
 }
 
 Session::checkCentralAccess();
-
-/** @global DBmysql $DB */
 
 // Make a select box
 if (isset($_POST["rubdoc"])) {

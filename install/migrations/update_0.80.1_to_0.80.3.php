@@ -40,6 +40,9 @@
  **/
 function update0801to0803()
 {
+    /**
+     * @var \Migration $migration
+     */
     global $migration;
 
     $updateresult     = true;

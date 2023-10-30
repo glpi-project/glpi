@@ -37,6 +37,9 @@
  * @since 0.83
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "planningcheck.php")) {
     $AJAX_INCLUDE = 1;
@@ -46,8 +49,6 @@ if (strpos($_SERVER['PHP_SELF'], "planningcheck.php")) {
 }
 
 Session::checkLoginUser();
-
-/** @global array $CFG_GLPI */
 
 $append_params = [
     "checkavailability" => "checkavailability",

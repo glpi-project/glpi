@@ -37,6 +37,9 @@
  * Search engine from cron tasks
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);

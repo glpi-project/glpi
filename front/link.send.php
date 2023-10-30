@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var \DBmysql $DB */
+global $DB;
+
 include('../inc/includes.php');
 
 Session::checkRight("link", READ);

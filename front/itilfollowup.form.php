@@ -35,6 +35,9 @@
 
 use Glpi\Event;
 
+/** @var \DBmysql $DB */
+global $DB;
+
 include('../inc/includes.php');
 
 Session::checkLoginUser();

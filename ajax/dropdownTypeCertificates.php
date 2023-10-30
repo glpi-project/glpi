@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var \DBmysql $DB */
+global $DB;
+
 if (strpos($_SERVER['PHP_SELF'], "dropdownTypeCertificates.php")) {
     $AJAX_INCLUDE = 1;
     include('../inc/includes.php');
@@ -45,8 +48,6 @@ Session::checkCentralAccess();
 
 // Make a select box
 $used = [];
-
-/** @global DBmysql $DB */
 
 // Clean used array
 if (

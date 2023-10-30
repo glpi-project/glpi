@@ -40,6 +40,10 @@
  **/
 function update0853to0855()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult     = true;

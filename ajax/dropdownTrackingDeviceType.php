@@ -35,6 +35,9 @@
 
 use Glpi\Http\Response;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -44,8 +47,6 @@ Session::checkLoginUser();
 // Read parameters
 $context  = $_POST['context'] ?? '';
 $itemtype = $_POST["itemtype"] ?? '';
-
-/** @global array $CFG_GLPI */
 
 // Check for required params
 if (empty($itemtype)) {

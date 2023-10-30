@@ -36,6 +36,9 @@
 use Glpi\Http\Firewall;
 use Glpi\Toolbox\Sanitizer;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
 }

@@ -37,6 +37,9 @@
  * Show network port by network equipment
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 Session::checkRight("reports", READ);

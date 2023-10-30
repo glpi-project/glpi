@@ -1626,6 +1626,7 @@ $define_mapping_entry = static function (string $source_table, string $target_ta
 };
 
 // Add polymorphic relations based on configuration.
+/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 $specifically_managed_types = [
     Agent::class, // FIXME Agent should be a CommonDBChild with $mustBeAttached=true
