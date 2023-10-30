@@ -147,7 +147,7 @@ class Sanitizer
      *
      * @param string $value
      *
-     * @return string
+     * @return bool
      */
     public static function isDbEscaped(string $value): bool
     {

@@ -45,7 +45,7 @@ final class URL
      *
      * @param null|string $url
      *
-     * @return string|null
+     * @return string
      */
     final public static function sanitizeURL(?string $url): string
     {

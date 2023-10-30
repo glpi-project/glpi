@@ -297,7 +297,7 @@ class Conf extends CommonGLPI
     /**
      * Get possible actions for stale agents
      *
-     * @return string
+     * @return array
      */
     public static function getStaleAgentActions(): array
     {
@@ -316,7 +316,7 @@ class Conf extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         switch ($item->getType()) {
             case __CLASS__:
@@ -332,7 +332,7 @@ class Conf extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         if ($item->getType() == __CLASS__) {
             /** @var self $item */
