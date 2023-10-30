@@ -198,8 +198,7 @@ HTML,
         $ticket_img = new \Document();
         $this->boolean($ticket_img->getFromDBByCrit(['tag' => 'aaaaaaaa-aaaaaaaa-aaaaaaaaaaaaaa.00000000']))->isTrue();
 
-        // Create large text document (15MB)
-        $ticket_doc = $this->createTxtDocument(15728640);
+        $ticket_doc = $this->createTxtDocument();
         $this->createItem(
             \Document_Item::class,
             [
@@ -209,8 +208,8 @@ HTML,
             ]
         );
 
-        // Create a followup and attach documents to it (big img ~15Mb)
-        $filename = $this->createUploadedImage($prefix = uniqid('', true), 10000, 7000);
+        // Create a followup and attach documents to it
+        $filename = $this->createUploadedImage($prefix = uniqid('', true));
         $followup = new \ITILFollowup();
         $followup_id = $followup->add([
             'itemtype'     => $ticket->getType(),
@@ -501,13 +500,9 @@ HTML,
         $queued_notifications = getAllDataFromTable(QueuedNotification::getTable(), ['is_deleted' => 0]);
         $this->array($queued_notifications)->hasSize(1);
 
-        $s = memory_get_usage();
-
         \NotificationEventMailing::setMailer(new \GLPIMailer($transport));
         \NotificationEventMailing::send($queued_notifications);
         \NotificationEventMailing::setMailer(null);
-
-        $this->integer(memory_get_peak_usage() - $s)->isLessThan(15000000);           // less than 15 Mb
 
         $attachments = $transport->sent_email->getAttachments();
         $this->array($attachments)->hasSize(count($expected_attachments));
@@ -528,16 +523,11 @@ HTML,
         $this->array($attachement_filenames)->isEqualTo($expected_filenames);
     }
 
-    private function createTxtDocument(int $bytes = null): \Document
+    private function createTxtDocument(): \Document
     {
         $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
         $filename = uniqid('glpitest_', true) . '.txt';
-
-        if (is_null($bytes)) {
-            $contents = random_bytes(1024);
-        } else {
-            $contents = random_bytes($bytes);
-        }
+        $contents = random_bytes(1024);
 
         $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
         $this->integer($written_bytes)->isEqualTo(strlen($contents));
@@ -557,11 +547,11 @@ HTML,
     /**
      * Simulates upload of a random PNG image and return its filename.
      */
-    private function createUploadedImage(string $prefix, int $width = 100, int $height = 100): string
+    private function createUploadedImage(string $prefix): string
     {
         $filename = $prefix . uniqid('glpitest_', true) . '.png';
 
-        $image = imagecreate($width, $height);
+        $image = imagecreate(100, 100);
         $this->object($image)->isInstanceOf(\GdImage::class);
         $this->integer(imagecolorallocate($image, rand(0, 255), rand(0, 255), rand(0, 255)));
         $this->boolean(imagepng($image, GLPI_TMP_DIR . '/' . $filename))->isTrue();

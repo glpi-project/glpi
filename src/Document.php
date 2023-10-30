@@ -530,7 +530,6 @@ class Document extends CommonDBTM
     /**
      * Send a document to navigator
      *
-     * @param string $context Context to resize image, if any
      * @param bool   $return_response
      * @return Response|void
      * @phpstan-return $return_response ? Response : void
@@ -1802,59 +1801,6 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Get resized image path.
-     * Will call image resize if needed.
-     *
-     * @since 10.0.1
-     *
-     * @param string  $path    Original path
-     * @param integer $width   width
-     * @param integer $height  height
-     *
-     * @return string Image path on disk
-     */
-    public static function getResizedImagePath(string $path, int $width = null, int $height = null): string
-    {
-        //no resize needed for mail attachment
-        if (is_null($height) && is_null($width)) {
-        //no resize needed
-            return $path;
-        }
-
-        $infos = pathinfo($path);
-        // output images with possible transparency to png, other to jpg
-        $extension = in_array(strtolower($infos['extension']), ['png', 'gif']) ? 'png' : 'jpg';
-        $context_path = sprintf(
-            '%1$s_%2$s-%3$s.%4$s',
-            $infos['dirname'] . '/' . $infos['filename'],
-            $width,
-            $height,
-            $extension
-        );
-
-    //let's check if file already exists
-        if (file_exists($context_path)) {
-            return $context_path;
-        }
-
-    //do resize
-        $result = Toolbox::resizePicture(
-            $path,
-            $context_path,
-            $width,
-            $height,
-            0,
-            0,
-            0,
-            0,
-            ($width > $height ? $width : $height)
-        );
-        return ($result ? $context_path : $path);
-    }
-
-
-
-    /**
      * Get image path for a specified context.
      * Will call image resize if needed.
      *
@@ -1871,7 +1817,7 @@ class Document extends CommonDBTM
      */
     public static function getImage($path, $context, $mwidth = null, $mheight = null)
     {
-        Toolbox::deprecated('Using getImage() is deprecated.');
+        Toolbox::deprecated();
 
         if ($mwidth === null || $mheight === null) {
             switch ($context) {
@@ -1888,44 +1834,59 @@ class Document extends CommonDBTM
             }
         }
 
-       //let's see if original image needs resize
+        return self::getResizedImagePath($path, $mwidth, $mheight);
+    }
+
+    /**
+     * Get resized image path.
+     *
+     * @since 10.0.1
+     *
+     * @param string  $path
+     * @param integer $width
+     * @param integer $height
+     *
+     * @return string
+     */
+    public static function getResizedImagePath(string $path, int $width, int $height): string
+    {
+        // let's see if original image needs resize
         $img_infos  = getimagesize($path);
-        if (!($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
-           //no resize needed
+        if (!($img_infos[0] > $width) && !($img_infos[1] > $height)) {
+            // no resize needed, source image is smaller than requested width/height
             return $path;
         }
 
         $infos = pathinfo($path);
-       // output images with possible transparency to png, other to jpg
+        // output images with possible transparency to png, other to jpg
         $extension = in_array(strtolower($infos['extension']), ['png', 'gif']) ? 'png' : 'jpg';
         $context_path = sprintf(
             '%1$s_%2$s-%3$s.%4$s',
             $infos['dirname'] . '/' . $infos['filename'],
-            $mwidth,
-            $mheight,
+            $width,
+            $height,
             $extension
         );
 
-       //let's check if file already exists
+        // let's check if file already exists
         if (file_exists($context_path)) {
             return $context_path;
         }
 
-       //do resize
+        // do resize
         $result = Toolbox::resizePicture(
             $path,
             $context_path,
-            $mwidth,
-            $mheight,
+            $width,
+            $height,
             0,
             0,
             0,
             0,
-            ($mwidth > $mheight ? $mwidth : $mheight)
+            ($width > $height ? $width : $height)
         );
         return ($result ? $context_path : $path);
     }
-
 
     /**
      * Give cron information
