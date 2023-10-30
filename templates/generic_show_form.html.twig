@@ -374,7 +374,7 @@
                            'User',
                            'users_id_tech',
                            item.fields['users_id_tech'],
-                           __('Technician in charge of the hardware'),
+                           (item_type starts with 'Software' ? __('Technician in charge of the software') : __('Technician in charge of the hardware')),
                            field_options|merge({
                               'entity': item.fields['entities_id'],
                               'right': 'own_ticket',
@@ -397,7 +397,7 @@
                            'Group',
                            'groups_id_tech',
                            item.fields['groups_id_tech'],
-                           __('Group in charge of the hardware'),
+                           (item_type starts with 'Software' ? __('Group in charge of the software') : __('Group in charge of the hardware')),
                            field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_assign': 1},
