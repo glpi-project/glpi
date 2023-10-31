@@ -277,7 +277,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      * @param int $timeend The end time of the task.
      * @return void
      */
-    public function handleTaskDuration(&$input, $timestart, $timeend)
+    private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
     {
         // If 'actiontime' is set and different from the current 'actiontime'
         if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
