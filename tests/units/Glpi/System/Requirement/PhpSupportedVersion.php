@@ -59,18 +59,48 @@ class PhpSupportedVersion extends \GLPITestCase
 
         yield [
             'phpversion' => '8.0.0-rc1',
+            'validated'  => false,
+            'messages'   => ['PHP 8.0 official support has ended. An upgrade to a more recent PHP version is recommended.'],
+        ];
+
+        yield [
+            'phpversion' => '8.0.15',
+            'validated'  => false,
+            'messages'   => ['PHP 8.0 official support has ended. An upgrade to a more recent PHP version is recommended.'],
+        ];
+
+        yield [
+            'phpversion' => '8.1.0-rc1',
             'validated'  => true,
             'messages'   => [],
         ];
 
         yield [
-            'phpversion' => '8.0.15',
+            'phpversion' => '8.1.7',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.2.0-alpha3',
             'validated'  => true,
             'messages'   => [],
         ];
 
         yield [
             'phpversion' => '8.2.34',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.3.0-dev',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.3.1',
             'validated'  => true,
             'messages'   => [],
         ];

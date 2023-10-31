@@ -41,12 +41,12 @@ namespace Glpi\System\Requirement;
 class PhpSupportedVersion extends AbstractRequirement
 {
     /**
-     * Minimal supported version of PHP version.
+     * Minimal version of PHP version that still get security fixes.
      *
      * @var string
      * @see https://www.php.net/supported-versions
      */
-    private const MIN_SUPPORTED_VERSION = '8.0';
+    private const MIN_SECURITY_SUPPORTED_VERSION = '8.1';
 
     public function __construct()
     {
@@ -59,7 +59,7 @@ class PhpSupportedVersion extends AbstractRequirement
     {
         $php_version =  preg_replace('/^(\d+\.\d+)\..*$/', '$1', phpversion());
 
-        if (version_compare($php_version, self::MIN_SUPPORTED_VERSION, '>=')) {
+        if (version_compare($php_version, self::MIN_SECURITY_SUPPORTED_VERSION, '>=')) {
             $this->validated = true;
             // No validation message as we cannot be sure that PHP is up-to-date.
         } else {
