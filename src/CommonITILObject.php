@@ -802,15 +802,17 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Recompute priority if not predefined and impact/urgency was changed
         if (
-            !isset($predefined_fields['priority'])
+            !isset($predefined_fields['priority'], $options['priority'])
             && (
                 isset($predefined_fields['urgency'])
                 || isset($predefined_fields['impact'])
+                || isset($options['impact'])
+                || isset($options['urgency'])
             )
         ) {
             $this->fields['priority'] = self::computePriority(
-                $this->fields['urgency'] ?? 3,
-                $this->fields['impact'] ?? 3
+                $this->fields['urgency'] ?: $predefined_fields['urgency'] ?? 3 /* Medium */,
+                $this->fields['impact'] ?: $predefined_fields['impact']  ?? 3 /* Medium */
             );
         }
 

@@ -4409,14 +4409,6 @@ JAVASCRIPT;
             $options['_noupdate'] = true;
         }
 
-        // compute priority if is new ticket and user have no right to change priority
-        if ($this->isNewItem() && !$canpriority) {
-            $this->fields['priority'] = $this->computePriority(
-                $this->fields['urgency'] ?: $predefined_fields['urgency'] ?? 3 /* Medium */,
-                $this->fields['impact'] ?: $predefined_fields['impact']  ?? 3 /* Medium */
-            );
-        }
-
         $sla = new SLA();
         $ola = new OLA();
         $item_ticket = null;
