@@ -99,6 +99,10 @@ abstract class CommonITILActor extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (empty($items_id)) {
+            return [];
+        }
+
         $users = [];
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
