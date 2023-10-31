@@ -283,10 +283,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 trigger_error('Failed to add document ' . $doc->fields['filepath'] . ' to mail: file not found', E_USER_WARNING);
                                 continue;
                             }
-                            $image_path = Document::getImage(
-                                GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
-                                'mail'
-                            );
+                            $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
                             $mail->embedFromPath($image_path, $doc->fields['filename']);
                             $inline_docs[$document_id] = $doc->fields['filename'];
                         } else {
@@ -336,34 +333,37 @@ class NotificationEventMailing extends NotificationEventAbstract
                                     $custom_height = intval($hmatches[1]);
                                 }
 
-                                $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
+                                if ($custom_height === null && $custom_width === null) {
+                                    // no custom size, use original file
+                                    $image_path = GLPI_DOC_DIR . "/" . $doc->fields['filepath'];
+                                } else {
+                                    if ($custom_width === null || $custom_height === null) {
+                                        // When either width or height is null, but the other is defined,
+                                        // compute the missing dimension using a cross-multiplication.
+                                        $img_infos = getimagesize(GLPI_DOC_DIR . "/" . $doc->fields['filepath']);
 
-                                if (!$img_infos) {
-                                    // Failure to read image size, skip to avoid a divide by zero exception
-                                    continue;
+                                        if (!$img_infos) {
+                                            // Failure to read image size, skip to avoid a divide by zero exception
+                                            continue;
+                                        }
+
+                                        $initial_width = $img_infos[0];
+                                        $initial_height = $img_infos[1];
+
+                                        if ($custom_height === null) {
+                                            $custom_height = $initial_height * $custom_width / $initial_width;
+                                        } else {
+                                            $custom_width = $initial_width * $custom_height / $initial_height;
+                                        }
+                                    }
+
+                                    $image_path = Document::getResizedImagePath(
+                                        GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
+                                        $custom_width,
+                                        $custom_height
+                                    );
                                 }
 
-                                $initial_width = $img_infos[0];
-                                $initial_height = $img_infos[1];
-
-                                if ($custom_width !== null && $custom_height === null) {
-                                    //compute height if needed
-                                    $custom_height = $initial_height * $custom_width / $initial_width;
-                                } elseif ($custom_height !== null && $custom_width === null) {
-                                    //compute width if needed
-                                    $custom_width = $initial_width * $custom_height / $initial_height;
-                                } elseif ($custom_height === null && $custom_width === null) {
-                                    //if both are null keep initial size
-                                    $custom_width = $initial_width;
-                                    $custom_height = $initial_height;
-                                }
-
-                                $image_path = Document::getImage(
-                                    GLPI_DOC_DIR . "/" . $doc->fields['filepath'],
-                                    'mail',
-                                    $custom_width,
-                                    $custom_height
-                                );
                                 $mail->embedFromPath($image_path, $doc->fields['filename']);
                                 $inline_docs[$docID] = $doc->fields['filename'];
                             }
@@ -517,13 +517,6 @@ class NotificationEventMailing extends NotificationEventAbstract
                 continue;
             }
             $path = GLPI_DOC_DIR . "/" . $document->fields['filepath'];
-            if (Document::isImage($path)) {
-                $path = Document::getImage(
-                    $path,
-                    'mail'
-                );
-            }
-
             $mail->attachFromPath($path, $document->fields['filename']);
         }
     }

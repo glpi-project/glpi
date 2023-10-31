@@ -103,6 +103,7 @@ The present file will list all changes made to the project; according to the
 - `SavedSearch::showSaveButton()` replaced with `pages/tools/savedsearch/save_button.html.twig` template.
 - `showSystemInformations` method for `$CFG_GLPI['systeminformations_types']` types renamed to `getSystemInformation` and should return an array with a label and content.
 - `DisplayPreference` config form POST handling moved to `ajax/displaypreference.php` script. The front file is for displaying the tabs only.
+- `Document::send()` signature changed. The `$context` parameter has been removed.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -127,6 +128,7 @@ The present file will list all changes made to the project; according to the
 - `Consumable::showForConsumableItem()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
+- `Document::getImage()`
 - `Glpi\Application\View\Extension::getVerbatimValue()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`

@@ -530,17 +530,13 @@ class Document extends CommonDBTM
     /**
      * Send a document to navigator
      *
-     * @param string $context Context to resize image, if any
      * @param bool   $return_response
      * @return Response|void
      * @phpstan-return $return_response ? Response : void
      **/
-    public function send($context = null, bool $return_response = false)
+    public function send(bool $return_response = false)
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
-        if ($context !== null) {
-            $file = self::getImage($file, $context);
-        }
         $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
         if ($response !== null) {
             return $response;
@@ -1816,9 +1812,13 @@ class Document extends CommonDBTM
      * @param integer $mheight Maximal height
      *
      * @return string Image path on disk
+     *
+     * @deprecated 10.1.0
      */
     public static function getImage($path, $context, $mwidth = null, $mheight = null)
     {
+        Toolbox::deprecated();
+
         if ($mwidth === null || $mheight === null) {
             switch ($context) {
                 case 'mail':
@@ -1834,40 +1834,56 @@ class Document extends CommonDBTM
             }
         }
 
-       //let's see if original image needs resize
+        return self::getResizedImagePath($path, $mwidth, $mheight);
+    }
+
+    /**
+     * Get resized image path.
+     *
+     * @since 10.0.1
+     *
+     * @param string  $path
+     * @param integer $width
+     * @param integer $height
+     *
+     * @return string
+     */
+    public static function getResizedImagePath(string $path, int $width, int $height): string
+    {
+        // let's see if original image needs resize
         $img_infos  = getimagesize($path);
-        if (!($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
-           //no resize needed
+        if (!($img_infos[0] > $width) && !($img_infos[1] > $height)) {
+            // no resize needed, source image is smaller than requested width/height
             return $path;
         }
 
         $infos = pathinfo($path);
-       // output images with possible transparency to png, other to jpg
+        // output images with possible transparency to png, other to jpg
         $extension = in_array(strtolower($infos['extension']), ['png', 'gif']) ? 'png' : 'jpg';
         $context_path = sprintf(
             '%1$s_%2$s-%3$s.%4$s',
             $infos['dirname'] . '/' . $infos['filename'],
-            $mwidth,
-            $mheight,
+            $width,
+            $height,
             $extension
         );
 
-       //let's check if file already exists
+        // let's check if file already exists
         if (file_exists($context_path)) {
             return $context_path;
         }
 
-       //do resize
+        // do resize
         $result = Toolbox::resizePicture(
             $path,
             $context_path,
-            $mwidth,
-            $mheight,
+            $width,
+            $height,
             0,
             0,
             0,
             0,
-            ($mwidth > $mheight ? $mwidth : $mheight)
+            ($width > $height ? $width : $height)
         );
         return ($result ? $context_path : $path);
     }
