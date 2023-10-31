@@ -465,4 +465,74 @@ class TicketTask extends DbTestCase
 
         $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::WAITING);
     }
+
+    /**
+     * Test that the task duration is correctly updated
+     *
+     * @return void
+     */
+    public function testTaskDurationUpdate()
+    {
+        $this->login();
+        $ticketId = $this->getNewTicket();
+        $uid = getItemByTypeName('User', TU_USER, true);
+
+        $date_begin = new \DateTime(); // ==> now
+        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+
+        $date_end = new \DateTime(); // ==> +2days
+        $date_end->add(new \DateInterval('P2D'));
+        $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+        // Create task with actiontime and without schedule
+        $task = new \TicketTask();
+        $task_id = $task->add([
+            'state'              => \Planning::TODO,
+            'tickets_id'         => $ticketId,
+            'tasktemplates_id'   => '0',
+            'taskcategories_id'  => '0',
+            'content'            => "Task with schedule and recall",
+            'users_id_tech'      => $uid,
+            'actiontime'         => 3600,
+        ]);
+        $this->integer($task_id)->isGreaterThan(0);
+
+        // Check that the task duration is correctly updated
+        $this->integer($task->fields['actiontime'])->isEqualTo(3600);
+        $this->variable($task->fields['begin'])->isEqualTo(null);
+        $this->variable($task->fields['end'])->isEqualTo(null);
+
+        // Schedule the task
+        $this->boolean($task->update([
+            'id'                 => $task_id,
+            'tickets_id'         => $ticketId,
+            'users_id_tech'      => $uid,
+            'plan'               => [
+                'begin'        => $date_begin_string,
+                'end'          => $date_end_string,
+            ]
+        ]))->isTrue();
+
+        // Check that the task duration is correctly updated
+        $this->integer($task->fields['actiontime'])->isEqualTo(172800);
+        $this->string($task->fields['begin'])->isEqualTo($date_begin_string);
+        $this->string($task->fields['end'])->isEqualTo($date_end_string);
+
+        // Update the task duration with actiontime
+        $this->boolean($task->update([
+            'id'                 => $task_id,
+            'tickets_id'         => $ticketId,
+            'users_id_tech'      => $uid,
+            'actiontime'         => 7200,
+            'plan'               => [
+                'begin'        => $date_begin_string,
+                'end'          => $date_end_string,
+            ]
+        ]))->isTrue();
+
+        // Check that the task duration is correctly updated
+        $this->integer($task->fields['actiontime'])->isEqualTo(7200);
+        $this->string($task->fields['begin'])->isEqualTo($date_begin_string);
+        $this->string($task->fields['end'])->isEqualTo($date_begin->add(new \DateInterval('PT2H'))->format('Y-m-d H:i:s'));
+    }
 }
