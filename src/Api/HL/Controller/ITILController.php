@@ -177,6 +177,7 @@ final class ITILController extends AbstractController
                     'x-field' => 'externalid',
                     'type' => Doc\Schema::TYPE_STRING,
                 ];
+                $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: \RequestType::class, full_schema: 'RequestType');
             }
             $schemas[$itil_type]['x-itemtype'] = $itil_type;
             $schemas[$itil_type]['properties']['status'] = [
@@ -259,6 +260,35 @@ final class ITILController extends AbstractController
         $schemas['ProblemTask']['x-itemtype'] = \ProblemTask::class;
         $schemas['ProblemTask']['properties'][Problem::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
+        $schemas['RequestType'] = [
+            'x-itemtype' => \RequestType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_helpdesk_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_followup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_mail_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_mailfollowup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_visible_ticket' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'x-field' => 'is_ticketheader',
+                ],
+                'is_visible_followup' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'x-field' => 'is_itilfollowup'
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ]
+        ];
+
         $schemas['Followup'] = [
             'x-itemtype' => \ITILFollowup::class,
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -287,6 +317,9 @@ final class ITILController extends AbstractController
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'content' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'request_type' => self::getDropdownTypeSchema(\RequestType::class, full_schema: 'RequestType'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ]
         ];
 
