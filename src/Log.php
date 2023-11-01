@@ -391,7 +391,7 @@ class Log extends CommonDBTM
 
             $tmp['display_history'] = true;
             $tmp['id']              = $data["id"];
-            $tmp['date_mod']        = Html::convDateTime($data["date_mod"]);
+            $tmp['date_mod']        = $data["date_mod"];
             $tmp['user_name']       = $data["user_name"];
             $tmp['field']           = "";
             $tmp['change']          = "";

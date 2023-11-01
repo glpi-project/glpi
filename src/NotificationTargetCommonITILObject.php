@@ -1529,10 +1529,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.numberoffollowups##"] = count($data['followups']);
 
             $data['log'] = [];
-           // Use list_limit_max or load the full history ?
-            foreach (Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']) as $log) {
+            // Use list_limit_max or load the full history ?
+            $log_data = Log::getHistoryData($item, 0, $CFG_GLPI['list_limit_max']);
+            foreach ($log_data as $log) {
                 $tmp                               = [];
-                $tmp["##$objettype.log.date##"]    = $log['date_mod'];
+                $tmp["##$objettype.log.date##"]    = Html::convDateTime($log['date_mod']);
                 $tmp["##$objettype.log.user##"]    = $log['user_name'];
                 $tmp["##$objettype.log.field##"]   = $log['field'];
                 $tmp["##$objettype.log.content##"] = $log['change'];

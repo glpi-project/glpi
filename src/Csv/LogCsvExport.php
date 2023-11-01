@@ -36,6 +36,7 @@
 namespace Glpi\Csv;
 
 use CommonDBTM;
+use Html;
 use Log;
 use Toolbox;
 use User;
@@ -88,6 +89,7 @@ class LogCsvExport implements ExportToCsvInterface
         $logs = array_map(function ($log) {
             unset($log['display_history']);
             unset($log['datatype']);
+            $log['date_mod'] = Html::convDateTime($log["date_mod"]);
             return $log;
         }, $logs);
 
