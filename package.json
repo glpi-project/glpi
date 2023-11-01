@@ -61,7 +61,7 @@
         "leaflet.markercluster": "^1.4.1",
         "lodash": "^4.17.21",
         "masonry-layout": "^4.2.2",
-        "monaco-editor": "^0.43.0",
+        "monaco-editor": "^0.44.0",
         "path-browserify": "^1.0.1",
         "photoswipe": "^5.4.2",
         "plain-scrollbar": "github:ewya/PlainScrollbar#35221e7c7fa9633d6f61bcd9d7b418b6de6da73b",
