@@ -33,7 +33,7 @@
         "bootstrap": "^5.2.3",
         "codemirror": "^6.0.1",
         "cropperjs": "^2.0.0-beta.4",
-        "cytoscape": "^3.26.0",
+        "cytoscape": "^3.27.0",
         "cytoscape-canvas": "^3.0.1",
         "cytoscape-context-menus": "^4.0.0",
         "cytoscape-dagre": "^2.2.1",
