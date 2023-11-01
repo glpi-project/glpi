@@ -82,7 +82,7 @@
         "glob": "^10.3.10",
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
-        "jest-extended": "^4.0.1",
+        "jest-extended": "^4.0.2",
         "mini-css-extract-plugin": "^2.7.6",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
