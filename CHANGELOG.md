@@ -107,6 +107,7 @@ The present file will list all changes made to the project; according to the
 - `title` property of Kanban items must be text only. HTML no longer supported.
 - `kanban:filter` JS event now includes the columns in the event data. Filtering must set the `_filtered_out` property of cards to hide them instead of changing the elements in the DOM.
 - `CommonITILActor::getActors()` signature changed. The `$items_id` parameter must strictly be an integer.
+- The `date_mod` property for historical entries returned by `Log::getHistoryData` is no longer formatted based on the user's preferences.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
