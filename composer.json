@@ -30,7 +30,7 @@
         "ext-zlib": "*",
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^2.0",
-        "donatj/phpuseragentparser": "^1.7",
+        "donatj/phpuseragentparser": "^1.8",
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^4.1",
         "glpi-project/inventory_format": "^1.1",
