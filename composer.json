@@ -38,7 +38,7 @@
         "guzzlehttp/psr7": "^2.6",
         "html2text/html2text": "^4.3",
         "laminas/laminas-i18n": "^2.23",
-        "laminas/laminas-json": "^3.5",
+        "laminas/laminas-json": "^3.6",
         "laminas/laminas-mail": "^2.23",
         "laminas/laminas-mime": "^2.9",
         "league/commonmark": "^2.4",
