@@ -268,6 +268,29 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
     }
 
+    /**
+     * Handle the task duration and planned duration logic.
+     *
+     * This function ensures a bi-directional link between the task duration and the planned duration.
+     * These two fields can be a bit redundant when task planning is enabled.
+     *
+     * @param array $input The input array, passed by reference.
+     * @param int $timestart The start time of the task.
+     * @param int $timeend The end time of the task.
+     * @return void
+     */
+    private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
+    {
+        // If 'actiontime' is set and different from the current 'actiontime'
+        if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
+            // Compute the end date based on 'actiontime'
+            $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
+        } else {
+            // If 'actiontime' is not set, compute it based on the start and end times
+            $input["actiontime"] = $timeend - $timestart;
+        }
+    }
+
 
     public function prepareInputForUpdate($input)
     {
@@ -311,7 +334,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             $timestart              = strtotime($input["begin"]);
             $timeend                = strtotime($input["end"]);
-            $input["actiontime"]    = $timeend - $timestart;
+
+            $this->handleTaskDuration($input, $timestart, $timeend);
 
             unset($input["plan"]);
 
@@ -525,7 +549,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             $timestart              = strtotime($input["begin"]);
             $timeend                = strtotime($input["end"]);
-            $input["actiontime"]    = $timeend - $timestart;
+
+            $this->handleTaskDuration($input, $timestart, $timeend);
 
             unset($input["plan"]);
             if (!$this->test_valid_date($input)) {

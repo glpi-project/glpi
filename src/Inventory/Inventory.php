@@ -411,9 +411,9 @@ class Inventory
 
 
     /**
-     * Get rawdata
+     * Get raw data
      *
-     * @return array
+     * @return object|null
      */
     public function getRawData(): ?object
     {

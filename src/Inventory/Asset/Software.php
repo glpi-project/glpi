@@ -1023,7 +1023,7 @@ class Software extends InventoryAsset
     /**
      * Get comparison key with normalized data.
      *
-     * @param \stdClass $data
+     * @param array $data
      *
      * return string
      */

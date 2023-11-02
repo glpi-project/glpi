@@ -911,7 +911,7 @@ class NotificationTarget extends CommonDBChild
      * Return main notification events for the object type
      * Internal use only => should use getAllEvents
      *
-     * @return an array which contains : event => event label
+     * @return array an array which contains : event => event label
      **/
     public function getEvents()
     {

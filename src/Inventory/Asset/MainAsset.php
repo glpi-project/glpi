@@ -1045,7 +1045,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Set partial inventory
      *
-     * @return Inventory
+     * @return self
      */
     protected function setPartial(): self
     {

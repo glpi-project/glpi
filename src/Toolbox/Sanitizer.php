@@ -159,7 +159,7 @@ class Sanitizer
      *
      * @param string $value
      *
-     * @return string
+     * @return bool
      *
      * @deprecated 10.1.0
      */

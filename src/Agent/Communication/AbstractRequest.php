@@ -101,7 +101,7 @@ abstract class AbstractRequest
     private $error = false;
     /** @var boolean */
     protected $test_rules = false;
-    /** @var Glpi\Agent\Communication\Headers\Common */
+    /** @var \Glpi\Agent\Communication\Headers\Common */
     protected $headers;
     /** @var int */
     private $http_response_code = 200;

@@ -1114,23 +1114,6 @@ class DBmysql
     /**
      * Instanciate a Simple DBIterator
      *
-     * Examples =
-     *  foreach ($DB->request("select * from glpi_states") as $data) { ... }
-     *  foreach ($DB->request("glpi_states") as $ID => $data) { ... }
-     *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
-     *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
-     *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
-     *
-     * Examples =
-     *   array("id"=>NULL)
-     *   array("OR"=>array("id"=>1, "NOT"=>array("state"=>3)));
-     *   array("AND"=>array("id"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
-     *
-     * FIELDS name or array of field names
-     * ORDER name or array of field names
-     * LIMIT max of row to retrieve
-     * START first row to retrieve
-     *
      * @param string|string[] $tableorsql Table name, array of names or SQL query
      * @param string|string[] $crit       String or array of filed/values, ex array("id"=>1), if empty => all rows
      *                                    (default '')
