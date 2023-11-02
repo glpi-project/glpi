@@ -220,7 +220,7 @@
                use_notification: {{ actor['use_notification'] ? "1" : "0" }},
                alternative_email: "{{ actor['alternative_email'] ?? '' }}",
                default_email: "{{ actor['default_email'] ?? '' }}",
-               is_notify: "{{ actor['is_notify'] ?? '0'}}",
+               is_notify: "{{ actor['is_notify'] ?? '0' }}",
             },
             {% endfor %}
          ],
