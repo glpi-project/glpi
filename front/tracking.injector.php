@@ -75,7 +75,6 @@ if (isset($_POST['add'])) {
     }
     $_POST['check_delegatee'] = true;
     if (isset($_POST['_actors'])) {
-        $_POST['_actors'] = json_decode($_POST['_actors'], true);
        // with self-service, we only have observers
         unset($_POST['_actors']['requester'], $_POST['_actors']['assign']);
     }
