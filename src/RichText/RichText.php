@@ -576,10 +576,8 @@ JAVASCRIPT;
             $config = $config->dropElement($dropped_element);
         }
 
-        // Allow styling attributes
-        foreach (['style', 'height', 'width'] as $allowed_attribute) {
-            $config = $config->allowAttribute($allowed_attribute, '*');
-        }
+        // Allow style attribute
+        $config = $config->allowAttribute('style', '*');
 
         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
             $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
