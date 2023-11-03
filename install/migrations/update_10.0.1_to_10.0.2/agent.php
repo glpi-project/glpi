@@ -34,8 +34,6 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
 

@@ -34,8 +34,7 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 // This key may be missing from database on GLPI instances that were migrated to 10.0 version

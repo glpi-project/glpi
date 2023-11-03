@@ -34,8 +34,9 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \Migration $migration
  */
+
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $migration->dropKey('glpi_items_devicecameras_imageformats', 'item_devicecameras_id');

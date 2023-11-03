@@ -34,7 +34,7 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 // CAS version config was missing on fresh installations since GLPI 9.4.0

@@ -34,7 +34,7 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 $migration->addField('glpi_cartridgeitems', 'stock_target', 'int', [

@@ -38,8 +38,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();

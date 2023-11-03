@@ -34,10 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
-
 
 $migration->addField('glpi_items_operatingsystems', 'company', "varchar(255) NULL DEFAULT NULL");
 $migration->addField('glpi_items_operatingsystems', 'owner', "varchar(255) NULL DEFAULT NULL");

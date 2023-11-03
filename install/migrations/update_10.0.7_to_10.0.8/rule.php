@@ -33,7 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-global $DB;
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
 //move criteria 'os_name' to 'name' for 'RuleDictionnaryOperatingSystem'
 //move criteria 'os_version' to 'name' for 'RuleDictionnaryOperatingSystemVersion'

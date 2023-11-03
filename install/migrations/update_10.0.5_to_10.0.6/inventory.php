@@ -34,9 +34,10 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
+
 $migration->addConfig(["entities_id_default" => 0], 'inventory');
 
 $config = \Config::getConfigurationValues('inventory');

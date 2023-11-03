@@ -34,7 +34,7 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 $migration->changeField(Contract::getTable(), 'use_monday', 'use_sunday', 'bool');

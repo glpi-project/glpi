@@ -34,9 +34,9 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
+
 $mapping = [
     'Computer_SoftwareLicense' => 'Item_SoftwareLicense',
     'Computer_SoftwareVersion' => 'Item_SoftwareVersion',

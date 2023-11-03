@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
 //lockedfield previous value must be null for global lock
 $migration->addPostQuery(
     $DB->buildUpdate(
