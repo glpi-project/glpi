@@ -2419,6 +2419,72 @@ class Ticket extends CommonITILObject
 
 
     /**
+     * Calculates the pending duration of the ticket.
+     *
+     * @param string|null $startPeriod The start period of the calculation. If null, the ticket creation date is used.
+     * @param string|null $endPeriod The end period of the calculation. If null, the current time is used.
+     *
+     * @return int timestamp of the pending duration
+     */
+    public function getPendingDuration($startPeriod = null, $endPeriod = null)
+    {
+        global $DB;
+
+        $startPeriod = $startPeriod ?? $this->fields['date'];
+        $endPeriod   = $endPeriod ?? $_SESSION["glpi_currenttime"];
+
+        $duration = 0;
+
+        $DBread = DBConnection::getReadConnection();
+
+        $itemtype  = $this->getType();
+        $items_id  = $this->getField('id');
+
+        $SEARCHOPTION = Search::getOptions($itemtype);
+
+        $id_search_option = null;
+        foreach ($SEARCHOPTION as $k => $v) {
+            if (isset($v['field']) && $v['field'] === 'status') {
+                $id_search_option = $k;
+                break;
+            }
+        }
+
+        $query = [
+            'FROM'   => Log::getTable(),
+            [
+                'items_id'  => $items_id,
+                'itemtype'  => $itemtype,
+                'id_search_option' => $id_search_option,
+                'date_mod >= ' . $DB->quote($startPeriod),
+                'date_mod <= ' . $DB->quote($endPeriod),
+            ]
+        ];
+
+        $iterator = $DBread->request($query);
+        $startPause = null;
+        foreach($iterator as $data)
+        {
+            if($data['new_value'] == self::WAITING) {
+                $startPause = $data['date_mod'];
+            }
+
+            if($data['old_value'] == self::WAITING && $startPause !== null) {
+                $endPause = $data['date_mod'];
+                $duration += strtotime($endPause) - strtotime($startPause);
+                $startPause = null;
+            } else if ($data['old_value'] == self::WAITING && $startPause === null) {
+                $startPause = $this->fields['date'];
+                $endPause = $data['date_mod'];
+                $duration += strtotime($endPause) - strtotime($startPause);
+                $startPause = null;
+            }
+        }
+        return $duration;
+    }
+
+
+    /**
      * Update date mod of the ticket
      *
      * @since 0.83.3 new proto

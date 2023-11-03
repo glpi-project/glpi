@@ -7121,8 +7121,9 @@ JAVASCRIPT;
                                                  - strtotime($item->fields['date']);
                             }
                         }
+                        $pending_duration = $item->getPendingDuration();
                         if ($totaltime != 0) {
-                            $percentage  = round((100 * $currenttime) / $totaltime);
+                            $percentage  = round((100 * ($currenttime - $pending_duration)) / ($totaltime - $pending_duration));
                         } else {
                            // Total time is null : no active time
                             $percentage = 100;
