@@ -237,7 +237,7 @@ class DatabaseInstance extends CommonDBTM
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_groups_id_tech$rand'>" . __('Group in charge of the hardware') . "</label></td>";
+        echo "<td><label for='dropdown_groups_id_tech$rand'>" . __('Group in charge') . "</label></td>";
         echo "<td>";
         Group::dropdown([
             'name'      => 'groups_id_tech',
@@ -259,7 +259,7 @@ class DatabaseInstance extends CommonDBTM
         echo "</textarea></td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_users_id_tech$rand'>" . __('Technician in charge of the hardware') . "</label></td>";
+        echo "<td><label for='dropdown_users_id_tech$rand'>" . __('Technician in charge') . "</label></td>";
         echo "<td>";
         User::dropdown(['name'   => 'users_id_tech',
             'value'  => $this->fields["users_id_tech"],
