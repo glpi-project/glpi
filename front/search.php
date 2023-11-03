@@ -76,7 +76,7 @@ if (isset($_GET["globalsearch"])) {
         }
     }
 
-    echo "<div class='search-container w-100 disable-overflow-y' counter='" . $data['data']['count'] . "'>";
+    echo "<div class='search-container w-100 disable-overflow-y' counter='0'>";
     echo "<div class='ajax-container search-display-data'>";
     echo "<div class='card card-sm mt-0 search-card'>";
     echo "<div class='card-header d-flex justify-content-between search-header pe-0'>";
