@@ -50,10 +50,12 @@ if ($conf->enabled_inventory != 1) {
 $inventory_request = new Request();
 $inventory_request->handleHeaders();
 
+$refused = new RefusedEquipment();
+
 $handle = true;
+$contents = '';
 if (isset($_GET['refused'])) {
     Session::checkRight("config", READ);
-    $refused = new RefusedEquipment();
     if ($refused->getFromDB($_GET['refused']) && ($inventory_file = $refused->getInventoryFileName()) !== null) {
         $contents = file_get_contents($inventory_file);
     } else {
@@ -61,7 +63,6 @@ if (isset($_GET['refused'])) {
             sprintf('Invalid RefusedEquipment "%s" or inventory file missing', $_GET['refused']),
             E_USER_WARNING
         );
-        $contents = '';
     }
 } else if (!isCommandLine() && $_SERVER['REQUEST_METHOD'] != 'POST') {
     if (isset($_GET['action']) && $_GET['action'] == 'getConfig') {
