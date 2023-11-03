@@ -1826,6 +1826,7 @@ function createNetworkNameFromItem(
    //   NetworkPorts or NetworkeEquipment, the migration may take several minutes or hours ...
    //$computerName = gethostbyaddr($IP);
     $computerName = $IP;
+    $domainID = 0;
     if ($computerName != $IP) {
         $position = strpos($computerName, ".");
         $name     = substr($computerName, 0, $position);
@@ -1841,7 +1842,6 @@ function createNetworkNameFromItem(
         }
     } else {
         $name     = "migration-" . str_replace('.', '-', $computerName);
-        $domainID = 0;
     }
 
     $IPaddress = new IPAddress();
