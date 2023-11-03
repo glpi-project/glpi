@@ -115,9 +115,5 @@ if (isset($_POST["add"])) {
         $menus = ["config", "commondevice", $item_device->getType()];
     }
 
-    if (!isset($options)) {
-        $options = [];
-    }
-
     $item_device::displayFullPageForItem($_GET["id"], $menus, $options ?? []);
 }
