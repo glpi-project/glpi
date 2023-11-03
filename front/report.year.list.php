@@ -60,8 +60,9 @@ if (
     $_POST["item_type"] = $items;
 }
 
+$all_criteria = [];
+
 if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
-    $all_criteria = [];
     foreach ($_POST["item_type"] as $key => $val) {
         if (in_array($val, $items)) {
             $itemtable = getTableForItemType($val);
@@ -172,8 +173,8 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                     ];
                 }
             }
+            $all_criteria[$val] = $criteria;
         }
-        $all_criteria[$val] = $criteria;
     }
 }
 $display_entity = Session::isMultiEntitiesMode();
