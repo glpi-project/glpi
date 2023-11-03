@@ -47,6 +47,7 @@ use Glpi\Event;
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
+/** @var Item_Devices|null $item_device */
 if (!($item_device instanceof Item_Devices)) {
     Html::displayErrorAndDie('');
 }
