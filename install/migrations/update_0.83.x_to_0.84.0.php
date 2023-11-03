@@ -1818,8 +1818,11 @@ function createNetworkNameFromItem(
     $entities_id,
     $IP
 ) {
-    /** @var \Migration $migration */
-    global $migration;
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
+    global $DB, $migration;
 
    // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
