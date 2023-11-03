@@ -181,7 +181,8 @@ function update090xto910()
                               ($ro_p_id, 'typedoc',                   '1'),
                               ($ro_p_id, 'user',                      '2177')");
 
-       // updates rights for Super-Admin profile
+        // updates rights for Super-Admin profile
+        $rightnames = [];
         foreach ($CFG_GLPI['lock_lockable_objects'] as $itemtype) {
             $rightnames[] = $itemtype::$rightname;
         }
