@@ -244,9 +244,7 @@ function step4($databasename, $newdatabasename)
    //display the form to return to the previous step.
     echo "<h3>" . __('Initialization of the database') . "</h3>";
 
-    function prev_form($host, $user, $password)
-    {
-
+    $prev_form = function ($host, $user, $password) {
         echo "<br><form action='install.php' method='post'>";
         echo "<input type='hidden' name='db_host' value='" . $host . "'>";
         echo "<input type='hidden' name='db_user' value='" . $user . "'>";
@@ -256,11 +254,10 @@ function step4($databasename, $newdatabasename)
         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='" .
             __s('Back') . "'></p>";
         Html::closeForm();
-    }
+    };
 
    //Display the form to go to the next page
-    function next_form()
-    {
+    $next_form = function () {
         (new CacheManager())->getInstallerCacheInstance();
 
         echo "<br><form action='install.php' method='post'>";
@@ -270,13 +267,13 @@ function step4($databasename, $newdatabasename)
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
         Html::closeForm();
-    }
+    };
 
    //create security key
     $glpikey = new GLPIKey();
     if (!$glpikey->generate()) {
         echo "<p><strong>" . __('Security key cannot be generated!') . "</strong></p>";
-        prev_form($host, $user, $password);
+        $prev_form($host, $user, $password);
         return;
     }
 
@@ -306,7 +303,7 @@ function step4($databasename, $newdatabasename)
         if (!$DB_selected) {
             echo __('Impossible to use the database:');
             echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
-            prev_form($host, $user, $password);
+            $prev_form($host, $user, $password);
         } else {
             $success = DBConnection::createMainConfig(
                 $host,
@@ -324,10 +321,10 @@ function step4($databasename, $newdatabasename)
                 Toolbox::createSchema($_SESSION["glpilanguage"]);
                 echo "<p>" . __('OK - database was initialized') . "</p>";
 
-                next_form();
+                $next_form();
             } else { // can't create config_db file
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                prev_form($host, $user, $password);
+                $prev_form($host, $user, $password);
             }
         }
     } else if (!empty($newdatabasename)) { // create new db
@@ -350,10 +347,10 @@ function step4($databasename, $newdatabasename)
             if ($success) {
                  Toolbox::createSchema($_SESSION["glpilanguage"]);
                  echo "<p>" . __('OK - database was initialized') . "</p>";
-                 next_form();
+                 $next_form();
             } else { // can't create config_db file
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                prev_form($host, $user, $password);
+                $prev_form($host, $user, $password);
             }
         } else { // try to create the DB
             if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
@@ -379,21 +376,20 @@ function step4($databasename, $newdatabasename)
                 if ($success) {
                     Toolbox::createSchema($_SESSION["glpilanguage"]);
                     echo "<p>" . __('OK - database was initialized') . "</p>";
-                    next_form();
+                    $next_form();
                 } else { // can't create config_db file
                     echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                    prev_form($host, $user, $password);
+                    $prev_form($host, $user, $password);
                 }
             } else { // can't create database
                 echo __('Error in creating database!');
                 echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
-                prev_form($host, $user, $password);
+                $prev_form($host, $user, $password);
             }
         }
     } else { // no db selected
         echo "<p>" . __("You didn't select a database!") . "</p>";
-       //prev_form();
-        prev_form($host, $user, $password);
+        $prev_form($host, $user, $password);
     }
 
     $link->close();
