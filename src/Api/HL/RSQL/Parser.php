@@ -277,6 +277,9 @@ final class Parser
             $position++;
         }
 
+        // Remove any trailing ANDs and ORs (may be multiple in a row)
+        $sql_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_string);
+
         // If the string is empty, return a criteria array that will return all results
         if ($sql_string === '') {
             $sql_string = '1';
