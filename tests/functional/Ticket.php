@@ -46,6 +46,7 @@ use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use ITILCategory;
+use ITILTemplate;
 use Profile_User;
 use Supplier;
 use Supplier_Ticket;
@@ -6552,5 +6553,70 @@ HTML
 
         $this->boolean(property_exists($ticket, 'plugin_xxx_data'))->isTrue();
         $this->string($ticket->plugin_xxx_data)->isEqualTo('test');
+    }
+
+    /**
+     * Calls the private method 'setPredefinedFields' of the given instance with the provided arguments.
+     * This function is similar to 'callPrivateMethod', but it also supports passing arguments by reference.
+     *
+     * @param object $instance The instance containing the private method to call.
+     * @param ITILTemplate $tt The ITIL template to pass as the first argument to the method.
+     * @param array $options The options array to pass as the second argument to the method.
+     * @param array $default_values The default values array to pass as the third argument to the method.
+     * @return mixed The result of the method call.
+     *
+     * @throws ReflectionException If the method does not exist or is not accessible.
+     */
+    protected function callSetPredefinedFields($instance, ITILTemplate $tt, &$options, $default_values)
+    {
+        $method = new \ReflectionMethod($instance, 'setPredefinedFields');
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($instance, [$tt, &$options, $default_values]);
+    }
+
+    public function testTicketPriorityComputation(): void
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name' => 'testTicketPriorityComputation',
+            'content' => 'testTicketPriorityComputation',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'urgency' => 1,
+            'impact' => 1,
+        ]);
+
+        $tt = $ticket->getITILTemplateToUse();
+        $options = [
+            'urgency' => 1,
+            'impact' => 1,
+        ];
+
+        $ticket->fields['urgency'] = 1;
+        $ticket->fields['impact'] = 1;
+        $this->callSetPredefinedFields(
+            $ticket,
+            $tt,
+            $options,
+            $ticket::getDefaultValues()
+        );
+        $this->integer($ticket->fields['priority'])->isEqualTo(1);
+
+        $options = [
+            'urgency' => 5,
+            'impact' => 5,
+        ];
+
+        $ticket->fields['urgency'] = 5;
+        $ticket->fields['impact'] = 5;
+        $this->callSetPredefinedFields(
+            $ticket,
+            $tt,
+            $options,
+            $ticket::getDefaultValues()
+        );
+        $this->integer($ticket->fields['priority'])->isEqualTo(5);
     }
 }
