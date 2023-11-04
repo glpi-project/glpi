@@ -207,8 +207,9 @@
 
             const tbody = specific_form.find(`ul.list-group`);
             tbody.append(`
-               <li data-opt-id="${num}" class="cursor-grab list-group-item d-flex justify-content-between">
-                  <span>${label}</span>
+               <li data-opt-id="${num}" class="cursor-grab list-group-item py-2 d-flex px-2">
+                  <i class="ti ti-grip-vertical fa-fw"></i>
+                  <span class="flex-fill ms-1">${label}</span>
                   <span>
                         <button type="button" name="remove_opt" class="btn btn-icon btn-sm btn-ghost-danger" title="{{ _x('button', 'Delete permanently') }}">
                            <i class="ti ti-x"></i>
