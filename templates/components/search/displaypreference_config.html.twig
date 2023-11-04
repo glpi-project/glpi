@@ -157,9 +157,9 @@
                 const dragged = e.detail.item;
                 const original_index = e.detail.origin.elementIndex;
                 if (original_index === 0) {
-                    $(dragged).insertBefore(dragged.parent().find(`tr:eq(${original_index})`));
+                    $(dragged).insertBefore(dragged.parent().find(`li:eq(${original_index})`));
                 } else {
-                    $(dragged).insertAfter(dragged.parent().find(`tr:eq(${original_index})`));
+                    $(dragged).insertAfter(dragged.parent().find(`li:eq(${original_index})`));
                 }
                 sortable(sortables, 'enable');
             });
@@ -223,11 +223,13 @@
         });
 
         config_forms.on(`click`, 'button[name="remove_opt"]', (e) => {
-            const tbody = $(e.target).closest('tbody');
-            $(e.target).closest('tr').remove();
+            const specific_form = $(e.target).closest('.display_preference_config');
+            const num_select = specific_form.find(`select[name="num"]`);
+            const list = $(e.target).closest('ul');
+            $(e.target).closest('li').remove();
             // Trigger an update for the select to re-run the templateResult function
-            tbody.find(`select[name="num"]`).trigger('change');
-            updateOrder(tbody);
+            num_select.find(`select[name="num"]`).trigger('change');
+            updateOrder(list);
         });
     });
 </script>
