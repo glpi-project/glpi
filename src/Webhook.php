@@ -608,7 +608,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'itemtype' => $parent_itemtype,
             'id' => $parent_id
         ], []);
-        $result = json_decode((string) $parent_result->getBody(), true, 512, JSON_THROW_ON_ERROR);
+        $result = json_decode((string) $parent_result->getBody(), true);
         if (is_array($result)) {
             $data['parent_item'] = $result;
         }
