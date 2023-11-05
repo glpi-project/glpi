@@ -183,7 +183,7 @@ final class Lexer
                         $buffer .= $char;
                     }
                 }
-                if (!empty($buffer)) {
+                if ($buffer !== '') {
                     $tokens[] = [self::T_VALUE, $buffer];
                     $buffer = '';
                 } else if ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
