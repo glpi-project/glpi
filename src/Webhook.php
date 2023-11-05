@@ -584,10 +584,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     private function addParentItemData(array &$data, string $itemtype, int $items_id): void
     {
-        if (!is_subclass_of($itemtype, CommonDBChild::class) && !is_subclass_of($itemtype, CommonITILTask::class)) {
-            return;
-        }
-        $parent_schema = $this->getParentItemSchema($itemtype, false);
         if (is_subclass_of($itemtype, CommonDBChild::class)) {
             $parent_itemtype = $data['item']['itemtype'];
             $parent_id = $data['item']['items_id'];
@@ -595,7 +591,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
             /** @var class-string<CommonDBTM> $parent_itemtype */
             $parent_itemtype = str_replace('Task', '', $itemtype);
             $parent_id = $data['item'][$parent_itemtype::getForeignKeyField()];
+        } else {
+            return;
         }
+        $parent_schema = $this->getParentItemSchema($itemtype);
         // filter properties in parent schema by the resolved parent itemtype (checks the x-parent-itemtype property)
         foreach ($parent_schema['properties'] as $property_name => $property_data) {
             if (in_array($parent_itemtype, $property_data['x-parent-itemtype'] ?? [], true)) {
