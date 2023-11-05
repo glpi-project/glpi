@@ -7458,9 +7458,9 @@ abstract class CommonITILObject extends CommonDBTM
                     . (empty($validation_row['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
 
                 $content = __('Validation request');
-                if (is_a($validation['itemtype_target'], CommonDBTM::class, true)) {
-                    $validation_target = new $validation['itemtype_target']();
-                    if ($validation_target->getFromDB($validation['items_id_target'])) {
+                if (is_a($validation_row['itemtype_target'], CommonDBTM::class, true)) {
+                    $validation_target = new $validation_row['itemtype_target']();
+                    if ($validation_target->getFromDB($validation_row['items_id_target'])) {
                         $content .= " <i class='ti ti-arrow-right'></i><i class='{$validation_target->getIcon()} text-muted me-1'></i>"
                             . $validation_target->getlink();
                     }
