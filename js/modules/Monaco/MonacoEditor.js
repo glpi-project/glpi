@@ -103,7 +103,7 @@ export default class MonacoEditor {
                         // expand completions to monaco format
                         for (const completion of completions) {
                             suggestions.push({
-                                label: completion.name,
+                                label: {label: completion.name, detail: completion.detail || ''},
                                 kind: window.monaco.languages.CompletionItemKind[completion.type],
                                 insertText: insert_prefix + completion.name + insert_suffix,
                                 documentation: completion.name,
