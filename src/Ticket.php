@@ -2463,13 +2463,12 @@ class Ticket extends CommonITILObject
 
         $iterator = $DBread->request($query);
         $startPause = null;
-        foreach($iterator as $data)
-        {
-            if($data['new_value'] == self::WAITING) {
+        foreach ($iterator as $data) {
+            if ($data['new_value'] == self::WAITING) {
                 $startPause = $data['date_mod'];
             }
 
-            if($data['old_value'] == self::WAITING && $startPause !== null) {
+            if ($data['old_value'] == self::WAITING && $startPause !== null) {
                 $endPause = $data['date_mod'];
                 $duration += strtotime($endPause) - strtotime($startPause);
                 $startPause = null;
