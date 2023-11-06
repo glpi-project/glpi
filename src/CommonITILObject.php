@@ -8819,9 +8819,7 @@ abstract class CommonITILObject extends CommonDBTM
                     ? sprintf('_additional_%ss', $actor_type)
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
-                $actors_id_replace_input_key  = $actor_itemtype === User::class
-                    ? sprintf('_replace_%ss', $actor_type)
-                    : sprintf('_replace_%ss_%ss', strtolower($actor_itemtype), $actor_type);
+                $actors_id_replace_input_key  = sprintf('_replace_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
                 $get_unique_key = function (array $actor) use ($actors_id_input_key): string {
                     // Use alternative_email in value key for "email" actors
@@ -8982,14 +8980,12 @@ abstract class CommonITILObject extends CommonDBTM
 
                     // remove all related actors
                     $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
-                    foreach ($this->{"lazy_loaded_" . str_replace("_id", "", $actor_fkey)} as $current_itilobject_actor) {
-                        foreach ($current_itilobject_actor as $actor_value) {
-                            $this->input[$actors_deleted_input_key][] =
-                            [
-                                "itemtype" => $actor_itemtype,
-                                "id" => $actor_value["id"],
-                            ];
-                        }
+                    $existing_actors = $this->{str_replace("_id", "", $actor_fkey)}; // `$this->users` or `$this->groups` or `$this->suppliers`
+                    foreach ($existing_actors[$actor_type_value] as $actor_value) {
+                        $this->input[$actors_deleted_input_key][] = [
+                            "itemtype" => $actor_itemtype,
+                            "id" => $actor_value["id"],
+                        ];
                     }
 
 
