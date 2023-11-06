@@ -131,7 +131,7 @@ final class SearchEngine
             if ($key === 'itil_types') {
                 $timeline_types = [\ITILFollowup::class, \CommonITILTask::class, \ITILSolution::class, \CommonITILValidation::class];
                 foreach ($timeline_types as $timeline_type) {
-                    if (is_a($item, $timeline_type) || is_subclass_of($item, $timeline_type)) {
+                    if (is_a($item, $timeline_type)) {
                         $linked = [...$linked, ...$values];
                     }
                 }
