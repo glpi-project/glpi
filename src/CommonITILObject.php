@@ -71,7 +71,7 @@ abstract class CommonITILObject extends CommonDBTM
     // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
     const HELPDESK_MY_HARDWARE  = 0;
     const HELPDESK_ALL_HARDWARE = 1;
-    
+
    /// Use user entity to select entity of the object
     protected $userentity_oncreate = false;
 
