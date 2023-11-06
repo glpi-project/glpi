@@ -33,14 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkCentralAccess();
-
-/** @global array $CFG_GLPI */
 
 // Make a select box
 if ($_POST["idtable"] && class_exists($_POST["idtable"])) {

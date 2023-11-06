@@ -37,6 +37,9 @@
  * @since 0.85
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 $translation = new KnowbaseItemTranslation();

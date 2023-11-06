@@ -34,11 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
-
-global $CFG_GLPI;
 
 $all_dropdowns = Dropdown::getStandardDropdownItemTypes();
 $dc_model_dropdowns = [];

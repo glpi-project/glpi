@@ -42,7 +42,11 @@ use Glpi\Cache\CacheManager;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\VersionParser;
 
-// Be sure to use global objects if this file is included outside normal process
+/**
+ * @var array $CFG_GLPI
+ * @var \GLPI $GLPI;
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
 global $CFG_GLPI, $GLPI, $GLPI_CACHE;
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
@@ -212,6 +216,7 @@ if ($missing_db_config) {
             echo "<div class='col-12 col-xxl-6'>";
             echo "<div class='card text-center mb-4'>";
 
+            /** @var \DBmysql $DB */
             global $DB;
             $core_requirements = (new RequirementsManager())->getCoreRequirementList($DB);
             TemplateRenderer::getInstance()->display(

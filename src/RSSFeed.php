@@ -979,7 +979,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param $personal boolean   display rssfeeds created by me ?
      * @param $personal $display  if false, return html
      *
-     * @return void
+     * @return void|string
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {

@@ -40,6 +40,10 @@
  **/
 function update084xto0850()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult       = true;
@@ -128,9 +132,10 @@ function update084xto0850()
             $migration->migrationOneTable('glpi_configs');
             // Then insert new values
             foreach ($configs as $name => $value) {
+                $value = is_string($value) ? addslashes($value) : $value;
                 $query = "INSERT INTO `glpi_configs`
                              (`context`, `name`, `value`)
-                      VALUES ('core', '$name', '" . addslashes($value ?? '') . "');";
+                      VALUES ('core', '$name', '" . $value . "');";
                 $DB->doQuery($query);
             }
         }

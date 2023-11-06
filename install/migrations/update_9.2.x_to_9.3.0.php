@@ -40,6 +40,10 @@
  **/
 function update92xto930()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
     $dbutils = new DbUtils();
 

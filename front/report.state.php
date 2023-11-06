@@ -49,6 +49,6 @@ if (!isset($_GET["id"])) {
 
 Report::title();
 
-State::showSummary($_SERVER['PHP_SELF']);
+State::showSummary();
 
 Html::footer();

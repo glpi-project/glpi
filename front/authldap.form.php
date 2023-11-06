@@ -33,6 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var array $CFG_GLPI
+ * @var array $_UPOST
+ */
+global $CFG_GLPI, $_UPOST;
+
 include('../inc/includes.php');
 
 Session::checkRight("config", UPDATE);

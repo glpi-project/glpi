@@ -34,8 +34,7 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 $migration->changeField('glpi_dashboards_items', 'card_id', 'card_id', 'varchar(255) NOT NULL');

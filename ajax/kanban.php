@@ -39,6 +39,9 @@ use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
 use Glpi\Toolbox\Sanitizer;
 
+/** @var array $_UPOST */
+global $_UPOST;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');
@@ -48,8 +51,6 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-/** @global array $_UPOST */
-
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }
@@ -58,6 +59,9 @@ $action = $_REQUEST['action'];
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delete_item', 'load_item_panel',
     'add_teammember', 'delete_teammember', 'restore_item'
 ];
+
+$itemtype = null;
+$item = null;
 if (isset($_REQUEST['itemtype'])) {
     if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
        // Bad request
@@ -70,7 +74,7 @@ if (isset($_REQUEST['itemtype'])) {
 }
 
 // Rights Checks
-if (isset($itemtype)) {
+if ($item !== null) {
     if (in_array($action, ['refresh', 'get_switcher_dropdown', 'get_column', 'load_item_panel'])) {
         if (!$item->canView()) {
            // Missing rights

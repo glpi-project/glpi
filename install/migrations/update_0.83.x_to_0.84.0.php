@@ -40,6 +40,10 @@
  **/
 function update083xto0840()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult     = true;
@@ -1788,6 +1792,7 @@ function update083xto0840()
  **/
 function logNetworkPortError($origin, $id, $itemtype, $items_id, $error)
 {
+    /** @var \Migration $migration */
     global $migration;
 
     $migration->log(
@@ -1813,13 +1818,18 @@ function createNetworkNameFromItem(
     $entities_id,
     $IP
 ) {
-    global $migration;
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
+    global $DB, $migration;
 
    // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
    //   But each gethostbyaddr() may reach several milliseconds. With very large number of
    //   NetworkPorts or NetworkeEquipment, the migration may take several minutes or hours ...
    //$computerName = gethostbyaddr($IP);
     $computerName = $IP;
+    $domainID = 0;
     if ($computerName != $IP) {
         $position = strpos($computerName, ".");
         $name     = substr($computerName, 0, $position);
@@ -1835,7 +1845,6 @@ function createNetworkNameFromItem(
         }
     } else {
         $name     = "migration-" . str_replace('.', '-', $computerName);
-        $domainID = 0;
     }
 
     $IPaddress = new IPAddress();
@@ -1878,6 +1887,10 @@ function createNetworkNameFromItem(
  **/
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard)
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $query = "SELECT `origin_glpi_networkports`.`name`,
@@ -1954,6 +1967,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard)
  **/
 function addNetworkPortMigrationError($networkports_id, $motive)
 {
+    /** @var \DBmysql $DB */
     global $DB;
 
     if (countElementsInTable("glpi_networkportmigrations", ['id' => $networkports_id]) == 0) {
@@ -1978,6 +1992,10 @@ function addNetworkPortMigrationError($networkports_id, $motive)
  **/
 function updateNetworkFramework(&$ADDTODISPLAYPREF)
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $ADDTODISPLAYPREF['FQDN']                 = [11];
@@ -2739,6 +2757,10 @@ function migrateComputerDevice(
     $new_specif_type = null,
     array $other_specif = []
 ) {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $table        = getTableForItemType('Item_' . $deviceType);

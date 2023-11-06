@@ -34,10 +34,9 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
-
-global $DB;
 
 $dc_models = [ComputerModel::class, EnclosureModel::class, MonitorModel::class, NetworkEquipmentModel::class,
     PassiveDCEquipmentModel::class, PDUModel::class, PeripheralModel::class

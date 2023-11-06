@@ -39,20 +39,6 @@ include('../inc/includes.php');
 
 $user = new User();
 
-
-// Manage lost password
-if (isset($_GET['lostpassword'])) {
-    Html::nullHeader();
-    if (isset($_GET['password_forget_token'])) {
-        User::showPasswordForgetChangeForm($_GET['password_forget_token']);
-    } else {
-        User::showPasswordForgetRequestForm();
-    }
-    Html::nullFooter();
-    exit();
-}
-
-
 Session::checkLoginUser();
 
 if (

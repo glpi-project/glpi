@@ -40,6 +40,10 @@
  **/
 function update951to952()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult     = true;

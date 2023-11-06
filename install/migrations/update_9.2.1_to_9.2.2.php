@@ -44,6 +44,10 @@
  **/
 function update921to922()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $current_config   = Config::getConfigurationValues('core');

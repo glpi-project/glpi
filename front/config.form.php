@@ -35,6 +35,9 @@
 
 use Glpi\Cache\CacheManager;
 
+/** @var array $_UPOST */
+global $_UPOST;
+
 include('../inc/includes.php');
 Session::checkRight("config", READ);
 

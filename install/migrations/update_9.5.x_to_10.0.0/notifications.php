@@ -36,8 +36,8 @@
 use Glpi\Toolbox\Sanitizer;
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 /** User mention notification */

@@ -3124,7 +3124,7 @@ HTML;
      *
      * @param bool $is_dev
      *
-     * @return void
+     * @return string
      */
     public static function agreeUnstableMessage(bool $is_dev)
     {
