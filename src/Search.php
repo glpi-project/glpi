@@ -7122,7 +7122,8 @@ JAVASCRIPT;
                             }
                         }
                         if ($totaltime != 0) {
-                            $percentage  = round((100 * $currenttime) / $totaltime);
+                            $waitingtime = $item->fields['sla_waiting_duration'];
+                            $percentage  = round((100 * ($currenttime - $waitingtime)) / ($totaltime - $waitingtime));
                         } else {
                            // Total time is null : no active time
                             $percentage = 100;
