@@ -1595,6 +1595,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      **/
     public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = 0, $items_id = 0, $options = [])
     {
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
         global $DB, $CFG_GLPI;
 
         $common_itil_object = str_replace("_Item", "", get_called_class());
