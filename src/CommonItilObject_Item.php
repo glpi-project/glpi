@@ -1934,7 +1934,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public static function getUsedItems($itilobject_id, $itilobject_type)
     {
 
-        $data = getAllDataFromTable(static::getTable(), [getForeignKeyFieldForTable($itilobject_type) => $itilobject_id]);
+        $data = getAllDataFromTable(static::getTable(), [getForeignKeyFieldForItemType($itilobject_type) => $itilobject_id]);
         $used = [];
         if (!empty($data)) {
             foreach ($data as $val) {
