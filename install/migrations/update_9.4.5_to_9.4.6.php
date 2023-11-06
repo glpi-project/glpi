@@ -40,6 +40,10 @@
  **/
 function update945to946()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
     $updateresult     = true;
    //TRANS: %s is the number of new version

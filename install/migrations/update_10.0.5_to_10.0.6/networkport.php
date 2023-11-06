@@ -34,9 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
+
 // Add display preferences
 $ADDTODISPLAYPREF['NetworkPort'] = [6];

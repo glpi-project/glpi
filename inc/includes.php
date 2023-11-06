@@ -35,6 +35,12 @@
 
 use Glpi\Http\Firewall;
 
+/**
+ * @var array $CFG_GLPI
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
+global $CFG_GLPI, $GLPI_CACHE;
+
 if (!defined('GLPI_ROOT')) {
     define('GLPI_ROOT', dirname(__DIR__));
 }
@@ -124,7 +130,7 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : check CSRF token
-if (!isAPI() && isset($_POST) && is_array($_POST) && count($_POST)) {
+if (!isAPI() && count($_POST) > 0) {
     if (preg_match(':' . $CFG_GLPI['root_doc'] . '(/(plugins|marketplace)/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI']) === 1) {
        // Keep CSRF token as many AJAX requests may be made at the same time.
        // This is due to the fact that read operations are often made using POST method (see #277).

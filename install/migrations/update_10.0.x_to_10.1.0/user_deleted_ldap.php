@@ -34,8 +34,7 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 // Migrate user_deleted_ldap into 3 distinct fields

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
     include('../inc/includes.php');
@@ -43,8 +46,6 @@ if (strpos($_SERVER['PHP_SELF'], "rulecriteria.php")) {
 }
 
 Session::checkLoginUser();
-
-/** @global array $CFG_GLPI */
 
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
     $criterias = $rule->getAllCriteria();

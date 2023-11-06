@@ -57,6 +57,7 @@ function isCommandLine()
  */
 function isAPI()
 {
+    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
     $called_url = (!empty($_SERVER['HTTPS'] ?? "") && ($_SERVER['HTTPS'] ?? "") !== 'off'
@@ -122,6 +123,7 @@ function isPluginItemType($classname)
  */
 function __($str, $domain = 'glpi')
 {
+    /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;
@@ -191,6 +193,7 @@ function _sx($ctx, $str, $domain = 'glpi')
  */
 function _n($sing, $plural, $nb, $domain = 'glpi')
 {
+    /** @var \Laminas\I18n\Translator\TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
 
     $trans = null;

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 if (isset($_GET["embed"]) && isset($_GET["dashboard"])) {
     $SECURITY_STRATEGY = 'no_check'; // Allow anonymous access for embed dashboards.
 }

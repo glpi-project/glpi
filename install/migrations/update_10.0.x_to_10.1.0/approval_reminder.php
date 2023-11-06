@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
 CronTask::Register(
     'CommonITILValidationCron',
     'approvalreminder',

@@ -55,6 +55,7 @@ if (isset($_POST['inquest_config' . $config_suffix]) && isset($_POST['entities_i
     } else {
         $inquest_delay             = -1;
         $inquest_rate              = -1;
+        $inquest_duration          = 0;
         $inquest_default_rate      = 3;
         $inquest_max_rate          = 5;
         $inquest_mandatory_comment = 0;

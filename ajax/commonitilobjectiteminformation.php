@@ -35,6 +35,8 @@
 
 use Glpi\Http\Response;
 
+/** @var CommonDBTM|null $obj */
+
 if (!($obj instanceof CommonDBTM)) {
     Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
 }

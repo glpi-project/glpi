@@ -35,6 +35,9 @@
 
 use Glpi\Plugin\Hooks;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 /**
  * @since 0.84
  */

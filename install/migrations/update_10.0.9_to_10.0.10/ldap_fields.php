@@ -34,8 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 /** Fix non encoded LDAP fields in groups */

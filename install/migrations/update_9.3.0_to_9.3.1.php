@@ -44,6 +44,9 @@
  **/
 function update930to931()
 {
+    /**
+     * @var \Migration $migration
+     */
     global $migration;
 
     $current_config   = Config::getConfigurationValues('core');

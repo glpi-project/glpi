@@ -36,6 +36,12 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+/**
+ * @var array $CFG_GLPI
+ * @var \DBmysql $DB
+ */
+global $CFG_GLPI, $DB;
+
 include("../inc/includes.php");
 
 Session::checkRight("reports", READ);
@@ -57,8 +63,9 @@ if (
     $_POST["item_type"] = $items;
 }
 
+$all_criteria = [];
+
 if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
-    $all_criteria = [];
     foreach ($_POST["item_type"] as $key => $val) {
         if (in_array($val, $items)) {
             $itemtable = getTableForItemType($val);
@@ -169,8 +176,8 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                     ];
                 }
             }
+            $all_criteria[$val] = $criteria;
         }
-        $all_criteria[$val] = $criteria;
     }
 }
 $display_entity = Session::isMultiEntitiesMode();

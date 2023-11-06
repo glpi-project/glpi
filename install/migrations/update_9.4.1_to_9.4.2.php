@@ -42,6 +42,10 @@ use Glpi\DBAL\QueryExpression;
  **/
 function update941to942()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult     = true;

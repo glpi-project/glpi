@@ -34,8 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var array $ADDTODISPLAYPREF
+ * @var \Migration $migration
  */
 
 /* Add `last_collect_date` to some glpi_mailcollectors */

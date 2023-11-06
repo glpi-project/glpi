@@ -34,8 +34,7 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 //set default configuration for import_unmanaged

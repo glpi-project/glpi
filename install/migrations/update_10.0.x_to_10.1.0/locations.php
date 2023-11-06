@@ -34,7 +34,7 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 $migration->addField('glpi_locations', 'code', 'string', ['after' => 'name']);

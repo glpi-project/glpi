@@ -34,8 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 if (countElementsInTable(Blacklist::getTable(), ["type" => Blacklist::IP, "value" => "::1"]) === 0) {

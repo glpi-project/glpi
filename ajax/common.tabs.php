@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to public FAQ tabs
 
 include('../inc/includes.php');

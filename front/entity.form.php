@@ -35,6 +35,9 @@
 
 include('../inc/includes.php');
 
+/** @var \DBmysql $DB */
+global $DB;
+
 $dropdown = new Entity();
 
 // Root entity : no delete

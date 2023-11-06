@@ -35,6 +35,9 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');

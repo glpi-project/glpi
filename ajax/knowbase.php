@@ -33,14 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $SECURITY_STRATEGY = 'faq_access';
 
 include('../inc/includes.php');
 Html::header_nocache();
 
 Toolbox::deprecated();
-
-/** @global array $CFG_GLPI */
 
 if (
     !$CFG_GLPI["use_public_faq"]

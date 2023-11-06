@@ -45,6 +45,11 @@ include_once(GLPI_ROOT . "/inc/based_config.php");
 include_once(GLPI_ROOT . "/inc/db.function.php");
 include_once(GLPI_CONFIG_DIR . "/config_db.php");
 
+/**
+ * @var \DBmysql $DB
+ * @var \GLPI $GLPI
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
 global $DB, $GLPI, $GLPI_CACHE;
 
 $GLPI = new GLPI();
@@ -76,6 +81,7 @@ if (isset($_POST['update_end'])) {
 //test la connection a la base de donn???.
 function test_connect()
 {
+    /** @var \DBmysql $DB */
     global $DB;
 
     if ($DB->error == 0) {
@@ -89,6 +95,10 @@ function test_connect()
 //update database
 function doUpdateDb()
 {
+    /**
+     * @var \Migration $migration
+     * @var \Update $update
+     */
     global $migration, $update;
 
     // Init debug variable
@@ -133,7 +143,10 @@ function doUpdateDb()
  */
 function showSecurityKeyCheckForm()
 {
-    global $CFG_GLPI, $update;
+    /**
+     * @var \Update $update
+     */
+    global $update;
 
     echo '<form action="update.php" method="post">';
     echo '<input type="hidden" name="continuer" value="1" />';

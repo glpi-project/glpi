@@ -43,6 +43,11 @@ use Glpi\DBAL\QueryParam;
  **/
 function update94xto950()
 {
+    /**
+     * @var array $CFG_GLPI
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $CFG_GLPI, $DB, $migration;
 
     $updateresult     = true;

@@ -37,9 +37,9 @@ jobs:
         run: |
           SHA=$( git rev-parse HEAD )
           if [ -n "$( git rev-list -n 1 --after="24 hours" $SHA )" ]; then
-            echo "::set-output name=build::yes"
+            echo "build=yes" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=build::no"
+            echo "build=no" >> $GITHUB_OUTPUT
           fi
       - name: "Deploy source into app container"
         if: ${{ steps.updated.outputs.build == 'yes' }}
@@ -55,7 +55,7 @@ jobs:
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/bugfixes||')
-          echo "::set-output name=basename::$REF_NAME"
+          echo "basename=$REF_NAME" >> $GITHUB_OUTPUT
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME-$SHA" >> $GITHUB_ENV
       - name: "Build"

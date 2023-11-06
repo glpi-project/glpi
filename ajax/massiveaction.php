@@ -37,14 +37,15 @@
  * @since 0.84
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-
-/** @global array $CFG_GLPI */
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'initial');

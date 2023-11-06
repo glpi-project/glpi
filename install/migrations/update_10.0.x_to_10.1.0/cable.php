@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
 if (!$DB->fieldExists("glpi_cables", "is_template", false)) {
     $migration->addField('glpi_cables', 'is_template', "tinyint NOT NULL DEFAULT '0'", ['after' => 'is_recursive' ]);
     $migration->addKey('glpi_cables', 'is_template');

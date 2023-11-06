@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
 /** KnowbaseItem notifications */
 if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) === 0) {
     $DB->insertOrDie(

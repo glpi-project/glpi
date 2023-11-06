@@ -35,7 +35,10 @@
 
 /**
  * @var array $ADDTODISPLAYPREF
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
+
 $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
 
 $table = 'glpi_knowbaseitems';

@@ -34,7 +34,7 @@
  */
 
 /**
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 $migration->addField('glpi_mailcollectors', 'create_user_from_email', 'bool', ['value' => 0]);

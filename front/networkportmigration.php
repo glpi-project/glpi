@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var \DBMysql $DB */
+global $DB;
+
 include('../inc/includes.php');
 
 Session::checkRight("networking", UPDATE);

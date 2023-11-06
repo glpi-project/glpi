@@ -197,7 +197,7 @@ class Dropdown
                 $output .= "<input type='hidden' name='" . $field_name . "' value='$value'>";
             }
             $output .= '<span class="form-control" readonly'
-                . ($params['width'] ? 'style="width: ' . $params["width"] . '"' : '') . '>'
+                . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
             return $output;

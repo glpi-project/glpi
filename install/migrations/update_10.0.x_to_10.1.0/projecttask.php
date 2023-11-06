@@ -34,9 +34,9 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
+
 $table = ProjectTask::getTable();
 $key_to_add = 'is_deleted';
 $migration->addField($table, $key_to_add, "tinyint NOT NULL DEFAULT '0'", [

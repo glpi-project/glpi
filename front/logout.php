@@ -37,6 +37,9 @@
  * @since 0.85
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');

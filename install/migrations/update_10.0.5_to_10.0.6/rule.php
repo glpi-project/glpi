@@ -34,11 +34,9 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
-
-global $DB;
 
 /** Rename 'name' criteria in dictionnaries */
 //move criteria 'name' to 'os_name' for 'RuleDictionnaryOperatingSystem'

@@ -42,6 +42,10 @@ use Glpi\DBAL\QueryExpression;
  **/
 function update91xto920()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $current_config   = Config::getConfigurationValues('core');

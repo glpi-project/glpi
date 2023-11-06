@@ -889,7 +889,7 @@ class Reminder extends CommonDBVisible implements
      * @param $personal boolean  : display reminders created by me ?
      * @param $personal $display : if false return html
      *
-     * @return void
+     * @return void|string
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {

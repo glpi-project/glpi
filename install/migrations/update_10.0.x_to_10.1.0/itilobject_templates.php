@@ -34,11 +34,13 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
-$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+$default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
+$default_charset   = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
 
 // Add template foreign key field to all ITIL Objects
 $itil_type_tables = [

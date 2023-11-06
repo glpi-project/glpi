@@ -2139,7 +2139,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param string $type    type : recent / popular / not published
      * @param bool   $display if false, return html
      *
-     * @return void
+     * @return void|string
      **/
     public static function showRecentPopular(string $type = "", bool $display = true)
     {

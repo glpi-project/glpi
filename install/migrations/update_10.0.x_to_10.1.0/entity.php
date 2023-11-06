@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
 if (!$DB->fieldExists("glpi_entities", "inquest_max_rate", false)) {
     $migration->addField('glpi_entities', 'inquest_max_rate', "int NOT NULL DEFAULT '5'", ['after' => 'inquest_URL']);
 }

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include("../inc/includes.php");
 
 if (!isset($_GET["id"])) {
@@ -40,7 +43,6 @@ if (!isset($_GET["id"])) {
 }
 $client = new OAuthClient();
 
-global $CFG_GLPI;
 if (isset($_POST["add"])) {
     $client->check(-1, CREATE, $_POST);
     $client->add($_POST);

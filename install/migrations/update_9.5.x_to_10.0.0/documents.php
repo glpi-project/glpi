@@ -34,8 +34,7 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 // Add a config entry for document max size.

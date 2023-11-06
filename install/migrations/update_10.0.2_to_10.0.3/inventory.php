@@ -36,8 +36,7 @@
 use Glpi\Inventory\Conf;
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
 
 //new right value for inventory

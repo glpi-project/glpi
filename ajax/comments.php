@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 $AJAX_INCLUDE = 1;
 include('../inc/includes.php');
 
@@ -41,8 +44,6 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-
-/** @global array $CFG_GLPI */
 
 if (
     isset($_POST["itemtype"])

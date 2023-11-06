@@ -36,8 +36,8 @@
 use Glpi\Socket;
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();

@@ -37,6 +37,9 @@ use Glpi\Http\Response;
 use Glpi\System\Log\LogParser;
 use Glpi\System\Log\LogViewer;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 Session::checkRight("logs", READ);

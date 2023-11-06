@@ -39,6 +39,9 @@
 
 use Glpi\DBAL\QueryExpression;
 
+/** @var \DBmysql $DB */
+global $DB;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');
@@ -48,7 +51,6 @@ Html::header_nocache();
 
 Session::checkRight("networking", UPDATE);
 
-/** @global DBmysql $DB */
 // Make a select box
 if (
     class_exists($_POST["itemtype"])
