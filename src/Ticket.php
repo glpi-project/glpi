@@ -2428,6 +2428,7 @@ class Ticket extends CommonITILObject
      */
     public function getPendingDuration($startPeriod = null, $endPeriod = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $startPeriod = $startPeriod ?? $this->fields['date'];
