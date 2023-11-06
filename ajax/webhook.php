@@ -128,7 +128,7 @@ switch ($action) {
             $obj = new $itemtype();
             $obj->getFromDB($items_id);
             $path = $webhook->getApiPath($obj);
-            echo $webhook->getResultForPath($path, $event, $raw_output);
+            echo $webhook->getResultForPath($path, $event, $itemtype, $items_id, $raw_output);
         }
 
         die();

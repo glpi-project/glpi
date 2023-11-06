@@ -472,7 +472,17 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return null;
     }
 
-    private function getWebhookBody(string $event, array $api_data, bool $raw_output = false): ?string
+    /**
+     * Get the body of a webhook request for the given event and API data.
+     * In some cases, the provided itemtype and items_id may be used to inject some information about the parent item into a top-level 'parent_item' object.
+     * @param string $event The event to use in the payload.
+     * @param array $api_data The data to use in the payload.
+     * @param string $itemtype The related itemtype.
+     * @param int $items_id The related items_id.
+     * @param bool $raw_output Whether to return the raw JSON or process it through the payload template.
+     * @return string|null
+     */
+    private function getWebhookBody(string $event, array $api_data, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
         $data = $api_data;
         if ($data !== null) {
@@ -501,6 +511,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         $data = [
                             'item' => $data
                         ];
+                        $this->addParentItemData($data, $itemtype, $items_id);
                         $data['event'] = $event;
                         $env = new \Twig\Environment(
                             new \Twig\Loader\ArrayLoader([
@@ -522,10 +533,101 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return null;
     }
 
-    public function getResultForPath(string $path, string $event, bool $raw_output = false): ?string
+    /**
+     * @param string $itemtype The itemtype to get the parent item schema for.
+     * @return array
+     */
+    private function getParentItemSchema(string $itemtype): array
+    {
+        $supported = self::getAPIItemtypeData();
+        $parent_itemtypes = [];
+        foreach ($supported as $controller => $categories) {
+            if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
+                $parent_itemtypes = $categories['main'];
+                break;
+            }
+        }
+
+        if (count($parent_itemtypes) === 0) {
+            return [];
+        }
+
+        if (count($parent_itemtypes) === 1) {
+            $parent_itemtype = array_key_first($parent_itemtypes);
+            return self::getAPISchemaBySupportedItemtype($parent_itemtype);
+        }
+        $schema = [
+            'type' => 'object',
+            'x-subtypes' => [],
+            'properties' => []
+        ];
+        foreach ($parent_itemtypes as $parent_itemtype => $parent_itemtype_data) {
+            $parent_schema = self::getAPISchemaBySupportedItemtype($parent_itemtype);
+            $schema['x-subtypes'][] = $parent_itemtype_data['name'];
+            foreach ($parent_schema['properties'] as $property_name => $property_data) {
+                // Save current parents
+                $existing_parents = $schema['properties'][$property_name]['x-parent-itemtype'] ?? [];
+                // Add the 'new' property (or overwrite)
+                $schema['properties'][$property_name] = $property_data;
+                // Merge the existing parents with the new one
+                $schema['properties'][$property_name]['x-parent-itemtype'] = array_merge($existing_parents, [$parent_itemtype]);
+            }
+        }
+        return $schema;
+    }
+
+    /**
+     * @param array $data
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @return void
+     */
+    private function addParentItemData(array &$data, string $itemtype, int $items_id): void
+    {
+        if (is_subclass_of($itemtype, CommonDBChild::class)) {
+            $parent_itemtype = $data['item']['itemtype'];
+            $parent_id = $data['item']['items_id'];
+        } else if (is_subclass_of($itemtype, CommonITILTask::class)) {
+            /** @var class-string<CommonDBTM> $parent_itemtype */
+            $parent_itemtype = str_replace('Task', '', $itemtype);
+            $parent_id = $data['item'][$parent_itemtype::getForeignKeyField()];
+        } else {
+            return;
+        }
+        $parent_schema = $this->getParentItemSchema($itemtype);
+        // filter properties in parent schema by the resolved parent itemtype (checks the x-parent-itemtype property)
+        foreach ($parent_schema['properties'] as $property_name => $property_data) {
+            if (in_array($parent_itemtype, $property_data['x-parent-itemtype'] ?? [], true)) {
+                $parent_schema['properties'][$property_name] = $property_data;
+            } else {
+                unset($parent_schema['properties'][$property_name]);
+            }
+        }
+        $parent_schema['x-itemtype'] = $parent_itemtype;
+        $parent_result = \Glpi\Api\HL\Search::getOneBySchema($parent_schema, [
+            'itemtype' => $parent_itemtype,
+            'id' => $parent_id
+        ], []);
+        $result = json_decode((string) $parent_result->getBody(), true);
+        if (is_array($result)) {
+            $data['parent_item'] = $result;
+        }
+    }
+
+    /**
+     * Get a result from the API for a given path.
+     * In some cases, the provided itemtype and items_id may be used to inject some information about the parent item into a top-level 'parent_item' object.
+     * @param string $path The API path to get the data from.
+     * @param string $event The event to use in the payload.
+     * @param class-string<CommonDBTM> $itemtype The itemtype related to the path.
+     * @param int $items_id The items_id related to the path.
+     * @param bool $raw_output Whether to return the raw JSON or process it through the payload template.
+     * @return string|null
+     */
+    public function getResultForPath(string $path, string $event, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
         $data = $this->getAPIResponse($path);
-        return $this->getWebhookBody($event, $data, $raw_output);
+        return $this->getWebhookBody($event, $data, $itemtype, $items_id, $raw_output);
     }
 
     public function getApiPath(CommonDBTM $item): string
@@ -798,6 +900,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
         $props = Schema::flattenProperties($schema['properties'], 'item.');
+        $parent_schema = $this->getParentItemSchema($this->fields['itemtype']);
+        $parent_props = !empty($parent_schema) ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
 
         $response_schema = [
             [
@@ -806,11 +910,34 @@ class Webhook extends CommonDBTM implements FilterableInterface
             ]
         ];
 
+        $subtype_labels = [];
+        if (isset($parent_schema['x-subtypes'])) {
+            foreach ($parent_schema['x-subtypes'] as $subtype) {
+                $subtype_labels[$subtype] = $subtype::getTypeName(1);
+            }
+        }
         foreach ($props as $prop_name => $prop_data) {
             $response_schema[] = [
                 'name' => $prop_name,
                 'type' => 'Variable'
             ];
+        }
+
+        foreach ($parent_props as $prop_name => $prop_data) {
+            $suggestion = [
+                'name' => $prop_name,
+                'type' => 'Variable'
+            ];
+
+            $applicable_types = array_intersect($prop_data['x-parent-itemtype'] ?? [], array_keys($subtype_labels));
+            if ($applicable_types !== array_keys($subtype_labels) && count($applicable_types)) {
+                //Note: In cases of child properties, there may not be any applicable types listed. They are handled at the top level only.
+                $suggestion['detail'] = '[' . implode(', ', array_map(static function ($type) use ($subtype_labels) {
+                    return $subtype_labels[$type];
+                }, $applicable_types)) . ']';
+            }
+
+            $response_schema[] = $suggestion;
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/payload_editor.html.twig', [
@@ -1007,7 +1134,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $webhook->getFromDB($webhook_data['id']);
 
             $api_data = $webhook->getAPIResponse($path);
-            $body = $webhook->getWebhookBody($event, $api_data);
+            $body = $webhook->getWebhookBody($event, $api_data, $item::getType(), $item->getID());
             // Check if the item matches the webhook filters
             if (!$webhook->itemMatchFilter($item)) {
                 continue;
