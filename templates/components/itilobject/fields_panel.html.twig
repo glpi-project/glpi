@@ -305,7 +305,7 @@
       </div>
    {% endif %}
 
-   {% if item_ticket is defined and item_ticket is not null %}
+   {% if item_commonitilobject is defined and item_commonitilobject is not null %}
       {% set items_show = headers_states['items'] is not defined or headers_states['items'] == "true" ? true : false %}
       <div class="accordion-item">
          <h2 class="accordion-header" id="items-heading" title="{{ _n('Item', 'Items', get_plural_number()) }}" data-bs-toggle="tooltip">
@@ -322,7 +322,7 @@
          </h2>
          <div id="items" class="accordion-collapse collapse {{ items_show ? "show" : "" }}" aria-labelledby="items-heading">
             <div class="accordion-body accordion-items row m-0 mt-n2">
-               {{ item_ticket.itemAddForm(item, params|default({})|merge({entities_id: entities_id})) }}
+               {{ item_commonitilobject.itemAddForm(item, params|default({})|merge({entities_id: entities_id})) }}
             </div>
          </div>
       </div>

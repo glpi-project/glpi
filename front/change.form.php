@@ -196,6 +196,15 @@ if (isset($_POST["add"])) {
     );
     Html::redirect(Change::getFormURLWithID($id));
 } else {
+    // Add a change from item : format data
+    if (
+        isset($_REQUEST['_add_fromitem'])
+        && isset($_REQUEST['itemtype'])
+        && isset($_REQUEST['items_id'])
+    ) {
+        $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
+    }
+
     if (isset($_GET['showglobalkanban']) && $_GET['showglobalkanban']) {
         Html::header(sprintf(__('%s Kanban'), Change::getTypeName(1)), $_SERVER['PHP_SELF'], "helpdesk", "change");
         $change::showKanban(0);

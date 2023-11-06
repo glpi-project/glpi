@@ -66,10 +66,6 @@ class Ticket extends CommonITILObject
     const IMPACT_MASK_FIELD             = 'impact_mask';
     const STATUS_MATRIX_FIELD           = 'ticket_status';
 
-   // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
-    const HELPDESK_MY_HARDWARE  = 0;
-    const HELPDESK_ALL_HARDWARE = 1;
-
    // Specific ones
    /// Hardware datas used by getFromDBwithData
     public $hardwaredatas = [];
@@ -4010,7 +4006,8 @@ JAVASCRIPT;
             'itiltemplate_key'   => self::getTemplateFormFieldName(),
             'itiltemplate'       => $tt,
             'predefined_fields'  => Toolbox::prepareArrayForInput($predefined_fields),
-            'item_ticket'        => $item_ticket,
+            'ticket_ticket'      => new Ticket_Ticket(),
+            'item_commonitilobject'        => $item_ticket,
             'sla'                => $sla,
             'ola'                => $ola,
             'canupdate'          => $canupdate,

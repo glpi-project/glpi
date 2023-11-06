@@ -1404,8 +1404,8 @@ class Problem extends CommonITILObject
                 '_add_fromitem',
                 __('New problem for this item...'),
                 [
-                    '_from_itemtype' => $item->getType(),
-                    '_from_items_id' => $item->getID(),
+                    'itemtype' => $item->getType(),
+                    'items_id' => $item->getID(),
                     'entities_id'    => $item->fields['entities_id']
                 ]
             );
@@ -1558,7 +1558,6 @@ class Problem extends CommonITILObject
             '_tasktemplates_id'          => [],
             'items_id'                   => 0,
             '_actors'                    => [],
-            '_add_fromitem'              => [],
         ];
     }
 
