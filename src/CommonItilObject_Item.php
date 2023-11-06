@@ -1924,16 +1924,17 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
 
     /**
-     * Return used items for a ticket
+     * Return used items for a commonitilobject
      *
-     * @param integer type $tickets_id
+     * @param integer $itilobject_id
+     * @param string  $itilobject_type
      *
      * @return array
      */
-    public static function getUsedItems($itilobject_id)
+    public static function getUsedItems($itilobject_id, $itilobject_type)
     {
 
-        $data = getAllDataFromTable(static::getTable(), [getForeignKeyFieldForTable(static::getTable()) => $itilobject_id]);
+        $data = getAllDataFromTable(static::getTable(), [getForeignKeyFieldForTable($itilobject_type) => $itilobject_id]);
         $used = [];
         if (!empty($data)) {
             foreach ($data as $val) {
@@ -2035,7 +2036,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             }
 
            // Get associated elements for ticket
-            $used = self::getUsedItems($params['id']);
+            $used = self::getUsedItems($params['id'], $itil_object->getType());
             foreach ($used as $itemtype => $items) {
                 foreach ($items as $items_id) {
                     if (
