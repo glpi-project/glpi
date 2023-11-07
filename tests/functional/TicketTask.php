@@ -563,6 +563,5 @@ class TicketTask extends DbTestCase
         ]);
         $this->integer($data['data']['totalcount'])->isEqualTo(1);
         $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('ticket title');
-
     }
 }
