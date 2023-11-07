@@ -37,6 +37,7 @@ namespace Glpi\System\Diagnostic;
 
 use FilesystemIterator;
 use Glpi\Toolbox\VersionParser;
+use GLPIKey;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use RecursiveDirectoryIterator;
@@ -180,9 +181,28 @@ class SourceCodeIntegrityChecker
      */
     private function getGLPIRelease(array &$errors = []): string|null
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);
         $gh_releases_endpoint = 'https://api.github.com/repos/glpi-project/glpi/releases/tags/' . $version_to_get;
-        $client = new Client();
+
+        $options = [
+            'connect_timeout' => 10, // 10 seconds timeout
+        ];
+        // add proxy string if configured in glpi
+        if (!empty($CFG_GLPI['proxy_name'])) {
+            $options['proxy'] = sprintf(
+                'http://%s%s:%d',
+                !empty($CFG_GLPI['proxy_user'])
+                    ? sprintf('%s:%s@', $CFG_GLPI['proxy_user'], (new GLPIKey())->decrypt($CFG_GLPI['proxy_passwd']))
+                    : '',
+                $CFG_GLPI['proxy_name'],
+                $CFG_GLPI['proxy_port']
+            );
+        }
+        $client = new Client($options);
+
         $dest = null;
         try {
             $response = $client->request('GET', $gh_releases_endpoint);
