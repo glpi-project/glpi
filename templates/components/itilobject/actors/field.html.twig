@@ -74,7 +74,10 @@
    {% endif %}
 
    <script type="text/javascript">
-   $(function() {
+
+   // Do not use jquery ready wrapper here as it behave unexpectedly with ajax
+   // requests, adding an unnecessary delay
+   (function() {
       var actorytype = '{{ actortype }}';
 
       // function to display an option in the list or the selected input
@@ -360,6 +363,6 @@
       {% if itiltemplate.isHiddenField('_groups_id_' ~ actortype) %}
          $(".actor_entry[data-itemtype=\"Group\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
       {% endif %}
-   });
+   })();
    </script>
 {% endif %}
