@@ -129,12 +129,14 @@ final class SearchEngine
             }
 
             if ($key === 'itil_types') {
-                $timeline_types = [\ITILFollowup::class, \CommonITILTask::class, \ITILSolution::class, \CommonITILValidation::class];
-                foreach ($timeline_types as $timeline_type) {
-                    if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
-                        $linked[] = $item->getItilObjectItemType();
-                    } else if (is_a($item, $timeline_type)) {
-                        $linked = [...$linked, ...$values];
+                if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
+                    $linked[] = $item->getItilObjectItemType();
+                } else {
+                    $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
+                    foreach ($timeline_types as $timeline_type) {
+                        if (is_a($item, $timeline_type)) {
+                            $linked = [...$linked, ...$values];
+                        }
                     }
                 }
             }
