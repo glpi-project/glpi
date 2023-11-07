@@ -66,6 +66,7 @@ class SourceCodeIntegrityChecker extends \GLPITestCase
 line1
 line2
 line3
+
 EOL,
             ],
             'templates' => [],
@@ -104,7 +105,7 @@ EOL,
                 'caldav.php' => '71938259',
                 'index.php' => '4475f8b1',
                 'src/test.php' => '53fe1f55',
-                'src/test2.php' => 'c779eae1',
+                'src/test2.php' => '2803299a',
                 'status.php' => '82d603ce',
             ]
         ]);
@@ -121,12 +122,14 @@ EOL,
 
         file_put_contents(vfsStream::url('check_root_dir/src/test.php'), 'changed');
         file_put_contents(vfsStream::url('check_root_dir/src/test3.php'), 'added');
+        file_put_contents(vfsStream::url('check_root_dir/src/test4.php'), 'added (with EOL)' . "\n");
         unlink(vfsStream::url('check_root_dir/src/test2.php'));
 
         $this->array($checker->getSummary())->isEqualTo([
             'src/test.php' => 1, // 1 = STATUS_ALTERED
             'src/test2.php' => 2, // 2 = STATUS_MISSING
             'src/test3.php' => 3, // 3 = STATUS_ADDED
+            'src/test4.php' => 3, // 3 = STATUS_ADDED
         ]);
     }
 
@@ -164,9 +167,11 @@ EOL,
 line1
 lineb
 line3
+
 EOL
         );
         file_put_contents(vfsStream::url('check_root_dir/src/test3.php'), 'added');
+        file_put_contents(vfsStream::url('check_root_dir/src/test4.php'), 'added (with EOL)' . "\n");
 
         $errors = [];
         $diff = $checker->getDiff(false, $errors);
@@ -183,16 +188,27 @@ diff --git a/src/test2.php b/src/test2.php
  line3
 
 diff --git a/src/test3.php b/src/test3.php
+new file mode 100666
 --- /dev/null
 +++ b/src/test3.php
 @@ -1,0 +1 @@
 +added
+\ No newline at end of file
+
+diff --git a/src/test4.php b/src/test4.php
+new file mode 100666
+--- /dev/null
++++ b/src/test4.php
+@@ -1,0 +1 @@
++added (with EOL)
 
 diff --git a/src/test.php b/src/test.php
+deleted file mode 100644
 --- a/src/test.php
 +++ /dev/null
 @@ -1 +1,0 @@
 -test1
+\ No newline at end of file
 EOL
         );
     }
