@@ -1580,7 +1580,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function itemAddForm(CommonITILObject $itil_object, $options = [])
+    public static function itemAddForm(CommonDBTM $itil_object, $options = [])
     {
         $params = [
             'id'  => (isset($itil_object->fields['id']) && $itil_object->fields['id'] != '') ? $itil_object->fields['id'] : 0,
