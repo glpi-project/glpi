@@ -128,6 +128,19 @@ final class SearchEngine
                 continue;
             }
 
+            if ($key === 'itil_types') {
+                if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
+                    $linked[] = $item->getItilObjectItemType();
+                } else {
+                    $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
+                    foreach ($timeline_types as $timeline_type) {
+                        if (is_a($item, $timeline_type)) {
+                            $linked = [...$linked, ...$values];
+                        }
+                    }
+                }
+            }
+
             foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
                 if ($ref_itemtype === $config_itemtype::getType()) {
                     // List is related to source itemtype, all types of list are so linked

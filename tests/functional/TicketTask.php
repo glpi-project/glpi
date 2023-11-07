@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Search\SearchEngine;
 
 /* Test for inc/tickettask.class.php */
 
@@ -534,5 +535,33 @@ class TicketTask extends DbTestCase
         $this->integer($task->fields['actiontime'])->isEqualTo(7200);
         $this->string($task->fields['begin'])->isEqualTo($date_begin_string);
         $this->string($task->fields['end'])->isEqualTo($date_begin->add(new \DateInterval('PT2H'))->format('Y-m-d H:i:s'));
+    }
+
+    public function testParentMetaSearchOptions()
+    {
+        $this->login();
+        $ticket = $this->getNewTicket(true);
+        $followup = new \ITILFollowup();
+        $this->integer($followup->add([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->fields['id'],
+            'content'  => 'Test followup',
+        ]))->isGreaterThan(0);
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Ticket',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'ticket title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('ticket title');
     }
 }
