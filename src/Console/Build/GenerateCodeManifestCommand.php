@@ -67,7 +67,7 @@ class GenerateCodeManifestCommand extends Command
 
         try {
             $this->generateManifest($algorithm, $output);
-            $output->writeln(__('Manifest successfully generated'));
+            $output->writeln('<info>' . __('Manifest successfully generated.') . '</info>');
         } catch (\Throwable $e) {
             $output->writeln('<error>' . sprintf(__('Failed to generate manifest. Error was: %s'), $e->getMessage()) . '</error>');
             return 1;

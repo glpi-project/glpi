@@ -43,7 +43,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SebastianBergmann\Diff\Differ;
-use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
+use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
 
 /**
  * @since 10.1.0
@@ -255,14 +255,15 @@ class SourceCodeIntegrityChecker
         $diff = '';
 
         foreach ($summary as $file => $status) {
-            // print diff --git line for the file
-            $diff .= 'diff --git a/' . $file . ' b/' . $file . "\n";
             $original_file = 'a/' . $file;
             $current_file = 'b/' . $file;
             $original_content = '';
             $current_content = '';
+            $extra_header = '';
             if ($status === self::STATUS_ADDED || !file_exists('phar://' . $release_path . '/glpi/' . $file)) {
                 $original_file = '/dev/null';
+                $file_perms   = @substr(sprintf('%o', fileperms($this->getCheckRootDir() . '/' . $file)), -4) ?: '0644';
+                $extra_header = 'new file mode 10' . $file_perms;
             } else {
                 $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
                 if ($original_content === false) {
@@ -272,6 +273,8 @@ class SourceCodeIntegrityChecker
             }
             if ($status === self::STATUS_MISSING || !file_exists($this->getCheckRootDir() . '/' . $file)) {
                 $current_file = '/dev/null';
+                $file_perms   = @substr(sprintf('%o', fileperms('phar://' . $release_path . '/glpi/' . $file)), -4) ?: '0644';
+                $extra_header = 'deleted file mode 10' . $file_perms;
             } else {
                 $current_content = file_get_contents($this->getCheckRootDir() . '/' . $file);
                 if ($current_content === false) {
@@ -280,12 +283,23 @@ class SourceCodeIntegrityChecker
                 }
             }
             try {
-                $differ = new Differ(new UnifiedDiffOutputBuilder("--- $original_file\n+++ $current_file\n", true));
-                $diff .= $differ->diff(
+                $differ = new Differ(
+                    new StrictUnifiedDiffOutputBuilder(
+                        [
+                            'fromFile' => $original_file,
+                            'toFile'   => $current_file,
+                        ]
+                    )
+                );
+                $file_diff = $differ->diff(
                     $original_content,
                     $current_content
                 );
-                $diff .= "\n";
+                $diff .= 'diff --git a/' . $file . ' b/' . $file . "\n";
+                if ($extra_header !== '') {
+                    $diff .= "$extra_header\n";
+                }
+                $diff .= "$file_diff\n";
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
