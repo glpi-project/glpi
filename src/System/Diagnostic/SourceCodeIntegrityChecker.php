@@ -63,9 +63,11 @@ class SourceCodeIntegrityChecker
     }
 
     /**
+     * Get list of files/directories to check.
+     *
      * @return array
      */
-    public function getPathsToCheck(): array
+    private function getPathsToCheck(): array
     {
         return [
             'ajax', 'css', 'front', 'inc', 'install', 'js', 'lib', 'locales', 'pics',
@@ -75,6 +77,8 @@ class SourceCodeIntegrityChecker
     }
 
     /**
+     * Returns the source code manifest contents.
+     *
      * @return array|null
      * @phpstan-return array{algorithm: string, files: array<string, string>}|null
      * @throws \JsonException
@@ -86,15 +90,17 @@ class SourceCodeIntegrityChecker
         try {
             $content = json_decode($manifest, true, 512, JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
-            throw new \RuntimeException('The source code file manifest is invalid', previous: $e);
+            throw new \RuntimeException('The source code file manifest is invalid.', previous: $e);
         }
         if (!isset($content['algorithm'], $content['files']) || !is_string($content['algorithm']) || !is_array($content['files'])) {
-            throw new \RuntimeException('The source code file manifest is invalid');
+            throw new \RuntimeException('The source code file manifest is invalid.');
         }
         return $content;
     }
 
     /**
+     * Generates the source code manifest contents.
+     *
      * @param string $algorithm
      * @return array {algorithm: string, files: array<string, string>}
      */
@@ -130,6 +136,11 @@ class SourceCodeIntegrityChecker
         ];
     }
 
+    /**
+     * Get a summary of differences between current source code and expected source code.
+     *
+     * @return array
+     */
     public function getSummary(): array
     {
         $baseline = $this->getBaselineManifest();
@@ -161,7 +172,13 @@ class SourceCodeIntegrityChecker
         return $summary;
     }
 
-    private function getGLPIRelease(&$errors = []): string|null
+    /**
+     * Download the GLPI release.
+     *
+     * @param array $errors
+     * @return string|null Release file path.
+     */
+    private function getGLPIRelease(array &$errors = []): string|null
     {
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);
         $gh_releases_endpoint = 'https://api.github.com/repos/glpi-project/glpi/releases/tags/' . $version_to_get;
@@ -188,7 +205,14 @@ class SourceCodeIntegrityChecker
         return $dest;
     }
 
-    public function getDiff(array &$errors = [], bool $allow_download = false): string
+    /**
+     * Get the diff (unified diff format) between current source code and expected source code.
+     *
+     * @param bool $allow_download  Whether the release download is allowed.
+     * @param array $errors         Array on which any errors will be added.
+     * @return string|null
+     */
+    public function getDiff(bool $allow_download = false, array &$errors = []): ?string
     {
         $summary = $this->getSummary();
         // ignore OK files in case they are present
@@ -199,12 +223,12 @@ class SourceCodeIntegrityChecker
             if ($allow_download) {
                 $release_path = $this->getGLPIRelease($errors);
                 if ($release_path === null) {
-                    $errors[] = 'An error occurred while downloading the release';
-                    return '';
+                    $errors[] = 'An error occurred while downloading the release.';
+                    return null;
                 }
             } else {
-                $errors[] = 'The release is not downloaded and downloading it was not allowed';
-                return '';
+                $errors[] = 'The release is not downloaded and downloading it was not allowed.';
+                return null;
             }
         }
 
@@ -221,11 +245,19 @@ class SourceCodeIntegrityChecker
                 $original_file = '/dev/null';
             } else {
                 $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
+                if ($original_content === false) {
+                    $errors[] = sprintf('Failed to get original contents of file `%s`.', $file);
+                    continue;
+                }
             }
             if ($status === self::STATUS_MISSING || !file_exists($this->getCheckRootDir() . '/' . $file)) {
                 $current_file = '/dev/null';
             } else {
                 $current_content = file_get_contents($this->getCheckRootDir() . '/' . $file);
+                if ($current_content === false) {
+                    $errors[] = sprintf('Fails to get current contents of file `%s`.', $file);
+                    continue;
+                }
             }
             try {
                 $differ = new Differ(new UnifiedDiffOutputBuilder("--- $original_file\n+++ $current_file\n", true));

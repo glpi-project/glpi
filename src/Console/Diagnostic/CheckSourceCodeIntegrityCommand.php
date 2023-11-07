@@ -55,12 +55,12 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('diagnostic:check_source_code_integrity');
-        $this->setDescription(__('Check GLPI source code file integrity'));
+        $this->setDescription(__('Check GLPI source code file integrity.'));
         $this->addOption(
             'diff',
             'd',
             InputOption::VALUE_NONE,
-            __('Show diff of altered files.'),
+            __('Show diff of altered files'),
         );
         $this->addOption(
             'allow-download',
@@ -78,11 +78,11 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
 
         // create temporary output buffer to capture output
         $output_buffer = fopen('php://memory', 'r+b');
-        $temp_output = new StreamOutput($output_buffer);
+        $temp_output = new StreamOutput($output_buffer, decorated: true);
         try {
             $summary = $checker->getSummary();
         } catch (\Exception $e) {
-            $output->writeln('<error>' . $e->getMessage() . '</error>');
+            $output->writeln('<error>' . sprintf(__('Failed to validate GLPI source code integrity. Error was: %s'), $e->getMessage()) . '</error>');
             return 1;
         }
         $all_ok = true;
@@ -99,6 +99,8 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
             $temp_output->writeln('<info>' . __('GLPI source code integrity is validated.') . '</info>');
         } else {
             $temp_output->writeln('<error>' . __('GLPI source code integrity is not validated.') . '</error>');
+
+            // @note Keep result untranslated
             $table = new Table($temp_output);
             $table->setHeaders(['File', 'Status']);
             foreach ($summary as $file => $status) {
@@ -125,27 +127,33 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
             if (VersionParser::isDevVersion(GLPI_VERSION)) {
                 $output->writeln('<error>' . __('Cannot generate a diff on a development version.') . '</error>');
             } else {
-                $diff = '';
-                // enumerate lines of the temporary output buffer and add them to the diff prefixed with a # to make them comments
-                rewind($output_buffer);
-                while (!feof($output_buffer)) {
-                    $diff .= '# ' . fgets($output_buffer);
+                $code_diff = $checker->getDiff($allow_download, $errors);
+
+                if ($code_diff !== null) {
+                    // enumerate lines of the temporary output buffer and add them to the diff prefixed with a # to make them comments
+                    $diff_comments = '';
+                    rewind($output_buffer);
+                    while (!feof($output_buffer)) {
+                        $diff_comments .= '# ' . fgets($output_buffer);
+                    }
+
+                    // Output with escaping so that style tags like <error> are shown as-is without being interpreted
+                    $output->write(OutputFormatter::escape($diff_comments . "\n" . $code_diff));
                 }
-                $diff .= "\n" . $checker->getDiff($errors, $allow_download);
-                // Output with escaping so that style tags like <error> are shown as-is without being interpreted
-                $output->write(OutputFormatter::escape($diff));
 
                 if (count($errors) > 0) {
-                    $output->writeln('<error>' . __('Errors:') . '</error>');
+                    $output->writeln('<error>' . __('Errors occurred during diff generation:') . '</error>');
                     foreach ($errors as $error) {
-                        $output->writeln('<error>' . $error . '</error>');
+                        $output->writeln('<error>- ' . $error . '</error>');
                     }
                     return 1;
                 }
             }
         }
+
         //cleanup temporary output buffer
         fclose($output_buffer);
+
         return 0;
     }
 

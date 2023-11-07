@@ -93,4 +93,4 @@ do
 done
 
 echo "Generating file manifest..."
-$WORKING_DIR/bin/console build:generate_code_baseline -a crc32c
+$WORKING_DIR/bin/console build:generate_code_manifest -a crc32c

@@ -169,7 +169,7 @@ EOL
         file_put_contents(vfsStream::url('check_root_dir/src/test3.php'), 'added');
 
         $errors = [];
-        $diff = $checker->getDiff($errors, false);
+        $diff = $checker->getDiff(false, $errors);
         // Why not isEmpty? Because then atoum will not tell you what the contents are when this fails.
         $this->array($errors)->isEqualTo([]);
         $this->string(trim($diff))->isEqualTo(<<<EOL
