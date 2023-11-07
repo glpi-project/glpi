@@ -37,6 +37,7 @@ namespace tests\units;
 
 use CommonITILActor;
 use DbTestCase;
+use Glpi\Search\SearchEngine;
 use ITILFollowup as CoreITILFollowup;
 use Ticket;
 use Ticket_User;
@@ -630,5 +631,55 @@ HTML,
         $this->boolean(
             $this->callPrivateMethod($followup, 'isParentAlreadyLoaded')
         )->isEqualTo($is_parent_loaded);
+    }
+
+    public function testParentMetaSearchOptions()
+    {
+        $this->login();
+        $ticket = $this->getNewITILObject('Ticket', true);
+        $change = $this->getNewITILObject('Change', true);
+        $followup = new CoreITILFollowup();
+        $this->integer($ticket_followups_id = $followup->add([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->fields['id'],
+            'content'  => 'Test followup',
+        ]))->isGreaterThan(0);
+        $this->integer($change_followups_id = $followup->add([
+            'itemtype' => 'Change',
+            'items_id' => $change->fields['id'],
+            'content'  => 'Test followup',
+        ]))->isGreaterThan(0);
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Ticket',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'Ticket title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('Ticket title');
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Change',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'Change title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Change_1'][0]['name'])->isEqualTo('Change title');
     }
 }
