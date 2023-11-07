@@ -185,7 +185,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         // ITIL Object update case
         if ($params['id'] > 0) {
             // Get associated elements for obj
-            $used = static::getUsedItems($params['id']);
+            $used = static::getUsedItems($params['id'], $obj->getType());
             foreach ($used as $itemtype => $items) {
                 foreach ($items as $items_id) {
                     if (
@@ -265,7 +265,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 foreach ($items as $items_id) {
                     $count++;
                     $twig_params['items_to_add'][] = static::showItemToAdd(
-                        $params['id'],
                         $itemtype,
                         $items_id,
                         [
