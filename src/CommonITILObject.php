@@ -1477,7 +1477,7 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Count active ITIL Objects having given user as observer.
      *
-     * @param int $users_id
+     * @param int $user_id
      *
      * @return int
      */
@@ -2108,7 +2108,7 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -3733,7 +3733,7 @@ abstract class CommonITILObject extends CommonDBTM
      * @param $values    String / Array with the value to display
      * @param $options   Array          of option
      *
-     * @return a string
+     * @return string
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {

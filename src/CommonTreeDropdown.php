@@ -82,7 +82,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         if (
             !$withtemplate
-            && ($item->getType() == $this->getType())
+            && ($item instanceof static)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -400,7 +400,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         $ID           = $this->getID();

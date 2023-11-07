@@ -110,7 +110,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print the notification templates
      *
      * @param Notification $notif        Notification object
-     * @param boolean      $withtemplate Template or basic item (default '')
+     * @param integer      $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
@@ -210,7 +210,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print associated notifications
      *
      * @param NotificationTemplate $template     Notification template object
-     * @param boolean              $withtemplate Template or basic item (default '')
+     * @param integer              $withtemplate Template or basic item (default '')
      *
      * @return void
      */

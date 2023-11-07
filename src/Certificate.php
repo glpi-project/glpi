@@ -837,7 +837,7 @@ class Certificate extends CommonDBTM
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->cleanAlerts([Alert::END]);
         parent::post_updateItem($history);

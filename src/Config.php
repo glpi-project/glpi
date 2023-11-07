@@ -3680,7 +3680,7 @@ HTML;
         $this->logConfigChange($this->fields['context'], $this->fields['name'], (string)$this->fields['value'], '');
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /**
          * @var array $CFG_GLPI

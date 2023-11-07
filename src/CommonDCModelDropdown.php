@@ -294,7 +294,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $input;
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->updateRackItemsHorizontalPosition();
     }

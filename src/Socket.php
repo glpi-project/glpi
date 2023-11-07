@@ -637,7 +637,7 @@ class Socket extends CommonDBChild
         $this->cleanIfStealNetworkPort();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->cleanIfStealNetworkPort();
     }

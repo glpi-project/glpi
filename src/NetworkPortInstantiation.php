@@ -115,7 +115,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $this->manageSocket();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->manageSocket();
     }

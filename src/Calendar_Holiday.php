@@ -227,7 +227,7 @@ class Calendar_Holiday extends CommonDBRelation
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (in_array('calendars_id', $this->updates)) {

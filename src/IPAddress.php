@@ -181,7 +181,7 @@ class IPAddress extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (

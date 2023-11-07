@@ -316,7 +316,7 @@ class Conf extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case __CLASS__:
@@ -332,7 +332,7 @@ class Conf extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == __CLASS__) {
             /** @var self $item */

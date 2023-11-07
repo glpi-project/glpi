@@ -122,7 +122,7 @@ class PlanningRecall extends CommonDBChild
     /**
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         $alert = new Alert();

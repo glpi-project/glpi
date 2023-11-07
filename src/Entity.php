@@ -618,7 +618,7 @@ class Entity extends CommonTreeDropdown
         $this->cleanEntitySelectorCache();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;

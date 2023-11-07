@@ -196,7 +196,7 @@ class TicketSatisfaction extends CommonDBTM
     /**
      * @since 0.85
      **/
-    public function post_UpdateItem($history = 1)
+    public function post_UpdateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

@@ -225,7 +225,7 @@ class SoftwareLicense extends CommonTreeDropdown
      * @since 0.85
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (in_array("is_valid", $this->updates)) {
