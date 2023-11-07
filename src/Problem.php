@@ -171,7 +171,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -189,7 +189,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
@@ -1303,11 +1303,11 @@ class Problem extends CommonITILObject
      * Will also display problems of linked items
      *
      * @param CommonDBTM $item
-     * @param boolean    $withtemplate
+     * @param integer    $withtemplate
      *
      * @return void
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

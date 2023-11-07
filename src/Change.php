@@ -221,7 +221,7 @@ class Change extends CommonITILObject
         return $actions;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -239,7 +239,7 @@ class Change extends CommonITILObject
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
@@ -693,12 +693,12 @@ class Change extends CommonITILObject
      *
      * Will also display changes of linked items
      *
-     * @param CommonDBTM      $item
-     * @param boolean|integer $withtemplate
+     * @param CommonDBTM $item
+     * @param integer    $withtemplate
      *
      * @return boolean|void
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

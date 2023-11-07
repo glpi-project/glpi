@@ -59,7 +59,7 @@ class ITILSolution extends CommonDBChild
         return _n('Solution', 'Solutions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item->isNewItem()) {
             return '';

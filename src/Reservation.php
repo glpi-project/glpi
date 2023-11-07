@@ -58,7 +58,7 @@ class Reservation extends CommonDBChild
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (
@@ -76,7 +76,7 @@ class Reservation extends CommonDBChild
      * @param $tabnum       (default1)
      * @param $withtemplate (default0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == 'User') {
@@ -1024,7 +1024,7 @@ JAVASCRIPT;
      * @param $item            CommonDBTM object for which the reservation tab need to be displayed
      * @param $withtemplate    withtemplate param (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         if (!Session::haveRight("reservation", READ)) {
             return false;

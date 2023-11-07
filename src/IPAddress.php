@@ -216,7 +216,7 @@ class IPAddress extends CommonDBChild
     }
 
 
-    public static function showForItem(CommonGLPI $item, $withtemplate = false)
+    public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -311,7 +311,7 @@ class IPAddress extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
@@ -351,7 +351,7 @@ class IPAddress extends CommonDBChild
      *
      * @return string
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (

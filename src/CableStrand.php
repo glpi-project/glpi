@@ -64,7 +64,7 @@ class CableStrand extends CommonDropdown
         Rule::cleanForItemCriteria($this, '_cablestrands_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -83,7 +83,7 @@ class CableStrand extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == __CLASS__) {

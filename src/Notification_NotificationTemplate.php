@@ -62,7 +62,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return _n('Template', 'Templates', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (!$withtemplate && Notification::canView()) {
@@ -91,7 +91,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {
             case Notification::class:
@@ -110,11 +110,11 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print the notification templates
      *
      * @param Notification $notif        Notification object
-     * @param boolean      $withtemplate Template or basic item (default '')
+     * @param integer      $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
-    public static function showForNotification(Notification $notif, $withtemplate = false)
+    public static function showForNotification(Notification $notif, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -210,11 +210,11 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print associated notifications
      *
      * @param NotificationTemplate $template     Notification template object
-     * @param boolean              $withtemplate Template or basic item (default '')
+     * @param integer              $withtemplate Template or basic item (default '')
      *
      * @return void
      */
-    public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = false)
+    public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

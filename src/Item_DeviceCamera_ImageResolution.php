@@ -46,7 +46,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         return _nx('camera', 'Resolution', 'Resolutions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
         switch ($item->getType()) {
@@ -64,7 +64,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showItems($item);
         return true;

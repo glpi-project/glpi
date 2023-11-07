@@ -42,7 +42,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         return _n('Comment', 'Comments', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!($item instanceof KnowbaseItem) || !$item->canComment()) {
             return '';
@@ -71,7 +71,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         return self::createTabEntry(self::getTypeName($nb), $nb);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForItem($item, $withtemplate);
         return true;
@@ -83,7 +83,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      * @param $item                     CommonDBTM object
      * @param $withtemplate    integer  withtemplate param (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

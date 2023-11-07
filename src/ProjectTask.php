@@ -1199,7 +1199,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         $nb = 0;
@@ -1226,7 +1226,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {

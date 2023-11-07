@@ -80,7 +80,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
-        $withtemplate = false
+        $withtemplate = 0
     ) {
        // Tabs on CommonITILRecurrent items
         if ($item instanceof self) {
@@ -95,7 +95,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return false;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
        // Only display tab if user can read ITILTemplates
         if (!Session::haveRight('itiltemplate', READ)) {

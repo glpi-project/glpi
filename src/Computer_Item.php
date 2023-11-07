@@ -326,11 +326,11 @@ class Computer_Item extends CommonDBRelation
      * Print the form for computers or templates connections to printers, screens or peripherals
      *
      * @param Computer $comp         Computer object
-     * @param boolean  $withtemplate Template or basic item (default 0)
+     * @param integer  $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
-    public static function showForComputer(Computer $comp, $withtemplate = false)
+    public static function showForComputer(Computer $comp, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -474,7 +474,7 @@ class Computer_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
        // Prints a direct connection to a computer
         /** @var \DBmysql $DB */
@@ -780,7 +780,7 @@ class Computer_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -823,7 +823,7 @@ class Computer_Item extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

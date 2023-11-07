@@ -81,7 +81,7 @@ class ContractCost extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -99,7 +99,7 @@ class ContractCost extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForContract($item, $withtemplate);
@@ -307,7 +307,7 @@ class ContractCost extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForContract(Contract $contract, $withtemplate = false)
+    public static function showForContract(Contract $contract, $withtemplate = 0)
     {
         /**
          * @var array $CFG_GLPI

@@ -58,7 +58,7 @@ class Appliance_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!Appliance::canView()) {
             return '';
@@ -82,7 +82,7 @@ class Appliance_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
@@ -240,11 +240,11 @@ class Appliance_Item extends CommonDBRelation
      * @since 9.5.2
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param boolean    $withtemplate not used (to be deleted)
+     * @param integer    $withtemplate not used (to be deleted)
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
         $itemtype = $item->getType();

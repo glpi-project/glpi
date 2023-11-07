@@ -69,7 +69,7 @@ class Item_Disk extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -96,7 +96,7 @@ class Item_Disk extends CommonDBChild
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForItem($item, $withtemplate);
@@ -204,11 +204,11 @@ class Item_Disk extends CommonDBChild
      * Print the disks
      *
      * @param CommonDBTM $item          Item object
-     * @param boolean    $withtemplate  Template or basic item (default 0)
+     * @param integer    $withtemplate  Template or basic item (default 0)
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

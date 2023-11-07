@@ -68,7 +68,7 @@ class Impact extends CommonGLPI
         return __('Impact analysis');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -128,7 +128,7 @@ class Impact extends CommonGLPI
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
-        $withtemplate = false
+        $withtemplate = 0
     ) {
        // Impact analysis should not be available outside of central
         if (Session::getCurrentInterface() !== "central") {

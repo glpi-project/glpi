@@ -57,7 +57,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForItem($item, $withtemplate);
         return true;
@@ -122,7 +122,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return $linked_items;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -141,7 +141,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return '';
     }
 
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $item_id = $item->getID();
         $item_type = $item::getType();

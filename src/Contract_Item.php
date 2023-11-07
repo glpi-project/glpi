@@ -208,7 +208,7 @@ class Contract_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -237,7 +237,7 @@ class Contract_Item extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -266,7 +266,7 @@ class Contract_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
         $itemtype = $item->getType();
@@ -437,7 +437,7 @@ class Contract_Item extends CommonDBRelation
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      **/
-    public static function showForContract(Contract $contract, $withtemplate = false)
+    public static function showForContract(Contract $contract, $withtemplate = 0)
     {
         /**
          * @var array $CFG_GLPI

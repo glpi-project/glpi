@@ -75,7 +75,7 @@ class Certificate_Item extends CommonDBRelation
      * @param int $withtemplate
      * @return string
      */
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -116,7 +116,7 @@ class Certificate_Item extends CommonDBRelation
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
-        $withtemplate = false
+        $withtemplate = 0
     ) {
 
         if ($item->getType() == 'Certificate') {
@@ -343,7 +343,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @return bool
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
         $ID = $item->getField('id');
@@ -359,7 +359,7 @@ class Certificate_Item extends CommonDBRelation
         $certificate  = new Certificate();
 
         if (empty($withtemplate)) {
-            $withtemplate = false;
+            $withtemplate = 0;
         }
 
         $canedit      = $item->canAddItem('Certificate');

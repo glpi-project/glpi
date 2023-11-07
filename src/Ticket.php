@@ -745,7 +745,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -896,7 +896,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
@@ -5351,7 +5351,7 @@ JAVASCRIPT;
      *
      * @return void (display a table)
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

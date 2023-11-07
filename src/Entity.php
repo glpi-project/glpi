@@ -466,7 +466,7 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -502,7 +502,7 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == __CLASS__) {

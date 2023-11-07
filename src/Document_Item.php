@@ -269,7 +269,7 @@ class Document_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         $nbdoc = $nbitem = 0;
@@ -312,7 +312,7 @@ class Document_Item extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
@@ -529,7 +529,7 @@ class Document_Item extends CommonDBRelation
      * @param $item            CommonDBTM object for which associated documents must be displayed
      * @param $withtemplate    (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $ID = $item->getField('id');
 
@@ -561,7 +561,7 @@ class Document_Item extends CommonDBRelation
      * @param $withtemplate   (default 0)
      * @param $colspan
      */
-    public static function showSimpleAddForItem(CommonDBTM $item, $withtemplate = false, $colspan = 1)
+    public static function showSimpleAddForItem(CommonDBTM $item, $withtemplate = 0, $colspan = 1)
     {
 
         $entity = $_SESSION["glpiactive_entity"];
@@ -597,7 +597,7 @@ class Document_Item extends CommonDBRelation
      *
      * @return boolean
      **/
-    public static function showAddFormForItem(CommonDBTM $item, $withtemplate = false, $options = [])
+    public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
         /**
          * @var array $CFG_GLPI
@@ -618,7 +618,7 @@ class Document_Item extends CommonDBRelation
         }
 
         if (empty($withtemplate)) {
-            $withtemplate = false;
+            $withtemplate = 0;
         }
 
        // find documents already associated to the item
@@ -739,7 +739,7 @@ class Document_Item extends CommonDBRelation
      * @param $withtemplate   (default 0)
      * @param $options        array
      */
-    public static function showListForItem(CommonDBTM $item, $withtemplate = false, $options = [])
+    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -782,7 +782,7 @@ class Document_Item extends CommonDBRelation
         }
 
         if (empty($withtemplate)) {
-            $withtemplate = false;
+            $withtemplate = 0;
         }
 
         $criteria = self::getDocumentForItemRequest($item, ["$sort $order"]);

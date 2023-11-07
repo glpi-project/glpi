@@ -937,7 +937,7 @@ class Lock extends CommonGLPI
      * @param $item               CommonGLPI object
      * @param $withtemplate       (default 0)
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
@@ -952,7 +952,7 @@ class Lock extends CommonGLPI
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {

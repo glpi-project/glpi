@@ -4395,7 +4395,7 @@ class AuthLDAP extends CommonDBTM
         Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (
@@ -4425,7 +4425,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return boolean (TRUE)
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($tabnum) {

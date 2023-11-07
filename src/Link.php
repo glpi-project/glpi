@@ -69,7 +69,7 @@ class Link extends CommonDBTM
         }
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (self::canView()) {
@@ -96,7 +96,7 @@ class Link extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForItem($item);
@@ -588,7 +588,7 @@ class Link extends CommonDBTM
      * @param $item                     CommonDBTM object
      * @param $withtemplate    integer  withtemplate param (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

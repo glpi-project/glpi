@@ -540,7 +540,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (self::canView()) {
@@ -585,7 +585,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param $tabnum       (default 1)
      * @param $withtemplate (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {

@@ -48,7 +48,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -156,11 +156,11 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
      * @since 0.83
      *
      * @param ITILTemplate $tt            ITIL Template
-     * @param boolean      $withtemplate  Template or basic item (default 0)
+     * @param integer      $withtemplate  Template or basic item (default 0)
      *
      * @return void
      **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = false)
+    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

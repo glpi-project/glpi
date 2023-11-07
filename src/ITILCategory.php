@@ -409,7 +409,7 @@ class ITILCategory extends CommonTreeDropdown
      * @param $item         CommonGLPI object
      * @param $withtemplate (default 0)
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (Session::haveRight(self::$rightname, READ)) {
@@ -422,7 +422,7 @@ class ITILCategory extends CommonTreeDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item instanceof ITILTemplate) {
@@ -436,7 +436,7 @@ class ITILCategory extends CommonTreeDropdown
      * @param $tt           ITILTemplate object
      * @param $withtemplate (default 0)
      **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = false)
+    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         /**
          * @var array $CFG_GLPI

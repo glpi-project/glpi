@@ -394,7 +394,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof ITILTemplate) {
             switch ($tabnum) {
@@ -407,7 +407,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (Session::haveRight(static::$rightname, READ)) {

@@ -88,7 +88,7 @@ class ProjectCost extends CommonDBChild
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -108,7 +108,7 @@ class ProjectCost extends CommonDBChild
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForProject($item, $withtemplate);
@@ -316,7 +316,7 @@ class ProjectCost extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForProject(Project $project, $withtemplate = false)
+    public static function showForProject(Project $project, $withtemplate = 0)
     {
         /**
          * @var array $CFG_GLPI

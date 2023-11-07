@@ -57,7 +57,7 @@ class ManualLink extends CommonDBChild
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         $count = 0;
@@ -82,7 +82,7 @@ class ManualLink extends CommonDBChild
         return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForItem($item);

@@ -49,7 +49,7 @@ class Item_Cluster extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -58,7 +58,7 @@ class Item_Cluster extends CommonDBRelation
         return self::createTabEntry(_n('Item', 'Items', $nb));
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showItems($item);
         return true;

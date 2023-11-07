@@ -55,7 +55,7 @@ class ComputerAntivirus extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -76,7 +76,7 @@ class ComputerAntivirus extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForComputer($item, $withtemplate);
@@ -276,7 +276,7 @@ class ComputerAntivirus extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForComputer(Computer $comp, $withtemplate = false)
+    public static function showForComputer(Computer $comp, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

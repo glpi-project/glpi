@@ -59,7 +59,7 @@ class Domain_Item extends CommonDBRelation
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (
             $item->getType() == 'Domain'
@@ -81,7 +81,7 @@ class Domain_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item->getType() == 'Domain') {
             self::showForDomain($item);
@@ -378,7 +378,7 @@ class Domain_Item extends CommonDBRelation
         }
 
         if (empty($withtemplate)) {
-            $withtemplate = false;
+            $withtemplate = 0;
         }
 
         $canedit      = $item->canAddItem('Domain');

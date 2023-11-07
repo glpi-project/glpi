@@ -52,7 +52,7 @@ class Item_OperatingSystem extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
         switch ($item->getType()) {
@@ -65,7 +65,7 @@ class Item_OperatingSystem extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForItem($item, $withtemplate);
@@ -146,7 +146,7 @@ class Item_OperatingSystem extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -177,7 +177,7 @@ class Item_OperatingSystem extends CommonDBRelation
         }
 
         if (empty($withtemplate)) {
-            $withtemplate = false;
+            $withtemplate = 0;
         }
 
         $iterator = self::getFromItem($item, $sort, $order);

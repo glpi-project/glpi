@@ -79,7 +79,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -111,7 +111,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         if ($item->getType() == __CLASS__) {

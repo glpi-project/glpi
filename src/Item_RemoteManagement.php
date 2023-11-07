@@ -53,7 +53,7 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $nb = 0;
         switch ($item->getType()) {
@@ -73,7 +73,7 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForItem($item, $withtemplate);
         return true;
@@ -108,11 +108,11 @@ class Item_RemoteManagement extends CommonDBChild
      * Print the remote management
      *
      * @param CommonDBTM $item          Item object
-     * @param boolean    $withtemplate  Template or basic item (default 0)
+     * @param integer    $withtemplate  Template or basic item (default 0)
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = false)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $ID = $item->fields['id'];
         $itemtype = $item->getType();

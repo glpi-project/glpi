@@ -58,7 +58,7 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -84,7 +84,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         self::showForObject($item, $withtemplate);
@@ -502,7 +502,7 @@ abstract class CommonITILCost extends CommonDBChild
      *
      * @return number total cost
      **/
-    public static function showForObject($item, $withtemplate = false)
+    public static function showForObject($item, $withtemplate = 0)
     {
         /**
          * @var array $CFG_GLPI

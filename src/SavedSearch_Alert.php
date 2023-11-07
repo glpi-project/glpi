@@ -60,7 +60,7 @@ class SavedSearch_Alert extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
        // can exists for template
@@ -81,7 +81,7 @@ class SavedSearch_Alert extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         self::showForSavedSearch($item, $withtemplate);
         return true;
@@ -192,11 +192,11 @@ class SavedSearch_Alert extends CommonDBChild
      * Print the searches alerts
      *
      * @param SavedSearch $search       Object instance
-     * @param boolean     $withtemplate Template or basic item (default '')
+     * @param integer     $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
-    public static function showForSavedSearch(SavedSearch $search, $withtemplate = false)
+    public static function showForSavedSearch(SavedSearch $search, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -88,7 +88,7 @@ class RuleMatchedLog extends CommonDBTM
      * @param integer $withtemplate 1 if is a template form
      * @return string|array name of the tab
      */
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         $array_ret = [];
@@ -138,7 +138,7 @@ class RuleMatchedLog extends CommonDBTM
      * @param integer $withtemplate 1 if is a template form
      * @return boolean
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         $rulematched = new self();

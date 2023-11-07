@@ -146,7 +146,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         if (static::canView() && !$withtemplate) {
@@ -173,7 +173,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
         switch ($item->getType()) {
