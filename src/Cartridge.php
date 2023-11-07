@@ -133,7 +133,7 @@ class Cartridge extends CommonDBRelation
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (in_array('pages', $this->updates)) {
@@ -239,7 +239,7 @@ class Cartridge extends CommonDBRelation
      * @param integer $history
      * @return bool
      */
-    public function backToStock(array $input, $history = 1)
+    public function backToStock(array $input, $history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -1347,7 +1347,7 @@ class Cartridge extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate && self::canView()) {
@@ -1394,7 +1394,7 @@ class Cartridge extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

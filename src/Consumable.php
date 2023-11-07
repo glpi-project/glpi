@@ -121,7 +121,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      */
-    public function backToStock(array $input, $history = 1)
+    public function backToStock(array $input, $history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -827,7 +827,7 @@ class Consumable extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate && Consumable::canView()) {
@@ -856,7 +856,7 @@ class Consumable extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

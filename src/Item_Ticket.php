@@ -530,7 +530,7 @@ class Item_Ticket extends CommonItilObject_Item
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate) {
@@ -558,7 +558,7 @@ class Item_Ticket extends CommonItilObject_Item
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

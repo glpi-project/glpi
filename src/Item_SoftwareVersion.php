@@ -1018,7 +1018,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -1587,7 +1587,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public function upgrade($instID, $softwareversions_id, $dohistory = 1)
+    public function upgrade($instID, $softwareversions_id, $dohistory = true)
     {
 
         if ($this->getFromDB($instID)) {
@@ -1603,7 +1603,7 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         $nb = 0;
@@ -1645,7 +1645,7 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == 'Software') {

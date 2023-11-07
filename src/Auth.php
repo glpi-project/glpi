@@ -1578,7 +1578,7 @@ class Auth extends CommonGLPI
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate) {
@@ -1604,7 +1604,7 @@ class Auth extends CommonGLPI
      *
      * @return boolean
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == 'User') {

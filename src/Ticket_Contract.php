@@ -48,7 +48,7 @@ class Ticket_Contract extends CommonDBRelation
         return __('Tickets / Contracts');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         if (Contract::canView()) {
             $nb = 0;
@@ -72,7 +72,7 @@ class Ticket_Contract extends CommonDBRelation
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
-        $withtemplate = 0
+        $withtemplate = false
     ) {
         $rand = mt_rand();
 

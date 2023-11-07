@@ -48,7 +48,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
        // can exists for template
@@ -160,7 +160,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
      *
      * @return void
      **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
+    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = false)
     {
         /** @var \DBmysql $DB */
         global $DB;

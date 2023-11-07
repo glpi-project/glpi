@@ -38,12 +38,12 @@ use Glpi\Toolbox\VersionParser;
 
 class GLPINetwork extends CommonGLPI
 {
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         return 'GLPI Network';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         if ($item->getType() == 'Config') {
             $glpiNetwork = new self();

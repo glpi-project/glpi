@@ -4197,7 +4197,7 @@ class AuthLDAP extends CommonDBTM
         return 0;
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -4395,7 +4395,7 @@ class AuthLDAP extends CommonDBTM
         Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (
@@ -4425,7 +4425,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return boolean (TRUE)
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($tabnum) {

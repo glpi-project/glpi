@@ -637,7 +637,7 @@ class Socket extends CommonDBChild
         $this->cleanIfStealNetworkPort();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->cleanIfStealNetworkPort();
     }
@@ -676,7 +676,7 @@ class Socket extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -709,7 +709,7 @@ class Socket extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

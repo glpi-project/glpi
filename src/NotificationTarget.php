@@ -1463,7 +1463,7 @@ class NotificationTarget extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate && Notification::canView()) {
@@ -1623,7 +1623,7 @@ class NotificationTarget extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == 'Group') {

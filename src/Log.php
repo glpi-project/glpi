@@ -85,7 +85,7 @@ class Log extends CommonDBTM
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         $nb = 0;
@@ -101,7 +101,7 @@ class Log extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         self::showForItem($item);
@@ -294,7 +294,7 @@ class Log extends CommonDBTM
      * @param $withtemplate    integer  withtemplate param (default 0)
      *
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

@@ -49,7 +49,7 @@ class Item_Enclosure extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -58,7 +58,7 @@ class Item_Enclosure extends CommonDBRelation
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         self::showItems($item);
         return true;

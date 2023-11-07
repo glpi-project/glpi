@@ -382,7 +382,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate) {
@@ -399,7 +399,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == static::$parentclass) {

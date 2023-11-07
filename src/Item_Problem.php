@@ -218,7 +218,7 @@ class Item_Problem extends CommonItilObject_Item
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -275,7 +275,7 @@ class Item_Problem extends CommonItilObject_Item
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

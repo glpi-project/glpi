@@ -44,7 +44,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         return _n('Revision', 'Revisions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         if (!$item->canUpdateItem()) {
             return '';
@@ -73,7 +73,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         return self::createTabEntry(self::getTypeName($nb), $nb);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         self::showForItem($item, $withtemplate);
         return true;
@@ -85,7 +85,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      * @param $item                     CommonDBTM object
      * @param $withtemplate    integer  withtemplate param (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
         /**
          * @var array $CFG_GLPI

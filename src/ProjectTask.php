@@ -217,7 +217,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /**
          * @var array $CFG_GLPI
@@ -1199,7 +1199,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         $nb = 0;
@@ -1226,7 +1226,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

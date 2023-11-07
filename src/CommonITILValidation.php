@@ -217,9 +217,9 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
-
+        /** @var CommonDBTM $item */
         $hidetab = false;
        // Hide if no rights on validations
         if (!static::canView()) {
@@ -250,7 +250,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         $validation = new static();
@@ -413,7 +413,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -940,6 +940,7 @@ abstract class CommonITILValidation extends CommonDBChild
            "</th></tr>";
 
         if ($canadd) {
+            /** @var CommonITILObject $item */
             if (
                 !in_array($item->fields['status'], array_merge(
                     $item->getSolvedStatusArray(),

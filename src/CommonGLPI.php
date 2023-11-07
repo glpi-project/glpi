@@ -369,7 +369,7 @@ class CommonGLPI implements CommonGLPIInterface
     public function addStandardTab($itemtype, array &$ong, array $options)
     {
 
-        $withtemplate = 0;
+        $withtemplate = false;
         if (isset($options['withtemplate'])) {
             $withtemplate = $options['withtemplate'];
         }
@@ -608,7 +608,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      *  @return string tab name
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         return '';
     }
@@ -625,7 +625,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         return false;
     }
@@ -641,7 +641,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return boolean true
      **/
-    public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
+    public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = false, $options = [])
     {
         switch ($tab) {
            // All tab
@@ -675,6 +675,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $options['withtemplate'] = $withtemplate;
 
                 if ($tabnum == 'main') {
+                    /** @var CommonDBTM $item */
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
 

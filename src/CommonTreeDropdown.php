@@ -77,12 +77,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (
             !$withtemplate
-            && ($item->getType() == $this->getType())
+            && ($item instanceof static)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -97,7 +97,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item instanceof CommonTreeDropdown) {
@@ -400,7 +400,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         $ID           = $this->getID();

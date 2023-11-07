@@ -550,7 +550,7 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if ($item->canView()) {
@@ -592,7 +592,7 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         self::showForItem($item, $withtemplate);
@@ -600,7 +600,7 @@ class Item_Devices extends CommonDBRelation
     }
 
 
-    public static function showForItem(CommonGLPI $item, $withtemplate = 0)
+    public static function showForItem(CommonGLPI $item, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

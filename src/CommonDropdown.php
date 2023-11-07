@@ -305,7 +305,7 @@ abstract class CommonDropdown extends CommonDBTM
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->addFilesFromRichText();
 

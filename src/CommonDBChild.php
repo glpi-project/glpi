@@ -550,7 +550,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (
@@ -791,7 +791,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param string  $field_name  the name of the HTML field inside Item's form
      * @param integer $id          id of the child
      *
-     * @return void
+     * @return string|void
      **/
     public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {

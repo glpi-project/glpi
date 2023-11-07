@@ -255,7 +255,7 @@ class NetworkAlias extends FQDNLabel
      * @param $item                     NetworkName object
      * @param $withtemplate   integer   withtemplate param (default 0)
      **/
-    public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
+    public static function showForNetworkName(NetworkName $item, $withtemplate = false)
     {
         /**
          * @var array $CFG_GLPI
@@ -484,7 +484,7 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {
@@ -500,7 +500,7 @@ class NetworkAlias extends FQDNLabel
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (

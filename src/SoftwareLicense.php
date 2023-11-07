@@ -225,7 +225,7 @@ class SoftwareLicense extends CommonTreeDropdown
      * @since 0.85
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (in_array("is_valid", $this->updates)) {
@@ -1219,7 +1219,7 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate) {
@@ -1258,7 +1258,7 @@ class SoftwareLicense extends CommonTreeDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == 'Software' && self::canView()) {

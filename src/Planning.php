@@ -203,7 +203,7 @@ class Planning extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if ($item->getType() == __CLASS__) {
@@ -215,7 +215,7 @@ class Planning extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == __CLASS__) {

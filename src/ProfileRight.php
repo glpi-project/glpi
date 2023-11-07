@@ -353,7 +353,7 @@ class ProfileRight extends CommonDBChild
      *
      * @see CommonDBChild::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
        // update current profile

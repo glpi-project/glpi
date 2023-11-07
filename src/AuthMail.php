@@ -346,7 +346,7 @@ class AuthMail extends CommonDBTM
         Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
@@ -358,7 +358,7 @@ class AuthMail extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($tabnum) {

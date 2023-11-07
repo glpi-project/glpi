@@ -66,7 +66,7 @@ class DropdownTranslation extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (self::canBeTranslated($item)) {
@@ -85,7 +85,7 @@ class DropdownTranslation extends CommonDBChild
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if (DropdownTranslation::canBeTranslated($item)) {
@@ -174,7 +174,7 @@ class DropdownTranslation extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (!isset($this->input['_no_completename'])) {

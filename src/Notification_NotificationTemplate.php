@@ -62,7 +62,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return _n('Template', 'Templates', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate && Notification::canView()) {
@@ -91,7 +91,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         switch ($item->getType()) {
             case Notification::class:
@@ -114,7 +114,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForNotification(Notification $notif, $withtemplate = 0)
+    public static function showForNotification(Notification $notif, $withtemplate = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -214,7 +214,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0)
+    public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = false)
     {
         /** @var \DBmysql $DB */
         global $DB;

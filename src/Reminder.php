@@ -539,7 +539,7 @@ class Reminder extends CommonDBVisible implements
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (self::canView()) {
@@ -585,7 +585,7 @@ class Reminder extends CommonDBVisible implements
      * @param $tabnum       (default 1)
      * @param $withtemplate (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

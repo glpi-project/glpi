@@ -64,7 +64,7 @@ class PrinterLog extends CommonDBChild
      * @param integer $withtemplate 1 if is a template form
      * @return string|array name of the tab
      */
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         $array_ret = [];
@@ -85,7 +85,7 @@ class PrinterLog extends CommonDBChild
      * @param integer $withtemplate 1 if is a template form
      * @return boolean
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         if ($item->getType() == Printer::getType() && $item->getID() > 0) {
             $printerlog = new self();

@@ -128,7 +128,7 @@ class TicketTemplate extends ITILTemplate
         return $tab;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         if ($item instanceof ITILTemplate) {
             switch ($tabnum) {

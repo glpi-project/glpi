@@ -294,7 +294,7 @@ class User extends CommonDBTM
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         switch ($item->getType()) {
@@ -311,7 +311,7 @@ class User extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1158,7 +1158,7 @@ class User extends CommonDBTM
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
        //handle timezone change for current user
         if ($this->fields['id'] == Session::getLoginUserID()) {

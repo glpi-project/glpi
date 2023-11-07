@@ -115,7 +115,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $this->manageSocket();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->manageSocket();
     }
@@ -852,7 +852,7 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if ($item->getType() == "NetworkPort") {
@@ -871,7 +871,7 @@ class NetworkPortInstantiation extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == "NetworkPort") {

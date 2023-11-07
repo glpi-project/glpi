@@ -271,7 +271,7 @@ class NetworkName extends FQDNLabel
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -739,7 +739,7 @@ class NetworkName extends FQDNLabel
      * @param $item                     CommonGLPI object
      * @param $withtemplate   integer   withtemplate param (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
         $ID = $item->getID();
         if (!$item->can($ID, READ)) {
@@ -886,7 +886,7 @@ class NetworkName extends FQDNLabel
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {
@@ -955,7 +955,7 @@ class NetworkName extends FQDNLabel
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (

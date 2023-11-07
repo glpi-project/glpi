@@ -86,7 +86,7 @@ class ProjectTeam extends CommonDBRelation
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (self::canView()) {
@@ -103,7 +103,7 @@ class ProjectTeam extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {

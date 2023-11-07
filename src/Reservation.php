@@ -58,7 +58,7 @@ class Reservation extends CommonDBChild
     /**
      * @see CommonGLPI::getTabNameForItem()
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (
@@ -76,7 +76,7 @@ class Reservation extends CommonDBChild
      * @param $tabnum       (default1)
      * @param $withtemplate (default0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == 'User') {
@@ -139,7 +139,7 @@ class Reservation extends CommonDBChild
     /**
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1024,7 +1024,7 @@ JAVASCRIPT;
      * @param $item            CommonDBTM object for which the reservation tab need to be displayed
      * @param $withtemplate    withtemplate param (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
         if (!Session::haveRight("reservation", READ)) {
             return false;

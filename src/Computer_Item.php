@@ -330,7 +330,7 @@ class Computer_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForComputer(Computer $comp, $withtemplate = 0)
+    public static function showForComputer(Computer $comp, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -474,7 +474,7 @@ class Computer_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
        // Prints a direct connection to a computer
         /** @var \DBmysql $DB */
@@ -780,7 +780,7 @@ class Computer_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -823,7 +823,7 @@ class Computer_Item extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

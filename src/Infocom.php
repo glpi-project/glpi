@@ -137,7 +137,7 @@ class Infocom extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
        // Can exists on template
@@ -171,7 +171,7 @@ class Infocom extends CommonDBChild
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {
@@ -1124,7 +1124,7 @@ class Infocom extends CommonDBChild
      * @param $item                  CommonDBTM object
      * @param $withtemplate integer  template or basic item (default 0)
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
        // Show Infocom or blank form
         if (!self::canView()) {

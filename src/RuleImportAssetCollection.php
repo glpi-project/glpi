@@ -50,7 +50,7 @@ class RuleImportAssetCollection extends RuleCollection
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

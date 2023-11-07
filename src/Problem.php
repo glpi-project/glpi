@@ -171,7 +171,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (static::canView()) {
@@ -189,7 +189,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {
@@ -250,7 +250,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1307,7 +1307,7 @@ class Problem extends CommonITILObject
      *
      * @return void
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showListForItem(CommonDBTM $item, $withtemplate = false)
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -80,7 +80,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
-        $withtemplate = 0
+        $withtemplate = false
     ) {
        // Tabs on CommonITILRecurrent items
         if ($item instanceof self) {
@@ -95,7 +95,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return false;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
        // Only display tab if user can read ITILTemplates
         if (!Session::haveRight('itiltemplate', READ)) {
@@ -411,7 +411,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $matches = [];
         if (preg_match($periodicity_pattern, $periodicity, $matches)) {
             $periodicity_as_interval = "{$matches[1]} {$matches[2]}";
-            $periodicity_in_seconds  = $matches[1]
+            $periodicity_in_seconds  = (int)$matches[1]
             * MONTH_TIMESTAMP
             * ('YEAR' === $matches[2] ? 12 : 1);
         } else if ($periodicity % DAY_TIMESTAMP == 0) {

@@ -181,7 +181,7 @@ class IPAddress extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (
@@ -216,7 +216,7 @@ class IPAddress extends CommonDBChild
     }
 
 
-    public static function showForItem(CommonGLPI $item, $withtemplate = 0)
+    public static function showForItem(CommonGLPI $item, $withtemplate = false)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -311,7 +311,7 @@ class IPAddress extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         switch ($item->getType()) {
@@ -351,7 +351,7 @@ class IPAddress extends CommonDBChild
      *
      * @return string
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (

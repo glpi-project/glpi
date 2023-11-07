@@ -198,7 +198,7 @@ class NetworkPortType extends CommonDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->invalidateCache();
         parent::post_updateItem($history);

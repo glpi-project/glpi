@@ -57,7 +57,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         return _n('Knowledge base item', 'Knowledge base items', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (static::canView()) {
@@ -78,7 +78,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         self::showForItem($item, $withtemplate);
         return true;
@@ -91,7 +91,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      * @param $withtemplate    integer  withtemplate param (default 0)
      *
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = false)
     {
         $item_id = $item->getID();
         $item_type = $item::getType();

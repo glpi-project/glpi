@@ -104,7 +104,7 @@ class View extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
         if ($item->getType() == __CLASS__) {
             return [
@@ -116,7 +116,7 @@ class View extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         if ($item->getType() == __CLASS__) {
             switch ($tabnum) {

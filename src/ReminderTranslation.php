@@ -73,7 +73,7 @@ class ReminderTranslation extends CommonDBChild
      * @return array|string
      * @see CommonGLPI::getTabNameForItem()
      */
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (
@@ -99,7 +99,7 @@ class ReminderTranslation extends CommonDBChild
      *
      * @return bool
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if (

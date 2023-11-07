@@ -90,7 +90,7 @@ abstract class ITILTemplateField extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
         static::showForITILTemplate($item, $withtemplate);
         return true;
@@ -117,7 +117,7 @@ abstract class ITILTemplateField extends CommonDBChild
      *
      * @return void
      **/
-    abstract public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0);
+    abstract public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = false);
 
 
     /**

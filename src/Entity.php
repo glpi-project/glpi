@@ -466,7 +466,7 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      **/
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
         if (!$withtemplate) {
@@ -502,7 +502,7 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      **/
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         if ($item->getType() == __CLASS__) {
@@ -618,7 +618,7 @@ class Entity extends CommonTreeDropdown
         $this->cleanEntitySelectorCache();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;

@@ -121,7 +121,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = false)
     {
 
        // can exists for template
@@ -142,7 +142,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = false)
     {
 
         self::showForITILTemplate($item, $withtemplate);
@@ -258,7 +258,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      *
      * @return void
      **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
+    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = false)
     {
         /**
          * @var array $CFG_GLPI
