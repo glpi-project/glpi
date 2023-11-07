@@ -45,10 +45,25 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Toolbox;
 
 class CheckSourceCodeIntegrityCommand extends AbstractCommand
 {
     protected $requires_db = false;
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        parent::initialize($input, $output);
+
+        if ($input->getOption('diff')) {
+            // Generating diff would require to load the GLPI archive in memory, and that requires about 400MB of memory.
+            // Ensure to have enough memory to not reach memory limit.
+            $max_memory = 512;
+            if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
+                ini_set('memory_limit', sprintf('%dM', $max_memory));
+            }
+        }
+    }
 
     protected function configure()
     {
@@ -76,15 +91,13 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
         $checker = new SourceCodeIntegrityChecker();
         $allow_download = $input->getOption('allow-download');
 
-        // create temporary output buffer to capture output
-        $output_buffer = fopen('php://memory', 'r+b');
-        $temp_output = new StreamOutput($output_buffer, decorated: true);
         try {
             $summary = $checker->getSummary();
         } catch (\Exception $e) {
             $output->writeln('<error>' . sprintf(__('Failed to validate GLPI source code integrity. Error was: %s'), $e->getMessage()) . '</error>');
             return 1;
         }
+
         $all_ok = true;
         if (count(array_filter($summary, static fn($status) => $status === SourceCodeIntegrityChecker::STATUS_ALTERED)) > 0) {
             $all_ok = false;
@@ -96,33 +109,29 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
             $all_ok = false;
         }
         if ($all_ok) {
-            $temp_output->writeln('<info>' . __('GLPI source code integrity is validated.') . '</info>');
-        } else {
-            $temp_output->writeln('<error>' . __('GLPI source code integrity is not validated.') . '</error>');
-
-            // @note Keep result untranslated
-            $table = new Table($temp_output);
-            $table->setHeaders(['File', 'Status']);
-            foreach ($summary as $file => $status) {
-                $status_label = match ($status) {
-                    SourceCodeIntegrityChecker::STATUS_ALTERED => 'Altered',
-                    SourceCodeIntegrityChecker::STATUS_MISSING => 'Missing',
-                    SourceCodeIntegrityChecker::STATUS_ADDED => 'Added',
-                };
-                $table->addRow([
-                    $file,
-                    $status_label
-                ]);
-            }
-            $table->render();
+            $output->writeln('<info>' . __('GLPI source code integrity is validated.') . '</info>');
+            return 0;
         }
-        if (!$diff) {
-            // copy lines from the temporary output buffer to the real output
-            rewind($output_buffer);
-            while (!feof($output_buffer)) {
-                $output->write(fread($output_buffer, 4096));
-            }
-        } else {
+
+        $output->writeln('<error>' . __('GLPI source code integrity is not validated.') . '</error>');
+
+        // @note Keep result untranslated
+        $table = new Table($output);
+        $table->setHeaders(['File', 'Status']);
+        foreach ($summary as $file => $status) {
+            $status_label = match ($status) {
+                SourceCodeIntegrityChecker::STATUS_ALTERED => 'Altered',
+                SourceCodeIntegrityChecker::STATUS_MISSING => 'Missing',
+                SourceCodeIntegrityChecker::STATUS_ADDED => 'Added',
+            };
+            $table->addRow([
+                $file,
+                $status_label
+            ]);
+        }
+        $table->render();
+
+        if ($diff) {
             $errors = [];
             if (VersionParser::isDevVersion(GLPI_VERSION)) {
                 $output->writeln('<error>' . __('Cannot generate a diff on a development version.') . '</error>');
@@ -130,15 +139,8 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
                 $code_diff = $checker->getDiff($allow_download, $errors);
 
                 if ($code_diff !== null) {
-                    // enumerate lines of the temporary output buffer and add them to the diff prefixed with a # to make them comments
-                    $diff_comments = '';
-                    rewind($output_buffer);
-                    while (!feof($output_buffer)) {
-                        $diff_comments .= '# ' . fgets($output_buffer);
-                    }
-
                     // Output with escaping so that style tags like <error> are shown as-is without being interpreted
-                    $output->write(OutputFormatter::escape($diff_comments . "\n" . $code_diff));
+                    $output->write(OutputFormatter::escape($code_diff));
                 }
 
                 if (count($errors) > 0) {
@@ -150,9 +152,6 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
                 }
             }
         }
-
-        //cleanup temporary output buffer
-        fclose($output_buffer);
 
         return 0;
     }
