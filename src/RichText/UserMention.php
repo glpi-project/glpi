@@ -204,7 +204,7 @@ final class UserMention
             return [];
         }
 
-        if (!$content_as_xml || is_null($content_as_xml)) {
+        if ($content_as_xml === null) {
             return [];
         }
 
