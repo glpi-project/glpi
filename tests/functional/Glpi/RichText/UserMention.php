@@ -188,7 +188,7 @@ HTML
                     'itemtype'      => $itemtype,
                     'main_itemtype' => $main_type,
 
-               // bad HTML no users are not notified
+               // bad HTML no users are notified
                     'add_content'            => <<<HTML
                   </span></p></div></body></html>
 HTML
@@ -196,7 +196,7 @@ HTML
                     'add_expected_observers' => [],
                     'add_expected_notified'  => [],
 
-               // update bad HTML => no users are not notified
+               // update bad HTML => no users are notified
                     'update_content'            => <<<HTML
                   </span></p></div></body></html>
 HTML
