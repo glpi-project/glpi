@@ -709,7 +709,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @param string  $text text to display
      * @param integer $nb   number of items (default 0)
      *
-     *  @return array array containing the onglets
+     *  @return string
      **/
     public static function createTabEntry($text, $nb = 0)
     {

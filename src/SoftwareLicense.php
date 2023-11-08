@@ -1206,7 +1206,7 @@ class SoftwareLicense extends CommonTreeDropdown
     /**
      * Get fields to display in the unicity error message
      *
-     * @return an array which contains field => label
+     * @return array
      */
     public function getUnicityFieldsToDisplayInErrorMessage()
     {

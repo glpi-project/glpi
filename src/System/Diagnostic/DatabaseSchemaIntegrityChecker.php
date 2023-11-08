@@ -188,7 +188,7 @@ class DatabaseSchemaIntegrityChecker
     /**
      * Get diff between effective table structure and proper structure contained in "CREATE TABLE" sql query.
      *
-     * @param string $table
+     * @param string $table_name
      * @param string $proper_create_table_sql
      *
      * @return string

@@ -48,7 +48,7 @@ class ExtensionGroup extends AbstractRequirement
     protected $extensions;
 
     /**
-     * @param string      $name         Extension group title.
+     * @param string      $title        Extension group title.
      * @param string[]    $extensions   Required extensions names.
      * @param bool        $optional     Indicate if extension is optional.
      * @param string|null $description  Describe usage of the extension.

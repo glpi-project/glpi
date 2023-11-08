@@ -81,7 +81,7 @@ class Migration
     protected $output_handler;
 
     /**
-     * @param integer $ver Version number
+     * @param string $ver Version number
      **/
     public function __construct($ver)
     {
@@ -102,7 +102,7 @@ class Migration
      *
      * @since 0.84
      *
-     * @param integer $ver Version number
+     * @param string $ver Version number
      *
      * @return void
      **/

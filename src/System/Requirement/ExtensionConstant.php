@@ -48,10 +48,10 @@ class ExtensionConstant extends AbstractRequirement
     private $name;
 
     /**
+     * @param string $title Constant title.
      * @param string $name Constant name.
      * @param bool $optional Indicated if extension is optional.
      * @param string $description Constant description.
-     * @param string $failure_message Failure message.
      */
     public function __construct(string $title, string $name, bool $optional = false, string $description = '')
     {

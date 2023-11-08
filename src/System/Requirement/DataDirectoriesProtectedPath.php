@@ -64,7 +64,7 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
     /**
      * @param array $directories_constants  Constants defining directories to check.
      * @param string $var_root_constant     Constant defining variable root directory.
-     * @param string $root_directory        Web root directory.
+     * @param string $glpi_root_directory   Web root directory.
      */
     public function __construct(
         array $directories_constants,

@@ -59,7 +59,7 @@ class ChangeTemplate extends ITILTemplate
         ];
     }
 
-    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $change = new Change();
         return [
