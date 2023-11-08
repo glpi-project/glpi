@@ -198,7 +198,7 @@ final class UserMention
             libxml_use_internal_errors(true);
             $dom->loadHTML($content);
             // TODO In GLPI 10.1, find a way to remove usage of this `@` operator
-            // xhich added to prevent Error E_WARNING simplexml_import_dom(): Invalid Nodetype to import
+            // that was added to prevent Error E_WARNING simplexml_import_dom(): Invalid Nodetype to import
             // with bad HTML content.
             $content_as_xml = @simplexml_import_dom($dom);
         } catch (\Throwable $e) {
