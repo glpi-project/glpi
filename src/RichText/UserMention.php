@@ -204,6 +204,10 @@ final class UserMention
             return [];
         }
 
+        if (!$content_as_xml || is_null($content_as_xml)) {
+            return [];
+        }
+
         $mention_elements = $content_as_xml->xpath('//*[@data-user-mention="true"]');
         foreach ($mention_elements as $mention_element) {
             $ids[] = (int)$mention_element->attributes()->{'data-user-id'};
