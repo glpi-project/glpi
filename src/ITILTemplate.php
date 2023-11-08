@@ -315,7 +315,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @see self::getAllowedFields()
      */
-    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         return [];
     }
