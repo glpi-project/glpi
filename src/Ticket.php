@@ -1248,6 +1248,13 @@ class Ticket extends CommonITILObject
                 ) {
                     $changes[] = $key;
                 }
+            } elseif (
+                array_key_exists($key, $this->fields) //existing in original field
+                && !array_key_exists($key, $post_added) //not already added by rules
+                && !array_key_exists($key, $input) //not in input, so not changed
+            ) {
+                $input[$key] = $this->fields[$key]; //add it to input to be able to use it in rules
+                $changes[] = $key; //add it to changes to be able to use it in rules
             }
         }
 
