@@ -194,6 +194,8 @@ final class UserMention
 
         try {
             $content = Sanitizer::getVerbatimValue($content);
+            //clean HTML to prevent Error E_WARNING simplexml_import_dom(): Invalid Nodetype to import
+            $content = RichText::getSafeHtml($content);
             $dom = new DOMDocument();
             libxml_use_internal_errors(true);
             $dom->loadHTML($content);
