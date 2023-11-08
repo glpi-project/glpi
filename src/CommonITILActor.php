@@ -126,7 +126,7 @@ abstract class CommonITILActor extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::getItilObjectForeignKey()   => $items_id,
                 'alternative_email'                 => $email
