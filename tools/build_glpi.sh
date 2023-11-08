@@ -91,3 +91,6 @@ for node in "${dev_nodes[@]}"
 do
     rm -rf $WORKING_DIR/$node
 done
+
+echo "Generating file manifest..."
+$WORKING_DIR/bin/console build:generate_code_manifest -a crc32c
