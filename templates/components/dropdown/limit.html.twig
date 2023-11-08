@@ -70,6 +70,9 @@
 {% if max > 10 %}
    {% set options = options|merge([max - 10]) %}
 {% endif %}
+{% if user_pref('list_limit') not in options %}
+   {% set options = options|merge([user_pref('list_limit')]) %}
+{% endif %}
 <select class="form-select form-select-sm mx-1 d-inline-block w-auto {{ select_class|default('') }}"
         {% if not no_onchange %}onChange="{{ href }}"{% endif %}>
    {% for value in options|sort %}
