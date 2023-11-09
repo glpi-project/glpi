@@ -58,7 +58,7 @@
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
             data-use-notification="{{ actor['use_notification'] }}"
-            data-is-notify="{{ actor['is_notify'] ?? 1}}"
+            data-is-notify="{{ actor['is_notify'] ?? 1 }}"
             data-default-email="{{ actor['default_email'] ?? '' }}"
             data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
@@ -128,11 +128,11 @@
          if (['User', 'Group', 'Supplier', 'Email'].includes(itemtype)
             && is_selection) {
             var fa_class = "far";
-            var notif_title = itemtype == 'Group' ? "{{__('Email followup (from group settings)')}}": "{{__('Email followup')}}";
+            var notif_title = itemtype == 'Group' ? "{{ __('Email followup (from group settings)') }}": "{{ __('Email followup') }}";
             debugger;
             if (is_notify != 0 && use_notif) {
                fa_class = "fas";
-               notif_title = "{{__('Email followup')}}";
+               notif_title = "{{ __('Email followup') }}";
             }
             actions = `<button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
