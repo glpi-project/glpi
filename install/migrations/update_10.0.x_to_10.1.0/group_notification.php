@@ -42,4 +42,3 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     );
     $migration->addKey($table, $field_to_add);
 }
-
