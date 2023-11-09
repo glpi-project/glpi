@@ -232,7 +232,7 @@
                         'sink_coeff',
                         infocom.fields['sink_coeff'],
                         __('Amortization coefficient'),
-                        {'disabled': disabled, 'step': 0.1}
+                        {'disabled': disabled, 'step': 'any'}
                      ) }}
 
                      {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
