@@ -923,4 +923,13 @@ class Config extends DbTestCase
             }
         }
     }
+
+    public function testConfigLogNotEmpty()
+    {
+        $itemtype = 'Config';
+        $config_id = \Config::getConfigIDForContext('core');
+        $this->integer($config_id)->isGreaterThan(0);
+        $total_number = countElementsInTable("glpi_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);
+        $this->integer($total_number)->isGreaterThan(0);
+    }
 }
