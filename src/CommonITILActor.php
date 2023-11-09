@@ -99,6 +99,10 @@ abstract class CommonITILActor extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (empty($items_id)) {
+            return [];
+        }
+
         $users = [];
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
@@ -122,7 +126,7 @@ abstract class CommonITILActor extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::getItilObjectForeignKey()   => $items_id,
                 'alternative_email'                 => $email

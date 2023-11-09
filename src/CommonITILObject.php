@@ -118,7 +118,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function loadUsers(): void
     {
-        if (!empty($this->userlinkclass) && isset($this->fields['id'])) {
+        if (!empty($this->userlinkclass) && !$this->isNewItem()) {
             $class = new $this->userlinkclass();
             $this->lazy_loaded_users = $class->getActors($this->fields['id']);
         } else {
@@ -133,7 +133,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function loadGroups(): void
     {
-        if (!empty($this->grouplinkclass) && isset($this->fields['id'])) {
+        if (!empty($this->grouplinkclass) && !$this->isNewItem()) {
             $class = new $this->grouplinkclass();
             $this->lazy_loaded_groups = $class->getActors($this->fields['id']);
         } else {
@@ -148,7 +148,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function loadSuppliers(): void
     {
-        if (!empty($this->supplierlinkclass) && isset($this->fields['id'])) {
+        if (!empty($this->supplierlinkclass) && !$this->isNewItem()) {
             $class = new $this->supplierlinkclass();
             $this->lazy_loaded_suppliers = $class->getActors($this->fields['id']);
         } else {
