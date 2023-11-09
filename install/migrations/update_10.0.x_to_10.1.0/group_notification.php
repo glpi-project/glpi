@@ -14,7 +14,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     );
     $migration->addKey($table, $field_to_add);
 }
-$table = 'glpi_change_groups';
+$table = 'glpi_changes_groups';
 
 $field_to_add = 'use_notification';
 if (!$DB->fieldExists($table, $field_to_add)) {
