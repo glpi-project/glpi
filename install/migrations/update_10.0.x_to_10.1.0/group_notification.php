@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @var DB $DB
+ * @var Migration $migration
+ */
+
 $table = 'glpi_groups_tickets';
 
 $field_to_add = 'use_notification';
