@@ -4020,12 +4020,11 @@ HTML;
         /** @var \DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
-            'SELECT' => 'id',
+            'SELECT' => ['MIN' => 'id AS id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'context' => $context,
             ],
-            'LIMIT'  => 1,
         ]);
         if (count($iterator)) {
             return $iterator->current()['id'];
