@@ -74,8 +74,12 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
    // the we must ask for unlock
     $ol = new ObjectLock();
     if ($ol->getFromDB($_POST["id"])) {
-        NotificationEvent::raiseEvent('unlock', $ol);
-        $ret = 1;
+        $itemtype = $ol->fields['itemtype'];
+        $object = new $itemtype();
+        if ($object->getFromDB($ol->fields["items_id"])){
+            NotificationEvent::raiseEvent('unlock', $object);
+            $ret = 1;
+        }
     }
 } else if (
     isset($_GET['lockstatus'])

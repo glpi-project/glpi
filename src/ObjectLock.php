@@ -247,7 +247,7 @@ class ObjectLock extends CommonDBTM
                      cache: false,
                      data: {
                         requestunlock: 1,
-                        id: {$this->itemid}
+                        id: {$this->fields['id']}
                      },
                      dataType: 'json',
                      success: function( data, textStatus, jqXHR ) {
