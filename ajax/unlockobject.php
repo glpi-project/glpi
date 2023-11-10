@@ -76,7 +76,7 @@ if (isset($_POST['unlock']) && isset($_POST["id"])) {
     if ($ol->getFromDB($_POST["id"])) {
         $itemtype = $ol->fields['itemtype'];
         $object = new $itemtype();
-        if ($object->getFromDB($ol->fields["items_id"])){
+        if ($object->getFromDB($ol->fields["items_id"])) {
             NotificationEvent::raiseEvent('unlock', $object);
             $ret = 1;
         }
