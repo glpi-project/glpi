@@ -65,6 +65,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 
     public function getCartridgeTagInfoForPrinter(Printer $printer)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $id = $printer->fields['id'];
