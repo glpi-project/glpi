@@ -76,6 +76,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     */
     private static function query(array $entities, int $repeat = 0): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (count($entities)) {
@@ -166,6 +167,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     */
     public static function prepareBodyValues(array $data): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $cartridge = new CartridgeItem();
@@ -214,6 +216,7 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
     */
     public static function displayAlerts(): void
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $crontask = new CronTask();
@@ -307,6 +310,8 @@ class PrinterCartridgeLevelAlert extends CommonGLPI
      **/
     public static function cronPrinterCartridgeLevelAlert($task = null)
     {
+        /** @var \DBmysql $DB */
+        /** @var array $CFG_GLPI */
         global $DB, $CFG_GLPI;
 
         $cron_status = 0;
