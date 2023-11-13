@@ -62,7 +62,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
     public static function canView()
     {
         $rule_class = (new static())->getRuleClassName();
-        return Session::haveRightsOr(self::$rightname, [READ, $rule_class::PARENT]);
+        return Session::haveRightsOr(static::$rightname, [READ, $rule_class::PARENT]);
     }
 
     public function canList()
