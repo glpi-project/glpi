@@ -54,6 +54,7 @@ class ActivateCommand extends AbstractPluginCommand
 
         $this->setName('plugin:activate');
         $this->setDescription('Activate plugin(s)');
+        $this->setAliases(['plugin:enable']);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

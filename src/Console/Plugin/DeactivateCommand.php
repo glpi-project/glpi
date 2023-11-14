@@ -54,6 +54,7 @@ class DeactivateCommand extends AbstractPluginCommand
 
         $this->setName('plugin:deactivate');
         $this->setDescription('Deactivate plugin(s)');
+        $this->setAliases(['plugin:disable']);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
