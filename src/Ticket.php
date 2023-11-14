@@ -1280,8 +1280,10 @@ class Ticket extends CommonITILObject
             if ($user_id !== null && $user->getFromDB($user_id)) {
                 $input['_locations_id_of_requester']   = $user->fields['locations_id'];
                 $input['users_default_groups']         = $user->fields['groups_id'];
+                $input['profiles_id']         = $user->fields['profiles_id'];
                 $changes[]                             = '_locations_id_of_requester';
                 $changes[]                             = '_groups_id_of_requester';
+                $changes[]                             = 'profiles_id';
             }
 
             $input = $rules->processAllRules(
@@ -1941,11 +1943,13 @@ class Ticket extends CommonITILObject
                 ) {
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
+                    $input['profiles_id'] = $user->fields['profiles_id']; //default profile
                     $tmprequester = $input["_users_id_requester"];
                 } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
                     if ($user->getFromDB($user_id)) {
                         $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                         $input['users_default_groups'] = $user->fields['groups_id'];
+                        $input['profiles_id'] = $user->fields['profiles_id']; //default profile
                     }
                 }
             }

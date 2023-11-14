@@ -53,6 +53,7 @@ use RuleCriteria;
 use TaskTemplate;
 use Ticket;
 use Ticket_Contract;
+use Ticket_User;
 use TicketTask;
 use Toolbox;
 use User;
@@ -3441,5 +3442,89 @@ class RuleTicket extends DbTestCase
 
         // Check if the location "Test location" is assigned
         $this->integer($ticket->fields['locations_id'])->isEqualTo($location->getID());
+    }
+
+    /**
+     * Test that the "Default profile" criterion works correctly
+     * @return void
+     */
+    public function testDefaultProfileCriterion(): void
+    {
+
+        // Get the root entity
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        // Create a location
+        $location = $this->createItem(Location::class, [
+            'name' => 'Test location',
+            'entities_id' => $entity,
+        ]);
+
+        // Create another location
+        $location2 = $this->createItem(Location::class, [
+            'name' => 'Other Test location',
+            'entities_id' => $entity,
+        ]);
+
+        // Create two rules
+        $builder = new RuleBuilder('Test default profile criterion rule');
+        $builder
+            ->addCriteria('profiles_id', Rule::PATTERN_IS, 4)
+            ->addAction('assign', 'locations_id', $location->getID());
+        $this->createRule($builder);
+
+
+        // Create two rules
+        $builder = new RuleBuilder('Test default profile criterion rule on update');
+        $builder
+            ->addCriteria('profiles_id', Rule::PATTERN_IS, 0)
+            ->addAction('assign', 'locations_id', $location2->getID());
+        $this->createRule($builder);
+
+        //Load user jsmith123
+        $user = new \User();
+        $user->getFromDB(getItemByTypeName('User', 'jsmith123', true));
+
+        // Create a ticket with "Very high" urgency
+        $ticket = $this->createItem(\Ticket::class, [
+            'name' => 'Test ticket',
+            'content' => 'Test ticket content',
+            'entities_id' => $entity,
+            '_users_id_requester' => $user->fields['id']
+        ]);
+
+
+        // Check if the location "Test location" is assigned
+        $this->integer($ticket->fields['locations_id'])->isEqualTo($location->getID());
+
+        $this->login('tech', 'tech');
+
+        //remove requester
+        $user_ticket = new Ticket_User();
+        $this->boolean($user_ticket->deleteByCriteria([
+            "tickets_id" => $ticket->fields['id'],
+            "type" => \CommonITILActor::REQUESTER,
+            "users_id" => $user->fields['id']
+        ]))->isTrue();
+
+        //reload ticket
+        $this->boolean($ticket->getFromDB($ticket->fields['id']))->isTrue();
+
+        //Load user tech
+        $user = new \User();
+        $user->getFromDB(getItemByTypeName('User', 'tech', true));
+
+        // update ticket to update requester
+        $this->boolean($ticket->update([
+            'name'                  => 'Test update ticket',
+            'id'                    => $ticket->fields['id'],
+            'content'               => 'test',
+            '_itil_requester'   => ["_type" => "user",
+                "users_id" => $user->fields['id']
+            ]
+        ]))->isTrue();
+
+        // Check if the location "Test location" is assigned
+        $this->integer($ticket->fields['locations_id'])->isEqualTo($location2->getID());
     }
 }
