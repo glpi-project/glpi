@@ -596,11 +596,12 @@ class Drive extends AbstractInventoryAsset
         </REQUEST>";
 
         $this->doInventory($xml_source, true);
-        //alwys1 harddrives linked to computer only
+        //always harddrives linked to computer only
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $agent['items_id']]);
         $this->integer(count($harddrives))->isIdenticalTo(1);
         $this->boolean($device_hdd->getFromDB(current($harddrives)['deviceharddrives_id']))->isTrue();
         $this->boolean($interface->getFromDB($device_hdd->fields['interfacetypes_id']))->isTrue();
+        //check interface has been updated
         $this->string($interface->fields['name'])->isEqualto('IDE');
     }
 }
