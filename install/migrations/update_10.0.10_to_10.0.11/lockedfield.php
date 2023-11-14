@@ -50,3 +50,14 @@ $migration->addPostQuery(
         ]
     )
 );
+
+//global lock on entities_id should not / no longer exist
+$migration->addPostQuery(
+    $DB->buildDelete(
+        'glpi_lockedfields',
+        [
+            'is_global' => 1,
+            'field' => 'entities_id'
+        ]
+    )
+);
