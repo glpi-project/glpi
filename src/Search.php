@@ -1024,7 +1024,7 @@ class Search
                     if ($first) {
                         $first = false;
                     } else {
-                        $QUERY .= " UNION ";
+                        $QUERY .= " UNION ALL ";
                     }
                     $tmpquery = "";
                    // AllAssets case
