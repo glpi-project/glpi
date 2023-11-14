@@ -78,13 +78,14 @@ class Drive extends AbstractInventoryAsset
       <SCSI_UNID>0</SCSI_UNID>
       <SERIALNUMBER />
       <TYPE>UNKNOWN</TYPE>
+      <INTERFACE>SSD</INTERFACE>
     </STORAGES>
     <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
   </CONTENT>
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description": "Lecteur de CD-ROM", "manufacturer": "(Lecteurs de CD-ROM standard)", "model": "VBOX CD-ROM ATA Device", "name": "VBOX CD-ROM ATA Device", "scsi_coid": "1", "scsi_lun": "0", "scsi_unid": "0", "type": "UNKNOWN", "designation": "Lecteur de CD-ROM", "interfacetypes_id": "UNKNOWN", "manufacturers_id": "(Lecteurs de CD-ROM standard)", "is_dynamic": 1}'
+                'expected'  => '{"description": "Lecteur de CD-ROM", "manufacturer": "(Lecteurs de CD-ROM standard)", "model": "VBOX CD-ROM ATA Device", "name": "VBOX CD-ROM ATA Device", "scsi_coid": "1", "scsi_lun": "0", "scsi_unid": "0", "type": "UNKNOWN", "designation": "Lecteur de CD-ROM", "interface": "SSD","interfacetypes_id": "SSD", "manufacturers_id": "(Lecteurs de CD-ROM standard)", "is_dynamic": 1}'
             ]
         ];
     }
