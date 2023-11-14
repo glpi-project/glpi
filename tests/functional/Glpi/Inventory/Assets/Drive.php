@@ -516,4 +516,91 @@ class Drive extends AbstractInventoryAsset
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->integer(count($harddrives))->isIdenticalTo(1);
     }
+
+
+
+
+    public function testInventoryHardDrive()
+    {
+        global $DB;
+        $computer = new \Computer();
+        $device_hdd = new \DeviceHardDrive();
+        $item_hdd = new \Item_DeviceHardDrive();
+        $interface = new \InterfaceType();
+
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <STORAGES>
+      <DESCRIPTION>PCI Slot 8 : Bus 85 : Device 0 : Function 0 : Adapter 1</DESCRIPTION>
+      <FIRMWARE>HPS1NFAV</FIRMWARE>
+      <INTERFACE>NVME</INTERFACE>
+      <MODEL>SAMSUNG MZVLQ512HBLU-00BH1</MODEL>
+      <NAME>PhysicalDisk0</NAME>
+      <SERIAL>9856_84F3_5641_9874</SERIAL>
+      <TYPE>SSD</TYPE>
+    </STORAGES>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test-pc002']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+
+        //we now have 1 harddrives linked to computer only
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $agent['items_id']]);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
+        $this->boolean($device_hdd->getFromDB(current($harddrives)['deviceharddrives_id']))->isTrue();
+        $this->boolean($interface->getFromDB($device_hdd->fields['interfacetypes_id']))->isTrue();
+        $this->string($interface->fields['name'])->isEqualto('NVME');
+
+        //redo inventory by updating interface
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <STORAGES>
+              <DESCRIPTION>PCI Slot 8 : Bus 85 : Device 0 : Function 0 : Adapter 1</DESCRIPTION>
+              <FIRMWARE>HPS1NFAV</FIRMWARE>
+              <INTERFACE>IDE</INTERFACE>
+              <MODEL>SAMSUNG MZVLQ512HBLU-00BH1</MODEL>
+              <NAME>PhysicalDisk0</NAME>
+              <SERIAL>9856_84F3_5641_9874</SERIAL>
+              <TYPE>SSD</TYPE>
+            </STORAGES>
+            <HARDWARE>
+              <NAME>pc002</NAME>
+            </HARDWARE>
+            <BIOS>
+              <SSN>ggheb7ne7</SSN>
+            </BIOS>
+            <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+          </CONTENT>
+          <DEVICEID>test-pc002</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+        //alwys1 harddrives linked to computer only
+        $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $agent['items_id']]);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
+        $this->boolean($device_hdd->getFromDB(current($harddrives)['deviceharddrives_id']))->isTrue();
+        $this->boolean($interface->getFromDB($device_hdd->fields['interfacetypes_id']))->isTrue();
+        $this->string($interface->fields['name'])->isEqualto('IDE');
+    }
 }
