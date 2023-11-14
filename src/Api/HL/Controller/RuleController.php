@@ -364,6 +364,7 @@ final class RuleController extends AbstractController
                 ];
             }
             unset($j);
+            /** @noinspection SlowArrayOperationsInLoopInspection */
             $conditions = array_replace($conditions, $to_add);
         }
         ksort($conditions);
@@ -598,7 +599,7 @@ final class RuleController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $params);
     }
 
-    #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/Collection/{collection}/Rule', methods: ['POST'])]
     #[Doc\Route(
         description: 'Create a rule in a collection',
         parameters: [
@@ -618,7 +619,46 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
 
-        return Search::createBySchema($this->getKnownSchema('Rule'), $params, [self::class, 'getRule']);
+        return Search::createBySchema($this->getKnownSchema('Rule'), $params, [self::class, 'getRule'], [
+            'mapped' => [
+                'collection' => $request->getAttribute('collection')
+            ]
+        ]);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Update a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Rule',
+            ]
+        ]
+    )]
+    public function updateRule(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, UPDATE)) {
+            return $response;
+        }
+
+        $params = $request->getParameters();
+        $params['sub_type'] = 'Rule' . $request->getAttribute('collection');
+
+        return Search::updateBySchema($this->getKnownSchema('Rule'), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['DELETE'])]
+    #[Doc\Route(
+        description: 'Delete a rule in a collection'
+    )]
+    public function deleteRule(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, PURGE)) {
+            return $response;
+        }
+        return Search::deleteBySchema($this->getKnownSchema('Rule'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
@@ -646,7 +686,7 @@ final class RuleController extends AbstractController
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Create am action for a rule in a collection',
+        description: 'Create an action for a rule in a collection',
         parameters: [
             [
                 'name' => '_',

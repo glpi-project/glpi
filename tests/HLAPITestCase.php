@@ -34,6 +34,7 @@
  */
 
 use Glpi\Api\HL\Controller\CoreController;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
@@ -189,6 +190,8 @@ final class HLAPIHelper
     {
         if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
+        } else {
+            $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
         }
         $response = $this->router->handleRequest($request);
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
