@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use CommonDBTM;
 use Glpi\Inventory\Conf;
+use Toolbox;
 
 class Drive extends Device
 {
@@ -46,9 +47,10 @@ class Drive extends Device
 
     public function prepare(): array
     {
+
         $mapping = [
             'name'         => 'designation',
-            'type'         => 'interfacetypes_id',
+            'interface'    => 'interfacetypes_id',
             'manufacturer' => 'manufacturers_id',
         ];
 
