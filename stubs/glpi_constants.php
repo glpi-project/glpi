@@ -85,3 +85,4 @@ define('GLPI_USE_CSRF_CHECK', null);
 define('GLPI_USE_IDOR_CHECK', null);
 define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
 define('GLPI_CENTRAL_WARNINGS', null);
+define('GLPI_TEXT_MAXSIZE', null);
