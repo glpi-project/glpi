@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Symfony\Component\Finder\Finder;
+
 /**
  * Profile class
  **/
@@ -820,6 +822,7 @@ class Profile extends CommonDBTM
             $options = array_replace([
                 'field' => null,
                 'label' => null,
+                'tooltip' => null,
                 'rights' => null,
                 'scope' => 'entity'
             ], $options);
@@ -828,6 +831,7 @@ class Profile extends CommonDBTM
                 'rights' => $options['rights'] ?? Profile::getRightsFor($itemtype, $interface),
                 'label'  => $options['label'] ?? $itemtype::getTypeName(Session::getPluralNumber()),
                 'field'  => $options['field'] ?? $itemtype::$rightname,
+                'tooltip' => self::getRelatedUsedClasses($options['field'] ?? $itemtype::$rightname),
                 'scope' => $options['scope']
             ];
         };
@@ -1130,6 +1134,45 @@ class Profile extends CommonDBTM
             $result = $all_rights[$interface][$form][$group] ?? [];
         }
         return $result;
+    }
+
+    public static function getRelatedUsedClasses(string $rightname)
+    {
+        Toolbox::logDebug($rightname);
+        $tooltip = "Used by : ";
+
+        $finder = new Finder();
+        // find all files in the current directory
+        $finder->files()->in(GLPI_ROOT . '/src')->name('*.php');
+
+        $handle = [];
+
+        // check if there are any search results
+        if ($finder->hasResults()) {
+            foreach ($finder as $file) {
+                $classname = $file->getBasename('.php');
+                // TODO In GLPI 10.1, find a way to remove usage of this `@` operator
+                // that was added to prevent PHP User deprecated function for RuleImportComputerCollection
+                if (@class_exists($classname) && is_a($classname, 'CommonDBTM', true)) {
+                    $class = new ReflectionClass($classname);
+                    if (!$class->isAbstract() && isset($classname::$rightname) && $classname::$rightname == $rightname) {
+                        if (array_key_exists($classname, $handle)) {
+                            continue;
+                        } else {
+                            $tooltip = sprintf($tooltip . ' %s,', $classname::getTypeName(0));
+                            $handle[$classname] = $classname;
+                        }
+                    }
+                }
+            }
+        }
+
+        if ($tooltip != "Used by : ") {
+            //remove last char ','
+            return substr($tooltip, 0, -1);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -3991,6 +4034,7 @@ class Profile extends CommonDBTM
                 }
 
                 $row = ['label'   => $info['label'],
+                    'tooltip'   => $info['tooltip'],
                     'columns' => []
                 ];
                 if (!empty($info['row_class'])) {
