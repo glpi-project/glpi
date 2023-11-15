@@ -478,14 +478,8 @@ class NetworkName extends FQDNLabel
         echo "</tr>";
 
         if ($name->isNewItem()) {
-            if (!$name->canCreate()) {
-                $canedit = false;
-            }
-            $canedit = $name->canUpdate();
+            $canedit = $name->canCreate();
         } else {
-            if (!$name->can($name->getID(), READ)) {
-                $canedit = false;
-            }
             $canedit = $name->can($name->getID(), UPDATE);
         }
 
