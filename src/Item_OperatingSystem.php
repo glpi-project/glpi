@@ -373,6 +373,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
