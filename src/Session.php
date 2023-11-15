@@ -2025,4 +2025,15 @@ class Session
     {
         return $_SESSION['glpilanguage'] ?? null;
     }
+
+    /**
+     * Helper function to get the date stored in $_SESSION['glpi_currenttime']
+     *
+     * @return null|string
+     */
+    public static function getCurrentTime(): ?string
+    {
+        // TODO (10.1 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
+        return $_SESSION['glpi_currenttime'] ?? null;
+    }
 }
