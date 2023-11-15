@@ -48,7 +48,7 @@ class Drive extends Device
     {
         $mapping = [
             'name'         => 'designation',
-            'type'         => 'interfacetypes_id',
+            'interface'    => 'interfacetypes_id',
             'manufacturer' => 'manufacturers_id',
         ];
 
