@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Symfony\Component\Finder\Finder;
 
 /**
  * Profile class
@@ -76,6 +77,8 @@ class Profile extends CommonDBTM
     public $dohistory             = true;
 
     public static $rightname             = 'profile';
+
+    public static $classname_scope = null;
 
     /**
      * Profile rights to update after profile update.
@@ -855,6 +858,7 @@ class Profile extends CommonDBTM
             $options = array_replace([
                 'field' => null,
                 'label' => null,
+                'tooltip' => null,
                 'rights' => null,
                 'scope' => 'entity'
             ], $options);
@@ -863,6 +867,7 @@ class Profile extends CommonDBTM
                 'rights' => $options['rights'] ?? Profile::getRightsFor($itemtype, $interface),
                 'label'  => $options['label'] ?? $itemtype::getTypeName(Session::getPluralNumber()),
                 'field'  => $options['field'] ?? $itemtype::$rightname,
+                'tooltip' => self::getRelatedUsedClasses($options['field'] ?? $itemtype::$rightname),
                 'scope' => $options['scope']
             ];
         };
@@ -1174,6 +1179,55 @@ class Profile extends CommonDBTM
             $result = $all_rights[$interface][$form][$group] ?? [];
         }
         return $result;
+    }
+
+    public static function getRelatedUsedClasses(string $rightname)
+    {
+        $tooltip = __("Used by : ");
+
+        if (self::$classname_scope == null) {
+            $finder = new Finder();
+            $finder->files()->in(GLPI_ROOT . '/src')->name('*.php');
+            foreach ($finder as $file) {
+                $classname = $file->getBasename('.php');
+                // TODO In GLPI 10.1, find a way to remove usage of this `@` operator
+                // that was added to prevent (among others) PHP User deprecated function for RuleImportComputerCollection
+                if (
+                    @class_exists($classname)
+                    && is_a($classname, 'CommonGLPI', true)
+                    && !is_a($classname, 'CommonDBRelation', true) //Exclude CommonDBRelation (getTypeName not exist)
+                    && !is_a($classname, 'RuleCollection', true)  //Exclude RuleCollection (getTypeName not exist)
+                ) {
+                    self::$classname_scope[$classname] = $classname;
+                }
+            }
+        }
+
+        $handle = [];
+        foreach (self::$classname_scope as $classname) {
+            $class = new ReflectionClass($classname);
+            if (!$class->isAbstract() && isset($classname::$rightname) && $classname::$rightname == $rightname) {
+                if (array_key_exists($classname::getTypeName(0), $handle)) {
+                    continue;
+                } else {
+                    $handle[$classname::getTypeName(0)] = $classname::getTypeName(0);
+                }
+            }
+        }
+
+        // Display tooltip only if concerned more than one context
+        if (count($handle) > 1) {
+            foreach ($handle as $class_type) {
+                $tooltip = sprintf($tooltip . ' %s,', $class_type);
+            }
+        }
+
+        if ($tooltip != __("Used by : ")) {
+            //remove last char ','
+            return substr($tooltip, 0, -1);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -4123,6 +4177,7 @@ class Profile extends CommonDBTM
                 }
 
                 $row = ['label'   => $info['label'],
+                    'tooltip'   => $info['tooltip'],
                     'columns' => []
                 ];
                 if (!empty($info['row_class'])) {

@@ -74,6 +74,10 @@
                   {% set row_id = call('Html::cleanId', ['row_label_' ~ row_name ~ '_' ~ param['rand']]) %}
                   <td class="{{ row['class'] }}" id="{{ row_id }}">
                      {{ row['label'] ?? '&nbsp;' }}
+
+                     {% if row['tooltip'] is not null %}
+                        {% do call('Html::showToolTip', [row['tooltip'], {}]) %}
+                     {% endif %}
                   </td>
 
                   {% for col_name, column in columns %}
