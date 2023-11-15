@@ -2115,9 +2115,11 @@ class CronTask extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+        if (self::mustRunWebTasks()) {
+            $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+            echo "<div style=\"background-image: url('$path');\"></div>";
+        }
 
-        echo "<div style=\"background-image: url('$path');\"></div>";
         return true;
     }
 
@@ -2145,16 +2147,12 @@ class CronTask extends CommonDBTM
      **/
     public static function callCron()
     {
+
         if (isset($_SESSION["glpicrontimer"])) {
            // call static function callcron() every 5min
             if ((time() - $_SESSION["glpicrontimer"]) > 300) {
-                if (self::mustRunWebTasks()) {
-                    if (self::callCronForce()) {
-                        // Restart timer
-                        $_SESSION["glpicrontimer"] = time();
-                    }
-                } else {
-                    // Restart timer
+                if (self::callCronForce()) {
+                   // Restart timer
                     $_SESSION["glpicrontimer"] = time();
                 }
             }
