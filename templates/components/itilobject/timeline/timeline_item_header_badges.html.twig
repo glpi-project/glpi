@@ -38,7 +38,8 @@
 {% set date_mod_relative = date_mod %}
 
 {% if not (anchor starts with 'Log_') %}
-    {# Workaround issue where log data already has a formatted datetime #}
+    {# Workaround issue where log data already has a formatted datetime -- see https://github.com/glpi-project/glpi/pull/15901 #}
+    {# TODO in GLPI 10.1: Remove this workaround #}
     {% set date_creation_formatted = date_creation|formatted_datetime %}
     {% set date_mod_formatted = date_mod|formatted_datetime %}
     {% set date_creation_relative = date_creation|relative_datetime %}
