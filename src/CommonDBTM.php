@@ -3530,7 +3530,7 @@ class CommonDBTM extends CommonGLPI
         if ($this->isField('users_id_tech')) {
             $tmp = getUserName($this->getField('users_id_tech'));
             if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => __('Technician in charge of the hardware'),
+                $toadd[] = ['name'  => __('Technician in charge'),
                     'value' => $tmp
                 ];
             }

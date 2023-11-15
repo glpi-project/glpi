@@ -55,14 +55,14 @@ class ITILCategory extends CommonTreeDropdown
             ],
             [
                 'name'      => 'users_id',
-                'label'     => __('Technician in charge of the hardware'),
+                'label'     => __('Technician in charge'),
                 'type'      => 'UserDropdown',
                 'right'     => 'own_ticket',
                 'list'      => true,
             ],
             [
                 'name'      => 'groups_id',
-                'label'     => __('Group in charge of the hardware'),
+                'label'     => __('Group in charge'),
                 'type'      => 'dropdownValue',
                 'condition' => ['is_assign' => 1],
                 'list'      => true,
@@ -157,7 +157,7 @@ class ITILCategory extends CommonTreeDropdown
             'id'                 => '70',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'name'               => __('Technician in charge of the hardware'),
+            'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
             'right'              => 'own_ticket'
         ];
