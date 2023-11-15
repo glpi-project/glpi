@@ -475,25 +475,39 @@ class NetworkName extends FQDNLabel
         );
         echo "</td>\n";
 
-        echo "</tr><tr class='tab_bg_1'>\n";
+        echo "</tr>";
 
-        echo "<td>" . IPAddress::getTypeName(Session::getPluralNumber());
-        IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses');
-        echo "</td>";
-        echo "<td>";
-        IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses');
-        echo "</td>";
+        if ($name->isNewItem()) {
+            if (!$name->canCreate()) {
+                $canedit = false;
+            }
+            $canedit = $name->canUpdate();
+        } else {
+            if (!$name->can($name->getID(), READ)) {
+                $canedit = false;
+            }
+            $canedit = $name->can($name->getID(), UPDATE);
+        }
 
-       // MoYo : really need to display it here ?
-       // make confure because not updatable
-       // echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."&nbsp;";
-       // Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
-       // echo "</td><td>";
-       // IPNetwork::showIPNetworkProperties($name->getEntityID());
-       // echo "</td>\n";
-        echo "<td colspan='2'>&nbsp;</td>";
+        if ($canedit) {
+            echo "<tr class='tab_bg_1'>\n";
+            echo "<td>" . IPAddress::getTypeName(Session::getPluralNumber());
+            IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses', $canedit);
+            echo "</td>";
+            echo "<td>";
+            IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses', $canedit);
+            echo "</td>";
 
-        echo "</tr>\n";
+           // MoYo : really need to display it here ?
+           // make confure because not updatable
+           // echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."&nbsp;";
+           // Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
+           // echo "</td><td>";
+           // IPNetwork::showIPNetworkProperties($name->getEntityID());
+           // echo "</td>\n";
+            echo "<td colspan='2'>&nbsp;</td>";
+            echo "</tr>\n";
+        }
     }
 
 
