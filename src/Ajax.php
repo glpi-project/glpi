@@ -420,7 +420,7 @@ JAVASCRIPT;
          $(function() {
             // Keep track of the first load which will be the tab stored in the
             // session.
-            // In this case, it is useless to sebd a request to the
+            // In this case, it is useless to send a request to the
             // updatecurrenttab endpoint as we already are on this tab
             let first_load = true;
 
