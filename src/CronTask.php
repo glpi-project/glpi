@@ -2132,8 +2132,8 @@ class CronTask extends CommonDBTM
     protected static function mustRunWebTasks(): bool
     {
         $web_tasks_count = countElementsInTable(self::getTable(), [
-            'mode'  => 1, // "GLPI" mode
-            'state' => ['<>', 0], // State is not "disabled"
+            'mode'  => self::MODE_INTERNAL, // "GLPI" mode
+            'state' => self::STATE_WAITING,
         ]);
 
         return $web_tasks_count > 0;
