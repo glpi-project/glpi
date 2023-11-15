@@ -1138,13 +1138,10 @@ class Profile extends CommonDBTM
 
     public static function getRelatedUsedClasses(string $rightname)
     {
-        Toolbox::logDebug($rightname);
         $tooltip = "Used by : ";
 
         $finder = new Finder();
-        // find all files in the current directory
         $finder->files()->in(GLPI_ROOT . '/src')->name('*.php');
-
         $handle = [];
 
         // check if there are any search results
