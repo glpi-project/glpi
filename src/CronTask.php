@@ -2123,18 +2123,38 @@ class CronTask extends CommonDBTM
 
 
     /**
+     * Check if any web cron task exist and is enabled
+     *
+     * @return bool
+     **/
+    protected static function mustRunWebTasks(): bool
+    {
+        $web_tasks_count = countElementsInTable(self::getTable(), [
+            'mode'  => 1, // "GLPI" mode
+            'state' => ['<>', 0], // State is not "disabled"
+        ]);
+
+        return $web_tasks_count > 0;
+    }
+
+
+    /**
      * Call cron if time since last launch elapsed
      *
      * @return void
      **/
     public static function callCron()
     {
-
         if (isset($_SESSION["glpicrontimer"])) {
            // call static function callcron() every 5min
             if ((time() - $_SESSION["glpicrontimer"]) > 300) {
-                if (self::callCronForce()) {
-                   // Restart timer
+                if (self::mustRunWebTasks()) {
+                    if (self::callCronForce()) {
+                        // Restart timer
+                        $_SESSION["glpicrontimer"] = time();
+                    }
+                } else {
+                    // Restart timer
                     $_SESSION["glpicrontimer"] = time();
                 }
             }
