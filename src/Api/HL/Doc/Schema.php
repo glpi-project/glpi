@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use Glpi\Toolbox\ArrayPathAccessor;
+
 /**
  * @implements \ArrayAccess<string, null|string|array<string, Schema>>
  */
@@ -340,7 +342,7 @@ class Schema implements \ArrayAccess
 
         foreach ($flattened_schema as $sk => $sv) {
             // Get value from original content by the array path $sk
-            $cv = \Toolbox::getElementByArrayPath($content, $sk);
+            $cv = ArrayPathAccessor::getElementByArrayPath($content, $sk);
 
             // Verify that the type is correct
             if (!self::validateTypeAndFormat($sv['type'], $sv['format'] ?? '', $cv)) {

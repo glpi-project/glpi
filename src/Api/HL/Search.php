@@ -47,6 +47,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Response;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Toolbox\ArrayPathAccessor;
 use RuntimeException;
 
 /**
@@ -751,7 +752,7 @@ final class Search
                 $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn ($p) => !is_numeric($p)));
                 if (!isset($this->joins[$path_without_ids]['parent_type']) && $this->joins[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                     if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
-                        $items = \Toolbox::getElementByArrayPath($hydrated_record, $current_path);
+                        $items = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $current_path);
                         // Remove numeric id parts from the path to get the join name
                         $current_join = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
                         $primary_prop = $this->getPrimaryKeyPropertyForJoin($current_join);
@@ -800,14 +801,14 @@ final class Search
                 $hydrated_record = [];
                 foreach ($main_record as $k => $v) {
                     $k_path = str_replace(chr(0x1F), '.', $k);
-                    \Toolbox::setElementByArrayPath($hydrated_record, $k_path, $v);
+                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, $k_path, $v);
                 }
             } else {
                 // Add the joined item fields
                 $join_name = substr($dehydrated_ref, 0, strrpos($dehydrated_ref, chr(0x1F)));
                 $join_name = str_replace(chr(0x1F), '.', $join_name);
-                if (!\Toolbox::hasElementByArrayPath($hydrated_record, $join_name)) {
-                    \Toolbox::setElementByArrayPath($hydrated_record, $join_name, []);
+                if (!ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $join_name)) {
+                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_name, []);
                 }
                 foreach ($needed_ids as $id) {
                     [$join_prop_path, $id] = $this->getItemRecordPath($join_name, $id, $hydrated_record);
@@ -817,12 +818,12 @@ final class Search
                     $matched_record = $fetched_records[$table][(int) $id] ?? null;
 
                     if (isset($this->joins[$join_name]['parent_type']) && $this->joins[$join_name]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
-                        \Toolbox::setElementByArrayPath($hydrated_record, $join_prop_path, $matched_record);
+                        ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path, $matched_record);
                     } else {
                         if ($matched_record !== null) {
-                            $current = \Toolbox::getElementByArrayPath($hydrated_record, $join_prop_path);
+                            $current = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $join_prop_path);
                             $current[$id] = $matched_record;
-                            \Toolbox::setElementByArrayPath($hydrated_record, $join_prop_path, $current);
+                            ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_prop_path, $current);
                         }
                     }
                 }
@@ -833,7 +834,7 @@ final class Search
         foreach ($dehydrated_row as $k => $v) {
             $normalized_k = str_replace(chr(0x1F), '.', $k);
             if (isset($this->joins[$normalized_k]) && !isset($hydrated_record[$normalized_k])) {
-                \Toolbox::setElementByArrayPath($hydrated_record, $normalized_k, $v);
+                ArrayPathAccessor::setElementByArrayPath($hydrated_record, $normalized_k, $v);
             }
         }
         $this->fixupAssembledRecord($hydrated_record);
@@ -859,16 +860,16 @@ final class Search
         foreach ($array_joins as $name => $join_def) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
-            $paths = \Toolbox::getArrayPaths($record, "/^{$pattern}$/");
+            $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
             foreach ($paths as $path) {
-                $join_prop = \Toolbox::getElementByArrayPath($record, $path);
+                $join_prop = ArrayPathAccessor::getElementByArrayPath($record, $path);
                 if ($join_prop === null) {
                     continue;
                 }
                 $join_prop = array_values($join_prop);
                 // Remove any empty values
                 $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
-                \Toolbox::setElementByArrayPath($record, $path, $join_prop);
+                ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }
 
@@ -879,15 +880,15 @@ final class Search
         foreach ($obj_joins as $name => $join_def) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
-            $paths = \Toolbox::getArrayPaths($record, "/^{$pattern}$/");
+            $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
             foreach ($paths as $path) {
-                $join_prop = \Toolbox::getElementByArrayPath($record, $path);
+                $join_prop = ArrayPathAccessor::getElementByArrayPath($record, $path);
                 if ($join_prop === null) {
                     continue;
                 }
                 $join_prop = array_filter($join_prop, static fn ($v) => !empty($v));
                 if (empty($join_prop)) {
-                    \Toolbox::setElementByArrayPath($record, $path, null);
+                    ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                 }
             }
         }
@@ -1027,7 +1028,7 @@ final class Search
                     foreach ($it as $data) {
                         $cleaned_data = [];
                         foreach ($data as $k => $v) {
-                            \Toolbox::setElementByArrayPath($cleaned_data, $k, $v);
+                            ArrayPathAccessor::setElementByArrayPath($cleaned_data, $k, $v);
                         }
                         $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
                         $fetched_records[$table][$data[$fkey_local_name]] = $cleaned_data;
@@ -1065,11 +1066,11 @@ final class Search
         foreach ($results as &$result) {
             // Handle mapped fields
             foreach ($mapped_props as $mapped_prop_name => $mapped_prop) {
-                if (\Toolbox::hasElementByArrayPath($result, $mapped_prop['x-mapped-from'])) {
-                    \Toolbox::setElementByArrayPath(
+                if (ArrayPathAccessor::hasElementByArrayPath($result, $mapped_prop['x-mapped-from'])) {
+                    ArrayPathAccessor::setElementByArrayPath(
                         array: $result,
                         path: $mapped_prop_name,
-                        value: $mapped_prop['x-mapper'](\Toolbox::getElementByArrayPath($result, $mapped_prop['x-mapped-from']))
+                        value: $mapped_prop['x-mapper'](ArrayPathAccessor::getElementByArrayPath($result, $mapped_prop['x-mapped-from']))
                     );
                 }
             }
