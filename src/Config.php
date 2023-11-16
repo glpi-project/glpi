@@ -1122,6 +1122,10 @@ class Config extends CommonDBTM
             [
                 'name' => 'webonyx/graphql-php',
                 'check' => 'GraphQL\\GraphQL'
+            ],
+            [
+                'name' => 'symfony/finder',
+                'check' => 'Symfony\\Finder'
             ]
         ];
         return $deps;
