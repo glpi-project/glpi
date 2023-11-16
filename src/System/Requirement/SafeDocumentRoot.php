@@ -83,7 +83,9 @@ final class SafeDocumentRoot extends AbstractRequirement
             $this->validation_messages[] = __('Web server root directory configuration seems safe.');
         } else {
             $this->validated = false;
-            $this->validation_messages[] = __('Web server root directory configuration is not safe as it permits access to non-public files. See installation documentation for more details.');
+            if (\Session::haveRight("config", UPDATE)) {
+                $this->validation_messages[] = __('Web server root directory configuration is not safe as it permits access to non-public files. See installation documentation for more details.');
+            }
         }
     }
 }
