@@ -519,11 +519,11 @@ class Central extends CommonGLPI
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
-        }
 
-        $safe_doc_root_requirement = new SafeDocumentRoot();
-        if (!$safe_doc_root_requirement->isValidated()) {
-            $messages['warnings'] = array_merge(($messages['warnings'] ?? []), $safe_doc_root_requirement->getValidationMessages());
+            $safe_doc_root_requirement = new SafeDocumentRoot();
+            if (!$safe_doc_root_requirement->isValidated()) {
+                $messages['warnings'] = array_merge(($messages['warnings'] ?? []), $safe_doc_root_requirement->getValidationMessages());
+            }
         }
 
         if ($DB->isSlave() && !$DB->first_connection) {
