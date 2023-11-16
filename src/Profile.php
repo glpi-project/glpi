@@ -1140,7 +1140,7 @@ class Profile extends CommonDBTM
 
     public static function getRelatedUsedClasses(string $rightname)
     {
-        $tooltip = "Used by : ";
+        $tooltip = __("Used by : ");
 
         if (self::$classname_scope == null) {
             $finder = new Finder();
@@ -1179,7 +1179,7 @@ class Profile extends CommonDBTM
             }
         }
 
-        if ($tooltip != "Used by : ") {
+        if ($tooltip != __("Used by : ")) {
             //remove last char ','
             return substr($tooltip, 0, -1);
         } else {
