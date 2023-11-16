@@ -1148,7 +1148,7 @@ class Profile extends CommonDBTM
             foreach ($finder as $file) {
                 $classname = $file->getBasename('.php');
                 // TODO In GLPI 10.1, find a way to remove usage of this `@` operator
-                // that was added to prevent PHP User deprecated function for RuleImportComputerCollection
+                // that was added to prevent (among others) PHP User deprecated function for RuleImportComputerCollection
                 if (
                     @class_exists($classname)
                     && is_a($classname, 'CommonGLPI', true)
