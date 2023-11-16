@@ -73,6 +73,8 @@ class Profile extends CommonDBTM
 
     public static $rightname             = 'profile';
 
+    public static $classname_scope = null;
+
     /**
      * Profile rights to update after profile update.
      * @var array
@@ -1140,27 +1142,40 @@ class Profile extends CommonDBTM
     {
         $tooltip = "Used by : ";
 
-        $finder = new Finder();
-        $finder->files()->in(GLPI_ROOT . '/src')->name('*.php');
-        $handle = [];
-
-        // check if there are any search results
-        if ($finder->hasResults()) {
+        if (self::$classname_scope == null) {
+            $finder = new Finder();
+            $finder->files()->in(GLPI_ROOT . '/src')->name('*.php');
             foreach ($finder as $file) {
                 $classname = $file->getBasename('.php');
                 // TODO In GLPI 10.1, find a way to remove usage of this `@` operator
                 // that was added to prevent PHP User deprecated function for RuleImportComputerCollection
-                if (@class_exists($classname) && is_a($classname, 'CommonDBTM', true)) {
-                    $class = new ReflectionClass($classname);
-                    if (!$class->isAbstract() && isset($classname::$rightname) && $classname::$rightname == $rightname) {
-                        if (array_key_exists($classname, $handle)) {
-                            continue;
-                        } else {
-                            $tooltip = sprintf($tooltip . ' %s,', $classname::getTypeName(0));
-                            $handle[$classname] = $classname;
-                        }
-                    }
+                if (
+                    @class_exists($classname)
+                    && is_a($classname, 'CommonGLPI', true)
+                    && !is_a($classname, 'CommonDBRelation', true) //Exclude CommonDBRelation (getTypeName not exist)
+                    && !is_a($classname, 'RuleCollection', true)  //Exclude RuleCollection (getTypeName not exist)
+                ) {
+                    self::$classname_scope[$classname] = $classname;
                 }
+            }
+        }
+
+        $handle = [];
+        foreach (self::$classname_scope as $classname) {
+            $class = new ReflectionClass($classname);
+            if (!$class->isAbstract() && isset($classname::$rightname) && $classname::$rightname == $rightname) {
+                if (array_key_exists($classname::getTypeName(0), $handle)) {
+                    continue;
+                } else {
+                    $handle[$classname::getTypeName(0)] = $classname::getTypeName(0);
+                }
+            }
+        }
+
+        // Display tooltip only if concerned more than one context
+        if (count($handle) > 1) {
+            foreach ($handle as $class_type) {
+                $tooltip = sprintf($tooltip . ' %s,', $class_type);
             }
         }
 
