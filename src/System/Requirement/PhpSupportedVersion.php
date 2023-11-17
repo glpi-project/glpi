@@ -53,6 +53,7 @@ class PhpSupportedVersion extends AbstractRequirement
         $this->title = __('PHP supported version');
         $this->description = __('An officially supported PHP version should be used to get the benefits of security and bug fixes.');
         $this->optional = true;
+        $this->recommended_for_security = true;
     }
 
     protected function check()
