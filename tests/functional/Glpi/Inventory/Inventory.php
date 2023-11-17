@@ -5082,7 +5082,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $iterator = $DB->request($criteria);
         $this->integer(count($iterator))->isIdenticalTo(1);
-        $this->string($iterator->current()['name'])->isIdenticalTo('Global import (by serial)');
+        $this->string($iterator->current()['name'])->isIdenticalTo('Phone import (by name)');
         $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
         //get phone models, manufacturer, ...
