@@ -121,7 +121,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function loadUsers(): void
     {
-        if (!empty($this->userlinkclass) && isset($this->fields['id'])) {
+        if (!empty($this->userlinkclass) && !$this->isNewItem()) {
             $class = new $this->userlinkclass();
             $this->lazy_loaded_users = $class->getActors($this->fields['id']);
         } else {
@@ -136,7 +136,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function loadGroups(): void
     {
-        if (!empty($this->grouplinkclass) && isset($this->fields['id'])) {
+        if (!empty($this->grouplinkclass) && !$this->isNewItem()) {
             $class = new $this->grouplinkclass();
             $this->lazy_loaded_groups = $class->getActors($this->fields['id']);
         } else {
@@ -151,7 +151,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public function loadSuppliers(): void
     {
-        if (!empty($this->supplierlinkclass) && isset($this->fields['id'])) {
+        if (!empty($this->supplierlinkclass) && !$this->isNewItem()) {
             $class = new $this->supplierlinkclass();
             $this->lazy_loaded_suppliers = $class->getActors($this->fields['id']);
         } else {
@@ -1507,7 +1507,7 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * Count active ITIL Objects having given user as observer.
      *
-     * @param int $users_id
+     * @param int $user_id
      *
      * @return int
      */
@@ -2269,7 +2269,7 @@ abstract class CommonITILObject extends CommonDBTM
         return $input;
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -3959,7 +3959,7 @@ abstract class CommonITILObject extends CommonDBTM
      * @param $values    String / Array with the value to display
      * @param $options   Array          of option
      *
-     * @return a string
+     * @return string
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -10200,10 +10200,12 @@ abstract class CommonITILObject extends CommonDBTM
             ) {
                 $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                 $input['users_default_groups'] = $user->fields['groups_id'];
+                $input['profiles_id'] = $user->fields['profiles_id']; //default profile
             } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
                 if ($user->getFromDB($user_id)) {
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
+                    $input['profiles_id'] = $user->fields['profiles_id']; //default profile
                 }
             }
         }
@@ -10815,8 +10817,10 @@ abstract class CommonITILObject extends CommonDBTM
                 if ($user_id !== null && $user->getFromDB($user_id)) {
                     $input['_locations_id_of_requester']   = $user->fields['locations_id'];
                     $input['users_default_groups']         = $user->fields['groups_id'];
+                    $input['profiles_id']                  = $user->fields['profiles_id']; //default profile
                     $rules_options['only_criteria'][] = '_locations_id_of_requester';
                     $rules_options['only_criteria'][] = '_groups_id_of_requester';
+                    $rules_options['only_criteria'][] = 'profiles_id';
                 }
             }
             $input = $rules->processAllRules(

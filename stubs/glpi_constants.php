@@ -84,6 +84,7 @@ define('GLPI_NETWORK_MAIL', null);
 define('GLPI_NETWORK_SERVICES', null);
 define('GLPI_SERVERSIDE_URL_ALLOWLIST', null);
 define('GLPI_TELEMETRY_URI', null);
+define('GLPI_TEXT_MAXSIZE', null);
 define('GLPI_USE_CSRF_CHECK', null);
 define('GLPI_USE_IDOR_CHECK', null);
 define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);

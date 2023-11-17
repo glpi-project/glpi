@@ -45,7 +45,6 @@ class Appliance extends DbTestCase
             'Appliance$main'     => "<span><i class='ti ti-versions me-2'></i>Appliance</span>",
             'Impact$1'           => "<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span>",
             'ManualLink$1'       => "<span><i class='fas fa-link me-2'></i>Links</span>",
-            'Log$1'              => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];
         $this
          ->given($this->newTestedInstance)
@@ -185,5 +184,69 @@ class Appliance extends DbTestCase
 
        //relations has been cloned
         $this->boolean($rapp->getFromDBByCrit(['appliances_items_id' => $iapp->fields['id']]))->isTrue();
+    }
+
+    public function testMetaSearch()
+    {
+        $this->login();
+
+        $computer = new \Computer();
+        $this->integer($computers_id = $computer->add([
+            'name' => 'Test computer',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+        ]));
+        $cluster = new \Cluster();
+        $this->integer($clusters_id = $cluster->add([
+            'name' => 'Test cluster',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+        ]));
+        $appliance = new \Appliance();
+        $this->integer($appliances_id = $appliance->add([
+            'name' => 'Test appliance',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+        ]));
+        $appliance_item = new \Appliance_Item();
+        $this->integer($appliance_item->add([
+            'appliances_id' => $appliances_id,
+            'itemtype'      => 'Computer',
+            'items_id'      => $computers_id
+        ]));
+        $this->integer($appliance_item->add([
+            'appliances_id' => $appliances_id,
+            'itemtype'      => 'Cluster',
+            'items_id'      => $clusters_id
+        ]));
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Computer',
+                'meta' => true,
+                'field' => 1, //Name
+                'searchtype' => 'contains',
+                'value' => 'computer',
+            ]
+        ];
+        $data = \Search::getDatas('Appliance', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Computer_1'][0]['name'])->isEqualTo('Test computer');
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Cluster',
+                'meta' => true,
+                'field' => 1, //Name
+                'searchtype' => 'contains',
+                'value' => 'cluster',
+            ]
+        ];
+        $data = \Search::getDatas('Appliance', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Cluster_1'][0]['name'])->isEqualTo('Test cluster');
     }
 }

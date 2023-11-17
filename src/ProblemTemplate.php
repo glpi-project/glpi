@@ -60,7 +60,7 @@ class ProblemTemplate extends ITILTemplate
         ];
     }
 
-    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $problem = new Problem();
         return [

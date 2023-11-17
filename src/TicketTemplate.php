@@ -60,7 +60,7 @@ class TicketTemplate extends ITILTemplate
         ];
     }
 
-    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         $itil_object = new Ticket();
         $tab =  [

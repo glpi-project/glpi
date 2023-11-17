@@ -3079,4 +3079,47 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         //get two RuleMatchedLog
         $this->integer(count($found_rulematchedLog))->isIdenticalTo(2);
     }
+
+    /**
+     * Test stacked Cisco C9300 switch
+     *
+     */
+    public function testStackedCiscoSwitchC9300()
+    {
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/cisco-C9300.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $server_serial = [
+            'DKFJG3541DF' => 43, //42  Gi1/0/x + 1 -> Gi0/0
+            'FOC2637YAPH' => 42  //42  Gi2/0/x
+        ];
+
+        foreach ($server_serial as $serial => $nb_port) {
+            $this->boolean(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial])
+            )->isTrue("Switch s/n $serial doesn't exist");
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->integer(count($found_np))->isIdenticalTo($nb_port, 'Must have ' . $nb_port . ' ports');
+        }
+    }
 }

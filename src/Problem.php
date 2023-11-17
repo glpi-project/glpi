@@ -249,7 +249,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1304,7 +1304,7 @@ class Problem extends CommonITILObject
      * Will also display problems of linked items
      *
      * @param CommonDBTM $item
-     * @param boolean    $withtemplate
+     * @param integer    $withtemplate
      *
      * @return void
      **/

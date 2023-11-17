@@ -133,7 +133,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      */
-    public function backToStock(array $input, $history = 1)
+    public function backToStock(array $input, $history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;

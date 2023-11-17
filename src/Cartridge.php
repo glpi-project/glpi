@@ -133,7 +133,7 @@ class Cartridge extends CommonDBRelation
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if (in_array('pages', $this->updates)) {
@@ -239,7 +239,7 @@ class Cartridge extends CommonDBRelation
      * @param integer $history
      * @return bool
      */
-    public function backToStock(array $input, $history = 1)
+    public function backToStock(array $input, $history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;

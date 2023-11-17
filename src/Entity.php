@@ -659,7 +659,7 @@ class Entity extends CommonTreeDropdown
         $this->cleanEntitySelectorCache();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
@@ -1759,7 +1759,7 @@ class Entity extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('pages/admin/entity/assets.html.twig', [
             'item' => $entity,
             'params' => [
-                'canedit' => (Infocom::canUpdate() && Session::haveAccessToEntity($ID)),
+                'canedit' => $entity->can($ID, UPDATE),
                 'candel' => false, // No deleting from the non-main tab
                 'entities_id' => $entity->fields['entities_id'],
             ],

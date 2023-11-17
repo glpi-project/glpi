@@ -66,7 +66,7 @@ class Filesystem
     /**
      * Checks if the files with given paths can be written.
      *
-     * @param string[] $path
+     * @param string[] $paths
      *
      * @return bool
      */

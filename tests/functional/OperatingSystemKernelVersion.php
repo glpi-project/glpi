@@ -75,7 +75,6 @@ class OperatingSystemKernelVersion extends CommonDropdown
     {
         return [
             'OperatingSystemKernelVersion$main' => "<span><i class='ti ti-edit me-2'></i>Kernel version</span>",
-            'Log$1'                             => "<span><i class='ti ti-history me-2'></i>Historical</span>"
         ];
     }
 

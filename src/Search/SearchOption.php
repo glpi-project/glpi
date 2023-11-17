@@ -231,13 +231,13 @@ final class SearchOption implements \ArrayAccess
                     $search[$itemtype][24]['table']         = 'glpi_users';
                     $search[$itemtype][24]['field']         = 'name';
                     $search[$itemtype][24]['linkfield']     = 'users_id_tech';
-                    $search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
+                    $search[$itemtype][24]['name']          = __('Technician in charge');
                     $search[$itemtype][24]['condition']     = ['is_assign' => 1];
 
                     $search[$itemtype][49]['table']          = 'glpi_groups';
                     $search[$itemtype][49]['field']          = 'completename';
                     $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
-                    $search[$itemtype][49]['name']           = __('Group in charge of the hardware');
+                    $search[$itemtype][49]['name']           = __('Group in charge');
                     $search[$itemtype][49]['condition']      = ['is_assign' => 1];
                     $search[$itemtype][49]['datatype']       = 'dropdown';
 

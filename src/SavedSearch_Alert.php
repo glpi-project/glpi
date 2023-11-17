@@ -147,7 +147,7 @@ class SavedSearch_Alert extends CommonDBChild
      * Print the searches alerts
      *
      * @param SavedSearch $search       Object instance
-     * @param boolean     $withtemplate Template or basic item (default '')
+     * @param integer     $withtemplate Template or basic item (default '')
      *
      * @return void
      **/

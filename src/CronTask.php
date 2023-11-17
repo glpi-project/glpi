@@ -1952,10 +1952,28 @@ class CronTask extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+        if (self::mustRunWebTasks()) {
+            $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+            echo "<div style=\"background-image: url('$path');\"></div>";
+        }
 
-        echo "<div style=\"background-image: url('$path');\"></div>";
         return true;
+    }
+
+
+    /**
+     * Check if any web cron task exist and is enabled
+     *
+     * @return bool
+     **/
+    protected static function mustRunWebTasks(): bool
+    {
+        $web_tasks_count = countElementsInTable(self::getTable(), [
+            'mode'  => self::MODE_INTERNAL, // "GLPI" mode
+            'state' => self::STATE_WAITING,
+        ]);
+
+        return $web_tasks_count > 0;
     }
 
 

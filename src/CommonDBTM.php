@@ -773,11 +773,11 @@ class CommonDBTM extends CommonGLPI
      * Mark deleted or purge an item in the database
      *
      * @param boolean $force force the purge of the item (not used if the table do not have a deleted field)
-     *               (default 0)
+     *               (default false)
      *
      * @return boolean true if succeed else false
      **/
-    public function deleteFromDB($force = 0)
+    public function deleteFromDB($force = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -1567,12 +1567,12 @@ class CommonDBTM extends CommonGLPI
      * Update some elements of an item in the database.
      *
      * @param array   $input   the _POST vars returned by the item form when press update
-     * @param boolean $history do history log ? (default 1)
+     * @param boolean $history do history log ? (default true)
      * @param array   $options with the insert options
      *
      * @return boolean true on success
      **/
-    public function update(array $input, $history = 1, $options = [])
+    public function update(array $input, $history = true, $options = [])
     {
         /**
          * @var \DBmysql $DB
@@ -1994,11 +1994,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done after the UPDATE of the item in the database
      *
-     * @param boolean $history store changes history ? (default 1)
+     * @param boolean $history store changes history ? (default true)
      *
      * @return void
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         if (count($this->updates) > 0) {
             UserMention::handleUserMentions($this);
@@ -2041,12 +2041,12 @@ class CommonDBTM extends CommonGLPI
      * Delete an item in the database.
      *
      * @param array   $input   the _POST vars returned by the item form when press delete
-     * @param boolean $force   force deletion (default 0)
-     * @param boolean $history do history log ? (default 1)
+     * @param boolean $force   force deletion (default false)
+     * @param boolean $history do history log ? (default true)
      *
      * @return boolean true on success
      **/
-    public function delete(array $input, $force = 0, $history = 1)
+    public function delete(array $input, $force = false, $history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2275,11 +2275,11 @@ class CommonDBTM extends CommonGLPI
      * Restore an item put in the trashbin in the database.
      *
      * @param array   $input   the _POST vars returned by the item form when press restore
-     * @param boolean $history do history log ? (default 1)
+     * @param boolean $history do history log ? (default true)
      *
      * @return boolean true on success
      **/
-    public function restore(array $input, $history = 1)
+    public function restore(array $input, $history = true)
     {
 
         if (!$this->getFromDB($input[static::getIndexName()])) {
@@ -3546,7 +3546,7 @@ class CommonDBTM extends CommonGLPI
         if ($this->isField('users_id_tech')) {
             $tmp = getUserName($this->getField('users_id_tech'));
             if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => __('Technician in charge of the hardware'),
+                $toadd[] = ['name'  => __('Technician in charge'),
                     'value' => $tmp
                 ];
             }
@@ -3982,7 +3982,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array      $actions    array of the actions to update
      * @param string     $itemtype   the type of the item for which we want the actions
-     * @param boolean    $is_deleted (default 0)
+     * @param boolean    $is_deleted (default false)
      * @param CommonDBTM $checkitem  (default NULL)
      *
      * @return void (update is set inside $actions)
@@ -3990,7 +3990,7 @@ class CommonDBTM extends CommonGLPI
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = 0,
+        $is_deleted = false,
         CommonDBTM $checkitem = null
     ) {
     }
@@ -4664,12 +4664,12 @@ class CommonDBTM extends CommonGLPI
      * Clean all infos which match some criteria
      *
      * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-     * @param boolean $force   force purge not on put in trashbin (default 0)
+     * @param boolean $force   force purge not on put in trashbin (default false)
      * @param boolean $history do history log ? (true by default)
      *
      * @return boolean
      **/
-    public function deleteByCriteria($crit = [], $force = 0, $history = 1)
+    public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -5243,11 +5243,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * @param string  $itemtype Item type
      * @param string  $target   Target
-     * @param boolean $add      (default 0)
+     * @param boolean $add      (default false)
      *
      * @return false|void
      */
-    public static function listTemplates($itemtype, $target, $add = 0)
+    public static function listTemplates($itemtype, $target, $add = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -5962,9 +5962,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Retrieve an item from the database
      *
-     * @param integer $ID ID of the item to get
+     * @param int|null $id ID of the item to get
      *
-     * @return static|boolean false on failure
+     * @return static|false
      */
     public static function getById(?int $id)
     {
@@ -5984,8 +5984,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Correct entity id if needed when cloning a template
      *
-     * @param array  $data
-     * @param string $parent_field
+     * @param array   $data
+     * @param integer $parent_id
+     * @param string  $parent_itemtype
      *
      * @return array
      */
@@ -6596,8 +6597,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a header for the "central" interface
      *
-     * @param null|string  $title
-     * @param array|string $menus
+     * @param null|string $title
+     * @param array|null  $menus
      *
      * @return void
      */
@@ -6625,8 +6626,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Display a header for the "helpdesk" interface
      *
-     * @param null|string  $title
-     * @param array|string $menus
+     * @param null|string $title
+     * @param array|null  $menus
      *
      * @return void
      */

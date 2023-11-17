@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+// Prevent plugins loading to speed up the framework initiation time.
+/** @var bool $PLUGINS_INCLUDED */
+$PLUGINS_INCLUDED = true;
+
 include('../inc/includes.php');
 
 if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {

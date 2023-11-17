@@ -111,7 +111,7 @@ class SLM extends CommonDBTM
         return $input;
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var \DBmysql $DB */
         global $DB;

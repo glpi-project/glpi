@@ -55,7 +55,7 @@ body.mce-content-body {
 
 .rich_text_container {
     white-space: initial;
-    width: 100%;
+    max-width: 100%;
 
     thead,
     tbody,

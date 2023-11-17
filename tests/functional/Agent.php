@@ -46,7 +46,6 @@ class Agent extends DbTestCase
         $expected = [
             'Agent$main'       => "<span><i class='ti ti-robot me-2'></i>Agent</span>",
             'RuleMatchedLog$0' => "<span><i class='ti ti-book me-2'></i>Import information</span>",
-            'Log$1'            => "<span><i class='ti ti-history me-2'></i>Historical</span>",
         ];
         $this
          ->given($this->newTestedInstance)

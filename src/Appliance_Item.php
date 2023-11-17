@@ -242,7 +242,7 @@ class Appliance_Item extends CommonDBRelation
      * @since 9.5.2
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param boolean    $withtemplate not used (to be deleted)
+     * @param integer    $withtemplate not used (to be deleted)
      *
      * @return void
      **/

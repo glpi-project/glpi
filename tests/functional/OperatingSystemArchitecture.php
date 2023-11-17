@@ -60,7 +60,6 @@ class OperatingSystemArchitecture extends CommonDropdown
     {
         return [
             'OperatingSystemArchitecture$main'  => "<span><i class='ti ti-edit me-2'></i>Operating system architecture</span>",
-            'Log$1'                             => "<span><i class='ti ti-history me-2'></i>Historical</span>"
         ];
     }
 

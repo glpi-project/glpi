@@ -411,7 +411,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $matches = [];
         if (preg_match($periodicity_pattern, $periodicity, $matches)) {
             $periodicity_as_interval = "{$matches[1]} {$matches[2]}";
-            $periodicity_in_seconds  = $matches[1]
+            $periodicity_in_seconds  = (int)$matches[1]
             * MONTH_TIMESTAMP
             * ('YEAR' === $matches[2] ? 12 : 1);
         } else if ($periodicity % DAY_TIMESTAMP == 0) {

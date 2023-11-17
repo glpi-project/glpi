@@ -532,7 +532,7 @@ class Ticket extends CommonITILObject
      * @since 9.2
      *
      * @param string  $laType (SLA | OLA)
-     * @param integer $id the sla/ola id
+     * @param integer $la_id the sla/ola id
      * @param integer $subtype (SLM::TTR | SLM::TTO)
      * @param bool    $delete_date (default false)
      *
@@ -1447,7 +1447,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -4660,7 +4660,7 @@ JAVASCRIPT;
                     $row = [
                         'values' => []
                     ];
-                    if ($job->getFromDBwithData($data['id'], 0)) {
+                    if ($job->getFromDBwithData($data['id'])) {
                         $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
                         $row['values'][] = [

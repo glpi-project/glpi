@@ -2706,4 +2706,93 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Check if the location "Test location" is assigned
         $this->integer($itil_object->fields['locations_id'])->isEqualTo($location->getID());
     }
+
+
+    /**
+     * Test that the "Default profile" criterion works correctly
+     * @return void
+     */
+    public function testDefaultProfileCriterion(): void
+    {
+        // Get the root entity
+        $entity = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        // Create a location
+        $location = $this->createItem(Location::class, [
+            'name' => 'Test location',
+            'entities_id' => $entity,
+        ]);
+
+        // Create another location
+        $location2 = $this->createItem(Location::class, [
+            'name' => 'Other Test location',
+            'entities_id' => $entity,
+        ]);
+
+        // Create two rules
+        $builder = new RuleBuilder('Test default profile criterion rule');
+        $builder
+            ->addCriteria('profiles_id', Rule::PATTERN_IS, 4)
+            ->addAction('assign', 'locations_id', $location->getID());
+        $this->createRule($builder, $this->getTestedClass());
+
+
+        // Create two rules
+        $builder = new RuleBuilder('Test default profile criterion rule on update');
+        $builder
+            ->addCriteria('profiles_id', Rule::PATTERN_IS, 0)
+            ->addAction('assign', 'locations_id', $location2->getID());
+        $this->createRule($builder, $this->getTestedClass());
+
+        //Load user jsmith123
+        $user = new \User();
+        $user->getFromDB(getItemByTypeName('User', 'jsmith123', true));
+
+        // Create an ITIL object with "Very high" urgency
+        $itil_object = $this->createItem($this->getITILObjectClass(), [
+            'name' => 'Test',
+            'content' => 'Test content',
+            'entities_id' => $entity,
+            '_users_id_requester' => $user->fields['id']
+        ]);
+
+        // Check if the location "Test location" is assigned
+        $this->integer($itil_object->fields['locations_id'])->isEqualTo($location->getID());
+
+        $this->login('tech', 'tech');
+
+        //remove requester
+        $itil_user = $this->getITILLinkInstance('User');
+        $itil_fk = $this->getITILObjectClass()::getForeignKeyField();
+        $this->boolean($itil_user->deleteByCriteria([
+            "type" => \CommonITILActor::REQUESTER,
+            "users_id" => $user->fields['id'],
+            $itil_fk => $itil_object->getID(),
+        ]))->isTrue();
+
+        if ($this->getTestedClass() === 'RuleProblem') {
+            return; // FIXME, it does not work for problems
+        }
+
+        //reload ITIL object
+        $this->boolean($itil_object->getFromDB($itil_object->getID()))->isTrue();
+
+        //Load user tech
+        $user = new \User();
+        $user->getFromDB(getItemByTypeName('User', 'tech', true));
+
+        // update ITIL object to update requester
+        $this->boolean($itil_object->update([
+            'name'                  => 'Test update',
+            'id'                    => $itil_object->fields['id'],
+            'content'               => 'test',
+            '_itil_requester'   => [
+                "_type" => "user",
+                "users_id" => $user->fields['id']
+            ]
+        ]))->isTrue();
+
+        // Check if the location "Test location" is assigned
+        $this->integer($itil_object->fields['locations_id'])->isEqualTo($location2->getID());
+    }
 }

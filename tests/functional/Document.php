@@ -96,8 +96,6 @@ class Document extends DbTestCase
             'Document$main'   => "<span><i class='ti ti-files me-2'></i>Document</span>",
             'Document_Item$1' => "<span><i class='ti ti-package me-2'></i>Associated items</span>",
             'Document_Item$2' => "<span><i class='ti ti-files me-2'></i>Documents</span>",
-            'Log$1'           => "<span><i class='ti ti-history me-2'></i>Historical</span>"
-
         ];
         $this
          ->given($this->newTestedInstance)

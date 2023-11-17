@@ -1993,7 +1993,7 @@ class Config extends CommonDBTM
         $this->logConfigChange($this->fields['context'], $this->fields['name'], (string)$this->fields['value'], '');
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /**
          * @var array $CFG_GLPI
@@ -2333,12 +2333,11 @@ class Config extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
         $iterator = $DB->request([
-            'SELECT' => 'id',
+            'SELECT' => ['MIN' => 'id AS id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'context' => $context,
             ],
-            'LIMIT'  => 1,
         ]);
         if (count($iterator)) {
             return $iterator->current()['id'];

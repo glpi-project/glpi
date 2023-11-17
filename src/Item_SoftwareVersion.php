@@ -1017,7 +1017,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      * Show software installed on a computer
      *
      * @param Computer $comp         Computer object
-     * @param boolean  $withtemplate template case of the view process
+     * @param integer  $withtemplate template case of the view process
      *
      * @return void
      **/
@@ -1387,7 +1387,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      * @param array   $data         data used to display
      * @param string  $itemtype     Type of the item
      * @param integer $items_id     ID of the item
-     * @param boolean $withtemplate template case of the view process
+     * @param integer $withtemplate template case of the view process
      * @param boolean $canedit      user can edit software ?
      * @param boolean $display      display and calculate if true or just calculate
      *
@@ -1520,7 +1520,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      * Display a software for a License (not installed)
      *
      * @param array   $data         data used to display
-     * @param boolean $withtemplate template case of the view process
+     * @param integer $withtemplate template case of the view process
      * @param boolean $canedit      user can edit software ?
      *
      * @return void
@@ -1590,7 +1590,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public function upgrade($instID, $softwareversions_id, $dohistory = 1)
+    public function upgrade($instID, $softwareversions_id, $dohistory = true)
     {
 
         if ($this->getFromDB($instID)) {

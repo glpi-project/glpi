@@ -221,7 +221,7 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         $hidetab = false;
        // Hide if no rights on validations
         if (!static::canView()) {
@@ -438,7 +438,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1102,6 +1102,7 @@ abstract class CommonITILValidation extends CommonDBChild
            "</th></tr>";
 
         if ($canadd) {
+            /** @var CommonITILObject $item */
             if (
                 !in_array($item->fields['status'], array_merge(
                     $item->getSolvedStatusArray(),

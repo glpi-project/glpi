@@ -76,15 +76,15 @@ abstract class CommonDevice extends CommonDropdown
 
 
     /**
-     * Get the assiociated item_device associated with this device
-     * This method can be override, for instance by the plugin
+     * Get the associated item_device associated with this device
+     * This method can be overridden, for instance by the plugin
      *
      * @since 0.85
      * @since 9.3 added the $devicetype parameter
      *
      * @param string $devicetype class name of device type, defaults to called class name
      *
-     * @return array of the types of CommonDevice available
+     * @return string
      **/
     public static function getItem_DeviceType($devicetype = null)
     {
@@ -628,7 +628,7 @@ abstract class CommonDevice extends CommonDropdown
      * @since 0.85
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         $this->post_workOnItem();

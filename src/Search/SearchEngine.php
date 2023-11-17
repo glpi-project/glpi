@@ -176,6 +176,7 @@ final class SearchEngine
         }
 
         $key_to_itemtypes = [
+            'appliance_types'      => ['Appliance'],
             'directconnect_types'  => ['Computer'],
             'infocom_types'        => ['Budget', 'Infocom'],
             'linkgroup_types'      => ['Group'],

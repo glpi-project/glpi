@@ -3831,7 +3831,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($first) {
                         $first = false;
                     } else {
-                        $QUERY .= " UNION ";
+                        $QUERY .= " UNION ALL ";
                     }
                     $tmpquery = "";
                     // AllAssets case

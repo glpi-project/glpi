@@ -265,12 +265,12 @@ class RuleImportEntity extends Rule
                 'type' => 'yesno'
             ],
             'groups_id_tech' => [
-                'name' => __('Group in charge of the hardware'),
+                'name' => __('Group in charge'),
                 'type' => 'dropdown',
                 'table' => Group::getTable()
             ],
             'users_id_tech' => [
-                'name' => __('Technician in charge of the hardware'),
+                'name' => __('Technician in charge'),
                 'type' => 'dropdown_users'
             ]
         ];
