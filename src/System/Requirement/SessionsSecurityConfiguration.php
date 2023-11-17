@@ -45,6 +45,7 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         $this->title = __('Security configuration for sessions');
         $this->description = __('Ensure security is enforced on session cookies.');
         $this->optional = true;
+        $this->recommended_for_security = true;
     }
 
     protected function check()

@@ -76,15 +76,22 @@ class CheckRequirementsCommand extends AbstractCommand
                 $status = sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('SKIPPED'));
             } elseif ($requirement->isValidated()) {
                 $status = sprintf('<%s>[%s]</>', 'fg=black;bg=green', __('OK'));
+            } elseif (!$requirement->isOptional()) {
+                $status = sprintf('<%s>[%s]</> ', 'fg=white;bg=red', __('ERROR'));
+            } elseif ($requirement->isRecommendedForSecurity()) {
+                $status = sprintf('<%s>[%s]</> ', 'fg=white;bg=red', __('INFO'));
             } else {
-                $status = $requirement->isOptional()
-                    ? sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('INFO'))
-                    : sprintf('<%s>[%s]</> ', 'fg=white;bg=red', __('ERROR'));
+                $status = sprintf('<%s>[%s]</> ', 'fg=white;bg=yellow', __('INFO'));
             }
 
-            $badge = $requirement->isOptional()
-                ? sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-blue', mb_strtoupper(__('Suggested')))
-                : sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-yellow', mb_strtoupper(__('Required')));
+            $badge = '';
+            if (!$requirement->isOptional()) {
+                $badge = sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-yellow', mb_strtoupper(__('Required')));
+            } elseif ($requirement->isRecommendedForSecurity()) {
+                $badge = sprintf('<%s>[%s]</> ', 'fg=black;bg=red', mb_strtoupper(__('Security')));
+            } else {
+                $badge = sprintf('<%s>[%s]</> ', 'fg=black;bg=bright-blue', mb_strtoupper(__('Suggested')));
+            }
             $title = $badge . '<options=bold>' . $requirement->getTitle() . '</>';
             if (!empty($description = $requirement->getDescription())) {
                 // wordwrap to keep table width acceptable

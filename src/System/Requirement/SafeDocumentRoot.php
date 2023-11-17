@@ -48,6 +48,7 @@ final class SafeDocumentRoot extends AbstractRequirement
             realpath(GLPI_ROOT) . DIRECTORY_SEPARATOR . 'public'
         );
         $this->optional = true;
+        $this->recommended_for_security = true;
     }
 
     protected function check()

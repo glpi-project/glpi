@@ -41,9 +41,12 @@
    <tbody>
       {% for requirement in requirements %}
          {% if not requirement.isOutOfContext() %}
+            {% set is_important = not requirement.isOptional() or requirement.isRecommendedForSecurity() %}
             <tr class="tab_bg_1">
                <td class="text-start">
-                  {% if requirement.isOptional() %}
+                  {% if requirement.isRecommendedForSecurity() %}
+                     <span class="badge bg-danger">{{ __('Security') }}</span>
+                  {% elseif requirement.isOptional() %}
                      <span class="badge bg-secondary">{{ __('Suggested') }}</span>
                   {% else %}
                      <span class="badge bg-warning">{{ __('Required') }}</span>
@@ -57,11 +60,15 @@
                   {% if not requirement.isValidated() %}
                       {% for message in requirement.getValidationMessages() %}
                           <br />
-                          <strong><em class="{{ not requirement.isOptional() ? 'red' : 'missing' }}">{{ message }}</em></strong>
+                          <strong>
+                             <em class="{{ is_important ? 'red' : 'missing' }}">
+                                {{ message }}
+                             </em>
+                          </strong>
                       {% endfor %}
                   {% endif %}
                </td>
-               <td class="{{ requirement.isMissing() and not requirement.isOptional() ? 'red' : '' }}">
+               <td class="{{ requirement.isMissing() ? (is_important ? 'red' : 'missing') : 'green' }}">
                   <span data-bs-toggle="popover"
                         data-bs-placement="right"
                         data-bs-html="true"
