@@ -1313,11 +1313,11 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>41</ranking>
+        <ranking>10</ranking>
         <name>Phone constraint (name)</name>
         <description></description>
         <match>AND</match>
-        <is_active>0</is_active>
+        <is_active>1</is_active>
         <comment></comment>
         <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_phone_constraint_name</uuid>
@@ -1342,7 +1342,192 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>42</ranking>
+        <ranking>11</ranking>
+        <name>Phone update (by serial + uuid)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_update_serial_uuid</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>12</ranking>
+        <name>Phone update (by serial + uuid is empty in GLPI)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_update_serial_uuid_empty</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>30</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>13</ranking>
+        <name>Phone import (by serial + uuid)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_import_serial_uuid</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>14</ranking>
+        <name>Phone update (by serial)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_update_serial</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>15</ranking>
+        <name>Phone update (by uuid)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_update_uuid</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>16</ranking>
         <name>Phone update (by mac)</name>
         <description></description>
         <match>AND</match>
@@ -1376,7 +1561,99 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>43</ranking>
+        <ranking>17</ranking>
+        <name>Phone update (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_update_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>18</ranking>
+        <name>Phone import (by serial)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_import_serial</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>19</ranking>
+        <name>Phone import (by uuid)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_import_uuid</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>20</ranking>
         <name>Phone import (by mac)</name>
         <description></description>
         <match>AND</match>
@@ -1405,11 +1682,40 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>44</ranking>
+        <ranking>21</ranking>
+        <name>Phone import (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_phone_import_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Phone</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>22</ranking>
         <name>Phone import denied</name>
         <description></description>
         <match>AND</match>
-        <is_active>0</is_active>
+        <is_active>1</is_active>
         <comment></comment>
         <is_recursive>1</is_recursive>
         <uuid>glpi_rule_import_asset_phone_import_denied</uuid>
