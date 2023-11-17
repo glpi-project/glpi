@@ -44,12 +44,12 @@
             {% set is_important = not requirement.isOptional() or requirement.isRecommendedForSecurity() %}
             <tr class="tab_bg_1">
                <td class="text-start">
-                  {% if requirement.isRecommendedForSecurity() %}
-                     <span class="badge bg-danger">{{ __('Security') }}</span>
-                  {% elseif requirement.isOptional() %}
-                     <span class="badge bg-secondary">{{ __('Suggested') }}</span>
-                  {% else %}
+                  {% if not requirement.isOptional() %}
                      <span class="badge bg-warning">{{ __('Required') }}</span>
+                  {% elseif requirement.isRecommendedForSecurity() %}
+                     <span class="badge bg-danger">{{ __('Security') }}</span>
+                  {% else %}
+                     <span class="badge bg-secondary">{{ __('Suggested') }}</span>
                   {% endif %}
                   <strong>{{ requirement.getTitle() }}</strong>
                   {% set description = requirement.getDescription() %}
