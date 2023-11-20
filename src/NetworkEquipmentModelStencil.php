@@ -68,7 +68,7 @@ class NetworkEquipmentModelStencil extends Stencil
 
     public function getMaxZoneNumber(): int
     {
-        return 64;
+        return 256;
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

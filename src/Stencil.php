@@ -187,7 +187,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
      */
     public function getMaxZoneNumber(): int
     {
-        return 128;
+        return 256;
     }
 
     public function prepareInputForAdd($input)
