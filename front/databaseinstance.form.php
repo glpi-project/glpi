@@ -39,14 +39,6 @@ include('../inc/includes.php');
 
 Session::checkRight('database', READ);
 
-Html::header(
-    DatabaseInstance::getTypeName(Session::getPluralNumber()),
-    $_SERVER['PHP_SELF'],
-    "management",
-    "database",
-    "databaseinstance"
-);
-
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
@@ -72,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $instance->check($_POST['id'], DELETE);
     $ok = $instance->delete($_POST);
     if ($ok) {
@@ -86,7 +78,7 @@ if (isset($_POST["add"])) {
         );
     }
     $instance->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $instance->check($_POST['id'], DELETE);
     if ($instance->restore($_POST)) {
         Event::log(
@@ -99,7 +91,7 @@ if (isset($_POST["add"])) {
         );
     }
     $instance->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $instance->check($_POST["id"], PURGE);
 
     if ($instance->delete($_POST, 1)) {
@@ -113,7 +105,7 @@ if (isset($_POST["add"])) {
         );
     }
     $instance->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $instance->check($_POST["id"], UPDATE);
 
     if ($instance->update($_POST)) {
@@ -128,6 +120,14 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
+    Html::header(
+        DatabaseInstance::getTypeName(Session::getPluralNumber()),
+        $_SERVER['PHP_SELF'],
+        "management",
+        "database",
+        "databaseinstance"
+    );
+
     $menus = ["database", "databaseinstance"];
     DatabaseInstance::displayFullPageForItem($_GET['id'], $menus, [
         'withtemplate' => $_GET['withtemplate']
