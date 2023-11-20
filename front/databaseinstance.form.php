@@ -39,6 +39,14 @@ include('../inc/includes.php');
 
 Session::checkRight('database', READ);
 
+Html::header(
+    DatabaseInstance::getTypeName(Session::getPluralNumber()),
+    $_SERVER['PHP_SELF'],
+    "management",
+    "database",
+    "databaseinstance"
+);
+
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
