@@ -1408,8 +1408,7 @@ class Auth extends CommonGLPI
         $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
         if (
             $CFG_GLPI["ssovariables_id"]
-            && ((isset($_SERVER[$ssovariable]) && !empty($_SERVER[$ssovariable]))
-              /*|| (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable]))*/)
+            && !empty($_SERVER[$ssovariable])
         ) {
             if ($redirect) {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
