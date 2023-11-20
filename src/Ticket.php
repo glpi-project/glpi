@@ -4417,7 +4417,12 @@ JAVASCRIPT;
         $ola = new OLA();
         $item_ticket = null;
 
-        $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        if ($this->isNewItem()) {
+            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        } else {
+            $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
+        }
+
         if ($options['_canupdate']) {
             $item_ticket = new Item_Ticket();
         }
