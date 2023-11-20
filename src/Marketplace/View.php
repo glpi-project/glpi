@@ -459,9 +459,10 @@ HTML;
             $url = "'" . Plugin::getFormURL() . "'";
             $fields = "{ 'formIdentifier' : 'change_default_interfaceform', '_glpi_csrf_token' : '" . Session::getNewCSRFToken() . "', 'value' : 2}";
             $default = $displaybutton = '';
-            if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 2) {
+ $marketplace_replace_plugins = Config::getConfigurationValue('core', 'marketplace_replace_plugins');
+            if ($marketplace_replace_plugins == Controller::MP_REPLACE_YES) {
                 $default = 'checked disabled';
-            } else if (Config::getConfigurationValue('core', 'marketplace_replace_plugins') == 1) {
+            } else if ($marketplace_replace_plugins == Controller::MP_REPLACE_ASK || is_null($marketplace_replace_plugins)) {
                 $displaybutton = 'd-none';
             }
             $label = __("Default View");
