@@ -44,11 +44,11 @@
  * @returns {StencilEditor} A new StencilEditor instance.
  */
 const StencilEditor = function (container, rand, zones_definition) {
-    var zones = zones_definition;
+    let zones = zones_definition;
 
-    var croppers = [];
+    let croppers = [];
 
-    var _this = this;
+    let _this = this;
 
     _this.init = function () {
 
@@ -131,14 +131,12 @@ const StencilEditor = function (container, rand, zones_definition) {
                         && cropper.getCropperSelection().width > 0;
                 });
 
-                if (hasSelection) {
-                    if (keycode == 13) {
-                        _this.saveZoneData();
-                        e.preventDefault();
-                    } else if (keycode == 27) {
-                        _this.editorDisable();
-                        e.preventDefault();
-                    }
+                if (keycode == 13 && hasSelection) {
+                    _this.saveZoneData();
+                    e.preventDefault();
+                } else if (keycode == 27) {
+                    _this.editorDisable();
+                    e.preventDefault();
                 }
             })
             .on('keypress', function (e) {
