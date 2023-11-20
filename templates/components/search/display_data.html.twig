@@ -62,7 +62,7 @@
                   {% set url = call('Plugin::getFormURL', []) %}
                   {% set config_value = call('Config::getConfigurationValue', ['core', 'marketplace_replace_plugins']) %}
                   {% if config_value is not null and config_value != constant('Glpi\\Marketplace\\Controller::MP_REPLACE_ASK')  %}
-                     {% if config_value is not null and  config_value == constant('Glpi\\Marketplace\\Controller::MP_REPLACE_NEVER')  %}
+                     {% if config_value is not null and config_value == constant('Glpi\\Marketplace\\Controller::MP_REPLACE_NEVER')  %}
                         {% set checked = 'checked disabled' %}
                      {% else %}
                         {% set checked = '' %}
