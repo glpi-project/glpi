@@ -1603,7 +1603,7 @@ class Inventory extends InventoryTestCase
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
         ]);
-        $this->integer(count($logs))->isIdenticalTo(1); //FIXME: should be 0
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //real computer update
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json'));
@@ -1781,12 +1781,6 @@ class Inventory extends InventoryTestCase
             'FROM' => \Log::getTable(),
             'LIMIT' => countElementsInTable(\Log::getTable()),
             'OFFSET' => $nblogsnow,
-            'WHERE' => [
-                'NOT' => [ //prevent logs check on Agent last contact
-                    'itemtype' => \Agent::getType(),
-                    'id_search_option' => 4
-                ]
-            ]
         ]);
 
         $this->integer(count($logs))->isIdenticalTo(4411);
