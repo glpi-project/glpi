@@ -2770,16 +2770,6 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_fk => $itil_object->getID(),
         ]))->isTrue();
 
-
-        if ($this->getTestedClass() === 'RuleProblem') {
-            // tech can't update problem by default
-            // only the following rights are permitted from fresh install
-            // Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE
-            \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
-                'problem' => (ALLSTANDARDRIGHT + \Problem::READALL + READNOTE + UPDATENOTE)
-            ]);
-        }
-
         //reload ITIL object
         $this->boolean($itil_object->getFromDB($itil_object->getID()))->isTrue();
 

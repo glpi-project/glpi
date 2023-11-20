@@ -7121,7 +7121,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'problem',
-                'rights' => Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'knowbasecategory',
