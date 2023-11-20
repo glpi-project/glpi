@@ -832,7 +832,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param boolean      $display     true display or false to return the button HTML code
      *
      *
-     * @return void|string the button HTML code if $display is true, void otherwise
+     * @return void|false|string the button HTML code if $display is true, void otherwise
      **/
     public static function showAddChildButtonForItemForm(
         CommonDBTM $item,

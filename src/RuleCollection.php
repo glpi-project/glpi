@@ -338,7 +338,7 @@ class RuleCollection extends CommonDBTM
      *
      * @param $target filename : where to go when done
      *
-     * @return  true if confirmtion is needed, else false
+     * @return boolean true if confirmation is needed, else false
      **/
     public function warningBeforeReplayRulesOnExistingDB($target)
     {
@@ -1172,7 +1172,7 @@ JAVASCRIPT;
      *
      * @since 0.85
      *
-     * @return true if all ok
+     * @return boolean
      **/
     public static function previewImportRules()
     {

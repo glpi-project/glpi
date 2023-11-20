@@ -1906,7 +1906,7 @@ class Toolbox
     {
 
         if (!Config::canUpdate()) {
-            return false;
+            return '';
         }
 
         $tab = Toolbox::parseMailServerConnectString($value);

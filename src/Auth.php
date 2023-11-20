@@ -234,7 +234,7 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * Find a user in a LDAP and return is BaseDN
+     * Find a user in LDAP
      * Based on GRR auth system
      *
      * @param string    $ldap_method ldap_method array to use
@@ -242,7 +242,7 @@ class Auth extends CommonGLPI
      * @param string    $password    User Password
      * @param bool|null $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
-     * @return string basedn of the user / false if not founded
+     * @return false|array
      */
     public function connection_ldap($ldap_method, $login, $password, ?bool &$error = null)
     {
@@ -1376,7 +1376,7 @@ class Auth extends CommonGLPI
      *                                (false by default)
      * @param string  $redirect_string redirect string if exists (default '')
      *
-     * @return void|integer nothing if redirect is true, else Auth system ID
+     * @return false|integer nothing if redirect is true, else Auth system ID
      */
     public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
     {

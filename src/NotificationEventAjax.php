@@ -64,14 +64,14 @@ class NotificationEventAjax extends NotificationEventAbstract
     public static function getAdminData()
     {
        //since admin cannot be logged in; no ajax notifications for global admin
-        return false;
+        return [];
     }
 
 
     public static function getEntityAdminsData($entity)
     {
        //since entities admin cannot be logged in; no ajax notifications for them
-        return false;
+        return [];
     }
 
 

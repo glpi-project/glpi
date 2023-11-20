@@ -1158,9 +1158,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @param $options      array of options
      *
-     * @return void|string
-     *    void if option display=true
-     *    string if option display=false (HTML code)
+     * @return boolean|string
      **/
     public function showFull($options = [])
     {

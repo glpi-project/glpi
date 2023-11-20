@@ -284,7 +284,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param $input   array   the new values for the current item
      * @param $fields  array   list of fields that define the attached items
      *
-     * @return true if the attached item has changed, false if the attached items has not changed
+     * @return boolean true if the attached item has changed, false if the attached items has not changed
      **/
     public function checkAttachedItemChangesAllowed(array $input, array $fields)
     {
@@ -398,7 +398,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param string          $items_id      the name of the field of the id of the item to get
      * @param CommonDBTM|null &$item         the item concerned by the item
      *
-     * @return true if we have absolute right to create the current connexity
+     * @return boolean true if we have absolute right to create the current connexity
      **/
     public function canConnexityItem(
         $methodItem,

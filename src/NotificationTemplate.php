@@ -238,7 +238,7 @@ class NotificationTemplate extends CommonDBTM
      * @param $event
      * @param $options      array
      *
-     * @return id of the template in templates_by_languages / false if computation failed
+     * @return false|integer id of the template in templates_by_languages / false if computation failed
      **/
     public function getTemplateByLanguage(
         NotificationTarget $target,

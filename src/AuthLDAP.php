@@ -2027,7 +2027,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @param array   $options       possible options:
      *          - authldaps_id ID of the server to use
-     *          - mode user to synchronise or add?
+     *          - mode user to synchronize or add?
      *          - ldap_filter ldap filter to use
      *          - basedn force basedn (default authldaps_id one)
      *          - order display order
@@ -2037,7 +2037,7 @@ class AuthLDAP extends CommonDBTM
      * @param array   $results       result stats
      * @param boolean $limitexceeded limit exceeded exception
      *
-     * @return array of the user
+     * @return false|array
      */
     public static function getAllUsers(array $options, &$results, &$limitexceeded)
     {
@@ -2540,7 +2540,7 @@ class AuthLDAP extends CommonDBTM
      * @param resource $ldap_connection ldap connection to use
      * @param string   $group_dn        the group's dn
      *
-     * @return string the group cn
+     * @return false|string the group cn
      */
     public static function getGroupCNByDn($ldap_connection, $group_dn)
     {

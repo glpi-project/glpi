@@ -88,7 +88,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             return $admin;
         }
 
-        return false;
+        return [];
     }
 
 
@@ -109,7 +109,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             return [$admin];
         }
 
-        return false;
+        return [];
     }
 
 

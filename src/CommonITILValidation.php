@@ -483,7 +483,7 @@ abstract class CommonITILValidation extends CommonDBChild
      **/
     public function getHistoryChangeWhenUpdateField($field)
     {
-
+        $result = [];
         if ($field == 'status') {
             $username = getUserName($this->fields["users_id_validate"]);
 
@@ -495,9 +495,8 @@ abstract class CommonITILValidation extends CommonDBChild
                //TRANS: %s is the username
                 $result[2] = sprintf(__('Update the approval request to %s'), $username);
             }
-            return $result;
         }
-        return false;
+        return $result;
     }
 
 
