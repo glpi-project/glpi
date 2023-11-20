@@ -60,9 +60,9 @@
                {{ include('components/search/controls.html.twig') }}
                {% if normalized_itemtype == 'Plugin' %}
                   {% set url = call('Plugin::getFormURL', []) %}
-                  {% set config_value = call('Config::getConfigurationValues', ['core', ['marketplace_replace_plugins']]) %}
-                  {% if config_value['marketplace_replace_plugins'] != '1' %}
-                     {% if config_value['marketplace_replace_plugins'] == '3' %}
+                  {% set config_value = call('Config::getConfigurationValue', ['core', 'marketplace_replace_plugins']) %}
+                  {% if config_value is not null and config_value != constant('Glpi\\Marketplace\\Controller::MP_REPLACE_ASK')  %}
+                     {% if config_value is not null and  config_value == constant('Glpi\\Marketplace\\Controller::MP_REPLACE_NEVER')  %}
                         {% set checked = 'checked disabled' %}
                      {% else %}
                         {% set checked = '' %}
