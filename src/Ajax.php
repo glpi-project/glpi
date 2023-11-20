@@ -413,7 +413,7 @@ HTML;
                     }
                });
             }
-            if (update_current_tab && $(target).html() && !force_reload) {
+            if ($(target).html() && !force_reload) {
                 updateCurrentTab();
                 return;
             }
