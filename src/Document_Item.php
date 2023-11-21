@@ -224,7 +224,11 @@ class Document_Item extends CommonDBRelation
             if (isset($this->input['_disablenotif']) && $this->input['_disablenotif']) {
                 $input['_disablenotif'] = true;
             }
-
+            if ($ticket->getFromDB($input['id'])) {
+                if ($ticket->fields['status'] == Ticket::WAITING) {
+                    $input['status'] = Ticket::ASSIGNED;
+                }
+            }
             $ticket->update($input);
         }
         parent::post_addItem();

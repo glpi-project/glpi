@@ -63,18 +63,6 @@ if (isset($_POST["add"])) {
                     "login",
                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"])
                 );
-                if (isset($_POST['itemtype']) && $_POST['itemtype'] == Ticket::getTypeName()) {
-                    $ticket = new Ticket();
-                    $ticket->getFromDB($_POST['items_id']);
-                    if ($_SESSION['glpiID'] ==  $ticket->fields['users_id_recipient']) {
-                        if ($ticket->fields['status'] == Ticket::WAITING) {
-                            $ticket->update([
-                                'id' => $_POST['items_id'],
-                                'status' => Ticket::ASSIGNED
-                            ]);
-                        }
-                    }
-                }
             }
         }
         if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
