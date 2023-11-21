@@ -359,11 +359,9 @@ class Document extends CommonDBTM
                 'items_id'     => $this->input["items_id"]
             ]);
 
-            if ($this->input["itemtype"] == \Ticket::getTypeName()) {
-                $ticket = new Ticket();
-                $ticket->getFromDB($this->input["items_id"]);
-                $this->updateParentStatus($ticket, $this->fields);
-            }
+            $itilobject = new $this->input["itemtype"]();
+            $itilobject->getFromDB($this->input["items_id"]);
+            $this->updateParentStatus($itilobject, $this->input);
 
             Event::log(
                 $this->fields['id'],
