@@ -291,10 +291,55 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
     }
 
+    public function assignTechFromtask($input)
+    {
+        //if user or group assigned to ticket task, add it to the ticket
+        $entities = [
+            'Ticket' => [
+                'users_id_tech' => new Ticket_User(),
+                'groups_id_tech' => new Group_Ticket(),
+            ],
+            'Change' => [
+                'users_id_tech' => new Change_User(),
+                'groups_id_tech' => new Change_Group(),
+            ],
+            'Problem' => [
+                'users_id_tech' => new Problem_User(),
+                'groups_id_tech' => new Group_Problem(),
+            ],
+        ];
+        foreach ($entities as $entityType => $entityData) {
+            if ($entityType == $input['itemtype']) {
+                $entityType = strtolower($entityType);
+                foreach ($entityData as $key => $entity) {
+                    if (isset($input[$key])) {
+                        $entityId = str_replace('_tech', '', $key);
+                        if (
+                            $entity->getFromDBByCrit(
+                                [
+                                    $entityType . 's_id' => $input[$entityType . 's_id'],
+                                    $entityId => $input[$key],
+                                    'type' => 2
+                                ]
+                            ) == false
+                        ) {
+                            $entity->add(
+                                [
+                                    $entityType . 's_id' => $input[$entityType . 's_id'],
+                                    $entityId => $input[$key],
+                                    'type' => 2
+                                ]
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     public function prepareInputForUpdate($input)
     {
-
         if (array_key_exists('content', $input) && empty($input['content'])) {
             Session::addMessageAfterRedirect(
                 __("You can't remove description of a task."),
@@ -383,6 +428,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 }
             }
         }
+        // Assign technician to ticket from ticket task
+        self::assignTechFromtask($input);
 
         return $input;
     }
@@ -591,6 +638,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (isset($input["users_id"])) {
             $input['timeline_position'] = $itemtype::getTimelinePosition($input["_job"]->getID(), $this->getType(), $input["users_id"]);
         }
+        // Assign technician to ticket from ticket task
+        self::assignTechFromtask($input);
 
         return $input;
     }
