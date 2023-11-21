@@ -10425,18 +10425,7 @@ abstract class CommonITILObject extends CommonDBTM
             && $satisfaction->getFromDB($item->getID())
         ) {
             // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
-            $config_suffix = static::getType() === 'Ticket' ? '' : ('_' . strtolower(static::getType()));
-
-            $duration = (int) Entity::getUsedConfig('inquest_duration' . $config_suffix, $item->fields['entities_id']);
-            $date2    = strtotime($satisfaction->fields['date_begin']);
-            if (
-                ($duration === 0)
-                || (time() - $date2) <= $duration * DAY_TIMESTAMP
-            ) {
-                $satisfaction->showSatisactionForm($item);
-            } else {
-                echo "<p class='center b'>" . __('Satisfaction survey expired') . "</p>";
-            }
+            $satisfaction->showSatisactionForm($item);
         } else {
             echo "<p class='center b'>" . __('No generated survey') . "</p>";
         }
