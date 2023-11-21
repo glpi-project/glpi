@@ -45,10 +45,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     $migration->addField(
         $table,
         $field_to_add,
-        'tinyint',
-        [
-            'value' => 0,
-        ]
+        "tinyint NOT NULL DEFAULT '0'"
     );
     $migration->addKey($table, $field_to_add);
 }
@@ -59,10 +56,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     $migration->addField(
         $table,
         $field_to_add,
-        'tinyint',
-        [
-            'value' => 0,
-        ]
+        "tinyint NOT NULL DEFAULT '0'"
     );
     $migration->addKey($table, $field_to_add);
 }
@@ -73,10 +67,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
     $migration->addField(
         $table,
         $field_to_add,
-        'tinyint',
-        [
-            'value' => 0,
-        ]
+        "tinyint NOT NULL DEFAULT '0'"
     );
     $migration->addKey($table, $field_to_add);
 }
