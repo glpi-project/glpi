@@ -335,7 +335,7 @@ class RuleCriteria extends CommonDBChild
      * Try to match a defined rule
      *
      * @param RuleCriteria &$criterion         RuleCriteria object
-     * @param strig        $field              the field to match
+     * @param string       $field              the field to match
      * @param array        &$criterias_results
      * @param array        &$regex_result
      *
