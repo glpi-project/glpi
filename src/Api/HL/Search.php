@@ -534,6 +534,7 @@ final class Search
      */
     private function criteriaHasJoinFilter(array $where): bool
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($where)) {
