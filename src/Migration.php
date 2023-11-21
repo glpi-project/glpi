@@ -1241,6 +1241,17 @@ class Migration
             ),
             true
         );
+
+        // Update current user rights so he doesn't have to reload his session
+        if (!isCommandLine()) {
+            foreach ($requiredrights as $rightname => $value) {
+                if (Session::haveRight($rightname, $value)) {
+                    // Insert new rights into session
+                    $_SESSION['glpiactiveprofile'][$name] = $rights;
+                    break;
+                }
+            }
+        }
     }
 
     /**
