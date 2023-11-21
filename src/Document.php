@@ -42,6 +42,7 @@ use Glpi\Toolbox\Sanitizer;
 class Document extends CommonDBTM
 {
     use Glpi\Features\TreeBrowse;
+    use Glpi\Features\ParentStatus;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -357,6 +358,12 @@ class Document extends CommonDBTM
                 'itemtype'     => $this->input["itemtype"],
                 'items_id'     => $this->input["items_id"]
             ]);
+
+            if ($this->input["itemtype"] == \Ticket::getTypeName()) {
+                $ticket = new Ticket();
+                $ticket->getFromDB($this->input["items_id"]);
+                $this->updateParentStatus($ticket, $this->fields);
+            }
 
             Event::log(
                 $this->fields['id'],
