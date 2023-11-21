@@ -3775,6 +3775,7 @@ class Entity extends CommonTreeDropdown
             case 'transfers_id':
                 $strategy = $values['transfers_strategy'] ?? $values[$field];
                 if ($strategy == self::CONFIG_NEVER) {
+                    return __('No automatic transfer');
                 }
                 if ($strategy == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
