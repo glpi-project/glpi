@@ -309,7 +309,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ],
         ];
         foreach ($entities as $entityType => $entityData) {
-            if ($entityType == $input['itemtype']) {
+            if ($entityType == isset($input['itemtype'])) {
                 $entityType = strtolower($entityType);
                 foreach ($entityData as $key => $entity) {
                     if (isset($input[$key])) {
