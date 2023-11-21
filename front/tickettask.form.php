@@ -36,4 +36,19 @@
 include('../inc/includes.php');
 
 $task = new TicketTask();
+
+//if user or group assigned to ticket task, add it to the ticket
+$entities = [
+    'users_id_tech' => new Ticket_User(),
+    'groups_id_tech' => new Group_Ticket(),
+];
+
+foreach ($entities as $key => $entity) {
+    if (isset($_POST[$key])) {
+        $entityId = str_replace('_tech', '', $key);
+        if ($entity->getFromDBByCrit(['tickets_id' => $_POST['tickets_id'], $entityId => $_POST[$key], 'type' => 2]) == false) {
+            $entity->add(['tickets_id' => $_POST['tickets_id'], $entityId => $_POST[$key], 'type' => 2]);
+        }
+    }
+}
 include(GLPI_ROOT . "/front/commonitiltask.form.php");
