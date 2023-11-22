@@ -131,12 +131,14 @@ const StencilEditor = function (container, rand, zones_definition) {
                         && cropper.getCropperSelection().width > 0;
                 });
 
-                if (keycode == 13 && hasSelection) {
-                    _this.saveZoneData();
-                    e.preventDefault();
-                } else if (keycode == 27) {
-                    _this.editorDisable();
-                    e.preventDefault();
+                if (_this.isEditorActive()) {
+                    if (keycode == 13 && hasSelection) {
+                        _this.saveZoneData();
+                        e.preventDefault();
+                    } else if (keycode == 27) {
+                        _this.editorDisable();
+                        e.preventDefault();
+                    }
                 }
             })
             .on('keypress', function (e) {
@@ -303,6 +305,13 @@ const StencilEditor = function (container, rand, zones_definition) {
         $(container).find('#zone-data-' + rand).addClass('d-none');
 
         _this.redoZones();
+    };
+
+    // check if editor is active
+    _this.isEditorActive = function () {
+        return croppers.some(function (cropper) {
+            return cropper.getCropperCanvas().disabled === false;
+        });
     };
 
     // redraw zones
