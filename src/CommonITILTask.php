@@ -291,46 +291,51 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
     }
 
-    public function assignTechFromtask($input)
+    public function getTargetITILClass(string $type)
+    {
+        switch ($type) {
+            case strpos($type, 'Ticket') !== false:
+                return Ticket::class;
+            case strpos($type, 'Change') !== false:
+                return Change::class;
+            case strpos($type, 'Problem') !== false:
+                return Problem::class;
+            default:
+                return null;
+        }
+    }
+
+    public function assignTechFromtask($input, string $type)
     {
         //if user or group assigned to ticket task, add it to the ticket
-        $entities = [
-            'Ticket' => [
-                'users_id_tech' => new Ticket_User(),
-                'groups_id_tech' => new Group_Ticket()
-            ],
-            'Change' => [
-                'users_id_tech' => new Change_User(),
-                'groups_id_tech' => new Change_Group()
-            ],
-            'Problem' => [
-                'users_id_tech' => new Problem_User(),
-                'groups_id_tech' => new Group_Problem()
-            ],
+        $itemtype = $this->getTargetITILClass($type);
+        $item = new $itemtype();
+        $entityType = strtolower($itemtype);
+        $itemData = [
+            'users_id_tech' => new $item->userlinkclass,
+            'groups_id_tech' => new $item->grouplinkclass,
         ];
-        foreach ($entities as $entityType => $entityData) {
-            $entityType = strtolower($entityType);
-            if (isset($input[$entityType . 's_id'])) {
-                foreach ($entityData as $key => $entity) {
-                    if (isset($input[$key]) && !empty($input[$key])) {
-                        $entityId = str_replace('_tech', '', $key);
-                        if (
-                            $entity->getFromDBByCrit(
-                                [
-                                    $entityType . 's_id' => $input[$entityType . 's_id'],
-                                    $entityId => $input[$key],
-                                    'type' => 2
-                                ]
-                            ) == false
-                        ) {
-                            $entity->add(
-                                [
-                                    $entityType . 's_id' => $input[$entityType . 's_id'],
-                                    $entityId => $input[$key],
-                                    'type' => 2
-                                ]
-                            );
-                        }
+        $foreignkey = getForeignKeyFieldForItemType($itemtype);
+        if (isset($input[$foreignkey])) {
+            foreach ($itemData as $key => $value) {
+                if (isset($input[$key]) && !empty($input[$key])) {
+                    $entityId = str_replace('_tech', '', $key);
+                    if (
+                        $value->getFromDBByCrit(
+                            [
+                                $foreignkey => $input[$foreignkey],
+                                $entityId => $input[$key],
+                                'type' => CommonITILActor::ASSIGN
+                            ]
+                        ) == false
+                    ) {
+                        $value->add(
+                            [
+                                $foreignkey => $input[$foreignkey],
+                                $entityId => $input[$key],
+                                'type' => CommonITILActor::ASSIGN
+                            ]
+                        );
                     }
                 }
             }
@@ -427,10 +432,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     );
                 }
             }
-        }
-        if (isset($input["changes_id"]) || isset($input["problems_id"]) || isset($input["tickets_id"])) {
-            // Assign technician to ticket from ticket task
-            self::assignTechFromtask($input);
         }
 
         return $input;
@@ -543,6 +544,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             );
         }
 
+        // Assign technician to ticket from ticket task
+        self::assignTechFromtask($this->input, get_class($this->input["_job"]));
+
         parent::post_updateItem($history);
     }
 
@@ -640,10 +644,6 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (isset($input["users_id"])) {
             $input['timeline_position'] = $itemtype::getTimelinePosition($input["_job"]->getID(), $this->getType(), $input["users_id"]);
         }
-        if (isset($input["changes_id"]) || isset($input["problems_id"]) || isset($input["tickets_id"])) {
-            // Assign technician to ticket from ticket task
-            self::assignTechFromtask($input);
-        }
 
         return $input;
     }
@@ -733,6 +733,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->getType(),
             Log::HISTORY_ADD_SUBITEM
         );
+
+        // Assign technician to ticket from ticket task
+        self::assignTechFromtask($this->input, get_class($this->input["_job"]));
 
         parent::post_addItem();
     }

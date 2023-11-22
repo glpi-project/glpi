@@ -39,36 +39,7 @@ use DbTestCase;
 
 class CommonITILTask extends DbTestCase
 {
-    public function testAddTechToTicketFromTask()
-    {
-        $ticket = new \Ticket();
-        $ticket_id = 101;
-
-        // Add a task
-        $task = new \TicketTask();
-        $task_id = $task->add([
-            'tickets_id' => $ticket_id,
-            'users_id'   => 2,
-            'content'    => "<p> Test task </p>",
-            'state'      => 1,
-            'users_id_tech'   => 4,
-        ]);
-        $this->integer(count($task->find(['id' => $task_id])))->isEqualTo(1);
-
-        $ticket_user = new \Ticket_User();
-        $this->integer(count($ticket_user->find(['tickets_id' => $ticket_id, 'users_id' => 4, 'type' => 2])))->isEqualTo(1);
-
-        $task->update([
-            'id' => $task_id,
-            'tickets_id' => $ticket_id,
-            'users_id' => 3,
-            'users_id_tech' => 3,
-        ]);
-
-        $this->integer(count($ticket_user->find(['tickets_id' => $ticket_id, 'users_id' => 3, 'type' => 2])))->isEqualTo(1);
-    }
-
-    public function testAddTechToChangeFromTask()
+    protected function dataTechTicketTask(): array
     {
         $change = new \Change();
         $change_id = $change->add([
@@ -77,33 +48,6 @@ class CommonITILTask extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'date'        => $_SESSION['glpi_currenttime'],
         ]);
-
-        // Add a task
-        $task = new \ChangeTask();
-        $task_id = $task->add([
-            'changes_id' => $change_id,
-            'users_id'   => 4,
-            'content'    => "<p> Test task </p>",
-            'state'      => 1,
-            'users_id_tech'   => 4,
-        ]);
-        $this->integer(count($task->find(['id' => $task_id])))->isEqualTo(1);
-
-        $change_user = new \Change_User();
-        $this->integer(count($change_user->find(['changes_id' => $change_id, 'users_id' => 4, 'type' => 2])))->isEqualTo(1);
-
-        $task->update([
-            'id' => $task_id,
-            'changes_id' => $change_id,
-            'users_id' => 3,
-            'users_id_tech' => 3,
-        ]);
-
-        $this->integer(count($change_user->find(['changes_id' => $change_id, 'users_id' => 3, 'type' => 2])))->isEqualTo(1);
-    }
-
-    public function testAddTechToProblemFromTask()
-    {
         $problem = new \Problem();
         $problem_id = $problem->add([
             'name'        => "Test tech task",
@@ -111,28 +55,76 @@ class CommonITILTask extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'date'        => $_SESSION['glpi_currenttime'],
         ]);
+        return [
+            [
+                'id' => 101,
+                'task' => new \TicketTask(),
+                'type_user' => new \Ticket_User(),
+                'foreignkey' => 'tickets_id',
+                'task_users_id' => 2,
+                'task_content' => "<p> Test task </p>",
+                'task_state' => 1,
+                'task_users_id_tech' => 4,
+                'ticket_users_id' => 4,
+                'ticket_type' => 2,
+                'update_users_id' => 3,
+                'update_users_id_tech' => 3,
+            ],
+            [
+                'id' => $change_id,
+                'task' => new \ChangeTask(),
+                'type_user' => new \Change_User(),
+                'foreignkey' => 'changes_id',
+                'task_users_id' => 4,
+                'task_content' => "<p> Test task for change </p>",
+                'task_state' => 1,
+                'task_users_id_tech' => 4,
+                'ticket_users_id' => 4,
+                'ticket_type' => 2,
+                'update_users_id' => 3,
+                'update_users_id_tech' => 3,
+            ],
+            [
+                'id' => $problem_id,
+                'task' => new \ProblemTask(),
+                'type_user' => new \Problem_User(),
+                'foreignkey' => 'problems_id',
+                'task_users_id' => 4,
+                'task_content' => "<p> Test task for problem </p>",
+                'task_state' => 1,
+                'task_users_id_tech' => 4,
+                'ticket_users_id' => 4,
+                'ticket_type' => 2,
+                'update_users_id' => 3,
+                'update_users_id_tech' => 3,
+            ],
+        ];
+    }
 
+    /**
+     * @dataprovider dataTechTicketTask
+     */
+    public function testAddTechToItilFromTask($id, $task, $type_user, $foreignkey, $task_users_id, $task_content, $task_state, $task_users_id_tech, $ticket_users_id, $ticket_type, $update_users_id, $update_users_id_tech)
+    {
         // Add a task
-        $task = new \ProblemTask();
         $task_id = $task->add([
-            'problems_id' => $problem_id,
-            'users_id'   => 4,
-            'content'    => "<p> Test task </p>",
-            'state'      => 1,
-            'users_id_tech'   => 4,
+            $foreignkey => $id,
+            'users_id'   => $task_users_id,
+            'content'    => $task_content,
+            'state'      => $task_state,
+            'users_id_tech'   => $task_users_id_tech,
         ]);
         $this->integer(count($task->find(['id' => $task_id])))->isEqualTo(1);
 
-        $problem_user = new \Problem_User();
-        $this->integer(count($problem_user->find(['problems_id' => $problem_id, 'users_id' => 4, 'type' => 2])))->isEqualTo(1);
+        $this->integer(count($type_user->find([$foreignkey => $id, 'users_id' => $ticket_users_id, 'type' => $ticket_type])))->isEqualTo(1);
+
         $task->update([
             'id' => $task_id,
-            'problems_id' => $problem_id,
-            'users_id' => 3,
-            'users_id_tech' => 3,
+            $foreignkey => $id,
+            'users_id' => $update_users_id,
+            'users_id_tech' => $update_users_id_tech,
         ]);
-        $this->integer(count($task->find(['id' => $task_id, 'users_id_tech' => 3])))->isEqualTo(1);
 
-        $this->integer(count($problem_user->find(['problems_id' => $problem_id, 'users_id' => 3, 'type' => 2])))->isEqualTo(1);
+        $this->integer(count($type_user->find([$foreignkey => $id, 'users_id' => $update_users_id, 'type' => $ticket_type])))->isEqualTo(1);
     }
 }
