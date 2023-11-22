@@ -63,12 +63,12 @@ class NotificationEventAjax extends DbTestCase
 
     public function testGetAdminData()
     {
-        $this->boolean(\NotificationEventAjax::getAdminData())->isFalse();
+        $this->array(\NotificationEventAjax::getAdminData())->isIdenticalTo([]);
     }
 
     public function testGetEntityAdminsData()
     {
-        $this->boolean(\NotificationEventAjax::getEntityAdminsData(0))->isFalse();
+        $this->array(\NotificationEventAjax::getEntityAdminsData(0))->isIdenticalTo([]);
     }
 
     public function testSend()

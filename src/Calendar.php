@@ -273,7 +273,7 @@ class Calendar extends CommonDropdown
     {
 
         if (!isset($this->fields['id'])) {
-            return false;
+            return 0;
         }
 
         if ($end < $start) {

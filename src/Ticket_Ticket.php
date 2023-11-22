@@ -139,7 +139,7 @@ class Ticket_Ticket extends CommonDBRelation
 
        // Make new database object and fill variables
         if (empty($ID)) {
-            return false;
+            return [];
         }
 
         $iterator = $DB->request([

@@ -2462,7 +2462,7 @@ class Ticket extends CommonITILObject
      *
      * @param $type itemtype of object to add
      *
-     * @return rights
+     * @return boolean
      **/
     public function canAddItem($type)
     {

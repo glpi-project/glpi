@@ -113,7 +113,7 @@ class Notepad extends CommonDBChild
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
         }
-        return false;
+        return '';
     }
 
 

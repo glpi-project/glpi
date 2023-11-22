@@ -2146,8 +2146,10 @@ HTML;
 
     /**
      * Retrieve full directory of a lib
+     *
      * @param  $libstring  object, class or function
-     * @return string       the path or false
+     *
+     * @return false|string the path or false
      *
      * @since 9.1
      */

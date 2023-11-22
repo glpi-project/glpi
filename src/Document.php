@@ -1390,7 +1390,7 @@ class Document extends CommonDBTM
      * @param &$input    array of datas need for add/update (will be completed)
      * @param $FILEDESC        FILE descriptor
      *
-     * @return true on success
+     * @return boolean
      **/
     public static function uploadDocument(array &$input, $FILEDESC)
     {

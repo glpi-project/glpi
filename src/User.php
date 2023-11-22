@@ -5375,7 +5375,7 @@ HTML;
      * @param string $field Field name
      * @param string $value Field value
      *
-     * @return integer
+     * @return false|integer
      */
     public static function getIdByField($field, $value, $escape = true)
     {

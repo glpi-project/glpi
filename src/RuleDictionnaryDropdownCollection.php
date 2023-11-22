@@ -130,7 +130,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
      * @param $offset    offset used to begin (default 0)
      * @param $maxtime   maximum time of process (reload at the end) (default 0)
      *
-     * @return -1 on completion else current offset
+     * @return int|boolean current offset or -1 on completion or false on failure
      **/
     public function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0)
     {

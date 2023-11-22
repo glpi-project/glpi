@@ -70,7 +70,7 @@ abstract class ITILTemplate extends CommonDropdown
      * @param $ID                    integer  ID of the item to get
      * @param $withtypeandcategory   boolean  with type and category (true by default)
      *
-     * @return true if succeed else false
+     * @return boolean
      **/
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {

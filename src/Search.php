@@ -4604,7 +4604,7 @@ JAVASCRIPT;
      * @param string  $val          Item num in the request
      * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
      *
-     * @return string Where string
+     * @return false|string Where string
      **/
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
     {

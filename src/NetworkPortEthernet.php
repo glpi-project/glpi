@@ -277,7 +277,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
      * @param integer|string $val        port speed
      * @param boolean        $to_string  true if we must transform the speed to string
      *
-     * @return integer|string (regarding what is requested)
+     * @return false|integer|string (regarding what is requested)
      **/
     public static function transformPortSpeed($val, $to_string)
     {
