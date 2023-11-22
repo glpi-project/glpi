@@ -297,20 +297,20 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $entities = [
             'Ticket' => [
                 'users_id_tech' => new Ticket_User(),
-                'groups_id_tech' => new Group_Ticket(),
+                'groups_id_tech' => new Group_Ticket()
             ],
             'Change' => [
                 'users_id_tech' => new Change_User(),
-                'groups_id_tech' => new Change_Group(),
+                'groups_id_tech' => new Change_Group()
             ],
             'Problem' => [
                 'users_id_tech' => new Problem_User(),
-                'groups_id_tech' => new Group_Problem(),
+                'groups_id_tech' => new Group_Problem()
             ],
         ];
         foreach ($entities as $entityType => $entityData) {
-            if ($entityType == isset($input['itemtype'])) {
-                $entityType = strtolower($entityType);
+            $entityType = strtolower($entityType);
+            if (isset($input[$entityType . 's_id'])) {
                 foreach ($entityData as $key => $entity) {
                     if (isset($input[$key])) {
                         $entityId = str_replace('_tech', '', $key);
@@ -428,8 +428,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 }
             }
         }
-        // Assign technician to ticket from ticket task
-        self::assignTechFromtask($input);
+        if (isset($input["changes_id"]) || isset($input["problems_id"]) || isset($input["tickets_id"])) {
+            // Assign technician to ticket from ticket task
+            self::assignTechFromtask($input);
+        }
 
         return $input;
     }
@@ -638,8 +640,10 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (isset($input["users_id"])) {
             $input['timeline_position'] = $itemtype::getTimelinePosition($input["_job"]->getID(), $this->getType(), $input["users_id"]);
         }
-        // Assign technician to ticket from ticket task
-        self::assignTechFromtask($input);
+        if (isset($input["changes_id"]) || isset($input["problems_id"]) || isset($input["tickets_id"])) {
+            // Assign technician to ticket from ticket task
+            self::assignTechFromtask($input);
+        }
 
         return $input;
     }
