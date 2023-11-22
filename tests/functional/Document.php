@@ -179,6 +179,85 @@ class Document extends DbTestCase
      * ->variable['items_id']->isEqualTo($cid);
      * }*/
 
+    /**
+     * This method tests the functionality of adding a document to a ticket.
+     *
+     * It performs the following steps:
+     * 1. Logs in the user.
+     * 2. Creates a new ticket and adds it to the database.
+     * 3. Adds a user as the requester of the ticket.
+     * 4. Creates a second test user and assigns it to the ticket.
+     * 5. Creates a stub for the Document class.
+     * 6. Configures the stub to move the uploaded document.
+     * 7. Adds a document to the ticket.
+     * 8. Refreshes the ticket object to get the latest data from the database.
+     * 9. Retrieves the document item from the database.
+     * 10. Performs various assertions to validate the functionality.
+     */
+    public function testPost_addItem()
+    {
+        $this->login();
+        $item = new \Ticket();
+        $cid = (int)$item->add([
+           'name'         => 'Documented Ticket',
+           'entities_id'  => 0,
+           'content'      => 'Ticket content',
+           'status'       => \Ticket::WAITING
+        ]);
+        $this->integer($cid)->isGreaterThan(0);
+
+        $ticket_user = new \Ticket_User();
+        $this->integer($ticket_user->add([
+            'tickets_id' => $cid,
+            'users_id'   => getItemByTypeName('User', TU_USER, true),
+            'type'       => \CommonITILActor::REQUESTER
+        ]))->isGreaterThan(0);
+
+        $user = new \User();
+        $uid = (int)$user->add([
+            'name'         => 'test_user2',
+            'realname'     => 'Test User',
+            'firstname'    => 'Test',
+            'password'     => 'test',
+            'is_active'    => 1,
+            'is_deleted'   => 0,
+            'authtype'     => 1,
+            'profiles_id'  => 0,
+            'entities_id'  => 0,
+            'usercategories_id' => 1
+        ]);
+        $this->integer($uid)->isGreaterThan(0);
+
+        $ticket_user = new \Ticket_User();
+        $this->integer($ticket_user->add([
+            'tickets_id' => $cid,
+            'users_id'   => $uid,
+            'type'       => \CommonITILActor::ASSIGN
+        ]))->isGreaterThan(0);
+
+        $mdoc = new \mock\Document();
+
+        $this->calling($mdoc)->moveUploadedDocument = true;
+
+        $input['upload_file'] = 'filename.ext';
+        $input['itemtype'] = $item->getType();
+        $input['items_id'] = $cid;
+        $input['documentcategories_id'] = 1;
+
+        $docid = (int)$mdoc->add($input);
+        $this->integer($docid)->isGreaterThan(0);
+
+        $this->boolean($item->getFromDB($cid))->isTrue();
+
+        $doc_item = new \Document_Item();
+        $this->boolean($doc_item->getFromDBByCrit(['documents_id' => $docid]))->isTrue();
+
+        $this->string(\Ticket::getTypeName(1))->isIdenticalTo($doc_item->fields['itemtype']);
+        $this->integer($cid)->isEqualTo($doc_item->fields['items_id']);
+
+        $this->integer($item->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+    }
+
     protected function validDocProvider()
     {
         return [
