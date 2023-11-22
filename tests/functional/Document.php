@@ -199,10 +199,10 @@ class Document extends DbTestCase
         $this->login();
         $item = new \Ticket();
         $cid = (int)$item->add([
-           'name'         => 'Documented Ticket',
-           'entities_id'  => 0,
-           'content'      => 'Ticket content',
-           'status'       => \Ticket::WAITING
+            'name'         => 'Documented Ticket',
+            'entities_id'  => 0,
+            'content'      => 'Ticket content',
+            'status'       => \Ticket::WAITING
         ]);
         $this->integer($cid)->isGreaterThan(0);
 
