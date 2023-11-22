@@ -42,12 +42,7 @@ class CommonITILTask extends DbTestCase
     public function testAddTechToTicketFromTask()
     {
         $ticket = new \Ticket();
-        $ticket_id = $ticket->add([
-            'name'        => "Test tech task",
-            'content'     => "Test tech task",
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'date'        => $_SESSION['glpi_currenttime'],
-        ]);
+        $ticket_id = 101;
 
         // Add a task
         $task = new \TicketTask();
