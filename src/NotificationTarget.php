@@ -588,7 +588,7 @@ class NotificationTarget extends CommonDBChild
             );
 
             // If one of the item is recursive, then we should also check the child entities
-            if ($this->mustCheckChildrenEntities()) {
+            if ($this->isTargetItemRecursive()) {
                 $filt = [
                     'OR' => [
                         $filt,
@@ -1368,7 +1368,7 @@ class NotificationTarget extends CommonDBChild
             )
         ];
 
-        if ($this->mustCheckChildrenEntities()) {
+        if ($this->isTargetItemRecursive()) {
             $criteria['WHERE'] = [
                 'OR' => [
                     $criteria['WHERE'],
@@ -1740,16 +1740,20 @@ class NotificationTarget extends CommonDBChild
      *
      * @return bool
      */
-    protected function mustCheckChildrenEntities(): bool
+    protected function isTargetItemRecursive(): bool
     {
-        $is_recursive = false;
-        foreach ($this->target_object as $obj) {
-            if ($obj->isRecursive()) {
-                $is_recursive = true;
-                break;
-            }
+        // If the notification target more than one item, we can't handle the
+        // entity restriction correctly and must discard any potential child
+        // entities check
+        if (count($this->target_object) > 1) {
+            return false;
         }
 
-        return $is_recursive;
+        // Not all items support recursion
+        if (!isset($this->obj->fields['is_recursive'])) {
+            return false;
+        }
+
+        return $this->obj->isRecursive();
     }
 }
