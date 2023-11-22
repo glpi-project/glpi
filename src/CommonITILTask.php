@@ -291,26 +291,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
     }
 
-    public function getTargetITILClass(string $type)
-    {
-        switch ($type) {
-            case strpos($type, 'Ticket') !== false:
-                return Ticket::class;
-            case strpos($type, 'Change') !== false:
-                return Change::class;
-            case strpos($type, 'Problem') !== false:
-                return Problem::class;
-            default:
-                return null;
-        }
-    }
-
     public function assignTechFromtask($input, string $type)
     {
         //if user or group assigned to ticket task, add it to the ticket
-        $itemtype = $this->getTargetITILClass($type);
+        $itemtype = $this->getItilObjectItemType();
         $item = new $itemtype();
-        $entityType = strtolower($itemtype);
         $itemData = [
             'users_id_tech' => new $item->userlinkclass,
             'groups_id_tech' => new $item->grouplinkclass,
