@@ -125,6 +125,21 @@ class Change extends CommonITILObject
                               ))))));
     }
 
+    /**
+     * Is the current user have right to approve solution of the current change ?
+     *
+     * @return boolean
+     **/
+    public function canApprove()
+    {
+
+        return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
+               &&  Session::haveRight('change', Change::WAITING))
+              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+              || (isset($_SESSION["glpigroups"])
+                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
+    }
+
 
     /**
      * Is the current user have right to create the current change ?
@@ -673,7 +688,7 @@ class Change extends CommonITILObject
 
     public static function getReopenableStatusArray()
     {
-        return self::getClosedStatusArray();
+        return [self::SOLVED] + self::getClosedStatusArray();
     }
 
     public function getRights($interface = 'central')
