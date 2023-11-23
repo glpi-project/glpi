@@ -46,7 +46,7 @@
         ) }}
 
     {% else %}
-        {% if expired == 1 %}
+        {% if expired == true %}
             {% set message = __('Satisfaction survey expired.') %}
         {% else %}
             {% set message = __('After 12 hours, you can no longer modify your response.') %}
@@ -60,7 +60,7 @@
             </div>
         </div>
         {% set result = item.fields['date_answered'] is empty ? 0 : 1 %}
-        {% if result == 0 and expired == 1 %}
+        {% if result == 0 and expired == true %}
             {{ fields.htmlField(
                 '',
                 '',
@@ -139,7 +139,7 @@
                 });
             </script>
 
-            {% if expired == 0 %}
+            {% if expired == false %}
                 {{ include('components/form/buttons.html.twig') }}
             {% endif %}
         {% endif %}

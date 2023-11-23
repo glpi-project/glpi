@@ -157,12 +157,12 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $max_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_max_rate' . $config_suffix);
             $duration = (int) Entity::getUsedConfig('inquest_duration', $item->fields['entities_id']);
             $date2 = strtotime($this->fields['date_begin']);
-            $expired = 1;
+            $expired = true;
             if (
                 ($duration === 0)
                 || (time() - $date2) <= $duration * DAY_TIMESTAMP
             ) {
-                $expired = 0;
+                $expired = false;
             }
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
                 'item'   => $this,
