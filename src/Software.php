@@ -1159,10 +1159,10 @@ class Software extends CommonDBTM
         return "ti ti-apps";
     }
 
-    public function handleCategoryRules(array &$input)
+    public function handleCategoryRules(array &$input, bool $is_dynamic = false)
     {
-       //If category was not set by user (when manually adding a user)
-        if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
+        //If category was not set by user (when manually adding a user)
+        if ($is_dynamic || !isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
             $softcatrule = new RuleSoftwareCategoryCollection();
             $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
 
