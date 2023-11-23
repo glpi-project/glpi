@@ -2236,7 +2236,7 @@ class AuthLDAP extends CommonDBTM
      * @param array  $ldap_infos ldap user search result
      * @param string $user_dn    user dn to look for
      *
-     * @return bool|array false if the user dn doesn't exist, user ldap infos otherwise
+     * @return false|array false if the user dn doesn't exist, user ldap infos otherwise
      */
     public static function dnExistsInLdap($ldap_infos, $user_dn)
     {
