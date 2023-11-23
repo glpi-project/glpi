@@ -943,17 +943,20 @@ JAVASCRIPT;
                             $begin_hour = $begin_time - strtotime(date('Y-m-d', $begin_time));
                             $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
                             foreach ($options['days'] as $day => $val) {
+                                $end_day = $day;
+                                //Check that the start and end times are different else set the end day at the next day
+                                if ($begin_hour == $end_hour) {
+                                    $end_day = date('l', strtotime($day . ' +1 day'));
+                                }
                                 $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
-                                    'end'   => strtotime("next $day", $end_time) + $end_hour
+                                    'end'   => strtotime("next $end_day", $end_time) + $end_hour
                                 ];
                             }
                         }
                     }
-
                     foreach ($dates as $key => $val) {
                         $begin_time = $val['begin'];
                         $end_time   = $val['end'];
-
                         while ($begin_time < $repeat_end) {
                             $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
                             $begin_time = strtotime('+1 week', $begin_time);
