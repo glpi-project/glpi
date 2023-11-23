@@ -106,6 +106,13 @@ final class RuleController extends AbstractController
                 'properties' => [
                     'id' => ['type' => Doc\Schema::TYPE_STRING],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'fields' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'description' => 'Fields/actions that can be used with this action. See /Rule/Collection/{collection}/ActionField for a complete list of fields/actions.',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING
+                        ]
+                    ]
                 ]
             ],
             'RuleActionField' => [
@@ -114,6 +121,13 @@ final class RuleController extends AbstractController
                 'properties' => [
                     'id' => ['type' => Doc\Schema::TYPE_STRING],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'action_types' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'description' => 'Action types that can be used with this field. See /Rule/Collection/{collection}/ActionType for a complete list of action types.',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING
+                        ]
+                    ]
                 ]
             ],
             'RuleAction' => [
@@ -234,6 +248,19 @@ final class RuleController extends AbstractController
             return self::getAccessDeniedErrorResponse();
         }
         return null;
+    }
+
+    private function isChildOfRule(string $schema, Request $request): bool
+    {
+        $params = $request->getParameters();
+        // Only allow updating if the criterion exists in the rule
+        $result = Search::getOneBySchema($this->getKnownSchema($schema), $request->getAttributes(), $params);
+        try {
+            $decoded = json_decode((string)$result->getBody(), true, 512, JSON_THROW_ON_ERROR);
+            return isset($decoded['rule']['id']) && $decoded['rule']['id'] === (int) $request->getAttribute('rule_id');
+        } catch (\JsonException $e) {
+            return false;
+        }
     }
 
     #[Route(path: '/Collection', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -367,14 +394,25 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
+        /** @var class-string<\Rule> $rule_subtype */
+        $rule_subtype = 'Rule' . $request->getAttribute('collection');
+        $rule = new $rule_subtype();
+        $fields = $rule->getActions();
         $types = \RuleAction::getActions();
         $result = [];
-        foreach ($types as $k => $v) {
-            $result[] = [
-                'id' => $k,
-                'name' => $v
-            ];
+        foreach ($fields as $fk => $fv) {
+            foreach ($types as $k => $v) {
+                if (in_array($k, $fv['force_actions'] ?? ['assign'], true)) {
+                    $result[$k] = [
+                        'id' => $k,
+                        'name' => $v,
+                        'fields' => [...$result[$k]['fields'] ?? [], $fk]
+                    ];
+                }
+            }
         }
+        $result = array_values($result);
+
         return new JSONResponse($result);
     }
 
@@ -401,7 +439,8 @@ final class RuleController extends AbstractController
         foreach ($possible_actions as $k => $v) {
             $result[] = [
                 'id' => $k,
-                'name' => $v['name']
+                'name' => $v['name'],
+                'action_types' => $v['force_actions'] ?? ['assign']
             ];
         }
         return new JSONResponse($result);
@@ -626,14 +665,70 @@ final class RuleController extends AbstractController
     )]
     public function createRuleCriteria(Request $request): Response
     {
-        if ($response = $this->checkCollectionAccess($request, CREATE)) {
+        if ($response = $this->checkCollectionAccess($request, UPDATE)) {
             return $response;
         }
 
         $params = $request->getParameters();
         $params['rule'] = $request->getAttribute('rule_id');
 
-        return Search::createBySchema($this->getKnownSchema('RuleCriteria'), $params, [self::class, 'getRuleCriterion']);
+        return Search::createBySchema($this->getKnownSchema('RuleCriteria'), $params, [self::class, 'getRuleCriterion'], [
+            'mapped' => [
+                'rule_id' => $request->getAttribute('rule_id'),
+                'collection' => $request->getAttribute('collection')
+            ]
+        ]);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Update a criterion for a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RuleCriteria',
+            ]
+        ]
+    )]
+    public function updateRuleCriteria(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, UPDATE)) {
+            return $response;
+        }
+        if (!$this->isChildOfRule('RuleCriteria', $request)) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        // Cannot move criteria to another rule
+        $params = $request->getParameters();
+        $params['id'] = $request->getAttribute('id');
+        $params['rule.id'] = $request->getAttribute('rule_id');
+
+        return Search::updateBySchema($this->getKnownSchema('RuleCriteria'), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Criteria/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Delete a criterion for a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RuleCriteria',
+            ]
+        ]
+    )]
+    public function deleteRuleCriteria(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, UPDATE)) {
+            return $response;
+        }
+        if (!$this->isChildOfRule('RuleCriteria', $request)) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        return Search::deleteBySchema($this->getKnownSchema('RuleCriteria'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action', methods: ['POST'], middlewares: [ResultFormatterMiddleware::class])]
@@ -656,6 +751,62 @@ final class RuleController extends AbstractController
         $params = $request->getParameters();
         $params['rule'] = $request->getAttribute('rule_id');
 
-        return Search::createBySchema($this->getKnownSchema('RuleAction'), $params, [self::class, 'getRuleAction']);
+        return Search::createBySchema($this->getKnownSchema('RuleAction'), $params, [self::class, 'getRuleAction'], [
+            'mapped' => [
+                'rule_id' => $request->getAttribute('rule_id'),
+                'collection' => $request->getAttribute('collection')
+            ]
+        ]);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['PATCH'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Update an action for a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RuleAction',
+            ]
+        ]
+    )]
+    public function updateRuleAction(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, UPDATE)) {
+            return $response;
+        }
+        if (!$this->isChildOfRule('RuleAction', $request)) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        // Cannot move action to another rule
+        $params = $request->getParameters();
+        $params['id'] = $request->getAttribute('id');
+        $params['rule.id'] = $request->getAttribute('rule_id');
+
+        return Search::updateBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $params);
+    }
+
+    #[Route(path: '/Collection/{collection}/Rule/{rule_id}/Action/{id}', methods: ['DELETE'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Delete an action for a rule in a collection',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'RuleAction',
+            ]
+        ]
+    )]
+    public function deleteRuleAction(Request $request): Response
+    {
+        if ($response = $this->checkCollectionAccess($request, UPDATE)) {
+            return $response;
+        }
+        if (!$this->isChildOfRule('RuleAction', $request)) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        return Search::deleteBySchema($this->getKnownSchema('RuleAction'), $request->getAttributes(), $request->getParameters());
     }
 }

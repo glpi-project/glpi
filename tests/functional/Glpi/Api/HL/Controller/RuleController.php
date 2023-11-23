@@ -240,60 +240,117 @@ class RuleController extends \HLAPITestCase
         });
     }
 
-//    protected function listRuleActionTypesProvider()
-//    {
-//        return [
-//            [
-//                'type' => 'Asset',
-//                'action_types' => [
-//                    'assign' => 'Assign',
-//                    'regex_result' => 'Assign the value from regular expression',
-//                    'fromuser' => 'Copy from user',
-//                    'compute' => 'Recalculate'
-//                ],
-//            ],
-//            [
-//                'type' => 'Ticket',
-//                'action_types' => [
-//                    'assign' => 'Assign',
-//                    'regex_result' => 'Assign the value from regular expression',
-//                    'fromitem' => 'Copy from item',
-//                    'compute' => 'Recalculate'
-//                ],
-//            ],
-//            [
-//                'type' => 'ImportAsset',
-//                'action_types' => [
-//                    'entities_id' => 'Target entity for the asset',
-//                    'mac' => 'Asset > Network port > MAC',
-//                    'link_criteria_port' => 'General > Restrict criteria to same network port'
-//                ],
-//            ],
-//        ];
-//    }
-//
-//    public function testListActionTypes($type, $action_types)
-//    {
-//        $this->login();
-//
-//        $this->api->call(new Request('GET', "/Rule/Collection/{$type}/ActionType"), function ($call) use ($action_types) {
-//            /** @var \HLAPICallAsserter $call */
-//            $call->response
-//                ->isOK()
-//                ->jsonContent(function ($content) use ($action_types) {
-//                    $tested = [];
-//                    foreach ($action_types as $id => $name) {
-//                        foreach ($content as $item) {
-//                            if ($item['id'] === $id) {
-//                                $this->string($action_types['name'])->isIdenticalTo($name);
-//                                $tested[] = $id;
-//                            }
-//                        }
-//                    }
-//                    $this->array($tested)->hasSize(count($action_types));
-//                });
-//        });
-//    }
+    protected function listRuleActionTypesProvider()
+    {
+        return [
+            [
+                'type' => 'Asset',
+                'action_types' => [
+                    'assign' => 'Assign',
+                    'regex_result' => 'Assign the value from regular expression',
+                    'fromuser' => 'Copy from user',
+                ],
+            ],
+            [
+                'type' => 'Ticket',
+                'action_types' => [
+                    'assign' => 'Assign',
+                    'regex_result' => 'Assign the value from regular expression',
+                    'fromitem' => 'Copy from item',
+                ],
+            ],
+            [
+                'type' => 'ImportAsset',
+                'action_types' => [
+                    'assign' => 'Assign',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider listRuleActionTypesProvider
+     */
+    public function testListActionTypes($type, $action_types)
+    {
+        $this->login();
+
+        $this->api->call(new Request('GET', "/Rule/Collection/{$type}/ActionType"), function ($call) use ($action_types) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($action_types) {
+                    $tested = [];
+                    foreach ($action_types as $id => $name) {
+                        foreach ($content as $item) {
+                            if ($item['id'] === $id) {
+                                $this->string($item['name'])->isIdenticalTo($name);
+                                $this->array($item['fields'])->isNotEmpty();
+                                $tested[] = $id;
+                            }
+                        }
+                    }
+                    $this->array($tested)->hasSize(count($action_types));
+                });
+        });
+    }
+
+    protected function listRuleActionFieldsProvider()
+    {
+        return [
+            [
+                'type' => 'Asset',
+                'fields' => [
+                    '_stop_rules_processing' => 'Skip remaining rules',
+                    '_affect_user_by_regex' => 'User based contact information',
+                    'otherserial' => 'Inventory number',
+                ],
+            ],
+            [
+                'type' => 'Ticket',
+                'fields' => [
+                    '_stop_rules_processing' => 'Skip remaining rules',
+                    '_itilcategories_id_by_completename' => 'Category (by completename)',
+                    'responsible_id_validate' => 'Send an approval request - Supervisor of the requester',
+                    'status' => 'Status',
+                ],
+            ],
+            [
+                'type' => 'ImportAsset',
+                'fields' => [
+                    '_inventory' => 'Inventory link',
+                    '_ignore_import' => 'Refuse import',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider listRuleActionFieldsProvider
+     */
+    public function testListActionFields($type, $fields)
+    {
+        $this->login();
+
+        $this->api->call(new Request('GET', "/Rule/Collection/{$type}/ActionField"), function ($call) use ($fields) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($fields) {
+                    $tested = [];
+                    foreach ($fields as $id => $name) {
+                        foreach ($content as $item) {
+                            if ($item['id'] === $id) {
+                                $this->string($item['name'])->isIdenticalTo($name);
+                                $this->array($item['action_types'])->isNotEmpty();
+                                $tested[] = $id;
+                            }
+                        }
+                    }
+                    $this->array($tested)->hasSize(count($fields));
+                });
+        });
+    }
 
     public function testCRUDRules()
     {
@@ -355,5 +412,145 @@ class RuleController extends \HLAPITestCase
                     ->isNotFoundError();
             });
         }
+    }
+
+    public function testCRUDRuleCriteria()
+    {
+        $this->login();
+
+        $rule = new \Rule();
+        $this->integer($rules_id = $rule->add([
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => 'testCRUDRuleCriteria',
+            'sub_type' => 'RuleTicket',
+        ]))->isGreaterThan(0);
+
+        // Create
+        $request = new Request('POST', "/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria");
+        $request->setParameter('criteria', 'name');
+        $request->setParameter('condition', 0); //is
+        $request->setParameter('pattern', 'testCRUDRuleCriteria');
+        $new_url = null;
+        $this->api->call($request, function ($call) use ($rules_id, &$new_url) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use ($rules_id, &$new_url) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Criteria");
+                    $new_url = $headers['Location'];
+                });
+        });
+
+        // Get
+        $this->api->call(new Request('GET', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['criteria', 'condition', 'pattern']);
+                    $this->string($content['criteria'])->isEqualTo('name');
+                    $this->integer($content['condition'])->isEqualTo(0);
+                    $this->string($content['pattern'])->isEqualTo('testCRUDRuleCriteria');
+                });
+        });
+
+        // Update
+        $request = new Request('PATCH', $new_url);
+        $request->setParameter('pattern', 'testCRUDRuleCriteria2');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['criteria', 'condition', 'pattern']);
+                    $this->string($content['criteria'])->isEqualTo('name');
+                    $this->integer($content['condition'])->isEqualTo(0);
+                    $this->string($content['pattern'])->isEqualTo('testCRUDRuleCriteria2');
+                });
+        });
+
+        // Delete
+        $this->api->call(new Request('DELETE', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Verify delete
+        $this->api->call(new Request('GET', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotFoundError();
+        });
+    }
+
+    public function testCRUDRuleAction()
+    {
+        $this->login();
+
+        $rule = new \Rule();
+        $this->integer($rules_id = $rule->add([
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => 'testCRUDRuleAction',
+            'sub_type' => 'RuleTicket',
+        ]))->isGreaterThan(0);
+
+        // Create
+        $request = new Request('POST', "/Rule/Collection/Ticket/Rule/{$rules_id}/Action");
+        $request->setParameter('field', 'name');
+        $request->setParameter('action_type', 'assign');
+        $request->setParameter('value', 'testCRUDRuleAction');
+        $new_url = null;
+        $this->api->call($request, function ($call) use ($rules_id, &$new_url) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use ($rules_id, &$new_url) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule/{$rules_id}/Action");
+                    $new_url = $headers['Location'];
+                });
+        });
+
+        // Get
+        $this->api->call(new Request('GET', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['field', 'action_type', 'value']);
+                    $this->string($content['field'])->isEqualTo('name');
+                    $this->string($content['action_type'])->isEqualTo('assign');
+                    $this->string($content['value'])->isEqualTo('testCRUDRuleAction');
+                });
+        });
+
+        // Update
+        $request = new Request('PATCH', $new_url);
+        $request->setParameter('value', 'testCRUDRuleAction2');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['field', 'action_type', 'value']);
+                    $this->string($content['field'])->isEqualTo('name');
+                    $this->string($content['action_type'])->isEqualTo('assign');
+                    $this->string($content['value'])->isEqualTo('testCRUDRuleAction2');
+                });
+        });
+
+        // Delete
+        $this->api->call(new Request('DELETE', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Verify delete
+        $this->api->call(new Request('GET', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotFoundError();
+        });
     }
 }
