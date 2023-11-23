@@ -60,43 +60,19 @@ class CommonITILTask extends DbTestCase
                 'id' => 101,
                 'task' => new \TicketTask(),
                 'type_user' => new \Ticket_User(),
-                'foreignkey' => 'tickets_id',
-                'task_users_id' => 2,
-                'task_content' => "<p> Test task </p>",
-                'task_state' => 1,
-                'task_users_id_tech' => 4,
-                'ticket_users_id' => 4,
-                'ticket_type' => 2,
-                'update_users_id' => 3,
-                'update_users_id_tech' => 3,
+                'task_content' => "<p> Test task for ticket</p>",
             ],
             [
                 'id' => $change_id,
                 'task' => new \ChangeTask(),
                 'type_user' => new \Change_User(),
-                'foreignkey' => 'changes_id',
-                'task_users_id' => 4,
                 'task_content' => "<p> Test task for change </p>",
-                'task_state' => 1,
-                'task_users_id_tech' => 4,
-                'ticket_users_id' => 4,
-                'ticket_type' => 2,
-                'update_users_id' => 3,
-                'update_users_id_tech' => 3,
             ],
             [
                 'id' => $problem_id,
                 'task' => new \ProblemTask(),
                 'type_user' => new \Problem_User(),
-                'foreignkey' => 'problems_id',
-                'task_users_id' => 4,
                 'task_content' => "<p> Test task for problem </p>",
-                'task_state' => 1,
-                'task_users_id_tech' => 4,
-                'ticket_users_id' => 4,
-                'ticket_type' => 2,
-                'update_users_id' => 3,
-                'update_users_id_tech' => 3,
             ],
         ];
     }
@@ -104,27 +80,40 @@ class CommonITILTask extends DbTestCase
     /**
      * @dataprovider dataTechTicketTask
      */
-    public function testAddTechToItilFromTask($id, $task, $type_user, $foreignkey, $task_users_id, $task_content, $task_state, $task_users_id_tech, $ticket_users_id, $ticket_type, $update_users_id, $update_users_id_tech)
+    public function testAddTechToItilFromTask($id, $task, $type_user, $task_content)
     {
+        $foreignkey = getForeignKeyFieldForItemType($task->getItilObjectItemType());
         // Add a task
         $task_id = $task->add([
             $foreignkey => $id,
-            'users_id'   => $task_users_id,
+            'users_id'   => 4,
             'content'    => $task_content,
-            'state'      => $task_state,
-            'users_id_tech'   => $task_users_id_tech,
+            'state'      => 1,
+            'users_id_tech'   => 4,
         ]);
         $this->integer(count($task->find(['id' => $task_id])))->isEqualTo(1);
 
-        $this->integer(count($type_user->find([$foreignkey => $id, 'users_id' => $ticket_users_id, 'type' => $ticket_type])))->isEqualTo(1);
+        $this->integer(count($type_user->find(
+            [
+                $foreignkey => $id,
+                'users_id' => 4,
+                'type' => \CommonITILActor::ASSIGN
+            ]
+        )))->isEqualTo(1);
 
         $task->update([
             'id' => $task_id,
             $foreignkey => $id,
-            'users_id' => $update_users_id,
-            'users_id_tech' => $update_users_id_tech,
+            'users_id' => 3,
+            'users_id_tech' => 3,
         ]);
 
-        $this->integer(count($type_user->find([$foreignkey => $id, 'users_id' => $update_users_id, 'type' => $ticket_type])))->isEqualTo(1);
+        $this->integer(count($type_user->find(
+            [
+                $foreignkey => $id,
+                'users_id' => 3,
+                'type' => \CommonITILActor::ASSIGN
+            ]
+        )))->isEqualTo(1);
     }
 }

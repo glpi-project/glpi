@@ -297,8 +297,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $itemtype = $this->getItilObjectItemType();
         $item = new $itemtype();
         $itemData = [
-            'users_id_tech' => new $item->userlinkclass,
-            'groups_id_tech' => new $item->grouplinkclass,
+            'users_id_tech' => new $item->userlinkclass(),
+            'groups_id_tech' => new $item->grouplinkclass(),
         ];
         $foreignkey = getForeignKeyFieldForItemType($itemtype);
         if (isset($input[$foreignkey])) {
