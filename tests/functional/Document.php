@@ -228,13 +228,6 @@ class Document extends DbTestCase
         ]);
         $this->integer($uid)->isGreaterThan(0);
 
-        $ticket_user = new \Ticket_User();
-        $this->integer($ticket_user->add([
-            'tickets_id' => $cid,
-            'users_id'   => $uid,
-            'type'       => \CommonITILActor::ASSIGN
-        ]))->isGreaterThan(0);
-
         $mdoc = new \mock\Document();
 
         $this->calling($mdoc)->moveUploadedDocument = true;
@@ -254,6 +247,20 @@ class Document extends DbTestCase
 
         $this->string(\Ticket::getTypeName(1))->isIdenticalTo($doc_item->fields['itemtype']);
         $this->integer($cid)->isEqualTo($doc_item->fields['items_id']);
+
+        $this->integer($item->fields['status'])->isEqualTo(\Ticket::INCOMING);
+
+        $ticket_user = new \Ticket_User();
+        $this->integer($ticket_user->add([
+            'tickets_id' => $cid,
+            'users_id'   => $uid,
+            'type'       => \CommonITILActor::ASSIGN
+        ]))->isGreaterThan(0);
+
+        $docid = (int)$mdoc->add($input);
+        $this->integer($docid)->isGreaterThan(0);
+
+        $this->boolean($item->getFromDB($cid))->isTrue();
 
         $this->integer($item->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
     }
