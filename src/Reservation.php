@@ -186,6 +186,7 @@ class Reservation extends CommonDBChild
                 );
             }
         }
+        $data = $input;
         $rr = new self();
         if (
             isset($input['items'])
@@ -253,8 +254,6 @@ class Reservation extends CommonDBChild
                     }
                 }
             }
-        } else {
-            $data = $input;
         }
 
        // set new date.
