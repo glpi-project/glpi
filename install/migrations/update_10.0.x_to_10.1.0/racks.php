@@ -46,10 +46,8 @@ if (!$DB->fieldExists('glpi_racks', 'users_id')) {
     $migration->addField(
         'glpi_racks',
         'users_id',
-        'int',
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-            'default' => 0,
-            'null' => false,
             'after' => 'states_id'
         ]
     );
@@ -60,10 +58,8 @@ if (!$DB->fieldExists('glpi_racks', 'groups_id')) {
     $migration->addField(
         'glpi_racks',
         'groups_id',
-        'int',
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-            'default' => 0,
-            'null' => false,
             'after' => 'users_id'
         ]
     );
