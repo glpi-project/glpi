@@ -156,7 +156,7 @@
     const division_length = 100;
 
     function is_entry_selected(entry, entry_i, all_entries) {
-        const selected_request = canvas_el.value.closest('#debug-toolbar-expanded-content').data('requests_request_id');
+        const selected_request = $(props.content_area).data('requests_request_id');
         let is_selected = false;
         if (selected_request === props.initial_request.id && entry.type === 'navigation') {
             is_selected = true;
