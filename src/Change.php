@@ -672,7 +672,7 @@ class Change extends CommonITILObject
 
     public static function getReopenableStatusArray()
     {
-        return [self::SOLVED] + self::getClosedStatusArray();
+        return array_merge(self::getClosedStatusArray(), [self::SOLVED]);
     }
 
     public function getRights($interface = 'central')
