@@ -97,7 +97,40 @@ if (isset($_POST["update"])) {
         $_POST['users_id'] = Session::getLoginUserID();
     }
     Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-    $rr->add($_POST);
+    if (isset($_POST["items"])) {
+        $newID = $rr->add($_POST);
+        $reservationitems_id = $_POST["items"][0];
+        Event::log(
+            $newID,
+            "reservation",
+            4,
+            "inventory",
+            sprintf(
+                __('%1$s adds the reservation %2$s for item %3$s'),
+                $_SESSION["glpiname"],
+                $newID,
+                $reservationitems_id
+            )
+        );
+        $rri = new ReservationItem();
+        $rri->getFromDB($reservationitems_id);
+        $item = new $rri->fields["itemtype"]();
+        $item->getFromDB($rri->fields["items_id"]);
+
+        Session::addMessageAfterRedirect(
+            sprintf(
+                __('Reservation added for item %s at %s'),
+                $item->getLink(),
+                Html::convDateTime($_POST["resa"]['begin'])
+            )
+        );
+    } else {
+        Session::addMessageAfterRedirect(
+            __('No item selected'),
+            false,
+            ERROR
+        );
+    }
 
     Html::back();
 } else if (isset($_GET["id"])) {

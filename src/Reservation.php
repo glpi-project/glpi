@@ -179,6 +179,7 @@ class Reservation extends CommonDBChild
                 && isset($input['periodicity']['type']) && !empty($input['periodicity']['type'])
             ) {
             // Compute others dates to add.
+
                 $dates_to_add += Reservation::computePeriodicities(
                     $input['resa']["begin"],
                     $input['resa']["end"],
@@ -186,6 +187,7 @@ class Reservation extends CommonDBChild
                 );
             }
         }
+
         $data = $input;
         $rr = new self();
         if (
@@ -236,7 +238,6 @@ class Reservation extends CommonDBChild
                                         $reservationitems_id
                                     )
                                 );
-
                                 $rri = new ReservationItem();
                                 $rri->getFromDB($reservationitems_id);
                                 $item = new $rri->fields["itemtype"]();
