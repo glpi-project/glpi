@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * @since 9.1
  */
@@ -621,9 +623,39 @@ class ObjectLock extends CommonDBTM
                 'massiveaction' => false,
                 'forcegroupby'  => true
             ];
+
+            $tab[] = [
+                'id'            => '207',
+                'table'         => getTableForItemType('ObjectLock'),
+                'field'         => 'id',
+                'datatype'      => 'specific',
+                'name'          => __('Lock status'),
+                'joinparams'    => ['jointype' => 'itemtype_item'],
+                'massiveaction' => false,
+                'forcegroupby'  => true,
+                'additionalfields' => ['date', 'users_id']
+            ];
         }
 
         return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'id':
+                return TemplateRenderer::getInstance()->render('components/search/lock_status.html.twig', [
+                    'is_locked' => $values['id'] > 0,
+                    'users_id'  => $values['users_id'],
+                    'date'      => $values['date'],
+                ]);
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
 
