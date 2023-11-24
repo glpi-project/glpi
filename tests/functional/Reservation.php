@@ -145,4 +145,17 @@ class Reservation extends DbTestCase
         $reservation->add($data);
         $this->integer(count($reservation->find($data)))->isEqualTo(1);
     }
+
+    public function testDeleteRecurrentReservation(): void
+    {
+        self::testAddRecurrentReservation();
+        $reservation = new \Reservation();
+        $this->integer(count($reservation->find()))->isEqualTo(5);
+        foreach ($reservation->find() as $res) {
+            $firstres = $res;
+            break;
+        }
+        $reservation->delete($firstres + ['_delete_group' => 'on']);
+        $this->integer(count($reservation->find()))->isEqualTo(0);
+    }
 }
