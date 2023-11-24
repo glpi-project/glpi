@@ -588,18 +588,55 @@ EOT;
                 'tags' => $route_path->getRouteTags(),
                 'responses' => $response_schema,
             ];
-            if (!isset($path_schema['responses']['200'])) {
-                $path_schema['responses']['200'] = [
-                    'description' => 'Success'
-                ];
-            } else {
-                $path_schema['responses']['200']['produces'] = array_keys($response_schema[200]['content']);
+
+            $default_responses = [
+                '200' => [
+                    'description' => 'Success',
+                    'methods' => ['GET', 'PATCH'] // Usually only GET and PATCH methods return 200
+                ],
+                '201' => [
+                    'description' => 'Success (created)',
+                    'methods' => ['POST']
+                ],
+                '204' => [
+                    'description' => 'Success (no content)',
+                    'methods' => ['DELETE']
+                ],
+                '400' => [
+                    'description' => 'Bad request',
+                    'methods' => [] // Empty array means all methods
+                ],
+                '401' => [
+                    'description' => 'Unauthorized',
+                    'methods' => []
+                ],
+                '403' => [
+                    'description' => 'Forbidden',
+                    'methods' => []
+                ],
+                '404' => [
+                    'description' => 'Not found',
+                    'methods' => []
+                ],
+                '500' => [
+                    'description' => 'Internal server error',
+                    'methods' => []
+                ],
+            ];
+
+            foreach ($default_responses as $code => $info) {
+                if (!empty($info['methods']) && !in_array(strtoupper($method), $info['methods'], true)) {
+                    continue;
+                }
+                if (!isset($path_schema['responses'][$code])) {
+                    $path_schema['responses'][$code] = [
+                        'description' => $info['description']
+                    ];
+                } else {
+                    $path_schema['responses'][$code]['produces'] = array_keys($response_schema[(int) $code]['content']);
+                }
             }
-            if (!isset($path_schema['responses']['500'])) {
-                $path_schema['responses']['500'] = [
-                    'description' => 'Internal server error'
-                ];
-            }
+
             $request_body = $this->getRequestBodySchema($route_path, $route_method);
 
             if ($route_doc !== null) {
