@@ -36,5 +36,4 @@
 include('../inc/includes.php');
 
 $task = new TicketTask();
-
 include(GLPI_ROOT . "/front/commonitiltask.form.php");
