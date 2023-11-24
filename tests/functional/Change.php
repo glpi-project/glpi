@@ -290,7 +290,7 @@ class Change extends DbTestCase
         $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::INCOMING);
     }
 
-    public function testValidationStatus()
+    public function testStatusWhenSolutionIsRefused()
     {
         $this->login();
         $change = new \Change();
