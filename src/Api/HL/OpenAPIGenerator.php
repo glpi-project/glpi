@@ -345,7 +345,6 @@ EOT;
     /**
      * Replace any generic paths like `/Assets/{itemtype}` with the actual paths for each itemtype as long as the parameter pattern(s) are explicit lists.
      * Example: "Computer|Monitor|NetworkEquipment".
-     * This method currently only expands paths based on the first parameter that can be expanded.
      * @param array $paths
      * @return array
      */
@@ -353,47 +352,71 @@ EOT;
     {
         $expanded = [];
         foreach ($paths as $path_url => $path) {
+            if (str_contains($path_url, 'Timeline')) {
+                $t = '';
+            }
             foreach ($path as $method => $route) {
-                $is_expanded = false;
                 $new_urls = [];
+                /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
+                $all_expansions = [];
                 foreach ($route['parameters'] as $param_key => $param) {
                     if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
-                        $itemtypes = explode('|', $param['schema']['pattern']);
-                        foreach ($itemtypes as $itemtype) {
-                            $new_url = str_replace('{itemtype}', $itemtype, $path_url);
-                            // Check there isn't already a route for this URL
-                            if (!isset($paths[$new_url][$method])) {
-                                $expanded[$new_url][$method] = $route;
-                                $expanded[$new_url][$method]['responses'] = $this->replaceRefPlaceholdersInResponses(
-                                    $route['responses'],
-                                    ['itemtype' => $itemtype],
-                                    $route['x-controller']
-                                );
-                                $expanded[$new_url][$method]['parameters'] = $this->replaceRefPlaceholdersInParameters(
-                                    $route['parameters'],
-                                    ['itemtype' => $itemtype],
-                                    $route['x-controller']
-                                );
-                                if (isset($route['requestBody'])) {
-                                    $expanded[$new_url][$method]['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
-                                        $route['requestBody'],
-                                        ['itemtype' => $itemtype],
-                                        $route['x-controller']
-                                    );
-                                }
-                                // Remove the itemtype path parameter now that it is a static value
-                                unset($expanded[$new_url][$method]['parameters'][$param_key]);
-                                $new_urls[] = $new_url;
-                                $is_expanded = true;
+                        $all_expansions[$param['name']] = explode('|', $param['schema']['pattern']);
+                    }
+                }
+                // enumerate all possible combinations of expansions (where keys are the placeholder name and the value is a single replacement) and generate a new URL and route for each
+                $combinations = [];
+                foreach ($all_expansions as $placeholder_name => $expansions) {
+                    $new_combinations = [];
+                    foreach ($expansions as $expansion) {
+                        if (count($combinations) === 0) {
+                            $new_combinations[] = [$placeholder_name => $expansion];
+                        } else {
+                            foreach ($combinations as $combination) {
+                                $new_combinations[] = array_merge($combination, [$placeholder_name => $expansion]);
                             }
                         }
                     }
+                    $combinations = $new_combinations;
                 }
-                foreach ($new_urls as $new_url) {
-                    // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
-                    $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
+
+                foreach ($combinations as $combination) {
+                    $new_url = $path_url;
+                    $temp_expanded = $route;
+                    foreach ($combination as $placeholder => $value) {
+                        $new_url = str_replace("{{$placeholder}}", $value, $new_url);
+                        $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
+                            $route['responses'],
+                            [$placeholder => $value],
+                            $route['x-controller']
+                        );
+                        $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
+                            $route['parameters'],
+                            [$placeholder => $value],
+                            $route['x-controller']
+                        );
+                        if (isset($route['requestBody'])) {
+                            $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
+                                $route['requestBody'],
+                                [$placeholder => $value],
+                                $route['x-controller']
+                            );
+                        }
+                        // Remove the itemtype path parameter now that it is a static value
+                        unset($temp_expanded['parameters'][$placeholder]);
+                    }
+                    if (!isset($paths[$new_url][$method])) {
+                        $expanded[$new_url][$method] = $temp_expanded;
+                    }
+                    $new_urls[] = $new_url;
                 }
-                if (!$is_expanded) {
+
+                if (count($new_urls)) {
+                    foreach ($new_urls as $new_url) {
+                        // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
+                        $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
+                    }
+                } else {
                     $expanded[$path_url][$method] = $route;
                 }
             }
