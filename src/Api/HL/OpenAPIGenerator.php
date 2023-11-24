@@ -596,7 +596,31 @@ EOT;
                 ],
                 '201' => [
                     'description' => 'Success (created)',
-                    'methods' => ['POST']
+                    'methods' => ['POST'],
+                    'headers' => [
+                        'Location' => [
+                            'description' => 'The URL of the newly created resource',
+                            'schema' => [
+                                'type' => 'string'
+                            ]
+                        ]
+                    ],
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'id' => [
+                                        'type' => 'integer',
+                                        'format' => 'int64'
+                                    ],
+                                    'href' => [
+                                        'type' => 'string'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 '204' => [
                     'description' => 'Success (no content)',
@@ -604,34 +628,35 @@ EOT;
                 ],
                 '400' => [
                     'description' => 'Bad request',
-                    'methods' => [] // Empty array means all methods
                 ],
                 '401' => [
                     'description' => 'Unauthorized',
-                    'methods' => []
                 ],
                 '403' => [
                     'description' => 'Forbidden',
-                    'methods' => []
                 ],
                 '404' => [
                     'description' => 'Not found',
-                    'methods' => []
                 ],
                 '500' => [
                     'description' => 'Internal server error',
-                    'methods' => []
                 ],
             ];
 
             foreach ($default_responses as $code => $info) {
-                if (!empty($info['methods']) && !in_array(strtoupper($method), $info['methods'], true)) {
+                if (isset($info['methods']) && !in_array(strtoupper($method), $info['methods'], true)) {
                     continue;
                 }
                 if (!isset($path_schema['responses'][$code])) {
                     $path_schema['responses'][$code] = [
-                        'description' => $info['description']
+                        'description' => $info['description'],
                     ];
+                    if (isset($info['headers'])) {
+                        $path_schema['responses'][$code]['headers'] = $info['headers'];
+                    }
+                    if (isset($info['content'])) {
+                        $path_schema['responses'][$code]['content'] = $info['content'];
+                    }
                 } else {
                     $path_schema['responses'][$code]['produces'] = array_keys($response_schema[(int) $code]['content']);
                 }
