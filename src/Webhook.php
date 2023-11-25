@@ -935,8 +935,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
             if ($applicable_types !== array_keys($subtype_labels) && count($applicable_types)) {
                 //Note: In cases of child properties, there may not be any applicable types listed. They are handled at the top level only.
                 $suggestion['detail'] = '[' . implode(', ', array_map(static function ($type) use ($subtype_labels) {
-                        return $subtype_labels[$type];
-                    }, $applicable_types)) . ']';
+                    return $subtype_labels[$type];
+                }, $applicable_types)) . ']';
             }
 
             $response_schema[] = $suggestion;
