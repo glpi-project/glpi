@@ -86,26 +86,46 @@ class Stat extends CommonGLPI
             case "technicien":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedTechBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = User::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "technicien_followup":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedTechTaskBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = User::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "suppliers_id_assign":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedSupplierBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = Supplier::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "user":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedAuthorBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = User::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "users_id_recipient":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedRecipientBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = User::class;
+                    return $item;
+                }, $val);
                 break;
 
             case 'group_tree':
@@ -128,6 +148,7 @@ class Stat extends CommonGLPI
                 $val    = [];
                 foreach ($iterator as $line) {
                      $val[] = [
+                         'itemtype' => Group::class,
                          'id'     => $line['id'],
                          'link'   => $line['name']
                      ];
@@ -161,6 +182,7 @@ class Stat extends CommonGLPI
                 $val    = [];
                 foreach ($iterator as $line) {
                     $val[] = [
+                        'itemtype' => ITILCategory::class,
                         'id'     => $line['id'],
                         'link'   => $line['category']
                     ];
@@ -194,6 +216,7 @@ class Stat extends CommonGLPI
                 $val    = [];
                 foreach ($iterator as $line) {
                     $val[] = [
+                        'itemtype' => Location::class,
                         'id'     => $line['id'],
                         'link'   => $line['location']
                     ];
@@ -213,11 +236,19 @@ class Stat extends CommonGLPI
             case "group":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedGroupBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = Group::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "groups_id_assign":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedAssignGroupBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = Group::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "priority":
@@ -238,21 +269,37 @@ class Stat extends CommonGLPI
             case "requesttypes_id":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedRequestTypeBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = RequestType::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "solutiontypes_id":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedSolutionTypeBetween($date1, $date2);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = SolutionType::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "usertitles_id":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, true);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = UserTitle::class;
+                    return $item;
+                }, $val);
                 break;
 
             case "usercategories_id":
                 /** @var CommonITILObject $item */
                 $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, false);
+                $val = array_map(static function ($item) {
+                    $item['itemtype'] = UserCategory::class;
+                    return $item;
+                }, $val);
                 break;
 
            // DEVICE CASE
@@ -275,6 +322,7 @@ class Stat extends CommonGLPI
 
                     foreach ($iterator as $line) {
                           $val[] = [
+                              'itemtype' => $item::class,
                               'id'     => $line['id'],
                               'link'   => $line['designation']
                           ];
@@ -302,9 +350,9 @@ class Stat extends CommonGLPI
 
                     $iterator = $DB->request($criteria);
 
-                    $val    = [];
                     foreach ($iterator as $line) {
                         $val[] = [
+                            'itemtype' => $type,
                             'id'     => $line['id'],
                             'link'   => $line[$field]
                         ];
@@ -1594,37 +1642,10 @@ class Stat extends CommonGLPI
         return $entrees;
     }
 
-    /**
-     * @param string $target
-     * @param string $date1
-     * @param string $date2
-     * @param int $start
-     **/
-    public static function showItems($target, $date1, $date2, $start)
+    public static function getAssetsWithTickets($start_date, $end_date): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
-
-        $view_entities = Session::isMultiEntitiesMode();
-
-        if ($view_entities) {
-            $entities = getAllDataFromTable('glpi_entities');
-        }
-
-        $output_type = Search::HTML_OUTPUT;
-        if (isset($_GET["display_type"])) {
-            $output_type = $_GET["display_type"];
-        }
-        if (empty($date2)) {
-            $date2 = date("Y-m-d");
-        }
-        $date2 .= " 23:59:59";
-
-       // 1 an par defaut
-        if (empty($date1)) {
-            $date1 = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y") - 1));
-        }
-        $date1 .= " 00:00:00";
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -1642,18 +1663,72 @@ class Stat extends CommonGLPI
                 ]
             ],
             'WHERE'  => [
-                'date'                        => ['<=', $date2],
-                'glpi_tickets.date'           => ['>=', $date1],
-                'glpi_items_tickets.itemtype' => ['<>', ''],
-                'glpi_items_tickets.items_id' => ['>', 0]
-            ] + getEntitiesRestrictCriteria('glpi_tickets'),
+                    'date'                        => ['<=', $end_date],
+                    'glpi_tickets.date'           => ['>=', $start_date],
+                    'glpi_items_tickets.itemtype' => ['<>', ''],
+                    'glpi_items_tickets.items_id' => ['>', 0]
+                ] + getEntitiesRestrictCriteria('glpi_tickets'),
             'GROUP'  => [
                 'glpi_items_tickets.itemtype',
                 'glpi_items_tickets.items_id'
             ],
             'ORDER'  => 'NB DESC'
         ]);
-        $numrows = count($iterator);
+
+        $data = [];
+        $view_entities = Session::isMultiEntitiesMode();
+        if ($view_entities) {
+            $entities = getAllDataFromTable('glpi_entities');
+        }
+
+        foreach ($iterator as $row) {
+            $itemtype = $row['itemtype'];
+            $items_id = $row['items_id'];
+            $item     = getItemForItemtype($itemtype);
+            $data_row = $row;
+            if ($item && $item->getFromDB($items_id)) {
+                if ($view_entities) {
+                    $ent = $item->getEntityID();
+                    $data_row['entities_id'] = $ent;
+                    $data_row['entity_name'] = $entities[$ent]['completename'];
+                }
+                $data_row['name'] = $item->getName();
+                $data_row['link'] = $item->getLink();
+                $data_row['is_deleted'] = $item->isDeleted();
+                $data[] = $data_row;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param $target
+     * @param $date1
+     * @param $date2
+     * @param $start
+     **/
+    public static function showItems($target, $date1, $date2, $start)
+    {
+        $view_entities = Session::isMultiEntitiesMode();
+
+        $output_type = Search::HTML_OUTPUT;
+        if (isset($_GET["display_type"])) {
+            $output_type = $_GET["display_type"];
+        }
+        if (empty($date2)) {
+            $date2 = date("Y-m-d");
+        }
+        $date2 .= " 23:59:59";
+
+       // 1 an par defaut
+        if (empty($date1)) {
+            $date1 = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d"), date("Y") - 1));
+        }
+        $date1 .= " 00:00:00";
+
+        $assets = self::getAssetsWithTickets($date1, $date2);
+        $numrows = count($assets);
 
         if ($numrows > 0) {
             if ($output_type == Search::HTML_OUTPUT) {
@@ -1695,47 +1770,40 @@ class Stat extends CommonGLPI
             }
 
             $i = $start;
-            foreach ($iterator as $data) {
+            foreach ($assets as $data) {
                 $item_num = 1;
                // Get data and increment loop variables
-                if (!($item = getItemForItemtype($data["itemtype"]))) {
-                    continue;
+                echo Search::showNewLine($output_type, $i % 2);
+                echo Search::showItem(
+                    $output_type,
+                    sprintf(
+                        __('%1$s - %2$s'),
+                        $data['itemtype']::getTypeName(),
+                        $data['link']
+                    ),
+                    $item_num,
+                    $i - $start + 1,
+                    "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                    : "")
+                );
+                if ($view_entities) {
+                      echo Search::showItem(
+                          $output_type,
+                          $data['entity_name'],
+                          $item_num,
+                          $i - $start + 1,
+                          "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                          : "")
+                      );
                 }
-                if ($item->getFromDB($data["items_id"])) {
-                    echo Search::showNewLine($output_type, $i % 2);
-                    echo Search::showItem(
-                        $output_type,
-                        sprintf(
-                            __('%1$s - %2$s'),
-                            $item->getTypeName(),
-                            $item->getLink()
-                        ),
-                        $item_num,
-                        $i - $start + 1,
-                        "class='center'" . " " . ($item->isDeleted() ? " class='deleted' "
-                        : "")
-                    );
-                    if ($view_entities) {
-                          $ent = $item->getEntityID();
-                          $ent = $entities[$ent]['completename'];
-                          echo Search::showItem(
-                              $output_type,
-                              $ent,
-                              $item_num,
-                              $i - $start + 1,
-                              "class='center'" . " " . ($item->isDeleted() ? " class='deleted' "
-                              : "")
-                          );
-                    }
-                    echo Search::showItem(
-                        $output_type,
-                        $data["NB"],
-                        $item_num,
-                        $i - $start + 1,
-                        "class='center'" . " " . ($item->isDeleted() ? " class='deleted' "
-                        : "")
-                    );
-                }
+                echo Search::showItem(
+                    $output_type,
+                    $data["NB"],
+                    $item_num,
+                    $i - $start + 1,
+                    "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                    : "")
+                );
 
                 $i++;
                 if ($i == $end_display) {
@@ -1750,11 +1818,7 @@ class Stat extends CommonGLPI
         }
     }
 
-
-    /**
-     * @since 0.84
-     **/
-    public static function title()
+    public static function getAvailableStatistics()
     {
         /**
          * @var array $CFG_GLPI
@@ -1795,20 +1859,16 @@ class Stat extends CommonGLPI
 
         $values   = [$CFG_GLPI["root_doc"] . '/front/stat.php' => Dropdown::EMPTY_VALUE];
 
-        $selected = -1;
         foreach ($opt_list as $opt => $group) {
             foreach ($stat_list[$opt] as $data) {
                 $name    = $data['name'];
                 $file    = $data['file'];
                 $key                  = $CFG_GLPI["root_doc"] . "/front/" . $file;
                 $values[$group][$key] = $name;
-                if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
-                    $selected = $key;
-                }
             }
         }
 
-       // Manage plugins
+        // Manage plugins
         $names    = [];
         $optgroup = [];
         if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
@@ -1834,8 +1894,87 @@ class Stat extends CommonGLPI
                 if ($opt == $val["plug"]) {
                     $file                  = $CFG_GLPI["root_doc"] . "/" . $key;
                     $values[$group][$file] = $val["name"];
-                    if (stripos($_SERVER['REQUEST_URI'], $file) !== false) {
-                        $selected = $file;
+                }
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * @param class-string<CommonITILObject> $itemtype
+     * @return array
+     */
+    public static function getITILStatFields(string $itemtype): array
+    {
+        $caract = [
+            'itilcategories_id'   => _n('Category', 'Categories', 1),
+            'itilcategories_tree' => __('Category tree'),
+            'urgency'             => __('Urgency'),
+            'impact'              =>  __('Impact'),
+            'priority'            => __('Priority'),
+            'solutiontypes_id'    => SolutionType::getTypeName(1)
+        ];
+
+        if ($itemtype === Ticket::class) {
+            $caract['type']            = _n('Type', 'Types', 1);
+            $caract['requesttypes_id'] = RequestType::getTypeName(1);
+            $caract['locations_id']    = Location::getTypeName(1);
+            $caract['locations_tree']  = __('Location tree');
+        }
+
+        return [
+            _n('Requester', 'Requesters', 1) => [
+                'user'               => _n('Requester', 'Requesters', 1),
+                'users_id_recipient' => __('Writer'),
+                'group'              => Group::getTypeName(1),
+                'group_tree'         => __('Group tree'),
+                'usertitles_id'      => _x('person', 'Title'),
+                'usercategories_id'  => _n('Category', 'Categories', 1)
+            ],
+            __('Characteristics') => $caract,
+            __('Assigned to') => [
+                'technicien'          => __('Technician as assigned'),
+                'technicien_followup' => __('Technician in tasks'),
+                'groups_id_assign'    => Group::getTypeName(1),
+                'groups_tree_assign'  => __('Group tree'),
+                'suppliers_id_assign' => Supplier::getTypeName(1)
+            ]
+        ];
+    }
+
+    public static function getItemCharacteristicStatFields(): array
+    {
+        $values = [
+            _n('Dropdown', 'Dropdowns', Session::getPluralNumber()) => [
+                'ComputerType'    => _n('Type', 'Types', 1),
+                'ComputerModel'   => _n('Model', 'Models', 1),
+                'OperatingSystem' => OperatingSystem::getTypeName(1),
+                'Location'        => Location::getTypeName(1)
+            ],
+        ];
+        $devices = Dropdown::getDeviceItemTypes();
+        foreach ($devices as $label => $dp) {
+            foreach ($dp as $i => $name) {
+                $values[$label][$i] = $name;
+            }
+        }
+        return $values;
+    }
+
+    /**
+     * @since 0.84
+     **/
+    public static function title()
+    {
+        $values = self::getAvailableStatistics();
+        $selected = -1;
+
+        foreach ($values as $reports) {
+            if (is_array($reports)) {
+                foreach ($reports as $key => $name) {
+                    if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
+                        $selected = $key;
                     }
                 }
             }

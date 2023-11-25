@@ -47,6 +47,7 @@ use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\ProjectController;
+use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Api\HL\Middleware\AuthMiddlewareInterface;
@@ -170,6 +171,7 @@ EOT;
             $instance->registerController(new ProjectController());
             $instance->registerController(new DropdownController());
             $instance->registerController(new GraphQLController());
+            $instance->registerController(new ReportController());
             $instance->registerController(new RuleController());
 
             // Register controllers from plugins
@@ -607,10 +609,31 @@ EOT;
                 $this->final_request = clone $request;
                 if ($response === null) {
                     $this->last_invoked_route = $matched_route;
-                    $response = $matched_route->invoke($request);
-                    $middleware_input = new MiddlewareInput($request, $matched_route, $response);
-                    $this->doResponseMiddleware($middleware_input);
-                    $response = $middleware_input->response;
+
+                    // Make sure all required parameters are present
+                    $params = $matched_route->getRouteDoc($request->getMethod())?->getParameters() ?? [];
+                    $missing_params = [];
+                    foreach ($params as $param) {
+                        if ($param->getRequired() && !$request->hasParameter($param->getName())) {
+                            $missing_params[] = $param->getName();
+                        }
+                    }
+                    if (count($missing_params)) {
+                        $response = new JSONResponse(
+                            AbstractController::getErrorResponseBody(
+                                AbstractController::ERROR_INVALID_PARAMETER,
+                                sprintf(_x('api', 'Missing required parameter(s): %s'), implode(', ', $missing_params))
+                            ),
+                            400
+                        );
+                    }
+
+                    if ($response === null) {
+                        $response = $matched_route->invoke($request);
+                        $middleware_input = new MiddlewareInput($request, $matched_route, $response);
+                        $this->doResponseMiddleware($middleware_input);
+                        $response = $middleware_input->response;
+                    }
                 }
             }
         }
