@@ -101,7 +101,7 @@ abstract class CommonITILActor extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (empty($items_id)) {
+        if ($items_id <= 0) {
             return [];
         }
 
