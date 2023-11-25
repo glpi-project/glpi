@@ -125,7 +125,7 @@ Html::printPager(
     $params['start'],
     count($val),
     $CFG_GLPI['root_doc'] . '/front/stat.tracking.php',
-    http_build_query($params),
+    http_build_query($params, '', '&amp;'),
     'Stat',
     $params
 );
