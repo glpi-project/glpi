@@ -120,6 +120,14 @@ foreach ($items as $label => $tab) {
     }
 }
 
+$val = Stat::getItems(
+    $params["itemtype"],
+    $params["date1"],
+    $params["date2"],
+    $params["type"],
+    $params["value2"]
+);
+
 Stat::title();
 Html::printPager(
     $params['start'],
@@ -139,14 +147,6 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/tracking_form.h
     'value2'    => $params["value2"],
     'showgraph' => $params["showgraph"],
 ]);
-
-$val = Stat::getItems(
-    $params["itemtype"],
-    $params["date1"],
-    $params["date2"],
-    $params["type"],
-    $params["value2"]
-);
 
 if (!$params['showgraph']) {
     Stat::showTable(
