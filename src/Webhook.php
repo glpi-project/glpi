@@ -724,7 +724,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $this->initForm($id, $options);
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook.html.twig', [
-            'item' => $this
+            'item' => $this,
+            'response_schema' => $this->getMonacoSuggestions(),
         ]);
 
         return true;
@@ -804,6 +805,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook_headers.html.twig', [
             'item' => $this,
             'item_fields' => $item_fields,
+            'response_schema' => $this->getMonacoSuggestions(),
             'params' => [
                 'candel' => false,
                 'formfooter' => false,
@@ -896,7 +898,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $controller_class::getKnownSchemas()[$schema_name] ?? null;
     }
 
-    private function showPayloadEditor(): void
+    private function getMonacoSuggestions(): array
     {
         $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
         $props = Schema::flattenProperties($schema['properties'], 'item.');
@@ -933,12 +935,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
             if ($applicable_types !== array_keys($subtype_labels) && count($applicable_types)) {
                 //Note: In cases of child properties, there may not be any applicable types listed. They are handled at the top level only.
                 $suggestion['detail'] = '[' . implode(', ', array_map(static function ($type) use ($subtype_labels) {
-                    return $subtype_labels[$type];
-                }, $applicable_types)) . ']';
+                        return $subtype_labels[$type];
+                    }, $applicable_types)) . ']';
             }
 
             $response_schema[] = $suggestion;
         }
+        return $response_schema;
+    }
+
+    private function showPayloadEditor(): void
+    {
+        $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
+        $response_schema = $this->getMonacoSuggestions();
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/payload_editor.html.twig', [
             'item' => $this,

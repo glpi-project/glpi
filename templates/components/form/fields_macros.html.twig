@@ -678,7 +678,7 @@
    {% endif %}
 
    {% set value %}
-      <span class="{{ wrapper_class }}">{{ value|raw }}</span>
+      <span class="{{ options.wrapper_class }}">{{ value|raw }}</span>
    {% endset %}
    {{ _self.field(name, value, label, options) }}
 {% endmacro %}
