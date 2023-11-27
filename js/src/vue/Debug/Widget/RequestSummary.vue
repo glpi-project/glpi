@@ -21,28 +21,30 @@
 </script>
 
 <template>
-    <h1>Request Summary ({{ props.current_profile.id }})</h1>
-    <table class="table">
-        <tbody>
-        <tr>
-            <td>
-                Initial Execution Time: {{ total_execution_time }} ms
-            </td>
-            <td>
-                Memory Usage: {{ memory_usage }} MiB / {{ memory_limit }} MiB
-                <br>
-                Memory Peak: {{ memory_peak }} MiB / {{ memory_limit }} MiB
-            </td>
-        </tr>
-        <tr>
-            <td>
-                SQL Requests: {{ total_sql_queries }}
-                <br>
-                SQL Duration: {{ total_sql_duration }} ms
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <div>
+        <h1>Request Summary ({{ props.current_profile.id }})</h1>
+        <table class="table">
+            <tbody>
+                <tr>
+                    <td>
+                        Initial Execution Time: {{ total_execution_time }} ms
+                    </td>
+                    <td>
+                        Memory Usage: {{ memory_usage }} MiB / {{ memory_limit }} MiB
+                        <br>
+                        Memory Peak: {{ memory_peak }} MiB / {{ memory_limit }} MiB
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        SQL Requests: {{ total_sql_queries }}
+                        <br>
+                        SQL Duration: {{ total_sql_duration }} ms
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </template>
 
 <style scoped>

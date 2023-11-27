@@ -136,6 +136,7 @@
     ];
 
     $.each(props.initial_request.sql.queries, (i, query) => {
+        // eslint-disable-next-line vue/no-mutating-props
         props.initial_request.sql.queries[i].query = cleanSQLQuery(query.query);
     });
     $(document).ajaxSend((event, xhr, settings) => {
@@ -293,12 +294,15 @@
         if (content_area === undefined) {
             content_area = $('#debug-toolbar-expanded-content');
         }
-        active_widget.value = widget_id;
-        show_content_area.value = true;
         // Copy data into data properties of the content_area
         Object.keys(data).forEach((key) => {
             content_area.data(key, data[key]);
         });
+        if (refresh) {
+            active_widget.value = null;
+        }
+        active_widget.value = widget_id;
+        show_content_area.value = true;
     }
 
     function refreshWidgetButtons() {
@@ -315,10 +319,6 @@
             $('body').addClass('debug-folded');
         }
     });
-
-    function toggleExtraContentArea(force_show = false) {
-        show_content_area.value = (force_show || !show_content_area.value);
-    }
 
     function getProfile(request_id) {
         if (request_id === props.initial_request.id) {

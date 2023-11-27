@@ -1,5 +1,6 @@
 <script setup>
-import {computed, ref, watch} from "vue";
+    import {computed, onMounted, ref, watch} from "vue";
+    import RequestTimeline from "./RequestTimeline.vue";
 
     const props = defineProps({
         initial_request: {
@@ -15,7 +16,11 @@ import {computed, ref, watch} from "vue";
             required: true
         },
     });
-    const emit = defineEmits(['switchWidget']);
+
+    const is_mounted = ref(false);
+    onMounted(() => {
+        is_mounted.value = true;
+    });
 
     const rand = Math.floor(Math.random() * 1000000);
     const REQUEST_PATH_LENGTH = 100;
@@ -24,24 +29,13 @@ import {computed, ref, watch} from "vue";
         return $(content_area.value);
     });
 
-    const requests = computed(() => {
-        const requests = [];
-        requests.push(props.initial_request);
-        for (const request of props.ajax_requests) {
-            requests.push(request);
-        }
-        return requests;
-    });
     const show_timeline = ref(false);
     const current_request_id = ref(props.initial_request.id);
     const current_profile = computed(() => {
         if (current_request_id.value === props.initial_request.id) {
             return props.initial_request;
         }
-        return props.ajax_requests.find((request) => request.id === current_request_id.value).profile
-    });
-    const details_content_area = computed(() => {
-        return $content_area.value.find('.request-details-content-area');
+        return props.ajax_requests.find((request) => request.id === current_request_id.value).profile;
     });
 
     $('#debug-toolbar').on('keyup', (e) => {
@@ -169,7 +163,6 @@ import {computed, ref, watch} from "vue";
 
     function selectRow(e) {
         current_request_id.value = $(e.currentTarget).attr('data-request-id');
-        $(e.currentTarget).addClass('table-active').siblings().removeClass('table-active');
     }
 
     const active_subwidget = ref('request_summary');
@@ -186,11 +179,18 @@ import {computed, ref, watch} from "vue";
     function switchSubwidget(widget_id) {
         active_subwidget.value = widget_id;
     }
+
+    function onRequestChanged() {
+        current_request_id.value = $content_area.value.data('requests_request_id') || props.initial_request.id;
+    }
 </script>
 
 <template>
     <div ref="content_area" @mousemove="onMouseMove($event)" @mouseup="onMouseUp()">
-        <div class="request-timeline" v-if="show_timeline"></div>
+        <div class="request-timeline" v-if="is_mounted && show_timeline">
+            <RequestTimeline :initial_request="initial_request" :ajax_requests="props.ajax_requests" :content_area="content_area"
+                             @change_request="onRequestChanged"></RequestTimeline>
+        </div>
         <div class="d-flex flex-row h-100 split-panel-h">
             <div class="left-panel">
                 <div class="overflow-auto h-100 me-2">
@@ -205,7 +205,8 @@ import {computed, ref, watch} from "vue";
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="request in sorted_requests_data" :data-request-id="request.id" class="cursor-pointer" @click="selectRow($event)">
+                            <tr v-for="request in sorted_requests_data" :key="request.id" :data-request-id="request.id"
+                                :class="`cursor-pointer ${request.id === current_request_id ? 'table-active' : ''}`" @click="selectRow($event)">
                                 <td>{{ request.number }}</td>
                                 <td :title="request.url"
                                     :data-truncated="urlNeedsTruncated(request.url)">{{ request.url.substring(0, REQUEST_PATH_LENGTH) }}<button
@@ -228,19 +229,19 @@ import {computed, ref, watch} from "vue";
                     <ul class="nav nav-tabs" data-bs-toggle="tabs">
                         <li class="nav-item">
                             <button @click="switchSubwidget('request_summary')"
-                                class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
+                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('sql')"
-                                class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql">SQL</button>
+                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="sql">SQL</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('globals')"
-                                class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">Globals</button>
+                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="globals">Globals</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('profiler')"
-                                class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
+                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="profiler">Profiler</button>
                         </li>
                     </ul>
 

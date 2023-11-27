@@ -1,12 +1,22 @@
 <script setup>
-    import {computed, ref} from "vue";
+    import {computed, onMounted, ref} from "vue";
 
     const props = defineProps({
+        initial_request: {
+            type: Object,
+            required: true
+        },
         ajax_requests: {
             type: Array,
             required: true
         },
+        content_area: {
+            type: Object,
+            required: true
+        },
     });
+
+    const emit = defineEmits(['change_request']);
 
     const TIMING_COLORS = {
         queued: '#808080',
@@ -80,8 +90,8 @@
         };
     });
 
-    const end_ts = request_timings.end_ts;
-    const timings = request_timings.timings;
+    const end_ts = request_timings.value.end_ts;
+    const timings = request_timings.value.timings;
     const time_origin = window.performance.timeOrigin;
 
     // group timings into sections so that there are no overlaps (based on start and end times)
@@ -124,29 +134,34 @@
         return sections.length * (ROW_HEIGHT + ROW_MARGIN) + 12;
     });
 
-    const canvas_el = content_area.find('canvas').eq(0);
-    /** @type {CanvasRenderingContext2D}*/
-    const ctx = canvas_el[0].getContext('2d');
+    const canvas_el = ref(null);
+    /** @var Ref<CanvasRenderingContext2D> */
+    const ctx = ref(null);
+    const text_color = computed(() => {
+        return canvas_el.value.css('color');
+    });
+    onMounted(() => {
+        canvas_el.value = $(props.content_area).find('canvas').eq(0);
+        ctx.value = canvas_el.value[0].getContext('2d');
+        const refresh = window.setInterval(() => {
+            if (canvas_el.value.length === 0) {
+                window.clearInterval(refresh);
+                return;
+            }
+            canvas_el.value.trigger('render');
+        }, 1000 / TIMELINE_REFRESH_RATE);
+        canvas_el.value.on('render', onCanvasRender);
+    });
 
     const division_length = 100;
 
-    const text_color = canvas_el.css('color');
-
-    const refresh = window.setInterval(() => {
-        if (content_area.find('canvas').length === 0) {
-            window.clearInterval(refresh);
-            return;
-        }
-        canvas_el.trigger('render');
-    }, 1000 / TIMELINE_REFRESH_RATE);
-
     function is_entry_selected(entry, entry_i, all_entries) {
-        const selected_request = canvas_el.closest('#debug-toolbar-expanded-content').data('requests_request_id');
+        const selected_request = $(props.content_area).data('requests_request_id');
         let is_selected = false;
         if (selected_request === props.initial_request.id && entry.type === 'navigation') {
             is_selected = true;
         } else {
-            const ajax_request = ajax_requests.find(r => r.id === selected_request);
+            const ajax_request = props.ajax_requests.find(r => r.id === selected_request);
             if (ajax_request === undefined) {
                 return false;
             }
@@ -183,12 +198,9 @@
     const hover_data = ref(null);
 
     function onCanvasRender() {
-        if (canvas_el.hasClass('d-none')) {
-            return;
-        }
-        canvas_el.attr('width', canvas_el.parent().width());
-        const canvas_width = canvas_el.width();
-        const canvas_height = canvas_el.height();
+        canvas_el.value.attr('width', canvas_el.value.parent().width());
+        const canvas_width = canvas_el.value.width();
+        const canvas_height = canvas_el.value.height();
 
         // round end_ts to nearest 100 ms
         const end_ts_rounded = Math.ceil(end_ts / 100) * 100;
@@ -201,18 +213,18 @@
             });
         }
 
-        ctx.fillStyle = '#80808040';
-        ctx.fillRect(0, 0, canvas_width, canvas_height);
+        ctx.value.fillStyle = '#80808040';
+        ctx.value.fillRect(0, 0, canvas_width, canvas_height);
         // draw division lines
         $.each(dividers, (i, divider) => {
-            ctx.fillStyle = text_color;
-            ctx.strokeStyle = text_color;
-            ctx.font = ctx.font.replace(/\d+px/, '10px');
-            ctx.beginPath();
-            ctx.moveTo(divider.canvas_x, 0);
-            ctx.lineTo(divider.canvas_x, canvas_height);
-            ctx.stroke();
-            ctx.fillText(`${divider.time} ms`, divider.canvas_x + 2, 10);
+            ctx.value.fillStyle = text_color.value;
+            ctx.value.strokeStyle = text_color.value;
+            ctx.value.font = ctx.value.font.replace(/\d+px/, '10px');
+            ctx.value.beginPath();
+            ctx.value.moveTo(divider.canvas_x, 0);
+            ctx.value.lineTo(divider.canvas_x, canvas_height);
+            ctx.value.stroke();
+            ctx.value.fillText(`${divider.time} ms`, divider.canvas_x + 2, 10);
         });
 
         // draw sections
@@ -235,39 +247,39 @@
                         width: width,
                         height: ROW_HEIGHT
                     };
-                    ctx.fillStyle = color;
-                    ctx.fillRect(x, row_y, width, ROW_HEIGHT);
+                    ctx.value.fillStyle = color;
+                    ctx.value.fillRect(x, row_y, width, ROW_HEIGHT);
                     if (is_selected) {
-                        const stroke_style = ctx.strokeStyle;
-                        ctx.strokeStyle = '#ffff00';
-                        ctx.strokeRect(x, row_y, width, ROW_HEIGHT);
-                        ctx.strokeRect(x - 1, row_y - 1, width + 2, ROW_HEIGHT + 2);
-                        ctx.strokeStyle = stroke_style;
+                        const stroke_style = ctx.value.strokeStyle;
+                        ctx.value.strokeStyle = '#ffff00';
+                        ctx.value.strokeRect(x, row_y, width, ROW_HEIGHT);
+                        ctx.value.strokeRect(x - 1, row_y - 1, width + 2, ROW_HEIGHT + 2);
+                        ctx.value.strokeStyle = stroke_style;
                     }
                 });
             });
         });
 
         // draw tooltip
-        if (hover_data !== null) {
-            ctx.fillStyle = '#808080';
-            const section = hover_data.target.section;
-            const duration = section.sections[hover_data.target.timing][1] - section.sections[hover_data.target.timing][0];
+        if (hover_data.value !== null) {
+            ctx.value.fillStyle = '#808080';
+            const section = hover_data.value.target.section;
+            const duration = section.sections[hover_data.value.target.timing][1] - section.sections[hover_data.value.target.timing][0];
             let section_name = section.name;
             if (section_name.length > 100) {
                 section_name = section_name.slice(0, 100) + '...';
             }
-            const text = `${section_name} ${hover_data.target.timing} (${duration.toFixed(0)} ms)`;
-            ctx.font = ctx.font.replace(/\d+px/, '14px');
-            const text_width = ctx.measureText(text).width;
+            const text = `${section_name} ${hover_data.value.target.timing} (${duration.toFixed(0)} ms)`;
+            ctx.value.font = ctx.value.font.replace(/\d+px/, '14px');
+            const text_width = ctx.value.measureText(text).width;
 
-            ctx.fillRect(section.bounds[hover_data.target.timing].x, section.bounds[hover_data.target.timing].y + ROW_HEIGHT, text_width + 4, 18);
-            ctx.fillStyle = text_color;
-            ctx.fillText(text, section.bounds[hover_data.target.timing].x + 2, section.bounds[hover_data.target.timing].y + ROW_HEIGHT + 14);
+            ctx.value.fillRect(section.bounds[hover_data.value.target.timing].x, section.bounds[hover_data.value.target.timing].y + ROW_HEIGHT, text_width + 4, 18);
+            ctx.value.fillStyle = text_color.value;
+            ctx.value.fillText(text, section.bounds[hover_data.value.target.timing].x + 2, section.bounds[hover_data.value.target.timing].y + ROW_HEIGHT + 14);
         }
     }
 
-    function onCanvasMouseMove() {
+    function onCanvasMouseMove(e) {
         // get canvas x and y
         const canvas_x = e.offsetX;
         const canvas_y = e.offsetY;
@@ -297,21 +309,21 @@
             hover_data.value = {
                 target: hover_target,
             };
-            canvas_el.css('cursor', 'pointer');
+            canvas_el.value.css('cursor', 'pointer');
         } else {
             hover_data.value = null;
-            canvas_el.css('cursor', 'default');
+            canvas_el.value.css('cursor', 'default');
         }
     }
 
     function onCanvasMouseLeave() {
         hover_data.value = null;
-        canvas_el.css('cursor', 'default');
+        canvas_el.value.css('cursor', 'default');
     }
 
     function onCanvasClick() {
-        if (hover_data !== null) {
-            const section = hover_data.target.section;
+        if (hover_data.value !== null) {
+            const section = hover_data.value.target.section;
             let selected_request_id = null;
             if (section.type === 'navigation') {
                 selected_request_id = props.initial_request.id;
@@ -344,20 +356,17 @@
             }
 
             if (selected_request_id !== null) {
-                const main_content = canvas_el.closest('#debug-toolbar-expanded-content');
-                main_content.data('requests_request_id', selected_request_id);
-                switchWidget(main_content.data('requests_active_widget') || 'request_summary', false, main_content.find('.request-details-content-area'), {
-                    request_id: main_content.data('requests_request_id'),
-                });
-                canvas_el.trigger('render');
+                $(props.content_area).data('requests_request_id', selected_request_id);
+                emit('change_request');
+                canvas_el.value.trigger('render');
             }
         }
     }
 </script>
 
 <template>
-    <canvas class="d-none" :height="canvas_height" @render="onCanvasRender()" @mousemove="onCanvasMouseMove()"
-        @mouseleave="onCanvasMouseLeave()" @click="onCanvasClick()">
+    <canvas :height="canvas_height" @mousemove="onCanvasMouseMove"
+            @mouseleave="onCanvasMouseLeave" @click="onCanvasClick">
     </canvas>
 </template>
 
