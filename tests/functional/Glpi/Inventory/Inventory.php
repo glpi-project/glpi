@@ -4050,7 +4050,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $rule->getFromDBByCrit(['name' => 'Computer import denied'])
         )->isTrue();
         $rules_id_refuse = $rule->fields['id'];
-        //udate action to refused import with no log
+        // update action to refused import with no log
         $action = new \RuleAction();
         $action->getFromDBByCrit([
             "rules_id" => $rules_id_refuse,
