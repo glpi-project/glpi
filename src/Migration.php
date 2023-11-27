@@ -198,7 +198,7 @@ class Migration
        // Do not log if more than 3 log error
         if (
             $this->log_errors < 3
-            && !Toolbox::logInFile($log_file_name, $message . ' @\n', true)
+            && !Toolbox::logInFile($log_file_name, $message . ' @ ', true)
         ) {
             $this->log_errors++;
         }
