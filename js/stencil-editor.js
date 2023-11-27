@@ -122,6 +122,10 @@ const StencilEditor = function (container, rand, zones_definition) {
         // keyboard events
         $(document)
             .on('keyup', function (e) {
+                if (!_this.isEditorActive()) {
+                    return;
+                }
+
                 var keycode = (e.keyCode ? e.keyCode : e.which);
 
                 // Check if one of the cropper as a selection
@@ -131,17 +135,19 @@ const StencilEditor = function (container, rand, zones_definition) {
                         && cropper.getCropperSelection().width > 0;
                 });
 
-                if (_this.isEditorActive()) {
-                    if (keycode == 13 && hasSelection) {
-                        _this.saveZoneData();
-                        e.preventDefault();
-                    } else if (keycode == 27) {
-                        _this.editorDisable();
-                        e.preventDefault();
-                    }
+                if (keycode == 13 && hasSelection) {
+                    _this.saveZoneData();
+                    e.preventDefault();
+                } else if (keycode == 27) {
+                    _this.editorDisable();
+                    e.preventDefault();
                 }
             })
             .on('keypress', function (e) {
+                if (!_this.isEditorActive()) {
+                    return;
+                }
+
                 var keycode = (e.keyCode ? e.keyCode : e.which);
 
                 if (keycode == 13) {
