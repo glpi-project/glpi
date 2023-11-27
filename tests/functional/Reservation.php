@@ -76,7 +76,7 @@ class Reservation extends DbTestCase
         $reservation = new \Reservation();
         $this->integer(count($reservation->find()))->isEqualTo(0);
 
-        $reservation->add([
+        \Reservation::handleAddForm([
             "itemtype"  => "Computer",
             "items" => [
                 0       => (string) $res_item->fields["id"]
