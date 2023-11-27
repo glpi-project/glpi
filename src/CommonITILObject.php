@@ -9939,4 +9939,30 @@ abstract class CommonITILObject extends CommonDBTM
         }
         return self::canDelete();
     }
+
+    public static function getTeamMemberForm(CommonITILObject $item)
+    {
+        $itiltemplate = $item->getITILTemplateToUse(
+            0,
+            null,
+            $item->fields['itilcategories_id'],
+            $item->fields['entities_id']
+        );
+        $field_options = [
+            'full_width' => true,
+            'fields_template' => $itiltemplate,
+            'add_field_class' => 'col-sm-12',
+        ];
+        TemplateRenderer::getInstance()->display('components/itilobject/actors/main.html.twig', [
+            'item' => $item,
+            'entities_id' => 0,
+            'canupdate' => true,
+            'canassign' => true,
+            'params' => $item->fields + ['load_actors' => false],
+            'itiltemplate' => $itiltemplate,
+            'canassigntome' => false,
+            'field_options' => $field_options,
+            'allow_auto_submit' => false,
+        ]);
+    }
 }

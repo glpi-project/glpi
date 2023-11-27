@@ -35,9 +35,13 @@
 
 namespace Glpi\Features;
 
+use CommonDBTM;
+use Dropdown;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Http\Response;
 use Glpi\Plugin\Hooks;
 use Plugin;
+use ProjectTeam;
 
 /**
  * Trait Kanban.
@@ -175,5 +179,15 @@ trait Kanban
             Response::sendError(400, "Itemtype does not have a Kanban tab!", Response::CONTENT_TYPE_TEXT_HTML);
         }
         return static::getFormURLWithID($items_id, $full) . "&forcetab={$tab_id}";
+    }
+
+    public static function getTeamMemberForm(CommonDBTM $item)
+    {
+        $members_types = ProjectTeam::$available_types;
+
+        TemplateRenderer::getInstance()->display('components/kanban/teammember.html.twig', [
+            'item' => $item,
+            'members_types' => $members_types,
+        ]);
     }
 }
