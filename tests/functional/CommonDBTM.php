@@ -40,6 +40,7 @@ use Computer;
 use Document;
 use Document_Item;
 use Entity;
+use Glpi\Toolbox\Sanitizer;
 use SoftwareVersion;
 
 /* Test for inc/commondbtm.class.php */
@@ -1538,5 +1539,216 @@ class CommonDBTM extends DbTestCase
         )->isTrue();
         $this->integer($document->getID())->isEqualTo($init_document_id);
         $this->string($document->fields['filename'])->isEqualTo('bar.txt');
+    }
+
+    protected function updatedInputProvider(): iterable
+    {
+        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
+        // make sure itemtype change is detected
+        yield [
+            'itemtype' => \Alert::class,
+            'add_input' => [
+                'itemtype' => \Glpi\Event::class,
+                'items_id' => 1,
+            ],
+            'update_input' => [
+                'itemtype' => \Contract::class,
+                'items_id' => 1,
+            ],
+            'expected_updates' => [
+                'itemtype',
+            ],
+        ];
+
+        // make sure namespaced itemtype is not prone to false positives
+        yield [
+            'itemtype' => \Alert::class,
+            'add_input' => [
+                'itemtype' => \Glpi\Event::class,
+                'items_id' => 1,
+            ],
+            'update_input' => [
+                'itemtype' => \Glpi\Event::class,
+                'items_id' => 1,
+            ],
+            'expected_updates' => [
+            ],
+        ];
+
+        // `text` or `string` datatype
+        // or `itemlink` datatype on a `name` field
+        foreach (['name', 'comment', 'num'] as $fieldname) {
+            // null is not considered different from an empty string
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => null,
+                ],
+                'update_input' => [
+                    $fieldname    => '',
+                ],
+                'expected_updates' => [
+                ],
+            ];
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => '',
+                ],
+                'update_input' => [
+                    $fieldname    => null,
+                ],
+                'expected_updates' => [
+                ],
+            ];
+            // numeric value is not considered different when its string reprosentation does not differ
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => 0,
+                ],
+                'update_input' => [
+                    $fieldname    => '0',
+                ],
+                'expected_updates' => [
+                ],
+            ];
+            // make sure HTML text value change is not prone to false positives
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => '<p>test \' with quote</p>',
+                ],
+                'update_input' => [
+                    $fieldname    => '<p>test \' with quote</p>',
+                ],
+                'expected_updates' => [
+                ],
+            ];
+            // make sure text value change is detected
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => 'init value',
+                ],
+                'update_input' => [
+                    $fieldname    => 'updated value',
+                ],
+                'expected_updates' => [
+                    $fieldname,
+                    'date_mod', // date_mod is automatically added
+                ],
+            ];
+            // make sure HTML text value change is detected
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => '<p>test \' with quote</p>',
+                ],
+                'update_input' => [
+                    $fieldname    => '<p>updated text</p>',
+                ],
+                'expected_updates' => [
+                    $fieldname,
+                    'date_mod', // date_mod is automatically added
+                ],
+            ];
+            // make sure numeric value change is detected
+            yield [
+                'itemtype' => \Contract::class,
+                'add_input' => [
+                    'entities_id' => $root_entity_id,
+                    $fieldname    => 152,
+                ],
+                'update_input' => [
+                    $fieldname    => 459,
+                ],
+                'expected_updates' => [
+                    $fieldname,
+                    'date_mod', // date_mod is automatically added
+                ],
+            ];
+        }
+
+        // `number` datatype
+        yield [
+            'itemtype' => \Contract::class,
+            'add_input' => [
+                'entities_id' => $root_entity_id,
+                'duration'    => 24,
+            ],
+            'update_input' => [
+                'duration'    => 24,
+            ],
+            'expected_updates' => [
+            ],
+        ];
+        yield [
+            'itemtype' => \Contract::class,
+            'add_input' => [
+                'entities_id' => $root_entity_id,
+                'duration'    => 12,
+            ],
+            'update_input' => [
+                'duration'    => 24,
+            ],
+            'expected_updates' => [
+                'duration',
+                'date_mod', // date_mod is automatically added
+            ],
+        ];
+
+        // `email` datatype
+        yield [
+            'itemtype' => \Contact::class,
+            'add_input' => [
+                'entities_id' => $root_entity_id,
+                'email'    => 'test@domain.tld',
+            ],
+            'update_input' => [
+                'email'    => 'test@domain.tld',
+            ],
+            'expected_updates' => [
+            ],
+        ];
+        yield [
+            'itemtype' => \Contact::class,
+            'add_input' => [
+                'entities_id' => $root_entity_id,
+                'email'    => 'test@domain.tld',
+            ],
+            'update_input' => [
+                'email'    => 'no-reply@domain.tld',
+            ],
+            'expected_updates' => [
+                'email',
+                'date_mod', // date_mod is automatically added
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider updatedInputProvider
+     */
+    public function testUpdatedFields(string $itemtype, array $add_input, array $update_input, array $expected_updates): void
+    {
+        $item = new $itemtype();
+
+        $item_id = $item->add(Sanitizer::sanitize($add_input));
+        $this->integer($item_id)->isGreaterThan(0);
+
+        $updated = $item->update(['id' => $item_id] + Sanitizer::sanitize($update_input));
+        $this->boolean($updated)->isTrue(0);
+
+        sort($item->updates);
+        sort($expected_updates);
+        $this->array($item->updates)->isEqualTo($expected_updates);
     }
 }
