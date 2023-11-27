@@ -1242,8 +1242,9 @@ class Migration
             true
         );
 
-        // Update current user rights so he doesn't have to reload his session
-        if (!isCommandLine()) {
+        // Update current user rights so he doesn't have to reload his session.
+        // This ensure rights created by plugin install/update migrations are applied immediately.
+        if (Session::getLoginUserID() !== false) {
             foreach ($requiredrights as $rightname => $value) {
                 if (Session::haveRight($rightname, $value)) {
                     // Insert new rights into session
