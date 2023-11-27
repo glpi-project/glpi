@@ -611,18 +611,80 @@ EOT;
                 'tags' => $route_path->getRouteTags(),
                 'responses' => $response_schema,
             ];
-            if (!isset($path_schema['responses']['200'])) {
-                $path_schema['responses']['200'] = [
-                    'description' => 'Success'
-                ];
-            } else {
-                $path_schema['responses']['200']['produces'] = array_keys($response_schema[200]['content']);
+
+            $default_responses = [
+                '200' => [
+                    'description' => 'Success',
+                    'methods' => ['GET', 'PATCH'] // Usually only GET and PATCH methods return 200
+                ],
+                '201' => [
+                    'description' => 'Success (created)',
+                    'methods' => ['POST'],
+                    'headers' => [
+                        'Location' => [
+                            'description' => 'The URL of the newly created resource',
+                            'schema' => [
+                                'type' => 'string'
+                            ]
+                        ]
+                    ],
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'id' => [
+                                        'type' => 'integer',
+                                        'format' => 'int64'
+                                    ],
+                                    'href' => [
+                                        'type' => 'string'
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                '204' => [
+                    'description' => 'Success (no content)',
+                    'methods' => ['DELETE']
+                ],
+                '400' => [
+                    'description' => 'Bad request',
+                ],
+                '401' => [
+                    'description' => 'Unauthorized',
+                ],
+                '403' => [
+                    'description' => 'Forbidden',
+                ],
+                '404' => [
+                    'description' => 'Not found',
+                ],
+                '500' => [
+                    'description' => 'Internal server error',
+                ],
+            ];
+
+            foreach ($default_responses as $code => $info) {
+                if (isset($info['methods']) && !in_array(strtoupper($method), $info['methods'], true)) {
+                    continue;
+                }
+                if (!isset($path_schema['responses'][$code])) {
+                    $path_schema['responses'][$code] = [
+                        'description' => $info['description'],
+                    ];
+                    if (isset($info['headers'])) {
+                        $path_schema['responses'][$code]['headers'] = $info['headers'];
+                    }
+                    if (isset($info['content'])) {
+                        $path_schema['responses'][$code]['content'] = $info['content'];
+                    }
+                } else {
+                    $path_schema['responses'][$code]['produces'] = array_keys($response_schema[(int) $code]['content']);
+                }
             }
-            if (!isset($path_schema['responses']['500'])) {
-                $path_schema['responses']['500'] = [
-                    'description' => 'Internal server error'
-                ];
-            }
+
             $request_body = $this->getRequestBodySchema($route_path, $route_method);
 
             if ($route_doc !== null) {
