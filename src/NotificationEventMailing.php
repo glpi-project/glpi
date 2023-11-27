@@ -172,10 +172,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                $mmail->SetFrom($current->fields['sender'], html_entity_decode($current->fields['sendername']));
+                $mmail->SetFrom($current->fields['sender'], Sanitizer::decodeHtmlSpecialChars($current->fields['sendername']));
 
                 if ($current->fields['replyto']) {
-                    $mmail->AddReplyTo($current->fields['replyto'], html_entity_decode($current->fields['replytoname']));
+                    $mmail->AddReplyTo($current->fields['replyto'], Sanitizer::decodeHtmlSpecialChars($current->fields['replytoname']));
                 }
                 $mmail->Subject = $current->fields['name'];
 
@@ -385,7 +385,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     $mmail->AltBody .= $text;
                 }
 
-                $mmail->AddAddress($recipient, html_entity_decode($current->fields['recipientname']));
+                $mmail->AddAddress($recipient, Sanitizer::decodeHtmlSpecialChars($current->fields['recipientname']));
 
                 if (!empty($current->fields['messageid'])) {
                     $mmail->MessageID = "<" . $current->fields['messageid'] . ">";

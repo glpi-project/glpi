@@ -2072,12 +2072,12 @@ class MailCollector extends CommonDBTM
 
         $mmail = new GLPIMailer();
         $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
-        $mmail->SetFrom($CFG_GLPI["admin_email"], html_entity_decode($CFG_GLPI["admin_email_name"]));
+        $mmail->SetFrom($CFG_GLPI["admin_email"], Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["admin_email_name"]));
         $mmail->AddAddress($to);
        // Normalized header, no translation
         $mmail->Subject  = 'Re: ' . $subject;
         $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-                         "\n-- \n" . html_entity_decode($CFG_GLPI["mailing_signature"]);
+                         "\n-- \n" . Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]);
         $mmail->Send();
     }
 
