@@ -380,9 +380,11 @@ class IPNetwork extends CommonImplicitTreeDropdown
             $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
            // Check unicity !
             if ($sameNetworks && (count($sameNetworks) > 0)) {
-                return ['error' => __('Network already defined in visible entities'),
-                    'input' => false
-                ];
+                $return = ['input' => false];
+                if (!isset($input['from_native_inventory'])) {
+                    $return['error'] = __('Network already defined in visible entities');
+                }
+                return $return;
             }
 
            // Then, update $input to reflect the network and the netmask
