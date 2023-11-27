@@ -289,7 +289,8 @@ class Inventory
             ) {
                 //if inventory is not partial, we consider following properties are empty if not present; so they'll be removed
                 $empty_props = [
-                    'virtualmachines'
+                    'virtualmachines',
+                    'remote_mgmt'
                 ];
             }
 
