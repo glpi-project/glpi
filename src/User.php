@@ -652,7 +652,7 @@ class User extends CommonDBTM
     public function getDefaultEmail()
     {
 
-        if (!isset($this->fields['id'])) {
+        if (empty($this->fields['id'])) {
             return '';
         }
 
