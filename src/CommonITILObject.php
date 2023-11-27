@@ -123,7 +123,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         if (!empty($this->userlinkclass) && !$this->isNewItem()) {
             $class = new $this->userlinkclass();
-            $this->lazy_loaded_users = $class->getActors($this->fields['id']);
+            $this->lazy_loaded_users = $class->getActors((int) $this->fields['id']);
         } else {
             $this->lazy_loaded_users = [];
         }
@@ -138,7 +138,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         if (!empty($this->grouplinkclass) && !$this->isNewItem()) {
             $class = new $this->grouplinkclass();
-            $this->lazy_loaded_groups = $class->getActors($this->fields['id']);
+            $this->lazy_loaded_groups = $class->getActors((int) $this->fields['id']);
         } else {
             $this->lazy_loaded_groups = [];
         }
@@ -153,7 +153,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         if (!empty($this->supplierlinkclass) && !$this->isNewItem()) {
             $class = new $this->supplierlinkclass();
-            $this->lazy_loaded_suppliers = $class->getActors($this->fields['id']);
+            $this->lazy_loaded_suppliers = $class->getActors((int) $this->fields['id']);
         } else {
             $this->lazy_loaded_suppliers = [];
         }
@@ -4157,7 +4157,7 @@ abstract class CommonITILObject extends CommonDBTM
                             }
                         }
                         $linkclass = new $item->supplierlinkclass();
-                        foreach ($linkclass->getActors($id) as $users) {
+                        foreach ($linkclass->getActors((int) $id) as $users) {
                             foreach ($users as $data) {
                                  $data['use_notification'] = $input['use_notification'];
                                  $linkclass->update($data);

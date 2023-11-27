@@ -92,20 +92,22 @@ abstract class CommonITILActor extends CommonDBRelation
 
 
     /**
-     * @param $items_id
+     * @param int $items_id
+     * @phpstan-param positive-int $items_id
+     * @return array Array of actors
      **/
-    public function getActors($items_id)
+    public function getActors(int $items_id): array
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (empty($items_id)) {
+        if ($items_id <= 0) {
             return [];
         }
 
         $users = [];
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
             'ORDER'  => 'id ASC'
         ]);
@@ -367,7 +369,11 @@ abstract class CommonITILActor extends CommonDBRelation
                 return false;
             }
 
-            $existing_actors = $this->getActors($input[static::getItilObjectForeignKey()] ?? 0);
+            $itil_items_id = $input[static::getItilObjectForeignKey()];
+            $existing_actors = [];
+            if (is_numeric($itil_items_id) && $itil_items_id > 0) {
+                $existing_actors = $this->getActors((int) $itil_items_id);
+            }
             $existing_ids    = array_column($existing_actors[$current_type] ?? [], $fk_field);
 
             // actor already exists
