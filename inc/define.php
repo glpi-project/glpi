@@ -66,6 +66,9 @@ define("READNOTE", 32);
 define("UPDATENOTE", 64);
 define("UNLOCK", 128);
 
+// set the default app_name
+$CFG_GLPI['app_name'] = 'GLPI';
+
 // dictionnaries
 $CFG_GLPI['languages'] = [
    //Code       Name in native lang          LANG FILE      jquery tinymce english name            standard plural number
