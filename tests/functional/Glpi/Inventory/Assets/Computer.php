@@ -1689,4 +1689,79 @@ class Computer extends AbstractInventoryAsset
         //check hw description has been stored
         $this->string($computer->fields['comment'])->isIdenticalTo("describ'ed from registry");
     }
+
+    public function testOsCommentRuleLocation()
+    {
+        global $DB;
+        $computer = new \Computer();
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'Caen',
+        ]);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Location os comment -> caen',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleLocation',
+            'ranking'   => 1
+        ];
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => "oscomment",
+            'pattern'   => "Caen",
+            'condition' => \Rule::PATTERN_CONTAIN
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $locations_id
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <DESCRIPTION>TECLIB-CAEN</DESCRIPTION>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72316892</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check created agent itemtype / deviceid / entities_id
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['entities_id']->isIdenticalTo(0); //root entity
+
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load / test computer entities_id root
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['locations_id'])->isEqualTo($locations_id);
+    }
 }

@@ -492,6 +492,10 @@ abstract class MainAsset extends InventoryAsset
 
         $input['itemtype'] = $this->item->getType();
 
+        if (property_exists($val, 'comment')) {
+            $input['oscomment'] = $val->comment;
+        }
+
         // * entity rules
         $input['entities_id'] = $this->entities_id;
 
