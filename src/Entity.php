@@ -1942,11 +1942,11 @@ class Entity extends CommonTreeDropdown
             'value'      => $entity->fields['transfers_id'],
             'display_emptychoice' => false
         ];
+        $params['toadd'] = [
+            self::CONFIG_NEVER => __('No automatic transfer')
+        ];
         if ($entity->fields['id'] > 0) {
-            $params['toadd'] = [
-                self::CONFIG_NEVER => __('No automatic transfer'),
-                self::CONFIG_PARENT => __('Inheritance of the parent entity')
-            ];
+            $params['toadd'][self::CONFIG_PARENT] = __('Inheritance of the parent entity');
         }
         Dropdown::show('Transfer', $params);
         if ($entity->fields['transfers_strategy'] == self::CONFIG_PARENT) {
@@ -3775,6 +3775,7 @@ class Entity extends CommonTreeDropdown
             case 'transfers_id':
                 $strategy = $values['transfers_strategy'] ?? $values[$field];
                 if ($strategy == self::CONFIG_NEVER) {
+                    return __('No automatic transfer');
                 }
                 if ($strategy == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
