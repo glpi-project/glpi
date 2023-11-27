@@ -301,28 +301,30 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             'groups_id_tech' => new $item->grouplinkclass(),
         ];
         $foreignkey = getForeignKeyFieldForItemType($itemtype);
-        if (isset($input[$foreignkey])) {
-            foreach ($itemData as $key => $value) {
-                if (isset($input[$key]) && !empty($input[$key])) {
-                    $entityId = str_replace('_tech', '', $key);
-                    if (
-                        $value->getFromDBByCrit(
-                            [
-                                $foreignkey => $input[$foreignkey],
-                                $entityId => $input[$key],
-                                'type' => CommonITILActor::ASSIGN
-                            ]
-                        ) == false
-                    ) {
-                        $value->add(
-                            [
-                                $foreignkey => $input[$foreignkey],
-                                $entityId => $input[$key],
-                                'type' => CommonITILActor::ASSIGN
-                            ]
-                        );
-                    }
-                }
+        if (!isset($input[$foreignkey])) {
+            return;
+        }
+        foreach ($itemData as $key => $value) {
+            if (empty($input[$key])) {
+                continue;
+            }
+            $entityId = str_replace('_tech', '', $key);
+            if (
+                $value->getFromDBByCrit(
+                    [
+                        $foreignkey => $input[$foreignkey],
+                        $entityId => $input[$key],
+                        'type' => CommonITILActor::ASSIGN
+                    ]
+                ) == false
+            ) {
+                $value->add(
+                    [
+                        $foreignkey => $input[$foreignkey],
+                        $entityId => $input[$key],
+                        'type' => CommonITILActor::ASSIGN
+                    ]
+                );
             }
         }
     }
