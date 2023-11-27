@@ -1764,5 +1764,4 @@ class Computer extends AbstractInventoryAsset
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
         $this->integer($computer->fields['locations_id'])->isEqualTo($locations_id);
     }
-
 }
