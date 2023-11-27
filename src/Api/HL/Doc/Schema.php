@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use Glpi\Toolbox\ArrayPathAccessor;
+
 /**
  * @implements \ArrayAccess<string, null|string|array<string, Schema>>
  */
@@ -70,7 +72,8 @@ class Schema implements \ArrayAccess
         private ?Schema $items = null,
         /** @var array|null $enum */
         private ?array $enum = null,
-        private ?string $pattern = null
+        private ?string $pattern = null,
+        private mixed $default = null
     ) {
         if ($this->format === null) {
             $this->format = self::getDefaultFormatForType($this->type);
@@ -135,6 +138,11 @@ class Schema implements \ArrayAccess
         return $this->items;
     }
 
+    public function getDefault(): mixed
+    {
+        return $this->default;
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -159,6 +167,9 @@ class Schema implements \ArrayAccess
         } else if ($this->enum !== null) {
             $r['enum'] = $this->enum;
         }
+        if ($this->default !== null) {
+            $r['default'] = $this->default;
+        }
         return $r;
     }
 
@@ -181,7 +192,16 @@ class Schema implements \ArrayAccess
         if (isset($schema['enum'])) {
             $enum = $schema['enum'];
         }
-        return new Schema(type: $type, format: $format, properties: $properties, items: $items, enum: $enum, pattern: $pattern);
+        $default = $schema['default'] ?? null;
+        return new Schema(
+            type: $type,
+            format: $format,
+            properties: $properties,
+            items: $items,
+            enum: $enum,
+            pattern: $pattern,
+            default: $default
+        );
     }
 
     public function offsetExists(mixed $offset): bool
@@ -207,23 +227,48 @@ class Schema implements \ArrayAccess
         //Not supported
     }
 
-    public static function getJoins(array $props, string $prefix = ''): array
+    public static function getJoins(array $props, string $prefix = '', ?array $parent_join = null): array
     {
         //Walk through properties recursively to find ones of type object with a "x-join" property. Return array of "x-join" properties
         $joins = [];
+        $fn_add_parent_hint = static function ($join, $prefix) use ($parent_join) {
+            $prefix = str_replace('.', chr(0x1F), rtrim($prefix, '.'));
+            if ($prefix === '' || $parent_join === null) {
+                return $join;
+            }
+            if (isset($join['ref-join']['fkey'])) {
+                $join['ref-join']['join_parent'] = $prefix;
+            } else if (isset($join['fkey'])) {
+                $join['join_parent'] = $prefix;
+            }
+            return $join;
+        };
         foreach ($props as $name => $prop) {
             if ($prop['type'] === self::TYPE_OBJECT && isset($prop['x-join'])) {
-                $joins[$name] = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                $new_join = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
+                $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $new_join);
             } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
-                $joins[$name] = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
+                $new_join = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
+                $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
+                $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
             } else if ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
-                $joins += self::getJoins($prop['properties'], $prefix . $name . '.');
+                if (isset($prop['x-join'])) {
+                    $parent_join = $prop['x-join'];
+                }
+                $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $parent_join);
+            } else {
+                // Scalar property joined from another table
+                if (isset($prop['x-join'])) {
+                    $new_join = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
+                    $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
+                }
             }
         }
         return $joins;
     }
 
-    public static function flattenProperties(array $props, string $prefix = '', bool $collapse_array_types = true): array
+    public static function flattenProperties(array $props, string $prefix = '', bool $collapse_array_types = true, ?array $parent_obj = null): array
     {
         $flattened = [];
         foreach ($props as $name => $prop) {
@@ -231,9 +276,14 @@ class Schema implements \ArrayAccess
                 $prop = $prop['items'];
             }
             if (array_key_exists('type', $prop) && $prop['type'] === self::TYPE_OBJECT) {
-                $flattened += self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types);
+                $flattened += self::flattenProperties($prop['properties'], $prefix . $name . '.', $collapse_array_types, $prop);
             } else {
-                $flattened[$prefix . $name] = $prop;
+                $flattened[$prefix . $name] = [
+                    ...$prop,
+                    ...[
+                        'x-full-schema' => $parent_obj['x-full-schema'] ?? null,
+                    ]
+                ];
             }
         }
         return $flattened;
@@ -292,19 +342,7 @@ class Schema implements \ArrayAccess
 
         foreach ($flattened_schema as $sk => $sv) {
             // Get value from original content by the array path $sk
-            $path_arr = explode('.', $sk);
-            $current = $content;
-            foreach ($path_arr as $path) {
-                if (!is_array($current)) {
-                    continue;
-                }
-                if (array_key_exists($path, $current)) {
-                    $current = $current[$path];
-                } else {
-                    return false;
-                }
-            }
-            $cv = $current;
+            $cv = ArrayPathAccessor::getElementByArrayPath($content, $sk);
 
             // Verify that the type is correct
             if (!self::validateTypeAndFormat($sv['type'], $sv['format'] ?? '', $cv)) {

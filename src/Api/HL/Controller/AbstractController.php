@@ -101,6 +101,7 @@ abstract class AbstractController
             'type' => Doc\Schema::TYPE_INTEGER,
             'format' => Doc\Schema::FORMAT_INTEGER_INT64,
             'minimum' => 0,
+            'default' => 100,
         ]
     ];
 
@@ -140,7 +141,7 @@ abstract class AbstractController
      * @param string|null $full_schema The name of the schema that represents the full object
      * @return array The schema
      */
-    protected static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
+    public static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
     {
         if ($field === null) {
             $field = $class::getForeignKeyField();

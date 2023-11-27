@@ -506,7 +506,7 @@ final class AssetController extends AbstractController
                             'table' => \PrinterModel::getTable(),
                             'fkey' => 'printermodels_id',
                             'field' => 'id',
-                            'ref_join' => [
+                            'ref-join' => [
                                 'table' => \CartridgeItem_PrinterModel::getTable(),
                                 'fkey' => 'id', // The ID field of the main table used to refer to the cartridgeitems_id of the joined table
                                 'field' => \CartridgeItem::getForeignKeyField(),

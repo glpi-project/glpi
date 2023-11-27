@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Api\HL\RSQL;
 
+use Glpi\Api\HL\Doc\Schema;
+use Glpi\Api\HL\Search;
 use GLPITestCase;
 
 class Parser extends GLPITestCase
@@ -43,7 +45,7 @@ class Parser extends GLPITestCase
     {
         return [
             [
-                [[5, 'id'], [6, '=='], [7, '20']],
+                [[5, 'id'], [6, '=='], [7, '20']], /** Tokens. First element is the token type. See T_* consts in {@link \Glpi\Api\HL\RSQL\Lexer} */
                 "(`_`.`id` = '20')"
             ],
             [
@@ -58,6 +60,26 @@ class Parser extends GLPITestCase
             [
                 [[5, 'name'], [6, '=='], [7, '(test']],
                 "(`_`.`name` = '(test')"
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, '1']],
+                "(`scalar_join`.`external_prop` = '1')" // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, 'true']],
+                "(`scalar_join`.`external_prop` = '1')"
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, '0']],
+                "(`scalar_join`.`external_prop` = '0')"
+            ],
+            [
+                [[5, 'scalar_join'], [6, '=='], [7, 'false']],
+                "(`scalar_join`.`external_prop` = '0')"
+            ],
+            [
+                [[5, 'extra_fields.extra1'], [6, '=='], [7, 'test']],
+                "(`extra_fieldsextra1`.`extra1` = 'test')"
             ]
         ];
     }
@@ -74,14 +96,64 @@ class Parser extends GLPITestCase
                 'comment' => ['type' => 'string'],
                 'model' => [
                     'type' => 'object',
+                    'x-join' => [],
                     'properties' => [
                         'id' => ['type' => 'integer'],
                         'name' => ['type' => 'string'],
                     ]
+                ],
+                'scalar_join' => [
+                    'type' => 'boolean',
+                    'x-join' => [],
+                    'x-field' => 'external_prop'
+                ],
+                'extra_fields' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'extra1' => [
+                            'type' => 'string',
+                            'x-join' => [],
+                            'x-field' => 'extra1'
+                        ],
+                        'extra2' => [
+                            'type' => 'string',
+                            'x-join' => [],
+                            'x-field' => 'extra2'
+                        ]
+                    ]
                 ]
             ]
         ];
-        $parser = new \Glpi\Api\HL\RSQL\Parser($schema);
+        $search_class = new \ReflectionClass(Search::class);
+        $search = $search_class->newInstanceWithoutConstructor();
+        $search_class->getProperty('schema')->setValue($search, $schema);
+        $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
+        $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
+        $parser = new \Glpi\Api\HL\RSQL\Parser($search);
         $this->string((string)$parser->parse($tokens))->isEqualTo($expected);
+    }
+
+    /**
+     * When a filter references a property that does not exist, it should be ignored to avoid invalid SQL being generated.
+     * @return void
+     */
+    public function testIgnoreInvalidProperties()
+    {
+        $schema = [
+            'properties' => [
+                'id' => ['type' => 'integer'],
+                'name' => ['type' => 'string'],
+            ]
+        ];
+
+        $search_class = new \ReflectionClass(Search::class);
+        $search = $search_class->newInstanceWithoutConstructor();
+        $search_class->getProperty('schema')->setValue($search, $schema);
+        $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
+        $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
+        $parser = new \Glpi\Api\HL\RSQL\Parser($search);
+        $this->string((string)$parser->parse([[5, 'test'], [6, '=='], [7, 'test']]))->isEqualTo('1');
+        // Test an invalid filter with a valid one
+        $this->string((string)$parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]))->isEqualTo("(`_`.`name` = 'test')");
     }
 }

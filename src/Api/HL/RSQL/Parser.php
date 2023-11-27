@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL\RSQL;
 
 use Glpi\Api\HL\Doc;
+use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -44,15 +45,15 @@ use Glpi\DBAL\QueryFunction;
  */
 final class Parser
 {
-    private array $flattened_properties = [];
+    private Search $search;
 
     private \DBmysql $db;
 
-    public function __construct(array $schema)
+    public function __construct(Search $search)
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        $this->search = $search;
         $this->db = $DB;
     }
 
@@ -65,7 +66,7 @@ final class Parser
     {
         // Convert string like (item1, item2,item3) to array
         if (!preg_match('/^\((.*)\)$/', $str_array, $matches)) {
-            throw new RSQLException(sprintf(__('Invalid RSQL array: %s'), $str_array));
+            throw new RSQLException('', sprintf(__('Invalid RSQL array: %s'), $str_array));
         }
 
         // Use CSV parser to handle splitting by comma (not inside quotes) to avoid headache trying to maintain custom regex
@@ -211,25 +212,6 @@ final class Parser
     }
 
     /**
-     * @param string $property
-     * @return string
-     * @throws RSQLException If the property is not valid.
-     */
-    private function getSQLFieldForProperty(string $property): string
-    {
-        $schema_field = $this->flattened_properties[$property] ?? null;
-        if ($schema_field === null) {
-            throw new RSQLException(sprintf(__('Invalid RSQL property: %s'), $property));
-        }
-        $sql_field = $schema_field['x-field'] ?? $property;
-
-        if (!str_contains($sql_field, '.')) {
-            $sql_field = '_.' . $sql_field;
-        }
-        return $sql_field;
-    }
-
-    /**
      * @param array $tokens Tokens from the RSQL lexer.
      * @return QueryExpression SQL criteria
      */
@@ -247,22 +229,43 @@ final class Parser
         // Loop through operators and set the keys to the operator property
         $operators = array_combine(array_column($operators, 'operator'), $operators);
 
+        $flat_props = $this->search->getFlattenedProperties();
+
         $buffer = [];
         while ($position < $token_count) {
             [$type, $value] = $tokens[$position];
             if ($type === Lexer::T_PROPERTY) {
-                $buffer = [
-                    'field' => $this->getSQLFieldForProperty($value),
-                ];
+                // If the property isn't in the flattened properties array, the filter should be ignored (not valid)
+                if (!isset($flat_props[$value])) {
+                    // Not valid. Just fill the buffer and continue to the next token. This will be handled once the value token is reached.
+                    $buffer = [
+                        'property' => null,
+                        'field' => null,
+                    ];
+                } else {
+                    $buffer = [
+                        'property' => $value,
+                        'field' => $this->search->getSQLFieldForProperty($value),
+                    ];
+                }
             } else if ($type === Lexer::T_OPERATOR) {
                 $buffer['operator'] = $operators[$value]['sql_where_callable'];
             } else if ($type === Lexer::T_VALUE) {
-                // Unquote value if it is quoted
-                if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
-                    $value = substr($value, 1, -1);
+                if ($buffer['property'] !== null && $buffer['field'] !== null) {
+                    // Unquote value if it is quoted
+                    if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
+                        $value = substr($value, 1, -1);
+                    }
+                    if (isset($flat_props[$buffer['property']])) {
+                        $value = match ($flat_props[$buffer['property']]['type']) {
+                            // Boolean values are stored as 0 or 1 in the database, but the user may try using "true" or "false" in the RSQL query
+                            Doc\Schema::TYPE_BOOLEAN => filter_var($value, FILTER_VALIDATE_BOOLEAN) ? 1 : 0,
+                            default => $value,
+                        };
+                    }
+                    $criteria_array = $buffer['operator']($buffer['field'], $value);
+                    $sql_string .= $it->analyseCrit($criteria_array);
                 }
-                $criteria_array = $buffer['operator']($buffer['field'], $value);
-                $sql_string .= $it->analyseCrit($criteria_array);
                 $buffer = [];
             } else if ($sql_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
                 $sql_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
@@ -272,6 +275,14 @@ final class Parser
                 $sql_string .= ')';
             }
             $position++;
+        }
+
+        // Remove any trailing ANDs and ORs (may be multiple in a row)
+        $sql_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_string);
+
+        // If the string is empty, return a criteria array that will return all results
+        if ($sql_string === '') {
+            $sql_string = '1';
         }
 
         return new QueryExpression($sql_string);

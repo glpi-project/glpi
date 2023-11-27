@@ -122,7 +122,8 @@ final class AdministrationController extends AbstractController
                             'x-join' => [
                                 'table' => 'glpi_useremails',
                                 'fkey' => 'id',
-                                'field' => 'users_id'
+                                'field' => 'users_id',
+                                'primary-property' => 'id' // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
                             ],
                             'properties' => [
                                 'id' => [
@@ -213,6 +214,7 @@ final class AdministrationController extends AbstractController
                         'x-join' => [
                             'table' => 'glpi_groups',
                             'fkey' => 'groups_id',
+                            'field' => 'id'
                         ],
                         'description' => 'Parent group',
                         'properties' => [
@@ -262,6 +264,7 @@ final class AdministrationController extends AbstractController
                         'x-join' => [
                             'table' => 'glpi_entities',
                             'fkey' => 'entities_id',
+                            'field' => 'id'
                         ],
                         'description' => 'Parent entity',
                         'properties' => [
