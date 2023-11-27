@@ -1603,7 +1603,7 @@ class Inventory extends InventoryTestCase
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
         ]);
-        $this->integer(count($logs))->isIdenticalTo(1); //FIXME: should be 0
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //real computer update
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json'));
@@ -1781,18 +1781,12 @@ class Inventory extends InventoryTestCase
             'FROM' => \Log::getTable(),
             'LIMIT' => countElementsInTable(\Log::getTable()),
             'OFFSET' => $nblogsnow,
-            'WHERE' => [
-                'NOT' => [ //prevent logs check on Agent last contact
-                    'itemtype' => \Agent::getType(),
-                    'id_search_option' => 4
-                ]
-            ]
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4411);
+        $this->integer(count($logs))->isIdenticalTo(4412);
 
         $expected_types_count = [
-            0 => 2, //Agent version, disks usage
+            0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
