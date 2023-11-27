@@ -327,7 +327,6 @@ class RemoteManagement extends AbstractInventoryAsset
 
     public function testNoMoreRemoteManagement()
     {
-        $computer = new \Computer();
         $mgmt = new \Item_RemoteManagement();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
