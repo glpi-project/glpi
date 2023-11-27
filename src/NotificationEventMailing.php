@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class NotificationEventMailing extends NotificationEventAbstract
@@ -172,10 +173,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                $mmail->SetFrom($current->fields['sender'], $current->fields['sendername']);
+                $mmail->SetFrom($current->fields['sender'], Sanitizer::decodeHtmlSpecialChars($current->fields['sendername']));
 
                 if ($current->fields['replyto']) {
-                    $mmail->AddReplyTo($current->fields['replyto'], $current->fields['replytoname']);
+                    $mmail->AddReplyTo($current->fields['replyto'], Sanitizer::decodeHtmlSpecialChars($current->fields['replytoname']));
                 }
                 $mmail->Subject = $current->fields['name'];
 
@@ -385,7 +386,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     $mmail->AltBody .= $text;
                 }
 
-                $mmail->AddAddress($recipient, $current->fields['recipientname']);
+                $mmail->AddAddress($recipient, Sanitizer::decodeHtmlSpecialChars($current->fields['recipientname']));
 
                 if (!empty($current->fields['messageid'])) {
                     $mmail->MessageID = "<" . $current->fields['messageid'] . ">";
