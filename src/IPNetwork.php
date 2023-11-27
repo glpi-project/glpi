@@ -381,7 +381,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
            // Check unicity !
             if ($sameNetworks && (count($sameNetworks) > 0)) {
                 $return = ['input' => false];
-                if (!isset($input['from_native_inventory'])) {
+                if (!isset($input['_no_message'])) {
                     $return['error'] = __('Network already defined in visible entities');
                 }
                 return $return;
