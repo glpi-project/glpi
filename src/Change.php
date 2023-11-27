@@ -125,7 +125,6 @@ class Change extends CommonITILObject
                               ))))));
     }
 
-
     /**
      * Is the current user have right to create the current change ?
      *
@@ -673,7 +672,7 @@ class Change extends CommonITILObject
 
     public static function getReopenableStatusArray()
     {
-        return self::getClosedStatusArray();
+        return array_merge(self::getClosedStatusArray(), [self::SOLVED]);
     }
 
     public function getRights($interface = 'central')
