@@ -41,6 +41,13 @@ class CommonITILTask extends DbTestCase
 {
     protected function dataTechTicketTask(): array
     {
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name'        => "Test tech task",
+            'content'     => "Test tech task",
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'date'        => $_SESSION['glpi_currenttime'],
+        ]);
         $change = new \Change();
         $change_id = $change->add([
             'name'        => "Test tech task",
@@ -57,7 +64,7 @@ class CommonITILTask extends DbTestCase
         ]);
         return [
             [
-                'id' => 101,
+                'id' => $ticket_id,
                 'task' => new \TicketTask(),
                 'type_user' => new \Ticket_User(),
                 'task_content' => "<p> Test task for ticket</p>",
