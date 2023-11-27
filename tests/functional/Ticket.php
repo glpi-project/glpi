@@ -1866,6 +1866,7 @@ class Ticket extends DbTestCase
             'name'    => 'Ticket to check cloning',
             'content' => 'Ticket to check cloning',
         ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
         $task = new \TicketTask();
         $this->integer(
             (int)$task->add([
