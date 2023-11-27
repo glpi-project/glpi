@@ -122,7 +122,7 @@ class GLPIMailer extends PHPMailer
             $this->Debugoutput = function ($message, $level) {
                 Toolbox::logInFile(
                     'mail-debug',
-                    "$level - $message"
+                    "$level - $message\n"
                 );
             };
         }

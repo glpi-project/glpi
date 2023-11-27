@@ -1620,7 +1620,7 @@ class Session
         ) {
             $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url");
+            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
             // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
