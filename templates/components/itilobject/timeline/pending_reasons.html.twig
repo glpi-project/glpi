@@ -98,6 +98,10 @@
             });
 
             $('#dropdown_pendingreasons_id{{ rand }}').trigger('change');
+
+            // A change on the dropdown is triggered on load to initialize the component.
+            // It needs to be reset to avoid marking the form as modified.
+            window.glpiUnsavedFormChanges = false;
          </script>
       </div>
 
