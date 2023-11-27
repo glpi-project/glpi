@@ -380,11 +380,9 @@ class IPNetwork extends CommonImplicitTreeDropdown
             $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
            // Check unicity !
             if ($sameNetworks && (count($sameNetworks) > 0)) {
-                $return = ['input' => false];
-                if (!isset($input['_no_message'])) {
-                    $return['error'] = __('Network already defined in visible entities');
-                }
-                return $return;
+                return ['error' => __('Network already defined in visible entities'),
+                    'input' => false
+                ];
             }
 
            // Then, update $input to reflect the network and the netmask
@@ -463,7 +461,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $preparedInput = $this->prepareInput($input);
 
-        if (isset($preparedInput['error'])) {
+        if (isset($preparedInput['error']) && !isset($input['_no_message'])) {
             Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
         }
 
