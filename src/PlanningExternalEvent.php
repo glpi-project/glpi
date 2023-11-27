@@ -168,7 +168,54 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         ) {
             $this->fields['users_id'] =  $options['res_items_id'];
         }
+        if (
+            isset($options['entities_id'])
+        ) {
+            $this->fields['entities_id'] =  (int)$options['entities_id'];
+        }
 
+        if ($canedit) {
+            echo "<tr class='tab_bg_2'><td colspan='2'>" . Entity::getTypeName() . "</td>";
+            echo "<td colspan='2'>";
+            if(isset($_REQUEST['_target']) && str_contains($_REQUEST['_target'],'planningexternalevent.form.php')) {
+                Entity::dropdown([
+                    'name'          => 'entities_id',
+                    'value'         => $this->getEntityID(),
+                    'on_change' => "this.form.submit()"
+                ]);
+
+
+            } else {
+                Entity::dropdown([
+                    'name'          => 'entities_id',
+                    'value'         => $this->getEntityID(),
+                    'on_change' => "entity_update$rand(this.value)"
+                ]);
+
+                $ajax_url = $CFG_GLPI["root_doc"] . "/ajax/planning.php";
+                $JS = <<<JAVASCRIPT
+            function entity_update{$rand}(value) {
+               $.ajax({
+                  url: '{$ajax_url}',
+                  type: "POST",
+                  data: {
+                     action: 'get_externalevent_entity',
+                     entities_id: value,
+                     rand: {$rand}
+                  }
+               }).done(function(data) {         
+                     $("#ajax_reminder{$options['rand_reminder']}").html(data); 
+               });
+            }
+JAVASCRIPT;
+                echo Html::scriptBlock($JS);
+            }
+
+
+            echo "</td>";
+            echo "</tr>";
+
+        }
         if ($canedit) {
             $tpl_class = 'PlanningExternalEventTemplate';
             echo "<tr class='tab_bg_1' style='vertical-align: top'>";

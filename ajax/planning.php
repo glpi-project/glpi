@@ -89,7 +89,37 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
         exit;
     }
 }
+if ($_REQUEST["action"] == "get_externalevent_entity") {
+    $key = 'entities_id';
+    if (
+        isset($_POST[$key])
+        && $_POST[$key] >= 0
+    ) {
+        if ($item = getItemForItemtype(PlanningExternalEvent::getType())) {
+            Html::header_nocache();
+            header("Content-Type: text/html; charset=UTF-8");
+            $item->showForm('', [
+                'from_planning_ajax' => true,
+                'begin'              => $params['begin']??"",
+                'end'                => $params['end']??"",
+                'res_itemtype'       => $params['res_itemtype']??"",
+                'res_items_id'       => $params['res_items_id']??"",
+                'entities_id'        => $_POST[$key],
+                'rand_reminder'      => $_POST['rand'],
+                'formoptions'        => "id='ajax_reminder".$_POST['rand']."'"
+            ]);
+            $callback = "glpi_close_all_dialogs();
+                      GLPIPlanning.refresh();
+                      displayAjaxMessageAfterRedirect();";
+            Html::ajaxForm("#ajax_reminder".$_POST['rand'], $callback);
+        }
+        Html::ajaxFooter();
+//        echo  $CFG_GLPI["root_doc"] . "/front/planningexternalevent.form.php?entities_id=".$_POST[$key];
+        exit;
 
+
+    }
+}
 Html::header_nocache();
 header("Content-Type: text/html; charset=UTF-8");
 

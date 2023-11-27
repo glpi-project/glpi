@@ -1604,7 +1604,8 @@ JAVASCRIPT;
                 'end'                => $params['end'],
                 'res_itemtype'       => $params['res_itemtype'],
                 'res_items_id'       => $params['res_items_id'],
-                'formoptions'        => "id='ajax_reminder$rand'"
+                'formoptions'        => "id='ajax_reminder$rand'",
+                'rand_reminder'      => $rand
             ]);
             $callback = "glpi_close_all_dialogs();
                       GLPIPlanning.refresh();
