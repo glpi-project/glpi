@@ -737,7 +737,10 @@ $RELATION = [
         ],
         'glpi_problemtasks'           => 'groups_id_tech',
         'glpi_projects'               => 'groups_id',
-        'glpi_racks'                  => 'groups_id_tech',
+        'glpi_racks'                  => [
+            'groups_id_tech',
+            'groups_id',
+        ],
         'glpi_softwarelicenses'       => [
             'groups_id_tech',
             'groups_id',
@@ -1572,7 +1575,10 @@ $RELATION = [
         'glpi_projects'                 => 'users_id',
         'glpi_projecttasks'             => 'users_id',
         'glpi_projecttasktemplates'     => 'users_id',
-        'glpi_racks'                    => 'users_id_tech',
+        'glpi_racks'                    => [
+            'users_id_tech',
+            'users_id',
+        ],
         '_glpi_reminders'               => 'users_id',
         '_glpi_reminders_users'         => 'users_id',
         '_glpi_remindertranslations'    => 'users_id',
