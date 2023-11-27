@@ -372,7 +372,7 @@ class RemoteManagement extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-        //we have  remote managements linked to computer
+        //we have no remote managements linked to computer
         $mgmts = $mgmt->find();
         $this->integer(count($mgmts))->isIdenticalTo(0);
     }
