@@ -313,7 +313,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $value->getFromDBByCrit(
                     [
                         $foreignkey => $input[$foreignkey],
-                        $entityId => $input[$key],
+                        $actorFkey => $input[$key],
                         'type' => CommonITILActor::ASSIGN
                     ]
                 ) == false
@@ -321,7 +321,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $value->add(
                     [
                         $foreignkey => $input[$foreignkey],
-                        $entityId => $input[$key],
+                        $actorFkey => $input[$key],
                         'type' => CommonITILActor::ASSIGN
                     ]
                 );
