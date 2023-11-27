@@ -1861,12 +1861,6 @@ class Ticket extends DbTestCase
     {
         $this->login();
         $this->setEntity('Root entity', true);
-        // this test originally used the ticket created in the dataset
-        // this ticket contained a task, which on creation added the tech to the assigned actors
-        // and add  additional log entry relating to this action
-        // so $this->integer((int)$clonedTicket->getTimelineItems())->isEqualTo(0); return false
-        // because getTimelineItems also returns the history of the actors
-        //$ticket = getItemByTypeName('Ticket', '_ticket01');
         $ticket = new GlobalTicket();
         $ticket_id = $ticket->add([
             'name'    => 'Ticket to check cloning',
