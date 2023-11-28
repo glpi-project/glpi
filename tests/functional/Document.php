@@ -267,13 +267,6 @@ class Document extends DbTestCase
          */
         $this->integer($item->fields['status'])->isEqualTo(\Ticket::INCOMING);
 
-        // Update the ticket status to WAITING.
-        $item->update([
-            'id'     => $cid,
-            'status' => \Ticket::WAITING
-        ]);
-        $this->integer($item->fields['status'])->isEqualTo(\Ticket::WAITING);
-
         // Assign the second user to the ticket.
         $ticket_user = new \Ticket_User();
         $this->integer($ticket_user->add([
@@ -281,6 +274,13 @@ class Document extends DbTestCase
             'users_id'   => $uid,
             'type'       => \CommonITILActor::ASSIGN
         ]))->isGreaterThan(0);
+
+        // Update the ticket status to WAITING.
+        $item->update([
+            'id'     => $cid,
+            'status' => \Ticket::WAITING
+        ]);
+        $this->integer($item->fields['status'])->isEqualTo(\Ticket::WAITING);
 
         // Add another document to the ticket.
         $docid = (int)$mdoc->add($input);
