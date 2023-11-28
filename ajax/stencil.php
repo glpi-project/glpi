@@ -57,5 +57,8 @@ if (isset($_POST['id'])) {
     } else if (isset($_POST['remove-zone'])) {
         $stencil->check($_POST['id'], UPDATE);
         $stencil->removeZones($_POST);
+    } else if (isset($_POST['reset-zone'])) {
+        $stencil->check($_POST['id'], UPDATE);
+        $stencil->resetZones($_POST);
     }
 }

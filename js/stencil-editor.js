@@ -91,6 +91,9 @@ const StencilEditor = function (container, rand, zones_definition) {
             .on('click', '#save-zone-data-' + rand, function () {
                 _this.saveZoneData();
             })
+            .on('click', '#reset-zone-data-' + rand, function () {
+                _this.resetZoneData();
+            })
             .on('click', '#cancel-zone-data-' + rand, function () {
                 _this.editorDisable();
             })
@@ -391,6 +394,40 @@ const StencilEditor = function (container, rand, zones_definition) {
                 $('form#stencil-editor-form-' + rand + ' button.set-zone-data').sort(function (a, b) {
                     return $(a).data('zone-index') - $(b).data('zone-index');
                 }).last().remove();
+            },
+        });
+    };
+
+    // reset zone data
+    _this.resetZoneData = function () {
+        const zoneId = $(container).find('#zone_number-' + rand).data('zone-index');
+        $.ajax({
+            type: 'POST',
+            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            data: {
+                'reset-zone': '',
+                'id': $(container).find('input[name=id]').val(),
+                'zone-id': zoneId,
+                '_no_message': 1, // prevent Session::addMessageAfterRedirect()
+            },
+            success: function () {
+                // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
+                $('form#stencil-editor-form-' + rand + ' button[name="reset-zone-data"][data-bs-toggle="tooltip"]').tooltip('hide');
+
+                // Reset zone data
+                var zoneData = $('.set-zone-data[data-zone-index="' + zoneId + '"]');
+                zoneData.removeClass('btn-success').removeClass('btn-warning');
+                zoneData.find('span').text(zoneId);
+                zoneData.find('i').removeClass('ti-check').addClass('ti-file-unknown');
+
+                // Remove zone data from zones
+                delete zones[zoneId];
+
+                // Disable editor
+                _this.editorDisable();
+
+                // Redraw zones
+                _this.redoZones();
             },
         });
     };

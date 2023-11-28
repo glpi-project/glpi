@@ -225,7 +225,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     public function removeZones(array $input): void
     {
         // Compute the new number of zones
-        $nbZones = $this->fields['nb_zones'] - ($input['nb-new-zones'] ?? 1);
+        $nbZones = $this->fields['nb_zones'] - ($input['nb-remove-zones'] ?? 1);
 
         // Remove zones with id > $nbZones
         $zones = array_filter(
@@ -237,7 +237,27 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         // Update the stencil
         $this->update(array_merge($input, [
             'zones'    => json_encode($zones, JSON_FORCE_OBJECT),
-            'nb_zones' => $this->fields['nb_zones'] - ($input['nb-new-zones'] ?? 1),
+            'nb_zones' => $this->fields['nb_zones'] - ($input['nb-remove-zones'] ?? 1),
+        ]));
+    }
+
+    /**
+     * Reset zones to their default values
+     *
+     * @param array $input
+     * @return void
+     */
+    public function resetZones(array $input): void
+    {
+        // Decode the zones
+        $zones = json_decode($this->fields['zones'] ?? '{}', true);
+
+        // Remove the zone corresponding to the given id
+        unset($zones[$input['zone-id'] ?? null]);
+
+        // Update the stencil
+        $this->update(array_merge($input, [
+            'zones' => json_encode($zones, JSON_FORCE_OBJECT),
         ]));
     }
 
