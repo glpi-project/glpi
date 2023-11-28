@@ -374,7 +374,7 @@ class Peripheral extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, PeripheralModel::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, PeripheralModel::rawSearchOptionsToAdd());
 
         return $tab;
     }

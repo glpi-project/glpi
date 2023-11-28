@@ -211,7 +211,7 @@ class PassiveDCEquipment extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, PassiveDCEquipmentModel::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, PassiveDCEquipmentModel::rawSearchOptionsToAdd());
 
         return $tab;
     }

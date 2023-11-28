@@ -512,7 +512,7 @@ class NetworkEquipment extends CommonDBTM
 
         $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd());
 
-        $tab = array_merge($tab, NetworkEquipmentModel::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, NetworkEquipmentModel::rawSearchOptionsToAdd());
 
         return $tab;
     }
