@@ -531,7 +531,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             );
         }
 
-        // Assign technician to ticket from ticket task
+        // Assign technician to main item  from task
         self::assignTechFromtask($this->input);
 
         parent::post_updateItem($history);
