@@ -32,7 +32,7 @@ jobs:
         include:
           - {php-version: "7.4"} # Lint on lower PHP version to detected too early usage of new syntaxes
           - {php-version: "8.2"} # Lint on higher PHP version to detected deprecated elements usage
-          - {php-version: "8.3-rc"}
+          - {php-version: "8.3"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -106,7 +106,7 @@ jobs:
           # test higher PHP version with higher MariaDB and MySQL versions
           - {php-version: "8.2", db-image: "mariadb:11.0", always: true}
           - {php-version: "8.2", db-image: "mysql:8.1", always: true}
-          - {php-version: "8.3-rc", db-image: "mariadb:11.0", always: true}
+          - {php-version: "8.3", db-image: "mariadb:11.0", always: true}
           # test other PHP versions
           - {php-version: "8.1", db-image: "mariadb:11.0", always: false}
           - {php-version: "8.0", db-image: "mariadb:11.0", always: false}
