@@ -441,8 +441,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public static function rawSearchOptionsToAdd()
     {
-        global $DB;
-
         $soptions = [];
 
         $soptions[] = [
