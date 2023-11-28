@@ -215,16 +215,18 @@
                         });
                     </script>
                     {% else %}
-                    <script type="application/javascript">
-                        updateItemOnSelectEvent("dropdown_validatortype{{ rand }}", '#show_validator_field{{ rand }}',
-                            CFG_GLPI.root_doc + '/ajax/dropdownValidator.php', {
-                                id: 0,
-                                entity: {{ item.fields['entities_id'] }},
-                                right: '{{ right }}',
-                                validatortype: '__VALUE__',
-                                groups_id: 0
-                            });
-                    </script>
+                        {% do call('Ajax::updateItemOnSelectEvent', [
+                            'dropdown_validatortype' ~ rand,
+                            'show_validator_field' ~ rand,
+                            config('root_doc') ~ '/ajax/dropdownValidator.php',
+                            {
+                                'id': 0,
+                                'entity': item.fields['entities_id'],
+                                'right': right,
+                                'validatortype': '__VALUE__',
+                                'groups_id': 0
+                            }
+                        ]) %}
                     {% endif %}
                 {% else %}
                     {{ fields.dropdownField(
