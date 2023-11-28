@@ -428,9 +428,13 @@ abstract class CommonDevice extends CommonDropdown
         }
 
         if (static::canView()) {
-            $content = $this->getLink();
+            $content = $this->getLink([
+                'icon' => $this->getIcon()
+            ]);
         } else {
-            $content = $this->getName();
+            $content = $this->getName([
+                'icon' => $this->getIcon()
+            ]);
         }
 
         if ($options['canedit']) {
