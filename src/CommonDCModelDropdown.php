@@ -459,7 +459,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             'nosearch'           => true,
             'nosort'           => true,
             'massiveaction'      => false,
-            'html'               => true
         ];
 
         $soptions[] = [
@@ -471,7 +470,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             'nosearch'           => true,
             'nosort'           => true,
             'massiveaction'      => false,
-            'html'               => true
         ];
 
         return $soptions;
