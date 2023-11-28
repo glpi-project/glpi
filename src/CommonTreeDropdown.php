@@ -947,7 +947,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
 
        // Import a full tree from completename
-        $names  = explode('>', $input['completename']);
+        $names  = explode('>', self::unsanitizeSeparatorInCompletename($input['completename']));
         $fk     = $this->getForeignKeyField();
         $i      = count($names);
         $parent = 0;
@@ -1009,5 +1009,24 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
         $separator = ' > ';
         return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
+    }
+
+    /**
+     * Separator may be encoded in input, but should sometimes be decoded to have a complename
+     * that fits the value expected to be stored in DB.
+     *
+     * This method aims to normalize the completename value.
+     *
+     * @param string|null $completename
+     *
+     * @return string|null
+     */
+    public static function unsanitizeSeparatorInCompletename(?string $completename): ?string
+    {
+        if (empty($completename)) {
+            return $completename;
+        }
+        $separator = ' > ';
+        return implode($separator, explode(Sanitizer::sanitize($separator), $completename));
     }
 }

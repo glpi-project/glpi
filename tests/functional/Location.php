@@ -35,8 +35,9 @@
 
 namespace tests\units;
 
-use Psr\Log\LogLevel;
 use DbTestCase;
+use Glpi\Toolbox\Sanitizer;
+use Psr\Log\LogLevel;
 
 /* Test for inc/location.class.php */
 
@@ -210,5 +211,109 @@ class Location extends DbTestCase
         $this->boolean($location2->getFromDB($location2_id))->isTrue();
         $this->string($location2->fields['name'])->isEqualTo('Non unique location');
         $this->string($location2->fields['completename'])->isEqualTo('Non unique location');
+    }
+
+    protected function importProvider(): iterable
+    {
+        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $sub_entity_id  = getItemByTypeName(\Entity::class, '_test_child_1', true);
+
+        // Make sure import is done in the expected entity
+        foreach ([$root_entity_id, $sub_entity_id] as $entity_id) {
+            yield [
+                'input'    => [
+                    'entities_id'   => $entity_id,
+                    'name'          => 'Import by name',
+                ],
+                'imported' => [
+                    [
+                        'entities_id'   => $entity_id,
+                        'name'          => 'Import by name',
+                    ]
+                ],
+            ];
+        }
+
+        // Make sure import can link to parents that are visible in the expected entity
+        $parent_location = $this->createItem(
+            \Location::class,
+            [
+                'entities_id'   => $root_entity_id,
+                'is_recursive'  => true,
+                'name'          => 'Parent location',
+            ]
+        );
+        yield [
+            'input'    => [
+                'entities_id'   => $sub_entity_id,
+                'completename'  => 'Parent location > Child name',
+            ],
+            'imported' => [
+                [
+                    'entities_id'   => $sub_entity_id,
+                    'name'          => 'Child name',
+                    'locations_id'  => $parent_location->getID(),
+                ]
+            ],
+        ];
+
+        // Make sure import will create the parents that are not visible in the expected entity
+        $l1_location = $this->createItem(
+            \Location::class,
+            [
+                'entities_id'   => $root_entity_id,
+                'is_recursive'  => false,
+                'name'          => 'Location level 1',
+            ]
+        );
+        $l2_location = $this->createItem(
+            \Location::class,
+            [
+                'entities_id'   => $root_entity_id,
+                'is_recursive'  => false,
+                'name'          => 'Location level 2',
+            ]
+        );
+        yield [
+            'input'    => [
+                'entities_id'   => $sub_entity_id,
+                'completename'  => 'Location level 1 > Location level 2 > Location level 3',
+            ],
+            'imported' => [
+                [
+                    'entities_id'   => $sub_entity_id,
+                    'name'          => 'Location level 1',
+                    'locations_id'  => 0,
+                ],
+                [
+                    'entities_id'   => $sub_entity_id,
+                    'name'          => 'Location level 2',
+                    ['NOT' => ['locations_id' => $l1_location->getID()]]
+                ],
+                [
+                    'entities_id'   => $sub_entity_id,
+                    'name'          => 'Location level 3',
+                    ['NOT' => ['locations_id' => $l2_location->getID()]]
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider importProvider
+     */
+    public function testImport(array $input, array $imported): void
+    {
+        $this->newTestedInstance();
+
+        $count_before_import = countElementsInTable(\Location::getTable());
+
+        $this->integer($this->testedInstance->import(Sanitizer::sanitize($input)))->isGreaterThan(0);
+
+        $this->integer(countElementsInTable(\Location::getTable()) - $count_before_import)->isEqualTo(count($imported));
+
+        foreach ($imported as $location_data) {
+            $this->integer(countElementsInTable(\Location::getTable(), $location_data))->isEqualTo(1, json_encode($location_data));
+        }
     }
 }
