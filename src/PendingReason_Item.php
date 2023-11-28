@@ -353,10 +353,6 @@ class PendingReason_Item extends CommonDBRelation
             return true;
         }
 
-        if (PendingReason_Item::getForItem($item, true)) {
-            return true;
-        }
-
         if (PendingReason_Item::isLastTimelineItem($item)) {
             return true;
         }
