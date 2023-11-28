@@ -293,7 +293,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function assignTechFromtask(array $input): void
     {
-        //if user or group assigned to ticket task, add it to the ticket
+        //if user or group assigned to CommonITIL task, add it to the main item
         $itemtype = $this->getItilObjectItemType();
         $item = new $itemtype();
         $itemData = [
