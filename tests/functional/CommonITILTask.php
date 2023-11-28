@@ -108,12 +108,14 @@ class CommonITILTask extends DbTestCase
             ]
         )))->isEqualTo(1);
 
-        $task->update([
-            'id' => $task_id,
-            $foreignkey => $id,
-            'users_id' => 3,
-            'users_id_tech' => 3,
-        ]);
+        $this->boolean(
+            $task->update([
+                'id' => $task_id,
+                $foreignkey => $id,
+                'users_id' => 3,
+                'users_id_tech' => 3,
+            ])
+        )->isTrue();
 
         $this->integer(count($type_user->find(
             [
