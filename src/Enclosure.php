@@ -228,6 +228,8 @@ class Enclosure extends CommonDBTM
 
         $tab = array_merge($tab, Rack::rawSearchOptionsToAdd(get_class($this)));
 
+        $tab = array_merge($tab, EnclosureModel::rawSearchOptionsToAdd());
+
         return $tab;
     }
 

@@ -204,10 +204,10 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         switch ($field) {
             case 'picture_front':
             case 'picture_rear':
-                if (isset($options['html']) && $options['html']) {
+                if (isset($values['name']) && strlen($values['name']) > 0 && isset($options['html']) && $options['html']) {
                     return Html::image(Toolbox::getPictureUrl($values[$field]), [
                         'alt'   => $options['searchopt']['name'],
-                        'style' => 'height: 30px;',
+                        'style' => 'max-height: 60px;',
                     ]);
                 }
         }
@@ -436,6 +436,41 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             default:
                 throw new \RuntimeException("Unknown {$field['type']}");
         }
+    }
+
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $soptions = [];
+
+        $soptions[] = [
+            'id'   => 'pictures',
+            'name' => _n('Picture', 'Pictures', Session::getPluralNumber())
+        ];
+
+        $soptions[] = [
+            'id'                 => '250',
+            'table'              => self::getTable(),
+            'field'              => 'picture_front',
+            'name'               => __('Front picture'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'           => true,
+            'massiveaction'      => false,
+        ];
+
+        $soptions[] = [
+            'id'                 => '251',
+            'table'              => self::getTable(),
+            'field'              => 'picture_rear',
+            'name'               => __('Rear picture'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'           => true,
+            'massiveaction'      => false,
+        ];
+
+        return $soptions;
     }
 
     public static function getIcon()
