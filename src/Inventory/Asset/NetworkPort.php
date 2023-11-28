@@ -710,6 +710,7 @@ class NetworkPort extends InventoryAsset
 
             if (property_exists($port, 'ifdescr') && !empty($port->ifdescr)) {
                 $input['name'] = $port->ifdescr;
+                $input['ifdescr'] = $port->ifdescr;
             }
 
             if (property_exists($port, 'mac') && !empty($port->mac)) {
