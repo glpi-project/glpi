@@ -31,10 +31,12 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set color = is_locked ? 'red' : 'green' %}
+{% set color = is_locked ? 'bg-red-lt' : 'bg-green-lt' %}
 {% set icon = is_locked ? 'ti-lock' : 'ti-lock-open' %}
-{% set tooltip = is_locked ? __('Locked by %s at %s')|format(call('getUsername', [users_id]), date) : __('Unlocked') %}
+{% set text = is_locked ? __('Locked') : __('Free') %}
+{% set tooltip = is_locked ? __('Locked by %s at %s')|format(call('getUsername', [users_id]), date) : text %}
 
-<span class="{{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
+<span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
     <i class="ti {{ icon }}"></i>
+    {{ text }}
 </span>
