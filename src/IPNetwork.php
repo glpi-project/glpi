@@ -479,7 +479,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $preparedInput = $this->prepareInput($input);
 
-        if (isset($preparedInput['error'])) {
+        if (isset($preparedInput['error']) && !isset($input['_no_message'])) {
             Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
         }
 
