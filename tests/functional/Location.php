@@ -35,9 +35,9 @@
 
 namespace tests\units;
 
-use Psr\Log\LogLevel;
 use DbTestCase;
-use QueryExpression;
+use Glpi\Toolbox\Sanitizer;
+use Psr\Log\LogLevel;
 
 /* Test for inc/location.class.php */
 
@@ -308,7 +308,7 @@ class Location extends DbTestCase
 
         $count_before_import = countElementsInTable(\Location::getTable());
 
-        $this->integer($this->testedInstance->import($input))->isGreaterThan(0);
+        $this->integer($this->testedInstance->import(Sanitizer::sanitize($input)))->isGreaterThan(0);
 
         $this->integer(countElementsInTable(\Location::getTable()) - $count_before_import)->isEqualTo(count($imported));
 
