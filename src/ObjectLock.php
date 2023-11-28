@@ -648,7 +648,19 @@ class ObjectLock extends CommonDBTM
 
         switch ($field) {
             case 'id':
-                return TemplateRenderer::getInstance()->render('components/search/lock_status.html.twig', [
+                $templateContent = <<<TWIG
+                    {% set color = is_locked ? 'bg-red-lt' : 'bg-green-lt' %}
+                    {% set icon = is_locked ? 'ti-lock' : 'ti-lock-open' %}
+                    {% set text = is_locked ? __('Locked') : __('Free') %}
+                    {% set tooltip = is_locked ? __('Locked by %s at %s')|format(call('getUsername', [users_id]), date) : text %}
+
+                    <span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
+                        <i class="ti {{ icon }}"></i>
+                        {{ text }}
+                    </span>
+                TWIG;
+
+                return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
                     'is_locked' => $values['id'] > 0,
                     'users_id'  => $values['users_id'],
                     'date'      => $values['date'],
