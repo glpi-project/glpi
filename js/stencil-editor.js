@@ -34,6 +34,15 @@
 // Needed for JS lint validation
 /* global _ */
 
+/**
+ * Creates a new StencilEditor instance.
+ *
+ * @constructor
+ * @param {HTMLElement} container - The container element for the editor.
+ * @param {string} rand - A random string used for generating unique IDs.
+ * @param {Object} zones_definition - The initial definition of zones.
+ * @returns {StencilEditor} A new StencilEditor instance.
+ */
 const StencilEditor = function (container, rand, zones_definition) {
     let zones = zones_definition;
 
@@ -82,8 +91,17 @@ const StencilEditor = function (container, rand, zones_definition) {
             .on('click', '#save-zone-data-' + rand, function () {
                 _this.saveZoneData();
             })
+            .on('click', '#reset-zone-data-' + rand, function () {
+                _this.resetZoneData();
+            })
             .on('click', '#cancel-zone-data-' + rand, function () {
                 _this.editorDisable();
+            })
+            .on('click', 'button[name="add-new-zone"]', function () {
+                _this.addNewZone();
+            })
+            .on('click', 'button[name="remove-zone"]', function () {
+                _this.removeZone();
             });
 
         $('#clear-data-' + rand)
@@ -105,18 +123,47 @@ const StencilEditor = function (container, rand, zones_definition) {
             });
 
         // keyboard events
-        $('#zone_label-' + rand)
-            .on('keypress', function (e) {
-                var keycode = (e.keyCode ? e.keyCode : e.which);
-                if (keycode == 13) {
-                    _this.saveZoneData();
+        $(document)
+            .on('keyup', function (e) {
+                if (!_this.isEditorActive()) {
+                    return;
                 }
-            });
-        $('#zone_number-' + rand)
-            .on('keypress', function (e) {
+
                 var keycode = (e.keyCode ? e.keyCode : e.which);
-                if (keycode == 13) {
+
+                // Check if one of the cropper as a selection
+                const hasSelection = croppers.some(function (cropper) {
+                    return cropper.getCropperSelection() !== undefined
+                        && cropper.getCropperSelection().height > 0
+                        && cropper.getCropperSelection().width > 0;
+                });
+
+                if (keycode == 13 && hasSelection) {
                     _this.saveZoneData();
+                    e.preventDefault();
+                } else if (keycode == 27) {
+                    _this.editorDisable();
+                    e.preventDefault();
+                }
+            })
+            .on('keypress', function (e) {
+                if (!_this.isEditorActive()) {
+                    return;
+                }
+
+                var keycode = (e.keyCode ? e.keyCode : e.which);
+
+                if (keycode == 13) {
+                    const hasSelection = croppers.some(function (cropper) {
+                        return cropper.getCropperSelection() !== undefined
+                            && cropper.getCropperSelection().height > 0
+                            && cropper.getCropperSelection().width > 0;
+                    });
+
+                    if (hasSelection) {
+                        _this.saveZoneData();
+                        e.preventDefault();
+                    }
                 }
             });
     }();
@@ -124,6 +171,9 @@ const StencilEditor = function (container, rand, zones_definition) {
     // open zone definition control (and enable croppers)
     _this.editorEnable = function (current_zone) {
         let zone = zones[current_zone] ?? { 'side': 0 };
+
+        // Hide tooltips to avoid bug : tooltip doesn't disappear when dom is altered
+        $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('hide');
 
         $(container).find('.set-zone-data').removeClass('btn-warning'); // remove old active definition
         $(container).find(".defined-zone").remove();
@@ -221,7 +271,7 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // indicate visually that data are saved
         $(container).find(".set-zone-data[data-zone-index=" + zoneIndex + "]")
-            .removeClass('btn-outline-secondary')
+            .removeClass('btn-warning')
             .addClass('btn-success')
             .find('i').removeClass('ti-file-unknown').addClass('ti-check');
 
@@ -266,6 +316,14 @@ const StencilEditor = function (container, rand, zones_definition) {
         _this.redoZones();
     };
 
+    // check if editor is active
+    _this.isEditorActive = function () {
+        return croppers.some(function (cropper) {
+            return cropper.getCropperCanvas().disabled === false;
+        });
+    };
+
+    // redraw zones
     _this.redoZones = function () {
         $(container).find(".defined-zone").remove();
 
@@ -276,6 +334,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                 data-zone-index="${zone_number}"
                 data-bs-toggle="tooltip"
                 data-bs-title="${_.escape(zone['label'])}"
+                data-bs-placement="auto"
                 style="left: ${zone['x_percent']}%; top: ${zone['y_percent']}%; width: ${zone['width_percent']}%; height: ${zone['height_percent']}%;">
                     <span class="zone-number" style="max-height: 90%;
                         max-width: 90%;
@@ -290,5 +349,86 @@ const StencilEditor = function (container, rand, zones_definition) {
                 </a>
             `);
         }
+
+        // Enable tooltips
+        $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('enable');
+    };
+
+    // add a new zone
+    _this.addNewZone = function () {
+        $.ajax({
+            type: 'POST',
+            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            data: {
+                'add-new-zone': '',
+                'id': $(container).find('input[name=id]').val(),
+                '_no_message': 1, // prevent Session::addMessageAfterRedirect()
+            },
+            success: function () {
+                // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
+                $('form#stencil-editor-form-' + rand + ' button[name="add-new-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
+
+                var index = $('form#stencil-editor-form-' + rand + ' button.set-zone-data').length + 1;
+                var template = $('#zone-number-template');
+                var newZoneButton = $(template.html());
+                $(newZoneButton).attr('data-zone-index', index);
+                $(newZoneButton).find('span').text(index);
+                newZoneButton.insertBefore(template);
+            },
+        });
+    };
+
+    // remove a zone
+    _this.removeZone = function () {
+        $.ajax({
+            type: 'POST',
+            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            data: {
+                'remove-zone': '',
+                'id': $(container).find('input[name=id]').val(),
+                '_no_message': 1, // prevent Session::addMessageAfterRedirect()
+            },
+            success: function () {
+                // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
+                $('form#stencil-editor-form-' + rand + ' button[name="remove-zone"][data-bs-toggle="tooltip"]').tooltip('hide');
+                $('form#stencil-editor-form-' + rand + ' button.set-zone-data').sort(function (a, b) {
+                    return $(a).data('zone-index') - $(b).data('zone-index');
+                }).last().remove();
+            },
+        });
+    };
+
+    // reset zone data
+    _this.resetZoneData = function () {
+        const zoneId = $(container).find('#zone_number-' + rand).data('zone-index');
+        $.ajax({
+            type: 'POST',
+            url: CFG_GLPI.root_doc + "/ajax/stencil.php",
+            data: {
+                'reset-zone': '',
+                'id': $(container).find('input[name=id]').val(),
+                'zone-id': zoneId,
+                '_no_message': 1, // prevent Session::addMessageAfterRedirect()
+            },
+            success: function () {
+                // Hide tooltip to avoid bug : tooltip doesn't disappear when dom is altered
+                $('form#stencil-editor-form-' + rand + ' button[name="reset-zone-data"][data-bs-toggle="tooltip"]').tooltip('hide');
+
+                // Reset zone data
+                var zoneData = $('.set-zone-data[data-zone-index="' + zoneId + '"]');
+                zoneData.removeClass('btn-success').removeClass('btn-warning');
+                zoneData.find('span').text(zoneId);
+                zoneData.find('i').removeClass('ti-check').addClass('ti-file-unknown');
+
+                // Remove zone data from zones
+                delete zones[zoneId];
+
+                // Disable editor
+                _this.editorDisable();
+
+                // Redraw zones
+                _this.redoZones();
+            },
+        });
     };
 };

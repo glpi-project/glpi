@@ -162,12 +162,45 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     /**
      * Returns the parameters to pass to the stencil template
      *
+     * Available parameters:
+     * - nb_zones_label (only for editor)
+     * - define_zones_label (only for editor)
+     * - zone_label (only for editor)
+     * - zone_number_label (only for editor)
+     * - save_zone_data_label (only for editor)
+     * - add_zone_label (only for editor)
+     * - remove_zone_label (only for editor)
+     * - anchor_id (only for display)
+     *
      * @param bool $editor
      * @return array
      */
     public function getParams(bool $editor): array
     {
         return [];
+    }
+
+    /**
+     * Returns the maximum number of zones allowed for the stencil
+     *
+     * @return int
+     */
+    public function getMaxZoneNumber(): int
+    {
+        return 256;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        // Check if the "nb_zones" property is set
+        if (!isset($input['nb_zones'])) {
+            return [];
+        }
+
+        // Limits the number of zones to the maximum allowed number of zones.
+        $input['nb_zones'] = min($input['nb_zones'], $this->getMaxZoneNumber());
+
+        return $input;
     }
 
     /**
@@ -192,7 +225,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
     public function removeZones(array $input): void
     {
         // Compute the new number of zones
-        $nbZones = $this->fields['nb_zones'] - ($input['nb-new-zones'] ?? 1);
+        $nbZones = $this->fields['nb_zones'] - ($input['nb-remove-zones'] ?? 1);
 
         // Remove zones with id > $nbZones
         $zones = array_filter(
@@ -204,7 +237,27 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         // Update the stencil
         $this->update(array_merge($input, [
             'zones'    => json_encode($zones, JSON_FORCE_OBJECT),
-            'nb_zones' => $this->fields['nb_zones'] - ($input['nb-new-zones'] ?? 1),
+            'nb_zones' => $this->fields['nb_zones'] - ($input['nb-remove-zones'] ?? 1),
+        ]));
+    }
+
+    /**
+     * Reset zones to their default values
+     *
+     * @param array $input
+     * @return void
+     */
+    public function resetZones(array $input): void
+    {
+        // Decode the zones
+        $zones = json_decode($this->fields['zones'] ?? '{}', true);
+
+        // Remove the zone corresponding to the given id
+        unset($zones[$input['zone-id'] ?? null]);
+
+        // Update the stencil
+        $this->update(array_merge($input, [
+            'zones' => json_encode($zones, JSON_FORCE_OBJECT),
         ]));
     }
 

@@ -48,16 +48,7 @@ if (isset($_POST['id'])) {
 
     $stencil->check($_POST['id'], READ);
 
-    if (isset($_POST['add-new-zone'])) {
-        $stencil->check($_POST['id'], UPDATE);
-        $stencil->addNewZones($_POST);
-    } else if (isset($_POST['remove-zone'])) {
-        $stencil->check($_POST['id'], UPDATE);
-        $stencil->removeZones($_POST);
-    } else if (isset($_POST['update'])) {
-        $stencil->check($_POST['id'], UPDATE);
-        $stencil->update($_POST);
-    } else if (isset($_POST['purge'])) {
+    if (isset($_POST['purge'])) {
         $stencil->check($_POST['id'], PURGE);
         $stencil->delete($_POST, true);
     }
