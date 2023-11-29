@@ -2706,7 +2706,7 @@ JAVASCRIPT;
             'table'              => $this->getTable(),
             'field'              => '_virtual_age',
             'datatype'           => 'specific',
-            'name'               => __('Age'),
+            'name'               => __('Time since opening'),
             'massiveaction'      => false,
             'nosearch'           => true,
             'additionalfields'   => ['id']
