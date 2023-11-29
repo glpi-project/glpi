@@ -73,12 +73,13 @@
                'add_field_html': pending_reasons_id_script
             }
          ) }}
-         <script>
+         <script type="module">
             // Initialize a flag to check if the pending reasons dropdown has been initialized
             let pendingReasonsInitalized{{ rand }} = false;
 
-            $('#dropdown_pendingreasons_id{{ rand }}').change(function() {
-               let pending_val = $(this).val();
+            let handlePendingReasonsChange{{ rand }} = async () => {
+               let pending_val = $('#dropdown_pendingreasons_id{{ rand }}').val();
+
                if (pending_val > 0) {
                   $('#pending-reasons-more_options_{{ rand }}').addClass('show');
                   let data = await $.ajax({
@@ -95,19 +96,12 @@
                   $('#dropdown_followups_before_resolution{{ rand }}')
                      .val(data.followups_before_resolution)
                      .trigger('change');
-
-                  // If this is the first time the dropdown is being initialized
-                  // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
-                  if (!pendingReasonsInitalized{{ rand }}) {
-                     pendingReasonsInitalized{{ rand }} = true;
-                     window.glpiUnsavedFormChanges = false;
-                  }
                } else {
                   $('#pending-reasons-more_options_{{ rand }}').removeClass('show');
                }
-            });
+            }
 
-            $('#dropdown_pendingreasons_id{{ rand }}').trigger('change');
+            await handlePendingReasonsChange{{ rand }}();
 
             // If this is the first time the dropdown is being initialized
             // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
@@ -115,6 +109,8 @@
                pendingReasonsInitalized{{ rand }} = true;
                window.glpiUnsavedFormChanges = false;
             }
+
+            $('#dropdown_pendingreasons_id{{ rand }}').change(handlePendingReasonsChange{{ rand }});
          </script>
       </div>
 
