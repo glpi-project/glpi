@@ -1313,514 +1313,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>45</ranking>
-        <name>Cluster update (by uuid)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_cluster_update_uuid</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Cluster</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>uuid</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>uuid</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>46</ranking>
-        <name>Cluster import (by uuid)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_cluster_import_uuid</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Cluster</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>uuid</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>47</ranking>
-        <name>Cluster import denied</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_cluster_import_denied</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Cluster</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_ignore_import</field>
-            <value>1</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>48</ranking>
-        <name>Enclosure update (by serial)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_enclosure_update_serial</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Enclosure</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>serial</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>serial</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>49</ranking>
-        <name>Enclosure import (by serial)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_enclosure_import_serial</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Enclosure</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>serial</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>50</ranking>
-        <name>Enclosure import denied</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_enclosure_import_denied</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Enclosure</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_ignore_import</field>
-            <value>1</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>51</ranking>
-        <name>Global constraint (name)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_global_constraint_name</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>9</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_ignore_import</field>
-            <value>1</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>52</ranking>
-        <name>Global update (by serial)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_global_update_serial</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>serial</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>serial</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>53</ranking>
-        <name>Global update (by mac)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>0</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_global_update_mac</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>mac</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>mac</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>54</ranking>
-        <name>Global import (by serial)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_global_import_serial</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>serial</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>55</ranking>
-        <name>Global import (by mac)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>0</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_global_import_mac</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>mac</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>56</ranking>
-        <name>Global import denied</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_global_import_denied</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern></pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_ignore_import</field>
-            <value>1</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>57</ranking>
-        <name>Database update (by name)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_database_update_name</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>DatabaseInstance</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>linked_item</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>58</ranking>
-        <name>Database import (by name)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_database_import_name</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>DatabaseInstance</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>59</ranking>
-        <name>Database import denied</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_database_import_denied</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>DatabaseInstance</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_ignore_import</field>
-            <value>1</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>60</ranking>
-        <name>Unmanaged update (by name)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_unmanaged_update_name</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Unmanaged</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>10</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>61</ranking>
-        <name>Unmanaged import (by name)</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_unmanaged_import_name</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Unmanaged</pattern>
-        </rulecriteria>
-        <rulecriteria>
-            <criteria>name</criteria>
-            <condition>8</condition>
-            <pattern>1</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>0</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>62</ranking>
-        <name>Unmanaged import denied</name>
-        <description></description>
-        <match>AND</match>
-        <is_active>1</is_active>
-        <comment></comment>
-        <is_recursive>1</is_recursive>
-        <uuid>glpi_rule_import_asset_unmanaged_import_denied</uuid>
-        <condition>0</condition>
-        <date_creation></date_creation>
-        <rulecriteria>
-            <criteria>itemtype</criteria>
-            <condition>0</condition>
-            <pattern>Unmanaged</pattern>
-        </rulecriteria>
-        <ruleaction>
-            <action_type>assign</action_type>
-            <field>_ignore_import</field>
-            <value>1</value>
-        </ruleaction>
-    </rule>
-    <rule>
-        <entities_id>Root entity</entities_id>
-        <sub_type>RuleImportAsset</sub_type>
-        <ranking>38</ranking>
+        <ranking>41</ranking>
         <name>Phone constraint (name)</name>
         <description></description>
         <match>AND</match>
@@ -1842,14 +1335,14 @@
         </rulecriteria>
         <ruleaction>
             <action_type>assign</action_type>
-            <field>_inventory</field>
-            <value>2</value>
+            <field>_ignore_import</field>
+            <value>1</value>
         </ruleaction>
     </rule>
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>39</ranking>
+        <ranking>42</ranking>
         <name>Phone update (by serial + uuid)</name>
         <description></description>
         <match>AND</match>
@@ -1893,7 +1386,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>40</ranking>
+        <ranking>43</ranking>
         <name>Phone update (by serial + uuid is empty in GLPI)</name>
         <description></description>
         <match>AND</match>
@@ -1932,7 +1425,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>41</ranking>
+        <ranking>44</ranking>
         <name>Phone import (by serial + uuid)</name>
         <description></description>
         <match>AND</match>
@@ -1966,7 +1459,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>42</ranking>
+        <ranking>45</ranking>
         <name>Phone update (by serial)</name>
         <description></description>
         <match>AND</match>
@@ -2000,7 +1493,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>43</ranking>
+        <ranking>46</ranking>
         <name>Phone update (by uuid)</name>
         <description></description>
         <match>AND</match>
@@ -2034,7 +1527,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>44</ranking>
+        <ranking>47</ranking>
         <name>Phone update (by mac)</name>
         <description></description>
         <match>AND</match>
@@ -2068,7 +1561,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>45</ranking>
+        <ranking>48</ranking>
         <name>Phone update (by name)</name>
         <description></description>
         <match>AND</match>
@@ -2102,7 +1595,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>46</ranking>
+        <ranking>49</ranking>
         <name>Phone import (by serial)</name>
         <description></description>
         <match>AND</match>
@@ -2131,7 +1624,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>47</ranking>
+        <ranking>50</ranking>
         <name>Phone import (by uuid)</name>
         <description></description>
         <match>AND</match>
@@ -2160,7 +1653,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>48</ranking>
+        <ranking>51</ranking>
         <name>Phone import (by mac)</name>
         <description></description>
         <match>AND</match>
@@ -2189,7 +1682,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>49</ranking>
+        <ranking>52</ranking>
         <name>Phone import (by name)</name>
         <description></description>
         <match>AND</match>
@@ -2218,7 +1711,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>50</ranking>
+        <ranking>53</ranking>
         <name>Phone import denied</name>
         <description></description>
         <match>AND</match>
@@ -2235,8 +1728,515 @@
         </rulecriteria>
         <ruleaction>
             <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>54</ranking>
+        <name>Cluster update (by uuid)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_cluster_update_uuid</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Cluster</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
             <field>_inventory</field>
-            <value>2</value>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>55</ranking>
+        <name>Cluster import (by uuid)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_cluster_import_uuid</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Cluster</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>uuid</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>56</ranking>
+        <name>Cluster import denied</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_cluster_import_denied</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Cluster</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>57</ranking>
+        <name>Enclosure update (by serial)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_enclosure_update_serial</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Enclosure</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>58</ranking>
+        <name>Enclosure import (by serial)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_enclosure_import_serial</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Enclosure</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>59</ranking>
+        <name>Enclosure import denied</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_enclosure_import_denied</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Enclosure</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>60</ranking>
+        <name>Global constraint (name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_global_constraint_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>9</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>61</ranking>
+        <name>Global update (by serial)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_global_update_serial</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>62</ranking>
+        <name>Global update (by mac)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_global_update_mac</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>mac</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>mac</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>63</ranking>
+        <name>Global import (by serial)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_global_import_serial</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>serial</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>64</ranking>
+        <name>Global import (by mac)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>0</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_global_import_mac</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>mac</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>65</ranking>
+        <name>Global import denied</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_global_import_denied</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern></pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>66</ranking>
+        <name>Database update (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_database_update_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>DatabaseInstance</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>linked_item</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>67</ranking>
+        <name>Database import (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_database_import_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>DatabaseInstance</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>68</ranking>
+        <name>Database import denied</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_database_import_denied</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>DatabaseInstance</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>69</ranking>
+        <name>Unmanaged update (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_unmanaged_update_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Unmanaged</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>70</ranking>
+        <name>Unmanaged import (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_unmanaged_import_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Unmanaged</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>71</ranking>
+        <name>Unmanaged import denied</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_unmanaged_import_denied</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>Unmanaged</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
         </ruleaction>
     </rule>
 </rules>
