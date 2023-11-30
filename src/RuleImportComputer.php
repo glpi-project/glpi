@@ -145,9 +145,9 @@ class RuleImportComputer extends Rule
      *
      * @see Rule::displayAdditionRuleActionValue()
      *
-     * @param value the value for this action
+     * @param string value the value for this action
      *
-     * @return the label's value or ''
+     * @return string the label's value or ''
      **/
     public function displayAdditionRuleActionValue($value)
     {

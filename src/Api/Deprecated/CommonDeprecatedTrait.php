@@ -78,7 +78,7 @@ trait CommonDeprecatedTrait
      * For each searchoption, update the UID ref to match the deprecated type
      *
      * @param array $soptions
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function updateSearchOptionsUids(array &$soptions)
     {
@@ -102,7 +102,7 @@ trait CommonDeprecatedTrait
      * For each searchoption, update the table ref to match the deprecated type
      *
      * @param array $soptions
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function updateSearchOptionsTables(array &$soptions)
     {
@@ -128,7 +128,7 @@ trait CommonDeprecatedTrait
      * @param array|object $fields
      * @param string $name
      * @param string $value
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function addField(&$fields, string $name, string $value)
     {
@@ -151,7 +151,7 @@ trait CommonDeprecatedTrait
      * @param array|object $fields
      * @param string $old
      * @param string $new
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function renameField(&$fields, string $old, string $new)
     {
@@ -175,7 +175,7 @@ trait CommonDeprecatedTrait
      *
      * @param array|object $fields
      * @param string $name
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function deleteField(&$fields, string $name)
     {
@@ -198,7 +198,7 @@ trait CommonDeprecatedTrait
      * @param array $fields
      * @param string $key
      * @param array $values
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function addSearchOption(
         array &$soptions,
@@ -216,7 +216,7 @@ trait CommonDeprecatedTrait
      * @param array $fields
      * @param string $key
      * @param array $values
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function alterSearchOption(
         array &$soptions,
@@ -236,7 +236,7 @@ trait CommonDeprecatedTrait
      * @param array $fields
      * @param string $key
      * @param array $values
-     * @return CommonDeprecatedTrait Return self to allow method chaining
+     * @return self Return self to allow method chaining
      */
     public function deleteSearchOption(array &$soptions, string $key)
     {

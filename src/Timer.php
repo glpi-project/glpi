@@ -61,13 +61,13 @@ class Timer
      * @param integer $decimals Number of decimal of the result (default 3)
      * @param boolean $raw      Get raw time
      *
-     * @return time past from start
+     * @return string time past from start
      **/
     public function getTime($decimals = 3, $raw = false)
     {
         $elapsed = microtime(true) - $this->timer;
         if ($raw === true) {
-            return $elapsed * 1000;
+            return (string)($elapsed * 1000);
         } else {
            // $decimals will set the number of decimals you want for your milliseconds.
             return number_format($elapsed, $decimals, '.', ' ');
