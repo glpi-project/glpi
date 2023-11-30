@@ -1,0 +1,8 @@
+.creator {
+    .badge {
+        background-color: $timeline-badge-bg;
+        color: $timeline-badge-fg;
+
+        @include tabler-badge-fix;
+    }
+}
