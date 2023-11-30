@@ -619,13 +619,10 @@ EOT;
                         }
                     }
                     if (count($missing_params)) {
-                        $response = new JSONResponse(
-                            AbstractController::getErrorResponseBody(
-                                AbstractController::ERROR_INVALID_PARAMETER,
-                                sprintf(_x('api', 'Missing required parameter(s): %s'), implode(', ', $missing_params))
-                            ),
-                            400
-                        );
+                        $errors = [
+                            'missing' => $missing_params
+                        ];
+                        $response = AbstractController::getInvalidParametersErrorResponse($errors);
                     }
 
                     if ($response === null) {
