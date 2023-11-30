@@ -68,7 +68,8 @@ if (!isset($_GET["start"])) {
 
 Stat::title();
 
-echo "<div class='center'><form method='post' name='form' action='stat.item.php'>";
+echo "<div class='center'><form method='get' name='form' action='stat.item.php'>";
+echo "<input type='hidden' name='itemtype' value='" . $_GET['itemtype'] . "'>";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>" . __('Start date') . "</td><td>";
 Html::showDateField("date1", ['value' => $_POST["date1"]]);
@@ -81,6 +82,6 @@ echo "</table>";
 Html::closeForm();
 echo "</div>";
 
-Stat::showItems($_SERVER['PHP_SELF'], $_POST["date1"], $_POST["date2"], $_GET['start']);
+Stat::showItems($_SERVER['PHP_SELF'], $_POST["date1"], $_POST["date2"], $_GET['start'], $_GET["itemtype"] ?? 'Ticket');
 
 Html::footer();

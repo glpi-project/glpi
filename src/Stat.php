@@ -1028,6 +1028,8 @@ class Stat extends CommonGLPI
         $value2 = "",
         array $add_criteria = []
     ) {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         $DB = \DBConnection::getReadConnection();
 
         if (!$item = getItemForItemtype($itemtype)) {
@@ -1221,13 +1223,13 @@ class Stat extends CommonGLPI
                 $fkname   = getForeignKeyFieldForTable(getTableForItemType($value2));
                //select computers IDs that are using this device;
                 $linkedtable = $table;
-                if ($itemtype == 'Ticket') {
-                    $linkedtable = 'glpi_items_tickets';
+                if (in_array($itemtype, $CFG_GLPI['itil_types'], true)) {
+                    $linkedtable = $itemtype::getItemsTable();
                     $LEFTJOIN = [
-                        'glpi_items_tickets' => [
+                        $linkedtable => [
                             'ON' => [
-                                'glpi_items_tickets' => 'tickets_id',
-                                'glpi_tickets'       => 'id', [
+                                $linkedtable => $itemtype::getForeignKeyField(),
+                                $table => 'id', [
                                     'AND' => [
                                         "$linkedtable.itemtype" => 'Computer'
                                     ]
@@ -1263,13 +1265,13 @@ class Stat extends CommonGLPI
                 $ftable   = getTableForItemType($value2);
                 $champ    = getForeignKeyFieldForTable($ftable);
                 $linkedtable = $table;
-                if ($itemtype == 'Ticket') {
-                    $linkedtable = 'glpi_items_tickets';
+                if (in_array($itemtype, $CFG_GLPI['itil_types'], true)) {
+                    $linkedtable = $itemtype::getItemsTable();
                     $LEFTJOIN = [
-                        'glpi_items_tickets' => [
+                        $linkedtable => [
                             'ON' => [
-                                'glpi_items_tickets' => 'tickets_id',
-                                'glpi_tickets'       => 'id', [
+                                $linkedtable => $itemtype::getForeignKeyField(),
+                                $table => 'id', [
                                     'AND' => [
                                         "$linkedtable.itemtype" => 'Computer'
                                     ]
@@ -1717,8 +1719,9 @@ class Stat extends CommonGLPI
      * @param $date1
      * @param $date2
      * @param $start
+     * @param $itemtype
      **/
-    public static function showItems($target, $date1, $date2, $start)
+    public static function showItems($target, $date1, $date2, $start, $itemtype = null)
     {
         $view_entities = Session::isMultiEntitiesMode();
 
@@ -1737,7 +1740,7 @@ class Stat extends CommonGLPI
         }
         $date1 .= " 00:00:00";
 
-        $assets = self::getAssetsWithITIL($date1, $date2);
+        $assets = self::getAssetsWithITIL($date1, $date2, $itemtype ?? 'Ticket');
         $numrows = count($assets);
 
         if ($numrows > 0) {
@@ -1847,7 +1850,7 @@ class Stat extends CommonGLPI
         $stat_list["Ticket"]["Ticket_Location"]["name"] = __('By hardware characteristics');
         $stat_list["Ticket"]["Ticket_Location"]["file"] = "stat.location.php?itemtype=Ticket";
         $stat_list["Ticket"]["Ticket_Item"]["name"]     = __('By hardware');
-        $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
+        $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php?itemtype=Ticket";
 
         if (Problem::canView()) {
             $opt_list["Problem"]                               = Problem::getTypeName(Session::getPluralNumber());
@@ -1856,6 +1859,10 @@ class Stat extends CommonGLPI
             $stat_list["Problem"]["Problem_Global"]["file"]    = "stat.global.php?itemtype=Problem";
             $stat_list["Problem"]["Problem_Problem"]["name"]   = __('By problem');
             $stat_list["Problem"]["Problem_Problem"]["file"]   = "stat.tracking.php?itemtype=Problem";
+            $stat_list["Problem"]["Problem_Location"]["name"] = __('By hardware characteristics');
+            $stat_list["Problem"]["Problem_Location"]["file"] = "stat.location.php?itemtype=Problem";
+            $stat_list["Problem"]["Problem_Item"]["name"]     = __('By hardware');
+            $stat_list["Problem"]["Problem_Item"]["file"]     = "stat.item.php?itemtype=Problem";
         }
 
         if (Change::canView()) {
@@ -1865,6 +1872,10 @@ class Stat extends CommonGLPI
             $stat_list["Change"]["Change_Global"]["file"]   = "stat.global.php?itemtype=Change";
             $stat_list["Change"]["Change_Change"]["name"]   = __('By change');
             $stat_list["Change"]["Change_Change"]["file"]   = "stat.tracking.php?itemtype=Change";
+            $stat_list["Change"]["Change_Location"]["name"] = __('By hardware characteristics');
+            $stat_list["Change"]["Change_Location"]["file"] = "stat.location.php?itemtype=Change";
+            $stat_list["Change"]["Change_Item"]["name"]     = __('By hardware');
+            $stat_list["Change"]["Change_Item"]["file"]     = "stat.item.php?itemtype=Change";
         }
 
         $values   = [$CFG_GLPI["root_doc"] . '/front/stat.php' => Dropdown::EMPTY_VALUE];
