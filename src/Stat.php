@@ -1673,11 +1673,11 @@ class Stat extends CommonGLPI
                 ]
             ],
             'WHERE'  => [
-                    'date' => ['<=', $end_date],
-                    "$itil_table.date" => ['>=', $start_date],
-                    "$item_link_table.itemtype" => ['<>', ''],
-                    "$item_link_table.items_id" => ['>', 0]
-                ] + getEntitiesRestrictCriteria($itil_table),
+                'date' => ['<=', $end_date],
+                "$itil_table.date" => ['>=', $start_date],
+                "$item_link_table.itemtype" => ['<>', ''],
+                "$item_link_table.items_id" => ['>', 0]
+            ] + getEntitiesRestrictCriteria($itil_table),
             'GROUP'  => [
                 "$item_link_table.itemtype",
                 "$item_link_table.items_id"

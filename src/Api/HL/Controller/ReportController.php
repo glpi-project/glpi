@@ -555,19 +555,19 @@ class ReportController extends AbstractController
             $total_actiontime = array_sum($avg_actiontime_stats);
 
             $results[] = $result + [
-                    'number_open' => array_sum($fn_get_stats('inter_total', $field, [$item['id']])),
-                    'number_solved' => array_sum($nb_solved_stats),
-                    'number_late' => array_sum($fn_get_stats('inter_solved_late', $field, [$item['id']])),
-                    'number_closed' => array_sum($fn_get_stats('inter_closed', $field, [$item['id']])),
-                    'satisfaction_surveys_open' => array_sum($fn_get_stats('inter_opensatisfaction', $field, [$item['id']])),
-                    'satisfaction_surveys_answered' => $nb_answersatisfaction_stats_sum,
-                    'satisfaction_surveys_avg_rating' => $nb_answersatisfaction_stats_sum > 0 ? round(array_sum($avg_satisfaction_stats) / $nb_answersatisfaction_stats_sum, 2) : 0,
-                    'time_take_into_account_avg' => array_sum($fn_get_stats('inter_avgactiontime', $field, [$item['id']])),
-                    'time_solve_avg' => array_sum($fn_get_stats('inter_avgsolvedtime', $field, [$item['id']])),
-                    'time_close_avg' => array_sum($fn_get_stats('inter_avgclosedtime', $field, [$item['id']])),
-                    'time_treatment_avg' => array_sum($avg_actiontime_stats),
-                    'time_treatment_total' => $total_actiontime,
-                ];
+                'number_open' => array_sum($fn_get_stats('inter_total', $field, [$item['id']])),
+                'number_solved' => array_sum($nb_solved_stats),
+                'number_late' => array_sum($fn_get_stats('inter_solved_late', $field, [$item['id']])),
+                'number_closed' => array_sum($fn_get_stats('inter_closed', $field, [$item['id']])),
+                'satisfaction_surveys_open' => array_sum($fn_get_stats('inter_opensatisfaction', $field, [$item['id']])),
+                'satisfaction_surveys_answered' => $nb_answersatisfaction_stats_sum,
+                'satisfaction_surveys_avg_rating' => $nb_answersatisfaction_stats_sum > 0 ? round(array_sum($avg_satisfaction_stats) / $nb_answersatisfaction_stats_sum, 2) : 0,
+                'time_take_into_account_avg' => array_sum($fn_get_stats('inter_avgactiontime', $field, [$item['id']])),
+                'time_solve_avg' => array_sum($fn_get_stats('inter_avgsolvedtime', $field, [$item['id']])),
+                'time_close_avg' => array_sum($fn_get_stats('inter_avgclosedtime', $field, [$item['id']])),
+                'time_treatment_avg' => array_sum($avg_actiontime_stats),
+                'time_treatment_total' => $total_actiontime,
+            ];
         }
 
         return new JSONResponse($results);
@@ -747,19 +747,19 @@ class ReportController extends AbstractController
             $total_actiontime = array_sum($avg_actiontime_stats);
 
             $results[] = $result + [
-                    'number_open' => array_sum($fn_get_stats('inter_total', $field, [$item['id']])),
-                    'number_solved' => array_sum($nb_solved_stats),
-                    'number_late' => array_sum($fn_get_stats('inter_solved_late', $field, [$item['id']])),
-                    'number_closed' => array_sum($fn_get_stats('inter_closed', $field, [$item['id']])),
-                    'satisfaction_surveys_open' => array_sum($fn_get_stats('inter_opensatisfaction', $field, [$item['id']])),
-                    'satisfaction_surveys_answered' => $nb_answersatisfaction_stats_sum,
-                    'satisfaction_surveys_avg_rating' => $nb_answersatisfaction_stats_sum > 0 ? round(array_sum($avg_satisfaction_stats) / $nb_answersatisfaction_stats_sum, 2) : 0,
-                    'time_take_into_account_avg' => array_sum($fn_get_stats('inter_avgactiontime', $field, [$item['id']])),
-                    'time_solve_avg' => array_sum($fn_get_stats('inter_avgsolvedtime', $field, [$item['id']])),
-                    'time_close_avg' => array_sum($fn_get_stats('inter_avgclosedtime', $field, [$item['id']])),
-                    'time_treatment_avg' => array_sum($avg_actiontime_stats),
-                    'time_treatment_total' => $total_actiontime,
-                ];
+                'number_open' => array_sum($fn_get_stats('inter_total', $field, [$item['id']])),
+                'number_solved' => array_sum($nb_solved_stats),
+                'number_late' => array_sum($fn_get_stats('inter_solved_late', $field, [$item['id']])),
+                'number_closed' => array_sum($fn_get_stats('inter_closed', $field, [$item['id']])),
+                'satisfaction_surveys_open' => array_sum($fn_get_stats('inter_opensatisfaction', $field, [$item['id']])),
+                'satisfaction_surveys_answered' => $nb_answersatisfaction_stats_sum,
+                'satisfaction_surveys_avg_rating' => $nb_answersatisfaction_stats_sum > 0 ? round(array_sum($avg_satisfaction_stats) / $nb_answersatisfaction_stats_sum, 2) : 0,
+                'time_take_into_account_avg' => array_sum($fn_get_stats('inter_avgactiontime', $field, [$item['id']])),
+                'time_solve_avg' => array_sum($fn_get_stats('inter_avgsolvedtime', $field, [$item['id']])),
+                'time_close_avg' => array_sum($fn_get_stats('inter_avgclosedtime', $field, [$item['id']])),
+                'time_treatment_avg' => array_sum($avg_actiontime_stats),
+                'time_treatment_total' => $total_actiontime,
+            ];
         }
 
         return new JSONResponse($results);
