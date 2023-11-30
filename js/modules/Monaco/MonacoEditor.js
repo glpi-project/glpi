@@ -138,12 +138,16 @@ export default class MonacoEditor {
                 };
             }
         });
+        const dark_theme = $('html').attr('data-glpi-theme-dark') === '1';
         this.editor = window.monaco.editor.create(el, Object.assign({
             value: value,
             language: new_lang_id,
+            theme: dark_theme ? 'vs-dark' : 'vs'
         }, options));
 
         if (options._single_line_editor) {
+            $(el).find('.monaco-editor').get(0).style.setProperty('--vscode-editor-background', 'transparent');
+            $(el).find('.monaco-editor').get(0).style.setProperty('font', 'inherit');
             // force cursor to stay on the first line
             this.editor.onDidChangeCursorPosition((e) => {
                 if (e.position.lineNumber !== 1) {
