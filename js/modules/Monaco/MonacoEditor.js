@@ -155,13 +155,10 @@ export default class MonacoEditor {
                     this.editor.setPosition({lineNumber: 1, column: Infinity});
                 }
             });
-            this.editor.addAction({
-                id: 'blockNewline',
-                label: 'Block newline',
-                keybindings: [window.monaco.KeyCode.Enter],
-                run: () => {
-                    this.editor.setValue(this.editor.getValue().trim());
-                    this.editor.setPosition({lineNumber: 1, column: Infinity});
+            this.editor.onDidChangeModelContent(() => {
+                // Remove all newlines but only if there are newlines (to avoid infinite loop)
+                if (this.editor.getValue().match(/\n/g)) {
+                    this.editor.setValue(this.editor.getValue().replace(/\n/g, ''));
                 }
             });
         }
