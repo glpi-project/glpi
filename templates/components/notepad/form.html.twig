@@ -96,6 +96,8 @@
     {% for note in notes %}
         {% set id = "note#{ note['id'] }#{ rand }" %}
         <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            <input type="hidden" name="id" value="{{ note['id'] }}" />
 
             <div class="accordion-item">
                 <div class="accordion-header">
@@ -158,9 +160,6 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                                        <input type="hidden" name="id" value="{{ note['id'] }}" />
-
                                         {{ fields.textareaField(
                                             'content',
                                             note['content'],
