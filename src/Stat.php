@@ -1642,35 +1642,45 @@ class Stat extends CommonGLPI
         return $entrees;
     }
 
-    public static function getAssetsWithTickets($start_date, $end_date): array
+    /**
+     * @param DateTime|string $start_date
+     * @param DateTime|string $end_date
+     * @param class-string<CommonITILObject> $itil_type
+     * @return array
+     */
+    public static function getAssetsWithITIL($start_date, $end_date, $itil_type = 'Ticket'): array
     {
         /** @var DBmysql $DB */
         global $DB;
 
+        $itil_table = $itil_type::getTable();
+        $itil_fkfield = $itil_type::getForeignKeyField();
+        $item_link_table = $itil_type::getItemsTable();
+
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_items_tickets.itemtype',
-                'glpi_items_tickets.items_id',
+                "$item_link_table.itemtype",
+                "$item_link_table.items_id",
                 'COUNT'  => '* AS NB'
             ],
-            'FROM'   => 'glpi_tickets',
+            'FROM'   => $itil_table,
             'LEFT JOIN' => [
-                'glpi_items_tickets' => [
+                $item_link_table => [
                     'ON' => [
-                        'glpi_items_tickets' => 'tickets_id',
-                        'glpi_tickets'       => 'id'
+                        $item_link_table => $itil_fkfield,
+                        $itil_table => 'id'
                     ]
                 ]
             ],
             'WHERE'  => [
-                    'date'                        => ['<=', $end_date],
-                    'glpi_tickets.date'           => ['>=', $start_date],
-                    'glpi_items_tickets.itemtype' => ['<>', ''],
-                    'glpi_items_tickets.items_id' => ['>', 0]
-                ] + getEntitiesRestrictCriteria('glpi_tickets'),
+                    'date' => ['<=', $end_date],
+                    "$itil_table.date" => ['>=', $start_date],
+                    "$item_link_table.itemtype" => ['<>', ''],
+                    "$item_link_table.items_id" => ['>', 0]
+                ] + getEntitiesRestrictCriteria($itil_table),
             'GROUP'  => [
-                'glpi_items_tickets.itemtype',
-                'glpi_items_tickets.items_id'
+                "$item_link_table.itemtype",
+                "$item_link_table.items_id"
             ],
             'ORDER'  => 'NB DESC'
         ]);
@@ -1727,7 +1737,7 @@ class Stat extends CommonGLPI
         }
         $date1 .= " 00:00:00";
 
-        $assets = self::getAssetsWithTickets($date1, $date2);
+        $assets = self::getAssetsWithITIL($date1, $date2);
         $numrows = count($assets);
 
         if ($numrows > 0) {

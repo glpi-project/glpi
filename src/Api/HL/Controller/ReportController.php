@@ -614,7 +614,7 @@ class ReportController extends AbstractController
             $request->getParameter('date_start') :
             date('Y-m-d', strtotime('-1 year', strtotime($date_end)));
 
-        $assets = \Stat::getAssetsWithTickets($date_start, $date_end);
+        $assets = \Stat::getAssetsWithITIL($date_start, $date_end, $itemtype);
         $results = [];
 
         foreach ($assets as $asset) {
