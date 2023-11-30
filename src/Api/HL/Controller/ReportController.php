@@ -48,6 +48,30 @@ class ReportController extends AbstractController
     protected static function getRawKnownSchemas(): array
     {
         return [
+            'StatReport' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'assistance_type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The assistance type the stats are for such as "Ticket", "Change" or "Problem"',
+                    ],
+                    'report_type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The report type',
+                    ],
+                    'report_title' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The report title',
+                    ],
+                    'report_group_fields' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'description' => 'The fields the report can be grouped by',
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                        ],
+                    ],
+                ]
+            ],
             'GlobalStats' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => [
@@ -308,33 +332,7 @@ class ReportController extends AbstractController
         description: 'List available assistance statistics',
         responses: [
             [
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'assistance_type' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'The assistance type the stats are for such as "Ticket", "Change" or "Problem"',
-                            ],
-                            'report_type' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'The report type',
-                            ],
-                            'report_title' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'The report title',
-                            ],
-                            'report_group_fields' => [
-                                'type' => Doc\Schema::TYPE_ARRAY,
-                                'description' => 'The fields the report can be grouped by',
-                                'items' => [
-                                    'type' => Doc\Schema::TYPE_STRING,
-                                ],
-                            ],
-                        ]
-                    ],
-                ]
+                'schema' => 'StatReport[]'
             ]
         ]
     )]
@@ -378,7 +376,7 @@ class ReportController extends AbstractController
                         }
                         // Assistance type is the itemtype param from the $key url or defaults to $group
                         $params = [];
-                        parse_str(parse_url($key, PHP_URL_QUERY), $params);
+                        parse_str(parse_url($key, PHP_URL_QUERY) ?? '', $params);
                         $assistance_type = $params['itemtype'] ?? $group;
                         $results[] = [
                             'assistance_type' => $assistance_type,

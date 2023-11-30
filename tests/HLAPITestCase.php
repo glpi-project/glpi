@@ -361,12 +361,19 @@ final class HLAPIResponseAsserter
         $matched_route = $this->call_asserter->route->get();
         /** @var class-string<\Glpi\Api\HL\Controller\AbstractController> $controller */
         $controller = $matched_route->getController();
+        $is_schema_array = str_ends_with($schema_name, '[]');
+        if ($is_schema_array) {
+            $schema_name = substr($schema_name, 0, -2);
+        }
         $schema = $controller::getKnownSchemas()[$schema_name];
         $content = json_decode((string) $this->response->getBody(), true);
+        $items = $is_schema_array ? $content : [$content];
 
         // Verify the JSON content matches the OpenAPI schema
-        $this->call_asserter->test
-            ->boolean(\Glpi\Api\HL\Doc\Schema::fromArray($schema)->isValid($content))->isTrue('Response does not validate against the schema');
+        foreach ($items as $item) {
+            $this->call_asserter->test
+                ->boolean(\Glpi\Api\HL\Doc\Schema::fromArray($schema)->isValid($item))->isTrue('Response does not validate against the schema');
+        }
         return $this;
     }
 }
