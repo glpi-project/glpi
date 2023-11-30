@@ -825,7 +825,7 @@ class Inventory
         return $this->metadata;
     }
 
-    public function getMainAsset(): InventoryAsset
+    public function getMainAsset(): MainAsset
     {
         return $this->mainasset;
     }
