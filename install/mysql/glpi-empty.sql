@@ -1962,7 +1962,8 @@ CREATE TABLE `glpi_deviceharddrives` (
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `deviceharddrivemodels_id` (`deviceharddrivemodels_id`)
+  KEY `deviceharddrivemodels_id` (`deviceharddrivemodels_id`),
+  KEY `deviceharddrivetypes_id` (`deviceharddrivetypes_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
