@@ -149,10 +149,10 @@ class PendingReasonCron extends CommonDBTM
                     'itemtype' => $item::getType(),
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
-                    'name' => $pending_reason->fields['name'],
-                    'content' => ITILFollowupTemplate::getById(
+                    'name' => addslashes($pending_reason->fields['name']),
+                    'content' => addslashes(ITILFollowupTemplate::getById(
                         $pending_reason->fields['itilfollowuptemplates_id']
-                    )->getRenderedContent($item),
+                    )->getRenderedContent($item)),
                 ]);
                 $task->addVolume(1);
 
