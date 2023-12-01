@@ -38,5 +38,6 @@
  * @var \Migration $migration
  */
 if (!$DB->fieldExists('glpi_deviceharddrives', 'deviceharddrivetypes_id')) {
-    $migration->addKey('glpi_deviceharddrives', 'deviceharddrivetypes_id', "int unsigned");
+    $migration->addField('glpi_deviceharddrives', 'deviceharddrivetypes_id', "int unsigned");
+    $migration->addKey('glpi_deviceharddrives', 'deviceharddrivetypes_id', "deviceharddrivetypes_id");
 }

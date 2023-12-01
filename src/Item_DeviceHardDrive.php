@@ -47,6 +47,13 @@ class Item_DeviceHardDrive extends Item_Devices
     {
 
         return [
+            'deviceharddrivetypes_id' => [
+                'long name'  => DeviceHardDriveType::getTypeName(1),
+                'short name' => _('Type'),
+                'size'       => 20,
+                'id'         => 28,
+                'datatype'   => 'dropdown'
+            ],
             'capacity' => [
                 'long name'  => sprintf(__('%1$s (%2$s)'), __('Capacity'), __('Mio')),
                 'short name' => __('Capacity'),
