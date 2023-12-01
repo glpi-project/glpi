@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
     $DB->request(
         "CREATE TABLE `glpi_deviceharddrivetypes` (
@@ -41,6 +45,6 @@ if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
             `comment` text,
             PRIMARY KEY (`id`),
             KEY `name` (`name`)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;"
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ROW_FORMAT=DYNAMIC;"
     );
 }

@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 if (!$DB->fieldExists('glpi_deviceharddrives', 'deviceharddrivetypes_id')) {
     $migration->addField('glpi_deviceharddrives', 'deviceharddrivetypes_id', "int unsigned");
 }
