@@ -71,7 +71,7 @@
         "symfony/filesystem": "^6.3",
         "symfony/html-sanitizer": "^6.3",
         "symfony/mailer": "^6.3",
-        "symfony/mime": "^6.3",
+        "symfony/mime": "^6.4",
         "symfony/polyfill-ctype": "^1.27",
         "symfony/polyfill-iconv": "^1.28",
         "symfony/polyfill-mbstring": "^1.27",
