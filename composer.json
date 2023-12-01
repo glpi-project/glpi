@@ -69,7 +69,7 @@
         "symfony/css-selector": "^6.4",
         "symfony/dom-crawler": "^6.4",
         "symfony/filesystem": "^6.4",
-        "symfony/html-sanitizer": "^6.3",
+        "symfony/html-sanitizer": "^6.4",
         "symfony/mailer": "^6.4",
         "symfony/mime": "^6.3",
         "symfony/polyfill-ctype": "^1.27",
