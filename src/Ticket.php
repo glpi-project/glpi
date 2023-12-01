@@ -4972,7 +4972,7 @@ JAVASCRIPT;
                         $options['criteria'][2]['link']       = 'AND';
 
                         if (Session::haveRight('ticket', Ticket::SURVEY)) {
-                            $options['criteria'][3]['link'] = 'AND';
+                            $options['criteria'][3]['link']     = 'AND';
                             $options['criteria'][3]['criteria'] = [
                                 [
                                     'link'        => 'AND',
@@ -4988,10 +4988,10 @@ JAVASCRIPT;
                                 ]
                             ];
                         } else {
-                            $options['criteria'][3]['field'] = 4; // requester
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value'] = Session::getLoginUserID();
-                            $options['criteria'][3]['link'] = 'AND';
+                            $options['criteria'][3]['field']        = 4; // requester
+                            $options['criteria'][3]['searchtype']   = 'equals';
+                            $options['criteria'][3]['value']        = Session::getLoginUserID();
+                            $options['criteria'][3]['link']         = 'AND';
                         }
                         $forcetab                 = 'Ticket$3';
 
