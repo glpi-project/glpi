@@ -155,7 +155,7 @@ var initRack = function() {
                     var is_half_rack = j_item.hasClass('half_rack');
                     var new_pos      = grid_rack_units
                                   - j_item.attr('gs-y')
-                                  - j_item.attr('gs-h')
+                                  - (j_item.attr('gs-h') ?? 1)
                                   + 1;
 
                     $.post(grid_item_ajax_url, {

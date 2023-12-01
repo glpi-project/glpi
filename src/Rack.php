@@ -623,6 +623,7 @@ class Rack extends CommonDBTM
          var x_before_drag = 0;
          var y_before_drag = 0;
          var dirty = false;
+         var is_dragged = false;
 
          window.dcroom_grid.on('change', function(event, items) {
            if (dirty) {
@@ -650,27 +651,35 @@ class Rack extends CommonDBTM
                  }
               });
            });
-         });
-         $('.grid-stack')
-            .on('dragstart', function(event, ui) {
-               var element = $(event.target);
-               var node    = element.data('_gridstack_node');
+         })
+        .on('dragstart', function(event, ui) {
+            is_dragged = true;
+            var element = $(event.target);
+            var node    = element[0].gridstackNode;
 
-               // store position before drag
-               x_before_drag = Number(node.x);
-               y_before_drag = Number(node.y);
+            // store position before drag
+            x_before_drag = Number(node.x);
+            y_before_drag = Number(node.y);
 
-               // disable qtip
-               element.qtip('hide', true);
-            })
+            // disable qtip
+            element.qtip('hide', true);
+        })
+        .on('dragstop', function(event, ui) {
+            setTimeout(() => { // prevent unwanted click (cannot find another way)
+                is_dragged = false;
+            }, 50);
+        })
+
+
+        $('.grid-stack')
             .on('click', function(event, ui) {
-               var grid    = this;
-               var element = $(event.target);
-               var el_url  = element.find('a').attr('href');
+                var grid    = this;
+                var element = $(event.target);
+                var el_url  = element.find('a').attr('href');
 
-               if (el_url) {
-                  window.location = el_url;
-               }
+                if (el_url && !is_dragged) {
+                    window.location = el_url;
+                }
             });
 
 
