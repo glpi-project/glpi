@@ -213,7 +213,7 @@ HTML;
         ) {
             $color = str_replace($type, '', $data['property']);
             $templateContent = <<<TWIG
-                <span class="badge bg-{{ color }} text-{{ color }}-fg fw-bold" aria-label="{{ color_translated }}">
+                <span class="badge bg-{{ color }} text-{{ color }}-fg fw-bold">
                     {{ color_translated }} : {{ status }}
                 </span>
             TWIG;
