@@ -74,7 +74,7 @@
         "spin.js": "^4.1.0",
         "swagger-ui-dist": "^5.9.1",
         "tinymce": "^6.7.3",
-        "tinymce-i18n": "^23.10.9",
+        "tinymce-i18n": "^23.11.20",
         "vue": "^3.3.4"
     },
     "scripts": {
