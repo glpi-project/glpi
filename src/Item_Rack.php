@@ -879,7 +879,7 @@ JAVASCRIPT;
 
             $readonly_attr = $readonly ? 'gs-no-move="true"' : '';
             return "
-         <div class='grid-stack-item pdu-grid {$back_class} {$half_class} {$reserved_cl} {$img_class}'
+         <div class='grid-stack-item {$back_class} {$half_class} {$reserved_cl} {$img_class}'
                gs-w='{$gs_item['width']}' gs-h='{$gs_item['height']}'
                gs-x='{$gs_item['x']}'     gs-y='{$gs_item['y']}'
                gs-id='{$gs_item['id']}'   gs-locked='true' {$readonly_attr}

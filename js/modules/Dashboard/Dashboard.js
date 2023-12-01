@@ -381,7 +381,7 @@ class GLPIDashboard {
                     x:            item.attr('gs-x'),
                     y:            item.attr('gs-y'),
                     width:        item.attr('gs-w'),
-                    height:       item.attr('gs-h'),
+                    height:       item.attr('gs-h') ?? 1,
                     card_options: card_opt,
                 },
             });
@@ -753,7 +753,7 @@ class GLPIDashboard {
                 x: $(v).attr('gs-x'),
                 y: $(v).attr('gs-y'),
                 width: $(v).attr('gs-w'),
-                height: $(v).attr('gs-h'),
+                height: $(v).attr('gs-h') ?? 1,
                 card_options: options
             } : null;
         });
