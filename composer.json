@@ -65,7 +65,7 @@
         "sebastian/diff": "^5.0",
         "simplepie/simplepie": "^1.8",
         "symfony/cache": "^6.3",
-        "symfony/console": "^6.3",
+        "symfony/console": "^6.4",
         "symfony/css-selector": "^6.3",
         "symfony/dom-crawler": "^6.3",
         "symfony/filesystem": "^6.3",
