@@ -79,6 +79,11 @@ class DeviceHardDrive extends CommonDevice
                     'name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
                     'type'  => 'dropdownValue'
+                ],
+                [
+                    'name'  => 'deviceharddrivetypes_id',
+                    'label' => __('Type'),
+                    'type'  => 'dropdownValue'
                 ]
             ]
         );
@@ -126,6 +131,14 @@ class DeviceHardDrive extends CommonDevice
             'table'              => 'glpi_deviceharddrivemodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '16',
+            'table'              => 'glpi_deviceharddrivetypes',
+            'field'              => 'name',
+            'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'dropdown'
         ];
 
@@ -233,7 +246,8 @@ class DeviceHardDrive extends CommonDevice
 
         return ['designation'       => 'equal',
             'manufacturers_id'  => 'equal',
-            'interfacetypes_id' => 'equal'
+            'interfacetypes_id' => 'equal',
+            'deviceharddrivetypes_id' => 'equal'
         ];
     }
 

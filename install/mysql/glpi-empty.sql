@@ -1925,6 +1925,17 @@ CREATE TABLE `glpi_deviceharddrivemodels` (
   KEY `product_number` (`product_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_deviceharddrivetypes
+
+DROP TABLE IF EXISTS `glpi_deviceharddrivetypes`;
+CREATE TABLE `glpi_deviceharddrivetypes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 ### Dump table glpi_deviceharddrives
 
 DROP TABLE IF EXISTS `glpi_deviceharddrives`;
@@ -1940,6 +1951,7 @@ CREATE TABLE `glpi_deviceharddrives` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `deviceharddrivemodels_id` int unsigned DEFAULT NULL,
+  `deviceharddrivetypes_id` int unsigned DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
