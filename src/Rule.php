@@ -2395,11 +2395,11 @@ class Rule extends CommonDBTM
     /**
      * Return a value associated with a pattern associated to a criteria to display it
      *
-     * @param integer $ID        the given criteria
-     * @param integer $condition condition used
-     * @param string  $pattern   the pattern
+     * @param integer  $ID        the given criteria
+     * @param integer  $condition condition used
+     * @param ?string  $pattern   the pattern
      *
-     * @return string
+     * @return ?string
      **/
     public function getCriteriaDisplayPattern($ID, $condition, $pattern)
     {
