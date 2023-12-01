@@ -13,7 +13,7 @@
         "@codemirror/lang-css": "^6.2.1",
         "@codemirror/lang-json": "^6.0.1",
         "@codemirror/lang-sql": "^6.5.4",
-        "@codemirror/language": "^6.9.2",
+        "@codemirror/language": "^6.9.3",
         "@fontsource/inter": "^4.5.15",
         "@fortawesome/fontawesome-free": "^6.4.2",
         "@fullcalendar/bootstrap": "^4.4.2",
