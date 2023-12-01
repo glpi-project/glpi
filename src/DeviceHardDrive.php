@@ -82,7 +82,7 @@ class DeviceHardDrive extends CommonDevice
                 ],
                 [
                     'name'  => 'deviceharddrivetypes_id',
-                    'label' => __('Type'),
+                    'label' => _n('Type', 'Types', 1),
                     'type'  => 'dropdownValue'
                 ]
             ]
