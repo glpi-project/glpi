@@ -353,7 +353,7 @@ function step4($databasename, $newdatabasename)
                 $prev_form($host, $user, $password);
             }
         } else { // try to create the DB
-            if ($link->doQuery("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
+            if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
                 echo "<p>" . __('Database created') . "</p>";
 
                 $select_db = $link->select_db($newdatabasename);
