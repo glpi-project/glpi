@@ -345,9 +345,10 @@ function step4($databasename, $newdatabasename)
                 false
             );
             if ($success) {
-                 Toolbox::createSchema($_SESSION["glpilanguage"]);
-                 echo "<p>" . __('OK - database was initialized') . "</p>";
-                 $next_form();
+                echo "<p>" . __('Initializing database tables and default data...') . "</p>";
+                Toolbox::createSchema($_SESSION["glpilanguage"]);
+                echo "<p>" . __('OK - database was initialized') . "</p>";
+                $next_form();
             } else { // can't create config_db file
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
                 $prev_form($host, $user, $password);
@@ -374,6 +375,7 @@ function step4($databasename, $newdatabasename)
                 }
 
                 if ($success) {
+                    echo "<p>" . __('Initializing database tables and default data...') . "</p>";
                     Toolbox::createSchema($_SESSION["glpilanguage"]);
                     echo "<p>" . __('OK - database was initialized') . "</p>";
                     $next_form();
