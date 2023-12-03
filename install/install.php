@@ -318,6 +318,7 @@ function step4($databasename, $newdatabasename)
                 false
             );
             if ($success) {
+                echo "<p>" . __('Initializing database tables and default data...') . "</p>";
                 Toolbox::createSchema($_SESSION["glpilanguage"]);
                 echo "<p>" . __('OK - database was initialized') . "</p>";
 
