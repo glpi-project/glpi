@@ -535,7 +535,7 @@ JAVASCRIPT;
             ])
             ->allowRelativeLinks()
             ->allowRelativeMedias()
-            ->withMaxInputLength(pow(2, 24)) // 2^24 corresponds to MySQL MEDIUMTEXT max length
+            ->withMaxInputLength(-1)
         ;
 
         // Block some elements (tag is removed but contents is preserved)
