@@ -135,7 +135,7 @@ class DeviceHardDrive extends CommonDevice
         ];
 
         $tab[] = [
-            'id'                 => '16',
+            'id'                 => '17',
             'table'              => 'glpi_deviceharddrivetypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
@@ -195,6 +195,7 @@ class DeviceHardDrive extends CommonDevice
                 Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 $base->addHeader('deviceharddriver_rpm', __('Rpm'), $super, $father);
                 $base->addHeader('deviceharddriver_cache', __('Cache'), $super, $father);
+                DeviceHardDriveType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 break;
         }
@@ -228,6 +229,7 @@ class DeviceHardDrive extends CommonDevice
                     );
                 }
 
+                DeviceHardDriveType::getHTMLTableCellsForItem($row, $this, null, $options);
                 InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
