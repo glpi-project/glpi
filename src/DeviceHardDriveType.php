@@ -66,7 +66,7 @@ class DeviceHardDriveType extends CommonDeviceType
             return;
         }
 
-        $base->addHeader($column_name, __('Type'), $super, $father);
+        $base->addHeader($column_name, _n('Type', 'Types', 1), $super, $father);
     }
 
 

@@ -37,14 +37,18 @@
  * @var \DBmysql $DB
  * @var \Migration $migration
  */
+
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
 if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
-    $DB->request(
-        "CREATE TABLE `glpi_deviceharddrivetypes` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `name` varchar(255) DEFAULT NULL,
-            `comment` text,
-            PRIMARY KEY (`id`),
-            KEY `name` (`name`)
-          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;"
-    );
+    $query = "CREATE TABLE `glpi_deviceharddrivetypes` (
+        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `name` varchar(255) DEFAULT NULL,
+        `comment` text,
+        PRIMARY KEY (`id`),
+        KEY `name` (`name`)
+      ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+    $DB->doQueryOrDie($query, "10.1.0 add table glpi_deviceharddrivetypes");
 }
