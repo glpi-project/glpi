@@ -251,7 +251,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' 
             'itemtype'        => 'Ticket',
             'event'           => 'auto_reminder',
             'comment'         => null,
-            'is_recursive'    => 0,
+            'is_recursive'    => 1,
             'is_active'       => 0,
         ],
         'Add automatic reminder notification'

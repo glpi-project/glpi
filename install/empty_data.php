@@ -3090,7 +3090,7 @@ $empty_data_builder = new class
                 'name'         => 'Automatic reminder',
                 'itemtype'     => 'Ticket',
                 'event'        => 'auto_reminder',
-                'is_recursive' => 0,
+                'is_recursive' => 1,
                 'is_active'    => 0,
             ], [
                 'id'           => 77,
