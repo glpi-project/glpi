@@ -40,10 +40,7 @@ class SlaLevelAction extends RuleAction
     public static $items_id  = 'slalevels_id';
     public $dohistory = true;
 
-    /**
-     * Constructor
-     **/
-    public function __construct()
+    public function __construct($rule_type = 'Rule')
     {
        // Override in order not to use glpi_rules table.
     }

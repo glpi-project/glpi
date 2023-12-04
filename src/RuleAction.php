@@ -62,7 +62,7 @@ class RuleAction extends CommonDBChild
 
 
     /**
-     * @param $rule_type
+     * @param string $rule_type
      **/
     public function __construct($rule_type = 'Rule')
     {
