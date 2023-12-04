@@ -2032,6 +2032,15 @@ class User extends CommonDBTM
                     $groups = [];
                 }
 
+                // Take database groups into acount
+                $searched_user = new User();
+                if (
+                    $login !== null
+                    && $searched_user->getFromDBbySyncField(Sanitizer::sanitize($login))
+                ) {
+                    $groups = array_merge($groups, Group_User::getUserGroups($searched_user->getID()));
+                }
+
                 $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields), [
                     'type'        => Auth::LDAP,
                     'ldap_server' => $ldap_method["id"],
