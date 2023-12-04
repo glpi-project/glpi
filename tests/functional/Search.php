@@ -1140,22 +1140,24 @@ class Search extends DbTestCase
         $this->array(
             $search
         )->isEqualTo([
-            'reset'        => 1,
-            'start'        => 0,
-            'order'        => 'ASC',
-            'sort'         => 1,
-            'is_deleted'   => 0,
-            'criteria'     => [
+            'reset'      => 1,
+            'start'      => 0,
+            'order'      => 'ASC',
+            'sort'       => 0,
+            'is_deleted' => 0,
+            'criteria'   => [
                 [
-                    'field' => 'view',
-                    'link'  => 'contains',
-                    'value' => '',
+                    'link'       => 'AND',
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
                 ]
             ],
-            'metacriteria' => [],
-            'as_map'       => 0,
-            'browse'       => 0,
-            'unpublished'  => 1,
+            'metacriteria'              => [],
+            'as_map'                    => 0,
+            'browse'                    => 0,
+            'disable_order_by_fallback' => true,
+            'unpublished'               => true,
         ]);
 
        // now add a bookmark on Computer view
@@ -1193,17 +1195,18 @@ class Search extends DbTestCase
             'is_deleted'   => 0,
             'criteria'     => [
                 0 => [
-                    'field' => 'view',
+                    'field'      => 'view',
                     'searchtype' => 'contains',
-                    'value' => 'test'
+                    'value'      => 'test'
                 ],
             ],
-            'metacriteria' => [],
-            'itemtype' => 'Computer',
-            'savedsearches_id' => $bk_id,
-            'as_map'           => 0,
-            'browse'           => 0,
-            'unpublished'      => 1,
+            'metacriteria'              => [],
+            'itemtype'                  => 'Computer',
+            'savedsearches_id'          => $bk_id,
+            'as_map'                    => 0,
+            'browse'                    => 0,
+            'unpublished'               => 1,
+            'disable_order_by_fallback' => true,
         ]);
     }
 
