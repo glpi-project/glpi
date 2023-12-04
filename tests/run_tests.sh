@@ -350,7 +350,7 @@ EOF
       TESTS_TO_RUN=(${CHOICE#settest })
     elif [[ "$CHOICE" = setscope* ]]; then
       SCOPE=${CHOICE#setscope }
-      if [[ ! "$SCOPE" =~ ^tests/ ]]; then
+      if [[ ! "$SCOPE" =~ ^tests/ && "$SCOPE" != "default" && "$SCOPE" != "" ]]; then
         SCOPE="tests/$SCOPE"
       fi
     elif [[ "$CHOICE" = "info" ]]; then
