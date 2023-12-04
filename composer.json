@@ -40,7 +40,7 @@
         "laminas/laminas-i18n": "^2.24",
         "laminas/laminas-json": "^3.6",
         "laminas/laminas-mail": "^2.23",
-        "laminas/laminas-mime": "^2.9",
+        "laminas/laminas-mime": "^2.12",
         "league/commonmark": "^2.4",
         "league/csv": "^9.11",
         "league/html-to-markdown": "^5.1",
