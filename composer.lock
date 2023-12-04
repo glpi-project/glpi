@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed04cf71c86a4944285496507d90ac2d",
+    "content-hash": "c2353158b1cac7e9c174068c272a5610",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -1410,21 +1410,21 @@
         },
         {
             "name": "laminas/laminas-mime",
-            "version": "2.11.0",
+            "version": "2.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-mime.git",
-                "reference": "60ec04b755821c79c1987ce291b44e69f2c0831f"
+                "reference": "08cc544778829b7d68d27a097885bd6e7130135e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/60ec04b755821c79c1987ce291b44e69f2c0831f",
-                "reference": "60ec04b755821c79c1987ce291b44e69f2c0831f",
+                "url": "https://api.github.com/repos/laminas/laminas-mime/zipball/08cc544778829b7d68d27a097885bd6e7130135e",
+                "reference": "08cc544778829b7d68d27a097885bd6e7130135e",
                 "shasum": ""
             },
             "require": {
                 "laminas/laminas-stdlib": "^2.7 || ^3.0",
-                "php": "~8.0.0 || ~8.1.0 || ~8.2.0"
+                "php": "~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0"
             },
             "conflict": {
                 "zendframework/zend-mime": "*"
@@ -1467,7 +1467,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2022-10-18T08:38:15+00:00"
+            "time": "2023-11-02T16:47:19+00:00"
         },
         {
             "name": "laminas/laminas-servicemanager",
