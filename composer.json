@@ -70,7 +70,7 @@
         "symfony/dom-crawler": "^6.4",
         "symfony/filesystem": "^6.3",
         "symfony/html-sanitizer": "^6.3",
-        "symfony/mailer": "^6.3",
+        "symfony/mailer": "^6.4",
         "symfony/mime": "^6.3",
         "symfony/polyfill-ctype": "^1.27",
         "symfony/polyfill-iconv": "^1.28",
