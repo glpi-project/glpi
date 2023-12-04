@@ -1157,7 +1157,7 @@ class Search extends DbTestCase
             'as_map'                    => 0,
             'browse'                    => 0,
             'disable_order_by_fallback' => true,
-
+            'unpublished'               => true,
         ]);
 
        // now add a bookmark on Computer view
