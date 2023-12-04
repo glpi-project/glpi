@@ -924,7 +924,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return all (GLPI + plugins) notification events for the object type
      *
-     * @return an array which contains : event => event label
+     * @return array which contains : event => event label
      **/
     public function getAllEvents()
     {

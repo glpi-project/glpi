@@ -506,12 +506,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
 
     /**
-     * Prepare query to store depending of the type
+     * Prepare query to store depending on the type
      *
      * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
      * @param array   $query_tab Parameters
      *
-     * @return clean query array
+     * @return array clean query array
      **/
     protected function prepareQueryToStore($type, $query_tab)
     {

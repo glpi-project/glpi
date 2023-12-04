@@ -651,7 +651,7 @@ class Notification extends CommonDBTM
      * @param string $itemtype Item type
      * @param int    $entity   Restrict to entity
      *
-     * @return ResultSet
+     * @return DBmysqlIterator
      **/
     public static function getNotificationsByEventAndType($event, $itemtype, $entity)
     {

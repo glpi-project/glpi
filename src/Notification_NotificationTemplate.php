@@ -408,11 +408,9 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
     /**
-     * Get notification method label
+     * Get modes
      *
-     * @since 0.84
-     *
-     * @return the mode's label
+     * @return array
      **/
     public static function getModes()
     {

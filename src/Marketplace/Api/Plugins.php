@@ -98,7 +98,7 @@ class Plugins
      * @param array $options array of options for guzzle lib
      * @param string $method GET/POST, etc
      *
-     * @return Psr\Http\Message\ResponseInterface|false
+     * @return \Psr\Http\Message\ResponseInterface|false
      */
     private function request(
         string $endpoint = '',

@@ -760,7 +760,7 @@ class Software extends CommonDBTM
      * @param is_recursive         boolean  must the software be recursive (false by default)
      * @param is_helpdesk_visible           show in helpdesk, default : from config (false by default)
      *
-     * @return the software's ID
+     * @return integer the software's ID
      **/
     public function addSoftware(
         $name,

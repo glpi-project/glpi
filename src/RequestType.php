@@ -238,7 +238,7 @@ class RequestType extends CommonDropdown
      *
      * @param $source string
      *
-     * @return requesttypes_id
+     * @return integer requesttypes_id
      **/
     public static function getDefault($source)
     {

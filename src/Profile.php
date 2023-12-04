@@ -3951,7 +3951,7 @@ class Profile extends CommonDBTM
      *             'canedit'
      *             'default_class' the default CSS class used for the row
      *
-     * @return random value used to generate the ids
+     * @return integer random value used to generate the ids
      **/
     public function displayRightsChoiceMatrix(array $rights, array $options = [])
     {

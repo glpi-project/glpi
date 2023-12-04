@@ -525,7 +525,7 @@ class MassiveAction
     /**
      * Get current action
      *
-     * @return a string with the current action or NULL if we are at initial stage
+     * @return string with the current action or NULL if we are at initial stage
      **/
     public function getAction()
     {

@@ -2873,7 +2873,7 @@ HTML;
      *
      * @since 0.85
      *
-     * @return DB version
+     * @return string DB version
      **/
     public static function getCurrentDBVersion()
     {
