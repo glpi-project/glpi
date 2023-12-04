@@ -514,6 +514,7 @@ final class DbUtils
        }*/
 
         if (!is_array($condition)) {
+            Toolbox::Deprecated('Condition must be an array!');
             if (empty($condition)) {
                 $condition = [];
             }
@@ -537,6 +538,7 @@ final class DbUtils
     {
 
         if (!is_array($condition)) {
+            Toolbox::Deprecated('Condition must be an array!');
             if (empty($condition)) {
                 $condition = [];
             }
