@@ -79,7 +79,7 @@
         "tecnickcom/tcpdf": "^6.6",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.7",
-        "twig/string-extra": "^3.7",
+        "twig/string-extra": "^3.8",
         "twig/twig": "^3.8",
         "wapmorgan/unified-archive": "^1.2",
         "webonyx/graphql-php": "^15.7"
