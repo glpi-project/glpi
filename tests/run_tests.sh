@@ -59,6 +59,8 @@ TESTS_SUITES=(
 ALL=false
 HELP=false
 BUILD=false
+INTERACTIVE=false
+
 while [[ $# -gt 0 ]]; do
   if [[ $1 == "--"* ]]; then
     ## Remove -- prefix, replace - by _ and uppercase all
@@ -71,6 +73,7 @@ done
 
 # Flag to indicate wether services containers are usefull
 USE_SERVICES_CONTAINERS=0
+SCOPE="default"
 
 # Extract list of tests suites to run
 TESTS_TO_RUN=()
@@ -94,9 +97,6 @@ if [[ $# -gt 0 ]]; then
   # Also, check wether services containes are usefull.
   for TEST_SUITE in "${TESTS_TO_RUN[@]}"; do
     if [[ ! " lint javascript " =~ " ${TEST_SUITE} " ]]; then
-      if [[ ! "${TESTS_TO_RUN[@]}" =~ "install" ]]; then
-        TESTS_TO_RUN=("install" "${TESTS_TO_RUN[@]}")
-      fi
       USE_SERVICES_CONTAINERS=1
       break
     fi
@@ -114,8 +114,13 @@ elif [[ "$ALL" = true ]]; then
   USE_SERVICES_CONTAINERS=1
 fi
 
+# If running in interactive mode, always use services containers
+if [[ "$INTERACTIVE" = true ]]; then
+  USE_SERVICES_CONTAINERS=1
+fi
+
 # Display help if user asks for it, or if it does not provide which test suite has to be executed
-if [[ "$HELP" = true || ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
+if [[ "$HELP" = true || ( ${#TESTS_TO_RUN[@]} -eq 0 && "$INTERACTIVE" = false ) ]]; then
   cat << EOF
 This command runs the tests in an environment similar to what is done by CI.
 
@@ -156,6 +161,8 @@ if [[ ! -x "$(command -v docker)" || ! -x "$(command -v docker-compose)" ]]; the
   exit 1
 fi
 
+LAST_EXIT_CODE=0
+
 # Import variables from .env file this file exists
 APP_CONTAINER_HOME=""
 DB_IMAGE=""
@@ -192,12 +199,18 @@ $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 # Install dependencies if required
 [[ "$BUILD" = false ]] || docker-compose exec -T app .github/actions/init_build.sh
 
-# Run tests
-LAST_EXIT_CODE=0
-for TEST_SUITE in "${TESTS_TO_RUN[@]}";
-do
-  echo -e "\n\e[1;30;43m Running \"$TEST_SUITE\" test suite \e[0m"
-  case $TEST_SUITE in
+INSTALL_TESTS_RUN=false
+
+run_single_test () {
+  local TEST_TO_RUN=$1
+  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
+  if [[ $INSTALL_TESTS_RUN == false && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
+    echo -e "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
+    # Run install test suite before any other test suite
+    run_single_test "install"
+  fi
+  echo -e "\n\e[1;30;43m Running \"$TEST_TO_RUN\" test suite \e[0m"
+  case $TEST_TO_RUN in
     "lint")
       # Misc lint (licence headers and locales) is not executed here as their output is not configurable yet
       # and it would be a pain to handle rolling back of their changes.
@@ -236,11 +249,11 @@ do
       || LAST_EXIT_CODE=$?
       ;;
     "units")
-         docker-compose exec -T app .github/actions/test_tests-units.sh \
+         docker-compose exec -T app .github/actions/test_tests-units.sh -s $SCOPE \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker-compose exec -T app .github/actions/test_tests-functional.sh \
+         docker-compose exec -T app .github/actions/test_tests-functional.sh -s $SCOPE \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")
@@ -266,20 +279,89 @@ do
       || LAST_EXIT_CODE=$?
       ;;
   esac
-
   if [[ $LAST_EXIT_CODE -ne 0 ]]; then
-    echo -e "\e[1;39;41m Tests \"$TEST_SUITE\" failed \e[0m\n"
-    break
+    echo -e "\e[1;39;41m Tests \"$TEST_TO_RUN\" failed \e[0m\n"
   else
-    echo -e "\e[1;30;42m Tests \"$TEST_SUITE\" passed \e[0m\n"
+    echo -e "\e[1;30;42m Tests \"$TEST_TO_RUN\" passed \e[0m\n"
+    if [[ $TEST_TO_RUN == "install" ]]; then
+      INSTALL_TESTS_RUN=true
+    fi
   fi
-done
+}
 
-# Restore configuration files
-rm -f $APPLICATION_ROOT/tests/config/*
-find "$BACKUP_DIR" -mindepth 1 -exec mv -f {} $APPLICATION_ROOT/tests/config \;
+run_tests () {
+  LAST_EXIT_CODE=0
+  for TEST_SUITE in "${TESTS_TO_RUN[@]}";
+  do
+    run_single_test $TEST_SUITE
+  done
+}
 
-# Stop containers
-$APPLICATION_ROOT/.github/actions/teardown_containers-cleanup.sh
+show_info () {
+  # If no tests are selected, display a message with information about how to select tests
+  if [[ ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
+    echo -e "Selected tests: none"
+    echo -e "No tests selected. You can select tests by using the 'settest' command."
+  else
+    echo -e "Selected tests: ${TESTS_TO_RUN[@]}"
+  fi
+  echo -e "Selected scope: ${SCOPE}\n"
+}
 
-exit $LAST_EXIT_CODE
+cleanup_and_exit () {
+  # Restore configuration files
+  rm -f $APPLICATION_ROOT/tests/config/*
+  find "$BACKUP_DIR" -mindepth 1 -exec mv -f {} $APPLICATION_ROOT/tests/config \;
+
+  # Stop containers
+  $APPLICATION_ROOT/.github/actions/teardown_containers-cleanup.sh
+
+  exit $LAST_EXIT_CODE
+}
+
+# Add ctrl+c handler to cleanup and exit gracefully
+trap cleanup_and_exit INT
+
+if [[ "$INTERACTIVE" = false ]]; then
+  # Do not automatically run tests if in interactive mode
+  run_tests
+else
+  echo -e "GLPI Tests (Interactive mode)\n"
+  show_info
+fi
+
+if [[ "$INTERACTIVE" = true ]]; then
+  CHOICE=""
+  while [[ "$CHOICE" != "exit" ]]; do
+    read -e -p "GLPI Tests > " CHOICE
+    if [[ "$CHOICE" = "test" ]]; then
+      run_tests
+    elif [[ "$CHOICE" = "help" ]]; then
+      cat << EOF
+Available commands:
+  - test: Run the currently selected tests.
+  - settest [tests]: Change the currently selected tests.
+  - setscope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
+  - info: Display information about the currently selected tests and scope.
+  - exit: Stop the containers and exit.
+  - help: See this list of commands.
+EOF
+    elif [[ "$CHOICE" = settest* ]]; then
+      TESTS_TO_RUN=(${CHOICE#settest })
+    elif [[ "$CHOICE" = setscope* ]]; then
+      SCOPE=${CHOICE#setscope }
+      if [[ ! "$SCOPE" =~ ^tests/ ]]; then
+        SCOPE="tests/$SCOPE"
+      fi
+    elif [[ "$CHOICE" = "info" ]]; then
+      show_info
+    elif [[ "$CHOICE" = "exit" ]]; then
+      cleanup_and_exit
+    else
+      echo -e "\e[1;39;41m Invalid command \e[0m"
+    fi
+    CHOICE=""
+  done
+fi
+
+cleanup_and_exit
