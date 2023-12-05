@@ -46,83 +46,102 @@
         ) }}
 
     {% else %}
+        {% if expired %}
+            {% set message = __('Satisfaction survey expired.') %}
+        {% else %}
+            {% set message = __('After 12 hours, you can no longer modify your response.') %}
+        {% endif %}
         <div class="alert alert-info d-flex align-items-center" role="alert">
             <div class="text-dark">
                 <span class="ms-2">
                     <i class="fas fa-xl fa-info-circle"></i>
-                    {{ __('After 12 hours, you can no longer modify your notice.') }}
+                    {{ message }}
                 </span>
             </div>
         </div>
-
-        {{ fields.hiddenField(
-            parent_item.getForeignKeyField(),
-            parent_item.fields['id'],
-            '',
-            {
-                'full_width': true,
-            }
-        ) }}
-
-        {% set select_dom %}
-            <select id="satisfaction_data" name="satisfaction">
-                {% for i in range(0, max_rate) %}
-                    <option value="{{ i }}" {% if i == item.fields['satisfaction'] %} selected {% endif %}>{{ i }}</option>
-                {% endfor %}
-            </select>
-            <div class="rateit" id="stars"></div>
-        {% endset %}
-
-        {{ fields.htmlField(
-            'satisfaction',
-            select_dom,
-            __('Satisfaction with the resolution of the %s')|format(parent_item.getTypeName(1)),
-            {
-                'full_width': true,
-                'full_width_adapt_column': false,
-                'label_class': 'col-xxl-4',
-                'input_class': 'col-xxl-8 text-start',
-            }
-        ) }}
-
-        {{ fields.textareaField(
-            'comment',
-            item.fields['comment'],
-            _n('Comment', 'Comments', get_plural_number()),
-            {
-                'full_width': true,
-            }
-        ) }}
-
-        {% if item.fields['date_answered'] > 0 %}
-
-            {{ fields.datetimeField(
-                'date_answered',
-                item.fields['date_answered'],
-                __('Response date to the satisfaction survey.'),
+        {% if item.fields['date_answered'] is empty and expired %}
+            {{ fields.htmlField(
+                '',
+                '',
+                __('No response given'),
+                {
+                    'input_class' : 'col-xxl-9',
+                    'label_class' : 'col-xxl-3'
+                }
+            ) }}
+        {% else %}
+            {{ fields.hiddenField(
+                parent_item.getForeignKeyField(),
+                parent_item.fields['id'],
+                '',
                 {
                     'full_width': true,
-                    'readonly' : true
                 }
             ) }}
 
-        {% endif %}
+            {% set select_dom %}
+                <select id="satisfaction_data" name="satisfaction">
+                    {% for i in range(0, max_rate) %}
+                        <option value="{{ i }}" {% if i == item.fields['satisfaction'] %} selected {% endif %}>{{ i }}</option>
+                    {% endfor %}
+                </select>
+                <div class="rateit" id="stars"></div>
+            {% endset %}
 
-        <script>
-            $(function() {
-                $('#stars').rateit({
-                    value: {{ item.fields['satisfaction'] }},
-                    min: 0,
-                    max: {{ max_rate }},
-                    step: 1,
-                    backingfld: '#satisfaction_data',
-                    ispreset: true,
-                    resetable: false
+            {{ fields.htmlField(
+                'satisfaction',
+                select_dom,
+                __('Satisfaction with the resolution of the %s')|format(parent_item.getTypeName(1)),
+                {
+                    'full_width': true,
+                    'full_width_adapt_column': false,
+                    'label_class': 'col-xxl-4',
+                    'input_class': 'col-xxl-8 text-start',
+                }
+            ) }}
+
+            {{ fields.textareaField(
+                'comment',
+                item.fields['comment'],
+                _n('Comment', 'Comments', get_plural_number()),
+                {
+                    'full_width': true,
+                    'readonly': expired,
+                }
+            ) }}
+
+            {% if item.fields['date_answered'] > 0 %}
+
+                {{ fields.datetimeField(
+                    'date_answered',
+                    item.fields['date_answered'],
+                    __('Response date to the satisfaction survey.'),
+                    {
+                        'full_width': true,
+                        'readonly' : true
+                    }
+                ) }}
+
+            {% endif %}
+
+            <script>
+                $(function() {
+                    $('#stars').rateit({
+                        value: {{ item.fields['satisfaction'] }},
+                        min: 0,
+                        max: {{ max_rate }},
+                        step: 1,
+                        backingfld: '#satisfaction_data',
+                        ispreset: true,
+                        resetable: false
+                    });
                 });
-            });
-        </script>
+            </script>
 
-        {{ include('components/form/buttons.html.twig') }}
+            {% if not expired %}
+                {{ include('components/form/buttons.html.twig') }}
+            {% endif %}
+        {% endif %}
     {% endif %}
 
 {% endblock %}
