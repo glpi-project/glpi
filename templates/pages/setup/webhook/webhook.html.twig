@@ -84,14 +84,27 @@
 
     {{ fields.largeTitle(_n('Target', 'Targets', 1), 'ti ti-viewfinder') }}
 
-    {{ fields.textField(
-        'url',
-        item.fields['url'],
-        __('URL'),
-        field_options|merge({
-            helper: __('It is strongly advised to use the HTTPS protocol.') ~ ' ' ~ __('You may use the same placeholder tags as in the payload content and header values.')
-        })
-    ) }}
+    {% set url_editor_container_id = 'url_' ~ random() %}
+    {% set url_editor_container %}
+        <div id="{{ url_editor_container_id }}" class="webhook_url form-control overflow-hidden" style="height: 36px"></div>
+    {% endset %}
+    {{ fields.htmlField('url', url_editor_container, __('URL'), field_options|merge({
+        wrapper_class: 'd-flex flex-grow-1',
+        helper: __('It is strongly advised to use the HTTPS protocol.') ~ ' ' ~ __('You may use the same placeholder tags as in the payload content and header values.')
+    })) }}
+    <script>
+        const editor_options = window.GLPI.MonacoEditor.singleLineEditorOptions;
+        new window.GLPI.MonacoEditor('{{ url_editor_container_id }}', 'twig', '{{ item.fields['url']|raw }}', {{ response_schema|json_encode|raw }}, editor_options);
+        $('#{{ url_editor_container_id }}').closest('form').on('formdata', (e) => {
+            const editors = window.monaco.editor.getEditors().filter((editor) => {
+                return editor._domElement.classList.contains('webhook_url');
+            });
+            if (editors.length) {
+                e.originalEvent.formData.delete('url');
+                e.originalEvent.formData.append('url', editors[0].getValue());
+            }
+        });
+    </script>
 
     {{ fields.dropdownArrayField(
         'http_method',

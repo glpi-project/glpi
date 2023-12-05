@@ -50,23 +50,23 @@
                </button>
             {% endset %}
             {% set header_value_autocomplete %}
-               <input type="hidden" name="header_value[]" value="">
-               <div class="header_value_autocomplete"></div>
+                <div class="header_value form-control overflow-hidden" style="height: 36px"></div>
             {% endset %}
             {{ fields.htmlField('header_value[]', header_value_autocomplete, '', {
                no_label: true,
-               field_class: 'ms-2 h-100 d-flex col-4 justify-content-center',
+               field_class: 'ms-2 h-100 d-flex col-5 justify-content-center',
+               wrapper_class: 'd-flex flex-grow-1',
                add_field_html: remove_btn,
             }) }}
          {% endset %}
          {{ fields.field('custom_header[]', header_field_pair, '', {
             no_label: true,
-            field_class: 'col-12 d-flex custom-header-field-pair align-items-center',
+            field_class: 'col-12 d-flex custom-header-field-pair',
          }) }}
       </template>
 
       <div class="custom-header-fields">
-         <button class="btn btn-secondard" name="add_header" type="button">
+         <button class="btn btn-secondary" name="add_header" type="button">
             <i class="ti ti-plus"></i>
             {{ __('Add a custom header') }}
          </button>
@@ -77,63 +77,20 @@
               const custom_header_fields_container = $('div.custom-header-fields');
               const template = $($('#custom-header-fields-template').html());
               const header_name_field = template.find('input[name="header_name[]"]');
-              const header_value_field = template.find('input[name="header_value[]"]');
+              const header_value_id = `header_value${Math.round(Math.random() * 1000000)}`;
+              $(``).insertAfter(template.find('input[name="header_value[]"]'));
+              template.find('div.header_value').prop('id', header_value_id);
               header_name_field.val(name);
-              header_value_field.val(value);
+              const editor_options = window.GLPI.MonacoEditor.singleLineEditorOptions;
               if (readonly) {
                   header_name_field.prop('readonly', true);
-                  header_value_field.prop('readonly', true);
                   // Delete the remove button
                   template.find('button[name="remove_header"]').remove();
+                  editor_options.readOnly = true;
               }
               // insert the template before the add button
-              let container = $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
-              // init autocomplete
-              container = container.find('.header_value_autocomplete');
-              container.attr('id', `header_value_autocomplete${Math.round(Math.random() * 1000000)}`);
-              const item_fields = {{ item_fields|keys|json_encode|raw }};
-              const opts = [];
-              $.each(item_fields, (i, v) => {
-                  {% verbatim %}
-                  opts.push({ label: `{{ ${v} }}`, value: `{{ ${v} }}` });
-                  {% endverbatim %}
-              });
-              container.data('autocomplete', window.autocomplete({
-                  'container': `#${container.attr('id')}`,
-                  'detachedMediaQuery': 'none',
-                  'openOnFocus': !readonly,
-                  onStateChange({ state }) {
-                      container.parent().find('input[name="header_value[]"]').val(state.query);
-                  },
-                  getSources({ query }) {
-                      if (readonly) {
-                          return [];
-                      }
-                      return [
-                          {
-                              sourceId: 'fields',
-                              getItems() {
-                                  return opts.filter(({ label }) => label.toLowerCase().includes(query.toLowerCase()));
-                              },
-                              templates: {
-                                  noResults() {
-                                      return 'No results';
-                                  },
-                                  item({ item, html }) {
-                                      return html`<div class="item_field_option py-1 my-n1">${item.label}</div>`;
-                                  },
-                              }
-                          },
-                      ];
-                  },
-              }));
-              container.data('autocomplete').setQuery(value);
-              if (readonly) {
-                  container.find('.aa-Input').prop('readonly', true);
-                  container.find('.aa-Input').css('width', 'calc(100% - 3rem)');
-              } else {
-                  container.find('.aa-Input').css('width', 'calc(100% - 1rem)');
-              }
+              $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
+              new window.GLPI.MonacoEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
           };
           $(() => {
               const known_custom = {{ item.fields['custom_headers']|default([])|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};
@@ -151,27 +108,21 @@
                   $(e.target).closest('.custom-header-field-pair').remove();
               });
 
-              $('body').on('click', '.aa-List .item_field_option', (e) => {
-                  const selected = $(e.target);
-                  const list_id = selected.closest('.aa-List').attr('id');
-                  // the autocomplete id is the first two parts of the list id (ex: autocomplete-1-0-List -> autocomplete-1)
-                  const autocomplete_id = list_id.split('-').slice(0, 2).join('-') + '-input';
-                  $(`#${autocomplete_id}`).closest('.header_value_autocomplete').data('autocomplete').setQuery(selected.text());
-              });
-              $('body').on('click', (e) => {
-                  // Close panels when clicking outside of them unless we click on another input,
-                  // in which case we close all panels except the panel for the one we clicked on
-                  if ($(e.target).closest('.aa-Panels, .aa-Input').length === 0) {
-                      $.each($('.header_value_autocomplete'), (i, v) => {
-                          $(v).data('autocomplete').setIsOpen(false);
-                      });
-                  } else if ($(e.target).closest('.aa-Input').length > 0) {
-                      $.each($('.header_value_autocomplete'), (i, v) => {
-                          if (!$(v).find('.aa-Input').is($(e.target))) {
-                              $(v).data('autocomplete').setIsOpen(false);
-                          }
-                      });
-                  }
+              // Add formdata handler to inject the custom header values from the monaco editors
+              $('div.custom-header-fields').closest('form').on('formdata', (e) => {
+                  const editors = window.monaco.editor.getEditors().filter((editor) => {
+                      return editor._domElement.classList.contains('header_value');
+                  });
+                  // remove all header_name[] and header_value[] from the formdata
+                  e.originalEvent.formData.delete('header_name[]');
+                  e.originalEvent.formData.delete('header_value[]');
+
+                  $(editors).each((i, editor) => {
+                      const header_name = $(editor._domElement).closest('.custom-header-field-pair').find('input[name="header_name[]"]').val();
+                      const header_value = editor.getValue();
+                      e.originalEvent.formData.append('header_name[]', header_name);
+                      e.originalEvent.formData.append('header_value[]', header_value);
+                  });
               });
           });
       </script>
