@@ -49,6 +49,7 @@ use Profile_User;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
+use Ticket as GlobalTicket;
 use Ticket_User;
 use TicketValidation;
 use User;
@@ -1860,12 +1861,16 @@ class Ticket extends DbTestCase
     {
         $this->login();
         $this->setEntity('Root entity', true);
-        $ticket = getItemByTypeName('Ticket', '_ticket01');
-
+        $ticket = new GlobalTicket();
+        $ticket_id = $ticket->add([
+            'name'    => 'Ticket to check cloning',
+            'content' => 'Ticket to check cloning',
+        ]);
+        $this->integer($ticket_id)->isGreaterThan(0);
         $task = new \TicketTask();
         $this->integer(
             (int)$task->add([
-                'tickets_id' => $ticket->getID(),
+                'tickets_id' => $ticket_id,
                 'content'    => 'A task to check cloning',
                 'actiontime' => 3600,
             ])

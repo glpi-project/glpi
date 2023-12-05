@@ -291,10 +291,47 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
     }
 
+    public function assignTechFromtask(array $input): void
+    {
+        //if user or group assigned to CommonITIL task, add it to the main item
+        $itemtype = $this->getItilObjectItemType();
+        $item = new $itemtype();
+        $itemData = [
+            'users_id_tech' => new $item->userlinkclass(),
+            'groups_id_tech' => new $item->grouplinkclass(),
+        ];
+        $foreignkey = getForeignKeyFieldForItemType($itemtype);
+        if (!isset($input[$foreignkey])) {
+            return;
+        }
+        foreach ($itemData as $key => $value) {
+            if (empty($input[$key])) {
+                continue;
+            }
+            $actorFkey = str_replace('_tech', '', $key);
+            if (
+                $value->getFromDBByCrit(
+                    [
+                        $foreignkey => $input[$foreignkey],
+                        $actorFkey => $input[$key],
+                        'type' => CommonITILActor::ASSIGN
+                    ]
+                ) == false
+            ) {
+                $value->add(
+                    [
+                        $foreignkey => $input[$foreignkey],
+                        $actorFkey => $input[$key],
+                        'type' => CommonITILActor::ASSIGN
+                    ]
+                );
+            }
+        }
+    }
+
 
     public function prepareInputForUpdate($input)
     {
-
         if (array_key_exists('content', $input) && empty($input['content'])) {
             Session::addMessageAfterRedirect(
                 __("You can't remove description of a task."),
@@ -494,6 +531,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             );
         }
 
+        // Assign technician to main item  from task
+        self::assignTechFromtask($this->input);
+
         parent::post_updateItem($history);
     }
 
@@ -680,6 +720,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->getType(),
             Log::HISTORY_ADD_SUBITEM
         );
+
+        // Assign technician to main item  from task
+        self::assignTechFromtask($this->input);
 
         parent::post_addItem();
     }
