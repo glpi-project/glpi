@@ -657,7 +657,7 @@ trait PlanningEvent
      *                    default '')
      * @param $complete   complete display (more details) (default 0)
      *
-     * @return Nothing (display function)
+     * @return void (display function)
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {

@@ -183,11 +183,12 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      */
     public function disconnectFrom($ports_id)
     {
-        $opposite_id = $this->getOppositeContact($ports_id);
-        if ($opposite_id && $this->getFromDBForNetworkPort($opposite_id) || $this->getFromDBForNetworkPort($ports_id)) {
-            return $this->delete($this->fields);
-        }
-        return true; // Nothing to disconnect
+        return $this->deleteByCriteria([
+            'OR'  => [
+                'networkports_id_1'  => $ports_id,
+                'networkports_id_2'  => $ports_id,
+            ]
+        ]);
     }
 
     /**

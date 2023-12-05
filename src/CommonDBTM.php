@@ -1240,7 +1240,7 @@ class CommonDBTM extends CommonGLPI
      *   - unicity_message : do not display message if item it a duplicate (default is yes)
      * @param boolean $history do history log ? (true by default)
      *
-     * @return integer the new ID of the added item (or false if fail)
+     * @return false|integer the new ID of the added item (or false if fail)
      **/
     public function add(array $input, $options = [], $history = true)
     {
@@ -1539,11 +1539,11 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Prepare input datas for adding the item
+     * Prepare input data for adding the item. If false, add is cancelled.
      *
      * @param array $input datas used to add the item
      *
-     * @return array the modified $input array
+     * @return false|array the modified $input array
      **/
     public function prepareInputForAdd($input)
     {
@@ -1641,6 +1641,7 @@ class CommonDBTM extends CommonGLPI
                         // Compare item
                         $ischanged = true;
                         $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
+
                         if (isset($searchopt['datatype'])) {
                             switch ($searchopt['datatype']) {
                                 case 'string':
@@ -1979,11 +1980,11 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Prepare input datas for updating the item
+     * Prepare input data for updating the item. If false, update is cancelled.
      *
      * @param array $input data used to update the item
      *
-     * @return array the modified $input array
+     * @return false|array the modified $input array
      **/
     public function prepareInputForUpdate($input)
     {
@@ -4158,7 +4159,7 @@ class CommonDBTM extends CommonGLPI
      *    - used : array / Already used items ID: not to display in dropdown (default empty)
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
-     * @return string|void display the dropdown
+     * @return string|false|integer
      **/
     public static function dropdown($options = [])
     {
@@ -4992,7 +4993,7 @@ class CommonDBTM extends CommonGLPI
      *    - comments : boolean / is the comments displayed near the value (default false)
      *    - any others options passed to specific display method
      *
-     * @return string the string to display
+     * @return false|string the string to display
      **/
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {

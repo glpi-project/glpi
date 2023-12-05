@@ -658,11 +658,7 @@ abstract class CommonITILValidation extends DbTestCase
         $validation = new $validation_class();
 
         $validation->fields = array_merge($validation->fields, $fields);
-        if (!empty($expected)) {
-            $this->array($validation->getHistoryChangeWhenUpdateField($field))->isIdenticalTo($expected);
-        } else {
-            $this->boolean($validation->getHistoryChangeWhenUpdateField($field))->isFalse();
-        }
+        $this->array($validation->getHistoryChangeWhenUpdateField($field))->isIdenticalTo($expected);
     }
 
     protected function getHistoryNameForItemProvider()

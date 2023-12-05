@@ -47,12 +47,18 @@ class OlaLevelAction extends RuleAction
     public static $items_id  = 'olalevels_id';
     public $dohistory = true;
 
-    /**
-     * Constructor
-     **/
-    public function __construct()
+    public function __construct($rule_type = 'OlaLevel')
     {
-       // Override in order not to use glpi_rules table.
+        // Override in order not to use glpi_rules table.
+        if ($rule_type !== static::$itemtype) {
+            throw new \LogicException(
+                sprintf(
+                    '%s is not expected to be used with a different rule type than %s',
+                    static::class,
+                    static::$itemtype
+                )
+            );
+        }
     }
 
     public function rawSearchOptions()

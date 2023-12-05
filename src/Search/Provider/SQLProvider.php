@@ -5263,6 +5263,7 @@ final class SQLProvider implements SearchProviderInterface
                                 $item->fields['date'],
                                 $data[$ID][0]['name']
                             );
+                            $waitingtime = $slaField === 'slas_id_ttr' ? $item->fields['sla_waiting_duration'] : 0;
                         } else {
                             $calendars_id = \Entity::getUsedConfig(
                                 'calendars_strategy',
@@ -5286,9 +5287,10 @@ final class SQLProvider implements SearchProviderInterface
                                 $totaltime   = strtotime($data[$ID][0]['name'])
                                     - strtotime($item->fields['date']);
                             }
+                            $waitingtime = 0;
                         }
                         if ($totaltime != 0) {
-                            $percentage  = round((100 * $currenttime) / $totaltime);
+                            $percentage = round((100 * ($currenttime - $waitingtime)) / ($totaltime - $waitingtime));
                         } else {
                             // Total time is null : no active time
                             $percentage = 100;

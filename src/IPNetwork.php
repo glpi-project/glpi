@@ -464,7 +464,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $preparedInput = $this->prepareInput($input);
 
-        if (isset($preparedInput['error'])) {
+        if (isset($preparedInput['error']) && !isset($input['_no_message'])) {
             Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
         }
 
@@ -482,7 +482,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $preparedInput = $this->prepareInput($input);
 
-        if (isset($preparedInput['error'])) {
+        if (isset($preparedInput['error']) && !isset($input['_no_message'])) {
             Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
         }
 
@@ -613,7 +613,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * @param integer $version    version of IP to look (only use when using arrays or string as input for
      *                            address or netmask n(default 0)
      *
-     * @return array  of networks found. If we want request several field, the return value will be
+     * @return false|array  of networks found. If we want request several field, the return value will be
      *                an array of array
      *
      * \warning The order of the elements inside the result are ordered from the nearest one to the

@@ -482,8 +482,11 @@ class DatabaseInstance extends CommonDBTM
                 if ($itemtype !== null && class_exists($itemtype)) {
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
-                        $item->getFromDB($values[$field]);
-                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        if ($item->getFromDB($values[$field])) {
+                            return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        } else {
+                            return ' ';
+                        }
                     }
                 } else {
                     return ' ';

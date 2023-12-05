@@ -43,6 +43,7 @@ use Glpi\Http\Response;
 class Document extends CommonDBTM
 {
     use Glpi\Features\TreeBrowse;
+    use Glpi\Features\ParentStatus;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -348,6 +349,8 @@ class Document extends CommonDBTM
                 $main_item = new $this->input["itemtype"]();
                 $main_item->getFromDB($this->input["items_id"]);
                 NotificationEvent::raiseEvent('add_document', $main_item);
+
+                $this->updateParentStatus($main_item, $this->input);
             }
 
             Event::log(
@@ -1384,7 +1387,7 @@ class Document extends CommonDBTM
      * @param &$input    array of datas need for add/update (will be completed)
      * @param $FILEDESC        FILE descriptor
      *
-     * @return true on success
+     * @return boolean
      **/
     public static function uploadDocument(array &$input, $FILEDESC)
     {

@@ -184,6 +184,7 @@ The present file will list all changes made to the project; according to the
 - `CommonDBTM::$deduplicate_queued_notifications` property.
 - `CommonDropdown::displayHeader()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
+- `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `GLPI::getLogLevel()`

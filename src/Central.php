@@ -36,6 +36,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
+use Glpi\System\Requirement\PhpSupportedVersion;
+use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
 /**
  * Central class
@@ -539,6 +541,16 @@ class Central extends CommonGLPI
                     __('You have defined pending reasons without any respective active %s.'),
                     $link
                 );
+            }
+
+            $security_requirements = [
+                new PhpSupportedVersion(),
+                new SessionsSecurityConfiguration(),
+            ];
+            foreach ($security_requirements as $requirement) {
+                if (!$requirement->isValidated()) {
+                    $messages['warnings'] = array_merge(($messages['warnings'] ?? []), $requirement->getValidationMessages());
+                }
             }
         }
 

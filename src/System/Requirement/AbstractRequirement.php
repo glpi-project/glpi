@@ -55,6 +55,13 @@ abstract class AbstractRequirement implements RequirementInterface
     protected $optional = false;
 
     /**
+     * Flag that indicates if requirement is recommended for security reasons.
+     *
+     * @var bool
+     */
+    protected bool $recommended_for_security = false;
+
+    /**
      * Flag that indicates if requirement is considered as out of context.
      *
      * @var bool
@@ -145,6 +152,13 @@ abstract class AbstractRequirement implements RequirementInterface
         $this->doCheck();
 
         return $this->optional;
+    }
+
+    public function isRecommendedForSecurity(): bool
+    {
+        $this->doCheck();
+
+        return $this->recommended_for_security;
     }
 
     public function isOutOfContext(): bool

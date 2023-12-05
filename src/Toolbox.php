@@ -1751,7 +1751,7 @@ class Toolbox
     public static function showMailServerConfig($value)
     {
         if (!Config::canUpdate()) {
-            return false;
+            return '';
         }
 
         $tab = Toolbox::parseMailServerConnectString($value);

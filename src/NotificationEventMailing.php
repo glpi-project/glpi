@@ -96,7 +96,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             return $admin;
         }
 
-        return false;
+        return [];
     }
 
 
@@ -117,7 +117,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             return [$admin];
         }
 
-        return false;
+        return [];
     }
 
     public static function send(array $data)

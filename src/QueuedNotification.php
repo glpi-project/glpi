@@ -700,7 +700,7 @@ class QueuedNotification extends CommonDBTM
      * @param integer $ID      ID of the item
      * @param array   $options Options
      *
-     * @return true if displayed  false if item not found or not right to display
+     * @return boolean true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {

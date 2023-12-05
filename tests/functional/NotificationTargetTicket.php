@@ -158,6 +158,13 @@ class NotificationTargetTicket extends DbTestCase
 
        // test of the getDataForObject for default language fr_FR
         $CFG_GLPI['translate_dropdowns'] = 1;
+        // Force generation of completename that was not done on dataset bootstrap
+        // because `translate_dropdowns` is false by default.
+        (new \DropdownTranslation())->generateCompletename([
+            'itemtype' => \TaskCategory::class,
+            'items_id' => getItemByTypeName(\TaskCategory::class, '_cat_1', true),
+            'language' => 'fr_FR'
+        ]);
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 

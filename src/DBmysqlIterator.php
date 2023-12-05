@@ -138,7 +138,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         $is_legacy = false;
 
-        if (is_string($table) && strpos($table, " ")) {
+        if (is_string($table) && strpos($table, " ") !== false) {
             $names = preg_split('/\s+AS\s+/i', $table);
             if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
                 $is_legacy = true;
@@ -147,7 +147,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         if ($is_legacy) {
             Toolbox::deprecated(
-                'Direct query usage is strongly discouraged!.',
+                'Direct query usage is strongly discouraged!',
                 false
             );
             $this->sql = $table;

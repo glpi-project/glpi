@@ -2103,7 +2103,7 @@ class Ticket extends CommonITILObject
      *
      * @param $type itemtype of object to add
      *
-     * @return rights
+     * @return boolean
      **/
     public function canAddItem($type)
     {
@@ -3982,7 +3982,6 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
         $can_requester = $this->canRequesterUpdateItem();
-        $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
         $cancreateuser = (bool) User::canCreate();
@@ -3997,19 +3996,24 @@ JAVASCRIPT;
             ]);
         }
 
+        $item_ticket = null;
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
+            $canpriority = false;
+        } else {
+            $item_ticket = new Item_Ticket();
+            $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         }
 
         $sla = new SLA();
         $ola = new OLA();
-        $item_ticket = null;
 
-        $options['_canupdate'] = Session::haveRight('ticket', CREATE);
-        if ($options['_canupdate']) {
-            $item_ticket = new Item_Ticket();
+        if ($this->isNewItem()) {
+            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        } else {
+            $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
         }
 
         // If a link is specified in the old format, convert it to the new one
@@ -4584,15 +4588,26 @@ JAVASCRIPT;
                         $options['criteria'][2]['link']       = 'AND';
 
                         if (Session::haveRight('ticket', Ticket::SURVEY)) {
-                            $options['criteria'][3]['field']      = 22; // author
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value']      = Session::getLoginUserID();
-                            $options['criteria'][3]['link']       = 'AND';
+                            $options['criteria'][3]['link']     = 'AND';
+                            $options['criteria'][3]['criteria'] = [
+                                [
+                                    'link'        => 'AND',
+                                    'field'       => 22, // author
+                                    'searchtype'  => 'equals',
+                                    'value'       => Session::getLoginUserID(),
+                                ],
+                                [
+                                    'link'        => 'OR',
+                                    'field'       => 4, // requester
+                                    'searchtype'  => 'equals',
+                                    'value'       => Session::getLoginUserID(),
+                                ]
+                            ];
                         } else {
-                            $options['criteria'][3]['field']      = 4; // requester
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value']      = Session::getLoginUserID();
-                            $options['criteria'][3]['link']       = 'AND';
+                            $options['criteria'][3]['field']        = 4; // requester
+                            $options['criteria'][3]['searchtype']   = 'equals';
+                            $options['criteria'][3]['value']        = Session::getLoginUserID();
+                            $options['criteria'][3]['link']         = 'AND';
                         }
                         $forcetab                 = 'Ticket$3';
 

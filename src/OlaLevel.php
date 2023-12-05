@@ -284,11 +284,11 @@ class OlaLevel extends LevelAgreementLevel
     /**
      * Get first level for a OLA
      *
-     * @param $olas_id   integer  id of the OLA
+     * @param integer $olas_id id of the OLA
      *
      * @since 9.1 (before getFirst OlaLevel)
      *
-     * @return id of the ola level : 0 if not exists
+     * @return integer id of the ola level : 0 if not exists
      **/
     public static function getFirstOlaLevel($olas_id)
     {
@@ -317,10 +317,10 @@ class OlaLevel extends LevelAgreementLevel
     /**
      * Get next level for a OLA
      *
-     * @param $olas_id         integer id of the OLA
-     * @param $olalevels_id    integer id of the current OLA level
+     * @param integer $olas_id      id of the OLA
+     * @param integer $olalevels_id id of the current OLA level
      *
-     * @return id of the ola level : 0 if not exists
+     * @return integer id of the ola level : 0 if not exists
      **/
     public static function getNextOlaLevel($olas_id, $olalevels_id)
     {

@@ -70,6 +70,8 @@ class Agent extends CommonDBTM
 
     private static $found_address = false;
 
+    public $history_blacklist = ['last_contact'];
+
     public static function getTypeName($nb = 0)
     {
         return _n('Agent', 'Agents', $nb);

@@ -83,7 +83,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {
@@ -733,23 +733,19 @@ JAVASCRIPT;
     /**
      * Return the opposite side from a passed side
      * @param  integer $side
-     * @return integer       the oposite side
+     * @return false|integer       the opposite side
      */
     public static function getOtherSide($side)
     {
         switch ($side) {
             case self::SIDE_TOP:
                 return self::SIDE_BOTTOM;
-            break;
             case self::SIDE_BOTTOM:
                 return self::SIDE_TOP;
-            break;
             case self::SIDE_LEFT:
                 return self::SIDE_RIGHT;
-            break;
             case self::SIDE_RIGHT:
                 return self::SIDE_LEFT;
-            break;
         }
         return false;
     }

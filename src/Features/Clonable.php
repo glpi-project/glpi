@@ -212,7 +212,7 @@ trait Clonable
      * @param array $override_input custom input to override
      * @param boolean $history do history log ?
      *
-     * @return integer The new ID of the clone (or false if fail)
+     * @return false|integer The new ID of the clone (or false if fail)
      */
     public function clone(array $override_input = [], bool $history = true)
     {

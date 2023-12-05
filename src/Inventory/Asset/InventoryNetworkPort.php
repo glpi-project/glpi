@@ -245,7 +245,8 @@ trait InventoryNetworkPort
                      'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
                      'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
                      'gateway'      => $port->gateway,
-                     'entities_id'  => $this->entities_id
+                     'entities_id'  => $this->entities_id,
+                     '_no_message'  => true //to prevent 'Network already defined in visible entities' message on add
                  ];
                  $ipnetwork->add($input);
             }

@@ -93,7 +93,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @since 0.84
      *
-     * @return object of the concerned item or false on error
+     * @return false|CommonDBTM object of the concerned item or false on error
      **/
     public function getItem()
     {

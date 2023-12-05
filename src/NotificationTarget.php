@@ -409,7 +409,7 @@ class NotificationTarget extends CommonDBChild
      * @param $event              the event which will be used (default '')
      * @param $options   array    of options
      *
-     * @return a notificationtarget class or false
+     * @return NotificationTarget|false
      **/
     public static function getInstanceByType($itemtype, $event = '', $options = [])
     {
@@ -585,6 +585,17 @@ class NotificationTarget extends CommonDBChild
                 $this->getEntity(),
                 true
             );
+
+            // If one of the item is recursive, then we should also check the child entities
+            if ($this->isTargetItemRecursive()) {
+                $filt = [
+                    'OR' => [
+                        $filt,
+                        ['entities_id' => getSonsOf(Entity::getTable(), $this->getEntity())]
+                    ]
+                ];
+            }
+
             $prof = Profile_User::getUserProfiles($data['users_id'], $filt);
             if (!count($prof)) {
                 // No right on the entity of the object
@@ -861,10 +872,10 @@ class NotificationTarget extends CommonDBChild
                     ]
                 ]
             ],
-            $criteria['INNER JOIN']
+            $criteria['INNER JOIN'] ?? []
         );
         $criteria['WHERE'] = array_merge(
-            $criteria['WHERE'],
+            $criteria['WHERE'] ?? [],
             [
                 Group_User::getTable() . '.groups_id'  => $group_id,
                 Group::getTable() . '.is_notify'       => 1,
@@ -928,7 +939,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Return all (GLPI + plugins) notification events for the object type
      *
-     * @return an array which contains : event => event label
+     * @return array which contains : event => event label
      **/
     public function getAllEvents()
     {
@@ -1363,7 +1374,7 @@ class NotificationTarget extends CommonDBChild
      */
     public function getProfileJoinCriteria()
     {
-        return [
+        $criteria = [
             'INNER JOIN'   => [
                 Profile_User::getTable() => [
                     'ON' => [
@@ -1372,13 +1383,26 @@ class NotificationTarget extends CommonDBChild
                     ]
                 ]
             ],
-            'WHERE'        => getEntitiesRestrictCriteria(
+            'WHERE' => getEntitiesRestrictCriteria(
                 Profile_User::getTable(),
                 'entities_id',
                 $this->getEntity(),
                 true
             )
         ];
+
+        if ($this->isTargetItemRecursive()) {
+            $criteria['WHERE'] = [
+                'OR' => [
+                    $criteria['WHERE'],
+                    [
+                        Profile_User::getTableField('entities_id') => getSonsOf(Entity::getTable(), $this->getEntity())
+                    ]
+                ]
+            ];
+        }
+
+        return $criteria;
     }
 
 
@@ -1700,5 +1724,27 @@ class NotificationTarget extends CommonDBChild
         $this->allow_response = $allow_response;
 
         return $this;
+    }
+
+    /**
+     * Check if at least one target item is recursive
+     *
+     * @return bool
+     */
+    protected function isTargetItemRecursive(): bool
+    {
+        // If the notification target more than one item, we can't handle the
+        // entity restriction correctly and must discard any potential child
+        // entities check
+        if (count($this->target_object) > 1) {
+            return false;
+        }
+
+        // Not all items support recursion
+        if (!$this->obj->maybeRecursive()) {
+            return false;
+        }
+
+        return $this->obj->isRecursive();
     }
 }

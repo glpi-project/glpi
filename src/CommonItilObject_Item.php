@@ -360,20 +360,16 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $types_iterator = static::getDistinctTypes($instID);
         $number = count($types_iterator);
-
-        $can_add_item = $obj instanceof CommonITILRecurrent
-            || (
-                $obj instanceof CommonITILObject
-                && !in_array(
-                    $obj->fields['status'],
-                    array_merge(
-                        $obj->getClosedStatusArray(),
-                        $obj->getSolvedStatusArray()
-                    )
+        $is_closed = $obj instanceof CommonITILObject
+            && in_array(
+                $obj->fields['status'],
+                array_merge(
+                    $obj->getClosedStatusArray(),
+                    $obj->getSolvedStatusArray()
                 )
             );
 
-        if ($canedit && $can_add_item) {
+        if ($canedit && !$is_closed) {
             echo "<div class='firstbloc'>";
             echo "<form name='commonitilobject_item_form$rand' method='post'
                     action='" . Toolbox::getItemTypeFormURL(static::class) . "'>";
@@ -403,7 +399,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
 
         echo "<div class='spaced'>";
-        if ($canedit && $number) {
+        if ($canedit && $number && !$is_closed) {
             Html::openMassiveActionsForm('mass' . static::class . $rand);
             $massiveactionparams = ['container' => 'mass' . static::class . $rand];
             Html::showMassiveActions($massiveactionparams);
@@ -413,7 +409,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $header_top    = '';
         $header_bottom = '';
         $header_end    = '';
-        if ($canedit && $number) {
+        if ($canedit && $number && !$is_closed) {
             $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . static::class . $rand);
             $header_top    .= "</th>";
             $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . static::class . $rand);
@@ -458,7 +454,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     }
 
                     echo "<tr class='tab_bg_1'>";
-                    if ($canedit) {
+                    if ($canedit && !$is_closed) {
                         echo "<td width='10'>";
                         Html::showMassiveActionCheckBox(static::class, $data["linkid"]);
                         echo "</td>";
@@ -495,7 +491,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
 
         echo "</table>";
-        if ($canedit && $number) {
+        if ($canedit && $number && !$is_closed) {
             $massiveactionparams['ontop'] = false;
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();

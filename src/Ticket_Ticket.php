@@ -137,7 +137,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
 
        // Make new database object and fill variables
         if (empty($ID)) {
-            return false;
+            return [];
         }
 
         $iterator = $DB->request([

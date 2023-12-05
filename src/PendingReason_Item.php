@@ -382,6 +382,25 @@ class PendingReason_Item extends CommonDBRelation
     }
 
     /**
+     * Determines if a pending reason can be displayed for a given item.
+     *
+     * @param CommonDBTM $item
+     * @return boolean
+     */
+    public static function canDisplayPendingReasonForItem(CommonDBTM $item): bool
+    {
+        if ($item->isNewItem()) {
+            return true;
+        }
+
+        if (PendingReason_Item::isLastTimelineItem($item)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * User might be trying to update the active pending reason by modifying the
      * pending reason data in a new timeline item form
      *
@@ -496,7 +515,11 @@ class PendingReason_Item extends CommonDBRelation
             }
         } else {
            // Not pending yet; did it change ?
-            if ($timeline_item->input['pending'] ?? 0) {
+            if (
+                $timeline_item->input['pending'] ?? 0
+                && isset($timeline_item->input['pendingreasons_id'])
+                && $timeline_item->input['pendingreasons_id'] > 0
+            ) {
                // Set parent status
                 $timeline_item->input['_status'] = CommonITILObject::WAITING;
 

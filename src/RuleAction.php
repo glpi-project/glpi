@@ -65,7 +65,7 @@ class RuleAction extends CommonDBChild
 
 
     /**
-     * @param $rule_type
+     * @param string $rule_type
      **/
     public function __construct($rule_type = 'Rule')
     {
@@ -94,9 +94,9 @@ class RuleAction extends CommonDBChild
     /**
      * Get title used in rule
      *
-     * @param $nb  integer  (default 0)
+     * @param integer $nb (default 0)
      *
-     * @return Title of the rule
+     * @return string Title of the rule
      **/
     public static function getTypeName($nb = 0)
     {
@@ -336,7 +336,7 @@ class RuleAction extends CommonDBChild
      *
      * @param $ID the rule_description ID
      *
-     * @return an array of RuleAction objects
+     * @return array of RuleAction objects
      **/
     public function getRuleActions($ID)
     {

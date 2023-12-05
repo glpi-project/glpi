@@ -254,7 +254,7 @@ class DomainRecord extends CommonDBChild
      * @param array   $input Input values
      * @param boolean $add   True when we're adding a record
      *
-     * @return aray|false
+     * @return array|false
      */
     private function prepareInput($input, $add = false)
     {

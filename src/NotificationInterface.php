@@ -41,7 +41,7 @@ interface NotificationInterface
     /**
      * Send notifications
      *
-     * @return 0|1
+     * @return boolean
      **/
     public function sendNotification();
 

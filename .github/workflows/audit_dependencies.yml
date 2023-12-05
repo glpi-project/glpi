@@ -62,7 +62,7 @@ jobs:
           printf "LOG<<EOF\n$LOG\nEOF" >> $GITHUB_OUTPUT
       - name: "Create issue if npm audit fails"
         if: "${{ steps.npmaudit.outputs.CODE != '0' }}"
-        uses: "actions/github-script@v6"
+        uses: "actions/github-script@v7"
         with:
           script: |
             const result = await github.rest.issues.create({
@@ -82,7 +82,7 @@ jobs:
           printf "LOG<<EOF\n$LOG\nEOF" >> $GITHUB_OUTPUT
       - name: "Create issue if composer audit fails"
         if: "${{ steps.composeraudit.outputs.CODE != '0' }}"
-        uses: "actions/github-script@v6"
+        uses: "actions/github-script@v7"
         with:
           script: |
             const result = await github.rest.issues.create({

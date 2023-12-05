@@ -105,7 +105,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {

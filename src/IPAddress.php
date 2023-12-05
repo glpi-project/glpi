@@ -450,7 +450,7 @@ class IPAddress extends CommonDBChild
      *
      * If the field name is empty, then, the field is not set
      *
-     * @return true is succeffully defined
+     * @return boolean successfully defined
      **/
     public function setAddressFromArray(array $array, $versionField, $textualField, $binaryField)
     {
@@ -560,7 +560,7 @@ class IPAddress extends CommonDBChild
      *
      * @param integer[] $address (bytes[4]) the address to check
      *
-     * @return true if the address is IPv4 mapped to IPv6
+     * @return boolean
      **/
     public static function isIPv4MappedToIPv6Address($address)
     {
@@ -597,7 +597,7 @@ class IPAddress extends CommonDBChild
      * @param string  $itemtype  type of the item this address has to be attached (default '')
      * @param integer $items_id  id of the item this address has to be attached (default -1)
      *
-     * @return true if the address is valid.
+     * @return boolean address is valid
      **/
     public function setAddressFromString($address, $itemtype = "", $items_id = -1)
     {
@@ -782,7 +782,7 @@ class IPAddress extends CommonDBChild
      * @param string    $itemtype  type of the item this address has to be attached (default '')
      * @param integer   $items_id  id of the item this address has to be attached (default -1)
      *
-     * @return true if the address is valid.
+     * @return boolean address is valid
      **/
     public function setAddressFromBinary($address, $itemtype = "", $items_id = -1)
     {
@@ -891,7 +891,7 @@ class IPAddress extends CommonDBChild
 
         $prefix = "";
 
-       //If it a special format, add prefix previsouly removed (to manage IPV4 part)
+       //If it is a special format, add prefix previously removed (to manage IPV4 part)
         if ($this->isDottedQuoadFormat) {
             $prefix = "::ffff:";
         }
@@ -907,7 +907,7 @@ class IPAddress extends CommonDBChild
      * @param integer[] $address   (in and out) the address to increment or decrement
      * @param integer   $value     the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
      *
-     * @return true if the increment is valid
+     * @return boolean true if the increment is valid
      **/
     public static function addValueToAddress(&$address, $value)
     {

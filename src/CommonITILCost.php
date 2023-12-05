@@ -513,7 +513,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param $item                  CommonITILObject object or Project
      * @param $withtemplate boolean  Template or basic item (default 0)
      *
-     * @return number total cost
+     * @return false|integer total cost
      **/
     public static function showForObject($item, $withtemplate = 0)
     {

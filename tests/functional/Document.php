@@ -179,6 +179,123 @@ class Document extends DbTestCase
      * ->variable['items_id']->isEqualTo($cid);
      * }*/
 
+
+    /**
+     * Test case for the testPost_addItem method.
+     *
+     * This method tests the functionality of adding a document to a ticket and the subsequent status changes.
+     * Specifically, it verifies the following scenarios:
+     *
+     * 1. When a document is added to a ticket in WAITING status without any assigned user,
+     *    the status of the ticket changes to INCOMING.
+     *
+     * 2. When a document is added to a ticket in WAITING status with an assigned user,
+     *    the status of the ticket changes to ASSIGNED.
+     *
+     * Note: The ticket status does not change to ASSIGNED in the first scenario
+     * because there is no user assigned to the ticket.
+     */
+    public function testPost_addItem()
+    {
+        // Login with the user.
+        $this->login();
+
+        // Create a new ticket.
+        $item = new \Ticket();
+        $cid = (int)$item->add([
+            'name'         => 'Documented Ticket',
+            'entities_id'  => 0,
+            'content'      => 'Ticket content',
+            'status'       => \Ticket::WAITING
+        ]);
+
+        // Verify that the ticket is successfully added to the database.
+        $this->integer($cid)->isGreaterThan(0);
+
+
+        // Add a user as requester of the ticket.
+        $ticket_user = new \Ticket_User();
+        $this->integer($ticket_user->add([
+            'tickets_id' => $cid,
+            'users_id'   => getItemByTypeName('User', TU_USER, true),
+            'type'       => \CommonITILActor::REQUESTER
+        ]))->isGreaterThan(0);
+
+
+        // Create a second test user.
+        $user = new \User();
+        $uid = (int)$user->add([
+            'name'         => 'test_user2',
+            'realname'     => 'Test User',
+            'firstname'    => 'Test',
+            'password'     => 'test',
+            'is_active'    => 1,
+            'is_deleted'   => 0,
+            'authtype'     => 1,
+            'profiles_id'  => 0,
+            'entities_id'  => 0,
+            'usercategories_id' => 1
+        ]);
+        $this->integer($uid)->isGreaterThan(0);
+
+        // Create a document stub.
+        $mdoc = new \mock\Document();
+
+        $this->calling($mdoc)->moveUploadedDocument = true;
+
+        $input['upload_file'] = 'filename.ext';
+        $input['itemtype'] = $item->getType();
+        $input['items_id'] = $cid;
+        $input['documentcategories_id'] = 1;
+
+        $docid = (int)$mdoc->add($input);
+        $this->integer($docid)->isGreaterThan(0);
+
+        // Refresh the ticket.
+        $this->boolean($item->getFromDB($cid))->isTrue();
+
+        $doc_item = new \Document_Item();
+        $this->boolean($doc_item->getFromDBByCrit(['documents_id' => $docid]))->isTrue();
+
+        // Verify that the ticket and document item are linked.
+        $this->string($doc_item->fields['itemtype'])->isIdenticalTo(\Ticket::getType());
+        $this->integer($cid)->isEqualTo($doc_item->fields['items_id']);
+
+        /**
+         * Verifiy that when a document is added to a ticket in WAITING status
+         * without any assigned user, the status of the ticket changes to INCOMING.
+         */
+        $this->integer($item->fields['status'])->isEqualTo(\Ticket::INCOMING);
+
+        // Assign the second user to the ticket.
+        $ticket_user = new \Ticket_User();
+        $this->integer($ticket_user->add([
+            'tickets_id' => $cid,
+            'users_id'   => $uid,
+            'type'       => \CommonITILActor::ASSIGN
+        ]))->isGreaterThan(0);
+
+        // Update the ticket status to WAITING.
+        $item->update([
+            'id'     => $cid,
+            'status' => \Ticket::WAITING
+        ]);
+        $this->integer($item->fields['status'])->isEqualTo(\Ticket::WAITING);
+
+        // Add another document to the ticket.
+        $docid = (int)$mdoc->add($input);
+        $this->integer($docid)->isGreaterThan(0);
+
+        // Refresh the ticket.
+        $this->boolean($item->getFromDB($cid))->isTrue();
+
+        /**
+         * Verifiy that when a document is added to a ticket in WAITING status
+         * with an assigned user, the status of the ticket changes to ASSIGNED.
+         */
+        $this->integer($item->fields['status'])->isEqualTo(\Ticket::ASSIGNED);
+    }
+
     protected function validDocProvider()
     {
         return [

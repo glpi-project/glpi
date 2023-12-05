@@ -870,7 +870,7 @@ class MailCollector extends CommonDBTM
                 $tkt['_tag']      = $this->tags;
             } else {
                //TRANS: %s is a directory
-                Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR . "/"));
+                Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR . "/") . '\n');
             }
         }
 

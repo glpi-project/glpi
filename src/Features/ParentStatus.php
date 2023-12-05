@@ -175,7 +175,7 @@ trait ParentStatus
             $input['_status'] = CommonITILObject::PLANNED;
         }
 
-       //change ITILObject status only if imput change
+       //change ITILObject status only if input change
         if (
             !$reopened
             && $input['_status'] != $parentitem->fields['status']

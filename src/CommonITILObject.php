@@ -1709,7 +1709,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param array $input Input
      *
-     * @return array
+     * @return false|array
      */
     protected function handleTemplateFields(array $input)
     {
@@ -5558,7 +5558,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param string $itemtype the object's type
      *
-     * @return true if ticket can be assign to this type, false if not
+     * @return boolean true if ticket can be assigned to this type, false if not
      **/
     public static function isPossibleToAssignType($itemtype)
     {
@@ -9538,11 +9538,23 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        $category_names = [];
         foreach ($common_itil_iterator as $data) {
+            if (!array_key_exists($data['itilcategories_id'], $category_names)) {
+                $category_name = DropdownTranslation::getTranslatedValue(
+                    $data['itilcategories_id'],
+                    ITILCategory::class
+                );
+                if ($category_name === '') {
+                    $category_name = ITILCategory::getFriendlyNameById($data['itilcategories_id']);
+                }
+
+                $category_names[$data['itilcategories_id']] = $category_name;
+            }
             $data = [
                 'id'        => $data['id'],
                 'name'      => $data['name'],
-                'category'  => $data['itilcategories_id'],
+                'category'  => $category_names[$data['itilcategories_id']] ?? '',
                 'content'   => $data['content'],
                 'status'    => $data['status'],
                 '_itemtype' => $itemtype,
