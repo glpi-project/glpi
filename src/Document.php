@@ -360,8 +360,10 @@ class Document extends CommonDBTM
             ]);
 
             $itilobject = new $this->input["itemtype"]();
-            $itilobject->getFromDB($this->input["items_id"]);
-            $this->updateParentStatus($itilobject, $this->input);
+            if ($itilobject instanceof CommonITILObject) {
+                $itilobject->getFromDB($this->input["items_id"]);
+                $this->updateParentStatus($itilobject, $this->input);
+            }
 
             Event::log(
                 $this->fields['id'],
