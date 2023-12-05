@@ -359,8 +359,8 @@ class Document extends CommonDBTM
                 'items_id'     => $this->input["items_id"]
             ]);
 
-            $itilobject = new $this->input["itemtype"]();
-            if ($itilobject instanceof CommonITILObject) {
+            if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
+                $itilobject = new $this->input["itemtype"]();
                 $itilobject->getFromDB($this->input["items_id"]);
                 $this->updateParentStatus($itilobject, $this->input);
             }
