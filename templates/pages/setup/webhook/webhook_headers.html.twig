@@ -77,7 +77,6 @@
               const custom_header_fields_container = $('div.custom-header-fields');
               const template = $($('#custom-header-fields-template').html());
               const header_name_field = template.find('input[name="header_name[]"]');
-              //const header_value_field = template.find('input[name="header_value[]"]');
               const header_value_id = `header_value${Math.round(Math.random() * 1000000)}`;
               $(``).insertAfter(template.find('input[name="header_value[]"]'));
               template.find('div.header_value').prop('id', header_value_id);
@@ -85,7 +84,6 @@
               const editor_options = window.GLPI.MonacoEditor.singleLineEditorOptions;
               if (readonly) {
                   header_name_field.prop('readonly', true);
-                  //header_value_field.prop('readonly', true);
                   // Delete the remove button
                   template.find('button[name="remove_header"]').remove();
                   editor_options.readOnly = true;
