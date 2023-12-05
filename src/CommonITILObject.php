@@ -10424,7 +10424,6 @@ abstract class CommonITILObject extends CommonDBTM
             in_array($item->fields['status'], static::getClosedStatusArray())
             && $satisfaction->getFromDB($item->getID())
         ) {
-            // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
             $satisfaction->showSatisactionForm($item);
         } else {
             echo "<p class='center b'>" . __('No generated survey') . "</p>";
