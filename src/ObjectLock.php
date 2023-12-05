@@ -662,7 +662,7 @@ TWIG;
 
                 return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
                     'is_locked' => $values['id'] > 0,
-                    'user_name' => getUsername($values['users_id']),
+                    'user_name' => getUserName($values['users_id']),
                     'date'      => $values['date'],
                 ]);
         }
