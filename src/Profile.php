@@ -1010,7 +1010,10 @@ class Profile extends CommonDBTM
                                 'rights' => [
                                     READ  => __('Read'),
                                     UPDATE  => __('Update'),
-                                    DELETE => __('Delete'),
+                                    DELETE => [
+                                        'short' => __('Delete'),
+                                        'long'  => _x('button', 'Put in trashbin')
+                                    ],
                                     PURGE   => [
                                         'short' => __('Purge'),
                                         'long'  => _x('button', 'Delete permanently')
