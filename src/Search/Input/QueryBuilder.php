@@ -111,12 +111,14 @@ final class QueryBuilder implements SearchInputInterface
      *
      * Params need to parsed before using Search::manageParams function
      *
+     * @since 10.1
+     *
      * @param string $itemtype  Type to display the form
      * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
      *
      * @return void
-     **/
-    public static function showGenericSort($itemtype, array $params)
+     */
+    public static function showGenericSort(string $itemtype, array $params): void
     {
         $p = [
             'sort' => [],
@@ -531,7 +533,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      */
-    public static function displaySortCriteria($request = [])
+    public static function displaySortCriteria(array $request = []): void
     {
         if (
             !isset($request["itemtype"])
@@ -825,9 +827,11 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Remove the active saved search in session
      *
+     * @since 10.1
+     *
      * @return void
      */
-    public static function resetActiveSavedSearch()
+    public static function resetActiveSavedSearch(): void
     {
         unset($_SESSION['glpi_loaded_savedsearch']);
     }
