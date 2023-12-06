@@ -66,7 +66,7 @@
                             data-bs-toggle="dropdown" data-bs-auto-close="outside">
                         <i class="ti ti-list-search"></i>
                         {% if active_search_name|length %}
-                            <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ active_search_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ active_search_name|e('html_attr') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                                 {{ active_search_name }}
                             </span>
                         {% else %}
@@ -85,7 +85,7 @@
                             data-bs-toggle="dropdown" data-bs-auto-close="outside">
                     <i class="ti ti-arrows-sort"></i>
                     {% set sort_names = (active_sort_name|length ? active_sort_name : __("Sort")) %}
-                    <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ sort_names }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ sort_names|e('html_attr') }}" data-bs-toggle="tooltip" data-bs-placement="top">
                         {{ sort_names }}
                     </span>
                 </button>
@@ -102,8 +102,7 @@
         {% endif %}
 
         <div class="secondary-controls">
-            {% set can_select_view = may_be_located %}
-            {% if can_select_view %}
+            {% if may_be_located %}
                 <div class="btn-group me-1 me-xl-2" role="group">
                     {% set table_class = (data['search']['as_map'] == 0 ? "btn-ghost-info" : "") %}
                     <input type="radio" class="btn-check" role="button"
@@ -117,19 +116,17 @@
                             <i class="ti ti-table"></i>
                         </label >
 
-                    {% if may_be_located %}
-                        {% set located_class = (data['search']['as_map'] == 1 ? "btn-ghost-info" : "") %}
-                        <input type="radio" class="btn-check" role="button"
-                            name="as_map" value="1" autocomplete="off"
-                            id="show_as_map"
-                            onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();"
-                            {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
-                        <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ located_class }}" title="{{ __('Show as map') }}"
-                            for="show_as_map"
-                            data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i class="ti ti-map-2"></i>
-                        </label >
-                    {% endif %}
+                    {% set located_class = (data['search']['as_map'] == 1 ? "btn-ghost-info" : "") %}
+                    <input type="radio" class="btn-check" role="button"
+                        name="as_map" value="1" autocomplete="off"
+                        id="show_as_map"
+                        onclick="toogle('as_map','','',''); document.forms['searchform{{ normalized_itemtype }}'].submit();"
+                        {{ data['search']['as_map'] == 1 ? 'checked' : '' }} />
+                    <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ located_class }}" title="{{ __('Show as map') }}"
+                        for="show_as_map"
+                        data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="ti ti-map-2"></i>
+                    </label >
                 </div>
             {% endif %}
 
