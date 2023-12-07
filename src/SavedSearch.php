@@ -869,6 +869,11 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                 } catch (\RuntimeException $e) {
                     ErrorHandler::getInstance()->handleException($e);
                     $search_data = false;
+                } catch (\Throwable $e) {
+                    ErrorHandler::getInstance()->handleException($e);
+                    $info_message = __s('A fatal error occurred while executing this saved search. It is not able to be used.');
+                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message'></span>";
+                    $data['_error'] = true;
                 }
                 if (isset($search_data['data']['totalcount'])) {
                     $count = $search_data['data']['totalcount'];
