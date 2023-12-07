@@ -1932,7 +1932,7 @@ class Config extends CommonDBTM
 
         foreach (
             ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
-                'session.save_handler', 'upload_max_filesize'
+                'session.save_handler', 'upload_max_filesize', 'disable_functions'
             ] as $key
         ) {
             $msg .= $key . '="' . ini_get($key) . '" ';
