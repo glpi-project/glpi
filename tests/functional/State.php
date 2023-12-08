@@ -83,4 +83,114 @@ class State extends DbTestCase
         $state = new \State();
         $this->boolean($state->isUnique($input))->isEqualTo($expected);
     }
+
+    public function testVisibility()
+    {
+        $state = new \State();
+
+        $states_id = $state->add([
+            'name' => 'Test computer and phone',
+            'is_visible_computer' => '1',
+            'is_visible_phone' => '1',
+        ]);
+
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $statevisibility = new \DropdownVisibility();
+        $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id]);
+        $this->array($visibilities)->hasSize(2);
+        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => \Computer::getType(), 'is_visible' => 1]))->isTrue();
+        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => \Phone::getType(), 'is_visible' => 1]))->isTrue();
+        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => \Printer::getType(), 'is_visible' => 0]))->isFalse();
+
+        $state->update([
+            'id' => $states_id,
+            'is_visible_computer' => '0',
+            'is_visible_printer' => '1',
+        ]);
+        $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id]);
+        $this->array($visibilities)->hasSize(3);
+        $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id, 'is_visible' => 1]);
+        $this->array($visibilities)->hasSize(2);
+        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => \Computer::getType(), 'is_visible' => 0]))->isTrue();
+        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => \Phone::getType(), 'is_visible' => 1]))->isTrue();
+        $this->boolean($statevisibility->getFromDBByCrit(['itemtype' => \State::getType(), 'items_id' => $states_id, 'visible_itemtype' => \Printer::getType(), 'is_visible' => 1]))->isTrue();
+
+        $this->boolean($state->getFromDB($states_id))->isTrue();
+        $this->string($state->fields['name'])->isEqualTo('Test computer and phone');
+        $this->integer($state->fields['is_visible_computer'])->isIdenticalTo(0);
+        $this->integer($state->fields['is_visible_phone'])->isIdenticalTo(1);
+        $this->integer($state->fields['is_visible_printer'])->isIdenticalTo(1);
+    }
+
+    public function testHasFeature()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        foreach ($CFG_GLPI['state_types'] as $itemtype) {
+            $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
+        }
+    }
+
+    public function testIsStateVisible()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $state = new \State();
+        $states_id = $state->add([
+            'name' => 'Test computer and phone',
+            'is_visible_computer' => '1'
+        ]);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $itemtype = $CFG_GLPI['state_types'][0];
+
+        $item = new $itemtype();
+        $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
+        $this->boolean($item->isStateVisible($states_id))->isTrue();
+
+        unset($CFG_GLPI['state_types'][0]);
+        $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
+
+        $this->when(
+            function() use ($item, $states_id) {
+                $this->boolean($item->isStateVisible($states_id))->isTrue();
+            }
+        )
+            ->error()
+            ->withType(E_USER_ERROR)
+            ->withMessage('Class Computer must be present in $CFG_GLPI[\'state_types\']')
+            ->exists();
+    }
+
+    public function testGetVisibilityCriteria()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $itemtype = $CFG_GLPI['state_types'][0];
+
+        $item = new $itemtype();
+        $this->array($item->getVisibilityCriteria())->isIdenticalTo([
+            'LEFT JOIN' => [
+                \DropdownVisibility::getTable() => [
+                    'ON' => [
+                        \DropdownVisibility::getTable() => 'items_id',
+                        \State::getTable() => 'id', [
+                            'AND' => [
+                                \DropdownVisibility::getTable() . '.itemtype' => \State::getType()
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                \DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                \DropdownVisibility::getTable() . '.visible_itemtype' => $itemtype,
+                \DropdownVisibility::getTable() . '.is_visible' => 1
+            ]
+        ]);
+    }
 }

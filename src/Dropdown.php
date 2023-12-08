@@ -2659,7 +2659,7 @@ JAVASCRIPT;
          */
         global $CFG_GLPI, $DB;
 
-       // check if asked itemtype is the one originaly requested by the form
+       // check if asked itemtype is the one originally requested by the form
         if (!Session::validateIDOR($post)) {
             return;
         }

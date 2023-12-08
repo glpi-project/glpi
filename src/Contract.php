@@ -43,6 +43,7 @@ use Glpi\DBAL\QueryFunction;
 class Contract extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;

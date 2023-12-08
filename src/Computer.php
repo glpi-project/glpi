@@ -43,6 +43,7 @@ class Computer extends CommonDBTM
     use Glpi\Features\DCBreadcrumb;
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -418,14 +419,15 @@ class Computer extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
-        $tab[] = [
+        //FIXME: add a search option for the state
+        /*$tab[] = [
             'id'                 => '31',
             'table'              => 'glpi_states',
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
             'condition'          => ['is_visible_computer' => 1]
-        ];
+        ];*/
 
         $tab[] = [
             'id'                 => '42',

@@ -41,6 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Rack extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
+    use Glpi\Features\State;
 
     const FRONT    = 0;
     const REAR     = 1;

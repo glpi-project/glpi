@@ -38,6 +38,8 @@
  **/
 class SoftwareVersion extends CommonDBChild
 {
+    use Glpi\Features\State;
+
    // From CommonDBTM
     public $dohistory = true;
 

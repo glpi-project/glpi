@@ -41,6 +41,7 @@ use Glpi\SocketModel;
 class Cable extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory         = true;

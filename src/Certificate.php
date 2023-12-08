@@ -49,6 +49,7 @@ use Glpi\DBAL\QueryFunction;
 class Certificate extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
     public $dohistory           = true;
     public static $rightname           = "certificate";

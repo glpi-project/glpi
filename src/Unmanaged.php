@@ -42,6 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Unmanaged extends CommonDBTM
 {
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;

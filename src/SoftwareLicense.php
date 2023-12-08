@@ -44,6 +44,7 @@ use Glpi\Features\AssetImage;
 class SoftwareLicense extends CommonTreeDropdown
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
     use AssetImage;
 
    /// TODO move to CommonDBChild ?

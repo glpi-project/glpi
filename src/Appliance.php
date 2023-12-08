@@ -42,6 +42,7 @@ use Glpi\Features\AssetImage;
 class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
     use AssetImage;
 
    // From CommonDBTM

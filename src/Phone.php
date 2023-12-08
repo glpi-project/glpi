@@ -43,6 +43,7 @@ class Phone extends CommonDBTM
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;

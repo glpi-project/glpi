@@ -43,6 +43,7 @@ class PassiveDCEquipment extends CommonDBTM
 {
     use Clonable;
     use Glpi\Features\DCBreadcrumb;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory = true;

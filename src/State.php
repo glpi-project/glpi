@@ -302,11 +302,6 @@ class State extends CommonTreeDropdown
     }
 
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonTreeDropdown::prepareInputForAdd()
-     **/
     public function prepareInputForAdd($input)
     {
         if (!isset($input['states_id'])) {
@@ -324,7 +319,7 @@ class State extends CommonTreeDropdown
         $input = parent::prepareInputForAdd($input);
 
         $state = new self();
-       // Get visibility information from parent if not set
+        // Get visibility information from parent if not set
         if (isset($input['states_id']) && $state->getFromDB($input['states_id'])) {
             foreach ($this->getvisibilityFields() as $type => $field) {
                 if (!isset($input[$field]) && isset($state->fields[$field])) {
@@ -335,6 +330,46 @@ class State extends CommonTreeDropdown
         return $input;
     }
 
+    public function post_addItem()
+    {
+        $state_visilibity = new DropdownVisibility();
+        foreach ($this->getvisibilityFields() as $itemtype => $field) {
+            if (isset($this->input[$field])) {
+                $state_visilibity->add([
+                    'itemtype' => State::getType(),
+                    'items_id' => $this->fields['id'],
+                    'visible_itemtype'  => $itemtype,
+                    'is_visible' => $this->input[$field]
+                ]);
+            }
+        }
+
+        parent::post_addItem();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        $state_visilibity = new DropdownVisibility();
+        foreach ($this->getvisibilityFields() as $itemtype => $field) {
+            if (isset($this->input[$field])) {
+                if ($state_visilibity->getFromDBByCrit(['itemtype' => self::getType(), 'items_id' => $this->input['id'], 'visible_itemtype' => $itemtype])) {
+                    $state_visilibity->update([
+                        'id' => $state_visilibity->fields['id'],
+                        'is_visible' => $this->input[$field]
+                    ]);
+                } else {
+                    $state_visilibity->add([
+                        'itemtype' => State::getType(),
+                        'items_id' => $this->fields['id'],
+                        'visible_itemtype' => $itemtype,
+                        'is_visible' => $this->input[$field]
+                    ]);
+                }
+            }
+        }
+
+        parent::post_updateItem();
+    }
 
     public function rawSearchOptions()
     {
@@ -658,5 +693,14 @@ class State extends CommonTreeDropdown
     public function getCloneRelations(): array
     {
         return [];
+    }
+    
+    public function post_getFromDB()
+    {
+        $statevisibility = new DropdownVisibility();
+        $visibilities = $statevisibility->find(['itemtype' => State::getType(), 'items_id' => $this->fields['id']]);
+        foreach ($visibilities as $visibility) {
+            $this->fields['is_visible_' . strtolower($visibility['visible_itemtype'])] = $visibility['is_visible'];
+        }
     }
 }

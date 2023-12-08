@@ -42,7 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Line extends CommonDBTM
 {
-   // From CommonDBTM
+    use Glpi\Features\State;
+
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname                   = 'line';
