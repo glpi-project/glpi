@@ -196,7 +196,7 @@ class Computer extends CommonDBTM
             ) {
                 $changes['states_id'] = $input['states_id'];
             }
-           // Update loction of attached items
+           // Update location of attached items
             if (
                 $this->updates[$i] == 'locations_id'
                 && Entity::getUsedConfig('is_location_autoupdate', $this->getEntityID())
@@ -426,8 +426,20 @@ class Computer extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_computer' => 1]
-        ];*/
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => StateVisibility::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'child',
+                        'beforejoin' => [
+                            'table'      => State::getTable(),
+                        ],
+                        'condition' => [
+                            'NEWTABLE.itemtype' => 'Computer'
+                        ]
+                    ]
+                ]
+            ]
 
         $tab[] = [
             'id'                 => '42',
