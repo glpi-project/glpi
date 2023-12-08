@@ -533,7 +533,7 @@ class QueuedNotification extends CommonDBTM
             'WHERE'  => [
                 'is_deleted'   => 0,
                 'mode'         => 'TOFILL',
-                'send_time'    => ['<', $send_time],
+                'send_time'    => ['<=', $send_time],
             ] +  $extra_where,
             'ORDER'  => 'send_time ASC',
             'START'  => 0,
