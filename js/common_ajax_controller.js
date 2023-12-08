@@ -170,6 +170,11 @@ $(() => {
             handleFriendlyNameUpdate(response);
             handleTrashbinStatus(response, form);
             handleRedirect(response);
+
+            // Call custom callback
+            if (form.data('ajaxSubmitCallback')) {
+                window[form.data('ajaxSubmitCallback')]();
+            }
         } catch (error) {
             // Handle backend errors
             const response = error.responseJSON;

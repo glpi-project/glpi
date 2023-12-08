@@ -52,10 +52,9 @@
     "
     method="POST"
     action="{{ item.getFormURL() }}"
-    {% if not item.isNewItem() %}
-        data-ajax-submit {# Form will be submitted using AJAX #}
-        data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
-    {% endif %}
+    data-ajax-submit {# Form will be submitted using AJAX #}
+    data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
+    data-ajax-submit-callback="glpi_form_ajax_update_callback" {# Specific post update callback #}
 >
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
@@ -150,9 +149,16 @@
         </button>
 
         {# Move to trashbin form action #}
-        {% if not item.isNewItem() and item.canDelete() %}
+        {% if item.canDelete() %}
+            {# Hidden if the item is still in draft mode #}
             <button
-                class="btn btn-ghost-warning me-2 {{ item.fields.is_deleted ? "d-none" : "" }}"
+                class="
+                    btn
+                    btn-ghost-warning
+                    me-2
+                    {{ item.fields.is_deleted ? "d-none" : "" }}
+                    {{ item.fields.is_draft ? "d-none" : "" }}
+                "
                 type="submit"
                 name="delete"
                 form="form-form"
@@ -178,7 +184,12 @@
         {# Restore action #}
         {% if item.canDelete() %}
             <button
-                class="btn btn-ghost-secondary me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
+                class="
+                    btn
+                    btn-ghost-secondary
+                    me-2
+                    {{ not item.fields.is_deleted ? "d-none" : "" }}
+                "
                 type="submit"
                 name="restore"
                 form="form-form"
@@ -188,12 +199,12 @@
             </button>
         {% endif %}
 
-        {% if item.isNewItem() and item.canCreate() %}
-            {# Add action #}
+        {% if item.fields.is_draft %}
+            {# Add action (which is an update form as we just change the is_draft field's value #}
             <button
                 class="btn btn-primary"
                 type="submit"
-                name="add"
+                name="update"
                 form="form-form"
                 title="{{ __("Add") }}"
             >
@@ -219,10 +230,12 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
-    {% if item.isNewItem() %}
-        {# CSRF #}
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    {# Set as non draft once saved #}
+    {% if item.fields.is_draft %}
+        <input type="hidden" name="is_draft" value="0">
     {% endif %}
+
+    {# TODO: add bootstrap tooltips on each buttons #}
 
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
@@ -241,6 +254,31 @@
 </div>
 
 <script>
+    /**
+     * Callback used when the form is updated
+     * Need to be a "var" to be accessible from the global scope
+     */
+    var glpi_form_ajax_update_callback = function () {
+        // Specific code enabled only if the item is a draft
+        let is_draft = {{ item.fields.is_draft }};
+
+        // Handle the ui changes to reflect the fact that the item is no longer a draft
+        if (is_draft) {
+            // Turn the "Add" button into "Save"
+            const add_button = $('#form-form button[name=update]');
+            add_button.find('.ti-plus').removeClass('ti-plus').addClass('ti-device-floppy');
+            add_button.find('.add-label').text("{{ __('Save') }}");
+            add_button.prop("title", "{{ __('Save') }}");
+
+            // Show the delete button
+            const del_button = $('#form-form button[name=delete]');
+            del_button.removeClass('d-none');
+
+            // Mark as no longer a draft to avoid running this code again
+            is_draft = false;
+        }
+    };
+
     // Isolate variables in a self calling function
     (function(){
         // Adjust height using javascript
