@@ -123,6 +123,9 @@ if (!$DB->tableExists('glpi_forms_answerssets')) {
     );
 }
 
+// Add rights for the forms object
+$migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
+
 // Name (forced), Entities (forced), Child entities, Active, Last update
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 
