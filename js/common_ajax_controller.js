@@ -173,7 +173,7 @@ $(() => {
 
             // Call custom callback
             if (form.data('ajaxSubmitCallback')) {
-                window[form.data('ajaxSubmitCallback')]();
+                window[form.data('ajaxSubmitCallback')](response);
             }
         } catch (error) {
             // Handle backend errors

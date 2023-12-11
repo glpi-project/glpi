@@ -54,7 +54,7 @@ $migration->createTable(
         `is_deleted` tinyint NOT NULL DEFAULT '0',
         `is_draft` tinyint NOT NULL DEFAULT '0',
         `name` varchar(255) NOT NULL DEFAULT '',
-        `header` text,
+        `header` longtext,
         `date_mod` timestamp NULL DEFAULT NULL,
         `date_creation` timestamp NULL DEFAULT NULL,
         PRIMARY KEY (`id`),
@@ -74,7 +74,7 @@ $migration->createTable(
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `name` varchar(255) NOT NULL DEFAULT '',
-        `description` text,
+        `description` longtext,
         `rank` int NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
         KEY `name` (`name`),
@@ -91,7 +91,7 @@ $migration->createTable(
         `subtype` varchar(255) NOT NULL DEFAULT '',
         `is_mandatory` tinyint NOT NULL DEFAULT '0',
         `rank` int NOT NULL DEFAULT '0',
-        `description` text,
+        `description` longtext,
         `default_value` text COMMENT 'JSON - The default value type may not be the same for all questions type',
         `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
         PRIMARY KEY (`id`),
@@ -130,4 +130,7 @@ $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 if (GLPI_VERSION == "10.1.0-dev") {
     $migration->addField("glpi_forms_forms", "is_draft", "bool");
     $migration->addKey("glpi_forms_forms", "is_draft");
+    $migration->changeField("glpi_forms_forms", "header", "header", "longtext");
+    $migration->changeField("glpi_forms_sections", "header", "header", "longtext");
+    $migration->changeField("glpi_forms_questions", "header", "header", "longtext");
 }

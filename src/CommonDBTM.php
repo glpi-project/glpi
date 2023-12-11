@@ -192,6 +192,12 @@ class CommonDBTM extends CommonGLPI
      */
     public $right;
 
+    /**
+     * Extra data that will be added to the CommonAjaxController response
+     * Child classes can add their specific data here
+     * @var array
+     */
+    protected array $extra_response_data = [];
 
     /**
      * Return the table used to store this object
@@ -6570,6 +6576,16 @@ class CommonDBTM extends CommonGLPI
             $menus[2] ?? '',
             false
         );
+    }
+
+    /**
+     * Getter for the extra_response_data property
+     *
+     * @return array
+     */
+    final public function getExtraResponseData(): array
+    {
+        return $this->extra_response_data;
     }
 
     /**

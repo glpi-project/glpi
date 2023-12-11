@@ -33,32 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Renderer;
-
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypesLoader;
+namespace Glpi\Form\QuestionType;
 
 /**
- * Utility class used to easily render a form
- * TODO: could be a singleton to hightlight its role as a service and support
- * DI in the future
+ * Helper class to load all available question types
  */
-final class FormRenderer
+class QuestionTypesLoader
 {
     /**
-     * Render a form using the `render_form.html.twig` template
+     * Return an array of question types instance, using their classes name as
+     * keys
      *
-     * @param Form $form Form to be displayed
-     *
-     * @return string
+     * @return QuestionTypeInterface[]
      */
-    public function render(Form $form): string
+    public static function getQuestionTypes(): array
     {
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/render_form.html.twig', [
-            'form'           => $form,
-            'question_types' => QuestionTypesLoader::getQuestionTypes(),
-        ]);
+        return [
+            QuestionTypeShortAnswer::class => new QuestionTypeShortAnswer(),
+        ];
     }
 }

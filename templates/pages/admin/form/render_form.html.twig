@@ -40,11 +40,29 @@
     </h5>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
 </div>
+
 <div class="modal-body">
-    <div class="text-muted">
+    <div class="text-muted mb-4">
         {{ form.fields.header|safe_html }}
     </div>
+
+    {% for section in form.getSections() %}
+        {% for question in section.getQuestions() %}
+            {% set question_type = question_types[question.fields.type] %}
+            <div class="mb-3">
+                <label class="form-label">
+                    {{ question.fields.name }}
+                    {% if question.fields.is_mandatory %}
+                        <span class="text-danger">*</span>
+                    {% endif %}
+                </label>
+                {{ question_type.renderEndUserTemplate(question)|raw }}
+                <div class="form-text">{{ question.fields.description|safe_html }}</div>
+            </div>
+        {% endfor %}
+    {% endfor %}
 </div>
+
 <div class="modal-footer">
     {# Disable submit as we don't have any questions yet #}
     {# TODO: enable when questions are added #}

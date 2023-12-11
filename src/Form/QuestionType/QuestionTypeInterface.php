@@ -33,32 +33,39 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Renderer;
+namespace Glpi\Form\QuestionType;
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypesLoader;
+use Glpi\Form\Question;
 
 /**
- * Utility class used to easily render a form
- * TODO: could be a singleton to hightlight its role as a service and support
- * DI in the future
+ * Interface that must be implemented by all available questions types
  */
-final class FormRenderer
+interface QuestionTypeInterface
 {
     /**
-     * Render a form using the `render_form.html.twig` template
+     * Render the administration template for the given question.
+     * This template is used on the form editor page.
      *
-     * @param Form $form Form to be displayed
+     * @param Question|null $question     Given question's data. May be null for a new question.
+     * @param string|null   $input_prefix Prefix to use for input names. May be null for a new question.
+     *                                    For a given prefix, the input's names must be "_question[<prefix>][<name>]".
      *
      * @return string
      */
-    public function render(Form $form): string
-    {
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/render_form.html.twig', [
-            'form'           => $form,
-            'question_types' => QuestionTypesLoader::getQuestionTypes(),
-        ]);
-    }
+    public function renderAdminstrationTemplate(
+        ?Question $question,
+        ?string $input_prefix = null
+    ): string;
+
+    /**
+     * Render the end up user template for a given question.
+     * This template is used when rendered forms are displayed to users.
+     *
+     * @param Question $question Given question's data.
+     *
+     * @return string
+     */
+    public function renderEndUserTemplate(
+        Question $question,
+    ): string;
 }

@@ -3722,6 +3722,8 @@ JS;
      * @param int     $editor_height    editor default height
      * @param array   $add_body_classes tinymce iframe's body classes
      * @param string  $toolbar_location tinymce toolbar location (default: top)
+     * @param bool    $init             init the editor (default: true)
+     * @param string  $placeholder      textarea placeholder
      *
      * @return void|string
      *    integer if param display=true
@@ -3735,7 +3737,9 @@ JS;
         $enable_images = true,
         int $editor_height = 150,
         array $add_body_classes = [],
-        string $toolbar_location = 'top'
+        string $toolbar_location = 'top',
+        bool $init = true,
+        string $placeholder = ''
     ) {
         global $CFG_GLPI, $DB;
 
@@ -3804,121 +3808,151 @@ JS;
             $body_class .= " $class";
         }
 
-        // init tinymce
+        // Compute init option as "string boolean" so it can be inserted directly into the js output
+        $init = $init ? 'true' : 'false';
+
+        // Id may be using array notation (field[key1][key2]) which whould not
+        // be supported in a js var name. Replace it with underscores.
+        $safe_id = str_replace(["[", "]"], "_", $id);
+
         $js = <<<JS
-         $(function() {
-            const html_el = $('html');
-            var is_dark = html_el.attr('data-glpi-theme-dark') === "1" || html_el.css('--is-dark').trim() === 'true';
-            var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
+            // Store config in global var so the editor can be reinitialized from the client side if needed
+            var tiny_editor_config_{$safe_id} = {};
 
-            // init editor
-            tinyMCE.init(Object.assign({
-               link_default_target: '_blank',
-               branding: false,
-               selector: '#{$id}',
-               text_patterns: false,
+            // init tinymce
+            $(function() {
+                const html_el = $('html');
+                var is_dark = html_el.attr('data-glpi-theme-dark') === "1" || html_el.css('--is-dark').trim() === 'true';
+                var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
-               plugins: {$pluginsjs},
+                tiny_editor_config_{$safe_id} = Object.assign({
+                    link_default_target: '_blank',
+                    branding: false,
+                    selector: '#' + $.escapeSelector('{$id}'),
+                    text_patterns: false,
 
-               // Appearance
-               skin_url: is_dark
-                  ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
-                  : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
-               body_class: '{$body_class}',
-               content_css: '{$content_css}',
-               autoresize_bottom_margin: 0, // Avoid excessive bottom padding
+                    plugins: {$pluginsjs},
 
-               min_height: $editor_height,
-               resize: true,
+                    // Appearance
+                    skin_url: is_dark
+                        ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
+                        : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
+                    body_class: '{$body_class}',
+                    content_css: '{$content_css}',
+                    autoresize_bottom_margin: 0, // Avoid excessive bottom padding
+                    autoresize_overflow_padding: 0,
 
-               // disable path indicator in bottom bar
-               elementpath: false,
+                    min_height: $editor_height,
+                    resize: true,
 
-               // inline toolbar configuration
-               menubar: false,
-               toolbar_location: '{$toolbar_location}',
-               toolbar: richtext_layout == 'classic'
-                  ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
-                  : false,
-               quickbars_insert_toolbar: richtext_layout == 'inline'
-                  ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
-                  : false,
-               quickbars_selection_toolbar: richtext_layout == 'inline'
-                  ? 'bold italic | styles | forecolor backcolor '
-                  : false,
-               contextmenu: richtext_layout == 'classic'
-                  ? false
-                  : 'copy paste | emoticons table image link | undo redo | code fullscreen',
+                    // disable path indicator in bottom bar
+                    elementpath: false,
 
-               // Content settings
-               entity_encoding: 'raw',
-               invalid_elements: '{$invalid_elements}',
-               readonly: {$readonlyjs},
-               relative_urls: false,
-               remove_script_host: false,
+                    placeholder: "{$placeholder}",
 
-               // Misc options
-               browser_spellcheck: true,
-               cache_suffix: '{$cache_suffix}',
+                    // inline toolbar configuration
+                    menubar: false,
+                    toolbar_location: '{$toolbar_location}',
+                    toolbar: richtext_layout == 'classic'
+                        ? 'styles | bold italic | forecolor backcolor | bullist numlist outdent indent | emoticons table link image | code fullscreen'
+                        : false,
+                    quickbars_insert_toolbar: richtext_layout == 'inline'
+                        ? 'emoticons quicktable quickimage quicklink | bullist numlist | outdent indent '
+                        : false,
+                    quickbars_selection_toolbar: richtext_layout == 'inline'
+                        ? 'bold italic | styles | forecolor backcolor '
+                        : false,
+                    contextmenu: richtext_layout == 'classic'
+                        ? false
+                        : 'copy paste | emoticons table image link | undo redo | code fullscreen',
 
-               setup: function(editor) {
-                  // "required" state handling
-                  if ($('#$id').attr('required') == 'required') {
-                     $('#$id').removeAttr('required'); // Necessary to bypass browser validation
+                    // Content settings
+                    entity_encoding: 'raw',
+                    invalid_elements: '{$invalid_elements}',
+                    readonly: {$readonlyjs},
+                    relative_urls: false,
+                    remove_script_host: false,
 
-                     editor.on('submit', function (e) {
-                        if ($('#$id').val() == '') {
-                           const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
-                           alert({$mandatory_field_msg}.replace('%s', field));
-                           e.preventDefault();
+                    // Misc options
+                    browser_spellcheck: true,
+                    cache_suffix: '{$cache_suffix}',
 
-                           // Prevent other events to run
-                           // Needed to not break single submit forms
-                           e.stopPropagation();
+                    setup: function(editor) {
+                        // "required" state handling
+                        if ($('#$id').attr('required') == 'required') {
+                            $('#$id').removeAttr('required'); // Necessary to bypass browser validation
+
+                            editor.on('submit', function (e) {
+                                if ($('#$id').val() == '') {
+                                    const field = $('#$id').closest('.form-field').find('label').text().replace('*', '').trim();
+                                    alert({$mandatory_field_msg}.replace('%s', field));
+                                    e.preventDefault();
+
+                                    // Prevent other events to run
+                                    // Needed to not break single submit forms
+                                    e.stopPropagation();
+                                }
+                            });
+                            editor.on('keyup', function (e) {
+                                editor.save();
+                                if ($('#$id').val() == '') {
+                                    $(editor.container).addClass('required');
+                                } else {
+                                    $(editor.container).removeClass('required');
+                                }
+                            });
+                            editor.on('init', function (e) {
+                                if (strip_tags($('#$id').val()) == '') {
+                                    $(editor.container).addClass('required');
+                                }
+                            });
+                            editor.on('paste', function (e) {
+                                // Remove required on paste event
+                                // This is only needed when pasting with right click (context menu)
+                                // Pasting with Ctrl+V is already handled by keyup event above
+                                $(editor.container).removeClass('required');
+                            });
                         }
-                     });
-                     editor.on('keyup', function (e) {
-                        editor.save();
-                        if ($('#$id').val() == '') {
-                           $(editor.container).addClass('required');
-                        } else {
-                           $(editor.container).removeClass('required');
-                        }
-                     });
-                     editor.on('init', function (e) {
-                        if (strip_tags($('#$id').val()) == '') {
-                           $(editor.container).addClass('required');
-                        }
-                     });
-                     editor.on('paste', function (e) {
-                        // Remove required on paste event
-                        // This is only needed when pasting with right click (context menu)
-                        // Pasting with Ctrl+V is already handled by keyup event above
-                        $(editor.container).removeClass('required');
-                     });
-                  }
 
-                  // Simulate focus on content-editable tinymce
-                  editor.on('click focus', function (e) {
-                    // Clear focus on other editors
-                    $('.simulate-focus').removeClass('simulate-focus');
-                    // Simulate input focus on our current editor
-                    $('.content-editable-tinymce').addClass('simulate-focus');
-                  });
+                        // Simulate focus on content-editable tinymce
+                        editor.on('click focus', function (e) {
+                            // Some focus events don't have the correct target and cant be handled
+                            if (!$(e.target.editorContainer).length) {
+                                return;
+                            }
 
-                  editor.on('Change', function (e) {
-                     // Nothing fancy here. Since this is only used for tracking unsaved changes,
-                     // we want to keep the logic in common.js with the other form input events.
-                     onTinyMCEChange(e);
-                  });
-                  // ctrl + enter submit the parent form
-                  editor.addShortcut('ctrl+13', 'submit', function() {
-                     editor.save();
-                     submitparentForm($('#$id'));
-                  });
-               }
-            }, {$language_opts}));
-         });
+                            // Clear focus on other editors
+                            $('.simulate-focus').removeClass('simulate-focus');
+
+                            // Simulate input focus on our current editor
+                            $(e.target.editorContainer)
+                                .closest('.content-editable-tinymce')
+                                .addClass('simulate-focus');
+                        });
+
+                        editor.on('Change', function (e) {
+                            // Nothing fancy here. Since this is only used for tracking unsaved changes,
+                            // we want to keep the logic in common.js with the other form input events.
+                            onTinyMCEChange(e);
+
+                            // Special callback for the form editor
+                            if (formEditor_OnTinyMCEChange !== undefined) {
+                                formEditor_OnTinyMCEChange(e);
+                            }
+                        });
+                        // ctrl + enter submit the parent form
+                        editor.addShortcut('ctrl+13', 'submit', function() {
+                            editor.save();
+                            submitparentForm($('#$id'));
+                        });
+                    }
+                }, {$language_opts});
+
+                // Init tinymce
+                if ({$init}) {
+                    tinyMCE.init(tiny_editor_config_{$safe_id});
+                }
+            });
 JS;
 
         if ($display) {

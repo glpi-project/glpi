@@ -44,4 +44,53 @@ class Section extends CommonDBChild
 {
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
+
+    /**
+     * Lazy loaded array of questions
+     * Should always be accessed through getQuestions()
+     * @var Question[]|null
+     */
+    protected ?array $questions = null;
+
+    /**
+     * Get questions of this form
+     *
+     * @return Question[]
+     */
+    public function getQuestions(): array
+    {
+        // Lazy loading
+        if ($this->questions === null) {
+            $this->questions = [];
+
+            // Read from database
+            $questions_data = (new Question())->find([
+                self::getForeignKeyField() => $this->fields['id']
+            ]);
+            foreach ($questions_data as $row) {
+                $question = new Question();
+                $question->getFromResultSet($row);
+                $question->post_getFromDB();
+                $this->questions[] = $question;
+            }
+        }
+
+        return $this->questions;
+    }
+
+    public function post_updateItem($history = 1)
+    {
+        // Clear any lazy loaded data
+        $this->clearLazyLoadedData();
+    }
+
+    /**
+     * Clear lazy loaded data
+     *
+     * @return void
+     */
+    protected function clearLazyLoadedData(): void
+    {
+        $this->questions = null;
+    }
 }

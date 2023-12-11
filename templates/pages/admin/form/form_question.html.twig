@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var question_type Glpi\Form\QuestionType\QuestionTypeInterface #}
+{# @var question      Glpi\Form\Question|null #}
+{# @var input_prefix  string|null #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set base_field_options = {
+    'is_horizontal': false,
+    'full_width'   : true,
+    'no_label'     : true,
+} %}
+
+<div
+    class="card mb-3 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+    data-question-container
+>
+    <div class="card-body">
+        {# Display question's title #}
+        <div class="d-flex">
+            <input
+                class="form-control content-editable-h2"
+                type="text"
+                name="{{ input_prefix is not null ? input_prefix ~ '[name]' : 'name' }}"
+                value="{{ question is not null ? question.fields.name : '' }}"
+                placeholder="{{ __("New question") }}"
+                data-question-title
+            />
+            <span data-required-mark class="text-danger d-none">*</span>
+        </div>
+
+        {# Render the specific question type #}
+        {{ question_type.renderAdminstrationTemplate(question, input_prefix)|raw }}
+
+        {# Display common fields #}
+        <div
+            class="content-editable-tinymce"
+            tabindex="6"
+            data-question-description
+            {# Mark as secondary if empty #}
+            {{ question is null or question.fields.description|length == 0 ? "data-question-extra-details" : ""}}
+        >
+            {{ fields.textareaField(
+                input_prefix is not null ? input_prefix ~ '[description]' : 'description',
+                question is not null ? question.fields.description : '',
+                __('Description'),
+                base_field_options|merge({
+                    'placeholder': __('Add a description...'),
+                    'enable_richtext': true,
+                    'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                    'editor_height': "0",
+                    'rows' : 1,
+                    'toolbar_location': 'bottom',
+                    'init': question is not null ? true : false,
+                })
+            ) }}
+        </div>
+
+        <div
+            class="d-flex align-items-end"
+            data-question-extra-details
+        >
+            <label class="form-check form-switch 2 ms-auto me-2 cursor-pointer">
+                <input type="hidden" value="0" name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}">
+                <input
+                    class="form-check-input"
+                    name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}"
+                    type="checkbox"
+                    value="1"
+                    {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
+                    data-question-mandatory-toggle
+                >
+                <span class="form-check-label">{{ __("Mandatory") }}</span>
+            </label>
+
+            <button
+                class="btn btn-ghost-danger px-2"
+                type="button"
+                data-delete-question
+            >
+                <i class="ti ti-trash me-2"></i>
+                {{ __("Delete") }}
+            </button>
+        </div>
+    </div>
+
+    {# Common hidden data #}
+    <input
+        type="hidden"
+        name="{{ input_prefix is not null ? input_prefix ~ '[type]' : 'type' }}"
+        value="{{ get_class(question_type) }}"
+    />
+    <input
+        type="hidden"
+        name="{{ input_prefix is not null ? input_prefix ~ '[id]' : 'id' }}"
+        value="{{ question is not null ? question.fields.id : 0 }}"
+    />
+</div>

@@ -188,4 +188,20 @@ class TemplateRenderer
             Profiler::getInstance()->stop($template);
         }
     }
+
+    // TMP, can be removed once we rebase as it is alreading integrated into
+    // #https://github.com/glpi-project/glpi/pull/16054
+    public function renderFromStringTemplate(string $template, array $variables = []): string
+    {
+        try {
+            Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
+            return $this->environment->createTemplate($template)->render($variables);
+        } catch (\Twig\Error\Error $e) {
+            ErrorHandler::getInstance()->handleTwigError($e);
+        } finally {
+            Profiler::getInstance()->stop($template);
+        }
+
+        return '';
+    }
 }

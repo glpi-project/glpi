@@ -137,6 +137,11 @@ class CommonAjaxController
         // the response so it can be applied in the UX but its not yet displayed
         // for Forms so there is no way to test it right now
         $body = $this->insertSessionMessages($body);
+
+        // Insert extra custom data from the item, which may be used by its
+        // custom callback
+        $body = array_merge($body, $this->item->getExtraResponseData());
+
         return $this->jsonResponse($code, $body);
     }
 

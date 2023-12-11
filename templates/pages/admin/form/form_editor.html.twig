@@ -71,7 +71,7 @@
                 <div class="col-7">
 
                     {# Card containing the main form data: title, header and status #}
-                    <div class="card form-details">
+                    <div class="card form-details mb-3">
                         <div class="card-status-top bg-primary"></div>
                         <div class="card-body">
 
@@ -108,7 +108,7 @@
                                     base_field_options|merge({
                                         'enable_richtext': true,
                                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                        'editor_height': "50",
+                                        'editor_height': "0",
                                         'rows' : 1,
                                         'toolbar_location': 'bottom',
                                     })
@@ -116,6 +116,32 @@
                             </div>
                         </div>
                     </div>
+
+                    {# Display all questions here #}
+                    <div class="questions">
+                        {% set question_index = 0 %}
+                        {% for section in item.getSections() %}
+                            {% for question in section.getQuestions() %}
+                                {# Render admin template for the given question type #}
+                                {{ include('pages/admin/form/form_question.html.twig', {
+                                    'question_type': question_types[question.fields.type],
+                                    'question'     : question,
+                                    'input_prefix' : '_questions[' ~ question_index ~ ']',
+                                }, with_context = false) }}
+                                {% set question_index = question_index + 1 %}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    {# Add question action #}
+                    {# TODO: UI/UX #}
+                    {% if item.canUpdate() %}
+                        <div id="form_add_question" class="card cursor-pointer align-items-center">
+                            <div class="card-body">
+                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add question") }}</h3>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -128,7 +154,7 @@
         py-2
         px-3
         {# Negative margins to cancel parent padding, this is needed as we want
-        our footer to use the full width of it's parent #}
+        our footer to use the full width of its parent #}
         ms-n2
         me-n2
     ">
@@ -200,7 +226,7 @@
         {% endif %}
 
         {% if item.fields.is_draft %}
-            {# Add action (which is an update form as we just change the is_draft field's value #}
+            {# Add action (which is an update form as we just change the is_draft field's value) #}
             <button
                 class="btn btn-primary"
                 type="submit"
@@ -230,6 +256,9 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
+    {# Special input to indicate that missing question must be deleted #}
+    <input type="hidden" name="_delete_missing_questions" value="1">
+
     {# Set as non draft once saved #}
     {% if item.fields.is_draft %}
         <input type="hidden" name="is_draft" value="0">
@@ -239,6 +268,19 @@
 
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
+
+{# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
+<div id="question_type_model_container" class="d-none">
+    {% for key, question_type in question_types %}
+        <div id="question_type_model_{{ key|slug }}">
+            {# Render admin template for the given question type #}
+            {{ include('pages/admin/form/form_question.html.twig', {
+                'question_type': question_type,
+                'question': null,
+            }, with_context = false) }}
+        </div>
+    {% endfor %}
+</div>
 
 {# Preview form modal #}
 <div
@@ -254,11 +296,13 @@
 </div>
 
 <script>
+    // TODO: script is getting bigger and might need its own file soon
+
     /**
      * Callback used when the form is updated
      * Need to be a "var" to be accessible from the global scope
      */
-    var glpi_form_ajax_update_callback = function () {
+    var glpi_form_ajax_update_callback = function (response) {
         // Specific code enabled only if the item is a draft
         let is_draft = {{ item.fields.is_draft }};
 
@@ -276,6 +320,36 @@
 
             // Mark as no longer a draft to avoid running this code again
             is_draft = false;
+        }
+
+        // Handle newly added questions ids, they must be inserted into their
+        // form so they can be updated correctly instead of re-added on the next
+        // submit
+        if (response.added_questions !== undefined) {
+            // Data contains two keys: input_index and id
+            response.added_questions.forEach(function(data) {
+                // Update ID input
+                $("input[name='_questions[" + data.input_index + "][id]']").val(data.id);
+            });
+        }
+    };
+
+    // Global event manager for tinymce
+    var formEditor_OnTinyMCEChange = function(event) {
+        // Special handler for description field
+        const description_container = $(event.target.container).closest("[data-question-description]");
+        if (description_container.length) {
+            // Strip tags
+            const div = document.createElement("div");
+            div.innerHTML = event.level.content;
+            const raw_text = div.textContent || div.innerText || "";
+
+            // Mark as secondary data if empty
+            if (raw_text.length == 0) {
+                description_container.attr("data-question-extra-details", "");
+            } else {
+                description_container.removeAttr("data-question-extra-details");
+            }
         }
     };
 
@@ -298,6 +372,17 @@
            adjust_container_height_throttled();
         });
 
+        /**
+         * Mark the given question as active
+         */
+        const setActiveQuestion = function(question_container) {
+            $("[data-question-container]").removeClass("active-question");
+
+            if (question_container !== null) {
+                question_container.addClass("active-question");
+            }
+        };
+
         // Handle preview
         $('#form-form button[name=preview]').on('click', function(e) {
             // Read form's id
@@ -311,6 +396,85 @@
             $("#preview_form_modal .modal-content").load(
                 CFG_GLPI.root_doc + "/ajax/form/render_form.php?id=" + id,
             );
+        });
+
+        // Handle new questions
+        let question_index = {{ question_index }};
+        $("#form_add_question").on("click", function(e) {
+            // Copy template
+            const copy = $("#question_type_model_{{ default_question_type|slug }}")
+                .children() // Skip model container
+                .clone();
+
+            // Keep track of how many textarea we process
+            let textarea_index = 0;
+            const tiny_mce_to_init = [];
+
+            // Input must have unique name so we will use the
+            // "_questions[index][input_name] key format
+            copy.find("input, textarea").each(function() {
+                const input_name = $(this).attr("name");
+                $(this).attr("name", `_questions[${question_index}][${input_name}]`);
+
+                // Special actions for tinymce
+                if ($(this).prop("tagName") == "TEXTAREA") {
+                    // Get editor config
+                    const config = window["tiny_editor_config_" + $(this).attr("id")];
+
+                    // Rename id so it can be unique
+                    $(this).attr("id", `_questions_${question_index}_${input_name}_${textarea_index}`);
+                    textarea_index++;
+
+                    // Push config into init queue
+                    config.selector = "#" + $(this).attr("id"); // Ref to updated id
+                    tiny_mce_to_init.push(config);
+                }
+            });
+
+            // Insert the new question
+            setActiveQuestion(copy);
+            copy.appendTo(".questions");
+            question_index++;
+
+            // Init editor (must be done after copy)
+            tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
+        });
+
+        // Handle question deletion
+        $(document).on("click", "[data-delete-question]", function(e) {
+            // Get question container
+            const question_container = $(e.target).closest("[data-question-container]");
+
+            // Remove question
+            question_container.remove();
+        });
+
+        // Add mandatory class to mandatory questions
+        $(document).on("change", "input[data-question-mandatory-toggle]", function(e) {
+            // Get question container
+            const question_container = $(e.target).closest("[data-question-container]");
+
+            if ($(this).prop("checked")) {
+                question_container.addClass("mandatory-question");
+            } else {
+                question_container.removeClass("mandatory-question");
+            }
+        });
+
+        // Set custom width for question titles as we need the red asterisk to be put right after it
+        $("[data-question-title]").each(function() {
+            $(this).css("width", getRealInputWidth($(this), "1.2rem"));
+        });
+        $(document).on("input", "[data-question-title]", function() {
+            $(this).css("width", getRealInputWidth($(this), "1.2rem"));
+        });
+
+        // Handle active question
+        $(document).on("click", "[data-question-container]", function() {
+            setActiveQuestion($(this));
+        });
+        $(document).on("click", ".form-details", function() {
+            setActiveQuestion(null);
         });
     })();
 </script>

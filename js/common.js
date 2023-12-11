@@ -1608,3 +1608,70 @@ function waitForElement(selector) {
         });
     });
 }
+
+/**
+ * Get the ideal width of an input element based on its content.
+ * This allow to make dynamic inputs that grow and shrink based on their content.
+ *
+ * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
+ *
+ * @param {JQuery} input
+ * @param {String} real_font_size It seems the font size computed by styles.fontSize
+ *                                 is not really accurate when using rem units.
+ *                                 This parameter allows to directly provide the
+ *                                 accurate font size if it's known.
+ *
+ * @return {String} The ideal width of the input element
+ */
+function getRealInputWidth(input, real_font_size = null)
+{
+    let fakeEle = $("#fake_dom_getRealInputWidth");
+    const textboxEle = input[0];
+
+    // Initialize our fake element only once to prevent useless computations
+    if (fakeEle.length === 0) {
+        // Create a div element
+        fakeEle = document.createElement('div');
+        fakeEle.id = "fake_dom_getRealInputWidth";
+
+        // Hide it completely
+        fakeEle.style.position = 'absolute';
+        fakeEle.style.top = '0';
+        fakeEle.style.left = '0';
+        fakeEle.style.left = '-9999px';
+        fakeEle.style.overflow = 'hidden';
+        fakeEle.style.visibility = 'hidden';
+        fakeEle.style.whiteSpace = 'nowrap';
+        fakeEle.style.height = '0';
+
+        // Append the fake element to `body`
+        document.body.appendChild(fakeEle);
+    } else {
+        fakeEle = fakeEle[0];
+    }
+
+    // We copy some styles from the textbox that effect the width
+    const styles = window.getComputedStyle(textboxEle);
+
+    // Copy font styles from the textbox
+    fakeEle.style.fontFamily = styles.fontFamily;
+    fakeEle.style.fontSize = real_font_size ?? styles.fontSize;
+    fakeEle.style.fontStyle = styles.fontStyle;
+    fakeEle.style.fontWeight = styles.fontWeight;
+    fakeEle.style.letterSpacing = styles.letterSpacing;
+    fakeEle.style.textTransform = styles.textTransform;
+
+    fakeEle.style.borderLeftWidth = styles.borderLeftWidth;
+    fakeEle.style.borderRightWidth = styles.borderRightWidth;
+    fakeEle.style.paddingLeft = styles.paddingLeft;
+    fakeEle.style.paddingRight = styles.paddingRight;
+
+    // Compute width
+    const string = textboxEle.value || textboxEle.getAttribute('placeholder') || '';
+    fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
+
+    const fakeEleStyles = window.getComputedStyle(fakeEle);
+    const width = fakeEleStyles.width;
+
+    return width;
+}

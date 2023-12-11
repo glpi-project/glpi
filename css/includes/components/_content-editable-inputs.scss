@@ -58,6 +58,9 @@ $inline-input-padding: 2px 4px;
 
 
 .content-editable-tinymce {
+    // Override some hard-set tinymce margins
+    margin-bottom: -1rem !important;
+
     // Remove default border and padding, add similar hover style used on our inputs
     .tox-tinymce {
         border-color: transparent !important;
@@ -88,6 +91,16 @@ $inline-input-padding: 2px 4px;
         opacity: 0;
         height: 0;
     }
+
+    // Override some hard-set tinymce margins
+    .tox-sidebar-wrap {
+        margin-bottom: -20px;
+    }
+
+    // Do not display file upload summary as it will only contains pasted images
+    .fileupload {
+        display: none;
+    }
 }
 
 // Simulate focus like a bootstrap input, needed for tinymce with some javascript
@@ -99,6 +112,12 @@ $inline-input-padding: 2px 4px;
     .tox-editor-header {
         opacity: unset;
         height: unset;
+    }
+
+    // Partial revert of margin change in this case as we want to keep the
+    // natural margin while the toolbar is visible
+    .tox-sidebar-wrap {
+        margin-bottom: -5px;
     }
 }
 

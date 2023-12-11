@@ -61,3 +61,20 @@
     border-top: 1px solid $border-color;
     background: $footer-toolbar-bg;
 }
+
+// Show required mark on mandatory question
+.mandatory-question {
+    [data-required-mark] {
+        display: inline !important;
+    }
+}
+
+// Higlight active question
+.active-question {
+    border: 1px solid $primary;
+}
+
+// Hide secondary data on inactive questions
+[data-question-container]:not(.active-question) [data-question-extra-details] {
+    display: none !important;
+}
