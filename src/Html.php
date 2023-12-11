@@ -1270,7 +1270,12 @@ HTML;
         } else {
             $theme_path = $theme->getPath();
         }
-        $tpl_vars['css_files'][] = ['path' => $theme_path];
+        $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
+        if ($theme->isCustomTheme()) {
+            $tpl_vars['css_files'][] = ['path' => $theme_path];
+        } else {
+            $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
+        }
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
@@ -6815,6 +6820,10 @@ HTML;
         $scss->addImportPath(
             function ($path) {
                 $file_chunks = [];
+                //Force bootstrap imports to be prefixed by ~
+                if (str_starts_with($path, 'bootstrap/scss')) {
+                    $path = '~' . $path;
+                }
                 if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
                     return null;
                 }

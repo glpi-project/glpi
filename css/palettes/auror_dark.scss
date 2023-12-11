@@ -32,8 +32,8 @@
  */
 
 $is-dark: true;
-$primary: #fec95c;
-$primary-fg: #644e21;
+
+
 $secondary: #b0bbd4;
 $secondary-fg: #262d3d;
 $min-contrast-ratio: 3;
@@ -46,10 +46,7 @@ $min-contrast-ratio: 3;
 
 $dark: #232e3c;
 $light: #9ca8c0;
-$link-color: #b6c3e0;
-$text-muted: #757d91;
-$mainmenu_bg: #2f3f64;
-$mainmenu_fg: #f4f6fa;
+
 $logo: "../pics/logos/logo-GLPI-100-white.png";
 $logo_reduced: "../pics/logos/logo-G-100-white.png";
 $header-fg: #6ba8f3;
@@ -79,4 +76,17 @@ $timeline-fup-bg: #1c2430 !default;
 $timeline-fup-fg: #8892a8 !default;
 $timeline-fup-border: #2f3d50 !default;
 
-@import "../includes/palette_dark";
+:root[data-glpi-theme="auror_dark"] {
+    --tblr-body-bg: #232e3c;
+    --tblr-body-color: #9ca8c0;
+    --tblr-primary-rgb: 254, 201, 92;
+    --tblr-primary-fg: #644e21;
+    --tblr-secondary: #b0bbd4;
+    --tblr-secondary-fg: #262d3d;
+    --tblr-link-color: #b6c3e0;
+    --tblr-muted: #757d91;
+
+
+    --glpi-mainmenu-bg: #2f3f64;
+    --glpi-mainmenu-fg: #f4f6fa;
+}

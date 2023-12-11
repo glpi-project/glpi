@@ -31,12 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #585957;
-$primary-fg: #fff;
-$link-color: #161514;
-$mainmenu_bg: #161514;
-$mainmenu_fg: #fff;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-@import "../includes/palette_light";
+:root[data-glpi-theme="dark"] {
+    --tblr-primary-rgb: 88, 89, 87;
+    --tblr-primary-fg: #ffffff;
+    --tblr-link-color: #161514;
+    --glpi-mainmenu-bg: #161514;
+    --glpi-mainmenu-fg: #ffffff;
+}

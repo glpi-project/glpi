@@ -31,14 +31,12 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #ffd2ca;
-$primary-fg: #d6665a;
-$secondary: #d6665a;
-$secondary-fg: #fff;
-$link-color: #75a48b;
-$mainmenu_bg: #d6665a;
-$mainmenu_fg: #ffd2ca;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-@import "../includes/palette_light";
+:root[data-glpi-theme="hipster"] {
+    --tblr-primary-rgb: 255, 210, 202;
+    --tblr-primary-fg: #d6665a;
+    --tblr-secondary: #d6665a;
+    --tblr-secondary-fg: #ffffff;
+    --tblr-link-color: #75a48b;
+    --glpi-mainmenu-bg: #d6665a;
+    --glpi-mainmenu-fg: #ffd2ca;
+}

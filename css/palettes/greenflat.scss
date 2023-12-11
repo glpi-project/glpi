@@ -31,11 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #fec95c;
-$link-color: #007a58;
-$mainmenu_bg: #09a071;
-$mainmenu_fg: #fff;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-@import "../includes/palette_light";
+:root[data-glpi-theme="greenflat"] {
+    --tblr-primary-rgb: 254, 201, 92;
+    --tblr-link-color: #007a58;
+    --glpi-mainmenu-bg: #09a071;
+    --glpi-mainmenu-fg: #ffffff;
+}

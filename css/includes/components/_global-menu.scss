@@ -31,27 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
-.navbar .navbar-toggler {
-    color: $mainmenu-fg;
-}
-
 .sidebar,
 .topbar {
-    background-color: $mainmenu-bg;
-    color: $mainmenu-fg;
+    background-color: var(--glpi-mainmenu-bg);
+    color: var(--glpi-mainmenu-fg);
     z-index: $zindex-fixed + 1; // +1 to be above breadcrumbs
 
+    .navbar-toggler {
+        color: var(--glpi-mainmenu-fg);
+    }
+
     .btn-ghost-secondary {
-        color: rgba($color: $mainmenu-fg, $alpha: 80%);
+        color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
     }
 
     .btn-outline-secondary {
-        color: rgba($color: $mainmenu-fg, $alpha: 80%);
-        border-color: rgba($color: $mainmenu-fg, $alpha: 80%);
+        color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+        border-color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
 
         &:hover {
-            background-color: rgba($color: $mainmenu-fg, $alpha: 80%);
-            color: rgba($color: $mainmenu-bg, $alpha: 80%);
+            background-color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+            color: rgba($color: var(--glpi-mainmenu-bg), $alpha: 80%);
             border-color: transparent;
         }
     }
@@ -89,14 +89,14 @@
         .nav-item {
             .nav-link {
                 padding: 0 1.5rem !important;
-                color: rgba($color: $mainmenu-fg, $alpha: 80%);
+                color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
                 border-left: 3px solid transparent;
                 border-radius: unset;
 
                 &.show,
                 &.active {
-                    border-left-color: rgba($color: $primary, $alpha: 30%);
-                    color: rgba($color: $primary, $alpha: 90%);
+                    border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 30%);
+                    color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
                     font-weight: bold;
                 }
 
@@ -115,14 +115,14 @@
                             padding-left: 3.25rem; // FIXME: tabler 1.0.0-beta13 missing var $container-padding-x
 
                             &.active {
-                                border-left-color: rgba($color: $primary, $alpha: 30%);
+                                border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 30%);
                                 background-color: rgba($color: #000, $alpha: 10%);
                                 font-weight: bold;
                             }
 
                             &:hover {
-                                border-left-color: $primary;
-                                color: $primary;
+                                border-left-color: var(--tblr-primary);
+                                color: var(--tblr-primary);
                                 background-color: rgba($color: #000, $alpha: 20%);
                             }
                         }
@@ -136,8 +136,8 @@
 
             &:hover {
                 .nav-link {
-                    border-left-color: $primary;
-                    color: $primary;
+                    border-left-color: var(--tblr-primary);
+                    color: var(--tblr-primary);
                     background-color: rgba($color: #000, $alpha: 10%);
                 }
             }
@@ -200,7 +200,7 @@
                 }
 
                 .dropdown-menu {
-                    box-shadow: $shadow-card-hover;
+                    box-shadow: $box-shadow-card-hover;
 
                     &.show {
                         display: none;
@@ -230,11 +230,11 @@
                                 background: transparent;
                             }
 
-                            background-color: $mainmenu-fg;
-                            color: $mainmenu-bg;
+                            background-color: var(--glpi-mainmenu-fg);
+                            color: var(--glpi-mainmenu-bg);
                             top: 0;
                             left: calc(100% + 1px);
-                            border: 1px solid $mainmenu-bg;
+                            border: 1px solid var(--glpi-mainmenu-bg);
                             position: absolute;
                             z-index: 1050;
 
@@ -246,8 +246,8 @@
                                 border-left: 3px solid transparent;
 
                                 &.active {
-                                    background-color: lighten($mainmenu-bg, 55%);
-                                    border-left-color: $primary;
+                                    background-color: var(--glpi-mainmenu-active-bg);
+                                    border-left-color: var(--tblr-primary);
                                 }
                             }
                         }
@@ -268,7 +268,7 @@
                     }
 
                     &.active {
-                        background-color: lighten($mainmenu-bg, 5%);
+                        background-color: color-mix(in srgb, var(--glpi-mainmenu-bg), white 5%);
                     }
                 }
             }

@@ -33,6 +33,7 @@
 
 $is-dark: false !default;
 
+@import "~@tabler/core/src/scss/core";
 @import "base";
 @import "mixins/badges_fixes";
 @import "global-variables";

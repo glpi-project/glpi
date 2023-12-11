@@ -244,11 +244,6 @@
    .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
       background-color: var(--contrast-light);
       color: var(--dark);
-
-      @include dark-mode {
-         background-color: var(--contrast-dark);
-         color: var(--light);
-      }
    }
 
    .tab_glpi {
@@ -347,10 +342,6 @@
    .tab_cadre_fixehov tr.rowHover,
    .tab_cadre_fixehov td.rowHover {
       background-color: #F3F3F3;
-
-      @include dark-mode {
-         background-color: #292929;
-      }
    }
 
    .tab_format {
@@ -389,11 +380,6 @@
 
       .tab_cadre_fixehov th, .tab_cadrehov th {
          background-color: #F1F0F0;
-
-         @include dark-mode {
-            background-color: var(--header-bg);
-            color: var(--header-fg);
-         }
       }
    }
 
@@ -1507,4 +1493,34 @@ div.banner-need-update {
    font-weight: bold;
    padding: 10px;
    text-align: right;
+}
+
+:root[data-glpi-theme-dark="1"] {
+    #page, .qtip, .modal .modal-body {
+        .tab_cadre,
+        .tab_cadre_fixehov,
+        .tab_cadrehov,
+        .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
+            background-color: var(--contrast-dark);
+            color: var(--light);
+        }
+
+        .tab_cadrehov th.headHover,
+        .tab_cadre_fixehov th.headHover,
+        .tab_cadrehov td.columnHover,
+        .tab_cadre_fixehov td.columnHover,
+        .tab_cadrehov tr.rowHover,
+        .tab_cadrehov td.rowHover,
+        .tab_cadre_fixehov tr.rowHover,
+        .tab_cadre_fixehov td.rowHover {
+            background-color: #292929;
+        }
+
+        .central {
+            .tab_cadre_fixehov th, .tab_cadrehov th {
+                background-color: var(--header-bg);
+                color: var(--header-fg);
+            }
+        }
+    }
 }

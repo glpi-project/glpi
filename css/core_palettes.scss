@@ -31,15 +31,26 @@
  * ---------------------------------------------------------------------
  */
 
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
+// Base light/dark mode palettes
+@import "includes/palette_light";
+@import "includes/palette_dark";
 
-:root[data-glpi-theme="flood"] {
-    --tblr-primary-rgb: 244, 212, 173;
-    --tblr-secondary: #757575;
-    --tblr-link-color: #006573;
-    --glpi-mainmenu-bg: #006573;
-    --glpi-mainmenu-fg: #f4f6fa;
-    --glpi-search-bg: #fcf7f1;
-    --glpi-search-fg: #756d61;
-}
+// Palettes
+@import "palettes/aerialgreen";
+@import "palettes/auror";
+@import "palettes/auror_dark";
+@import "palettes/automn";
+@import "palettes/classic";
+@import "palettes/clockworkorange";
+@import "palettes/dark";
+@import "palettes/darker";
+@import "palettes/flood";
+@import "palettes/greenflat";
+@import "palettes/hipster";
+@import "palettes/icecream";
+@import "palettes/lightblue";
+@import "palettes/midnight";
+@import "palettes/premiumred";
+@import "palettes/purplehaze";
+@import "palettes/teclib";
+@import "palettes/vintage";

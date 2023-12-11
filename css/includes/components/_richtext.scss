@@ -47,6 +47,7 @@ body.mce-content-body {
     border-top: transparent;
 }
 
+@import "~bootstrap/scss/mixins/border-radius";
 .tox.tox-tinymce {
     border: $input-border-width solid $input-border-color;
 

@@ -31,14 +31,13 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #c8eafd;
-$secondary: #656d77;
-$link-color: #2c73a7;
-$mainmenu_bg: #1a7ab2;
-$mainmenu_fg: #f4f6fa;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
 $badge-bg: #d0d9f0;
 $badge-fg: rgb(58, 73, 102);
 
-@import "../includes/palette_light";
+:root[data-glpi-theme="lightblue"] {
+    --tblr-primary-rgb: 200, 234, 253;
+    --tblr-secondary: #656d77;
+    --tblr-link-color: #2c73a7;
+    --glpi-mainmenu-bg: #1a7ab2;
+    --glpi-mainmenu-fg: #f4f6fa;
+}

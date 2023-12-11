@@ -62,23 +62,26 @@
     margin-top: -0.25rem;
 }
 
-// Variations
-@mixin bs-callout-variant($color) {
-    border-left-color: $color;
+.callout-info {
+    border-left-color: var(--tblr-info);
 
     h2 {
-        color: $color;
+        color: var(--tblr-info);
     }
 }
 
-.callout-info {
-    @include bs-callout-variant($info);
-}
-
 .callout-warning {
-    @include bs-callout-variant($warning);
+    border-left-color: var(--tblr-warning);
+
+    h2 {
+        color: var(--tblr-warning);
+    }
 }
 
 .callout-danger {
-    @include bs-callout-variant($danger);
+    border-left-color: var(--tblr-danger);
+
+    h2 {
+        color: var(--tblr-danger);
+    }
 }

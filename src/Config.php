@@ -627,13 +627,15 @@ class Config extends CommonDBTM
         }
 
         $central = new Central();
+        $palettes = $this->getPalettes(true);
         TemplateRenderer::getInstance()->display('pages/setup/general/preferences_setup.html.twig', [
             'is_user' => $userpref,
             'canedit' => (!$userpref && $canedit) || ($userpref && $canedituser),
             'form_path' => $url,
             'can_edit_config' => $canedit,
             'config' => $data,
-            'palettes' => $this->getPalettes(),
+            'palettes' => array_combine(array_keys($palettes), array_column($palettes, 'name')),
+            'palettes_isdark' => array_combine(array_keys($palettes), array_column($palettes, 'dark')),
             'timezones' => $DB->use_timezones ? $DB->getTimezones() : null,
             'central_tabs' => $central->getTabNameForItem($central, 0),
         ]);
@@ -1848,14 +1850,23 @@ class Config extends CommonDBTM
     /**
      * Get available palettes
      *
+     * @param bool $expanded_info Get expanded info for each palette
      * @return array
+     * @phpstan-return $expanded_info ? array<string, {name: string, dark: boolean}> : array<string, string>
      */
-    public function getPalettes()
+    public function getPalettes(bool $expanded_info = false)
     {
         $all_themes = ThemeManager::getInstance()->getAllThemes();
         $themes = [];
         foreach ($all_themes as $theme) {
-            $themes[$theme->getKey()] = $theme->getName();
+            if ($expanded_info) {
+                $themes[$theme->getKey()] = [
+                    'name' => $theme->getName(),
+                    'dark' => $theme->isDarkTheme(),
+                ];
+            } else {
+                $themes[$theme->getKey()] = $theme->getName();
+            }
         }
         return $themes;
     }

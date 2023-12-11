@@ -34,11 +34,11 @@
 // TODO Encapsulate into a class
 
 .form-check-input[name="as_map"]:checked {
-    background-color: $info;
+    background-color: var(--tblr-info);
 }
 
 .form-check-input[name="is_deleted"]:checked {
-    background-color: $danger;
+    background-color: var(--tblr-danger)
 }
 
 // Prevent search results from filling all available vertical space
@@ -189,7 +189,7 @@
                             z-index: $zindex-sticky;
                             position: sticky;
                             top: 44px;
-                            border: 1px solid $card-border-color;
+                            border: 1px solid var(--card-border-color);
                             border-left: 0;
                             border-right: 0;
                             background-color: $table_header_bg;

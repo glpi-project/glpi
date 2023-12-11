@@ -43,3 +43,18 @@ $logo: "../pics/logos/logo-GLPI-100-white.png";
 $logo_reduced: "../pics/logos/logo-G-100-white.png";
 $badge-bg: #d0d9f0;
 $badge-fg: rgb(58, 73, 102);
+
+:root {
+    --glpi-primary: #fec95c;
+    --glpi-secondary: #606f91;
+    --glpi-fg-secondary: #f4f6fa;
+    --glpi-input-bg: rgb(253, 253, 253);
+    --glpi-input-disabled-bg: #f1f5f9;
+    --glpi-link-color: #3a5693;
+    --glpi-mainmenu-bg: #2f3f64;
+    --glpi-mainmenu-fg: #f4f6fa;
+    --glpi-logo: "../pics/logos/logo-GLPI-100-white.png";
+    --glpi-logo-reduced: "../pics/logos/logo-G-100-white.png";
+    --glpi-badge-bg: #d0d9f0;
+    --glpi-badge-fg: rgb(58, 73, 102);
+}
