@@ -37,13 +37,12 @@ use Glpi\Form\Form;
 
 include('../../inc/includes.php');
 
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
-
 // Read parameters
 $id = $_REQUEST['id'] ?? null;
 
 if (($_GET['id'] ?? 0) == 0) {
+    Session::checkRight(Form::$rightname, CREATE);
+
     // Clear stale drafts
     // TODO: move to a dedicated cron task
     $DB->delete(Form::getTable(), [
@@ -64,5 +63,6 @@ if (($_GET['id'] ?? 0) == 0) {
     // Code stop here due to exit() in the Html::redirect() method
 } else {
     // Show requested form
+    Session::checkRight(Form::$rightname, READ);
     Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
 }

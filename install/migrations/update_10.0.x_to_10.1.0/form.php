@@ -119,6 +119,9 @@ $migration->createTable(
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
 );
 
+// Add rights for the forms object
+$migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
+
 // Name (forced), Entities (forced), Child entities, Active, Last update
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 

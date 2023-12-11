@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Form\Form;
 
 /**
  * Profile class
@@ -966,6 +967,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(__CLASS__, 'central', ['scope' => 'global']),
                             $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(Form::class, 'central'),
                         ],
                         'inventory' => [
                             $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', [
@@ -3590,6 +3592,20 @@ class Profile extends CommonDBTM
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'rssfeed_public']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '122',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Form::getTypeName(1),
+            'datatype'           => 'right',
+            'rightclass'         => Form::class,
+            'rightname'          => Form::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Form::$rightname]
             ]
         ];
 
