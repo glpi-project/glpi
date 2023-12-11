@@ -393,8 +393,8 @@
       }
 
       &.subheader {
-         background-color: $header-bg;
-         color: $header-fg;
+         background-color: var(--glpi-form-header-bg);
+         color: var(--glpi-form-header-fg);
          text-align: center;
          font-weight: bold;
 

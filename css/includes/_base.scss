@@ -36,20 +36,13 @@
     --tblr-primary: rgb(var(--tblr-primary-rgb));
     --tblr-secondary: #606f91;
     --tblr-info: #80abe4;
-    --glpi-fg-secondary: #f4f6fa;
+
     //--tblr-input-bg: rgb(253, 253, 253);
     //--tblr-input-disabled-bg: #f1f5f9;
     --tblr-link-color: #3a5693;
-    --glpi-logo: "../pics/logos/logo-GLPI-100-white.png";
-    --glpi-logo-reduced: "../pics/logos/logo-G-100-white.png";
     --tblr-badge-bg: #d0d9f0;
     --tblr-badge-fg: rgb(58, 73, 102);
     --tblr-navbar-color: #2f3f64;
-    --glpi-mainmenu-bg: #2f3f64;
-    --glpi-mainmenu-fg: #f4f6fa;
-    --glpi-search-bg: transparentize(#2f3f64, 0.95);
-    --glpi-search-fg: lighten(#f4f6fa, 5%);
-    --glpi-mainmenu-active-bg: lighten(#2f3f64, 55%);
     --tblr-body-bg: #ffffff;
     --tblr-card-cap-bg: var(--tblr-body-bg);
 
@@ -59,7 +52,24 @@
     --glpi-tabs-active-bg: var(--glpi-tabs-bg);
     --glpi-tabs-active-fg: var(--tblr-body-color);
     --glpi-tabs-active-border: var(--glpi-tabs-border);
+
+    --glpi-logo: "../pics/logos/logo-GLPI-100-white.png";
+    --glpi-logo-reduced: "../pics/logos/logo-G-100-white.png";
+    --glpi-mainmenu-bg: #2f3f64;
+    --glpi-mainmenu-fg: #f4f6fa;
+    --glpi-mainmenu-active-bg: lighten(#2f3f64, 55%);
+    --glpi-search-bg: transparentize(#2f3f64, 0.95);
+    --glpi-search-fg: lighten(#f4f6fa, 5%);
+    --glpi-fg-secondary: #f4f6fa;
+
+    --glpi-form-header-fg: var(--tblr-blue);
+    --glpi-form-header-bg: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 90%);
+    --glpi-form-header-border-color: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 75%);
+    --glpi-form-header-danger-fg: var(--tblr-danger);
+    --glpi-form-header-danger-bg: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 90%);
+    --glpi-form-header-danger-border-color: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 75%);
 }
+
 $mainmenu_bg: $dark !default;
 $mainmenu_fg: $light !default;
 $search_bg: transparentize($mainmenu_bg, 0.95) !default;
