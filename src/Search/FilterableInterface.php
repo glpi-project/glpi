@@ -64,7 +64,7 @@ interface FilterableInterface
      * To help users understand how the filter will be used by GLPI, we will
      * display a small info section at the start of the "Filter" tab
      *
-     * The info section will be constructed as a bootstrap "callout", which need
+     * The info section will be constructed as a tabler "alert", which need
      * a title explaining the general purpose of the filter.
      *
      * @return string
@@ -75,7 +75,7 @@ interface FilterableInterface
      * To help users understand how the filter will be used by GLPI, we will
      * display a small info section at the start of the "Filter" tab
      *
-     * The info section will be constructed as a bootstrap "callout", which need
+     * The info section will be constructed as a tabler "alert", which need
      * a description to explain in details how the filter will be used.
      *
      * @return string
