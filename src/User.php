@@ -1033,7 +1033,7 @@ class User extends CommonDBTM
             && !$this->currentUserHaveMoreRightThan($input['id'])
         ) {
             foreach ($protected_input_keys as $input_key) {
-                if ($input_key === '_emails' && isCommandLine() && !isAPI()) {
+                if ($input_key === '_emails' && isCommandLine()) {
                     continue;
                 }
                 unset($input[$input_key]);
