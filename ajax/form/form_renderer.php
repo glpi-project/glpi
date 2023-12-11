@@ -43,8 +43,8 @@ include('../../inc/includes.php');
  * AJAX endpoint used to display or preview a form.
  */
 
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
+// For now form rendering is only used to preview a form by a technician
+Session::checkRight(Form::$rightname, READ);
 
 // Mandatory parameter: id of the form to render
 $id = $_GET['id'] ?? 0;

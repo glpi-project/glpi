@@ -37,8 +37,7 @@ use Glpi\Form\Form;
 
 include('../../inc/includes.php');
 
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
+Session::checkRight(Form::$rightname, READ);
 
 Html::header(Form::getTypeName(1), $_SERVER['PHP_SELF'], "admin", Form::getType());
 Search::show(Form::getType());

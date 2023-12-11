@@ -47,6 +47,8 @@ use Log;
  */
 class Form extends CommonDBTM
 {
+    public static $rightname = 'form';
+
     public static function getTypeName($nb = 0)
     {
         return _n('Form', 'Forms', $nb);
@@ -55,32 +57,6 @@ class Form extends CommonDBTM
     public static function getIcon()
     {
         return "ti ti-forms";
-    }
-
-    public static function canView()
-    {
-        // Only super admins for now - TODO add specific rights
-        return Config::canUpdate();
-    }
-
-    public static function canCreate()
-    {
-        return Config::canUpdate();
-    }
-
-    public static function canUpdate()
-    {
-        return Config::canUpdate();
-    }
-
-    public static function canDelete()
-    {
-        return Config::canUpdate();
-    }
-
-    public static function canPurge()
-    {
-        return Config::canUpdate();
     }
 
     public function defineTabs($options = [])
