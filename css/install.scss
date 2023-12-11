@@ -33,8 +33,9 @@
 
 $is-dark: false !default;
 
-@import "palettes/defaults";
-@import "includes/palette_light";
+@import "includes/fonts";
+@import "includes/logos";
+@import "lib/tabler/core/src/scss/core";
 @import "includes/base";
 @import "includes/global-variables";
 @import "includes/components/select2";
