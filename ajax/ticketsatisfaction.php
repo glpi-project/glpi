@@ -49,11 +49,13 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
         $inquest_rate      = $entity->getfield('inquest_rate');
         $inquest_duration  = $entity->getfield('inquest_duration');
         $max_closedate     = $entity->getfield('max_closedate');
+        $inquest_display   = $entity->getfield('inquest_display');
     } else {
         $inquest_delay     = -1;
         $inquest_rate      = -1;
         $inquest_duration  = -1;
         $max_closedate     = '';
+        $inquest_display   = 0;
     }
 
     if ($_POST['inquest_config'] > 0) {
@@ -102,6 +104,18 @@ if (isset($_POST['inquest_config']) && isset($_POST['entities_id'])) {
         Html::showDateTimeField("max_closedate", ['value'      => $max_closedate,
             'timestep'   => 1
         ]);
+        echo "</td></tr>";
+
+
+        echo "<tr class='tab_bg_1'>" .
+           "<td>" . __('Arrange the elements') . "</td>";
+        echo "<td>";
+        Dropdown::showFromArray(
+            'inquest_display',
+            ['0' => __('Vertically'),
+             '1' => __('Horizontally')],
+            ['value' => $inquest_display,]
+        );
         echo "</td></tr>";
 
         if ($_POST['inquest_config'] == 2) {

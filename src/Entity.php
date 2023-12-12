@@ -126,7 +126,7 @@ class Entity extends CommonTreeDropdown
         'entity_helpdesk' => [
             'calendars_strategy', 'calendars_id', 'tickettype', 'auto_assign_mode',
             'autoclose_delay', 'inquest_config',
-            'inquest_rate', 'inquest_delay',
+            'inquest_rate', 'inquest_delay', 'inquest_display',
             'inquest_duration','inquest_URL',
             'max_closedate', 'tickettemplates_strategy', 'tickettemplates_id',
             'changetemplates_strategy', 'changetemplates_id', 'problemtemplates_strategy', 'problemtemplates_id',

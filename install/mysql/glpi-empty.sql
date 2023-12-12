@@ -2759,6 +2759,7 @@ CREATE TABLE `glpi_entities` (
   `inquest_rate` int NOT NULL DEFAULT '0',
   `inquest_delay` int NOT NULL DEFAULT '-10',
   `inquest_URL` varchar(255) DEFAULT NULL,
+  `inquest_display` int NOT NULL DEFAULT '0',
   `autofill_warranty_date` varchar(255) NOT NULL DEFAULT '-2',
   `autofill_use_date` varchar(255) NOT NULL DEFAULT '-2',
   `autofill_buy_date` varchar(255) NOT NULL DEFAULT '-2',
