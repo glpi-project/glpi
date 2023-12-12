@@ -668,30 +668,32 @@ var stopEvent = function(event) {
     event.stopPropagation();
 };
 
-/**
- * Back to top implementation
- */
-if ($('#backtotop').length) {
-    var scrollTrigger = 100, // px
-        backToTop = function () {
-            var scrollTop = $(window).scrollTop();
-            if (scrollTop > scrollTrigger) {
-                $('#backtotop').addClass('d-md-block');
-            } else {
-                $('#backtotop').removeClass('d-md-block');
-            }
-        };
-    backToTop();
-    $(window).on('scroll', function () {
+$(() => {
+    /**
+     * Back to top implementation
+     */
+    if ($('#backtotop').length) {
+        var scrollTrigger = 100, // px
+            backToTop = function () {
+                var scrollTop = $(window).scrollTop();
+                if (scrollTop > scrollTrigger) {
+                    $('#backtotop').addClass('d-md-block');
+                } else {
+                    $('#backtotop').removeClass('d-md-block');
+                }
+            };
         backToTop();
-    });
-    $('#backtotop').on('click', function (e) {
-        e.preventDefault();
-        $('html,body').animate({
-            scrollTop: 0
-        }, 700);
-    });
-}
+        $(window).on('scroll', function () {
+            backToTop();
+        });
+        $('#backtotop').on('click', function (e) {
+            e.preventDefault();
+            $('html,body').animate({
+                scrollTop: 0
+            }, 700);
+        });
+    }
+});
 
 /**
  * Returns element height, including margins
