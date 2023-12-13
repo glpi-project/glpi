@@ -79,27 +79,27 @@
 
     --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 20%);
     --glpi-scrollbar-track-color: transparent;
-}
 
-$itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
-$timeline-itilc-bg: #e2f2e3 !default;
-$timeline-itilc-fg: #155210 !default;
-$timeline-itilc-border: #87aa8a !default;
-$timeline-fup-bg: #ececec !default;
-$timeline-fup-fg: #535353 !default;
-$timeline-fup-border: #ccc !default;
-$timeline-task-bg: #ffe8b9 !default;
-$timeline-task-fg: #38301f !default;
-$timeline-task-border: #e5c88c !default;
-$timeline-sol-bg: #9fd6ed !default;
-$timeline-sol-fg: #27363b !default;
-$timeline-sol-border: #90c2d8 !default;
-$timeline-doc-bg: #80cead !default;
-$timeline-doc-fg: #21352c !default;
-$timeline-doc-border: #68b997 !default;
-$timeline-log-bg: #cacaca21 !default;
-$timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
-$timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
+    --glpi-itil-secondary-bg: #f5f5f5;
+    --glpi-timeline-itil-content-bg: #e2f2e3;
+    --glpi-timeline-itil-content-fg: #155210;
+    --glpi-timeline-itil-content-border-color: #87aa8a;
+    --glpi-timeline-fup-bg: #ececec;
+    --glpi-timeline-fup-fg: #535353;
+    --glpi-timeline-fup-border-color: #b3b3b3;
+    --glpi-timeline-task-bg: #ffe8b9;
+    --glpi-timeline-task-fg: #38301f;
+    --glpi-timeline-task-border-color: #e5c88c;
+    --glpi-timeline-solution-bg: #9fd6ed;
+    --glpi-timeline-solution-fg: #27363b;
+    --glpi-timeline-solution-border-color: #90c2d8;
+    --glpi-timeline-document-bg: #80cead;
+    --glpi-timeline-document-fg: #21352c;
+    --glpi-timeline-document-border-color: #68b997;
+    --glpi-timeline-log-bg: #cacaca21;
+    --glpi-timeline-badge-bg: rgba(97, 97, 97, 15%);
+    --glpi-timeline-badge-fg: rgba(43, 43, 43, 80%);
+}
 
 body.iframed,
 body.in_modal {
