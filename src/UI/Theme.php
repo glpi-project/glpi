@@ -128,7 +128,7 @@ final class Theme implements \JsonSerializable
         $this->is_custom = $data['is_custom'];
     }
 
-    function jsonSerialize(): mixed
+    public function jsonSerialize(): mixed
     {
         return $this->__serialize();
     }

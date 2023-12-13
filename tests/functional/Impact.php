@@ -169,7 +169,7 @@ class Impact extends \DbTestCase
         $tab_name = $impact->getTabNameForItem($computer2);
         $_SESSION['glpishow_count_on_tabs'] = $old_session;
 
-        $this->string($tab_name)->isEqualTo("<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span> <span class='badge'>2</span>");
+        $this->string($tab_name)->isEqualTo("<span><i class='ti ti-affiliate me-2'></i>Impact analysis</span> <span class='badge bg-secondary text-secondary-fg'>2</span>");
     }
 
     public function testGetTabNameForItem_ITILObject()
