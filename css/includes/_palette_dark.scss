@@ -33,47 +33,15 @@
 
 @import "logos";
 
-//$table_header_bg: $dark !default;
-//$input-bg: darken($dark, 2%) !default;
-//$input-color: $light !default;
-//$input-focus-bg: #444 !default;
-//$input-focus-border-color: #868686 !default;
-//$timeline-itilc-bg: #1a221a34 !default;
-//$timeline-itilc-fg: #85bd81 !default;
-//$timeline-itilc-border: #324132 !default;
-//$timeline-fup-bg: #222 !default;
-//$timeline-fup-fg: #acacac !default;
-//$timeline-fup-border: #3b3b3b !default;
-//$timeline-task-bg: #2722172f !default;
-//$timeline-task-fg: #ccb686 !default;
-//$timeline-task-border: #363532 !default;
-//$timeline-sol-bg: #3a4d55 !default;
-//$timeline-sol-fg: #89bfd3 !default;
-//$timeline-sol-border: #435963 !default;
-//$timeline-badge-bg: rgba(104, 104, 104, 15%) !default;
-//$timeline-badge-fg: rgba(236, 236, 236, 80%) !default;
-//$scrollbar-color-thumb: rgba($color: $secondary, $alpha: 20%) !default;
-//$gray-100: $light !default;
-//$gray-200: mix($light, $dark, 98%) !default;
-//$gray-300: mix($light, $dark, 94%) !default;
-//$gray-400: mix($light, $dark, 88%) !default;
-//$gray-500: mix($light, $dark, 78%) !default;
-//$gray-600: mix($light, $dark, 60%) !default;
-//$gray-700: mix($light, $dark, 36%) !default;
-//$gray-800: mix($light, $dark, 16%) !default;
-//$gray-900: $dark !default;
-//$table-striped-bg: rgba(#fff, 0.05) !default;
-//$toast-header-background-color: $gray-400;
-//$toast-header-color: $light;
-//$btn-close-color: $light;
-
 :root[data-glpi-theme-dark="1"] {
     --tblr-body-bg: #000000;
     --tblr-body-color: #e6e6e6;
     --tblr-bg-surface: color-mix(in srgb, var(--tblr-body-bg), black 2%);
     --tblr-border-color: color-mix(in srgb, var(--tblr-body-bg), white 33.33%);
+
     --glpi-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
     --glpi-tabs-border-color: transparent;
+    --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 75%);
 
     .navbar-nav.user-menu .bg-red-lt {
         background-color: rgba(214, 57, 57, 0.20) !important
