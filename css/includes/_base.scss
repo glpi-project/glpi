@@ -37,7 +37,8 @@
     --tblr-secondary: #606f91;
     --tblr-secondary-fg: var(--tblr-body-bg);
     --tblr-info: #80abe4;
-    --tblr-link-color: #3a5693;
+    --tblr-link-color-rgb: 58, 86, 147;
+    --tblr-link-color: rgb(var(--tblr-link-color-rgb));
     --tblr-badge-bg: var(--tblr-secondary);
     --tblr-badge-color: var(--tblr-secondary-fg);
     --tblr-navbar-color: #2f3f64;
@@ -60,7 +61,7 @@
     --glpi-search-border-color: color-mix(in srgb, var(--glpi-search-fg), white 65%);
     --glpi-fg-secondary: #f4f6fa;
     --glpi-table-header-bg: var(--tblr-bg-surface);
-    --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), white 10%);
+    --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), transparent 75%);
     --glpi-badge-fg: var(--tblr-link-color);
     --glpi-form-header-fg: var(--tblr-blue);
     --glpi-form-header-bg: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 90%);
