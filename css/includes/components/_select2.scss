@@ -76,13 +76,6 @@
                 > * {
                     unicode-bidi: plaintext; // preserve text direction
                 }
-
-                //@include dark-mode {
-                //    & {
-                //        color: $dark-mode-text;
-                //        border-color: $input-border;
-                //    }
-                //}
             }
 
             .form-select-sm + & {
@@ -159,13 +152,6 @@
                         &:hover {
                             color: var(--tblr-black);
                         }
-
-                        //@include dark-mode {
-                        //    &,
-                        //    &:hover {
-                        //        color: $light;
-                        //    }
-                        //}
                     }
                 }
             }
