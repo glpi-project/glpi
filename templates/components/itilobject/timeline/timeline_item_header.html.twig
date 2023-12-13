@@ -59,13 +59,6 @@
          {% set actions = actions|merge({edit_btn}) %}
       {% endif %}
 
-      {% if is_private %}
-         <span class="is-private ms-2" title="{{ __('Private') }}"
-               data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="ti ti-lock" aria-label="{{ __('Private') }}"></i>
-         </span>
-      {% endif %}
-
       {% if entry_i['can_promote'] %}
          {% if entry_i['sourceof_items_id'] > 0 %}
             {% set promoted_btn %}
@@ -106,6 +99,13 @@
                {% endfor %}
             </ul>
          </div>
+      {% endif %}
+
+      {% if is_private %}
+         <span class="is-private ms-2" title="{{ __('Private') }}"
+               data-bs-toggle="tooltip" data-bs-placement="bottom">
+            <i class="ti ti-eye-off" aria-label="{{ __('Private') }}"></i>
+         </span>
       {% endif %}
    </div>
 

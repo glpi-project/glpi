@@ -143,7 +143,10 @@
                 {{ value == 1 ? 'checked' : '' }}
                 {{ options.readonly ? 'readonly' : '' }}
                 {{ options.required ? 'required' : '' }}
-                {{ options.disabled ? 'disabled' : '' }} />
+                {{ options.disabled ? 'disabled' : '' }}
+                {% for attr, value in options.additional_attributes %}
+                    {{ attr }}="{{ value }}"
+                {% endfor %} />
          {% if options.label2 %}
             <span class="form-check-label">{{ options.label2 }}</span>
          {% endif %}
