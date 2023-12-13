@@ -1012,22 +1012,22 @@ class User extends CommonDBTM
         }
 
         // prevent changing tokens and emails from users with lower rights
-        $protected_input_keys = array_intersect(
-            [
-                'api_token',
-                '_reset_api_token',
-                'cookie_token',
-                'password_forget_token',
-                'personal_token',
-                '_reset_personal_token',
+        $protected_input_keys = [
+            'api_token',
+            '_reset_api_token',
+            'cookie_token',
+            'password_forget_token',
+            'personal_token',
+            '_reset_personal_token',
 
-                '_emails',
-                '_useremails',
-            ],
-            array_keys($input)
-        );
+            '_useremails',
+        ];
+        if (!isCommandLine()) {
+            // Disallow `_emails` input unless on CLI context (e.g. LDAP sync command).
+            $protected_input_keys[] = '_emails';
+        }
         if (
-            $protected_input_keys > 0
+            count(array_intersect($protected_input_keys, array_keys($input))) > 0
             && !Session::isCron() // cron context is considered safe
             && $input['id'] !== Session::getLoginUserID()
             && !$this->currentUserHaveMoreRightThan($input['id'])
