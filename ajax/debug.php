@@ -117,6 +117,12 @@ if (isset($_GET['action'])) {
         echo json_encode($options);
         die();
     }
+    if ($action === 'get_themes') {
+        header('Content-Type: application/json');
+        $themes = \Glpi\UI\ThemeManager::getInstance()->getAllThemes();
+        echo json_encode($themes);
+        die();
+    }
 }
 
 http_response_code(400);

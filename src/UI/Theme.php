@@ -40,7 +40,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class that represents a theme/palette.
  */
-final class Theme
+final class Theme implements \JsonSerializable
 {
     private string $key;
     private string $name;
@@ -108,5 +108,28 @@ final class Theme
     public function getPath(bool $relative = true): string
     {
         return $this->getBaseDir($relative) . '/' . $this->getKey() . '.scss';
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'key' => $this->key,
+            'name' => $this->name,
+            'is_dark' => $this->is_dark,
+            'is_custom' => $this->is_custom,
+        ];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        $this->key = $data['key'];
+        $this->name = $data['name'];
+        $this->is_dark = $data['is_dark'];
+        $this->is_custom = $data['is_custom'];
+    }
+
+    function jsonSerialize(): mixed
+    {
+        return $this->__serialize();
     }
 }

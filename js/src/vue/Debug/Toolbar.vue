@@ -119,6 +119,16 @@
             refreshButton: (button) => {}
         },
         {
+            id: 'theme_switcher',
+            title: 'Palette Switcher',
+            icon: 'ti ti-palette',
+            main_widget: true, // This widget shows directly in the toolbar
+            component_registered_name: 'widget-theme-switcher',
+            refreshButton: (button) => {
+                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${document.documentElement.attributes['data-glpi-theme'].value}`);
+            }
+        },
+        {
             id: 'globals',
             main_widget: false,
             component_registered_name: 'widget-globals',
@@ -394,7 +404,8 @@
         </div>
         <div id="debug-toolbar-expanded-content" class="w-100 card pe-2" v-show="show_content_area && show_toolbar">
             <component v-if="active_widget" :is="active_widget_component" :initial_request="props.initial_request"
-               :ajax_requests="ajax_requests" @switchWidget="switchWidget" :widgets="widgets"></component>
+               :ajax_requests="ajax_requests" @switchWidget="switchWidget" :widgets="widgets"
+               @refreshButton="refreshWidgetButtons"></component>
         </div>
     </div>
 </template>
