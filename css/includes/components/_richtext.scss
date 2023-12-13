@@ -49,9 +49,9 @@ body.mce-content-body {
 
 @import "~bootstrap/scss/mixins/border-radius";
 .tox.tox-tinymce {
-    border: $input-border-width solid $input-border-color;
+    border: var(--tblr-border-width) solid var(--tblr-border-color);
 
-    @include border-radius($input-border-radius, 0);
+    @include border-radius(var(--tblr-border-radius), 0);
 }
 
 .rich_text_container {

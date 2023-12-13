@@ -95,8 +95,8 @@
 
                 &.show,
                 &.active {
-                    border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 30%);
-                    color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+                    border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 70%);
+                    color: color-mix(in srgb, var(--tblr-primary), transparent 10%);
                     font-weight: bold;
                 }
 

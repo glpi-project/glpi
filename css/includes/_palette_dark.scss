@@ -73,7 +73,7 @@
     --tblr-bg-surface: color-mix(in srgb, var(--tblr-body-bg), black 2%);
     --tblr-border-color: color-mix(in srgb, var(--tblr-body-bg), white 33.33%);
     --glpi-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
-    --glpi-tabs-border: transparent;
+    --glpi-tabs-border-color: transparent;
 
     .navbar-nav.user-menu .bg-red-lt {
         background-color: rgba(214, 57, 57, 0.20) !important

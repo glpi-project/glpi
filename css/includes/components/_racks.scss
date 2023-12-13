@@ -184,18 +184,18 @@ ul.indexes {
     }
 
     .racks_add {
-        border: 1px solid $table-border-color;
+        border: 1px solid var(--tblr-border-color);
         border-width: 0 1px 1px 0;
         background-size: var(--dcroom-grid-cellw) var(--dcroom-grid-cellh);
         background-image:
             linear-gradient(
                 to right,
-                $table-border-color 1px,
+                var(--tblr-border-color) 1px,
                 transparent 1px
             ),
             linear-gradient(
                 to bottom,
-                $table-border-color 1px,
+                var(--tblr-border-color) 1px,
                 transparent 1px
             );
         margin-left: 15px;
@@ -273,7 +273,7 @@ ul.indexes {
         padding: 0;
         text-align: center;
         font-size: 0.7em;
-        color: $table-color;
+        color: var(--tblr-body-color);
         float: left;
 
         &.indexes-x {
@@ -316,14 +316,14 @@ ul.indexes {
 #viewgraph {
     .rooms a {
         &.fa {
-            color: $table-color;
+            color: var(--tblr-body-color);
             position: absolute;
             right: 0;
             top: 0;
             padding: 0.5em;
 
             &:link {
-                color: $table-color;
+                color: var(--tblr-body-color);
                 position: absolute;
                 right: 0;
                 top: 0;
@@ -332,7 +332,7 @@ ul.indexes {
         }
 
         .fa {
-            color: $table-color;
+            color: var(--tblr-body-color);
             position: absolute;
             right: 0;
             top: 0;
@@ -351,12 +351,12 @@ ul.indexes {
         }
 
         th {
-            color: $table-th-color;
+            color: var(--tblr-secondary);
             background-color: steelblue;
         }
 
         td {
-            border-left: 1px solid $table-th-border-color;
+            border-left: 1px solid var(--tblr-border-color);
 
             div {
                 border: none !important;
@@ -403,17 +403,17 @@ ul.indexes {
 .rack_side {
     float: left;
     text-align: center;
-    background: $table-bg;
-    border: 1px solid $table-border-color;
-    color: $table-color;
+    background: var(--tblr-body-bg);
+    border: 1px solid var(--tblr-border-color);
+    color: var(--tblr-body-color);
     padding-top: 18px;
 }
 
 .racks_col h2 {
     font-size: 14px;
     font-weight: bold;
-    color: $table-th-color;
-    background-color: $table-th-bg;
+    color: var(--tblr-secondary);
+    background-color: var(--tblr-bg-surface-tertiary);
     height: 30px;
     margin: 0;
     padding: 5px 0;
@@ -444,14 +444,14 @@ ul.indexes {
 
     width: 217px;
     background:
-        $table-bg repeating-linear-gradient(
+        var(--tblr-body-bg) repeating-linear-gradient(
             transparent,
             transparent 21px,
-            $table-striped-bg 21px,
-            $table-striped-bg 42px
+            var(--tblr-bg-surface-tertiary) 21px,
+            var(--tblr-bg-surface-tertiary) 42px
         );
     z-index: 1;
-    border: 1px solid $table-border-color;
+    border: 1px solid var(--tblr-border-color);
     float: left;
 }
 
@@ -476,7 +476,7 @@ ul.indexes {
 }
 
 .side_pdus {
-    background-color: $table-striped-bg;
+    background-color: var(--tblr-bg-surface-tertiary);
     margin: 0 1px;
 
     .grid-stack-item:not(.lock-bottom) {
@@ -584,7 +584,7 @@ ul.indexes {
 }
 
 .grid-rack .grid-stack-item.lock-bottom {
-    background: $table-bg;
+    background: var(--tblr-body-bg);
     width: 101% !important;
     margin: 0 -1px;
 }
@@ -599,9 +599,9 @@ ul.indexes {
 
 .rack_side_block {
     width: 200px;
-    border: 1px solid $table-border-color;
-    background-color: $table-th-bg;
-    color: $table-th-color;
+    border: 1px solid var(--tblr-border-color);
+    background-color: var(--tblr-bg-surface-tertiary);
+    color: var(--tblr-secondary);
     text-align: left;
     font-size: 11px;
     margin-bottom: 20px;

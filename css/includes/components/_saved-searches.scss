@@ -32,11 +32,11 @@
  */
 
 .saved-searches-panel {
-    border-color: rgba($color: $secondary, $alpha: 30%);
+    border-color: color-mix(in srgb, var(--tblr-secondary), transparent 70%);
     border-left-width: 0;
     border-radius: unset;
     position: fixed;
-    top: $contextbar-height;
+    top: var(--glpi-contextbar-height);
     bottom: 0;
     left: $sidebar-width;
     z-index: $zindex-fixed;
@@ -49,12 +49,12 @@
         top: 0;
         left: 0;
         border-left-width: 1px;
-        height: calc(100vh - #{$contextbar-height} - #{$content-margin});
+        height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin));
         min-width: 320px;
 
         .pin-saved-searches-panel {
-            border: 2px inset rgba($color: $secondary, $alpha: 50%);
-            background-color: rgba($color: $secondary, $alpha: 10%);
+            border: 2px inset color-mix(in srgb, var(--tblr-secondary), transparent 50%);
+            background-color: color-mix(in srgb, var(--tblr-secondary), transparent 90%);
             border-radius: 0.15rem;
         }
 
@@ -91,8 +91,8 @@
                 }
 
                 .badge {
-                    background-color: $badge-bg;
-                    color: $badge-fg;
+                    background-color: var(--tblr-badge-bg);
+                    color: var(--tblr-badge-fg);
                 }
             }
         }
@@ -101,10 +101,10 @@
 
 body.navbar-collapsed {
     .saved-searches-panel {
-        height: calc(100vh - #{$topbar-height});
+        height: calc(100vh - var(--glpi-topbar-height));
 
         &:not(.pinned) {
-            top: $contextbar-height;
+            top: var(--glpi-contextbar-height);
             left: 70px;
         }
     }
@@ -112,17 +112,17 @@ body.navbar-collapsed {
 
 body.horizontal-layout {
     .saved-searches-panel {
-        top: $topbar-height;
+        top: var(--glpi-topbar-height);
         left: 0;
 
         &.pinned {
             top: 0;
-            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - #{$content-margin});
         }
     }
 
     .secondary-bar {
-        top: $topbar-height;
+        top: var(--glpi-topbar-height);
         z-index: 1010;
 
         @include media-breakpoint-down(md) {
@@ -189,7 +189,7 @@ body.horizontal-layout {
             content: "\ec01";
             font-family: tabler-icons;
             font-weight: 900;
-            color: $secondary;
+            color: var(--tblr-secondary);
             margin-left: -1rem;
             width: 1rem;
         }

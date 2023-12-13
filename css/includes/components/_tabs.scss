@@ -37,14 +37,14 @@
 
 .card-tabs {
     #tabspanel {
-        border-right: 1px solid var(--glpi-tabs-border);
+        border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
     #tabspanel.nav-tabs {
         .nav-link {
             background: var(--glpi-tabs-bg);
             color: var(--glpi-tabs-fg);
-            border-color: var(--glpi-tabs-border);
+            border-color: var(--glpi-tabs-border-color);
             border-right-width: 0;
 
             &.active {
@@ -52,7 +52,7 @@
                 margin-right : -1px; // Hack for border overlap
                 background: var(--glpi-tabs-active-bg);
                 color: var(--glpi-tabs-active-fg);
-                border-color: var(--glpi-tabs-active-border);
+                border-color: var(--glpi-tabs-active-border-color);
                 font-weight: bold;
 
                 .badge {
@@ -62,15 +62,13 @@
 
             .badge {
                 margin-left: 5px;
-                background-color: $badge-bg;
-                color: $badge-fg;
             }
         }
     }
 
     &.vertical {
         .nav-link {
-            border-bottom: var(--tblr-card-border-width) solid var(--glpi-tabs-border);
+            border-bottom: 1px solid var(--glpi-tabs-border-color);
 
             &.active {
                 border-left-width: 5px;

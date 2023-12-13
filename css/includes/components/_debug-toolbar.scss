@@ -37,7 +37,7 @@ body.debug-active:not(.debug-folded) {
     .search_page {
         .search-container {
             @include media-breakpoint-up(lg) {
-                height: calc(100vh - #{$contextbar-height} - #{$content-margin} - 50px);
+                height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin) - 50px);
             }
         }
     }

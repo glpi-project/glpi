@@ -60,7 +60,7 @@ body.debug-active {
 
     a {
         font-weight: bold;
-        background-color: #fff;
-        color: red;
+        background-color: var(--tblr-body-bg);
+        color: var(--tblr-danger);
     }
 }

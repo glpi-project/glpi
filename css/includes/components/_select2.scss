@@ -48,13 +48,6 @@
         @include box-shadow($input-box-shadow);
         @include transition($input-transition);
 
-        //@include dark-mode {
-        //    & {
-        //        background-color: $dark-mode-darken;
-        //        border-color: $input-border;
-        //    }
-        //}
-
         .select2-selection__rendered input[type="search"] {
             color: var(--tblr-body-color);
         }
@@ -158,20 +151,13 @@
                     max-width: 100%;
                     white-space: normal;
 
-                    //@include dark-mode {
-                    //    & {
-                    //        background-color: $dark;
-                    //        border-color: $input-border;
-                    //    }
-                    //}
-
                     .select2-selection__choice__remove {
                         color: $dark;
                         font-weight: bold;
                         margin: 0 0 0 3px;
 
                         &:hover {
-                            color: $black;
+                            color: var(--tblr-black);
                         }
 
                         //@include dark-mode {
@@ -209,12 +195,6 @@
 
         @include font-size($input-font-size);
 
-        //@include dark-mode {
-        //    & {
-        //        background-color: $dark;
-        //    }
-        //}
-
         &.select-dropdown-sm {
             @include font-size($input-font-size-sm);
         }
@@ -249,20 +229,12 @@
             .select2-results__options {
                 .select2-results__option {
                     &[aria-selected="true"]:not(.select2-results__option--highlighted) {
-                        background-color: darken($light, 5%);
+                        background-color: color-mix(in srgb, var(--tblr-bg-surface), black 5%);
                     }
 
                     &.select2-results__option--highlighted {
                         background-color: var(--tblr-primary);
-                        color: $light;
-
-                        //@include dark-mode {
-                        //    & {
-                        //        background-color: $dark-mode-darken;
-                        //        color: $dark-mode-text;
-                        //        border-color: $input-border;
-                        //    }
-                        //}
+                        color: var(--tblr-primary-fg);
                     }
 
                     &[role="group"] {
@@ -300,22 +272,6 @@
 
     & ~ .btn.btn-outline-secondary {
         border: var(--tblr-border-width) solid var(--tblr-border-color);
-    }
-}
-
-:root[data-glpi-theme-dark="1"] {
-    .select2-container {
-        .select2-dropdown {
-            .select2-results {
-                .select2-results__options {
-                    .select2-results__option {
-                        &[aria-selected="true"]:not(.select2-results__option--highlighted) {
-                            background-color: lighten($dark, 5%);
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
