@@ -61,7 +61,7 @@
 
         @include media-breakpoint-up(lg) {
             overflow: auto;
-            height: calc(100vh - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin));
             padding: 0;
             margin-left: calc(var(--tblr-gutter-x) / 2);
             margin-right: calc(var(--tblr-gutter-x) / 2);
@@ -86,9 +86,9 @@
             }
 
             .search-form, .sort-container {
-                background-color: $search_bg;
-                color: $search_fg;
-                border-color: $search_border;
+                background-color: var(--glpi-search-bg);
+                color: var(--glpi-search-fg);
+                border-color: var(--glpi-search-border-color);
                 max-height: 60vh;
                 overflow-y: auto;
 
@@ -98,7 +98,7 @@
                 }
 
                 .sub_criteria {
-                    background-color: darken($search_bg, 1%);
+                    background-color: color-mix(in srgb, var(--glpi-search-bg), black 1%);
                 }
 
                 .search_actions, .sort_actions {
@@ -192,7 +192,7 @@
                             border: 1px solid var(--card-border-color);
                             border-left: 0;
                             border-right: 0;
-                            background-color: $table_header_bg;
+                            background-color: var(--glpi-table-header-bg);
                             min-width: max-content;
                             vertical-align: top;
                         }
@@ -263,14 +263,14 @@ body.horizontal-layout {
     .search_page:not(.search_page_global) {
         .search-container {
             @include media-breakpoint-up(lg) {
-                height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+                height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
             }
         }
     }
 
     .search_page_global {
         @include media-breakpoint-up(lg) {
-            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
         }
     }
 }

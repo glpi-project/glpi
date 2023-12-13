@@ -164,7 +164,7 @@
                 flex-direction: column;
                 flex: 1 0 auto;
                 text-align: center;
-                border-top: 5px solid $header-border-color;
+                border-top: 5px solid var(--glpi-form-header-border-color);
 
                 &[data-drop-only="true"] .kanban-body {
                     background: #fffa90;

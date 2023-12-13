@@ -49,8 +49,6 @@ $is-dark: true;
 //$tabs-active-bg: #3a3938;
 //$tabs-active-fg: #aaa;
 //$tabs-active-border: transparent;
-//$badge-bg: $light;
-//$badge-fg: $dark;
 //$input-border: #333;
 //$input-focus-bg: #35455a;
 //$input-focus-border-color: #b4bfce;
@@ -75,6 +73,9 @@ $is-dark: true;
     --tblr-secondary-fg: #f3f3f3;
     --tblr-link-color: #888888;
     --tblr-muted: #aaaaaa;
+    --tblr-badge-bg: var(--tblr-light);
+    --tblr-badge-color: var(--tblr-dark);
     --glpi-mainmenu-bg: #242323;
     --glpi-mainmenu-fg: #f4f6fa;
+    --glpi-form-header-border-color: transparent;
 }

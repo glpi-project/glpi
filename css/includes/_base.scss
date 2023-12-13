@@ -38,8 +38,6 @@
     --tblr-secondary-fg: var(--tblr-body-bg);
     --tblr-info: #80abe4;
 
-    //--tblr-input-bg: rgb(253, 253, 253);
-    //--tblr-input-disabled-bg: #f1f5f9;
     --tblr-link-color: #3a5693;
     --tblr-badge-bg: var(--tblr-secondary);
     --tblr-badge-color: var(--tblr-secondary-fg);
@@ -58,10 +56,15 @@
     --glpi-logo-reduced: "../pics/logos/logo-G-100-white.png";
     --glpi-mainmenu-bg: #2f3f64;
     --glpi-mainmenu-fg: #f4f6fa;
-    --glpi-mainmenu-active-bg: lighten(#2f3f64, 55%);
-    --glpi-search-bg: transparentize(#2f3f64, 0.95);
-    --glpi-search-fg: lighten(#f4f6fa, 5%);
+    --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
+    --glpi-search-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), transparent 95%);
+    --glpi-search-fg: color-mix(in srgb, var(--glpi-mainmenu-fg), white 5%);
+    --glpi-search-border-color: color-mix(in srgb, var(--glpi-search-fg), white 65%);
     --glpi-fg-secondary: #f4f6fa;
+    --glpi-table-header-bg: var(--tblr-bg-surface);
+
+    --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), white 10%);
+    --glpi-badge-fg: var(--tblr-link-color);
 
     --glpi-form-header-fg: var(--tblr-blue);
     --glpi-form-header-bg: color-mix(in srgb, var(--glpi-form-header-fg), var(--tblr-bg-surface) 90%);
@@ -78,24 +81,6 @@
     --glpi-scrollbar-track-color: transparent;
 }
 
-$mainmenu_bg: $dark !default;
-$mainmenu_fg: $light !default;
-$search_bg: transparentize($mainmenu_bg, 0.95) !default;
-$search_fg: lighten($mainmenu_bg, 5%) !default;
-$search_border: lighten($color: $search_fg, $amount: 35) !default;
-$table_border: #eee !default;
-$table_header_bg: #f8f8f8 !default;
-$header-fg: $blue !default;
-$header-bg: theme-color-lighter($header-fg) !default;
-$header-border-color: tint-color($header-fg, 75%) !default;
-$header-danger-bg: $danger !default;
-$header-badge-bg: tint-color($header-fg, 80%) !default;
-$header-badge-fg: darken($header-fg, 20%) !default;
-$scrollbar-color-thumb: rgba($color: $secondary, $alpha: 80%) !default;
-$scrollbar-color-track: transparent !default;
-
-$badge-bg: $secondary !default;
-$badge-fg: $light !default;
 $itil-secondary-bg: #f5f5f5 !default; // secondary color for right side and footer (primary color is card background)
 $timeline-itilc-bg: #e2f2e3 !default;
 $timeline-itilc-fg: #155210 !default;
@@ -115,14 +100,6 @@ $timeline-doc-border: #68b997 !default;
 $timeline-log-bg: #cacaca21 !default;
 $timeline-badge-bg: rgba(97, 97, 97, 15%) !default;
 $timeline-badge-fg: rgba(43, 43, 43, 80%) !default;
-$dropdowns-list-contrast: rgba(167, 171, 175, 10%) !default;
-$glpi-badge-bg: theme-color-lighter($link-color) !default;
-$glpi-badge-fg: $link-color !default;
-
-// helpers
-$topbar-height: 79px;
-$contextbar-height: 56px;
-$content-margin: 20px;
 
 body.iframed,
 body.in_modal {
@@ -319,8 +296,8 @@ table {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    background: $glpi-badge-bg;
-    color: $glpi-badge-fg !important;
+    background: var(--glpi-badge-bg);
+    color: var(--glpi-badge-fg) !important;
     padding: calc(0.25rem - 1px) 0.25rem;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -408,4 +385,9 @@ body .dropdown-menu {
     --tblr-dropdown-divider-margin-y: calc(var(--tblr-spacer) * 0.5);
     --tblr-dropdown-item-padding-x: var(--tblr-spacer);
     --tblr-dropdown-item-padding-y: calc(var(--tblr-spacer) * 0.5);
+}
+
+body .toast {
+    background: var(--tblr-bg-surface);
+    color: var(--tblr-body-color);
 }

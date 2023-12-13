@@ -311,7 +311,7 @@
    .tab_cadre_fixehov th, .tab_cadrehov th {
       background-color: #F8F8F8;
       color: #2E2E2E;
-      border-bottom: 1px solid $table_border;
+      border-bottom: 1px solid var(--tblr-border-color);
    }
 
    .tab_cadre_fixehov td, .tab_cadrehov td {
@@ -323,12 +323,12 @@
    }
 
    .tab_cadre td, .tab_cadre_fixehov td {
-      border-bottom: 1px solid $table_border;
+      border-bottom: 1px solid var(--tblr-border-color);
    }
 
    .tab_cadrehov {
       td {
-         border-bottom: 1px solid $table_border;
+         border-bottom: 1px solid var(--tblr-border-color);
       }
    }
 
@@ -1518,8 +1518,8 @@ div.banner-need-update {
 
         .central {
             .tab_cadre_fixehov th, .tab_cadrehov th {
-                background-color: var(--header-bg);
-                color: var(--header-fg);
+                background-color: var(--glpi-form-header-bg);
+                color: var(--glpi-form-header-fg);
             }
         }
     }

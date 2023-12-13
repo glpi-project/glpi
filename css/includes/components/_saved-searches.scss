@@ -117,7 +117,7 @@ body.horizontal-layout {
 
         &.pinned {
             top: 0;
-            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - #{$content-margin});
+            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
         }
     }
 
