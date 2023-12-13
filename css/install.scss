@@ -44,7 +44,7 @@ $is-dark: false !default;
 
 :root {
     --tblr-body-bg: #1b2f62 !important;
-    --tblr-body-color: #ffffff !important;
+    --tblr-body-color: #fff !important;
     --tblr-link-color: #fec95c !important;
 }
 
@@ -86,7 +86,7 @@ p {
 .tab_check {
     padding: 10px;
     background-color: #fff;
-    color: #000000;
+    color: #000;
 }
 
 .tab_check th {
@@ -96,7 +96,7 @@ p {
 
 .tab_check td {
     font-size: 12px;
-    border-bottom: 1px solid #bbbbbb;
+    border-bottom: 1px solid #bbb;
 }
 
 .tab_check td i.fas,
@@ -134,7 +134,7 @@ h3 {
 .block {
     display: inline-block;
     width: 300px;
-    color: #000000;
+    color: #000;
 }
 
 .license-container {
@@ -148,12 +148,12 @@ h3 {
 }
 
 .alert:not(.alert-important) {
-    color: #000000;
+    color: #000;
 }
 
 /** Tabler override for install **/
 .form-selectgroup-boxes .form-selectgroup-label {
-    color: #000000;
+    color: #000;
 }
 
 .form-control {

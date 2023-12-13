@@ -43,6 +43,7 @@ body {
         --glpi-flatpickr-border-color: var(--tblr-border-color);
         --glpi-flatpickr-shadow-color: color-mix(in srgb, var(--tblr-body-color), transparent 96%);
         --glpi-flatpickr-faded-color: color-mix(in srgb, var(--tblr-body-color), transparent 70%);
+
         background: var(--glpi-flatpickr-bg);
         -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
         box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);

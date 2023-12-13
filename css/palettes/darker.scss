@@ -41,19 +41,18 @@ $is-dark: true;
 
 :root[data-glpi-theme="darker"] {
     --tblr-dark: #242323;
-    --tblr-light: #aaaaaa;
+    --tblr-light: #aaa;
     --tblr-body-bg: #1f1e1e;
-    --tblr-body-color: #aaaaaa;
+    --tblr-body-color: #aaa;
     --tblr-bg-surface: #242323;
     --tblr-primary-rgb: 88, 89, 87;
-    --tblr-primary-fg: #aaaaaa;
+    --tblr-primary-fg: #aaa;
     --tblr-secondary: #737572;
     --tblr-secondary-fg: #f3f3f3;
-    --tblr-link-color: #888888;
-    --tblr-muted: #aaaaaa;
+    --tblr-link-color: #888;
+    --tblr-muted: #aaa;
     --tblr-badge-bg: var(--tblr-light);
     --tblr-badge-color: var(--tblr-dark);
-
     --glpi-mainmenu-bg: #242323;
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-form-header-border-color: transparent;

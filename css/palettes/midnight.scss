@@ -40,19 +40,18 @@ $is-dark: true;
 }
 
 :root[data-glpi-theme="midnight"] {
-    --tblr-dark: #000000;
+    --tblr-dark: #000;
     --tblr-light: #e6e6e6;
-    --tblr-body-bg: #000000;
-    --tblr-primary-rgb: 182, 195, 224; //#b6c3e0
+    --tblr-body-bg: #000;
+    --tblr-primary-rgb: 182, 195, 224; // #b6c3e0
     --tblr-primary-fg: #232e3c;
     --tblr-secondary: #b0bbd4;
     --tblr-secondary-fg: #262d3d;
     --tblr-link-color: var(--tblr-primary);
     --tblr-muted: #c6cad2;
-    --tblr-muted-rgb: 198, 202, 210; //#c6cad2
+    --tblr-muted-rgb: 198, 202, 210; // #c6cad2
     --tblr-badge-bg: var(--tblr-light);
     --tblr-badge-color: var(--tblr-dark);
-
     --glpi-mainmenu-bg: var(--tblr-body-bg);
     --glpi-mainmenu-fg: var(--tblr-body-color);
     --glpi-form-header-fg: #6ba8f3;

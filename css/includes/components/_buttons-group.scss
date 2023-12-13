@@ -35,7 +35,7 @@
 Override the override of mixins by tabler over bootstrap
 which broke styles of btn-group > .btn-check
 */
-//TODO Can this be removed yet?
+// TODO Can this be removed yet?
 
 @mixin button-check(
     $color,
