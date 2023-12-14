@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+$SECURITY_STRATEGY = 'no_check';
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
