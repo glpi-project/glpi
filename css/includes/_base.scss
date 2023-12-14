@@ -44,8 +44,9 @@
     --tblr-badge-color: var(--tblr-secondary-fg);
     --tblr-navbar-color: #2f3f64;
     --tblr-body-bg: #fff;
-    --tblr-card-cap-bg: var(--tblr-body-bg);
-    --tblr-bg-surface-tertiary: var(--tblr-body-bg);
+    --tblr-bg-surface: var(--tblr-body-bg);
+    --tblr-card-cap-bg: var(--tblr-bg-surface);
+    --tblr-bg-surface-tertiary: var(--tblr-bg-surface);
     --glpi-tabs-bg: var(--tblr-bg-surface);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);

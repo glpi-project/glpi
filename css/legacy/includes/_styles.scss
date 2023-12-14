@@ -242,8 +242,8 @@
    .tab_cadre_fixehov,
    .tab_cadrehov,
    .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
-      background-color: var(--contrast-light);
-      color: var(--dark);
+      background-color: var(--tblr-bg-surface);
+      color: var(--tblr-body-color);
    }
 
    .tab_glpi {
