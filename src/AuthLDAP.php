@@ -4783,7 +4783,7 @@ class AuthLDAP extends CommonDBTM
 
         if (
             isset($input['tls_keyfile'])
-            && strlen($input['tls_certfile']) > 0
+            && strlen($input['tls_keyfile']) > 0
             && (!Filesystem::isFilepathSafe($input['tls_keyfile']) || !file_exists($input['tls_keyfile']))
         ) {
             Session::addMessageAfterRedirect(
