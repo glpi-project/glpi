@@ -184,6 +184,15 @@ class Unmanaged extends CommonDBTM
             'name'         => __('IP'),
         ];
 
+        $tab[] = [
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_unmanaged' => 1]
+        ];
+
         return $tab;
     }
 

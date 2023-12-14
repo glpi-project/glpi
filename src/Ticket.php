@@ -747,7 +747,7 @@ class Ticket extends CommonITILObject
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (static::canView()) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
@@ -871,25 +871,21 @@ class Ticket extends CommonITILObject
         }
 
        // Not check self::READALL for Ticket itself
-        switch ($item->getType()) {
-            case __CLASS__:
-                $ong    = [];
+        if ($item instanceof self) {
+            $ong    = [];
 
-                // enquete si statut clos
-                $satisfaction = new TicketSatisfaction();
-                if (
-                    $satisfaction->getFromDB($item->getID())
-                    && $item->fields['status'] == self::CLOSED
-                ) {
-                    $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
-                }
-                if ($item->canView()) {
-                    $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
-                }
-                return $ong;
-
-           //   default :
-           //      return _n('Ticket','Tickets', Session::getPluralNumber());
+            // enquete si statut clos
+            $satisfaction = new TicketSatisfaction();
+            if (
+                $satisfaction->getFromDB($item->getID())
+                && $item->fields['status'] == self::CLOSED
+            ) {
+                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+            }
+            if ($item->canView()) {
+                $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
+            }
+            return $ong;
         }
 
         return '';
@@ -899,8 +895,8 @@ class Ticket extends CommonITILObject
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case __CLASS__:
+        switch (get_class($item)) {
+            case self::class:
                 switch ($tabnum) {
                     case 3:
                         self::showSatisfactionTabContent($item);
@@ -912,9 +908,9 @@ class Ticket extends CommonITILObject
                 }
                 break;
 
-            case 'Group':
-            case 'SLA':
-            case 'OLA':
+            case Group::class:
+            case SLA::class:
+            case OLA::class:
             default:
                 self::showListForItem($item, $withtemplate);
         }
@@ -2330,7 +2326,7 @@ class Ticket extends CommonITILObject
                 $rand = mt_rand();
                 $mergeparam = [
                     'name'         => "_mergeticket",
-                    'used'         => $ma->items['Ticket'],
+                    'used'         => $ma->getItems()['Ticket'],
                     'displaywith'  => ['id'],
                     'rand'         => $rand
                 ];
@@ -5022,8 +5018,8 @@ JAVASCRIPT;
             'reset'    => 'reset'
         ];
 
-        switch ($item->getType()) {
-            case 'User':
+        switch (get_class($item)) {
+            case User::class:
                 $options['restrict']['glpi_tickets_users.users_id'] = $item->getID();
                 $options['restrict']['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
 
@@ -5033,7 +5029,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'SLA':
+            case SLA::class:
                 $options['restrict'][] = [
                     'OR' => [
                         'slas_id_tto'  => $item->getID(),
@@ -5048,7 +5044,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'OLA':
+            case OLA::class:
                 $options['restrict'][] = [
                     'OR' => [
                         'olas_id_tto'  => $item->getID(),
@@ -5063,7 +5059,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Supplier':
+            case Supplier::class:
                 $options['restrict']['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
                 $options['restrict']['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
 
@@ -5073,7 +5069,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Group':
+            case Group::class:
                // Mini search engine
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);

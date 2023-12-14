@@ -63,7 +63,7 @@ Installation mode: {{ constant('GLPI_INSTALL_MODE') }}
 Current language: {{ language }}
 {% endset %}
 
-{% set setup_init_keys = ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode', 'session.save_handler', 'upload_max_filesize'] %}
+{% set setup_init_keys = ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode', 'session.save_handler', 'upload_max_filesize', 'disable_functions'] %}
 {% set server_info %}
 Operating system: {{ call('php_uname') }}
 

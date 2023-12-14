@@ -35,6 +35,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Filesystem;
 
 /**
  *  Class used to manage Auth LDAP config
@@ -338,7 +339,10 @@ class AuthLDAP extends CommonDBTM
             };
         }
 
-        $this->checkFilesExist($input);
+        if (!$this->checkFilesExist($input)) {
+            return false;
+        }
+
         return $input;
     }
 
@@ -3079,19 +3083,24 @@ class AuthLDAP extends CommonDBTM
                 );
             }
         }
-        if (
-            !empty($tls_certfile)
-            && file_exists($tls_certfile)
-            && !@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)
-        ) {
-            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+
+        if (!empty($tls_certfile)) {
+            if (!Filesystem::isFilepathSafe($tls_certfile)) {
+                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_certfile)) {
+                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+            }
         }
-        if (
-            !empty($tls_keyfile)
-            && file_exists($tls_keyfile)
-            && !@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)
-        ) {
-            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+        if (!empty($tls_keyfile)) {
+            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
+                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_keyfile)) {
+                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+            }
         }
         if (!empty($tls_version)) {
             $cipher_suite = 'NORMAL';
@@ -4777,30 +4786,31 @@ class AuthLDAP extends CommonDBTM
 
     public function checkFilesExist(&$input)
     {
-
-        if (isset($input['tls_certfile'])) {
-            $file = realpath($input['tls_certfile']);
-            if (!file_exists($file)) {
-                Session::addMessageAfterRedirect(
-                    __('TLS certificate path is incorrect'),
-                    false,
-                    ERROR
-                );
-                return false;
-            }
+        if (
+            isset($input['tls_certfile'])
+            && (!Filesystem::isFilepathSafe($input['tls_certfile']) || !file_exists($input['tls_certfile']))
+        ) {
+            Session::addMessageAfterRedirect(
+                __('TLS certificate path is incorrect'),
+                false,
+                ERROR
+            );
+            return false;
         }
 
-        if (isset($input['tls_keyfile'])) {
-            $file = realpath($input['tls_keyfile']);
-            if (!file_exists($file)) {
-                Session::addMessageAfterRedirect(
-                    __('TLS key file path is incorrect'),
-                    false,
-                    ERROR
-                );
-                return false;
-            }
+        if (
+            isset($input['tls_keyfile'])
+            && (!Filesystem::isFilepathSafe($input['tls_keyfile']) || !file_exists($input['tls_keyfile']))
+        ) {
+            Session::addMessageAfterRedirect(
+                __('TLS key file path is incorrect'),
+                false,
+                ERROR
+            );
+            return false;
         }
+
+        return true;
     }
 
 

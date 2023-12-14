@@ -63,7 +63,6 @@ The present file will list all changes made to the project; according to the
 ### API changes
 
 #### Added
-
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
@@ -239,7 +238,28 @@ The present file will list all changes made to the project; according to the
 - `DisplayPreference::showFormPerso` `target_id` parameter.
 
 
-## [10.0.11] unreleased
+## [10.0.12] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.11] 2023-12-13
 
 ### Added
 
