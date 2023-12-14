@@ -161,7 +161,7 @@
                         ) }}
 
                         {% set fup_private_lbl %}
-                           <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
+                           <i class="ti ti-eye-off fa-fw me-1" title="{{ __('Private') }}"></i>
                         {% endset %}
                         {{ fields.sliderField(
                            'is_private',
@@ -171,6 +171,9 @@
                               'full_width': true,
                               'icon_label': true,
                               'rand': rand,
+                              'additional_attributes': {
+                                'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                              }
                            }
                         ) }}
 
@@ -254,7 +257,8 @@
                         <i class="fas fa-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
-                     {{ pending_reasons|raw }}
+                    {{ pending_reasons|raw }}
+
                   </div>
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />

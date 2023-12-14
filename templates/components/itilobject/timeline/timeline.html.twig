@@ -57,6 +57,8 @@
       {% set is_current_user = users_id == session('glpiID') %}
       {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
 
+      {% set is_private_class = is_private ? "private-item" : "" %}
+
       {% set can_edit_i  = entry_i['can_edit'] %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
@@ -105,14 +107,14 @@
       {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
 
       {% set anchor = entry['type'] ~ '_' ~ entry_i['id'] %}
-      <div id="{{ anchor }}" class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
+      <div id="{{ anchor }}" class="timeline-item mb-3 {{ is_private_class }} {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
 
          {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
 
          <div class="row">
-            <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
+            <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto order-sm-last' : '' }}">
                {% if entry_i['state'] is constant('Planning::TODO') %}
                   {% if can_edit_i %}
                      <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
@@ -277,5 +279,9 @@ for (let i = 0; i < result.snapshotLength; i++) {
    node.style.setProperty('width', 'var(--itilautobump-header-badge-width)');
    node.style.setProperty('flex-direction', 'row-reverse');
    document.documentElement.style.setProperty('--itilautobump-header-badge-width', width + 'px');
+}
+
+function toggleTimelinePrivate(checked, check_element) {
+    $(check_element).closest('.timeline-item').toggleClass('private-item', checked);
 }
 </script>

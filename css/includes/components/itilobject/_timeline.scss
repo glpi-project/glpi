@@ -114,7 +114,7 @@
                 right: auto;
                 top: -1px;
                 bottom: auto;
-                border: 7px solid transparent;
+                border: 7px dashed transparent;
             }
 
             &::after {
@@ -126,7 +126,7 @@
                 right: auto;
                 top: 0;
                 bottom: auto;
-                border: 6px solid transparent;
+                border: 6px dashed transparent;
             }
 
             &.t-right {
@@ -142,6 +142,34 @@
                     right: -12px;
                 }
             }
+        }
+    }
+
+    &.private-item {
+        .timeline-content {
+            border-style: dashed;
+            border-width: 3px;
+
+            &::before {
+                top: -3px;
+            }
+
+            &::after {
+                left: -7px;
+            }
+
+            &.t-right {
+                &::after {
+                    left: auto;
+                    right: -7px;
+                }
+            }
+        }
+    }
+
+    &:not(.private-item) {
+        .timeline-content {
+            padding: 2px; // compensate border
         }
     }
 
@@ -352,12 +380,9 @@
 }
 
 #new-itilobject-form {
-    min-width: 65%;
-    max-width: 100%;
+    width: 100%;
 
     .timeline-item {
-        min-width: 100%;
-
         &.ITILSolution {
             .timeline-content {
                 border-left: 1px solid transparent;
