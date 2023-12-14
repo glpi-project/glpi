@@ -120,6 +120,10 @@ body.in_modal {
     }
 }
 
+.breadcrumb a {
+    --tblr-breadcrumb-link-color: var(--tblr-muted);
+}
+
 .breadcrumb-alternate {
     a {
         &:hover {
