@@ -274,7 +274,6 @@ $empty_data_builder = new class
             'palette' => 'auror',
             'page_layout' => 'vertical',
             'fold_menu' => '0',
-            'fold_search' => '0',
             'savedsearches_pinned' => '0',
             'timeline_order' => 'natural',
             'itil_layout' => '',

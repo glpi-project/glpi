@@ -44,8 +44,9 @@ if (!$DB->fieldExists('glpi_users', 'is_notif_enable_default')) {
 
 $migration->addConfig(['is_notif_enable_default' => 1]);
 
-if (!$DB->fieldExists('glpi_users', 'show_search_form')) {
-    $migration->addField('glpi_users', 'show_search_form', "tinyint DEFAULT 0");
-}
+// search ux improvements (#15861)
+$migration->addField('glpi_users', 'show_search_form', "tinyint DEFAULT 0");
+$migration->dropField('glpi_users', 'fold_search');
 
 $migration->addConfig(['show_search_form' => 0]);
+Config::deleteConfigurationValues('core', ['fold_search']);

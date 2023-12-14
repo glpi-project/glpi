@@ -1166,7 +1166,7 @@
    }
 
    .fa {
-      &.bookmark_record, &.reset-search, &.fold-search {
+      &.bookmark_record, &.reset-search {
          font-size: 1.5em;
          color: #ccc !important;
 
@@ -1186,7 +1186,7 @@
          }
       }
 
-      &.reset-search:hover, &.bookmark_record.save:hover, &.fold-search:hover {
+      &.reset-search:hover, &.bookmark_record.save:hover {
          color: #999 !important;
       }
    }

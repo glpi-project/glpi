@@ -277,32 +277,6 @@ $(document).ready(function() {
       }
    });
 
-   $('.fold-search').change(function(event) {
-      var show_search = $(this).is(":checked");
-
-      // hide tooltips (issue maybe ?)
-      $('[data-toggle="tooltip"]').tooltip('hide');
-
-      event.preventDefault();
-      $.ajax({
-         url: '{{ path('/ajax/search.php') }}',
-         type: 'POST',
-         datatype: 'json',
-         data: {
-            'action': 'fold_search',
-            'show_search': (show_search ? 1 : 0),
-         },
-         success: function() {
-            toggle_fold_search(show_search);
-
-            // scroll to top to display the change
-            if (show_search) {
-               $("html, body, .search-container").animate({ scrollTop: 0 });
-            }
-         }
-      });
-   });
-
    $('.default-filter').change(function(event) {
       const search_params = new URLSearchParams(window.location.search);
       if (!$(this).is(":checked")) {

@@ -40,13 +40,12 @@
 {% set extra_actions_templates = p.extra_actions_templates|default([]) %}
 {% set hide_controls = p.hide_controls is defined and p.hide_controls %}
 {% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
-{% set fold_search = (session('glpifold_search') or hide_criteria) and not hide_controls %}
 
 {% if mainform and showaction %}
    <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
 {% endif %}
 
-<div class="{{ card_class }} {{ fold_search ? 'd-none' : '' }}">
+<div class="{{ card_class }}">
    <div id="searchcriteria{{ rand }}" class="{{ main_block_class }}">
       {# init criteria count #}
       {% set nbsearchcountvar = "nbcriteria" ~ normalized_itemtype ~ random() %}
@@ -75,7 +74,7 @@
                p: p
             }]) }}
          {% endfor %}
-         <a id="more-criteria{{ rand }}" role="button" class="normalcriteria fold-search list-group-item p-2 b-0 d-none"></a>
+         <a id="more-criteria{{ rand }}" role="button" class="normalcriteria list-group-item p-2 b-0 d-none"></a>
       </div>
       {% if _get['savedsearches_id'] is defined %}
          <input type="hidden" name="savedsearches_id" value="{{ _get['savedsearches_id'] }}">
@@ -183,16 +182,6 @@
          });
 
          {% if mainform and not hide_criteria %}
-            {% if not is_ajax %}
-                const toggle_fold_search = function(show_search) {
-                    $('#searchcriteria{{ rand }}').closest('.search-form').toggle(show_search);
-                };
-                // Init search_criteria state
-                const search_criteria_visibility = window.localStorage.getItem('show_full_searchcriteria');
-                if (search_criteria_visibility !== undefined && search_criteria_visibility !== 'false') {
-                    $('.fold-search').click();
-                }
-            {% endif %}
             $(document).off('click', '.remove-search-criteria').on("click", ".remove-search-criteria", function() {
                 // force removal of tooltip
                 const tooltip = bootstrap.Tooltip.getInstance($(this)[0]);
