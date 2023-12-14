@@ -7898,6 +7898,8 @@ abstract class CommonITILObject extends CommonDBTM
     public function getAssociatedDocumentsCriteria($bypass_rights = false): array
     {
         $task_class = $this->getType() . 'Task';
+        /** @var DBMysql $DB */
+        global $DB; // Used to get subquery results - better performance
 
         $or_crits = [
          // documents associated to ITIL item directly
@@ -7918,50 +7920,59 @@ abstract class CommonITILObject extends CommonDBTM
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
             }
-            $or_crits[] = [
-                Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
-                Document_Item::getTableField('items_id') => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => ITILFollowup::getTable(),
-                        'WHERE'  => $fup_crits,
-                    ]
-                ),
-            ];
+            // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => ITILFollowup::getTable(),
+                'WHERE'  => $fup_crits,
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
+                    Document_Item::getTableField('items_id') => $arr_values,
+                ];
+            }
         }
 
        // documents associated to solutions
         if ($bypass_rights || ITILSolution::canView()) {
-            $or_crits[] = [
-                Document_Item::getTableField('itemtype') => ITILSolution::getType(),
-                Document_Item::getTableField('items_id') => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => ITILSolution::getTable(),
-                        'WHERE'  => [
-                            ITILSolution::getTableField('itemtype') => $this->getType(),
-                            ITILSolution::getTableField('items_id') => $this->getID(),
-                        ],
-                    ]
-                ),
-            ];
+            // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => ITILSolution::getTable(),
+                'WHERE'  => [
+                    ITILSolution::getTableField('itemtype') => $this->getType(),
+                    ITILSolution::getTableField('items_id') => $this->getID(),
+                ],
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    Document_Item::getTableField('itemtype') => ITILSolution::getType(),
+                    Document_Item::getTableField('items_id') => $arr_values,
+                ];
+            }
         }
 
        // documents associated to ticketvalidation
         $validation_class = static::getType() . 'Validation';
         if (class_exists($validation_class) && ($bypass_rights ||  $validation_class::canView())) {
-            $or_crits[] = [
-                Document_Item::getTableField('itemtype') => $validation_class::getType(),
-                Document_Item::getTableField('items_id') => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => $validation_class::getTable(),
-                        'WHERE'  => [
-                            $validation_class::getTableField($validation_class::$items_id) => $this->getID(),
-                        ],
-                    ]
-                ),
-            ];
+             // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => $validation_class::getTable(),
+                'WHERE'  => [
+                    $validation_class::getTableField($validation_class::$items_id) => $this->getID(),
+                ],
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    Document_Item::getTableField('itemtype') => $validation_class::getType(),
+                    Document_Item::getTableField('items_id') => $arr_values,
+                ];
+            }
         }
 
        // documents associated to tasks
@@ -7974,18 +7985,20 @@ abstract class CommonITILObject extends CommonDBTM
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
             }
-            $or_crits[] = [
-                'glpi_documents_items.itemtype' => $task_class::getType(),
-                'glpi_documents_items.items_id' => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => $task_class::getTable(),
-                        'WHERE'  => $tasks_crit,
-                    ]
-                ),
-            ];
+             // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => $task_class::getTable(),
+                'WHERE'  => $tasks_crit,
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    'glpi_documents_items.itemtype' => $task_class::getType(),
+                    'glpi_documents_items.items_id' => $arr_values,
+                ];
+            }
         }
-
         return ['OR' => $or_crits];
     }
 
