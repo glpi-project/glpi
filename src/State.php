@@ -397,10 +397,17 @@ class State extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => $this->getTable(),
-            'field'              => 'is_visible_monitor',
+            'table'              => DropdownVisibility::getTable(),
+            'field'              => 'is_visible',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
+            'joinparams'         => [
+                'jointype' => 'itemtypeonly',
+                'table'      => $this->getTable(),
+                'condition' => [
+                    'NEWTABLE.visible_itemtype' => 'Monitor'
+                ]
+            ]
         ];
 
         $tab[] = [
