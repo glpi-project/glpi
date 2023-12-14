@@ -41,6 +41,20 @@
     --glpi-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
     --glpi-tabs-border-color: transparent;
     --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 75%);
+    --glpi-timeline-itil-content-bg: #1a221a34;
+    --glpi-timeline-itil-content-fg: #85bd81;
+    --glpi-timeline-itil-content-border-color: #324132;
+    --glpi-timeline-fup-bg: #222;
+    --glpi-timeline-fup-fg: #acacac;
+    --glpi-timeline-fup-border-color: #3b3b3b;
+    --glpi-timeline-task-bg: #2722172f;
+    --glpi-timeline-task-fg: #ccb686;
+    --glpi-timeline-task-border-color: #363532;
+    --glpi-timeline-solution-bg: #3a4d55;
+    --glpi-timeline-solution-fg: #89bfd3;
+    --glpi-timeline-solution-border-color: #435963;
+    --glpi-timeline-badge-bg: rgba(104, 104, 104, 15%);
+    --glpi-timeline-badge-fg: rgba(236, 236, 236, 80%);
 
     .navbar-nav.user-menu .bg-red-lt {
         background-color: rgba(214, 57, 57, 20%) !important
