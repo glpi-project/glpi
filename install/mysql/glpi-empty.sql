@@ -7802,7 +7802,6 @@ CREATE TABLE `glpi_users` (
   `palette` char(20) DEFAULT NULL,
   `page_layout` char(20) DEFAULT NULL,
   `fold_menu` tinyint DEFAULT NULL,
-  `fold_search` tinyint DEFAULT NULL,
   `savedsearches_pinned` text,
   `timeline_order` char(20) DEFAULT NULL,
   `itil_layout` text,

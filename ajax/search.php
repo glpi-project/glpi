@@ -50,7 +50,6 @@ if (!isset($_REQUEST['action'])) {
 
 // actions without IDOR
 switch ($_REQUEST['action']) {
-
     case 'display_results':
         if (!isset($_REQUEST['itemtype'])) {
             http_response_code(400);
