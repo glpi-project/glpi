@@ -85,10 +85,12 @@
                 left: 0;
             }
 
-            .search-form {
+            .search-form, .sort-container {
                 background-color: $search_bg;
                 color: $search_fg;
                 border-color: $search_border;
+                max-height: 60vh;
+                overflow-y: auto;
 
                 // try having same width on link dropdowns
                 .select2-container {
@@ -98,10 +100,17 @@
                 .sub_criteria {
                     background-color: darken($search_bg, 1%);
                 }
+
+                .search_actions, .sort_actions {
+                    position: sticky;
+                    bottom: 0;
+                }
             }
         }
 
         .search-card {
+            display: grid;
+
             &.card {
                 // Borders are unreliable here as they will scroll out of sight
                 // due to the sticky header behavior
@@ -110,20 +119,52 @@
                 border: unset;
             }
 
-            @include media-breakpoint-up(lg) {
-                min-width: 100%;
-                width: fit-content;
+            min-width: 100%;
+            width: fit-content;
 
-                .search-header {
-                    border-bottom: 0;
-                    position: sticky;
-                    top: -1px;
-                    background-color: inherit;
-                    z-index: #{$zindex-sticky + 1};
+            .massiveactions-control {
+                grid-column: 1;
+                grid-row: 1;
+                width: 100%;
+                z-index: #{$zindex-sticky + 2} !important;
+            }
 
-                    .search-controls {
+            .search-header {
+                grid-column: 1;
+                grid-row: 1;
+                height: 45px;
+                border-bottom: 0;
+                position: sticky;
+                top: -1px;
+                left: 0;
+                background-color: inherit;
+                z-index: #{$zindex-sticky + 1};
+
+                .search-controls {
+                    width: 100%;
+
+                    .primary-controls {
                         position: sticky;
-                        left: 22px;
+                        left: 18px;
+                    }
+
+                    .btn-active-search {
+                        background-color: #cff5d1;
+                        color: rgb(77, 77, 77);
+                    }
+
+                    .btn-active-sort {
+                        background-color: #ffe0cc;
+                        color: rgb(77, 77, 77);
+                    }
+
+                    .secondary-controls {
+                        position: sticky;
+                        right: 23px;
+
+                        @include media-breakpoint-down(lg) {
+                            right: 0;
+                        }
                     }
                 }
             }
@@ -147,7 +188,7 @@
                         th {
                             z-index: $zindex-sticky;
                             position: sticky;
-                            top: 59px;
+                            top: 44px;
                             border: 1px solid $card-border-color;
                             border-left: 0;
                             border-right: 0;

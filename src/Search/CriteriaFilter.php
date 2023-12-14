@@ -170,7 +170,7 @@ final class CriteriaFilter extends CommonDBChild
      *
      * @return array
      */
-    private static function getDefaultSearch(string $itemtype): array
+    public static function getDefaultSearch(string $itemtype): array
     {
         // Some item may define a getDefaultSearchRequest method
         if (method_exists($itemtype, 'getDefaultSearchRequest')) {

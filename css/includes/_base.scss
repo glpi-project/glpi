@@ -183,7 +183,10 @@ body.in_modal {
         i.fa-brands,
         i.ti {
             margin-right: 0;
-            line-height: 1.5em;
+
+            &:not(.ti) {
+                line-height: 1.5em;
+            }
         }
 
         &.btn-sm {
@@ -204,21 +207,8 @@ body.in_modal {
             i.far,
             i.fa-regular,
             i.fab,
-            i.fa-brands,
-            i.ti {
+            i.fa-brands {
                 line-height: 1.2em;
-            }
-        }
-    }
-}
-
-.btn-group {
-    .btn.btn-outline-secondary {
-        border: $input-border-width solid $input-border-color;
-
-        @include dark-mode {
-            & {
-                border-color: $input-border;
             }
         }
     }

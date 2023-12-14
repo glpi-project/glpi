@@ -472,8 +472,9 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'use_flat_dropdowntree', 'use_flat_dropdowntree_on_search_result', 'palette', 'page_layout',
     'highcontrast_css', 'default_dashboard_central', 'default_dashboard_assets',
     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
-    'fold_menu', 'fold_search', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
-    'itil_layout', 'toast_location', 'timeline_action_btn_layout', 'timeline_date_format', 'is_notif_enable_default'
+    'fold_menu', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
+    'itil_layout', 'toast_location', 'timeline_action_btn_layout', 'timeline_date_format', 'is_notif_enable_default',
+    'show_search_form'
 ];
 
 $CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',

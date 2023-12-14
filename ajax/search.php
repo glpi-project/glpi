@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\Input\QueryBuilder;
+
 // Direct access to file
 
 $AJAX_INCLUDE = 1;
@@ -48,16 +50,6 @@ if (!isset($_REQUEST['action'])) {
 
 // actions without IDOR
 switch ($_REQUEST['action']) {
-    case "fold_search":
-        $user = new User();
-        $success = $user->update([
-            'id'          => (int) Session::getLoginUserID(),
-            'fold_search' => (int) !$_POST['show_search'],
-        ]);
-
-        echo json_encode(['success' => $success]);
-        break;
-
     case 'display_results':
         if (!isset($_REQUEST['itemtype'])) {
             http_response_code(400);
@@ -76,6 +68,9 @@ switch ($_REQUEST['action']) {
         unset($_REQUEST['params']);
 
         $search_params = Search::manageParams($itemtype, $_REQUEST, $_REQUEST['usesession'] ?? true);
+        $params = array_replace($search_params, $params);
+        // Remove hidden criteria such as the longitude and latitude criteria which are injected in the search engine itself for map searches
+        $params['criteria'] = array_filter($params['criteria'], static fn ($criteria) => !isset($criteria['_hidden']) || !$criteria['_hidden']);
 
         if (isset($search_params['browse']) && $search_params['browse'] == 1) {
             $itemtype::showBrowseView($itemtype, $search_params, true);
@@ -99,14 +94,17 @@ if (!Session::validateIDOR($_REQUEST)) {
 switch ($_REQUEST['action']) {
     case "display_criteria":
         Search::displayCriteria($_REQUEST);
+        QueryBuilder::resetActiveSavedSearch();
         break;
 
     case "display_meta_criteria":
         Search::displayMetaCriteria($_REQUEST);
+        QueryBuilder::resetActiveSavedSearch();
         break;
 
     case "display_criteria_group":
         Search::displayCriteriaGroup($_REQUEST);
+        QueryBuilder::resetActiveSavedSearch();
         break;
 
     case "display_searchoption":
@@ -115,5 +113,9 @@ switch ($_REQUEST['action']) {
 
     case "display_searchoption_value":
         Search::displaySearchoptionValue($_REQUEST);
+        break;
+
+    case "display_sort_criteria":
+        Search::displaySortCriteria($_REQUEST);
         break;
 }

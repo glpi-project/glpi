@@ -60,13 +60,15 @@ final class MapSearchOutput extends HTMLSearchOutput
             'link'         => 'AND NOT',
             'field'        => $latitude,
             'searchtype'   => 'contains',
-            'value'        => 'NULL'
+            'value'        => 'NULL',
+            '_hidden'      => true
         ];
         $params['criteria'][] = [
             'link'         => 'AND NOT',
             'field'        => $longitude,
             'searchtype'   => 'contains',
-            'value'        => 'NULL'
+            'value'        => 'NULL',
+            '_hidden'      => true
         ];
 
         return $params;

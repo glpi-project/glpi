@@ -274,7 +274,6 @@ $empty_data_builder = new class
             'palette' => 'auror',
             'page_layout' => 'vertical',
             'fold_menu' => '0',
-            'fold_search' => '0',
             'savedsearches_pinned' => '0',
             'timeline_order' => 'natural',
             'itil_layout' => '',
@@ -354,6 +353,7 @@ $empty_data_builder = new class
             '2fa_grace_date_start' => null,
             '2fa_grace_days' => 0,
             'is_notif_enable_default' => 1,
+            'show_search_form' => 0,
         ];
 
         $tables['glpi_configs'] = [];
