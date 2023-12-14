@@ -34,10 +34,21 @@
 @import "logos";
 
 :root[data-glpi-theme-dark="1"] {
+    --tblr-dark: #000;
+    --tblr-light: #e6e6e6;
     --tblr-body-bg: #000;
     --tblr-body-color: #e6e6e6;
     --tblr-bg-surface: color-mix(in srgb, var(--tblr-body-bg), black 2%);
     --tblr-border-color: color-mix(in srgb, var(--tblr-body-bg), white 33.33%);
+    --tblr-gray-100: var(--tblr-dark);
+    --tblr-gray-200: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 2%);
+    --tblr-gray-300: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 6%);
+    --tblr-gray-400: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 12%);
+    --tblr-gray-500: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 22%);
+    --tblr-gray-600: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 40%);
+    --tblr-gray-700: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 64%);
+    --tblr-gray-800: color-mix(in srgb, var(--tblr-dark), var(--tblr-light) 84%);
+    --tblr-gray-900: var(--tblr-light);
     --glpi-tabs-active-bg: color-mix(in srgb, var(--tblr-bg-surface), white 10%);
     --glpi-tabs-border-color: transparent;
     --glpi-scrollbar-thumb-color: color-mix(in srgb, var(--tblr-secondary), transparent 75%);
