@@ -78,12 +78,22 @@
     }
 
     &.horizontal {
-        .nav-link {
-            border-bottom-width: 1px;
-            border-bottom-style: solid;
+        #tabspanel.nav-tabs {
+            .nav-link {
+                border-bottom-width: 1px;
+                border-bottom-style: solid;
 
-            &.active {
-                border-bottom-color: transparent !important;
+                &:last-of-type {
+                    border-right-width: 1px;
+
+                    &.active {
+                        border-right-color: var(--glpi-tabs-border-color) !important;
+                    }
+                }
+
+                &.active {
+                    border-bottom-color: transparent !important;
+                }
             }
         }
     }
