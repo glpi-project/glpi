@@ -278,11 +278,11 @@ window.GLPI.Search.Table = class Table extends GenericView {
             this.refreshResults();
         });
         $(ajax_container).on('click', '.sort-reset', (e) => {
-             // force removal of tooltip
-             const tooltip = bootstrap.Tooltip.getInstance($(e.currentTarget)[0]);
-             if (tooltip !== null) {
-                 tooltip.dispose();
-             }
+            // force removal of tooltip
+            const tooltip = bootstrap.Tooltip.getInstance($(e.currentTarget)[0]);
+            if (tooltip !== null) {
+                tooltip.dispose();
+            }
 
             e.preventDefault();
             this.resetSortState();
