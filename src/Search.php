@@ -7124,7 +7124,7 @@ JAVASCRIPT;
                             }
                             $waitingtime = 0;
                         }
-                        if ($totaltime != 0) {
+                        if (($totaltime - $waitingtime) != 0) {
                             $percentage  = round((100 * ($currenttime - $waitingtime)) / ($totaltime - $waitingtime));
                         } else {
                            // Total time is null : no active time
