@@ -38,6 +38,8 @@
  * @var \Migration $migration
  */
 
+global $CFG_GLPI;
+
 if ($CFG_GLPI["lock_use_lock_item"]) {
     foreach ($CFG_GLPI['lock_item_list'] as $itemtype) {
         $migration->changeSearchOption($itemtype, 205, 207);
