@@ -38,7 +38,7 @@
  * @var \Migration $migration
  */
 
-if ($CFG_GLPI["lock_use_lock_item"]) {
+if ($CFG_GLPI["lock_use_lock_item"] ?? false) {
     foreach ($CFG_GLPI['lock_item_list'] as $itemtype) {
         $migration->changeSearchOption($itemtype, 205, 207);
         $migration->changeSearchOption($itemtype, 206, 208);
