@@ -8757,7 +8757,7 @@ HTML;
                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                     $value = '<div class="fup-popup">' . $value . '</div>';
-                    $valTip = '' . Html::showToolTip(
+                    $valTip = ' ' . Html::showToolTip(
                         $value,
                         [
                             'awesome-class'   => 'fa-comments',
