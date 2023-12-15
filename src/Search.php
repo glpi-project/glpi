@@ -6887,7 +6887,7 @@ JAVASCRIPT;
                         return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/" .
                            $data[$ID][0]['name'] . "'>";
                     }
-                    return "&nbsp;";
+                    return '';
 
                 case "glpi_documents.filename":
                     $doc = new Document();
@@ -7268,7 +7268,7 @@ JAVASCRIPT;
                             return implode("<br>", $items);
                         }
                     }
-                    return '&nbsp;';
+                    return '';
 
                 case 'glpi_items_tickets.itemtype':
                 case 'glpi_items_problems.itemtype':
@@ -7291,7 +7291,7 @@ JAVASCRIPT;
                         }
                     }
 
-                    return '&nbsp;';
+                    return '';
 
                 case 'glpi_tickets.name':
                 case 'glpi_problems.name':
@@ -7432,7 +7432,7 @@ JAVASCRIPT;
                                           $data["refID"] . "' title=\"" . __s('See planning') . "\">" .
                                           "<i class='far fa-calendar-alt'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
                     } else {
-                        return "&nbsp;";
+                        return '';
                     }
 
                 case "glpi_tickets.priority":
@@ -7643,7 +7643,7 @@ JAVASCRIPT;
                             $out .= "</a>";
                         }
                     }
-                    return (empty($out) ? "&nbsp;" : $out);
+                    return (empty($out) ? '' : $out);
 
                 case "weblink":
                     $orig_link = trim((string)$data[$ID][0]['name']);
@@ -7656,7 +7656,7 @@ JAVASCRIPT;
                         }
                         return "<a href=\"" . Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link</a>";
                     }
-                    return "&nbsp;";
+                    return '';
 
                 case "count":
                 case "number":
@@ -8757,7 +8757,7 @@ HTML;
                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                     $value = '<div class="fup-popup">' . $value . '</div>';
-                    $valTip = "&nbsp;" . Html::showToolTip(
+                    $valTip = '' . Html::showToolTip(
                         $value,
                         [
                             'awesome-class'   => 'fa-comments',
