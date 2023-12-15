@@ -84,6 +84,10 @@ class DataExport
             $value = trim($value, " \n\r\t" . $nbsp);
         }
 
+        if ($value == '&nbsp;') {
+            $value = '';
+        }
+
         return $value;
     }
 }
