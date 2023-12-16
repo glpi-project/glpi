@@ -805,7 +805,8 @@ JAVASCRIPT;
             'min'        => 0,
             'max'        => 24 * HOUR_TIMESTAMP,
             'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
+            'emptylabel' => __('Specify an end date'),
+            'allow_max_change' => false
         ]);
         echo "<br><div id='date_end$rand'></div>";
         $params = [
