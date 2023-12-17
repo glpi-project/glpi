@@ -457,11 +457,8 @@ class Central extends CommonGLPI
 
         $user = new User();
         $user->getFromDB(Session::getLoginUserID());
-        if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-            $expiration_msg = sprintf(
-                __('Your password will expire on %s.'),
-                Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
-            );
+        $expiration_msg = $user->getPasswordExpirationMessage();
+        if ($expiration_msg !== null) {
             $messages['warnings'][] = $expiration_msg
              . ' '
              . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
