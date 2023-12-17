@@ -141,6 +141,7 @@ CREATE TABLE `glpi_authmails` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `comment` text,
   `is_active` tinyint NOT NULL DEFAULT '0',
+  `is_default` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `date_mod` (`date_mod`),
