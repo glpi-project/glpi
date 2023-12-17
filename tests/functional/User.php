@@ -952,6 +952,7 @@ class User extends \DbTestCase
 
         return [
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 years', $time)),
                 'expiration_delay'                => -1,
                 'expiration_notice'               => -1,
@@ -960,6 +961,7 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
@@ -968,6 +970,7 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => 10,
@@ -976,10 +979,29 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-20 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
                 'expected_expiration_time'        => strtotime('-5 days', $time),
+                'expected_should_change_password' => true,
+                'expected_has_password_expire'    => true,
+            ],
+            [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'last_update'                     => null,
+                'expiration_delay'                => 15,
+                'expiration_notice'               => -1,
+                'expected_expiration_time'        => strtotime('+15 days', strtotime($_SESSION['glpi_currenttime'])),
+                'expected_should_change_password' => false,
+                'expected_has_password_expire'    => false,
+            ],
+            [
+                'creation_date'                   => '2021-12-03 17:54:32',
+                'last_update'                     => null,
+                'expiration_delay'                => 15,
+                'expiration_notice'               => -1,
+                'expected_expiration_time'        => strtotime('2021-12-18 17:54:32'),
                 'expected_should_change_password' => true,
                 'expected_has_password_expire'    => true,
             ],
@@ -990,7 +1012,8 @@ class User extends \DbTestCase
      * @dataProvider passwordExpirationMethodsProvider
      */
     public function testPasswordExpirationMethods(
-        string $last_update,
+        string $creation_date,
+        ?string $last_update,
         int $expiration_delay,
         int $expiration_notice,
         $expected_expiration_time,
@@ -1003,9 +1026,10 @@ class User extends \DbTestCase
         $username = 'prepare_for_update_' . mt_rand();
         $user_id = $user->add(
             [
-                'name'      => $username,
-                'password'  => 'pass',
-                'password2' => 'pass'
+                'date_creation' => $creation_date,
+                'name'          => $username,
+                'password'      => 'pass',
+                'password2'     => 'pass'
             ]
         );
         $this->integer($user_id)->isGreaterThan(0);

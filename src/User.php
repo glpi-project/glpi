@@ -6365,6 +6365,13 @@ HTML;
             return null;
         }
 
+        if (null === $this->fields['password_last_update']) {
+            // password never updated
+            return strtotime(
+                '+ ' . $expiration_delay . ' days',
+                strtotime($this->fields['date_creation'])
+            );
+        }
         return strtotime(
             '+ ' . $expiration_delay . ' days',
             strtotime($this->fields['password_last_update'])
@@ -6414,6 +6421,26 @@ HTML;
         }
 
         return $expiration_time < time();
+    }
+
+    public function getPasswordExpirationMessage(): ?string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $expiration_msg = null;
+        if ($this->fields['authtype'] == Auth::DB_GLPI && $this->shouldChangePassword()) {
+            $expire_time = $this->getPasswordExpirationTime();
+            $expire_has_passed = $expire_time < time();
+            if ($expire_has_passed) {
+                $expiration_msg = __('Your password has expired.');
+            } else {
+                $expiration_msg = sprintf(
+                    __('Your password will expire on %s.'),
+                    Html::convDateTime(date('Y-m-d H:i:s', $expire_time))
+                );
+            }
+        }
+        return $expiration_msg;
     }
 
     public static function getFriendlyNameSearchCriteria(string $filter): array
