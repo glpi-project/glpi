@@ -79,6 +79,8 @@ class DeviceHardDriveType extends CommonDeviceType
      * @param CommonDBTM|null $item
      * @param HTMLTableCell|null $father
      * @param $options   array
+     *
+     * @return void
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
