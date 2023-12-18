@@ -6705,6 +6705,7 @@ CREATE TABLE `glpi_softwares` (
   `is_helpdesk_visible` tinyint NOT NULL DEFAULT '1',
   `softwarecategories_id` int unsigned NOT NULL DEFAULT '0',
   `is_valid` tinyint NOT NULL DEFAULT '1',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `date_creation` timestamp NULL DEFAULT NULL,
   `pictures` text,
   PRIMARY KEY (`id`),

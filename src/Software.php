@@ -78,6 +78,14 @@ class Software extends CommonDBTM
         return 's';
     }
 
+    public function isDynamic()
+    {
+        if ($this->fields['is_dynamic'] != null && $this->fields['id'] != 0) {
+            return true;
+        }
+        return false;
+    }
+
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
