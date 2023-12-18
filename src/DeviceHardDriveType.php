@@ -46,11 +46,13 @@ class DeviceHardDriveType extends CommonDeviceType
     /**
      * @since 10.1
      *
-     * @param $itemtype
-     * @param $base               HTMLTableBase object
-     * @param $super              HTMLTableSuperHeader object (default NULL)
-     * @param $father             HTMLTableHeader object (default NULL)
-     * @param $options   array
+     * @param string $itemtype
+     * @param HTMLTableBase $base             
+     * @param HTMLTableSuperHeader|null $super  
+     * @param HTMLTableHeader|null $father           
+     * @param array $options   
+     *
+     * @return void
      **/
     public static function getHTMLTableHeader(
         $itemtype,
