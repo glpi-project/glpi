@@ -360,7 +360,7 @@ final class QueryBuilder implements SearchInputInterface
 
             echo "<input type='text' class='form-control' size='13' name='$inputname' value=\"" .
                 htmlspecialchars($request['value']) . "\" pattern=\"" . htmlspecialchars($pattern) . "\">" .
-                "<span class='info'>" . htmlspecialchars($message) . "</span>";
+                "<span class='invalid-tooltip'>" . htmlspecialchars($message) . "</span>";
         }
     }
 
@@ -958,13 +958,13 @@ final class QueryBuilder implements SearchInputInterface
                 break;
 
             case 'datetime':
-                $pattern = $relative_operators_pattern . '([\d:\- ]+|\-?\s*\d+(\.\d+)?)';
+                $pattern = $relative_operators_pattern . '([\d:\- ]+|-?\s*\d+(\.\d+)?)';
                 $message = __('must be a date time (YYYY-MM-DD HH:mm:SS) or be a relative number of months (e.g. > -6 for dates higher than 6 months ago)');
                 break;
 
             case 'date':
             case 'date_delay':
-                $pattern = $relative_operators_pattern . '([\d\-]+|\-?\s*\d+(\.\d+)?)';
+                $pattern = $relative_operators_pattern . '([\d\-]+|-?\s*\d+(\.\d+)?)';
                 $message = __('must be a date (YYYY-MM-DD) or be a relative number of months (e.g. > -6 for dates higher than 6 months ago)');
                 break;
 
