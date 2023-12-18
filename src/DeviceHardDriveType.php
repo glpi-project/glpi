@@ -73,7 +73,7 @@ class DeviceHardDriveType extends CommonDeviceType
 
 
     /**
-     * @since 0.84
+     * @since 10.1
      *
      * @param HTMLTableRow|null $row
      * @param CommonDBTM|null $item
