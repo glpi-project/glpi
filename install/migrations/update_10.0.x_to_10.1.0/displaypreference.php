@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+ /**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
+
 /**
  * The search options for the different levels of toner and drum (1 per color)
  * have been replaced by respective unique fields.
@@ -48,13 +53,18 @@ foreach (
 ) {
     $num = $dpref['num'] < 1408 ? 1400 : 1401;
 
-    \DisplayPreference::getById($dpref['id'])->deleteFromDB();
+    $migration->addPostQuery($DB->buildDelete('glpi_displaypreferences', [
+        'id' => $dpref['id']
+    ]));
     if (!isset($appliedPreferences[$dpref['users_id']][$num])) {
-        $displayPreference->add([
-            'users_id' => $dpref['users_id'],
-            'itemtype' => 'Printer',
-            'num' => $num
-        ]);
+        $migration->addPostQuery($DB->buildInsert(
+            'glpi_displaypreferences',
+            [
+                'users_id' => $dpref['users_id'],
+                'itemtype' => 'Printer',
+                'num' => $num
+            ]
+        ));
         $appliedPreferences[$dpref['users_id']][$num] = true;
     }
 }
