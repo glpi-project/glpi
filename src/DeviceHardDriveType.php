@@ -60,7 +60,7 @@ class DeviceHardDriveType extends CommonDeviceType
         HTMLTableSuperHeader $super = null,
         HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = __CLASS__;
 
