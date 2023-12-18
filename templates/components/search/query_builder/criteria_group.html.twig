@@ -54,7 +54,7 @@
          {% set parents_num = (parents_num|default([]))|merge([num]) %}
          {{ call("Glpi\\Search\\Input\\QueryBuilder::showGenericSearch", [itemtype, {
             mainform: false,
-            prefix_crit: prefix ~ num ~ '_criteria_',
+            prefix_crit: prefix ~ '[' ~ num ~ '][criteria]',
             parents_num: parents_num,
             criteria: criteria['criteria'],
          }]) }}
