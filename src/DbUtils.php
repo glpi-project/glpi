@@ -446,7 +446,7 @@ final class DbUtils
      *
      * @param string $itemtype itemtype
      *
-     * @return object|false itemtype instance or false if class does not exists
+     * @return CommonDBTM|false itemtype instance or false if class does not exists
      */
     public function getItemForItemtype($itemtype)
     {

@@ -126,6 +126,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         CommonDBTM $item,
         array $ids
     ) {
+        /** @var SavedSearch $item */
         $input = $ma->getInput();
         switch ($ma->getAction()) {
             case 'unset_default':

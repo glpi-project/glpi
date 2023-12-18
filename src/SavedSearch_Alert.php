@@ -65,7 +65,7 @@ class SavedSearch_Alert extends CommonDBChild
 
        // can exists for template
         if (
-            ($item->getType() == 'SavedSearch')
+            ($item instanceof self)
             && SavedSearch::canView()
         ) {
             $nb = 0;

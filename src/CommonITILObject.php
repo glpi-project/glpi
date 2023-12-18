@@ -3473,6 +3473,10 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
+    public static function getProcessStatusArray()
+    {
+        // To be overriden by class
+    }
 
     /**
      * Get the ITIL object process status list

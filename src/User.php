@@ -316,12 +316,12 @@ class User extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        switch ($item->getType()) {
-            case __CLASS__:
+        switch (get_class($item)) {
+            case self::class:
                 $item->showItems($tabnum == 2);
                 return true;
 
-            case 'Preference':
+            case Preference::class:
                 $user = new self();
                 $user->showMyForm(
                     $CFG_GLPI['root_doc'] . "/front/preference.php",
@@ -917,7 +917,7 @@ class User extends CommonDBTM
             }
             if ($newPicture) {
                 if (!$fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"])) {
-                    return;
+                    return false;
                 }
                 if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
@@ -4109,9 +4109,9 @@ HTML;
      * @param string          $search           pattern (default '')
      * @param integer         $start            start LIMIT value (default 0)
      * @param integer         $limit            limit LIMIT value (default -1 no limit)
-     * @param boolean         $inactive_deleted true to retreive also inactive or deleted users
+     * @param boolean         $inactive_deleted true to retrieve also inactive or deleted users
      *
-     * @return mysqli_result|boolean
+     * @return DBmysqlIterator
      */
     public static function getSqlSearchResult(
         $count = true,
@@ -4122,7 +4122,7 @@ HTML;
         $search = '',
         $start = 0,
         $limit = -1,
-        $inactive_deleted = 0,
+        $inactive_deleted = false,
         $with_no_right = 0
     ) {
         /** @var \DBmysql $DB */
@@ -4609,6 +4609,7 @@ HTML;
         $valuesnames = [];
 
         if (!$p['multiple']) {
+            /** @var array $user */
             $user = getUserName($p['value'], 2, true);
 
             if ($p['readonly']) {
@@ -4630,6 +4631,7 @@ HTML;
             // get multiple values name
             foreach ($p['values'] as $value) {
                 if (!empty($value) && ($value > 0)) {
+                    /** @var array $user */
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
                 } else {
@@ -4679,7 +4681,7 @@ HTML;
                 false
             );
             if ($result['count'] === 0) {
-                return;
+                return '';
             }
         }
 
@@ -5738,7 +5740,7 @@ HTML;
     {
 
         if ($this->fields['authtype'] != Auth::LDAP) {
-            return false;
+            return;
         }
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixe'>";
@@ -5953,7 +5955,7 @@ HTML;
      * @since 0.85
      *
      * @param string $picture Picture field value
-     * @param bool  bool get full path
+     * @param bool  $full     get full path
      *
      * @return string
      */
@@ -6117,7 +6119,7 @@ HTML;
     /**
      * Print the switch language form.
      *
-     * @return void
+     * @return string
      */
     public static function showSwitchLangForm()
     {
@@ -6467,8 +6469,7 @@ HTML;
     /**
      * Get anonymized name for user instance.
      *
-     * @param int $users_id
-     * @param int $entities_id
+     * @param ?int $entities_id
      *
      * @return string|null
      */
