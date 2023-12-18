@@ -81,11 +81,11 @@ class DeviceHardDriveType extends CommonDeviceType
      * @param $options   array
      **/
     public static function getHTMLTableCellsForItem(
-        HTMLTableRow $row = null,
-        CommonDBTM $item = null,
-        HTMLTableCell $father = null,
+        ?HTMLTableRow $row = null,
+        ?CommonDBTM $item = null,
+        ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
         $column_name = __CLASS__;
 
         if (isset($options['dont_display'][$column_name])) {
