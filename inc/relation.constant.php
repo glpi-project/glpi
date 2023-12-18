@@ -382,6 +382,10 @@ $RELATION = [
         'glpi_deviceharddrives' => 'deviceharddrivemodels_id',
     ],
 
+    'glpi_deviceharddrivetypes' => [
+        'glpi_deviceharddrives' => 'deviceharddrivetypes_id',
+    ],
+
     'glpi_deviceharddrives' => [
         'glpi_items_deviceharddrives' => 'deviceharddrives_id',
     ],

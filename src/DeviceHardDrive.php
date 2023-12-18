@@ -293,6 +293,26 @@ class DeviceHardDrive extends CommonDevice
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
+        $tab[] = [
+            'id'                 => '116',
+            'table'              => 'glpi_deviceharddrivetypes',
+            'field'              => 'name',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), _n('Type', 'Types', 1)),
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => DeviceHardDrive::getTable(),
+                    'joinparams' => [
+                        'beforejoin' => [
+                            'table'      => Item_DeviceHardDrive::getTable(),
+                            'joinparams' => ['jointype' => 'itemtype_item']
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
         return $tab;
     }
 
