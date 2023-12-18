@@ -62,7 +62,8 @@ foreach (
             [
                 'users_id' => $dpref['users_id'],
                 'itemtype' => 'Printer',
-                'num' => $num
+                'num' => $num,
+                'rank' => $dpref['rank'],
             ]
         ));
         $appliedPreferences[$dpref['users_id']][$num] = true;
