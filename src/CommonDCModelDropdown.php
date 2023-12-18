@@ -35,11 +35,13 @@
 
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssetImage;
+use Glpi\Features\Clonable;
 
 /// CommonDCModelDropdown class - dropdown for datacenter items models
 abstract class CommonDCModelDropdown extends CommonDropdown
 {
     use AssetImage;
+    use Clonable;
 
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
@@ -478,5 +480,10 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         $model_class  = get_called_class();
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

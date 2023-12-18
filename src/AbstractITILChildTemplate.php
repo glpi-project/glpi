@@ -35,6 +35,7 @@
 
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
+use Glpi\Features\Clonable;
 
 /**
  * Base template class
@@ -43,6 +44,8 @@ use Glpi\ContentTemplates\TemplateManager;
  */
 abstract class AbstractITILChildTemplate extends CommonDropdown
 {
+    use Clonable;
+
     public function showForm($ID, array $options = [])
     {
         if (!parent::showForm($ID, $options)) {
@@ -148,5 +151,10 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         }
 
         return $html;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

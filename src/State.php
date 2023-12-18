@@ -35,12 +35,15 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\Clonable;
 
 /**
  * State Class
  **/
 class State extends CommonTreeDropdown
 {
+    use Clonable;
+
     public $can_be_translated       = true;
 
     public static $rightname               = 'state';
@@ -650,5 +653,10 @@ class State extends CommonTreeDropdown
                 ['states_id' => 0]
             ]
         ];
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

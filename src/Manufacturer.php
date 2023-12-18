@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /// Class Manufacturer
 /// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown
 {
+    use Clonable;
+
     public $can_be_translated = false;
 
 
@@ -224,5 +228,10 @@ class Manufacturer extends CommonDropdown
                 $father
             );
         }
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }
