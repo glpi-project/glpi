@@ -97,8 +97,6 @@ if (isset($_POST["update"])) {
         $_POST['users_id'] = Session::getLoginUserID();
     }
     Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-    if (isset($_POST["items"])) {
-        if (isset($_POST['resa'])) {
             Reservation::handleAddForm($_POST);
         }
     } else {
