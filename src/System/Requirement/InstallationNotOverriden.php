@@ -58,11 +58,16 @@ final class InstallationNotOverriden extends AbstractRequirement
 
     public function __construct(?DBmysql $db, string $version_dir = GLPI_ROOT . '/version')
     {
+        parent::__construct(
+            __('Previous GLPI version files detection'),
+            __('The presence of source files from previous versions of GLPI can lead to security issues or bugs.'),
+            false,
+            false,
+            null // $out_of_context will be computed on check
+        );
+
         $this->db = $db;
         $this->version_dir = $version_dir;
-
-        $this->title = __('Previous GLPI version files detection');
-        $this->description = __('The presence of source files from previous versions of GLPI can lead to security issues or bugs.');
     }
 
     protected function check()

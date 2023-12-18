@@ -42,8 +42,13 @@ class SeLinux extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('SELinux configuration');
-        $this->optional = true;
+        parent::__construct(
+            __('SELinux configuration'),
+            null,
+            true,
+            false,
+            null, // $out_of_context will be computed on check
+        );
     }
 
     protected function check()

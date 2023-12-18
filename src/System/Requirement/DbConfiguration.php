@@ -51,7 +51,10 @@ class DbConfiguration extends AbstractRequirement
 
     public function __construct(DBmysql $db)
     {
-        $this->title = __('DB configuration');
+        parent::__construct(
+            __('DB configuration')
+        );
+
         $this->db = $db;
     }
 

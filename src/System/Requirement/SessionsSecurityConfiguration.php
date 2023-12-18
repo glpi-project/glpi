@@ -42,10 +42,13 @@ class SessionsSecurityConfiguration extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('Security configuration for sessions');
-        $this->description = __('Ensure security is enforced on session cookies.');
-        $this->optional = true;
-        $this->recommended_for_security = true;
+        parent::__construct(
+            __('Security configuration for sessions'),
+            __('Ensure security is enforced on session cookies.'),
+            true,
+            true,
+            isCommandLine() // out of context when tested from CLI
+        );
     }
 
     protected function check()
@@ -61,7 +64,6 @@ class SessionsSecurityConfiguration extends AbstractRequirement
         if ($is_cli) {
             $this->validation_messages[] = __('Checking the session cookie configuration of the web server cannot be done in the CLI context.');
             $this->validation_messages[] = __('You should apply the following recommendations for configuring the web server.');
-            $this->out_of_context = true;
         }
         $cookie_secure_ko = $is_https_request && !$cookie_secure;
         if ($is_cli || $cookie_secure_ko) {
