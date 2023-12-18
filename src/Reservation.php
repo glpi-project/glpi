@@ -184,6 +184,17 @@ class Reservation extends CommonDBChild
 
     public static function handleAddForm(array $input)
     {
+        if (
+            !isset($input['resa']["begin"])
+            || !isset($input['resa']["end"])
+            || !isset($input['items'])
+            || !is_array($input['items'])
+            || count($input['items']) === 0
+            || !isset($input['users_id'])
+        ) {
+            return;
+        }
+
         $rr = new self();
         $dates_to_add = [];
 
