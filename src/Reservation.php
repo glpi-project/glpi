@@ -218,7 +218,7 @@ class Reservation extends CommonDBChild
             foreach ($input['items'] as $reservationitems_id) {
 
                     ksort($dates_to_add);
-                    $data['group'] = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
+                    $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
 
                     foreach ($dates_to_add as $begin => $end) {
                         $recu_res = [
