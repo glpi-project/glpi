@@ -42,10 +42,8 @@ $appliedPreferences = [];
 foreach (
     $displayPreference->find([
         'itemtype' => 'Printer',
-        'num' => ['>=', 1400],
-        'AND' => [
-            'num' => ['<=', 14015],
-        ]
+        ['num' => ['>=', 1400]],
+        ['num' => ['<=', 1415]],
     ], ['num', 'users_id']) as $dpref
 ) {
     $num = $dpref['num'] < 1408 ? 1400 : 1401;
