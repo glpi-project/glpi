@@ -43,8 +43,8 @@ class DeviceHardDriveType extends CommonDeviceType
         return _n('Device hard drive type', 'Device hard drive types', $nb);
     }
 
-        /**
-     * @since 0.84
+    /**
+     * @since 10.1
      *
      * @param $itemtype
      * @param $base               HTMLTableBase object
