@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Printer_CartridgeInfo extends CommonDBChild
 {
     public static $itemtype        = 'Printer';
@@ -141,63 +143,41 @@ HTML;
             'name' => self::getTypeName(1)
         ];
 
-        $create_toner_percent_option = static function (int $ID, string $color_key, string $color_name): array {
-            return [
-                'id'                => (string) $ID,
-                'table'             => self::getTable(),
-                'field'             => "_virtual_toner_{$color_key}_percent",
-                'name'              => sprintf(__('%s toner percentage'), $color_name),
-                'datatype'          => 'specific',
-                'massiveaction'     => false,
-                'nosearch'          => true,
-                'joinparams'        => [
-                    'jointype' => 'child'
-                ],
-                'additionalfields'  => ['property', 'value'],
-                'forcegroupby'      => true,
-                'aggregate'         => true,
-                'searchtype'        => ['contains'],
-                'nosort'            => true
-            ];
-        };
+        $tab[] = [
+            'id'                => 1400,
+            'table'             => self::getTable(),
+            'field'             => "_virtual_toner_percent",
+            'name'              => __('Toner percentage'),
+            'datatype'          => 'specific',
+            'massiveaction'     => false,
+            'nosearch'          => true,
+            'joinparams'        => [
+                'jointype' => 'child'
+            ],
+            'additionalfields'  => ['property', 'value'],
+            'forcegroupby'      => true,
+            'aggregate'         => true,
+            'searchtype'        => ['contains'],
+            'nosort'            => true
+        ];
 
-        $tab[] = $create_toner_percent_option(1400, 'black', __('Black'));
-        $tab[] = $create_toner_percent_option(1401, 'cyan', __('Cyan'));
-        $tab[] = $create_toner_percent_option(1402, 'cyanlight', __('Light cyan'));
-        $tab[] = $create_toner_percent_option(1403, 'magenta', __('Magenta'));
-        $tab[] = $create_toner_percent_option(1404, 'magentalight', __('Light magenta'));
-        $tab[] = $create_toner_percent_option(1405, 'yellow', __('Yellow'));
-        $tab[] = $create_toner_percent_option(1406, 'grey', __('Grey'));
-        $tab[] = $create_toner_percent_option(1407, 'darkgrey', __('Dark grey'));
-
-        $create_drum_percent_option = static function (int $ID, string $color_key, string $color_name): array {
-            return [
-                'id'                => (string) $ID,
-                'table'             => self::getTable(),
-                'field'             => "_virtual_drum_{$color_key}_percent",
-                'name'              => sprintf(__('%s drum percentage'), $color_name),
-                'datatype'          => 'specific',
-                'massiveaction'     => false,
-                'nosearch'          => true,
-                'joinparams'        => [
-                    'jointype' => 'child'
-                ],
-                'additionalfields'  => ['property', 'value'],
-                'forcegroupby'      => true,
-                'aggregate'         => true,
-                'searchtype'        => ['contains'],
-                'nosort'            => true
-            ];
-        };
-
-        $tab[] = $create_drum_percent_option(1408, 'black', __('Black'));
-        $tab[] = $create_drum_percent_option(1409, 'cyan', __('Cyan'));
-        $tab[] = $create_drum_percent_option(1410, 'cyanlight', __('Light cyan'));
-        $tab[] = $create_drum_percent_option(1411, 'magenta', __('Magenta'));
-        $tab[] = $create_drum_percent_option(1412, 'magentalight', __('Light magenta'));
-        $tab[] = $create_drum_percent_option(1413, 'yellow', __('Yellow'));
-        $tab[] = $create_drum_percent_option(1414, 'grey', __('Grey'));
-        $tab[] = $create_drum_percent_option(1415, 'darkgrey', __('Dark grey'));
+        $tab[] = [
+            'id'                => 1401,
+            'table'             => self::getTable(),
+            'field'             => "_virtual_drum_percent",
+            'name'              => __('Drum percentage'),
+            'datatype'          => 'specific',
+            'massiveaction'     => false,
+            'nosearch'          => true,
+            'joinparams'        => [
+                'jointype' => 'child'
+            ],
+            'additionalfields'  => ['property', 'value'],
+            'forcegroupby'      => true,
+            'aggregate'         => true,
+            'searchtype'        => ['contains'],
+            'nosort'            => true
+        ];
 
         return $tab;
     }
@@ -207,34 +187,42 @@ HTML;
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    private static function getProgressColorsForColor($color)
+    /**
+     * Create a badge for a specific type of cartridge information
+     *
+     * @param array $data
+     * @param string $type
+     */
+    private static function createCartridgeInformationBadge($data, $type): ?string
     {
-        $fg_transparency_hex = '80';
-        switch ($color) {
-            case 'cyan':
-            case 'light_cyan':
-                return [
-                    'fg' => '#00ffff' . $fg_transparency_hex,
-                    'text' => 'inherit'
-                ];
-            case 'magenta':
-            case 'light_magenta':
-                return [
-                    'fg' => '#ff00ff' . $fg_transparency_hex,
-                    'text' => 'inherit'
-                ];
-            case 'yellow':
-                return [
-                    'fg' => '#ffff00' . $fg_transparency_hex,
-                    'text' => 'inherit'
-                ];
-            case 'black':
-            case 'grey':
-            case 'darkgrey':
-                return [
-                    'fg' => '#303030' . $fg_transparency_hex,
-                    'text' => 'inherit'
-                ];
+        $color_aliases = [
+            'magenta'   => 'purple',
+        ];
+        $color_translations = [
+            'black'         => __('Black'),
+            'cyan'          => __('Cyan'),
+            'magenta'       => __('Magenta'),
+            'yellow'        => __('Yellow'),
+        ];
+
+        if (
+            is_array($data)
+            && isset($data['property'])
+            && isset($data['value'])
+            && str_starts_with($data['property'], $type)
+        ) {
+            $color = str_replace($type, '', $data['property']);
+            $templateContent = <<<TWIG
+                <span class="badge bg-{{ color }} text-{{ color }}-fg fw-bold">
+                    {{ color_translated }} : {{ status }}
+                </span>
+TWIG;
+
+            return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
+                'color_translated' => $color_translations[$color] ?? ucwords($color),
+                'color' => $color_aliases[$color] ?? $color,
+                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value']
+            ]);
         }
 
         return null;
@@ -242,54 +230,31 @@ HTML;
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-        $color_aliases = [
-            'grey'      => 'gray',
-            'darkgrey'  => 'darkgray'
-        ];
         $printer = new Printer();
         if (str_starts_with($field, '_virtual_')) {
-            $type = preg_match('/_virtual_(.*)_.*_percent/', $field, $matches) ? $matches[1] : '';
-            $color = preg_match('/_virtual_' . $type . '_(.*)_percent/', $field, $matches) ? $matches[1] : '';
-            $search_option_id = $printer->getSearchOptionIDByField('field', $field);
-            $raw_search_opt_values = $options['raw_data']['Printer_' . $search_option_id];
+            $type = preg_match('/_virtual_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $badges = array_filter(array_map(
+                function ($data) use ($type) {
+                    return self::createCartridgeInformationBadge($data, $type);
+                },
+                $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)]
+            ));
 
-            $get_percent_remaining = static function ($color, $raw_search_opt_values, $type) {
-                $used_field = $type . $color;
+            if ($badges) {
+                $templateContent = <<<TWIG
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for badge in badges %}
+                            {{ badge|raw }}
+                        {% endfor %}
+                    </div>
+TWIG;
 
-                if ($raw_search_opt_values !== null) {
-                    unset($raw_search_opt_values['count']);
-                    foreach ($raw_search_opt_values as $raw_search_opt_value) {
-                        if ($raw_search_opt_value['property'] === $used_field) {
-                            return $raw_search_opt_value['value'];
-                        }
-                    }
-                }
-                return null;
-            };
-
-            $percent_remaining = $get_percent_remaining($color, $raw_search_opt_values, $type);
-
-            //return value if not null and not numeric  "OK" "WARNING"
-            if ($percent_remaining !== null && ! is_numeric($percent_remaining)) {
-                return $percent_remaining;
-            }
-
-            if ($percent_remaining === null && array_key_exists($color, $color_aliases)) {
-                $percent_remaining = $get_percent_remaining($color_aliases[$color], $raw_search_opt_values, $type);
-            }
-
-            if ($percent_remaining !== null) {
-                return Html::progressBar('pb' . mt_rand(), [
-                    'percent' => $percent_remaining,
-                    'message' => $percent_remaining . '%',
-                    'display' => false,
-                    'create' => true,
-                    'colors' => self::getProgressColorsForColor($color)
+                return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
+                    'badges' => $badges
                 ]);
             }
-            // Need to return some non-empty value otherwise Search engine will throw errors.
-            return null;
         }
+
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 }
