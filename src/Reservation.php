@@ -224,7 +224,6 @@ class Reservation extends CommonDBChild
                     'users_id' => $input['users_id'],
                 ];
 
-                if (!empty($dates_to_add)) {
                     ksort($dates_to_add);
                     $data['group'] = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
 
