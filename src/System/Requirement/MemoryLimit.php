@@ -52,7 +52,10 @@ class MemoryLimit extends AbstractRequirement
      */
     public function __construct(int $min)
     {
-        $this->title = __('Allocated memory');
+        parent::__construct(
+            __('Allocated memory')
+        );
+
         $this->min = $min;
     }
 

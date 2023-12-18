@@ -50,10 +50,12 @@ class PhpSupportedVersion extends AbstractRequirement
 
     public function __construct()
     {
-        $this->title = __('PHP maintained version');
-        $this->description = __('A PHP version maintained by the PHP community should be used to get the benefits of PHP security and bug fixes.');
-        $this->optional = true;
-        $this->recommended_for_security = true;
+        parent::__construct(
+            __('PHP maintained version'),
+            __('A PHP version maintained by the PHP community should be used to get the benefits of PHP security and bug fixes.'),
+            true,
+            true
+        );
     }
 
     protected function check()

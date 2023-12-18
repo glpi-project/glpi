@@ -54,9 +54,9 @@ class DirectoriesWriteAccess extends AbstractRequirement
      */
     public function __construct(string $title, array $paths, bool $optional = false)
     {
-        $this->title = $title;
+        parent::__construct($title, null, $optional);
+
         $this->paths = $paths;
-        $this->optional = $optional;
     }
 
     protected function check()

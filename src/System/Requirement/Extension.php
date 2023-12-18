@@ -54,10 +54,13 @@ class Extension extends AbstractRequirement
      */
     public function __construct(string $name, bool $optional = false, ?string $description = null)
     {
-        $this->title = sprintf(__('%s extension'), $name);
+        parent::__construct(
+            sprintf(__('%s extension'), $name),
+            $description,
+            $optional
+        );
+
         $this->name = $name;
-        $this->optional = $optional;
-        $this->description = $description;
     }
 
     protected function check()
