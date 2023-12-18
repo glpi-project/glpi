@@ -44,7 +44,7 @@ $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
     $query = "CREATE TABLE `glpi_deviceharddrivetypes` (
-        `id` int unsigned NOT NULL AUTO_INCREMENT,
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
         `name` varchar(255) DEFAULT NULL,
         `comment` text,
         PRIMARY KEY (`id`),
