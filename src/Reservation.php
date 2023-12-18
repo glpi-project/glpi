@@ -227,7 +227,7 @@ class Reservation extends CommonDBChild
                             'reservationitems_id' => $reservationitems_id,
                             'comment' => $input['comment'],
                             'users_id' => $input['users_id'],
-                            'group' => $data['group'],
+                            'group' => $group,
                         ];
 
                         if (
