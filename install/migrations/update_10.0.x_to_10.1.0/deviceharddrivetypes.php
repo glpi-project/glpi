@@ -49,6 +49,6 @@ if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
         `comment` text,
         PRIMARY KEY (`id`),
         KEY `name` (`name`)
-      ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+      ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQueryOrDie($query, "10.1.0 add table glpi_deviceharddrivetypes");
 }
