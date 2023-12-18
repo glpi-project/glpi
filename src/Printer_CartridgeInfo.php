@@ -216,7 +216,7 @@ HTML;
                 <span class="badge bg-{{ color }} text-{{ color }}-fg fw-bold">
                     {{ color_translated }} : {{ status }}
                 </span>
-            TWIG;
+TWIG;
 
             return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
                 'color_translated' => $color_translations[$color] ?? ucwords($color),
@@ -247,7 +247,7 @@ HTML;
                             {{ badge|raw }}
                         {% endfor %}
                     </div>
-                TWIG;
+TWIG;
 
                 return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
                     'badges' => $badges
