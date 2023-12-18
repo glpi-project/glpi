@@ -34,12 +34,19 @@
  */
 
 /**
- * @var array $CFG_GLPI
+ * @var \DBmysql $DB
  * @var \Migration $migration
  */
 
-if ($CFG_GLPI["lock_use_lock_item"] ?? false) {
-    foreach ($CFG_GLPI['lock_item_list'] as $itemtype) {
+$iterator = $DB->request('glpi_configs', ['name' => 'lock_use_lock_item']);
+$lock_use_lock_item = $iterator->current()['value'] ?? false;
+
+if ($lock_use_lock_item) {
+    $iterator = $DB->request('glpi_configs', ['name' => 'lock_item_list']);
+    $lock_item_list = $iterator->current()['value'] ?? '';
+    $lock_item_list = explode(',', $lock_item_list);
+    
+    foreach ($lock_item_list as $itemtype) {
         $migration->changeSearchOption($itemtype, 205, 207);
         $migration->changeSearchOption($itemtype, 206, 208);
     }

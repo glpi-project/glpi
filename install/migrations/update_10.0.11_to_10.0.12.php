@@ -43,9 +43,8 @@ function update10011to10012()
     /**
      * @var \DBmysql $DB
      * @var \Migration $migration
-     * @var array $CFG_GLPI
      */
-    global $DB, $migration, $CFG_GLPI;
+    global $DB, $migration;
 
     $updateresult       = true;
     $ADDTODISPLAYPREF   = [];
