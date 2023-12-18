@@ -594,7 +594,7 @@ class ObjectLock extends CommonDBTM
             && in_array($itemtype, $CFG_GLPI['lock_item_list'])
         ) {
             $tab[] = [
-                'id' => '205',
+                'id'            => '207',
                 'table'         => 'glpi_users',
                 'field'         => 'name',
                 'datatype'      => 'dropdown',
@@ -612,7 +612,7 @@ class ObjectLock extends CommonDBTM
             ];
 
             $tab[] = [
-                'id'            => '206',
+                'id'            => '208',
                 'table'         => getTableForItemType('ObjectLock'),
                 'field'         => 'date',
                 'datatype'      => 'datetime',

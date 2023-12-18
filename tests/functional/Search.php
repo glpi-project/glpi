@@ -52,7 +52,7 @@ class Search extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
     {
-        global $DEBUG_SQL;
+        global $DEBUG_SQL, $CFG_GLPI;
 
        // check param itemtype exists (to avoid search errors)
         if ($itemtype !== 'AllAssets') {
@@ -62,6 +62,12 @@ class Search extends DbTestCase
        // login to glpi if needed
         if (!isset($_SESSION['glpiname'])) {
             $this->login();
+        }
+
+        // force item lock
+        if (in_array($itemtype, $CFG_GLPI['lock_lockable_objects'])) {
+            $CFG_GLPI["lock_use_lock_item"] = 1;
+            $CFG_GLPI["lock_item_list"] = [$itemtype];
         }
 
        // force session in debug mode (to store & retrieve sql errors)
