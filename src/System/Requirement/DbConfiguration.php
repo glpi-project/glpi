@@ -52,7 +52,7 @@ class DbConfiguration extends AbstractRequirement
     public function __construct(DBmysql $db)
     {
         parent::__construct(
-            __('Safe path for data directories')
+            __('DB configuration')
         );
 
         $this->db = $db;
