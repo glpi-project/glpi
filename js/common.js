@@ -1448,7 +1448,7 @@ function blockFormSubmit(form, e) {
     form.attr('data-submitted', 'true');
 }
 
-function validateFormWithBootstrap(event) {
+window.validateFormWithBootstrap = function (event) {
     const form = $(event.target).closest('form');
     const valid = form[0].checkValidity();
 
