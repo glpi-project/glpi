@@ -57,8 +57,8 @@ class DeviceHardDriveType extends CommonDeviceType
     public static function getHTMLTableHeader(
         string $itemtype,
         HTMLTableBase $base,
-        HTMLTableSuperHeader $super = null,
-        HTMLTableHeader $father = null,
+        ?HTMLTableSuperHeader $super = null,
+        ?HTMLTableHeader $father = null,
         array $options = []
     ): void {
 
