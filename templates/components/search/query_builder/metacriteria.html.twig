@@ -66,8 +66,9 @@
          }) }}
       </div>
       <input type="hidden" name="criteria{{ prefix ~ "[" ~ num ~ "][meta]" }}" value="true">
-      {% set field_id = "dropdown_criteria" ~ prefix ~ "[" ~ num ~ "][itemtype]" ~ rand %}
-      {% set spanid = "show_" ~ itemtype ~ "_" ~ prefix ~ num ~ "_" ~ rand %}
+      {% set clean_id_prefix = call('Html::cleanId', [prefix]) %}
+      {% set field_id = "dropdown_criteria" ~ clean_id_prefix ~ "[" ~ num ~ "][itemtype]" ~ rand %}
+      {% set span_id = "show_" ~ itemtype ~ "_" ~ clean_id_prefix ~ num ~ "_" ~ rand %}
       {% set params = {
          action: 'display_criteria',
          itemtype: '__VALUE__',
@@ -81,11 +82,11 @@
       } %}
       {% do call('Ajax::updateItemOnSelectEvent', [
          field_id,
-         spanid,
+         span_id,
          config('root_doc') ~ "/ajax/search.php",
          params
       ]) %}
-      <div class="col-auto" id="{{ spanid }}">
+      <div class="col-auto" id="{{ span_id }}">
          <div class="row">
             {% if metacriteria['itemtype'] is defined and metacriteria['itemtype'] is not empty %}
                {% set params = params|merge({itemtype: metacriteria['itemtype']}) %}
