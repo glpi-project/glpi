@@ -2636,7 +2636,7 @@ class Rule extends CommonDBTM
             RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT,
             RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE,
         ];
-        if (in_array($condition, $hiddens)) {
+        if (!$display && in_array($condition, $hiddens)) {
             echo Html::hidden($name, ['value' => 1]);
             $display = true;
         }
