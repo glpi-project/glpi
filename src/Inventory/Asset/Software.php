@@ -403,6 +403,7 @@ class Software extends InventoryAsset
                 $software_to_update = new GSoftware();
                 $software_to_update->update([
                     "id" => $db_software_data[$key_wo_version]['softid'],
+                    'is_dynamic' => true,
                     "softwarecategories_id" => ($this->known_links[$sckey] ?? 0)
                 ], 0);
             }
