@@ -1462,7 +1462,7 @@ function validateFormWithBootstrap(event) {
     }
 
     return valid;
-};
+}
 
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {

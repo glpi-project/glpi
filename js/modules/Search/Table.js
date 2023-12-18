@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global bootstrap */
+/* global bootstrap, validateFormWithBootstrap */
 
 import GenericView from './GenericView.js';
 
