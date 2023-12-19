@@ -37,4 +37,4 @@
  * @var \Migration $migration
  */
 
-$migration->addField('glpi_authmails', 'is_default', "tinyint", ['value' => '0']);
+$migration->addField("glpi_authmails", "is_default", "TINYINT NOT NULL DEFAULT 0");
