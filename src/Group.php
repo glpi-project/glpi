@@ -470,6 +470,13 @@ class Group extends CommonTreeDropdown
                 'name'               => __('Group DN'),
                 'datatype'           => 'text',
             ];
+            $tab[] = [
+                'id'                 => '6',
+                'table'              => $this->getTable(),
+                'field'              => 'sync_field_group',
+                'name'               => __('Synchronization field'),
+                'datatype'           => 'text',
+            ];
         }
 
         $tab[] = [
@@ -620,6 +627,18 @@ class Group extends CommonTreeDropdown
             echo "<td>" . __('Group DN') . "</td>";
             echo "<td>";
             echo Html::input('ldap_group_dn', ['value' => $this->fields['ldap_group_dn']]);
+            echo "</td></tr>";
+            //If it's an external auth, check if the sync_field must be displayed
+
+            $syncrand = mt_rand();
+            echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __('Synchronization field') . "</label></td><td>";
+
+                if (empty($this->fields['sync_field_group'])) {
+                    echo Dropdown::EMPTY_VALUE;
+                } else {
+                    echo $this->fields['sync_field_group'];
+                }
+
             echo "</td></tr>";
         }
 
@@ -1092,5 +1111,17 @@ class Group extends CommonTreeDropdown
         }
 
         return $this->getLink();
+    }
+
+    /**
+     * Retrieve a group from the database using value of the sync field.
+     *
+     * @param string $value Value of the sync field
+     *
+     * @return boolean
+     */
+    public function getFromDBbySyncField($value)
+    {
+        return $this->getFromDBByCrit(['sync_field_group' => $value]);
     }
 }

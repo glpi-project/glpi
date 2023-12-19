@@ -39,7 +39,11 @@
                <h3>{{ __('Bulk import groups from a LDAP directory') }}</h3>
             </div>
             <div class="list-group list-group-flush">
-               <a class="list-group-item list-group-item-action" href="{{ path('front/ldap.group.import.php?next=servers') }}?mode=0&amp;action=show">
+               <a class="list-group-item list-group-item-action" href="{{ path('front/ldap.group.import.php?next=servers') }}&mode=1&amp;action=show">
+                  <i class="fas fa-fw fa-users-cog me-1"></i>
+                  <span>{{ __('Synchronizing already imported groups') }}</span>
+               </a>
+               <a class="list-group-item list-group-item-action" href="{{ path('front/ldap.group.import.php?next=servers') }}&mode=0&amp;action=show">
                   <i class="fas fa-fw fa-users me-1"></i>
                   <span>{{ __('Import of new groups') }}</span>
                </a>
