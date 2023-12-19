@@ -3476,6 +3476,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getProcessStatusArray()
     {
         // To be overriden by class
+        return [];
     }
 
     /**

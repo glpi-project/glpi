@@ -5035,9 +5035,8 @@ JAVASCRIPT;
             case "glpi_problems.status":
             case "glpi_changes.status":
                 $tocheck = [];
-                /** @var CommonITILObject $item */
                 $item = getItemForItemtype($itemtype);
-                if ($item) {
+                if ($item instanceof CommonITILObject) {
                     switch ($val) {
                         case 'process':
                             $tocheck = $item->getProcessStatusArray();
