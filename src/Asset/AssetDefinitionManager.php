@@ -115,33 +115,46 @@ final class AssetDefinitionManager
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $capacities = $this->getAvailableCapacities();
 
         foreach ($this->getDefinitions() as $definition) {
             if (!$definition->isActive()) {
                 continue;
             }
 
-            $concrete_class_name = $definition->getConcreteClassName();
+            $this->boostrapConcreteClass($definition);
+        }
+    }
 
-            // Register asset into configuration entries related to the capacities that cannot be disabled
-            $config_keys = [
-                'asset_types',
-                'linkuser_types',
-                'linkgroup_types',
-                'linkuser_tech_types',
-                'linkgroup_tech_types',
-                'location_types',
-            ];
-            foreach ($config_keys as $config_key) {
-                $CFG_GLPI[$config_key][] = $concrete_class_name;
-            }
+    /**
+     * Bootstrap the concrete class.
+     *
+     * @param AssetDefinition $definition
+     *
+     * @return void
+     */
+    private function boostrapConcreteClass(AssetDefinition $definition): void
+    {
+        $capacities = $this->getAvailableCapacities();
 
-            // Bootstrap capacities
-            foreach ($capacities as $capacity) {
-                if ($definition->hasCapacityEnabled($capacity)) {
-                    $capacity->onClassBootstrap($concrete_class_name);
-                }
+        $concrete_class_name = $definition->getConcreteClassName();
+
+        // Register asset into configuration entries related to the capacities that cannot be disabled
+        $config_keys = [
+            'asset_types',
+            'linkuser_types',
+            'linkgroup_types',
+            'linkuser_tech_types',
+            'linkgroup_tech_types',
+            'location_types',
+        ];
+        foreach ($config_keys as $config_key) {
+            $CFG_GLPI[$config_key][] = $concrete_class_name;
+        }
+
+        // Bootstrap capacities
+        foreach ($capacities as $capacity) {
+            if ($definition->hasCapacityEnabled($capacity)) {
+                $capacity->onClassBootstrap($concrete_class_name);
             }
         }
     }

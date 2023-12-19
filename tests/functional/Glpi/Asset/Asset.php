@@ -36,36 +36,15 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
-use Glpi\Asset\AssetDefinition;
 
 class Asset extends DbTestCase
 {
-    /**
-     * Initialize a definition.
-     *
-     * @return AssetDefinition
-     */
-    private function initDefinition(): AssetDefinition
-    {
-        $definition = $this->createItem(
-            AssetDefinition::class,
-            [
-                'system_name' => $this->getUniqueString(),
-                'is_active'   => true,
-            ]
-        );
-        $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
-        $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
-
-        return $definition;
-    }
-
     protected function getByIdProvider(): iterable
     {
-        $foo_definition = $this->initDefinition();
+        $foo_definition = $this->initAssetDefinition();
         $foo_classname = $foo_definition->getConcreteClassName();
 
-        $bar_definition = $this->initDefinition();
+        $bar_definition = $this->initAssetDefinition();
         $bar_classname = $bar_definition->getConcreteClassName();
 
         // Loop to ensure that switching between definition does not cause any issue
@@ -109,7 +88,7 @@ class Asset extends DbTestCase
 
     public function testPrepareInputDefinition(): void
     {
-        $definition = $this->initDefinition();
+        $definition = $this->initAssetDefinition();
         $classname = $definition->getConcreteClassName();
         $asset = new $classname();
 

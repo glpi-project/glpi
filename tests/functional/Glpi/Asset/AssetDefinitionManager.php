@@ -46,18 +46,7 @@ class AssetDefinitionManager extends DbTestCase
         $mapping = [];
         for ($i = 0; $i < 5; $i++) {
             $system_name = $this->getUniqueString();
-
-            $definition = new AssetDefinition();
-            $definition->fields = [
-                'system_name' => $system_name,
-            ];
-
-            $expected_classname = 'Glpi\\CustomAsset\\' . $system_name;
-
-            $instance = \Glpi\Asset\AssetDefinitionManager::getInstance();
-            $this->callPrivateMethod($instance, 'loadConcreteClass', $definition);
-
-            $mapping[$expected_classname] = $definition;
+            $mapping['Glpi\\CustomAsset\\' . $system_name] = $this->initAssetDefinition($system_name);
         }
 
         foreach ($mapping as $expected_classname => $definition) {

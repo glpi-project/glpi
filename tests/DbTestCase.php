@@ -35,6 +35,8 @@
 
 // Generic test classe, to be extended for CommonDBTM Object
 
+use Glpi\Asset\AssetDefinition;
+
 class DbTestCase extends \GLPITestCase
 {
     public function beforeTestMethod($method)
@@ -301,5 +303,60 @@ class DbTestCase extends \GLPITestCase
         }
 
         return $rule;
+    }
+
+    /**
+     * Initialize a definition.
+     *
+     * @param string $system_name
+     * @param array $capacities
+     *
+     * @return AssetDefinition
+     */
+    protected function initAssetDefinition(
+        ?string $system_name = null,
+        array $capacities = [],
+    ): AssetDefinition {
+        $definition = $this->createItem(
+            AssetDefinition::class,
+            [
+                'system_name' => $system_name ?? $this->getUniqueString(),
+                'is_active'   => true,
+                'capacities'  => $capacities,
+            ],
+            skip_fields: ['capacities'] // JSON encoded fields cannot be automatically checked
+        );
+        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
+
+        $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
+        $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
+        $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
+
+        return $definition;
+    }
+
+    /**
+     * Create a random text document.
+     * @return \Document
+     */
+    protected function createTxtDocument(): Document
+    {
+        $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
+        $filename = uniqid('glpitest_', true) . '.txt';
+        $contents = random_bytes(1024);
+
+        $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
+        $this->integer($written_bytes)->isEqualTo(strlen($contents));
+
+        return $this->createItem(
+            Document::class,
+            [
+                'filename'    => $filename,
+                'entities_id' => $entity,
+                '_filename'   => [
+                    $filename,
+                ],
+            ]
+        );
     }
 }
