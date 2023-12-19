@@ -3744,7 +3744,7 @@ class Rule extends CommonDBTM
      */
     final public static function hasDefaultRules(): bool
     {
-        return file_exists(static::getDefaultRulesFilePath());
+        return file_exists(self::getDefaultRulesFilePath());
     }
 
     /**

@@ -137,7 +137,7 @@ class TicketTemplate extends ITILTemplate
                     return true;
 
                 case 2:
-                    $item->showHelpdeskPreview($item);
+                    static::showHelpdeskPreview($item);
                     return true;
             }
         }

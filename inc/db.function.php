@@ -141,7 +141,7 @@ function getTableForItemType($itemtype)
  *
  * @param $itemtype   string   itemtype
  *
- * @return CommonDBTM|boolean itemtype object or false if class does not exists
+ * @return CommonDBTM|false itemtype object or false if class does not exists
  **/
 function getItemForItemtype($itemtype)
 {
