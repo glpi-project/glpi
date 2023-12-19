@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use atoum\atoum\scripts\treemap\analyzers\size;
 use DBmysqlIterator;
 use Dropdown;
 use Entity;
@@ -732,7 +733,7 @@ class Software extends InventoryAsset
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
 
-                if ($stmt === null) {
+                if ($stmt === null || $stmt_types === null || strlen($stmt_types) != count($stmt_columns)) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
                     $reference = array_fill_keys(
                         array_keys($stmt_columns),
@@ -757,8 +758,6 @@ class Software extends InventoryAsset
                     \Log::HISTORY_CREATE_ITEM
                 );
                 $this->softwares[$skey] = $softwares_id;
-                // unset stmt to avoid an error related to a different size of stmt_columns
-                unset($stmt);
             }
         }
 
