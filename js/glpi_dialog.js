@@ -144,6 +144,10 @@ var glpi_html_dialog = function({
         // call close event
         close(event);
 
+        if ($('div.modal.show').length === 0) {
+            $('div.modal-backdrop').remove();
+        }
+
         // remove html on modal close
         $('#'+id).remove();
     });
