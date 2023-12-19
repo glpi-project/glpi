@@ -1558,7 +1558,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 date: $ttask::getTable() . '.date_creation',
                 interval: new QueryExpression($DB::quoteName($ttask::getTable() . '.planned_duration')),
                 interval_unit: 'SECOND',
-                alias: 'notp_edate'
             );
             $SELECT[] = new QueryExpression($bdate, 'notp_date');
             $SELECT[] = new QueryExpression($edate, 'notp_edate');
