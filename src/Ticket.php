@@ -3303,7 +3303,7 @@ JAVASCRIPT;
                     $time = $now->getTimestamp() - $ticket_date->getTimestamp();
                 }
 
-                return sprintf(__('%s hours %s minutes ago'), floor($time / 3600), floor(($time % 3600) / 60));
+                return sprintf(__('%s hours %s minutes'), floor($time / 3600), floor(($time % 3600) / 60));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

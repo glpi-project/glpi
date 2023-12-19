@@ -7022,7 +7022,7 @@ HTML
             $entity->getID(),
             0,
             '2023-11-26 10:00:00',
-            '24 hours 0 minutes ago'
+            '24 hours 0 minutes'
         ];
 
         // Calendar with 24/24 working hours
@@ -7030,7 +7030,7 @@ HTML
             $entity->getID(),
             $calendar2->getID(),
             '2023-11-11 10:00:00',
-            '144 hours 0 minutes ago'
+            '144 hours 0 minutes'
         ];
 
         // Calendar with 0 working hours
@@ -7038,7 +7038,7 @@ HTML
             $entity->getID(),
             $calendar3->getID(),
             '2023-11-11 10:00:00',
-            '0 hours 0 minutes ago'
+            '0 hours 0 minutes'
         ];
 
         // Calendar with working hours
@@ -7046,7 +7046,7 @@ HTML
             $entity->getID(),
             $calendar4->getID(),
             '2023-11-10 10:47:21',
-            '80 hours 12 minutes ago'
+            '80 hours 12 minutes'
         ];
 
         // Calendar with working hours with ticket creation date outside working hours
@@ -7054,7 +7054,7 @@ HTML
             $entity->getID(),
             $calendar4->getID(),
             '2023-11-11 10:00:00',
-            '74 hours 0 minutes ago'
+            '74 hours 0 minutes'
         ];
 
         return $data;
