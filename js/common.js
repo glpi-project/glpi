@@ -1462,11 +1462,11 @@ window.validateFormWithBootstrap = function (event) {
     }
 
     return valid;
-}
+};
 
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {
-        if (!validateFormWithBootstrap(e)) {
+        if (!window.validateFormWithBootstrap(e)) {
             return false;
         }
 

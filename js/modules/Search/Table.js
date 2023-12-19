@@ -269,7 +269,7 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
         $(search_container).on('click', '.search-form-container button[name="search"]', (e) => {
             e.preventDefault();
-            if (validateFormWithBootstrap(e)) {
+            if (window.validateFormWithBootstrap(e)) {
                 this.onSearch();
             }
         });
