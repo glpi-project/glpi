@@ -399,11 +399,18 @@ class Drive extends AbstractInventoryAsset
         $interfacetypes_id = $interface->fields['id'];
         $this->integer($interfacetypes_id)->isGreaterThan(0);
 
+        $hdd_type = new \DeviceHardDriveType();
+        $hddt_id = $hdd_type->add([
+            'name' => 'disk'
+        ]);
+        $this->integer($hddt_id)->isGreaterThan(0);
+
         $harddrive_1_id = $device_hdd->add([
             'designation' => 'PM951 NVMe SAMSUNG 256GB',
             'manufacturers_id' => $manufacturers_id,
             'interfacetypes_id' => $interfacetypes_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
+            'deviceharddrivetypes_id' => $hddt_id
         ]);
         $this->integer($harddrive_1_id)->isGreaterThan(0);
 
@@ -411,7 +418,7 @@ class Drive extends AbstractInventoryAsset
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
             'deviceharddrives_id' => $harddrive_1_id,
-            'serial'       => 'S29NNXAH146764'
+            'serial'       => 'S29NNXAH146764',
         ]);
         $this->integer($item_harddrive_1_id)->isGreaterThan(0);
 
@@ -419,7 +426,8 @@ class Drive extends AbstractInventoryAsset
             'designation' => 'HGST HTS725032A7E630',
             'manufacturers_id' => $manufacturers_id,
             'interfacetypes_id' => $interfacetypes_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
+            'deviceharddrivetypes_id' => $hddt_id
         ]);
         $this->integer($harddrive_2_id)->isGreaterThan(0);
 
@@ -457,11 +465,11 @@ class Drive extends AbstractInventoryAsset
 
        //we still have 3 harddrives
         $harddrives = $device_hdd->find();
-        $this->integer(count($harddrives))->isIdenticalTo(5);
+        $this->integer(count($harddrives))->isIdenticalTo(3);
 
        //we still have 3 harddrives items linked to the computer
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-        $this->integer(count($harddrives))->isIdenticalTo(5);
+        $this->integer(count($harddrives))->isIdenticalTo(3);
 
        //harddrives present in the inventory source are now dynamic
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
@@ -469,7 +477,7 @@ class Drive extends AbstractInventoryAsset
 
        //harddrive not present in the inventory is still not dynamic
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-        $this->integer(count($harddrives))->isIdenticalTo(3);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
 
        //Redo inventory, but with removed "HGST HTS725032A7E630" harddrive
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -501,11 +509,11 @@ class Drive extends AbstractInventoryAsset
 
        //we still have 3 harddrives
         $harddrives = $device_hdd->find();
-        $this->integer(count($harddrives))->isIdenticalTo(5);
+        $this->integer(count($harddrives))->isIdenticalTo(3);
 
        //we now have 2 harddrives linked to computer only
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
-        $this->integer(count($harddrives))->isIdenticalTo(4);
+        $this->integer(count($harddrives))->isIdenticalTo(2);
 
        //harddrive present in the inventory source is still dynamic
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
@@ -513,6 +521,6 @@ class Drive extends AbstractInventoryAsset
 
        //harddrive not present in the inventory is still not dynamic
         $harddrives = $item_hdd->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
-        $this->integer(count($harddrives))->isIdenticalTo(3);
+        $this->integer(count($harddrives))->isIdenticalTo(1);
     }
 }

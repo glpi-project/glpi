@@ -255,13 +255,15 @@ class DeviceHardDrive extends CommonDevice
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
+        global $DB;
+
         $tab = [];
 
         $tab[] = [
             'id'                 => '114',
             'table'              => 'glpi_deviceharddrives',
             'field'              => 'designation',
-            'name'               => __('Hard drive type'),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Name')),
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
@@ -278,7 +280,7 @@ class DeviceHardDrive extends CommonDevice
             'id'                 => '115',
             'table'              => 'glpi_items_deviceharddrives',
             'field'              => 'capacity',
-            'name'               => __('Hard drive size'),
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Capacity by default')),
             'unit'               => 'auto',
             'forcegroupby'       => true,
             'usehaving'          => true,
@@ -286,10 +288,10 @@ class DeviceHardDrive extends CommonDevice
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        => '(' .
-                QueryFunction::sum('TABLE.capacity') . ' / ' .
-                QueryFunction::count('TABLE.id') . ') * ' .
-                QueryFunction::count(expression: 'TABLE.id', distinct: true),
+            'computation'        =>
+            '(SUM(' . $DB->quoteName('TABLE.capacity') . ') / COUNT(' .
+            $DB->quoteName('TABLE.id') . '))
+            * COUNT(DISTINCT ' . $DB->quoteName('TABLE.id') . ')',
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
