@@ -231,6 +231,11 @@ class Software extends InventoryAsset
             if (!property_exists($val, 'comment')) {
                 $val->comment = null;
             }
+
+            //set dynamicity
+            if (!property_exists($val, 'is_dynamic') || $val->is_dynamic == null) {
+                $val->is_dynamic = "1";
+            }
         }
 
         //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
@@ -403,7 +408,7 @@ class Software extends InventoryAsset
                 $software_to_update = new GSoftware();
                 $software_to_update->update([
                     "id" => $db_software_data[$key_wo_version]['softid'],
-                    'is_dynamic' => true,
+                    'is_dynamic' => 1,
                     "softwarecategories_id" => ($this->known_links[$sckey] ?? 0)
                 ], 0);
             }
@@ -752,6 +757,8 @@ class Software extends InventoryAsset
                     \Log::HISTORY_CREATE_ITEM
                 );
                 $this->softwares[$skey] = $softwares_id;
+                // unset stmt to avoid an error related to a different size of stmt_columns
+                unset($stmt);
             }
         }
 

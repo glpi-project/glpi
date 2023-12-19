@@ -906,4 +906,42 @@ class Lockedfield extends DbTestCase
         $this->integer($database->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
         $this->array($lockedfield->getLockedValues($database->getType(), $database->fields['id']))->isIdenticalTo(['manufacturers_id' => 'PostgreSQL']);
     }
+
+    public function testWithSoftware()
+    {
+        $software = new \Software();
+        $sid = (int)$software->add([
+            'name'                  => 'Software to test locked field',
+            'manufacturers_id'      => 0,
+            'softwarecategories_id'  => 0,
+            'entities_id'           => 0,
+            'is_dynamic'            => 1
+        ]);
+        $this->integer($sid)->isGreaterThan(0);
+
+        $lockedfield = new \Lockedfield();
+        $this->boolean($lockedfield->isHandled($software))->isTrue();
+        $this->array($lockedfield->getLockedValues($software->getType(), $sid))->isEmpty();
+
+        //update computer manually, to add a locked field
+        $this->boolean(
+            (bool)$software->update(['id' => $sid, 'softwarecategories_id' => 48725])
+        )->isTrue();
+
+        $this->boolean($software->getFromDB($sid))->isTrue();
+        $this->array($lockedfield->getLockedValues($software->getType(), $sid))->isIdenticalTo(['softwarecategories_id' => null]);
+
+        //ensure new dynamic update does not override softwarecategories_id again
+        $this->boolean(
+            (bool)$software->update([
+                'id' => $sid,
+                'is_dynamic'   => 1,
+                'softwarecategories_id'  => 65131
+            ])
+        )->isTrue();
+
+        $this->boolean($software->getFromDB($sid))->isTrue();
+        $this->variable($software->fields['softwarecategories_id'])->isEqualTo(48725);
+        $this->array($lockedfield->getLockedValues($software->getType(), $sid))->isEqualTo(['softwarecategories_id' => 65131]);
+    }
 }
