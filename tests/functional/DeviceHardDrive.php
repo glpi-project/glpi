@@ -53,7 +53,7 @@ class DeviceHardDrive extends DbTestCase
             'interfacetypes_id'        => $this->getUniqueInteger(),
         ];
         $id = $obj->add($in);
-        $this->integer((int)$id)->isGreaterThan(0);
+        $this->integer($id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
 
        // getField methods
