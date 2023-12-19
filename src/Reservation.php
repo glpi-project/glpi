@@ -217,26 +217,25 @@ class Reservation extends CommonDBChild
         if (isset($input['items']) && count($input['items']) && isset($input['users_id'])) {
             foreach ($input['items'] as $reservationitems_id) {
 
-                    ksort($dates_to_add);
-                    $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
+                ksort($dates_to_add);
+                $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
 
-                    foreach ($dates_to_add as $begin => $end) {
-                        $recu_res = [
-                            'begin' => $begin,
-                            'end' => $end,
-                            'reservationitems_id' => $reservationitems_id,
-                            'comment' => $input['comment'],
-                            'users_id' => (int)$input['users_id'],
-                            'group' => $group,
-                        ];
+                foreach ($dates_to_add as $begin => $end) {
+                    $recu_res = [
+                        'begin' => $begin,
+                        'end' => $end,
+                        'reservationitems_id' => $reservationitems_id,
+                        'comment' => $input['comment'],
+                        'users_id' => (int)$input['users_id'],
+                        'group' => $group,
+                    ];
 
-                        if (
-                            (Session::haveRight("reservation", UPDATE) || (Session::getLoginUserID() === $recu_res["users_id"]))
-                            && count($rr->find([$recu_res])) == 0
-                        ) {
-                            if ($newID = $rr->add($recu_res)) {
-                                self::logAndRedirect($newID, $reservationitems_id, $recu_res);
-                            }
+                    if (
+                        (Session::haveRight("reservation", UPDATE) || (Session::getLoginUserID() === $recu_res["users_id"]))
+                        && count($rr->find([$recu_res])) == 0
+                    ) {
+                        if ($newID = $rr->add($recu_res)) {
+                            self::logAndRedirect($newID, $reservationitems_id, $recu_res);
                         }
                     }
                 }

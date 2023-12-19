@@ -97,9 +97,10 @@ if (isset($_POST["update"])) {
         $_POST['users_id'] = Session::getLoginUserID();
     }
     Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
-            Reservation::handleAddForm($_POST);
-        }
-    } else {
+    Reservation::handleAddForm($_POST);
+    if (
+        !isset($_POST['items'])
+    ) {
         Session::addMessageAfterRedirect(
             __('No item selected'),
             false,
