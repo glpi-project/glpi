@@ -50,7 +50,7 @@ class DeviceHardDriveType extends DbTestCase
             'comment'                  => $this->getUniqueString(),
         ];
         $id = $obj->add($in);
-        $this->integer((int)$id)->isGreaterThan(0);
+        $this->integer($id)->isGreaterThan(0);
         $this->boolean($obj->getFromDB($id))->isTrue();
 
        // getField methods
