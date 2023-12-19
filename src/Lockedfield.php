@@ -429,7 +429,7 @@ class Lockedfield extends CommonDBTM
         }
         // Set software category like lockable field
         $name = sprintf('%1$s - %2$s', Software::getTypeName(1), 'softwarecategories_id');
-        $dname = sprintf('%1$s - %2$s', Software::getTypeName(1), __('Category'));
+        $dname = sprintf('%1$s - %2$s', Software::getTypeName(1), _n('Category', 'Categories', 1));
         $lockable[$name] = $dname;
 
         return $lockable;
