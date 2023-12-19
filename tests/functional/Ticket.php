@@ -7022,7 +7022,7 @@ HTML
             $entity->getID(),
             0,
             '2023-11-26 10:00:00',
-            '1 days 0 hours 0 minutes'
+            '24 hours 0 minutes ago'
         ];
 
         // Calendar with 24/24 working hours
@@ -7030,7 +7030,7 @@ HTML
             $entity->getID(),
             $calendar2->getID(),
             '2023-11-11 10:00:00',
-            '6 days 0 hours 0 minutes'
+            '144 hours 0 minutes ago'
         ];
 
         // Calendar with 0 working hours
@@ -7038,7 +7038,7 @@ HTML
             $entity->getID(),
             $calendar3->getID(),
             '2023-11-11 10:00:00',
-            '0 days 0 hours 0 minutes'
+            '0 hours 0 minutes ago'
         ];
 
         // Calendar with working hours
@@ -7046,7 +7046,7 @@ HTML
             $entity->getID(),
             $calendar4->getID(),
             '2023-11-10 10:47:21',
-            '3 days 8 hours 12 minutes'
+            '80 hours 12 minutes ago'
         ];
 
         // Calendar with working hours with ticket creation date outside working hours
@@ -7054,7 +7054,7 @@ HTML
             $entity->getID(),
             $calendar4->getID(),
             '2023-11-11 10:00:00',
-            '3 days 2 hours 0 minutes'
+            '74 hours 0 minutes ago'
         ];
 
         return $data;
@@ -7095,7 +7095,8 @@ HTML
         $this->string($ticket->getSpecificValueToDisplay(
             '_virtual_age',
             [
-                'id' => $ticket->getID(),
+                'entities_id' => $entity_id,
+                'date' => $date
             ]
         ))->isEqualTo($expected);
     }
