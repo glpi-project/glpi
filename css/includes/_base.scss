@@ -45,9 +45,8 @@
     --tblr-navbar-color: #2f3f64;
     --tblr-body-bg: #f5f7fb;
     --tblr-bg-surface: #fff;
-    --tblr-card-cap-bg: var(--tblr-bg-surface);
     --tblr-bg-surface-tertiary: var(--tblr-bg-surface);
-    --glpi-tabs-bg: var(--tblr-bg-surface);
+    --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
     --glpi-tabs-active-bg: var(--glpi-tabs-bg);
@@ -390,4 +389,8 @@ body .dropdown-menu {
 body .toast {
     background: var(--tblr-bg-surface);
     color: var(--tblr-body-color);
+}
+
+.card {
+    --tblr-card-cap-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%) !important;
 }

@@ -139,4 +139,8 @@
     .popover .popover-arrow::after {
         border-top-color: var(--tblr-active-bg) !important;
     }
+
+    iframe.tox-edit-area__iframe {
+        background-color: var(--tblr-bg-surface) !important;
+    }
 }
