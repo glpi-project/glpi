@@ -60,7 +60,7 @@ class ComputerAntivirus extends CommonDBChild
 
        // can exists for template
         if (
-            ($item->getType() == 'Computer')
+            $item instanceof Computer
             && Computer::canView()
         ) {
             $nb = 0;

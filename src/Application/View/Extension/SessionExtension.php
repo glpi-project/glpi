@@ -67,7 +67,7 @@ class SessionExtension extends AbstractExtension
     /**
      * Returns current interface.
      *
-     * @return User|null
+     * @return string|null
      */
     public function getCurrentInterface(): ?string
     {
@@ -101,6 +101,7 @@ class SessionExtension extends AbstractExtension
             throw new \Exception(sprintf('Unable to check rights of itemtype "%s".', $itemtype));
         }
 
+        /** @var \CommonDBTM $item */
         $item = new $itemtype();
         return $item->canGlobal($right);
     }

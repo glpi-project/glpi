@@ -86,7 +86,7 @@ class ContractCost extends CommonDBChild
 
        // can exists for template
         if (
-            ($item->getType() == 'Contract')
+            $item instanceof Contract
             && Contract::canView()
         ) {
             $nb = 0;

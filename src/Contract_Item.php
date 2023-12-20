@@ -657,7 +657,7 @@ class Contract_Item extends CommonDBRelation
                     }
 
                     if ($item->can($objdata['id'], READ)) {
-                        $link     = $itemtype::getFormURLWithID($objdata['id']);
+                        $link     = $item::getFormURLWithID($objdata['id']);
                         $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
                     } else {
                         $namelink = $name;

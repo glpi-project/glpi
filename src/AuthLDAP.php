@@ -698,8 +698,6 @@ class AuthLDAP extends CommonDBTM
     /**
      * Show config replicates form
      *
-     * @var DBmysql $DB
-     *
      * @return void
      */
     public function showFormReplicatesConfig()
@@ -1614,7 +1612,8 @@ class AuthLDAP extends CommonDBTM
      * Check if the sync_field is configured for an LDAP server
      *
      * @since 9.2
-     * @param integer authldaps_id the LDAP server ID
+     * @param integer $authldaps_id the LDAP server ID
+     *
      * @return boolean true if configured, false if not configured
      */
     public static function isSyncFieldConfigured($authldaps_id)
@@ -4065,8 +4064,6 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get number of servers
      *
-     * @var DBmysql $DB
-     *
      * @return integer
      */
     public static function getNumberOfServers()
@@ -4190,8 +4187,6 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Get default ldap
-     *
-     * @var DBmysql $DB DB instance
      *
      * @return integer
      */
@@ -4406,7 +4401,7 @@ class AuthLDAP extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (
             !$withtemplate
             && $item->can($item->getField('id'), READ)
@@ -4426,7 +4421,7 @@ class AuthLDAP extends CommonDBTM
     }
 
     /**
-     * Choose wich form to show
+     * Choose which form to show
      *
      * @param CommonGLPI $item         Item instance
      * @param integer    $tabnum       Tab number
@@ -4436,7 +4431,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        /** @var AuthLDAP $item */
         switch ($tabnum) {
             case 1:
                 $item->showFormTestLDAP();

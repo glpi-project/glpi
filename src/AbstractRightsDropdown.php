@@ -75,7 +75,7 @@ abstract class AbstractRightsDropdown
      * @param string $name  Field name
      * @param array $values Selected values
      *
-     * @return array
+     * @return string
      */
     public static function show(string $name, array $values): string
     {

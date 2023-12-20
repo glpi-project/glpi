@@ -240,7 +240,7 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->affectedRows($result) > 0) {
+        if ($DB->affectedRows() > 0) {
             $this->timer  = microtime(true);
             $this->volume = 0;
             $log = new CronTaskLog();
@@ -321,7 +321,7 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->affectedRows($result) > 0) {
+        if ($DB->affectedRows() > 0) {
            // No gettext for log but add gettext line to be parsed for pot generation
            // order is important for insertion in english in the database
             if ($log_state === CronTaskLog::STATE_ERROR) {
@@ -1579,7 +1579,7 @@ class CronTask extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var CronTask $item */
         switch ($ma->getAction()) {
             case 'reset':
                 foreach ($ids as $key) {

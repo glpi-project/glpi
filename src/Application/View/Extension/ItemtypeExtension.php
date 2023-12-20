@@ -91,7 +91,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @param string $itemtype
      *
-     * @return CommonGLPI|null
+     * @return string|null
      */
     public function getItemtypeDropdown($itemtype, array $options = []): ?string
     {
