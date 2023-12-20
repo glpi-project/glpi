@@ -246,6 +246,15 @@ final class AssetDefinition extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if (!array_key_exists('system_name', $input)) {
+            Session::addMessageAfterRedirect(
+                __('The system name is mandatory.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         foreach (['capacities', 'profiles'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {
                 // ensure default value of JSON fields will be a valid array

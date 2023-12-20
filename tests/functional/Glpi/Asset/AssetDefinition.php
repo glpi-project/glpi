@@ -45,12 +45,6 @@ class AssetDefinition extends DbTestCase
 {
     protected function updateInputProvider(): iterable
     {
-        yield [
-            'input'    => [],
-            'output'   => [],
-            'messages' => [],
-        ];
-
         // Capacities inputs
         yield [
             'input'    => [
@@ -191,11 +185,69 @@ class AssetDefinition extends DbTestCase
 
     protected function addInputProvider(): iterable
     {
+        yield [
+            'input'    => [],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The system name is mandatory.',
+                ],
+            ],
+        ];
+
+        // start at 32 to ignore control chars
+        // stop at 8096, no need to test the whole UTF-8 charset
+        for ($i = 32; $i < 8096; $i++) {
+            $char = mb_chr($i);
+            if ($char === false) {
+                continue;
+            }
+
+            $system_name = sprintf('TestAsset%s', $char);
+            if (
+                ($char >= "A" && $char <= "Z") // A -> Z
+                || ($char >= "a" && $char <= "z") // a -> z
+            ) {
+                yield [
+                    'input'    => [
+                        'system_name' => $system_name,
+                    ],
+                    'output'   => [
+                        'system_name' => $system_name,
+                        'capacities'  => '[]',
+                        'profiles'    => '[]',
+                    ],
+                    'messages' => [],
+                ];
+            } else {
+                yield [
+                    'input'    => [
+                        'system_name' => $system_name,
+                    ],
+                    'output'   => false,
+                    'messages' => [
+                        ERROR => [
+                            'The following field has an incorrect value: "System name".',
+                        ],
+                    ],
+                ];
+            }
+        }
+
         foreach ($this->updateInputProvider() as $data) {
+            if (!array_key_exists('system_name', $data['input'])) {
+                // `system_name` is mandatory on add
+                $data['input']['system_name'] = __FUNCTION__;
+                if (is_array($data['output'])) {
+                    $data['output']['system_name'] = __FUNCTION__;
+                }
+            }
             if (is_array($data['output']) && !array_key_exists('capacities', $data['output'])) {
+                // default value for `capacities`
                 $data['output']['capacities'] = '[]';
             }
             if (is_array($data['output']) && !array_key_exists('profiles', $data['output'])) {
+                // default value for `profiles`
                 $data['output']['profiles'] = '[]';
             }
             yield $data;
@@ -214,5 +266,22 @@ class AssetDefinition extends DbTestCase
         foreach ($messages as $level => $level_messages) {
             $this->hasSessionMessages($level, $level_messages);
         }
+    }
+
+    public function testSystemNameUpdate(): void
+    {
+        $definition = $this->createItem(
+            \Glpi\Asset\AssetDefinition::class,
+            [
+                'system_name' => 'test',
+            ]
+        );
+
+        $updated = $definition->update([
+            'id' => $definition->getID(),
+            'system_name' => 'changed',
+        ]);
+        $this->boolean($updated)->isFalse();
+        $this->hasSessionMessages(ERROR, ['The system name cannot be changed.']);
     }
 }

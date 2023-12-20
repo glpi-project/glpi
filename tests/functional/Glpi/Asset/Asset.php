@@ -105,4 +105,21 @@ class Asset extends DbTestCase
             )->message->contains('Asset definition does not match the current concrete class.');
         }
     }
+
+    public function testUpdateWithWrongDefinition(): void
+    {
+        $definition_1 = $this->initAssetDefinition();
+        $classname_1  = $definition_1->getConcreteClassName();
+        $definition_2 = $this->initAssetDefinition();
+        $classname_2  = $definition_2->getConcreteClassName();
+
+        $asset = $this->createItem($classname_1, ['name' => 'new asset']);
+
+        $this->exception(
+            function () use ($asset, $classname_2) {
+                $asset_2 = new $classname_2();
+                $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
+            }
+        )->message->contains('Asset definition cannot be changed.');
+    }
 }
