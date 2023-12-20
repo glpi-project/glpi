@@ -1132,6 +1132,5 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id])))->isIdenticalTo(2);
         //we have 2 dynamic link
         $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1])))->isIdenticalTo(2);
-
     }
 }
