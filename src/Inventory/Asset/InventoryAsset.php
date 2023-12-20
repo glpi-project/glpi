@@ -358,18 +358,6 @@ abstract class InventoryAsset
     }
 
     /**
-     * Set item and itemtype
-     *
-     * @param CommonDBTM $item Item instance
-     *
-     * @return InventoryAsset
-     */
-    protected function getItem(): CommonDBTM
-    {
-        return $this->item;
-    }
-
-    /**
      * Set inventory item
      *
      * @param InventoryAsset $mainasset Main inventory asset instance
@@ -420,7 +408,7 @@ abstract class InventoryAsset
         }
 
         $citem = new \Computer_Item();
-        $citem->add($input, [], !$this->getItem()->isNewItem()); //log only if mainitem is not new
+        $citem->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
     }
 
     protected function setNew(): self
