@@ -1336,6 +1336,7 @@ class AuthLDAP extends DbTestCase
         unset($dup['id']);
         unset($dup['date_creation']);
         unset($dup['date_mod']);
+        unset($dup['user_dn_hash']);
         $aid = $dup['auths_id'];
         $dup['auths_id'] = $aid + 1;
 
