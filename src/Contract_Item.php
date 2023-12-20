@@ -303,8 +303,7 @@ class Contract_Item extends CommonDBRelation
 
             echo "<tr class='tab_bg_1'><td>";
             Contract::dropdown(['entity'  => $item->getEntityID(),
-                'used'    => $used,
-                'expired' => false
+                'used'    => $used
             ]);
 
             echo "</td><td class='center'>";
