@@ -62,7 +62,10 @@ class PhpVersion extends AbstractRequirement
      */
     public function __construct(string $min_version, string $max_version)
     {
-        $this->title = __('PHP Parser');
+        parent::__construct(
+            __('PHP Parser')
+        );
+
         $this->min_version = $min_version;
         $this->max_version = $max_version;
     }

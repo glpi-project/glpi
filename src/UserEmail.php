@@ -221,7 +221,7 @@ class UserEmail extends CommonDBChild
             !$user->can($users_id, READ)
             && ($users_id != Session::getLoginUserID())
         ) {
-            return false;
+            return;
         }
         $canedit = ($user->can($users_id, UPDATE) || ($users_id == Session::getLoginUserID()));
 

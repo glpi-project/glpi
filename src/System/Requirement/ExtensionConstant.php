@@ -55,10 +55,13 @@ class ExtensionConstant extends AbstractRequirement
      */
     public function __construct(string $title, string $name, bool $optional = false, string $description = '')
     {
-        $this->title = $title;
+        parent::__construct(
+            $title,
+            $description,
+            $optional
+        );
+
         $this->name = $name;
-        $this->optional = $optional;
-        $this->description = $description;
     }
 
     protected function check()

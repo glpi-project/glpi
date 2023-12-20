@@ -427,6 +427,29 @@ class NotificationTemplate extends CommonDBTM
         $string = self::processIf($string, $cleandata);
         $string = strtr($string, $cleandata);
 
+        $string = self::convertRelativeGlpiLinksToAbsolute($string);
+
+        return $string;
+    }
+
+    /**
+     * Convert relative links to GLPI nto absolute links.
+     *
+     * @param string $string
+     * @return string
+     */
+    private static function convertRelativeGlpiLinksToAbsolute(string $string): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        // Convert domain relative links to absolute links
+        $string = preg_replace(
+            '/((?:href)=[\'"])(\/(?:[^\/][^\'"]*)?)([\'"])/',
+            '$1' . $CFG_GLPI['url_base'] . '$2$3',
+            $string
+        );
+
         return $string;
     }
 

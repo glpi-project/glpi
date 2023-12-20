@@ -581,6 +581,8 @@ class State extends CommonTreeDropdown
 
     /**
      * Get visibility fields from conf
+     *
+     * @return array<string,string>
      */
     protected function getvisibilityFields(): array
     {

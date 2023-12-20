@@ -35,7 +35,10 @@
 
 namespace tests\units;
 
+use Calendar;
+use CalendarSegment;
 use DbTestCase;
+use Session;
 
 /* Test for inc/commonitilrecurrent.class.php */
 
@@ -48,9 +51,11 @@ abstract class CommonITILRecurrent extends DbTestCase
      */
     protected function computeNextCreationDateProvider()
     {
-        $calendar    = new \Calendar();
+        $this->login();
+
+        $calendar    = new Calendar();
         $cal_holiday = new \Calendar_Holiday();
-        $cal_segment = new \CalendarSegment();
+        $cal_segment = new CalendarSegment();
         $holiday     = new \Holiday();
 
         $start_of_previous_month = date('Y-m-01 00:00:00', strtotime('-1 month'));
@@ -428,6 +433,61 @@ abstract class CommonITILRecurrent extends DbTestCase
             'expected_value' => date('Y-m-d H:00:00', $next_time),
         ];
 
+        // Create a calendar with 7 workings days
+        $full_calendar_9_to_10 =  $this->createItem(Calendar::class, [
+            'name' => $this->getChildClass() . ' full calendar 9 to 10',
+        ]);
+        for ($day = 0; $day <= 6; $day++) {
+            $this->createItem(CalendarSegment::class, [
+                'calendars_id' => $full_calendar_9_to_10->getID(),
+                'day'          => $day,
+                'begin'        => '09:00:00',
+                'end'          => '10:00:00'
+            ]);
+        }
+
+        // Daily ticket starting from the 27th of november
+        // We are on the 28th at 8 AM, which is BEFORE the start of the working
+        // day so the next creation date will be the 28th at 9 PM.
+        $data[] = [
+            'begin_date'     => "2023-11-27 08:00:00",
+            'end_date'       => null,
+            'periodicity'    => DAY_TIMESTAMP,
+            'create_before'  => 0,
+            'calendars_id'   => $full_calendar_9_to_10->getID(),
+            'expected_value' => "2023-11-28 09:00:00",
+            'messages'       => null,
+            'current_date'   => "2023-11-28 08:00:00",
+        ];
+
+        // Daily ticket starting from the 27th of november
+        // We are on the 28th at 8 AM, which is BEFORE the start of the working
+        // day so the next creation date will be the 28th at 9 PM.
+        $data[] = [
+            'begin_date'     => "2023-11-27 12:00:00", // Note: date is outside of calendar
+            'end_date'       => null,
+            'periodicity'    => DAY_TIMESTAMP,
+            'create_before'  => 0,
+            'calendars_id'   => $full_calendar_9_to_10->getID(),
+            'expected_value' => "2023-11-28 09:00:00",
+            'messages'       => null,
+            'current_date'   => "2023-11-28 08:00:00",
+        ];
+
+        // Daily ticket starting from the 27th of november
+        // We are on the 28th at 11 AM, which is AFTER the start of the working
+        // day so the next creation date will on the following day which is the 29th.
+        $data[] = [
+            'begin_date'     => "2023-11-27 12:00:00", // Note: date is outside of calendar
+            'end_date'       => null,
+            'periodicity'    => DAY_TIMESTAMP,
+            'create_before'  => 0,
+            'calendars_id'   => $full_calendar_9_to_10->getID(),
+            'expected_value' => "2023-11-29 09:00:00",
+            'messages'       => null,
+            'current_date'   => "2023-11-28 11:00:00",
+        ];
+
         return $data;
     }
 
@@ -439,6 +499,7 @@ abstract class CommonITILRecurrent extends DbTestCase
      * @param integer        $calendars_id
      * @param string         $expected_value
      * @param array          $messages
+     * @param string|null    $current_date             Override the current date
      *
      * @dataProvider computeNextCreationDateProvider
      */
@@ -449,8 +510,15 @@ abstract class CommonITILRecurrent extends DbTestCase
         $create_before,
         $calendars_id,
         $expected_value,
-        $messages = null
+        $messages = null,
+        $current_date = null
     ) {
+        // Handle dynamic date
+        $date_to_restore = null;
+        if (!is_null($current_date)) {
+            $date_to_restore = Session::getCurrentTime();
+            $_SESSION['glpi_currenttime'] = $current_date;
+        }
 
         $child_class = $this->getChildClass();
         $recurrent = new $child_class();
@@ -467,6 +535,10 @@ abstract class CommonITILRecurrent extends DbTestCase
             $this->hasNoSessionMessage(ERROR);
         } else {
             $this->hasSessionMessages(ERROR, $messages);
+        }
+
+        if (!is_null($date_to_restore)) {
+            $_SESSION['glpi_currenttime'] = $date_to_restore;
         }
     }
 

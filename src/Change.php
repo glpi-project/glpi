@@ -932,6 +932,7 @@ class Change extends CommonITILObject
             'name'                       => '',
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
+            'date'                      => 'NULL',
             '_add_validation'            => 0,
             'users_id_validate'          => [],
             '_tasktemplates_id'          => [],

@@ -650,7 +650,6 @@ class Document_Item extends CommonDBRelation
                     $entities = $entity;
                 }
             }
-            $limit = getEntitiesRestrictRequest(" AND ", "glpi_documents", '', $entities, true);
 
             $count = $DB->request([
                 'COUNT'     => 'cpt',

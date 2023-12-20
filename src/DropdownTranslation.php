@@ -279,84 +279,91 @@ class DropdownTranslation extends CommonDBChild
     {
         /** @var \DBmysql $DB */
         global $DB;
-       // Force completename translated : used for the first translation
-        $_SESSION['glpi_dropdowntranslations'][$input['itemtype']]['completename'] = 'completename';
 
-       //If there's already a completename for this language, get it's ID, otherwise 0
+        if (!is_a($input['itemtype'], CommonTreeDropdown::class, true)) {
+            return; // `completename` is used only for tree dropdowns
+        }
+        $itemtype = $input['itemtype'];
+
+        //If there's already a completename for this language, get it's ID, otherwise 0
         $completenames_id = self::getTranslationID(
             $input['items_id'],
-            $input['itemtype'],
+            $itemtype,
             'completename',
             $input['language']
         );
-        $item = new $input['itemtype']();
-       //Completename is used only for tree dropdowns !
-        if (
-            $item instanceof CommonTreeDropdown
-            && isset($input['language'])
-        ) {
-            $item->getFromDB($input['items_id']);
-            $foreignKey = $item->getForeignKeyField();
+        $item = new $itemtype();
+        $item->getFromDB($input['items_id']);
+        $foreignKey = $item->getForeignKeyField();
 
-           //Regenerate completename : look for item's ancestors
-            $completename = "";
+        $completename_parts  = [];
+        $completename = "";
 
-           //Get ancestors as an array
-
-            if ($item->fields[$foreignKey] != 0) {
-                $completename = self::getTranslatedValue(
-                    $item->fields[$foreignKey],
-                    $input['itemtype'],
-                    'completename',
-                    $input['language']
-                );
-            }
-
-            if ($completename != '') {
-                $completename .= " > ";
-            }
-            $completename .= self::getTranslatedValue(
-                $item->getID(),
-                $input['itemtype'],
-                'name',
+        if ($item->fields[$foreignKey] != 0) {
+            // Get translated complename of parent item
+            $tranlated_parent_completename = self::getTranslatedValue(
+                $item->fields[$foreignKey],
+                $itemtype,
+                'completename',
                 $input['language']
             );
+            if ($tranlated_parent_completename !== '') {
+                $completename_parts[] = $tranlated_parent_completename;
+            } elseif ($parent = $itemtype::getById($item->fields[$foreignKey])) {
+                // Fallback to untranslated completename of parent item
+                $completename_parts[] = $parent->fields['completename'];
+            }
+        }
 
-           //Add or update completename for this language
-            $translation              = new self();
-            $tmp                      = [];
-            $tmp['items_id']          = $input['items_id'];
-            $tmp['itemtype']          = $input['itemtype'];
-            $tmp['field']             = 'completename';
-            $tmp['value']             = addslashes($completename);
-            $tmp['language']          = $input['language'];
-            $tmp['_no_completename']  = true;
-            if ($completenames_id) {
-                $tmp['id']    = $completenames_id;
-                if ($completename === $item->fields['completename']) {
-                    $translation->delete(['id' => $completenames_id]);
-                } else {
-                    $translation->update($tmp);
-                }
+        // Append translated name of item
+        $tranlated_name = self::getTranslatedValue(
+            $item->getID(),
+            $itemtype,
+            'name',
+            $input['language']
+        );
+        if ($tranlated_name !== '') {
+            $completename_parts[] = $tranlated_name;
+        } else {
+            $completename_parts[] = $item->fields['name'];
+        }
+
+        $completename = implode(' > ', $completename_parts);
+
+        // Add or update completename for this language
+        $translation              = new self();
+        $tmp                      = [];
+        $tmp['items_id']          = $input['items_id'];
+        $tmp['itemtype']          = $input['itemtype'];
+        $tmp['field']             = 'completename';
+        $tmp['value']             = addslashes($completename);
+        $tmp['language']          = $input['language'];
+        $tmp['_no_completename']  = true;
+        if ($completenames_id) {
+            $tmp['id']    = $completenames_id;
+            if ($completename === $item->fields['completename']) {
+                $translation->delete(['id' => $completenames_id]);
             } else {
-                if ($completename != $item->fields['completename']) {
-                     $translation->add($tmp);
-                }
+                $translation->update($tmp);
             }
-
-            $iterator = $DB->request([
-                'SELECT' => ['id'],
-                'FROM'   => $item->getTable(),
-                'WHERE'  => [
-                    $foreignKey => $item->getID()
-                ]
-            ]);
-
-            foreach ($iterator as $tmp) {
-                $input2 = $input;
-                $input2['items_id'] = $tmp['id'];
-                $this->generateCompletename($input2, $add);
+        } else {
+            if ($completename != $item->fields['completename']) {
+                 $translation->add($tmp);
             }
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $item->getTable(),
+            'WHERE'  => [
+                $foreignKey => $item->getID()
+            ]
+        ]);
+
+        foreach ($iterator as $tmp) {
+            $input2 = $input;
+            $input2['items_id'] = $tmp['id'];
+            $this->generateCompletename($input2, $add);
         }
     }
 
@@ -674,12 +681,15 @@ JAVASCRIPT
             $language = $_SESSION['glpilanguage'];
         }
 
+        $translated_fields = $language === $_SESSION['glpilanguage'] && isset($_SESSION['glpi_dropdowntranslations'])
+            ? $_SESSION['glpi_dropdowntranslations']
+            : DropdownTranslation::getAvailableTranslations($language);
+
        //If dropdown translation is globally off, or if this itemtype cannot be translated,
        //then original value should be returned
-        $item = new $itemtype();
         if (
             !$ID
-            || !Session::haveTranslations($itemtype, $field)
+            || !isset($translated_fields[$itemtype][$field])
         ) {
             return $value;
         }

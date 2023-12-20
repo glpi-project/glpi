@@ -296,7 +296,7 @@ class Printer extends CommonDBTM
     /**
      * Return the linked items (in computers_items)
      *
-     * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
     public function getLinkedItems()
@@ -747,12 +747,12 @@ class Printer extends CommonDBTM
     /**
      * Create a new printer
      *
-     * @param $name         the printer's name (need to be addslashes)
-     * @param $manufacturer the printer's manufacturer (need to be addslashes)
-     * @param $entity       the entity in which the printer must be added
-     * @param $comment      (default '')
+     * @param string  $name         the printer's name (need to be addslashes)
+     * @param string  $manufacturer the printer's manufacturer (need to be addslashes)
+     * @param integer $entity       the entity in which the printer must be added
+     * @param string  $comment      (default '')
      *
-     * @return the printer's ID
+     * @return integer the printer's ID
      **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {

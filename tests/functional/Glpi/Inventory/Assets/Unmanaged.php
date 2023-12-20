@@ -539,4 +539,188 @@ class Unmanaged extends AbstractInventoryAsset
         $this->string($agent_reload->fields['itemtype'])->isIdenticalTo("Computer");
         $this->integer($agent_reload->fields['items_id'])->isIdenticalTo($computers_id);
     }
+
+    public function testState()
+    {
+        global $DB;
+
+        $this->login();
+
+        //create states to use
+        $state = new \State();
+        $inv_states_id = $state->add([
+            'name' => 'In use'
+        ]);
+        $this->integer($inv_states_id)->isGreaterThan(0);
+
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'states_id_default' => $inv_states_id
+            ]
+        );
+
+        $json_str = '
+        {
+            "action": "inventory",
+            "content": {
+                "accesslog": {
+                    "logdate": "2023-12-11 09:39:16"
+                },
+                "bios": {
+                    "assettag": "Asset-1234567890",
+                    "bdate": "2013-10-29",
+                    "bmanufacturer": "American Megatrends Inc.",
+                    "bversion": "1602",
+                    "mmanufacturer": "ASUSTeK COMPUTER INC.",
+                    "mmodel": "Z87-A",
+                    "msn": "131219362301208",
+                    "skunumber": "All",
+                    "smanufacturer": "ASUS",
+                    "smodel": "All Series"
+                },
+                "hardware": {
+                    "chassis_type": "Desktop",
+                    "datelastloggeduser": "Mon Dec 11 09:34",
+                    "defaultgateway": "192.168.1.1",
+                    "dns": "127.0.0.53",
+                    "lastloggeduser": "teclib",
+                    "memory": 32030,
+                    "name": "teclib-asus-desktop",
+                    "swap": 2047,
+                    "uuid": "31042c80-d7da-11dd-93d0-bcee7b8de946",
+                    "vmsystem": "Physical",
+                    "workgroup": "home"
+                },
+                "networks": [
+                    {
+                        "description": "enp3s0",
+                        "driver": "r8169",
+                        "ipaddress": "192.168.1.20",
+                        "ipgateway": "192.168.1.1",
+                        "ipmask": "255.255.255.0",
+                        "ipsubnet": "192.168.1.0",
+                        "mac": "bc:ee:7b:8d:e9:46",
+                        "pciid": "10EC:8168:1043:859E",
+                        "pcislot": "0000:03:00.0",
+                        "speed": "1000",
+                        "status": "up",
+                        "type": "ethernet",
+                        "virtualdev": false
+                    }
+                ],
+                "operatingsystem": {
+                    "arch": "x86_64",
+                    "boot_time": "2023-12-11 08:36:20",
+                    "dns_domain": "home",
+                    "fqdn": "teclib-asus-desktop.home",
+                    "full_name": "Ubuntu 22.04.3 LTS",
+                    "hostid": "007f0101",
+                    "install_date": "2023-09-11 08:40:42",
+                    "kernel_name": "linux",
+                    "kernel_version": "5.15.0-89-generic",
+                    "name": "Ubuntu",
+                    "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv\/aqNaZ6Xk6m",
+                    "timezone": {
+                        "name": "Europe\/Paris",
+                        "offset": "+0100"
+                    },
+                    "version": "22.04.3 LTS (Jammy Jellyfish)"
+                },
+                "versionclient": "GLPI-Agent_v1.4-1",
+                "versionprovider": {
+                    "comments": [
+                        "Built by Debian",
+                        "Source time: 2022-07-01 09:21"
+                    ],
+                    "etime": 4,
+                    "name": "GLPI",
+                    "perl_args": "--debug --debug",
+                    "perl_config": [
+                        "gccversion: 11.4.0",
+                        "defines: use64bitall use64bitint usedl useithreads uselanginfo uselargefiles usemallocwrap usemultiplicity usemymalloc=n usenm=false useopcode useperlio useposix useshrplib usethreads usevendorprefix usevfork=false"
+                    ],
+                    "perl_exe": "\/usr\/bin\/perl",
+                    "perl_inc": "\/usr\/share\/glpi-agent\/lib:\/etc\/perl:\/usr\/local\/lib\/x86_64-linux-gnu\/perl\/5.34.0:\/usr\/local\/share\/perl\/5.34.0:\/usr\/lib\/x86_64-linux-gnu\/perl5\/5.34:\/usr\/share\/perl5:\/usr\/lib\/x86_64-linux-gnu\/perl-base:\/usr\/lib\/x86_64-linux-gnu\/perl\/5.34:\/usr\/share\/perl\/5.34:\/usr\/local\/lib\/site_perl",
+                    "perl_module": [
+                        "LWP @ 6.61",
+                        "LWP::Protocol @ 6.61",
+                        "IO::Socket @ 1.46",
+                        "IO::Socket::SSL @ 2.074",
+                        "IO::Socket::INET @ 1.46",
+                        "Net::SSLeay @ 1.92",
+                        "Net::SSLeay uses OpenSSL 3.0.2 15 Mar 2022",
+                        "Net::HTTPS @ 6.22",
+                        "HTTP::Status @ 6.36",
+                        "HTTP::Response @ 6.36"
+                    ],
+                    "perl_version": "v5.34.0",
+                    "program": "\/usr\/bin\/glpi-agent",
+                    "version": "1.4-1"
+                }
+            },
+            "deviceid": "teclib-asus-desktop-2022-09-20-16-43-09",
+            "itemtype": "Computer",
+            "tag": "sub"
+        }';
+
+        $json = json_decode($json_str);
+        $inventory = $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
+            ->string['name']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
+            ->string['version']->isIdenticalTo('1.4-1')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->string['tag']->isIdenticalTo('sub')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+            ->integer['items_id']->isGreaterThan(0);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check states has been set
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($inv_states_id);
+
+        //run discovery
+        $xml_source = '
+        <?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <DNSHOSTNAME>192.168.1.20</DNSHOSTNAME>
+      <ENTITY>0</ENTITY>
+      <IP>192.168.1.20</IP>
+      <MAC>bc:ee:7b:8d:e9:46</MAC>
+    </DEVICE>
+    <MODULEVERSION>5.1</MODULEVERSION>
+    <PROCESSNUMBER>17</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>teclib-asus-desktop-2022-09-20-16-43-09</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>
+        ';
+        //do a discovery
+        $inventory->setDiscovery(true);
+        $inventory->doInventory($xml_source, true);
+
+        //no Unmanaged create
+        $unmanaged = new \Unmanaged();
+        $found = $unmanaged->find();
+        $this->array($found)->hasSize(0);
+
+        //reload computer
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check that state has not change
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($inv_states_id);
+    }
 }

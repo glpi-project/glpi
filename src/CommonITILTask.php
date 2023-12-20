@@ -1110,8 +1110,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (!$item = getItemForItemtype($itemtype)) {
             return;
         }
+
+        if (!$item instanceof CommonITILTask) {
+            return;
+        }
+
         $parentitemtype = $item->getItilObjectItemType();
         if (!$parentitem = getItemForItemtype($parentitemtype)) {
+            return;
+        }
+
+        if (!$parentitem instanceof CommonITILObject) {
             return;
         }
 
@@ -1385,6 +1394,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $parenttype = str_replace('Task', '', $itemtype);
         if ($parent = getItemForItemtype($parenttype)) {
+            if (!$parent instanceof CommonITILObject) {
+                return;
+            }
             $parenttype_fk = $parent->getForeignKeyField();
         } else {
             return;

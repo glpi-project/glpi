@@ -1096,7 +1096,7 @@ class GLPIKanbanRights {
                     let list_item = "<li data-list-id='"+column.id+"'>";
                     // The `columns_used` array seems to store the ids as strings
                     // We'll check if the values exist as they are or as strings to cover both formats
-                    if (columns_used.includes(column.id) || columns_used.includes(column.id.toString())) {
+                    if (column.id && (columns_used.includes(column.id) || columns_used.includes(column.id.toString()))) {
                         list_item += "<input type='checkbox' checked='true' class='form-check-input' />";
                     } else {
                         list_item += "<input type='checkbox' class='form-check-input' />";

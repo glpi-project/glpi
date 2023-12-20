@@ -55,10 +55,13 @@ class ExtensionGroup extends AbstractRequirement
      */
     public function __construct(string $title, array $extensions, bool $optional = false, ?string $description = null)
     {
-        $this->title = $title;
+        parent::__construct(
+            $title,
+            $description,
+            $optional
+        );
+
         $this->extensions = $extensions;
-        $this->optional = $optional;
-        $this->description = $description;
     }
 
     protected function check()

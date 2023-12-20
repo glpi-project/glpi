@@ -34,6 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 class RuleImportAsset extends Rule
 {
     const RULE_ACTION_LINK_OR_IMPORT    = 0;
@@ -518,7 +520,7 @@ class RuleImportAsset extends Rule
                 $this->handleOneJoinPerCriteria($item, $it_criteria);
             }
 
-            $this->handleFieldsCriteria($item, $it_criteria, $input);
+            $this->handleFieldsCriteria($item, $it_criteria, Sanitizer::sanitize($input));
 
             if (isset($PLUGIN_HOOKS['use_rules'])) {
                 foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {

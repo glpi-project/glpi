@@ -1636,33 +1636,36 @@ class CommonDBTM extends CommonGLPI
                       // Compare item
                         $ischanged = true;
                         $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
+
+                        $current_value = $this->fields[$key];
+                        $new_value     = is_string($this->input[$key]) ? Sanitizer::dbUnescape($this->input[$key]) : $this->input[$key];
                         if (isset($searchopt['datatype'])) {
                             switch ($searchopt['datatype']) {
                                 case 'string':
                                 case 'text':
                                     $ischanged = (strcmp(
-                                        (string)$DB->escape($this->fields[$key]),
-                                        (string)$this->input[$key]
+                                        (string)$current_value,
+                                        (string)$new_value
                                     ) != 0);
                                     break;
 
                                 case 'itemlink':
                                     if ($key == 'name') {
                                         $ischanged = (strcmp(
-                                            (string)$DB->escape($this->fields[$key]),
-                                            (string)$this->input[$key]
+                                            (string)$current_value,
+                                            (string)$new_value
                                         ) != 0);
                                         break;
                                     }
                                // else default
 
                                 default:
-                                    $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                                    $ischanged = $current_value != $new_value;
                                     break;
                             }
                         } else {
                          // No searchoption case
-                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                            $ischanged = $current_value != $new_value;
                         }
                         if ($ischanged) {
                             if ($key != "id") {

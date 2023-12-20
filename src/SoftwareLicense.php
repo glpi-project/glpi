@@ -1224,8 +1224,8 @@ class SoftwareLicense extends CommonTreeDropdown
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Software':
+            switch (get_class($item)) {
+                case Software::class:
                     if (!self::canView()) {
                         return '';
                     }
@@ -1236,8 +1236,8 @@ class SoftwareLicense extends CommonTreeDropdown
                         self::getTypeName(Session::getPluralNumber()),
                         (($nb >= 0) ? $nb : '&infin;')
                     );
-                break;
-                case 'SoftwareLicense':
+
+                case SoftwareLicense::class:
                     if (!self::canView()) {
                         return '';
                     }
@@ -1251,7 +1251,6 @@ class SoftwareLicense extends CommonTreeDropdown
                         self::getTypeName(Session::getPluralNumber()),
                         (($nb >= 0) ? $nb : '&infin;')
                     );
-                break;
             }
         }
         return '';

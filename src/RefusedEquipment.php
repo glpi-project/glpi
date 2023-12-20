@@ -115,7 +115,7 @@ class RefusedEquipment extends CommonDBTM
             'table'         => $this->getTable(),
             'field'         => 'ip',
             'name'          => __('IP'),
-            'datatype'      => 'string',
+            'datatype'      => 'text',
             'massiveaction' => false,
         ];
 
@@ -124,7 +124,7 @@ class RefusedEquipment extends CommonDBTM
             'table'         => $this->getTable(),
             'field'         => 'mac',
             'name'          => __('MAC'),
-            'datatype'      => 'string',
+            'datatype'      => 'text',
             'massiveaction' => false,
         ];
 

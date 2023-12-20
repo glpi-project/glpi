@@ -35,7 +35,7 @@
 
 namespace Glpi\Toolbox;
 
-class Filesystem
+final class Filesystem
 {
     /**
      * Checks if the file with given path can be written.
@@ -79,5 +79,65 @@ class Filesystem
         }
 
         return true;
+    }
+
+    /**
+     * Checks if the given file path is safe.
+     *
+     * @param string $path
+     * @param string $restricted_directory
+     *
+     * @return bool
+     */
+    public static function isFilepathSafe(string $path, ?string $restricted_directory = null): bool
+    {
+        $parsed_scheme = parse_url($path, PHP_URL_SCHEME);
+
+        if ($parsed_scheme === 'file') {
+            // If scheme is `file://`, parse the path again to validate that it does not contains itself
+            // an unexpected scheme.
+            $path = parse_url($path, PHP_URL_PATH);
+            $parsed_scheme = parse_url($path, PHP_URL_SCHEME);
+        }
+
+        if ($parsed_scheme !== null && preg_match('/^[a-z]$/i', $parsed_scheme) !== 1) {
+            // As soon as the path contains a scheme, it is not considered as safe,
+            // unless the scheme is 1 letter (corresponds to a drive letter on Windows system).
+            return false;
+        }
+
+        if ($restricted_directory === null) {
+            // All directories are allowed.
+            return true;
+        }
+
+        $restricted_directory = self::normalizePath($restricted_directory);
+        if (!str_ends_with($restricted_directory, '/')) {
+            // Ensure directory ends with a `/`, to prevent false positives:
+            // - /path/to/dir/file is inside /path/to/dir
+            // - /path/to/dir_file is not inside /path/to/dir
+            $restricted_directory .= '/';
+        }
+
+        return str_starts_with(self::normalizePath($path), $restricted_directory);
+    }
+
+    /**
+     * Normalize a path, to make comparisons and relative paths computation easier.
+     *
+     * @param string $path
+     * @return string
+     */
+    private static function normalizePath(string $path): string
+    {
+        $realpath = realpath($path);
+        if ($realpath !== false) {
+            // Use realpath if possible (not always possible, for instance when file not exists).
+            $path = $realpath;
+        }
+
+        // Normalize all directory separators to `/`.
+        $path = preg_replace('/\\\/', '/', $path);
+        return $path;
     }
 }

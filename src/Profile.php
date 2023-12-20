@@ -975,7 +975,10 @@ class Profile extends CommonDBTM
                                 'rights' => [
                                     READ  => __('Read'),
                                     UPDATE  => __('Update'),
-                                    DELETE => __('Delete'),
+                                    DELETE => [
+                                        'short' => __('Delete'),
+                                        'long'  => _x('button', 'Put in trashbin')
+                                    ],
                                     PURGE   => [
                                         'short' => __('Purge'),
                                         'long'  => _x('button', 'Delete permanently')
@@ -3951,7 +3954,7 @@ class Profile extends CommonDBTM
      *             'canedit'
      *             'default_class' the default CSS class used for the row
      *
-     * @return random value used to generate the ids
+     * @return integer random value used to generate the ids
      **/
     public function displayRightsChoiceMatrix(array $rights, array $options = [])
     {

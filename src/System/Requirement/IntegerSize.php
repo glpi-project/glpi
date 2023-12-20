@@ -39,9 +39,11 @@ final class IntegerSize extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('PHP maximal integer size');
-        $this->description = __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).');
-        $this->optional = true;
+        parent::__construct(
+            __('PHP maximal integer size'),
+            __('Support of 64 bits integers is required for IP addresses related operations (network inventory, API clients IP filtering, ...).'),
+            true
+        );
     }
 
     protected function check()

@@ -876,7 +876,9 @@ class GLPIDashboard {
         this.grid.setStatic(!activate);
 
         // set filters as sortable (draggable) or not
-        sortable(this.filters_selector, activate ? 'enable' : 'disable');
+        if ($(this.filters_selector).children().length > 0) {
+            sortable(this.filters_selector, activate ? 'enable' : 'disable');
+        }
 
         if (!this.edit_mode) {
             // save markdown textareas set as dirty

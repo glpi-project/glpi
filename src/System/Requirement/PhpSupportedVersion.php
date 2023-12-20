@@ -50,10 +50,12 @@ class PhpSupportedVersion extends AbstractRequirement
 
     public function __construct()
     {
-        $this->title = __('PHP supported version');
-        $this->description = __('An officially supported PHP version should be used to get the benefits of security and bug fixes.');
-        $this->optional = true;
-        $this->recommended_for_security = true;
+        parent::__construct(
+            __('PHP maintained version'),
+            __('A PHP version maintained by the PHP community should be used to get the benefits of PHP security and bug fixes.'),
+            true,
+            true
+        );
     }
 
     protected function check()
@@ -65,10 +67,9 @@ class PhpSupportedVersion extends AbstractRequirement
             // No validation message as we cannot be sure that PHP is up-to-date.
         } else {
             $this->validated = false;
-            $this->validation_messages[] = sprintf(
-                __('PHP %s official support has ended. An upgrade to a more recent PHP version is recommended.'),
-                $php_version
-            );
+            $this->validation_messages[] = sprintf(__('PHP %s is no longer maintained by its community.'), $php_version);
+            $this->validation_messages[] = __('Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.');
+            $this->validation_messages[] = __('Indeed, this PHP version may contain unpatched security vulnerabilities.');
         }
     }
 }

@@ -3473,6 +3473,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
+    public static function getProcessStatusArray()
+    {
+        // To be overriden by class
+        return [];
+    }
 
     /**
      * Get the ITIL object process status list
@@ -8927,7 +8932,9 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
-        /** @var \DBmysql $DB */
+        /**
+         * @var \DBmysql $DB
+        */
         global $DB;
 
         // List of items to return
@@ -9170,11 +9177,23 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        $category_names = [];
         foreach ($common_itil_iterator as $data) {
+            if (!array_key_exists($data['itilcategories_id'], $category_names)) {
+                $category_name = DropdownTranslation::getTranslatedValue(
+                    $data['itilcategories_id'],
+                    ITILCategory::class
+                );
+                if ($category_name === '') {
+                    $category_name = ITILCategory::getFriendlyNameById($data['itilcategories_id']);
+                }
+
+                $category_names[$data['itilcategories_id']] = $category_name;
+            }
             $data = [
                 'id'        => $data['id'],
                 'name'      => $data['name'],
-                'category'  => $data['itilcategories_id'],
+                'category'  => $category_names[$data['itilcategories_id']] ?? '',
                 'content'   => $data['content'],
                 'status'    => $data['status'],
                 '_itemtype' => $itemtype,
