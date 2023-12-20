@@ -45,7 +45,7 @@
     --tblr-navbar-color: #2f3f64;
     --tblr-body-bg: #f5f7fb;
     --tblr-bg-surface: #fff;
-    --tblr-bg-surface-tertiary: var(--tblr-bg-surface);
+    --tblr-bg-surface-tertiary: var(--tblr-gray-50);
     --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
@@ -61,7 +61,6 @@
     --glpi-search-fg: color-mix(in srgb, var(--glpi-mainmenu-fg), white 5%);
     --glpi-search-border-color: color-mix(in srgb, var(--glpi-search-fg), white 65%);
     --glpi-fg-secondary: #f4f6fa;
-    --glpi-table-header-bg: var(--tblr-bg-surface);
     --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), transparent 75%);
     --glpi-badge-fg: var(--tblr-link-color);
     --glpi-form-header-fg: var(--tblr-blue);
