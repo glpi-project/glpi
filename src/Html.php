@@ -3827,8 +3827,17 @@ JS;
 
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($theme->getPath(), ['force_no_version' => true]))
-         . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
+        $content_css_paths = [
+            'css/glpi.scss',
+            'css/core_palettes.scss',
+            'public/lib/base.css'
+        ];
+        if ($theme->isCustomTheme()) {
+            $content_css_paths[] = $theme->getPath();
+        }
+        $content_css = implode(',', array_map(function ($path) use ($theme) {
+            return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
+        }, $content_css_paths));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3927,6 +3936,17 @@ JS;
                browser_spellcheck: true,
                cache_suffix: '{$cache_suffix}',
 
+               init_instance_callback: (editor) => {
+                   const page_root_el = $(document.documentElement);
+                   const root_el = $(editor.dom.doc.documentElement);
+                   // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
+                   const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                   for (const attr of to_copy) {
+                       if (page_root_el.attr(attr) !== undefined) {
+                           root_el.attr(attr, page_root_el.attr(attr));
+                       }
+                   }
+               },
                setup: function(editor) {
                   // "required" state handling
                   if ($('#$id').attr('required') == 'required') {
