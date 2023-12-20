@@ -408,7 +408,7 @@ abstract class InventoryAsset
         }
 
         $citem = new \Computer_Item();
-        $citem->add($input, [], false);
+        $citem->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
     }
 
     protected function setNew(): self
