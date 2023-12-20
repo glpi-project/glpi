@@ -1147,8 +1147,8 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
-       //on demand JS
-        if ($sector != 'none' || $item != 'none' || $option != '') {
+        //on demand JS. Always evaluated when debug mode is enabled so requirements for the debug bar can be loaded.
+        if ($sector != 'none' || $item != 'none' || $option != '' || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $jslibs = [];
             if (isset($CFG_GLPI['javascript'][$sector])) {
                 if (isset($CFG_GLPI['javascript'][$sector][$item])) {
