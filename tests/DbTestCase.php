@@ -316,6 +316,7 @@ class DbTestCase extends \GLPITestCase
     protected function initAssetDefinition(
         ?string $system_name = null,
         array $capacities = [],
+        array $profiles = [],
     ): AssetDefinition {
         $definition = $this->createItem(
             AssetDefinition::class,
@@ -323,10 +324,12 @@ class DbTestCase extends \GLPITestCase
                 'system_name' => $system_name ?? $this->getUniqueString(),
                 'is_active'   => true,
                 'capacities'  => $capacities,
+                'profiles'    => $profiles,
             ],
-            skip_fields: ['capacities'] // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
         );
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
+        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
         $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);

@@ -36,7 +36,6 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
-use Glpi\Asset\AssetDefinition;
 
 class AssetDefinitionManager extends DbTestCase
 {

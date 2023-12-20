@@ -360,6 +360,13 @@ abstract class Asset extends CommonDBTM
             throw new \RuntimeException('Asset definition does not match the current concrete class.');
         }
 
+        if (
+            !$this->isNewItem()
+            && (int)$this->fields[$definition_fkey] !== $definition_id
+        ) {
+            throw new \RuntimeException('Asset definition cannot be changed.');
+        }
+
         $input[$definition_fkey] = $definition_id;
 
         return $input;
