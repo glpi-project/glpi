@@ -1029,7 +1029,7 @@ class User extends CommonDBTM
         if (
             count(array_intersect($protected_input_keys, array_keys($input))) > 0
             && !Session::isCron() // cron context is considered safe
-            && $input['id'] !== Session::getLoginUserID()
+            && (int) $input['id'] !== Session::getLoginUserID()
             && !$this->currentUserHaveMoreRightThan($input['id'])
         ) {
             foreach ($protected_input_keys as $input_key) {
