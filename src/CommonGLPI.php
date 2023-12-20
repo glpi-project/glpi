@@ -764,7 +764,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         if ($nb) {
            //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge bg-secondary text-secondary-fg'>$nb</span>");
+            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge glpi-badge'>$nb</span>");
         }
         return $text;
     }

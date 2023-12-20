@@ -32,16 +32,3 @@
  */
 
 @import "logos";
-
-:root:not([data-glpi-theme-dark="1"]) {
-    --tblr-gray-100: var(--tblr-light);
-    --tblr-gray-200: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 4%);
-    --tblr-gray-300: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 6%);
-    --tblr-gray-400: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 12%);
-    --tblr-gray-500: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 22%);
-    --tblr-gray-600: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 40%);
-    --tblr-gray-700: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%);
-    --tblr-gray-800: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 84%);
-    --tblr-gray-900: var(--tblr-dark);
-    --tblr-gray-50: var(--tblr-gray-200);
-}
