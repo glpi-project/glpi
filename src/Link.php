@@ -266,13 +266,10 @@ class Link extends CommonDBTM
      *
      * @param string        $link       original string content
      * @param CommonDBTM    $item       item used to make replacements
-     * @param bool          $safe_url   indicates whether URL should be sanitized or not
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
-     *
-     * @FIXME Uncomment $safe_url parameter declaration in GLPI 10.1.
      */
-    public static function generateLinkContents($link, CommonDBTM $item/*, bool $safe_url = true*/)
+    public static function generateLinkContents($link, CommonDBTM $item)
     {
         $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
 
