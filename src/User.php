@@ -897,7 +897,7 @@ class User extends CommonDBTM
         }
 
         // Hash user_dn if set
-        if (isset($this->input['user_dn'])) {
+        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
             $this->update([
                 'id' => $this->fields['id'],
                 'user_dn_hash' => md5($this->input['user_dn'])
@@ -1203,7 +1203,7 @@ class User extends CommonDBTM
         if (in_array('user_dn', $this->updates)) {
             $this->update([
                 'id' => $this->fields['id'],
-                'user_dn_hash' => md5($this->fields['user_dn'])
+                'user_dn_hash' => is_string($this->fields['user_dn']) && strlen($this->fields['user_dn']) > 0 ? md5($this->fields['user_dn']) : null,
             ]);
         }
     }
