@@ -27,6 +27,23 @@
         if (new_theme !== undefined) {
             document.documentElement.attributes['data-glpi-theme'].value = new_theme['key'];
             document.documentElement.attributes['data-glpi-theme-dark'].value = new_theme['is_dark'] ? '1' : '0';
+
+            const textareas = document.querySelectorAll('textarea');
+            // Try getting TinyMCE editor for each
+            for (let i = 0; i < textareas.length; i++) {
+                const textarea = textareas[i];
+                const editor = tinyMCE.get(textarea.id);
+                if (editor !== undefined) {
+                    const editor_root_element = $(editor.dom.doc.documentElement);
+                    const page_root_element = $(document.documentElement);
+                    const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                    for (const attr of to_copy) {
+                        if (page_root_element.attr(attr) !== undefined) {
+                            editor_root_element.attr(attr, page_root_element.attr(attr));
+                        }
+                    }
+                }
+            }
         }
         emit('refreshButton');
     }
