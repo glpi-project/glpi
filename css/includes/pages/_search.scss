@@ -56,7 +56,7 @@
     }
 
     .search-container {
-        border: var(--tblr-card-border-width) solid var(--tblr-card-border-color);
+        border: var(--tblr-border-width) solid var(--tblr-border-color);
         border-radius: var(--tblr-border-radius);
 
         @include media-breakpoint-up(lg) {
@@ -189,7 +189,7 @@
                             z-index: $zindex-sticky;
                             position: sticky;
                             top: 44px;
-                            border: 1px solid var(--card-border-color);
+                            border: 1px solid var(--tblr-border-color);
                             border-left: 0;
                             border-right: 0;
                             min-width: max-content;
