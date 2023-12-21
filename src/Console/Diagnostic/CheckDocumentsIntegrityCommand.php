@@ -152,8 +152,8 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     /**
      * Get detailed error message
      *
-     * @param int   $type     Error type
-     * @param array $document Invalid document's data
+     * @param int   $type         Error type
+     * @param array $document_row Invalid document's data
      *
      * @return string
      */

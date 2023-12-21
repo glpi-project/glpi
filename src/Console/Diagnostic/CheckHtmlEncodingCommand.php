@@ -193,7 +193,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
                 // Build the SQL query
                 $dump_content .= $DB->buildUpdate(
-                    $itemtype::getTable(),
+                    $item::getTable(),
                     $object_state,
                     ['id' => $item_id],
                 ) . ';' . PHP_EOL;
@@ -223,19 +223,20 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     private function fixItems(): void
     {
         foreach ($this->invalid_items as $itemtype => $items) {
+            /* @var \CommonDBTM $item */
+            $item = new $itemtype();
+
             $this->outputMessage(
-                '<comment>' . sprintf(__('Fixing %s...'), $itemtype::getTypeName(Session::getPluralNumber())) . '</comment>',
+                '<comment>' . sprintf(__('Fixing %s...'), $item::getTypeName(Session::getPluralNumber())) . '</comment>',
             );
-            $progress_message = function (array $fields, int $id) use ($itemtype) {
-                return sprintf(__('Fixing %s with ID %s...'), $itemtype::getTypeName(1), $id);
+            $progress_message = function (array $fields, int $id) use ($item) {
+                return sprintf(__('Fixing %s with ID %s...'), $item::getTypeName(1), $id);
             };
 
             foreach ($this->iterate($items, $progress_message) as $item_id => $fields) {
-                /* @var \CommonDBTM $item */
-                $item = new $itemtype();
                 if (!$item->getFromDB($item_id)) {
                     $this->outputMessage(
-                        '<error>' . sprintf(__('Unable to fix %s with ID %s.'), $itemtype::getTypeName(1), $item_id) . '</error>',
+                        '<error>' . sprintf(__('Unable to fix %s with ID %s.'), $item::getTypeName(1), $item_id) . '</error>',
                         OutputInterface::VERBOSITY_QUIET
                     );
                     $this->failed_items_count++;

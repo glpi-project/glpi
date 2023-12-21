@@ -88,7 +88,7 @@ class Central extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             switch ($tabnum) {
                 case 0:
                     $item->showGlobalDashboard();

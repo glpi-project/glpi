@@ -69,7 +69,7 @@ class ComputerVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && ($item->getType() == 'Computer')
+            && $item instanceof Computer
             && Computer::canView()
         ) {
             $nb = 0;

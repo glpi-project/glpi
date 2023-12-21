@@ -1278,7 +1278,8 @@ class Transfer extends CommonDBTM
                     $this->transferDocuments($itemtype, $ID, $newID);
 
                     if (is_a($itemtype, CommonITILObject::class, true)) {
-                       // Transfer ITIL childs documents too
+                        // Transfer ITIL childs documents too
+                        /** @var CommonITILObject $itil_item */
                         $itil_item = getItemForItemtype($itemtype);
                         $itil_item->getFromDB($ID);
                         $document_item_obj = new Document_Item();

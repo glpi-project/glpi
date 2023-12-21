@@ -179,7 +179,7 @@ class CalendarSegment extends CommonDBChild
 
         foreach ($iterator as $data) {
             list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
-            $sum += $hour * HOUR_TIMESTAMP + $minute * MINUTE_TIMESTAMP + $second;
+            $sum += (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
         }
         return $sum;
     }
@@ -267,19 +267,19 @@ class CalendarSegment extends CommonDBChild
 
         foreach ($iterator as $data) {
             list($hour, $minute, $second) = explode(':', $data['TDIFF']);
-            $tstamp = $hour * HOUR_TIMESTAMP + $minute * MINUTE_TIMESTAMP + $second;
+            $tstamp = (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
 
             // Delay is completed
             if ($delay <= $tstamp) {
                 if (!$negative_delay) {
                     // Add time
                     list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
-                    $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
+                    $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
                     $endstamp = $beginstamp + $delay;
                 } else {
                     // Substract time
                     list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['END']);
-                    $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
+                    $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
                     $endstamp = $beginstamp - $delay;
                 }
                 $units      = Toolbox::getTimestampTimeUnits($endstamp);
@@ -485,15 +485,14 @@ class CalendarSegment extends CommonDBChild
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Calendar':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            $this->getTable(),
-                            ['calendars_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            if ($item instanceof Calendar) {
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = countElementsInTable(
+                        $this->getTable(),
+                        ['calendars_id' => $item->getID()]
+                    );
+                }
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
             }
         }
         return '';

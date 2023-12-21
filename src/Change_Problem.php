@@ -73,8 +73,8 @@ class Change_Problem extends CommonDBRelation
 
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Change':
+            switch (get_class($item)) {
+                case Change::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_changes_problems',
@@ -83,7 +83,7 @@ class Change_Problem extends CommonDBRelation
                     }
                     return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
 
-                case 'Problem':
+                case Problem::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_changes_problems',
