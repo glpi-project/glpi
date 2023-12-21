@@ -838,6 +838,14 @@ class User extends CommonDBTM
         );
     }
 
+    public function pre_addInDB()
+    {
+        // Hash user_dn if set
+        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
+            $this->input['user_dn_hash'] = md5($this->input['user_dn']);
+        }
+    }
+
     public function post_addItem()
     {
 
@@ -894,14 +902,6 @@ class User extends CommonDBTM
                 $right                       = new Profile_User();
                 $right->add($affectation);
             }
-        }
-
-        // Hash user_dn if set
-        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
-            $this->update([
-                'id' => $this->fields['id'],
-                'user_dn_hash' => md5($this->input['user_dn'])
-            ]);
         }
     }
 
@@ -1198,17 +1198,7 @@ class User extends CommonDBTM
                 true
             );
         }
-
-        // Hash user_dn if is updated
-        if (in_array('user_dn', $this->updates)) {
-            $this->update([
-                'id' => $this->fields['id'],
-                'user_dn_hash' => is_string($this->fields['user_dn']) && strlen($this->fields['user_dn']) > 0 ? md5($this->fields['user_dn']) : null,
-            ]);
-        }
     }
-
-
 
     /**
      * Apply rules to determine dynamic rights of the user.
@@ -3503,6 +3493,12 @@ HTML;
                 unset($this->updates[$key]);
                 unset($this->oldvalues['comment']);
             }
+        }
+
+        // Hash user_dn if is updated
+        if (in_array('user_dn', $this->updates)) {
+            $this->updates[] = 'user_dn_hash';
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0 ? md5($this->input['user_dn']) : null;
         }
     }
 
