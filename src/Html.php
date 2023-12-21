@@ -3830,7 +3830,6 @@ JS;
         $content_css_paths = [
             'css/glpi.scss',
             'css/core_palettes.scss',
-            'public/lib/base.css'
         ];
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
@@ -3838,6 +3837,7 @@ JS;
         $content_css = implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3880,12 +3880,12 @@ JS;
         }
 
         $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
+        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/standalone/tinymce_skin.scss', ['force_no_version' => true]));
 
         // init tinymce
         $js = <<<JS
          $(function() {
             const html_el = $('html');
-            var is_dark = html_el.attr('data-glpi-theme-dark') === "1" || html_el.css('--is-dark').trim() === 'true';
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
             // init editor
@@ -3898,9 +3898,7 @@ JS;
                plugins: {$pluginsjs},
 
                // Appearance
-               skin_url: is_dark
-                  ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
-                  : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
+               skin_url: '{$skin_url}',
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
