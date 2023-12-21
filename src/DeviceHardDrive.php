@@ -195,7 +195,7 @@ class DeviceHardDrive extends CommonDevice
                 Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 $base->addHeader('deviceharddriver_rpm', __('Rpm'), $super, $father);
                 $base->addHeader('deviceharddriver_cache', __('Cache'), $super, $father);
-                DeviceHardDriveType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+                $base->addHeader('deviceharddriver_type', _n('Type', 'Types', 1), $super, $father);
                 InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 break;
         }
@@ -229,7 +229,16 @@ class DeviceHardDrive extends CommonDevice
                     );
                 }
 
-                DeviceHardDriveType::getHTMLTableCellsForItem($row, $this, null, $options);
+                if ($this->fields["deviceharddrivetypes_id"]) {
+                    $row->addCell(
+                        $row->getHeaderByName('deviceharddriver_type'),
+                        Dropdown::getDropdownName(
+                            "glpi_deviceharddrivetypes",
+                            $this->fields["deviceharddrivetypes_id"]
+                        ),
+                        $father
+                    );
+                }
                 InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
