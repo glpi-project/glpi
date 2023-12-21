@@ -42,7 +42,7 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$migration->addField('glpi_deviceharddrives', 'deviceharddrivetypes_id', "int unsigned");
+$migration->addField('glpi_deviceharddrives', 'deviceharddrivetypes_id', 'fkey');
 $migration->addKey('glpi_deviceharddrives', 'deviceharddrivetypes_id', "deviceharddrivetypes_id");
 
 if (!$DB->tableExists('glpi_deviceharddrivetypes')) {
