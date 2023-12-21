@@ -43,4 +43,5 @@ $displaypref = new DisplayPreference();
 if ($displaypref->getFromDBByCrit(['itemtype' => 'Contract', 'users_id' => 0, 'num' => 3])) {
     $migration->changeSearchOption(Contract::class, 3, 9); //Number search option move to index 9
 }
+//migration is needed because searchoption with index 8 is set from default view
 $migration->changeSearchOption(Contract::class, 8, 3); //Location completename move to index 3
