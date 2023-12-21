@@ -403,3 +403,7 @@ body .toast {
 .card {
     --tblr-card-cap-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%) !important;
 }
+
+.accordion {
+    --tblr-accordion-color: var(--tblr-muted);
+}
