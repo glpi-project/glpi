@@ -702,4 +702,140 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $this->string($vlan->fields['name'])->isIdenticalTo($vlanname);
     }
+
+    public function testIfaliasUpdate()
+    {
+        $networkport = new \NetworkPort();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>Catalyst 2960-24TC</NAME>
+                <TYPE>device</TYPE>
+                <VERSION>12.2(58)SE1</VERSION>
+              </FIRMWARES>
+              <INFO>
+                <FIRMWARE>12.2(58)SE1</FIRMWARE>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>38 days, 4:05:41.99</UPTIME>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>ACCESS vs HAV-S1700</IFALIAS>
+                  <IFDESCR>GigabitEthernet1/0/3</IFDESCR>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>0</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>7.90 seconds</IFLASTCHANGE>
+                  <IFMTU>9216</IFMTU>
+                  <IFNAME>GigabitEthernet1/0/3</IFNAME>
+                  <IFNUMBER>4227641</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>0</IFOUTOCTETS>
+                  <IFPORTDUPLEX>1</IFPORTDUPLEX>
+                  <IFSPEED>0</IFSPEED>
+                  <IFSTATUS>2</IFSTATUS>
+                  <IFTYPE>117</IFTYPE>
+                  <MAC>00:0f:e2:59:ef:dd</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+        ->isTrue();
+
+        //check alias
+        $this->string($networkport->fields['ifalias'])->isEqualTo('ACCESS vs HAV-S1700');
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>Catalyst 2960-24TC</NAME>
+                <TYPE>device</TYPE>
+                <VERSION>12.2(58)SE1</VERSION>
+              </FIRMWARES>
+              <INFO>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>38 days, 4:05:41.99</UPTIME>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFALIAS>another alias</IFALIAS>
+                  <IFDESCR>GigabitEthernet1/0/3</IFDESCR>
+                  <IFINERRORS>0</IFINERRORS>
+                  <IFINOCTETS>0</IFINOCTETS>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFLASTCHANGE>7.90 seconds</IFLASTCHANGE>
+                  <IFMTU>9216</IFMTU>
+                  <IFNAME>GigabitEthernet1/0/3</IFNAME>
+                  <IFNUMBER>4227641</IFNUMBER>
+                  <IFOUTERRORS>0</IFOUTERRORS>
+                  <IFOUTOCTETS>0</IFOUTOCTETS>
+                  <IFPORTDUPLEX>1</IFPORTDUPLEX>
+                  <IFSPEED>0</IFSPEED>
+                  <IFSTATUS>2</IFSTATUS>
+                  <IFTYPE>117</IFTYPE>
+                  <MAC>00:0f:e2:59:ef:dd</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkport
+        $this->boolean($networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet']))
+        ->isTrue();
+
+        //check alias
+        $this->string($networkport->fields['ifalias'])->isEqualTo('another alias');
+    }
 }

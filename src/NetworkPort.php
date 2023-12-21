@@ -1404,6 +1404,11 @@ class NetworkPort extends CommonDBChild
         echo Html::input('name', ['value' => $this->fields['name']]);
         echo "</td></tr>\n";
 
+        echo "<tr class='tab_bg_1'><td>" . __('Alias') . "</td>\n";
+        echo "<td>";
+        echo Html::input('ifalias', ['value' => $this->fields['ifalias']]);
+        echo "</td></tr>\n";
+
         $instantiation = $this->getInstantiation();
         if ($instantiation !== false) {
             echo "<tr class='tab_bg_1'><th colspan='4'>" . $instantiation->getTypeName(1) . "</th></tr>\n";
