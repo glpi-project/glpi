@@ -352,6 +352,7 @@ class Html extends \GLPITestCase
         $this->array($menu['admin']['types'])->isIdenticalTo($expected);
 
         $expected = [
+            'Glpi\Asset\AssetDefinition',
             'CommonDropdown',
             'CommonDevice',
             'Notification',

@@ -43,6 +43,10 @@
 
 {% if mainform and showaction %}
    <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
+
+   {% for param_name, param_value in additional_params %}
+       <input type="hidden" name="{{ param_name }}" value="{{ param_value }}" />
+   {% endfor %}
 {% endif %}
 
 <div class="{{ card_class }}">

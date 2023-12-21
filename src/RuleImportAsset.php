@@ -507,7 +507,7 @@ class RuleImportAsset extends Rule
             $it_criteria = [
                 'SELECT' => ["$itemtable.id"],
                 'FROM'   => $itemtable, //to fill
-                'WHERE'  => [] //to fill
+                'WHERE'  => $item->getSystemSQLCriteria(), //to fill
             ];
 
             if ($this->link_criteria_port) {

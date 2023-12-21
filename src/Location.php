@@ -501,7 +501,7 @@ class Location extends CommonTreeDropdown
                 'FROM'   => $table,
                 'WHERE'  => [
                     "$table.locations_id"   => $locations_id,
-                ]
+                ] + $item->getSystemSQLCriteria()
             ];
             if ($item->maybeDeleted()) {
                 $itemtype_criteria['WHERE']['is_deleted'] = 0;

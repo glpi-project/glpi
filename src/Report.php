@@ -213,7 +213,7 @@ class Report extends CommonGLPI
                 'FROM'   => $table_item,
                 'WHERE'  => [
                     "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item)
+                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria()
             ];
 
             $itemtype_object = new $itemtype();
@@ -281,13 +281,13 @@ class Report extends CommonGLPI
             echo "<tr class='tab_bg_1'><td colspan='2' class='b'>" . $itemtype::getTypeName(Session::getPluralNumber()) .
               "</td></tr>";
 
-            //no type for unmanaged
-            if ($itemtype == Unmanaged::class) {
+            $typeclass  = $itemtype . "Type";
+
+            if (!class_exists($typeclass)) {
                 continue;
             }
 
             $table_item = getTableForItemType($itemtype);
-            $typeclass  = $itemtype . "Type";
             $type_table = getTableForItemType($typeclass);
             $typefield  = getForeignKeyFieldForTable(getTableForItemType($typeclass));
 
@@ -307,7 +307,7 @@ class Report extends CommonGLPI
                 ],
                 'WHERE'     => [
                     "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item),
+                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria(),
                 'GROUPBY'   => "$type_table.name"
             ];
 

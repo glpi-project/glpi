@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Http\Firewall;
 
 /**
@@ -91,6 +92,9 @@ if (isset($AJAX_INCLUDE)) {
     $HEADER_LOADED = true;
 }
 
+// Assets classes autoload
+AssetDefinitionManager::getInstance()->registerAssetsAutoload();
+
 /* On startup, register all plugins configured for use. */
 if (!isset($PLUGINS_INCLUDED)) {
    // PLugin already included
@@ -99,6 +103,10 @@ if (!isset($PLUGINS_INCLUDED)) {
     $plugin = new Plugin();
     $plugin->init(true, $PLUGINS_EXCLUDED);
 }
+
+// Assets classes bootstraping.
+// Must be done after plugins initialization, to allow plugin to register new capacities.
+AssetDefinitionManager::getInstance()->boostrapAssets();
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
     $_SESSION["MESSAGE_AFTER_REDIRECT"] = [];

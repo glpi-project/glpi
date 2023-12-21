@@ -9724,4 +9724,61 @@ CREATE TABLE `glpi_stencils` (
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_assets_assetdefinitions`;
+CREATE TABLE `glpi_assets_assetdefinitions` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `system_name` varchar(255) DEFAULT NULL,
+  `icon` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `capacities` JSON NOT NULL,
+  `profiles` JSON NOT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `system_name` (`system_name`),
+  KEY `is_active` (`is_active`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_assets_assets`;
+CREATE TABLE `glpi_assets_assets` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `assets_assetdefinitions_id` int unsigned NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `serial` varchar(255) DEFAULT NULL,
+  `otherserial` varchar(255) DEFAULT NULL,
+  `contact` varchar(255) DEFAULT NULL,
+  `contact_num` varchar(255) DEFAULT NULL,
+  `users_id` int unsigned NOT NULL DEFAULT '0',
+  `groups_id` int unsigned NOT NULL DEFAULT '0',
+  `users_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `groups_id_tech` int unsigned NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
+  `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
+  `states_id` int unsigned NOT NULL DEFAULT '0',
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
+  KEY `name` (`name`),
+  KEY `users_id` (`users_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `users_id_tech` (`users_id_tech`),
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `locations_id` (`locations_id`),
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `states_id` (`states_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `is_deleted` (`is_deleted`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

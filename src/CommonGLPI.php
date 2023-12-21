@@ -88,7 +88,20 @@ class CommonGLPI implements CommonGLPIInterface
      * @var boolean
      */
     public $get_item_to_display_tab = false;
-    protected static $othertabs     = [];
+
+    /**
+     * List of tabs to add (registered by `self::registerStandardTab()`).
+     * Array structure looks like:
+     *  [
+     *      "Computer" => [ // item on which the tab will be added
+     *          "PluginAwesomeItem" // item that will provide the tab
+     *              => 100, // weight value used when sorting tabs
+     *      ]
+     *  ]
+     *
+     * @var array
+     */
+    private static $othertabs = [];
 
 
     public function __construct()
@@ -253,18 +266,19 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.83
      *
-     * @param string $typeform object class name to add tab on form
-     * @param string $typetab  object class name which manage the tab
+     * @param string $typeform  object class name to add tab on form
+     * @param string $typetab   object class name which manage the tab
+     * @param int $order        Weight value used when sorting tabs. Lower values will be displayed before higher values.
      *
      * @return void
      **/
-    public static function registerStandardTab($typeform, $typetab)
+    public static function registerStandardTab($typeform, $typetab, int $order = 500)
     {
 
         if (isset(self::$othertabs[$typeform])) {
-            self::$othertabs[$typeform][] = $typetab;
+            self::$othertabs[$typeform][$typetab] = $order;
         } else {
-            self::$othertabs[$typeform] = [$typetab];
+            self::$othertabs[$typeform] = [$typetab => $order];
         }
     }
 
@@ -281,9 +295,10 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getOtherTabs($typeform)
     {
-
         if (isset(self::$othertabs[$typeform])) {
-            return self::$othertabs[$typeform];
+            $othertabs = self::$othertabs[$typeform];
+            asort($othertabs);
+            return array_keys($othertabs);
         }
         return [];
     }
@@ -338,11 +353,9 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
        // Object with class with 'addtabon' attribute
-        if (
-            isset(self::$othertabs[$this->getType()])
-            && !$this->isNewItem()
-        ) {
-            foreach (self::$othertabs[$this->getType()] as $typetab) {
+        if (!$this->isNewItem()) {
+            $othertabs = self::getOtherTabs($this->getType());
+            foreach ($othertabs as $typetab) {
                 $this->addStandardTab($typetab, $onglets, $options);
             }
         }

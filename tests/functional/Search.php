@@ -39,6 +39,9 @@ use CommonDBTM;
 use CommonITILActor;
 use DBConnection;
 use DbTestCase;
+use Document;
+use Document_Item;
+use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Psr\Log\LogLevel;
 use Ticket;
 
@@ -3627,6 +3630,245 @@ class Search extends DbTestCase
 
             $this->string($this->cleanSQL($data['sql']['search']))->contains($expected_where);
         }
+    }
+
+    protected function customAssetsProvider(): iterable
+    {
+        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $document_1 = $this->createTxtDocument();
+        $document_2 = $this->createTxtDocument();
+        $document_3 = $this->createTxtDocument();
+
+        $definition_1  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $asset_class_1 = $definition_1->getConcreteClassName();
+
+        $definition_2  = $this->initAssetDefinition(capacities: [HasDocumentsCapacity::class]);
+        $asset_class_2 = $definition_2->getConcreteClassName();
+
+        // Assets for first class
+        $asset_1_1 = $this->createItem(
+            $asset_class_1,
+            [
+                'name'        => 'Asset 1.1',
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $asset_1_2 = $this->createItem(
+            $asset_class_1,
+            [
+                'name'        => 'Asset 1.2',
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $asset_1_3 = $this->createItem(
+            $asset_class_1,
+            [
+                'name'        => 'Asset 1.3 (deleted)',
+                'entities_id' => $root_entity_id,
+                'is_deleted'  => true,
+            ]
+        );
+
+        // Assets for second class
+        $asset_2_1 = $this->createItem(
+            $asset_class_2,
+            [
+                'name'        => 'Asset 2.1 (deleted)',
+                'entities_id' => $root_entity_id,
+                'is_deleted'  => true,
+            ]
+        );
+        $asset_2_2 = $this->createItem(
+            $asset_class_2,
+            [
+                'name'        => 'Asset 2.2',
+                'entities_id' => $root_entity_id,
+            ]
+        );
+        $asset_2_3 = $this->createItem(
+            $asset_class_2,
+            [
+                'name'        => 'Asset 2.3 (deleted)',
+                'entities_id' => $root_entity_id,
+                'is_deleted'  => true,
+            ]
+        );
+
+        // Attached documents
+        $this->createItems(
+            Document_Item::class,
+            [
+                [
+                    'documents_id' => $document_1->getID(),
+                    'itemtype'     => $asset_1_1->getType(),
+                    'items_id'     => $asset_1_1->getID(),
+                ],
+                [
+                    'documents_id' => $document_1->getID(),
+                    'itemtype'     => $asset_1_2->getType(),
+                    'items_id'     => $asset_1_2->getID(),
+                ],
+                [
+                    'documents_id' => $document_2->getID(),
+                    'itemtype'     => $asset_1_2->getType(),
+                    'items_id'     => $asset_1_2->getID(),
+                ],
+                [
+                    'documents_id' => $document_1->getID(),
+                    'itemtype'     => $asset_2_1->getType(),
+                    'items_id'     => $asset_2_1->getID(),
+                ],
+            ]
+        );
+
+        // Check search on custom assets.
+        // Validates that searching on assets of class A will not return some assets of class B in results.
+        $asset_search_params = [
+            'criteria' => [
+                [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => 'Asset'
+                ]
+            ]
+        ];
+
+        yield [
+            'class'    => $asset_class_1,
+            'params'   => $asset_search_params + ['is_deleted' => 0],
+            'expected' => [$asset_1_1, $asset_1_2],
+        ];
+        yield [
+            'class'    => $asset_class_1,
+            'params'   => $asset_search_params + ['is_deleted' => 1],
+            'expected' => [$asset_1_3],
+        ];
+        yield [
+            'class'    => $asset_class_2,
+            'params'   => $asset_search_params + ['is_deleted' => 0],
+            'expected' => [$asset_2_2],
+        ];
+        yield [
+            'class'    => $asset_class_2,
+            'params'   => $asset_search_params + ['is_deleted' => 1],
+            'expected' => [$asset_2_1, $asset_2_3],
+        ];
+
+        // Check search on documents using a custom assets as meta criteria.
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_1, $document_2],
+        ];
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND NOT',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_3],
+        ];
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ],
+                    [
+                        'link'       => 'OR',
+                        'itemtype'   => $asset_class_2,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_1, $document_2],
+        ];
+        yield [
+            'class'    => Document::class,
+            'params'   => [
+                'criteria' => [
+                    [
+                        'field'      => 'view',
+                        'searchtype' => 'contains',
+                        'value'      => ''
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_1,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ],
+                    [
+                        'link'       => 'AND',
+                        'itemtype'   => $asset_class_2,
+                        'meta'       => true,
+                        'field'      => '1', // name
+                        'searchtype' => 'contains',
+                        'value'      => 'Asset'
+                    ]
+                ]
+            ],
+            'expected' => [$document_1],
+        ];
+    }
+
+    /**
+     * @dataProvider customAssetsProvider
+     */
+    public function testCustomAssetSearch(string $class, array $params, array $expected): void
+    {
+        $data = $this->doSearch($class, $params);
+        foreach ($expected as $key => $item) {
+            $this->string($data['data']['rows'][$key]['raw'][sprintf('ITEM_%s_1', $class)])->isEqualTo($item->fields['name']);
+            $this->integer($data['data']['rows'][$key]['raw']['id'])->isEqualTo($item->getID());
+        }
+        $this->integer($data['data']['totalcount'])->isIdenticalTo(count($expected));
     }
 }
 

@@ -529,27 +529,6 @@ HTML,
         $this->array($attachement_filenames)->isEqualTo($expected_filenames);
     }
 
-    private function createTxtDocument(): \Document
-    {
-        $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
-        $filename = uniqid('glpitest_', true) . '.txt';
-        $contents = random_bytes(1024);
-
-        $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
-        $this->integer($written_bytes)->isEqualTo(strlen($contents));
-
-        return $this->createItem(
-            \Document::class,
-            [
-                'filename'    => $filename,
-                'entities_id' => $entity,
-                '_filename'   => [
-                    $filename,
-                ],
-            ]
-        );
-    }
-
     /**
      * Simulates upload of a random PNG image and return its filename.
      */

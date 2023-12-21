@@ -5113,6 +5113,7 @@ JAVASCRIPT;
             $field_user  = 'users_id';
             $field_group = 'groups_id';
         }
+        $itemtypes = array_unique($itemtypes);
 
         $group_where = "";
         $groups      = [];
@@ -5155,7 +5156,7 @@ JAVASCRIPT;
                         'OR' => [
                             $field_user => $ID
                         ] + $group_where
-                    ],
+                    ] + $item->getSystemSQLCriteria(),
                 ];
 
                 if ($item->maybeTemplate()) {

@@ -632,7 +632,7 @@ class Group extends CommonTreeDropdown
             if (!$item->isField($field)) {
                 continue;
             }
-            $restrict[$itemtype] = $groups_criteria;
+            $restrict[$itemtype] = $groups_criteria + $item->getSystemSQLCriteria();
 
             if ($itemtype == 'Consumable') {
                 $restrict[$itemtype] = [

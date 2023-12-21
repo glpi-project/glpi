@@ -299,22 +299,37 @@ class ProfileRight extends CommonDBChild
     }
 
 
-    /**
-     * To avoid log out and login when rights change (very useful in debug mode)
-     *
-     * @see CommonDBChild::post_updateItem()
-     **/
+    public function post_addItem($history = true)
+    {
+        // Refresh session rights to avoid log out and login when rights change
+        $this->forceCurrentSessionRights($this->fields['profiles_id'], $this->fields['name'], $this->fields['rights']);
+    }
+
     public function post_updateItem($history = true)
     {
+        // Refresh session rights to avoid log out and login when rights change
+        $this->forceCurrentSessionRights($this->fields['profiles_id'], $this->fields['name'], $this->fields['rights']);
+    }
 
-       // update current profile
+    /**
+     * Force rights for given rightname on current session.
+     *
+     * @param int $profile_id
+     * @param string $rightname
+     * @param int $rights
+     * @return void
+     */
+    private function forceCurrentSessionRights(int $profile_id, string $rightname, int $rights): void
+    {
         if (
             isset($_SESSION['glpiactiveprofile']['id'])
-            && $_SESSION['glpiactiveprofile']['id'] == $this->fields['profiles_id']
-            && (!isset($_SESSION['glpiactiveprofile'][$this->fields['name']])
-              || $_SESSION['glpiactiveprofile'][$this->fields['name']] != $this->fields['rights'])
+            && $_SESSION['glpiactiveprofile']['id'] == $profile_id
+            && (
+                !isset($_SESSION['glpiactiveprofile'][$rightname])
+                || $_SESSION['glpiactiveprofile'][$rightname] != $rights
+            )
         ) {
-            $_SESSION['glpiactiveprofile'][$this->fields['name']] = $this->fields['rights'];
+            $_SESSION['glpiactiveprofile'][$rightname] = $rights;
             unset($_SESSION['glpimenu']);
         }
     }

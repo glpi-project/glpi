@@ -156,9 +156,10 @@ final class SQLProvider implements SearchProviderInterface
 
         $opt_arrays = SearchOption::getOptionsForItemtype($itemtype);
         $opt = new SearchOption($opt_arrays[$ID]);
-        $table       = $opt["table"];
-        $field       = $opt["field"];
-        $is_virtual  = $opt->isVirtual();
+        $table        = $opt["table"];
+        $opt_itemtype = $opt['itemtype'] ?? getItemTypeForTable($table);
+        $field        = $opt["field"];
+        $is_virtual   = $opt->isVirtual();
 
         $addtable    = "";
         $addtable2   = "";
@@ -190,12 +191,9 @@ final class SQLProvider implements SearchProviderInterface
 
         $addmeta = "";
         if ($meta) {
-            // $NAME = "META";
-            if ($meta_type::getTable() !== $table) {
-                $addmeta = "_" . $meta_type;
-                $addtable  .= $addmeta;
-                $addtable2 .= $addmeta;
-            }
+            $addmeta = self::getMetaTableUniqueSuffix($table, $meta_type);
+            $addtable  .= $addmeta;
+            $addtable2 .= $addmeta;
         }
 
         // Plugin can override core definition for its type
@@ -528,7 +526,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "itemlink":
                     if ($meta || $opt->isForceGroupBy()) {
                         $TRANS = '';
-                        if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+                        if (Session::haveTranslations($opt_itemtype, $field)) {
                             $TRANS = QueryFunction::groupConcat(
                                 expression: QueryFunction::concat([
                                     QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
@@ -574,7 +572,7 @@ final class SQLProvider implements SearchProviderInterface
                     || $opt->isComputationGroupBy()))
         ) { // Not specific computation
             $TRANS = '';
-            if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+            if (Session::haveTranslations($opt_itemtype, $field)) {
                 $TRANS = QueryFunction::groupConcat(
                     expression: QueryFunction::concat([
                         QueryFunction::ifnull($tocomputetrans, new QueryExpression($DB::quoteValue(\Search::NULLVALUE))),
@@ -608,7 +606,7 @@ final class SQLProvider implements SearchProviderInterface
         $SELECT = [
             new QueryExpression($tocompute, $NAME),
         ];
-        if (Session::haveTranslations(getItemTypeForTable($table), $field)) {
+        if (Session::haveTranslations($opt_itemtype, $field)) {
             $SELECT[] = "$tocomputetrans AS {$NAME}_trans_{$field}";
         }
         return array_merge($SELECT, $ADDITONALFIELDS);
@@ -1000,6 +998,32 @@ final class SQLProvider implements SearchProviderInterface
         return $criteria;
     }
 
+    /**
+     * Return where part related to system criteria of main itemtype.
+     *
+     * @param string $itemtype  Main itemtype
+     *
+     * @return string
+     */
+    private static function getMainItemtypeSystemSQLCriteria(string $itemtype): string
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (!is_a($itemtype, \CommonDBTM::class, true)) {
+            return '';
+        }
+
+        $criteria = $itemtype::getSystemSQLCriteria($itemtype::getTable());
+
+        if (count($criteria) === 0) {
+            return '';
+        }
+
+        $dbi = new \DBmysqlIterator($DB);
+        return $dbi->analyseCrit($criteria);
+    }
+
     public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0): ?array
     {
         /** @var \DBmysql $DB */
@@ -1046,8 +1070,8 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         $addmeta = "";
-        if ($meta && $itemtype::getTable() !== $inittable) {
-            $addmeta = "_" . $itemtype;
+        if ($meta) {
+            $addmeta = self::getMetaTableUniqueSuffix($inittable, $itemtype);
             $table .= $addmeta;
         }
 
@@ -2311,8 +2335,8 @@ final class SQLProvider implements SearchProviderInterface
         $addmetanum = "";
         $rt         = $ref_table;
         $cleanrt    = $rt;
-        if ($meta && $meta_type::getTable() !== $new_table) {
-            $addmetanum = "_" . $meta_type;
+        if ($meta) {
+            $addmetanum = self::getMetaTableUniqueSuffix($new_table, $meta_type);
             $AS         = " AS `$nt$addmetanum`";
             $nt         = $nt . $addmetanum;
         }
@@ -2401,8 +2425,8 @@ final class SQLProvider implements SearchProviderInterface
                             if (!empty($complexjoin)) {
                                 $intertable .= "_" . $complexjoin;
                             }
-                            if ($meta && $meta_type::getTable() !== $cleanrt) {
-                                $intertable .= "_" . $meta_type;
+                            if ($meta) {
+                                $intertable .= self::getMetaTableUniqueSuffix($cleanrt, $meta_type);
                             }
                             $rt = $intertable;
                         }
@@ -2682,11 +2706,15 @@ final class SQLProvider implements SearchProviderInterface
 
         $from_table = $from_type::getTable();
         $from_fk    = getForeignKeyFieldForTable($from_table);
-        $to_table   = $to_type::getTable();
-        $to_fk      = getForeignKeyFieldForTable($to_table);
+
+        $to_table         = $to_type::getTable();
+        $to_fk            = getForeignKeyFieldForTable($to_table);
+        $to_table_alias   = $to_table . self::getMetaTableUniqueSuffix($to_table, $to_type);
+        $to_criteria      = $to_type::getSystemSQLCriteria($to_table_alias);
+        $to_table_join_id = $to_table . ($to_table_alias !== $to_table ? ' AS ' . $to_table_alias : '');
 
         $to_obj        = getItemForItemtype($to_type);
-        $to_entity_restrict_criteria = $to_obj->isField('entities_id') ? getEntitiesRestrictCriteria($to_table) : [];
+        $to_entity_restrict_criteria = $to_obj->isField('entities_id') ? getEntitiesRestrictCriteria($to_table_alias) : [];
 
         $complexjoin = \Search::computeComplexJoinID($joinparams);
         $alias_suffix = ($complexjoin !== '' ? '_' . $complexjoin : '') . '_' . $to_type;
@@ -2724,16 +2752,16 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $items_softwareversions_table => 'items_id',
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
                             'AND' => [
                                 "$items_softwareversions_table.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria
+                            ] + $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -2769,13 +2797,13 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $softwareversions_table => 'softwares_id',
-                        $to_table => 'id',
-                    ]
+                        $to_table_alias => 'id',
+                    ] + $to_criteria
                 ];
             }
             $softwarelicenses_table = "glpi_softwarelicenses{$alias_suffix}";
@@ -2783,7 +2811,7 @@ final class SQLProvider implements SearchProviderInterface
                 $already_link_tables2[] = $softwarelicenses_table;
                 $joins['LEFT JOIN']["`glpi_softwarelicenses` AS `$softwarelicenses_table`"] = [
                     'ON' => [
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         $softwarelicenses_table => 'softwares_id',
                         [
                             'AND' => getEntitiesRestrictCriteria($softwarelicenses_table, '', '', true)
@@ -2806,16 +2834,16 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $infocom_alias => 'items_id',
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
                             'AND' => [
                                 "$infocom_alias.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria
+                            ] + $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -2840,15 +2868,15 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $infocom_alias => $to_fk,
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
                             'AND' => $to_entity_restrict_criteria
-                        ]
+                        ] + $to_criteria
                     ]
                 ];
             }
@@ -2867,16 +2895,16 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $reservationitems_alias => 'items_id',
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
                             'AND' => [
                                 "$reservationitems_alias.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria
+                            ] + $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -2901,14 +2929,14 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $reservationitems_alias => 'id',
-                        $to_table => 'reservationitems_id',
+                        $to_table_alias => 'reservationitems_id',
                         [
-                            'AND' => $to_entity_restrict_criteria
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -2936,60 +2964,60 @@ final class SQLProvider implements SearchProviderInterface
 
         if ($from_obj && $from_obj->isField($to_fk)) {
             // $from_table has a foreign key corresponding to $to_table
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $from_table => $to_fk,
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
             }
         } else if ($to_obj && $to_obj->isField($from_fk)) {
             // $to_table has a foreign key corresponding to $from_table
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $from_table => 'id',
-                        $to_table => $from_fk,
+                        $to_table_alias => $from_fk,
                         [
-                            'AND' => $to_entity_restrict_criteria
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
             }
         } else if ($from_obj && $from_obj->isField('itemtype') && $from_obj->isField('items_id')) {
             // $from_table has items_id/itemtype fields
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $from_table => 'items_id',
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
                             'AND' => [
                                 "$from_table.itemtype" => $to_type,
-                            ] + $to_entity_restrict_criteria
+                            ] + $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
             }
         } else if ($to_obj && $to_obj->isField('itemtype') && $to_obj->isField('items_id')) {
             // $to_table has items_id/itemtype fields
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $from_table => 'id',
-                        $to_table => 'items_id',
+                        $to_table_alias => 'items_id',
                         [
                             'AND' => [
-                                "$to_table.itemtype" => $from_type,
-                            ] + $to_entity_restrict_criteria
+                                "$to_table_alias.itemtype" => $from_type,
+                            ] + $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -3013,14 +3041,14 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $items_table_alias => 'items_id',
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -3044,14 +3072,14 @@ final class SQLProvider implements SearchProviderInterface
                     ]
                 ];
             }
-            if (!in_array($to_table, $already_link_tables2, true)) {
-                $already_link_tables2[] = $to_table;
-                $joins['LEFT JOIN'][$to_table] = [
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
                     'ON' => [
                         $items_table_alias => $to_fk,
-                        $to_table => 'id',
+                        $to_table_alias => 'id',
                         [
-                            'AND' => $to_entity_restrict_criteria
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -3746,7 +3774,13 @@ final class SQLProvider implements SearchProviderInterface
                                 $ctable,
                                 $tmpquery
                             );
-                            $query_num  = str_replace($data['itemtype'], $ctype, $query_num);
+                            $query_num  = str_replace($data['itemtype'], $DB->escape($ctype), $query_num);
+
+                            $system_criteria_sql = self::getMainItemtypeSystemSQLCriteria($ctype);
+                            if ($system_criteria_sql !== '') {
+                                $query_num .= ' AND ' . $system_criteria_sql;
+                            }
+
                             $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
                             // Add deleted if item have it
@@ -3771,7 +3805,7 @@ final class SQLProvider implements SearchProviderInterface
                             $replace  = "FROM `$reftable`
                                   INNER JOIN `$ctable`
                                        ON (`$reftable`.`items_id` =`$ctable`.`id`
-                                           AND `$reftable`.`itemtype` = '$ctype')";
+                                           AND `$reftable`.`itemtype` = '{$DB->escape($ctype)}')";
 
                             $query_num = str_replace(
                                 "FROM `" .
@@ -3800,6 +3834,11 @@ final class SQLProvider implements SearchProviderInterface
                     }
                 }
             } else {
+                $system_criteria_sql = self::getMainItemtypeSystemSQLCriteria($data['itemtype']);
+                if ($system_criteria_sql !== '') {
+                    $query_num .= (!empty($COMMONWHERE) ? ' AND ' : ' WHERE ') . $system_criteria_sql;
+                }
+
                 $data['sql']['count'][] = $query_num;
             }
         }
@@ -3840,9 +3879,14 @@ final class SQLProvider implements SearchProviderInterface
                     $tmpquery = "";
                     // AllAssets case
                     if ($data['itemtype'] == \AllAssets::getType()) {
-                        $tmpquery = $SELECT . ", '$ctype' AS TYPE " .
+                        $tmpquery = $SELECT . ", '{$DB->escape($ctype)}' AS TYPE " .
                             $FROM .
                             $WHERE;
+
+                        $system_criteria_sql = self::getMainItemtypeSystemSQLCriteria($ctype);
+                        if ($system_criteria_sql !== '') {
+                            $tmpquery .= ' AND ' . $system_criteria_sql;
+                        }
 
                         $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
 
@@ -3869,13 +3913,13 @@ final class SQLProvider implements SearchProviderInterface
                         // Use quoted value to prevent replacement of AllAssets in column identifiers
                         $tmpquery = str_replace(
                             $DB->quoteValue(\AllAssets::getType()),
-                            $DB->quoteValue($ctype),
+                            $DB->quoteValue($DB->escape($ctype)),
                             $tmpquery
                         );
                     } else {// Ref table case
                         $reftable = $data['itemtype']::getTable();
 
-                        $tmpquery = $SELECT . ", '$ctype' AS TYPE,
+                        $tmpquery = $SELECT . ", '{$DB->escape($ctype)}' AS TYPE,
                                       `$reftable`.`id` AS refID, " . "
                                       `$ctable`.`entities_id` AS ENTITY " .
                             $FROM .
@@ -3892,7 +3936,7 @@ final class SQLProvider implements SearchProviderInterface
                         $replace = "FROM `$reftable`" . "
                               INNER JOIN `$ctable`" . "
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`" . "
-                                     AND `$reftable`.`itemtype` = '$ctype')";
+                                     AND `$reftable`.`itemtype` = '{$DB->escape($ctype)}')";
                         $tmpquery = str_replace(
                             "FROM `" .
                             $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
@@ -3951,6 +3995,11 @@ final class SQLProvider implements SearchProviderInterface
             $QUERY .= str_replace($CFG_GLPI["union_search_type"][$data['itemtype']] . ".", "", $ORDER) .
                 $LIMIT;
         } else {
+            $system_criteria_sql = self::getMainItemtypeSystemSQLCriteria($data['itemtype']);
+            if ($system_criteria_sql !== '') {
+                $WHERE .= (!empty($WHERE) ? ' AND ' : ' WHERE ') . $system_criteria_sql;
+            }
+
             $data['sql']['raw'] = [
                 'SELECT' => $SELECT,
                 'FROM' => $FROM,
@@ -4798,9 +4847,10 @@ final class SQLProvider implements SearchProviderInterface
         );
 
         if (isset($so["table"])) {
-            $table     = $so["table"];
-            $field     = $so["field"];
-            $linkfield = $so["linkfield"];
+            $table        = $so["table"];
+            $field        = $so["field"];
+            $linkfield    = $so["linkfield"];
+            $opt_itemtype = $so['itemtype'] ?? getItemTypeForTable($table);
 
             /// TODO try to clean all specific cases using SpecificToDisplay
 
@@ -5038,7 +5088,7 @@ final class SQLProvider implements SearchProviderInterface
                     break;
                 case $table . ".completename":
                     if (
-                        $itemtype != getItemTypeForTable($table)
+                        $itemtype != $opt_itemtype
                         && $data[$ID][0]['name'] != null //column have value in DB
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
@@ -5213,7 +5263,7 @@ final class SQLProvider implements SearchProviderInterface
                             return $out;
                         }
 
-                        $itemtype = getItemTypeForTable($table);
+                        $itemtype = $opt_itemtype;
                         $item = new $itemtype();
                         $item->getFromDB($data['id']);
                         $percentage  = 0;
@@ -5479,7 +5529,7 @@ final class SQLProvider implements SearchProviderInterface
 
                         // Add tooltip
                         $id = $data[$ID][0]['id'];
-                        $itemtype = getItemTypeForTable($table);
+                        $itemtype = $opt_itemtype;
 
                         $out     = sprintf(
                             __('%1$s %2$s'),
@@ -5723,7 +5773,7 @@ final class SQLProvider implements SearchProviderInterface
         if (isset($so["datatype"])) {
             switch ($so["datatype"]) {
                 case "itemlink":
-                    $linkitemtype  = getItemTypeForTable($so["table"]);
+                    $linkitemtype  = $so['itemtype'] ?? getItemTypeForTable($so["table"]);
 
                     $out           = "";
                     $count_display = 0;
@@ -6048,8 +6098,8 @@ HTML;
             }
         };
         if (isset($table) && isset($field)) {
-            $itemtype = getItemTypeForTable($table);
-            if ($item = getItemForItemtype($itemtype)) {
+            $opt_itemtype = $so['itemtype'] ?? getItemTypeForTable($table);
+            if ($item = getItemForItemtype($opt_itemtype)) {
                 if ($aggregate) {
                     $tmpdata = [
                         'values'     => [],
@@ -6126,5 +6176,28 @@ HTML;
             $tab[0] = null;
         }
         return $tab;
+    }
+
+    /**
+     * Returns the suffix to add to table identifiers joined for meta items.
+     *
+     * @param string $initial_table
+     * @param string $meta_itemtype
+     * @return string
+     */
+    private static function getMetaTableUniqueSuffix(string $initial_table, string $meta_itemtype): string
+    {
+        $suffix = '';
+
+        if ($meta_itemtype::getTable() !== $initial_table) {
+            $suffix .= "_" . $meta_itemtype;
+        }
+
+        $system_criteria = $meta_itemtype::getSystemSQLCriteria();
+        if (count($system_criteria)) {
+            $suffix .= '_' . md5(serialize($system_criteria));
+        }
+
+        return $suffix;
     }
 }

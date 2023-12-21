@@ -93,6 +93,12 @@ final class QueryBuilder implements SearchInputInterface
 
         $can_disablefilter = \Session::haveRightsOr('search_config', [\DisplayPreference::PERSONAL, \DisplayPreference::GENERAL]);
 
+        $target_query  = parse_url($p['target'], PHP_URL_QUERY);
+        $additional_params = [];
+        if ($target_query !== false && $target_query != '') {
+            parse_str($target_query, $additional_params);
+        }
+
         TemplateRenderer::getInstance()->display('components/search/query_builder/main.html.twig', [
             'mainform'            => $p['mainform'],
             'showaction'          => $p['showaction'],
@@ -102,6 +108,7 @@ final class QueryBuilder implements SearchInputInterface
             'p'                   => $p,
             'linked'              => $linked,
             'can_disablefilter'   => $can_disablefilter,
+            'additional_params'   => $additional_params,
         ]);
     }
 
