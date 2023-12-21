@@ -1323,6 +1323,20 @@ class User extends \DbTestCase
         ]);
         $user->getFromDB($user->getID());
         $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Set user_dn to empty and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => ''
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Set user_dn to null and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => null
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
     }
 
     /**
