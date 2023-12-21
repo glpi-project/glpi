@@ -62,6 +62,9 @@ if (!isset($_GET["name"]) || !isset($_GET["plugin"]) || !Plugin::isPluginActive(
 }
 
 $dir = GLPI_PLUGIN_DOC_DIR . "/" . $_GET["plugin"] . "/";
+if (isset($_GET["folder"])) {
+    $dir .= $_GET["folder"] . "/";
+}
 $filepath = $dir . $_GET["name"];
 
 if (
