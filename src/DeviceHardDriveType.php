@@ -35,8 +35,6 @@
 
 class DeviceHardDriveType extends CommonDeviceType
 {
-    public $additional_fields_for_dictionnary = ['manufacturer'];
-
     public static function getTypeName($nb = 0)
     {
         return _n('Device hard drive type', 'Device hard drive types', $nb);
