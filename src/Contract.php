@@ -500,7 +500,7 @@ class Contract extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '3',
+            'id'                 => '9',
             'table'              => $this->getTable(),
             'field'              => 'num',
             'name'               => _x('phone', 'Number'),
@@ -585,14 +585,6 @@ class Contract extends CommonDBTM
             'datatype'           => 'number',
             'max'                => 120,
             'unit'               => 'month'
-        ];
-
-        $tab[] = [
-            'id'                 => '8',
-            'table'              => 'glpi_locations',
-            'field'              => 'completename',
-            'name'               => Location::getTypeName(1),
-            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
@@ -862,6 +854,8 @@ class Contract extends CommonDBTM
                 ]
             ]
         ];
+
+        $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
         return $tab;
     }
