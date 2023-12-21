@@ -499,6 +499,15 @@ class Contract extends CommonDBTM
             'datatype'           => 'number'
         ];
 
+        $locations_sos = Location::rawSearchOptionsToAdd();
+        foreach ($locations_sos as &$locations_so) {
+            if ($locations_so['id'] == '3') {
+                //initially used in contracts
+                $locations_so['id'] = '8';
+            }
+        }
+        $tab = array_merge($tab, $locations_sos);
+
         $tab[] = [
             'id'                 => '3',
             'table'              => $this->getTable(),
@@ -585,14 +594,6 @@ class Contract extends CommonDBTM
             'datatype'           => 'number',
             'max'                => 120,
             'unit'               => 'month'
-        ];
-
-        $tab[] = [
-            'id'                 => '8',
-            'table'              => 'glpi_locations',
-            'field'              => 'completename',
-            'name'               => Location::getTypeName(1),
-            'datatype'           => 'dropdown'
         ];
 
         $tab[] = [
