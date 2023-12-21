@@ -49,7 +49,7 @@
     --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
-    --glpi-tabs-active-bg: var(--glpi-tabs-bg);
+    --glpi-tabs-active-bg: var(--tblr-bg-surface);
     --glpi-tabs-active-fg: var(--tblr-body-color);
     --glpi-tabs-active-border-color: var(--glpi-tabs-border-color);
     --glpi-logo: "../pics/logos/logo-GLPI-100-white.png";
