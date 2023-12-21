@@ -4720,6 +4720,7 @@ class CommonDBTM extends CommonGLPI
 
         switch ($field) {
             case '_virtual_datacenter_position':
+                /** @var CommonDBTM|\Glpi\Features\DCBreadcrumb $static */
                 $static = new static();
                 if (method_exists($static, 'getDcBreadcrumbSpecificValueToDisplay')) {
                     //@phpstan-ignore-next-line

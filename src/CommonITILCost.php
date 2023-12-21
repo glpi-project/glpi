@@ -63,7 +63,7 @@ abstract class CommonITILCost extends CommonDBChild
 
        // can exists for template
         if (
-            (get_class($item) == static::class)
+            (get_class($item) == static::$itemtype)
             && static::canView()
         ) {
             $nb = 0;
