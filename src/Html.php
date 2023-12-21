@@ -3835,7 +3835,7 @@ JS;
         if ($theme->isCustomTheme()) {
             $content_css_paths[] = $theme->getPath();
         }
-        $content_css = implode(',', array_map(function ($path) use ($theme) {
+        $content_css = implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
 
