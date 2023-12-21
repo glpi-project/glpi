@@ -46,6 +46,12 @@
     }
 }
 
+body.debug-active {
+    .floating-buttons {
+        bottom: 60px;
+    }
+}
+
 #maintenance-float {
     top: 0;
     left: 250px;
@@ -54,7 +60,7 @@
 
     a {
         font-weight: bold;
-        background-color: #fff;
-        color: red;
+        background-color: var(--tblr-body-bg);
+        color: var(--tblr-danger);
     }
 }

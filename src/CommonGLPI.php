@@ -777,7 +777,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
         if ($nb) {
            //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge'>$nb</span>");
+            $text = sprintf(__('%1$s %2$s'), $text, "<span class='badge glpi-badge'>$nb</span>");
         }
         return $text;
     }
@@ -1082,7 +1082,8 @@ class CommonGLPI implements CommonGLPIInterface
                 }
             }
             $cleantarget = Html::cleanParametersURL($target);
-            echo "<div class='navigationheader justify-content-sm-between'>";
+            $is_deleted = $this instanceof CommonDBTM && $this->isField('is_deleted') && $this->fields['is_deleted'];
+            echo "<div class='navigationheader justify-content-sm-between " . ($is_deleted ? 'asset-deleted' : '') . "'>";
 
             // First set of header pagination actions, displayed on the left side of the page
             echo "<div class='left-icons'>";
@@ -1149,7 +1150,7 @@ class CommonGLPI implements CommonGLPIInterface
                     $title = $this->isField('date_mod')
                                 ? sprintf(__s('Item has been deleted on %s'), Html::convDateTime($this->fields['date_mod']))
                                 : __s('Deleted');
-                    echo "<span class='mx-2 bg-danger status rounded-1' title=\"" . $title . "\"
+                    echo "<span class='mx-2 status rounded-1' title=\"" . $title . "\"
                         data-bs-toggle='tooltip'>
                         <i class='ti ti-trash'></i>";
                         echo __s('Deleted');

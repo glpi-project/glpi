@@ -31,15 +31,26 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #fec95c;
-$secondary: #606f91;
-$fg-secondary: #f4f6fa;
-$input-bg: rgb(253, 253, 253) !default;
-$input-disabled-bg: #f1f5f9;
-$link-color: #3a5693;
-$mainmenu_bg: #2f3f64;
-$mainmenu_fg: #f4f6fa;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
+// Base light/dark mode palettes
+@import "includes/palette_light";
+@import "includes/palette_dark";
+
+// Palettes
+@import "palettes/aerialgreen";
+@import "palettes/auror";
+@import "palettes/auror_dark";
+@import "palettes/automn";
+@import "palettes/classic";
+@import "palettes/clockworkorange";
+@import "palettes/dark";
+@import "palettes/darker";
+@import "palettes/flood";
+@import "palettes/greenflat";
+@import "palettes/hipster";
+@import "palettes/icecream";
+@import "palettes/lightblue";
+@import "palettes/midnight";
+@import "palettes/premiumred";
+@import "palettes/purplehaze";
+@import "palettes/teclib";
+@import "palettes/vintage";

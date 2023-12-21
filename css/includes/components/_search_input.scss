@@ -99,7 +99,7 @@ div.search-input {
 }
 
 input:invalid {
-    background-color: $warning !important;
+    background-color: var(--tblr-warning) !important;
 }
 
 input + span.info {
@@ -108,6 +108,6 @@ input + span.info {
 
 input:invalid + span.info {
     display: inline;
-    color: $warning;
+    color: var(--tblr-warning);
     font-size: 0.8rem;
 }

@@ -65,7 +65,7 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $this->login();
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge'>1</span>");
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>1</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $n_nt->getTabNameForItem($notif);
@@ -78,7 +78,7 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge'>2</span>");
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>2</span>");
     }
 
     public function testShowForNotification()

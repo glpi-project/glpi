@@ -38,20 +38,20 @@
     }
 
     .card-header {
-        background-color: $header-bg;
-        color: $header-fg;
-        border-color: $header-border-color;
+        background-color: var(--glpi-form-header-bg);
+        color: var(--glpi-form-header-fg);
+        border-color: var(--glpi-form-header-border-color);
 
         &:not(.main-header) {
-            border-top: 1px solid $header-border-color;
+            border-top: 1px solid var(--glpi-form-header-border-color);
         }
 
         .badge {
             @include tabler-badge-fix;
 
             &.entity-name {
-                background-color: $header-badge-bg;
-                color: $header-badge-fg;
+                background-color: var(--glpi-form-header-bg);
+                color: var(--glpi-form-header-fg);
             }
         }
 
@@ -73,13 +73,13 @@
 
     &.asset-deleted {
         .card-header {
-            background-color: tint-color($header-danger-bg, 30%);
-            color: shade-color($header-danger-bg, 50%);
-            border-color: shade-color($header-danger-bg, 50%);
+            background-color: var(--glpi-form-header-danger-bg);
+            color: var(--glpi-form-header-danger-fg);
+            border-color: var(--glpi-form-header-border-danger-color);
 
             .badge.entity-name {
-                background-color: tint-color($header-danger-bg, 80%);
-                color: shade-color($header-danger-bg, 50%);
+                background-color: var(--glpi-form-header-danger-bg);
+                color: var(--glpi-form-header-danger-fg);
             }
         }
     }
@@ -95,6 +95,16 @@
 }
 
 .navigationheader {
+    &.asset-deleted {
+        .main-header {
+            .status {
+                background-color: var(--glpi-form-header-danger-bg);
+                color: var(--glpi-form-header-danger-fg);
+                border-color: var(--glpi-form-header-border-danger-color);
+            }
+        }
+    }
+
     .main-header {
         padding-top: 0;
         padding-bottom: 0;

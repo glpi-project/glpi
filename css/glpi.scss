@@ -31,54 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Callouts used by bootstrap 4 in their documentation
- * Quick and easy way to make some text pop off
- */
+$enable-negative-margins: true;
+$link-hover-decoration: none;
 
-.callout {
-    padding: 1.25rem;
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
-    border: 1px solid #eee;
-    border-left-width: 0.25rem;
-    border-radius: 0.25rem;
-
-    h2 {
-        margin-top: 0;
-        margin-bottom: 0.25rem;
-    }
-
-    p:last-child {
-        margin-bottom: 0;
-    }
-
-    code {
-        border-radius: 0.25rem;
-    }
-}
-
-.callout + .callout {
-    margin-top: -0.25rem;
-}
-
-// Variations
-@mixin bs-callout-variant($color) {
-    border-left-color: $color;
-
-    h2 {
-        color: $color;
-    }
-}
-
-.callout-info {
-    @include bs-callout-variant($info);
-}
-
-.callout-warning {
-    @include bs-callout-variant($warning);
-}
-
-.callout-danger {
-    @include bs-callout-variant($danger);
-}
+@import "includes/fonts";
+@import "includes/logos";
+@import "includes/includes";

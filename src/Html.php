@@ -1272,7 +1272,12 @@ HTML;
         } else {
             $theme_path = $theme->getPath();
         }
-        $tpl_vars['css_files'][] = ['path' => $theme_path];
+        $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
+        if ($theme->isCustomTheme()) {
+            $tpl_vars['css_files'][] = ['path' => $theme_path];
+        } else {
+            $tpl_vars['css_files'][] = ['path' => 'css/core_palettes.scss'];
+        }
 
         $tpl_vars['js_files'][] = ['path' => 'public/lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
@@ -3829,8 +3834,17 @@ JS;
 
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
-        $content_css = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($theme->getPath(), ['force_no_version' => true]))
-         . ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
+        $content_css_paths = [
+            'css/glpi.scss',
+            'css/core_palettes.scss',
+        ];
+        if ($theme->isCustomTheme()) {
+            $content_css_paths[] = $theme->getPath();
+        }
+        $content_css = implode(',', array_map(static function ($path) {
+            return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
+        }, $content_css_paths));
+        $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3873,12 +3887,12 @@ JS;
         }
 
         $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
+        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/standalone/tinymce_skin.scss', ['force_no_version' => true]));
 
         // init tinymce
         $js = <<<JS
          $(function() {
             const html_el = $('html');
-            var is_dark = html_el.attr('data-glpi-theme-dark') === "1" || html_el.css('--is-dark').trim() === 'true';
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
             // init editor
@@ -3891,9 +3905,7 @@ JS;
                plugins: {$pluginsjs},
 
                // Appearance
-               skin_url: is_dark
-                  ? CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide-dark'
-                  : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
+               skin_url: '{$skin_url}',
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
@@ -3929,6 +3941,17 @@ JS;
                browser_spellcheck: true,
                cache_suffix: '{$cache_suffix}',
 
+               init_instance_callback: (editor) => {
+                   const page_root_el = $(document.documentElement);
+                   const root_el = $(editor.dom.doc.documentElement);
+                   // Copy data-glpi-theme and data-glpi-theme-dark from page html element to editor root element
+                   const to_copy = ['data-glpi-theme', 'data-glpi-theme-dark'];
+                   for (const attr of to_copy) {
+                       if (page_root_el.attr(attr) !== undefined) {
+                           root_el.attr(attr, page_root_el.attr(attr));
+                       }
+                   }
+               },
                setup: function(editor) {
                   // "required" state handling
                   if ($('#$id').attr('required') == 'required') {
@@ -6822,6 +6845,10 @@ HTML;
         $scss->addImportPath(
             function ($path) {
                 $file_chunks = [];
+                //Force bootstrap imports to be prefixed by ~
+                if (str_starts_with($path, 'bootstrap/scss')) {
+                    $path = '~' . $path;
+                }
                 if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
                     return null;
                 }

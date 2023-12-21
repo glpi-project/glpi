@@ -31,16 +31,14 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #f4d4ad;
-$secondary: #757575;
-$link-color: #006573;
-$mainmenu_bg: #006573;
-$mainmenu_fg: #f4f6fa;
-$search_bg: #fcf7f1;
-$search_fg: #756d61;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
-
-@import "../includes/palette_light";
+:root[data-glpi-theme="flood"] {
+    --tblr-primary-rgb: 244, 212, 173;
+    --tblr-secondary: #757575;
+    --tblr-link-color-rgb: 0, 101, 115;
+    --tblr-badge-bg: #d0d9f0;
+    --tblr-badge-color: rgb(58, 73, 102);
+    --glpi-mainmenu-bg: #006573;
+    --glpi-mainmenu-fg: #f4f6fa;
+    --glpi-search-bg: #fcf7f1;
+    --glpi-search-fg: #756d61;
+}

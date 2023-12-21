@@ -47,10 +47,12 @@ body.mce-content-body {
     border-top: transparent;
 }
 
-.tox.tox-tinymce {
-    border: $input-border-width solid $input-border-color;
+@import "~bootstrap/scss/mixins/border-radius";
 
-    @include border-radius($input-border-radius, 0);
+.tox.tox-tinymce {
+    border: var(--tblr-border-width) solid var(--tblr-border-color);
+
+    @include border-radius(var(--tblr-border-radius), 0);
 }
 
 .rich_text_container {

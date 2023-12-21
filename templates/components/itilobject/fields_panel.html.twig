@@ -261,7 +261,7 @@
             <span class="item-title">
                 {{ __('Actors') }}
             </span>
-            <span class="badge bg-secondary ms-2">
+            <span class="badge bg-secondary text-secondary-fg ms-2">
                {{ item.countActors() }}
             </span>
             {% if not params['template_preview'] and cancreateuser and canupdate %}
@@ -286,7 +286,7 @@
                <span class="item-title">
                   {{ __('Entity notes') }}
                </span>
-               <span class="badge bg-secondary ms-2">{{ notes|length }}</span>
+               <span class="badge bg-secondary text-secondary-fg ms-2">{{ notes|length }}</span>
             </button>
          </h2>
          <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
@@ -314,7 +314,7 @@
                <span class="item-title">
                     {{ _n('Item', 'Items', get_plural_number()) }}
                 </span>
-               <span class="item-counter badge bg-secondary ms-2"></span>
+               <span class="item-counter badge bg-secondary text-secondary-fg ms-2"></span>
                {% if itiltemplate.isMandatoryField('items_id') %}
                   <span class="required">*</span>
                {% endif %}
@@ -344,7 +344,7 @@
                      {{ _n('Service level', 'Service levels', get_plural_number()) }}
                   </span>
                   {% if nb_la > 0 %}
-                     <span class="badge bg-secondary ms-2">{{ nb_la }}</span>
+                     <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_la }}</span>
                   {% endif %}
                </button>
             </h2>
@@ -380,7 +380,7 @@
                     {{ __("Analysis") }}
                </span>
                {% if nb_analysis > 0 %}
-                  <span class="badge bg-secondary ms-2">{{ nb_analysis }}</span>
+                  <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_analysis }}</span>
                {% endif %}
             </button>
          </h2>
@@ -427,7 +427,7 @@
                     {{ __("Plans") }}
                </span>
                {% if nb_plans > 0 %}
-                  <span class="badge bg-secondary ms-2">{{ nb_plans }}</span>
+                  <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_plans }}</span>
                {% endif %}
             </button>
          </h2>
@@ -464,7 +464,7 @@
                  {{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}
             </span>
             {% if nb_linked_itilobjects > 0 %}
-               <span class="badge bg-secondary ms-2">{{ nb_linked_itilobjects }}</span>
+               <span class="badge bg-secondary text-secondary-fg ms-2">{{ nb_linked_itilobjects }}</span>
             {% endif %}
          </button>
       </h2>

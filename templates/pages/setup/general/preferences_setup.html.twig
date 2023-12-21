@@ -136,6 +136,14 @@
                `<img src="{{ path('/front/palette_preview.php') }}?key=${theme.id}" /> ${theme.text}`
            );
        }
+       $('select[name="palette"]').on('change', function(e) {
+           // Hotswap theme on selection so the user can see the result without saving
+           const palettes_isdark = {{ palettes_isdark|default({})|json_encode|raw }};
+           $('html').attr({
+               'data-glpi-theme': e.target.value,
+               'data-glpi-theme-dark': (palettes_isdark[e.target.value] ?? false) ? "1" : "0"
+           });
+       });
    </script>
 
    {{ fields.dropdownArrayField('page_layout', config['page_layout'], {

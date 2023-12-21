@@ -31,12 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #bcda1a;
-$primary-fg: #353b17;
-$link-color: #a958b9;
-$mainmenu_bg: #a958b9;
-$mainmenu_fg: #fff;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-@import "../includes/palette_light";
+:root[data-glpi-theme="teclib"] {
+    --tblr-primary-rgb: 188, 218, 26;
+    --tblr-primary-fg: #353b17;
+    --tblr-link-color-rgb: 169, 88, 185;
+    --glpi-mainmenu-bg: #a958b9;
+    --glpi-mainmenu-fg: #fff;
+}

@@ -32,11 +32,6 @@
  */
 
 $is-dark: true;
-$primary: #fec95c;
-$primary-fg: #644e21;
-$secondary: #b0bbd4;
-$secondary-fg: #262d3d;
-$min-contrast-ratio: 3;
 
 .btn-primary,
 .btn-outline-primary,
@@ -44,39 +39,32 @@ $min-contrast-ratio: 3;
     --tblr-btn-color-text: red;
 }
 
-$dark: #232e3c;
-$light: #9ca8c0;
-$link-color: #b6c3e0;
-$text-muted: #757d91;
-$mainmenu_bg: #2f3f64;
-$mainmenu_fg: #f4f6fa;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-$header-fg: #6ba8f3;
-$header-border-color: transparent;
-$header-badge-bg: #1d2c3f;
-$header-badge-fg: #6ba8f3;
-$tabs-bg: #1d2531;
-$tabs-fg: $light;
-$tabs-border: transparent;
-$tabs-active-bg: rgb(42, 58, 79);
-$tabs-active-fg: #d8dfe7;
-$tabs-active-border: transparent;
-$badge-bg: $light;
-$badge-fg: $dark;
-$input-border: #35455a;
-$input-focus-bg: #35455a;
-$input-focus-border-color: #b4bfce;
-$input-disabled-bg: #35404e;
-$table-border-color: #1f2936;
-$search_border: rgba(101, 109, 119, 16%);
-$table_border: rgba(101, 109, 119, 16%);
-$border-color: rgba(101, 109, 119, 16%);
-$table-th-bg: #2c3b4f;
-$table-th-color: $light;
-$itil-secondary-bg: #1d2531 !default;
-$timeline-fup-bg: #1c2430 !default;
-$timeline-fup-fg: #8892a8 !default;
-$timeline-fup-border: #2f3d50 !default;
-
-@import "../includes/palette_dark";
+:root[data-glpi-theme="auror_dark"] {
+    --tblr-dark: #232e3c;
+    --tblr-light: #9ca8c0;
+    --tblr-body-bg: #1f2936;
+    --tblr-bg-surface: #232e3c;
+    --tblr-body-color: #9ca8c0;
+    --tblr-primary-rgb: 254, 201, 92;
+    --tblr-primary-fg: #644e21;
+    --tblr-secondary: #b0bbd4;
+    --tblr-secondary-fg: #262d3d;
+    --tblr-link-color-rgb: 182, 195, 224;
+    --tblr-muted: #757d91;
+    --tblr-badge-bg: var(--tblr-light);
+    --tblr-badge-color: var(--tblr-dark);
+    --glpi-form-header-fg: #6ba8f3;
+    --glpi-form-header-border-color: transparent;
+    --glpi-mainmenu-bg: #232e3c;
+    --glpi-mainmenu-fg: #ffffffb3;
+    --glpi-tabs-bg: #1d2531;
+    --glpi-tabs-fg: var(--tblr-light);
+    --glpi-tabs-border-color: transparent;
+    --glpi-tabs-active-bg: #2a3a4f;
+    --glpi-tabs-active-fg: #d8dfe7;
+    --glpi-tabs-active-border-color: transparent;
+    --glpi-itil-secondary-bg: #1d2531;
+    --glpi-timeline-fup-bg: #1c2430;
+    --glpi-timeline-fup-fg: #8892a8;
+    --glpi-timeline-fup-border: #2f3d50;
+}

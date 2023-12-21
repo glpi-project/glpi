@@ -34,11 +34,11 @@
 // TODO Encapsulate into a class
 
 .form-check-input[name="as_map"]:checked {
-    background-color: $info;
+    background-color: var(--tblr-info);
 }
 
 .form-check-input[name="is_deleted"]:checked {
-    background-color: $danger;
+    background-color: var(--tblr-danger)
 }
 
 // Prevent search results from filling all available vertical space
@@ -56,12 +56,9 @@
     }
 
     .search-container {
-        border: var(--tblr-card-border-width) solid var(--tblr-card-border-color);
-        border-radius: var(--tblr-border-radius);
-
         @include media-breakpoint-up(lg) {
             overflow: auto;
-            height: calc(100vh - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-contextbar-height) - var(--glpi-content-margin));
             padding: 0;
             margin-left: calc(var(--tblr-gutter-x) / 2);
             margin-right: calc(var(--tblr-gutter-x) / 2);
@@ -86,9 +83,9 @@
             }
 
             .search-form, .sort-container {
-                background-color: $search_bg;
-                color: $search_fg;
-                border-color: $search_border;
+                background-color: var(--glpi-search-bg);
+                color: var(--glpi-search-fg);
+                border-color: var(--glpi-search-border-color);
                 max-height: 60vh;
                 overflow-y: auto;
 
@@ -98,7 +95,7 @@
                 }
 
                 .sub_criteria {
-                    background-color: darken($search_bg, 1%);
+                    background-color: color-mix(in srgb, var(--glpi-search-bg), black 1%);
                 }
 
                 .search_actions, .sort_actions {
@@ -110,15 +107,6 @@
 
         .search-card {
             display: grid;
-
-            &.card {
-                // Borders are unreliable here as they will scroll out of sight
-                // due to the sticky header behavior
-                // Its better to move it to a parent item that wont scroll like
-                // .search-container
-                border: unset;
-            }
-
             min-width: 100%;
             width: fit-content;
 
@@ -138,6 +126,7 @@
                 top: -1px;
                 left: 0;
                 background-color: inherit;
+                border-radius: var(--tblr-border-radius);
                 z-index: #{$zindex-sticky + 1};
 
                 .search-controls {
@@ -189,10 +178,9 @@
                             z-index: $zindex-sticky;
                             position: sticky;
                             top: 44px;
-                            border: 1px solid $card-border-color;
+                            border: 1px solid var(--tblr-border-color);
                             border-left: 0;
                             border-right: 0;
-                            background-color: $table_header_bg;
                             min-width: max-content;
                             vertical-align: top;
                         }
@@ -263,14 +251,14 @@ body.horizontal-layout {
     .search_page:not(.search_page_global) {
         .search-container {
             @include media-breakpoint-up(lg) {
-                height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+                height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
             }
         }
     }
 
     .search_page_global {
         @include media-breakpoint-up(lg) {
-            height: calc(100vh - #{$topbar-height} - #{$contextbar-height} - #{$content-margin});
+            height: calc(100vh - var(--glpi-topbar-height) - var(--glpi-contextbar-height) - var(--glpi-content-margin));
         }
     }
 }

@@ -32,10 +32,6 @@
  */
 
 $is-dark: true;
-$primary: #b6c3e0;
-$primary-fg: #232e3c;
-$secondary: #b0bbd4;
-$secondary-fg: #262d3d;
 
 .btn-primary,
 .btn-outline-primary,
@@ -43,44 +39,31 @@ $secondary-fg: #262d3d;
     --tblr-btn-color-text: red;
 }
 
-$dark: #000;
-$dark-mode-darken: #000;
-$color-contrast-dark: #1a1a1a;
-$light: #e6e6e6;
-$link-color: #b6c3e0;
-$text-muted: #c6cad2;
-$mainmenu_bg: #2f3f64;
-$mainmenu_fg: #f4f6fa;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-$badge-bg: #d0d9f0;
-$badge-fg: rgb(58, 73, 102);
-$header-fg: #6ba8f3;
-$header-border-color: transparent;
-$header-badge-bg: #1d2c3f;
-$header-badge-fg: #6ba8f3;
-$tabs-bg: $color-contrast-dark;
-$tabs-fg: $light;
-$tabs-border: transparent;
-$tabs-active-bg: #737373;
-$tabs-active-fg: #fff;
-$tabs-active-border: transparent;
-$badge-bg: $light;
-$badge-fg: $dark;
-$input-border: #555;
-$input-border-color: #555;
-$input-focus-bg: $dark;
-$input-focus-border-color: #555;
-$input-disabled-bg: #35404e;
-$table-border-color: #1f2936;
-$table-th-bg: #1f2936;
-$table-th-color: $light;
-$search_border: rgba(101, 109, 119, 16%);
-$table_border: rgba(101, 109, 119, 16%);
-$border-color: rgba(101, 109, 119, 16%);
-$itil-secondary-bg: #1d2531 !default;
-$timeline-fup-bg: #1c2430 !default;
-$timeline-fup-fg: #8892a8 !default;
-$timeline-fup-border: #2f3d50 !default;
-
-@import "../includes/palette_dark";
+:root[data-glpi-theme="midnight"] {
+    --tblr-dark: #000;
+    --tblr-light: #e6e6e6;
+    --tblr-body-bg: #000;
+    --tblr-primary-rgb: 182, 195, 224; // #b6c3e0
+    --tblr-primary-fg: #232e3c;
+    --tblr-secondary: #b0bbd4;
+    --tblr-secondary-fg: #262d3d;
+    --tblr-link-color-rgb: var(--tblr-primary-rgb);
+    --tblr-muted: #c6cad2;
+    --tblr-muted-rgb: 198, 202, 210; // #c6cad2
+    --tblr-badge-bg: var(--tblr-light);
+    --tblr-badge-color: var(--tblr-dark);
+    --glpi-mainmenu-bg: var(--tblr-body-bg);
+    --glpi-mainmenu-fg: var(--tblr-body-color);
+    --glpi-form-header-fg: #6ba8f3;
+    --glpi-form-header-border-color: transparent;
+    --glpi-tabs-bg: #1a1a1a;
+    --glpi-tabs-fg: var(--tblr-light);
+    --glpi-tabs-border-color: transparent;
+    --glpi-tabs-active-bg: #3a3938;
+    --glpi-tabs-active-fg: var(--tblr-muted);
+    --glpi-tabs-active-border-color: transparent;
+    --glpi-itil-secondary-bg: #1d2531;
+    --glpi-timeline-fup-bg: #1c2430;
+    --glpi-timeline-fup-fg: #8892a8;
+    --glpi-timeline-fup-border: #2f3d50;
+}

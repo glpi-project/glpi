@@ -83,7 +83,7 @@
 }
 
 .network-parent {
-   border  : 1px solid var(--input-border);
+   border  : 1px solid var(--tblr-border-color);
    position: relative;
    padding : 0 !important;
 }
@@ -419,7 +419,7 @@ i.fa-impact-manipulation {
       }
 
       &.impact-separator {
-         border-top: 2px solid var(--header-border-color);
+         border-top: 2px solid var(--glpi-form-header-border-color);
       }
    }
 

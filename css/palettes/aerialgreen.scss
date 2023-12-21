@@ -31,13 +31,11 @@
  * ---------------------------------------------------------------------
  */
 
-$primary: #8ec547;
-$secondary: #768363;
-$secondary-fg: #fcfcfc;
-$link-color: #459436;
-$mainmenu_bg: #459436;
-$mainmenu_fg: #f4f6fa;
-$logo: "../pics/logos/logo-GLPI-100-white.png";
-$logo_reduced: "../pics/logos/logo-G-100-white.png";
-
-@import "../includes/palette_light";
+:root[data-glpi-theme="aerialgreen"] {
+    --tblr-primary-rgb: 142, 197, 71;
+    --tblr-secondary: #768363;
+    --tblr-secondary-fg: #fcfcfc;
+    --tblr-link-color-rgb: 69, 148, 54;
+    --glpi-mainmenu-bg: #459436;
+    --glpi-mainmenu-fg: #f4f6fa;
+}

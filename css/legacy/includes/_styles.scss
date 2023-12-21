@@ -242,13 +242,8 @@
    .tab_cadre_fixehov,
    .tab_cadrehov,
    .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
-      background-color: var(--contrast-light);
-      color: var(--dark);
-
-      @include dark-mode {
-         background-color: var(--contrast-dark);
-         color: var(--light);
-      }
+      background-color: var(--tblr-bg-surface);
+      color: var(--tblr-body-color);
    }
 
    .tab_glpi {
@@ -316,7 +311,7 @@
    .tab_cadre_fixehov th, .tab_cadrehov th {
       background-color: #F8F8F8;
       color: #2E2E2E;
-      border-bottom: 1px solid $table_border;
+      border-bottom: 1px solid var(--tblr-border-color);
    }
 
    .tab_cadre_fixehov td, .tab_cadrehov td {
@@ -328,12 +323,12 @@
    }
 
    .tab_cadre td, .tab_cadre_fixehov td {
-      border-bottom: 1px solid $table_border;
+      border-bottom: 1px solid var(--tblr-border-color);
    }
 
    .tab_cadrehov {
       td {
-         border-bottom: 1px solid $table_border;
+         border-bottom: 1px solid var(--tblr-border-color);
       }
    }
 
@@ -347,10 +342,6 @@
    .tab_cadre_fixehov tr.rowHover,
    .tab_cadre_fixehov td.rowHover {
       background-color: #F3F3F3;
-
-      @include dark-mode {
-         background-color: #292929;
-      }
    }
 
    .tab_format {
@@ -389,11 +380,6 @@
 
       .tab_cadre_fixehov th, .tab_cadrehov th {
          background-color: #F1F0F0;
-
-         @include dark-mode {
-            background-color: var(--header-bg);
-            color: var(--header-fg);
-         }
       }
    }
 
@@ -407,8 +393,8 @@
       }
 
       &.subheader {
-         background-color: $header-bg;
-         color: $header-fg;
+         background-color: var(--glpi-form-header-bg);
+         color: var(--glpi-form-header-fg);
          text-align: center;
          font-weight: bold;
 
@@ -1507,4 +1493,34 @@ div.banner-need-update {
    font-weight: bold;
    padding: 10px;
    text-align: right;
+}
+
+:root[data-glpi-theme-dark="1"] {
+    #page, .qtip, .modal .modal-body {
+        .tab_cadre,
+        .tab_cadre_fixehov,
+        .tab_cadrehov,
+        .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
+            background-color: var(--contrast-dark);
+            color: var(--light);
+        }
+
+        .tab_cadrehov th.headHover,
+        .tab_cadre_fixehov th.headHover,
+        .tab_cadrehov td.columnHover,
+        .tab_cadre_fixehov td.columnHover,
+        .tab_cadrehov tr.rowHover,
+        .tab_cadrehov td.rowHover,
+        .tab_cadre_fixehov tr.rowHover,
+        .tab_cadre_fixehov td.rowHover {
+            background-color: #292929;
+        }
+
+        .central {
+            .tab_cadre_fixehov th, .tab_cadrehov th {
+                background-color: var(--glpi-form-header-bg);
+                color: var(--glpi-form-header-fg);
+            }
+        }
+    }
 }

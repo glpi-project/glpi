@@ -37,28 +37,20 @@
     --light: #{$light};
     --dark: #{$dark};
     --logo: #{$logo};
+    --logo-dark-login: #{$logo-dark-login};
     --contrast-light: #{$color-contrast-light};
     --contrast-dark: #{$color-contrast-dark};
     --light-mix: #{rgba(mix($light, $dark, 64%), 0.24)};
     --hover-bg: #{$hover-bg};
     --btn-disabled-opacity: #{$btn-disabled-opacity};
 
-    // Dark mode
-    --dark-mode-darken: #{$dark-mode-darken};
-    --dark-mode-text: #{$dark-mode-text};
-
     // Form elements
     --input-bg: #{$input-bg};
     --input-color: #{$input-color};
-    --input-border: #{$input-border};
-    --input-border-color: #{$input-border-color};
+    --input-border: var(--tblr-border-width) var(--tblr-border-style) var(--tblr-border-color);
+    --input-border-color: var(--tblr-border-color);
     --input-border-radius: #{$border-radius};
     --input-border-width: #{$input-border-width};
-
-    // headers
-    --header-fg: #{$header-fg};
-    --header-bg: #{$header-bg};
-    --header-border-color: #{$header-border-color};
 
     // card
     --card-border-color: #{$card-border-color};
