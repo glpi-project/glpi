@@ -145,4 +145,16 @@
     iframe.tox-edit-area__iframe {
         background-color: var(--tblr-bg-surface) !important;
     }
+
+    .search_page .search-container .search-card .search-header .search-controls {
+        .btn-active-search {
+            background-color: #cff5d129;
+            color: #cff5d1;
+        }
+
+        .btn-active-sort {
+            background-color: #ffe0cc2e;
+            color: #ffe0cc;
+        }
+    }
 }
