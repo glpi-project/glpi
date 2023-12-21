@@ -1951,7 +1951,7 @@ CREATE TABLE `glpi_deviceharddrives` (
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
   `deviceharddrivemodels_id` int unsigned DEFAULT NULL,
-  `deviceharddrivetypes_id` int unsigned DEFAULT NULL,
+  `deviceharddrivetypes_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
