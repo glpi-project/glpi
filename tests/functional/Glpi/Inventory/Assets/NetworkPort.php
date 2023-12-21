@@ -773,7 +773,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //check alias
         $this->string($networkport->fields['ifalias'])->isEqualTo('ACCESS vs HAV-S1700');
 
-
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
           <CONTENT>
@@ -838,7 +837,5 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         //check alias
         $this->string($networkport->fields['ifalias'])->isEqualTo('another alias');
-
-
     }
 }
