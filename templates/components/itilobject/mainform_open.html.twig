@@ -49,7 +49,7 @@
 {% endif %}
 
 <form method="POST" action="{{ form_path }}" enctype="{{ enctype }}"
-      data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }}" data-submit-once>
+      data-track-changes="{{ track_changes }}" id="itil-form" class="{{ new_cls }} needs-validation" data-submit-once novalidate>
    {% if not item.isNewItem() %}
        <input type="hidden" name="id" value="{{ item.fields['id'] }}" />
    {% endif %}

@@ -98,16 +98,14 @@ div.search-input {
     }
 }
 
-input:invalid {
-    background-color: var(--tblr-warning) !important;
-}
+.was-validated .form-control:valid,
+.form-control.is-valid {
+    border-color: var(--tblr-border-color);
+    background-image: none;
+    padding-right: initial;
 
-input + span.info {
-    display: none;
-}
-
-input:invalid + span.info {
-    display: inline;
-    color: var(--tblr-warning);
-    font-size: 0.8rem;
+    &:focus {
+        border-color: var(--tblr-border-color);
+        box-shadow: initial;
+    }
 }

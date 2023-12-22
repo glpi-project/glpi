@@ -1448,8 +1448,28 @@ function blockFormSubmit(form, e) {
     form.attr('data-submitted', 'true');
 }
 
+window.validateFormWithBootstrap = function (event) {
+    const form = $(event.target).closest('form');
+    const valid = form[0].checkValidity();
+
+    if (form.hasClass('needs-validation')) {
+        if (!valid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        form.addClass('was-validated');
+    }
+
+    return valid;
+};
+
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {
+        if (!window.validateFormWithBootstrap(e)) {
+            return false;
+        }
+
         const form = $(e.target).closest('form');
         if (form.attr('data-submitted') === 'true') {
             e.preventDefault();

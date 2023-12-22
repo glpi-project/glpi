@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global bootstrap */
+/* global bootstrap, validateFormWithBootstrap */
 
 import GenericView from './GenericView.js';
 
@@ -269,7 +269,9 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
         $(search_container).on('click', '.search-form-container button[name="search"]', (e) => {
             e.preventDefault();
-            this.onSearch();
+            if (window.validateFormWithBootstrap(e)) {
+                this.onSearch();
+            }
         });
 
         $(ajax_container).on('click', '.trigger-sort', (e) => {
