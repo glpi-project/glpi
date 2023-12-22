@@ -953,7 +953,7 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'><td colspan=2></td>";
             echo "<td>";
             echo "<span id='blocaction1' style='display:none'>";
-            echo __('Change the status');
+            echo \State::createTabEntry(__('Change the status'), 0, \State::getType());
             echo "</span>";
             echo "</td>";
             echo "<td width='20%'>";
