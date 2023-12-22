@@ -2650,6 +2650,18 @@ JAVASCRIPT;
         $tab = array_merge($tab, $this->getSearchOptionsMain());
 
         $tab[] = [
+            'id'                 => '70',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual_age',
+            'datatype'           => 'specific',
+            'name'               => __('Time since opening'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nosort'             => true,
+            'additionalfields'   => ['entities_id', 'date']
+        ];
+
+        $tab[] = [
             'id'                 => '155',
             'table'              => $this->getTable(),
             'field'              => 'time_to_own',
@@ -3212,6 +3224,7 @@ JAVASCRIPT;
                 }
             }
         }
+
         return $tab;
     }
 
@@ -3225,6 +3238,20 @@ JAVASCRIPT;
         switch ($field) {
             case 'type':
                 return self::getTicketTypeName($values[$field]);
+            case '_virtual_age':
+                $calendars_id = Entity::getUsedConfig('id', $values['entities_id'], 'calendars_id', 0);
+
+                if ($calendars_id) {
+                    $calendar = new Calendar();
+                    $calendar->getFromDB($calendars_id);
+                    $time = $calendar->getActiveTimeBetween($values['date'], $_SESSION["glpi_currenttime"]);
+                } else {
+                    $ticket_date = new DateTime($values['date']);
+                    $now = new DateTime($_SESSION["glpi_currenttime"]);
+                    $time = $now->getTimestamp() - $ticket_date->getTimestamp();
+                }
+
+                return sprintf(__('%s hours %s minutes'), floor($time / 3600), floor(($time % 3600) / 60));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

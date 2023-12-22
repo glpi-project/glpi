@@ -6952,4 +6952,157 @@ HTML
         $this->boolean(property_exists($ticket, 'plugin_xxx_data'))->isTrue();
         $this->string($ticket->plugin_xxx_data)->isEqualTo('test');
     }
+
+    protected function ageSearchOptionDataProvider()
+    {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = '2023-11-27 10:00:00';
+
+        $entity = $this->createItem(
+            \Entity::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+
+        $calendar = $this->createItem(
+            \Calendar::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+
+        $segments = $this->createItems(\CalendarSegment::class, [
+            ['calendars_id' => $calendar->getID(), 'day' => 0, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 1, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 3, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 4, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 5, 'begin' => '00:00:00', 'end' => '24:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 6, 'begin' => '00:00:00', 'end' => '24:00:00'],
+        ]);
+
+        $calendar2 = $this->createItem(
+            \Calendar::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+
+        $segments2 = $this->createItems(\CalendarSegment::class, [
+            ['calendars_id' => $calendar2->getID(), 'day' => 0, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar2->getID(), 'day' => 1, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar2->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar2->getID(), 'day' => 3, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar2->getID(), 'day' => 4, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar2->getID(), 'day' => 5, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar2->getID(), 'day' => 6, 'begin' => '08:00:00', 'end' => '17:00:00'],
+        ]);
+
+        $calendar3 = $this->createItem(
+            \Calendar::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+
+        $calendar4 = $this->createItem(
+            \Calendar::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+
+        $segmetns4 = $this->createItems(\CalendarSegment::class, [
+            ['calendars_id' => $calendar4->getID(), 'day' => 1, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar4->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar4->getID(), 'day' => 4, 'begin' => '08:00:00', 'end' => '17:00:00'],
+            ['calendars_id' => $calendar4->getID(), 'day' => 5, 'begin' => '08:00:00', 'end' => '17:00:00'],
+        ]);
+
+        $data = array();
+
+        // No calendar defined, 24/24
+        $data[] = [
+            $entity->getID(),
+            0,
+            '2023-11-26 10:00:00',
+            '24 hours 0 minutes'
+        ];
+
+        // Calendar with 24/24 working hours
+        $data[] = [
+            $entity->getID(),
+            $calendar2->getID(),
+            '2023-11-11 10:00:00',
+            '144 hours 0 minutes'
+        ];
+
+        // Calendar with 0 working hours
+        $data[] = [
+            $entity->getID(),
+            $calendar3->getID(),
+            '2023-11-11 10:00:00',
+            '0 hours 0 minutes'
+        ];
+
+        // Calendar with working hours
+        $data[] = [
+            $entity->getID(),
+            $calendar4->getID(),
+            '2023-11-10 10:47:21',
+            '80 hours 12 minutes'
+        ];
+
+        // Calendar with working hours with ticket creation date outside working hours
+        $data[] = [
+            $entity->getID(),
+            $calendar4->getID(),
+            '2023-11-11 10:00:00',
+            '74 hours 0 minutes'
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @dataProvider ageSearchOptionDataProvider
+     */
+    public function testAgeSearchOption(
+        int $entity_id,
+        int $calendar_id,
+        string $date,
+        string $expected
+    ) {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = '2023-11-27 10:00:00';
+
+        if ($calendar_id) {
+            $this->updateItem(
+                \Entity::class,
+                $entity_id,
+                [
+                    'calendars_id' => $calendar_id,
+                ]
+            );
+        }
+
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => __FUNCTION__,
+                'content'     => __FUNCTION__,
+                'entities_id' => $entity_id,
+                'date'        => $date
+            ]
+        );
+
+        $this->string($ticket->getSpecificValueToDisplay(
+            '_virtual_age',
+            [
+                'entities_id' => $entity_id,
+                'date' => $date
+            ]
+        ))->isEqualTo($expected);
+    }
 }
