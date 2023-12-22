@@ -7610,6 +7610,7 @@ CREATE TABLE `glpi_users` (
   `password_forget_token` char(40) DEFAULT NULL,
   `password_forget_token_date` timestamp NULL DEFAULT NULL,
   `user_dn` text,
+  `user_dn_hash` varchar(32),
   `registration_number` varchar(255) DEFAULT NULL,
   `show_count_on_tabs` tinyint DEFAULT NULL,
   `refresh_views` int DEFAULT NULL,
@@ -7686,7 +7687,8 @@ CREATE TABLE `glpi_users` (
   KEY `groups_id` (`groups_id`),
   KEY `users_id_supervisor` (`users_id_supervisor`),
   KEY `auths_id` (`auths_id`),
-  KEY `default_requesttypes_id` (`default_requesttypes_id`)
+  KEY `default_requesttypes_id` (`default_requesttypes_id`),
+  KEY `user_dn_hash` (`user_dn_hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

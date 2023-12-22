@@ -550,15 +550,20 @@ class User extends CommonDBTM
     /**
      * Retrieve a user from the database using it's dn.
      *
-     * @since 0.84
-     *
      * @param string $user_dn dn of the user
      *
      * @return boolean
      */
     public function getFromDBbyDn($user_dn)
     {
-        return $this->getFromDBByCrit(['user_dn' => $user_dn]);
+        /**
+         * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
+         * The 'user_dn_hash' field is a hashed version of the 'user_dn' field
+         * and is indexed in the database, making it faster to search.
+         */
+        return $this->getFromDBByCrit([
+            'user_dn_hash' => md5($user_dn)
+        ]);
     }
 
     /**
@@ -831,6 +836,14 @@ class User extends CommonDBTM
         return Toolbox::slugify(
             $this->baseComputeCloneName($current_name, $copy_index)
         );
+    }
+
+    public function pre_addInDB()
+    {
+        // Hash user_dn if set
+        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
+            $this->input['user_dn_hash'] = md5($this->input['user_dn']);
+        }
     }
 
     public function post_addItem()
@@ -1186,8 +1199,6 @@ class User extends CommonDBTM
             );
         }
     }
-
-
 
     /**
      * Apply rules to determine dynamic rights of the user.
@@ -3482,6 +3493,12 @@ HTML;
                 unset($this->updates[$key]);
                 unset($this->oldvalues['comment']);
             }
+        }
+
+        // Hash user_dn if is updated
+        if (in_array('user_dn', $this->updates)) {
+            $this->updates[] = 'user_dn_hash';
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0 ? md5($this->input['user_dn']) : null;
         }
     }
 
