@@ -269,7 +269,7 @@
           $('.popover').popover('hide');
       });
 
-      setTimeout((function() {
+      $(function () {
          actor_select.parent().popover({
             selector: '[data-glpi-popover-source]',
             container: actor_select.parent(),
@@ -291,7 +291,7 @@
                return false;
             }
          });
-      }), 500);
+      });
 
         // when the mouse leave the user card in the popover, close it
         $(document).on('mouseleave', '.user-info-card', function() {
