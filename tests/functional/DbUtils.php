@@ -852,21 +852,14 @@ class DbUtils extends DbTestCase
             $this->array($GLPI_CACHE->get($ckey_new_id2))->isIdenticalTo($expected);
         }
 
-       //test on multiple entities
+        // test on multiple entities
+        // getAncestorsOf was already called on $new_id and $new_id2 separately, so cache is already populated since we don't cache ancestors of multiple entities together anymore.
+        // Ex: getAncestorsOf('glpi_entities', [$new_id, $new_id2]) will populate ancestors_cache_glpi_entities_$new_id and ancestors_cache_glpi_entities_$new_id2
+        // but not ancestors_cache_glpi_entities_ . md5(implode('|', [$new_id, $new_id2]))
+        // We will ignore the $cache and $hit parameters here and just ensure the combined result is correct.
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
-        $ckey_new_all = 'ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2);
-        if ($cache === true && $hit === false) {
-            $this->boolean($GLPI_CACHE->has($ckey_new_all))->isFalse();
-        } else if ($cache === true && $hit === true) {
-            $this->array($GLPI_CACHE->get($ckey_new_all))->isIdenticalTo($expected);
-        }
-
         $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
         $this->array($ancestors)->isIdenticalTo($expected);
-
-        if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($ckey_new_all))->isIdenticalTo($expected);
-        }
     }
 
     public function testGetAncestorsOf()
