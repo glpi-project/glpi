@@ -1750,7 +1750,7 @@ class NotificationTarget extends CommonDBChild
         }
 
         // Not all items support recursion
-        if (!method_exists($this->obj, 'maybeRecursive') || !$this->obj->maybeRecursive()) {
+        if (!($this->obj instanceof CommonDBTM)  || !$this->obj->maybeRecursive()) {
             return false;
         }
 
