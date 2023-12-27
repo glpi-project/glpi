@@ -1173,7 +1173,6 @@ class Toolbox
                 return __('You have the latest available version');
             }
         }
-        return 1;
     }
 
 
@@ -2804,7 +2803,6 @@ class Toolbox
                                 $new_image,
                                 $content_text
                             );
-                            $content_text = $content_text;
                         }
 
                         // If the tag is from another ticket : link document to ticket
