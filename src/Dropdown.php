@@ -3297,7 +3297,7 @@ JAVASCRIPT;
                         if (!empty($joins_str)) {
                             $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
                         }
-                        $where[] = Search::addDefaultWhere(Ticket::class);
+                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
                     }
                     break;
 

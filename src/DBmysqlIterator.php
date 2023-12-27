@@ -724,6 +724,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $fkey = $this->analyseFkey($values);
                 return $fkey . ' ' . key($condition) . ' ' . $this->analyseCrit(current($condition));
             }
+        } else if ($values instanceof QueryExpression) {
+            return $values->getValue();
         }
         throw new \LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
     }
