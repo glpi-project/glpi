@@ -60,10 +60,12 @@ $ckey = 'entity_selector'
     . sha1($base_path) // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
 ;
 
-$entitiestree = $GLPI_CACHE->get($ckey);
+//TODO Use cache to avoid extra DB work to get entity names? Implement at getTreeForItem() level via optional $use_cache parameter (default false)?
+$entitiestree = null;//$GLPI_CACHE->get($ckey);
 
 /* calculates the tree to save it in the cache if it is not already there */
 if ($entitiestree === null) {
+    \Glpi\Debug\Profiler::getInstance()->start('Generate entity tree');
     $entitiestree = [];
     foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
         $default_entity_id = $default_entity['id'];
@@ -97,6 +99,7 @@ if ($entitiestree === null) {
 
         $entitiestree = array_merge($entitiestree, $entitytree);
     }
+    \Glpi\Debug\Profiler::getInstance()->stop('Generate entity tree');
 
     $GLPI_CACHE->set($ckey, $entitiestree);
 }

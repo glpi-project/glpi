@@ -1468,52 +1468,33 @@ final class DbUtils
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
 
-       // IDs to be present in the final array
+        // IDs to be present in the final array
         $id_found = [];
-       // current ID found to be added
-        $found = [];
 
-       // First request init the  variables
+        $sons = $this->getSonsOf($table, $IDf);
+        if (!isset($sons[(int) $IDf])) {
+            $sons[(int) $IDf] = (int) $IDf;
+        }
+
+        // First request init the variables
         $iterator = $DB->request([
+            'SELECT' => ['id', 'name', $parentIDfield],
             'FROM'   => $table,
-            'WHERE'  => [$parentIDfield => $IDf],
+            'WHERE'  => [$parentIDfield => $sons],
             'ORDER'  => 'name'
         ]);
 
         foreach ($iterator as $row) {
-            $id_found[$row['id']]['parent'] = $IDf;
+            $id_found[$row['id']]['parent'] = $row[$parentIDfield];
             $id_found[$row['id']]['name']   = $row['name'];
-            $found[$row['id']]              = $row['id'];
         }
 
-       // Get the leafs of previous founded item
-        while (count($found) > 0) {
-           // Get next elements
-            $iterator = $DB->request([
-                'FROM'   => $table,
-                'WHERE'  => [$parentIDfield => $found],
-                'ORDER'  => 'name'
-            ]);
-
-           // CLear the found array
-            unset($found);
-            $found = [];
-
-            foreach ($iterator as $row) {
-                if (!isset($id_found[$row['id']])) {
-                    $id_found[$row['id']]['parent'] = $row[$parentIDfield];
-                    $id_found[$row['id']]['name']   = $row['name'];
-                    $found[$row['id']]              = $row['id'];
-                }
-            }
-        }
-        $tree = [
+        return [
             $IDf => [
                 'name' => Dropdown::getDropdownName($table, $IDf),
                 'tree' => $this->constructTreeFromList($id_found, $IDf),
             ],
         ];
-        return $tree;
     }
 
     /**
