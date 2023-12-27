@@ -71,7 +71,7 @@ TWIG;
             <input
                 type="text"
                 class="form-control"
-                name="question[{{ question.fields.id }}]"
+                name="answers[{{ question.fields.id }}]"
                 value="{{ question.fields.default_value }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
@@ -80,6 +80,18 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'question' => $question,
+        ]);
+    }
+
+    public function renderAnswerTemplate($answer): string
+    {
+        $template = <<<TWIG
+            <div class="form-control-plaintext">{{ answer }}</div>
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'answer' => $answer,
         ]);
     }
 }

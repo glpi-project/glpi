@@ -191,11 +191,27 @@ class Form extends CommonDBTM
                 $section = new Section();
                 $section->getFromResultSet($row);
                 $section->post_getFromDB();
-                $this->sections[] = $section;
+                $this->sections[$row['id']] = $section;
             }
         }
 
         return $this->sections;
+    }
+
+    /**
+     * Get all questions for this form
+     *
+     * @return Question[]
+     */
+    public function getQuestions(): array
+    {
+        $questions = [];
+        foreach ($this->getSections() as $section) {
+            // Its important to use the "+" operator here and not array_merge
+            // because the keys must be preserved
+            $questions = $questions + $section->getQuestions();
+        }
+        return $questions;
     }
 
     /**

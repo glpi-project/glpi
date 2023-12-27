@@ -68,4 +68,14 @@ interface QuestionTypeInterface
     public function renderEndUserTemplate(
         Question $question,
     ): string;
+
+    /**
+     * Render the given answer.
+     * This template is used when rendering answers for a form.
+     *
+     * @param mixed $answer Given raw answer data.
+     *
+     * @return string
+     */
+    public function renderAnswerTemplate($answer): string;
 }

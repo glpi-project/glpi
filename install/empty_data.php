@@ -1946,6 +1946,7 @@ $empty_data_builder = new class
         ];
 
         $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
+        $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
         $ADDTODISPLAYPREF['Cluster'] = [31, 19];
         $ADDTODISPLAYPREF['Domain'] = [3, 4, 2, 6, 7];
         $ADDTODISPLAYPREF['DomainRecord'] = [2, 3];

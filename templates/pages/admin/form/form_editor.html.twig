@@ -398,6 +398,18 @@
             );
         });
 
+        // Handle preview successful submit
+        $(document).on('forms-form-submit-success', function(e, data) {
+            // Close modal
+            $("#preview_form_modal").modal('hide');
+
+            // Show toast with link to answers set
+            glpi_toast_info(
+                __("Item successfully created: %s").replace("%s", data.link_to_created_item)
+            );
+        });
+
+
         // Handle new questions
         let question_index = {{ question_index }};
         $("#form_add_question").on("click", function(e) {

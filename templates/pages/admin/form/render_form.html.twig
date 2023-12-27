@@ -34,37 +34,55 @@
 {# TODO: Maybe it will also be possible to render form outside of modal #}
 {# In this case, the modal specific structure and classes references could be conditioned with a parameter #}
 
-<div class="modal-header">
-    <h5 class="modal-title" id="display_form_modal_label">
-        {{ form.fields.name }}
-    </h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
-</div>
-
-<div class="modal-body">
-    <div class="text-muted mb-4">
-        {{ form.fields.header|safe_html }}
+<form id="forms_form_answers" method="POST" action="{{ path("ajax/form/answer.php") }}">
+    <div class="modal-header">
+        <h5 class="modal-title" id="display_form_modal_label">
+            {{ form.fields.name }}
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
     </div>
 
-    {% for section in form.getSections() %}
-        {% for question in section.getQuestions() %}
-            {% set question_type = question_types[question.fields.type] %}
-            <div class="mb-3">
-                <label class="form-label">
-                    {{ question.fields.name }}
-                    {% if question.fields.is_mandatory %}
-                        <span class="text-danger">*</span>
-                    {% endif %}
-                </label>
-                {{ question_type.renderEndUserTemplate(question)|raw }}
-                <div class="form-text">{{ question.fields.description|safe_html }}</div>
-            </div>
-        {% endfor %}
-    {% endfor %}
-</div>
+    <div class="modal-body">
+        <div class="text-muted mb-4">
+            {{ form.fields.header|safe_html }}
+        </div>
 
-<div class="modal-footer">
-    {# Disable submit as we don't have any questions yet #}
-    {# TODO: enable when questions are added #}
-    <button type="button" class="btn btn-primary" disabled>{{ __("Send form") }}</button>
-</div>
+            {% for section in form.getSections() %}
+                {% for question in section.getQuestions() %}
+                    {% set question_type = question_types[question.fields.type] %}
+                    <div class="mb-3">
+                        <label class="form-label">
+                            {{ question.fields.name }}
+                            {% if question.fields.is_mandatory %}
+                                <span class="text-danger">*</span>
+                            {% endif %}
+                        </label>
+                        {{ question_type.renderEndUserTemplate(question)|raw }}
+                        <div class="form-text">{{ question.fields.description|safe_html }}</div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
+            <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">{{ __("Send form") }}</button>
+    </div>
+</form>
+
+<script>
+    $('#forms_form_answers').on('submit', async function(e) {
+        e.preventDefault();
+        try {
+            const response = await $.post({
+                url: $(this).prop("action"),
+                data: $(this).serialize(),
+            });
+            $(document).trigger('forms-form-submit-success', response);
+        } catch (e) {
+            $(document).trigger('forms-form-submit-failed', response);
+        }
+    });
+</script>
+
