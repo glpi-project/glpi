@@ -164,7 +164,7 @@ final class AssetDefinitionManager
         }
 
         // Register IITL tabs, which will only be displayed if some condition
-        // are met (see the shouldDisplayTabForAsset method in
+        // are met (see the  method in
         // CommonItilObject_Item and Ticket classes).
         CommonGLPI::registerStandardTab(
             $asset_class_name,

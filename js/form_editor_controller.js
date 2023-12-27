@@ -138,6 +138,12 @@ class GlpiFormEditorController
                 (e, original_event) => this.#handleTinyMCEClick(original_event)
             );
 
+        // Handle form preview successful submit
+        $(document)
+            .on(
+                'glpi-form-renderer-submit-success',
+                (e, data) => this.#handleFormPreviewSubmitSuccess(data)
+            );
 
         // Register handlers for each possible editor actions using custom
         // data attributes
@@ -571,5 +577,22 @@ class GlpiFormEditorController
      */
     #computeDynamicInputSize(input) {
         $(input).css("width", getRealInputWidth(input, "1.2rem"));
+    }
+
+    /**
+     * Handle form preview successful submit.
+     * @param {Object} data Response data
+     */
+    #handleFormPreviewSubmitSuccess(data) {
+        // Close modal
+        $("#glpi_form_editor_preview_modal").modal('hide');
+
+        // Show toast with link to answers set
+        glpi_toast_info(
+            __("Item successfully created: %s").replace(
+                "%s",
+                data.link_to_created_item
+            )
+        );
     }
 }

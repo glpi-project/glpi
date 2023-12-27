@@ -128,6 +128,7 @@ $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
 // Name (forced), Entities (forced), Child entities, Active, Last update
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
+$ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
 
 // Temporary migration code to cover dev migrations
 // TODO: Should be removed from the final release
