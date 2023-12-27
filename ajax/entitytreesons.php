@@ -55,54 +55,41 @@ if (Session::getCurrentInterface() == 'helpdesk') {
 
 $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
-$ckey = 'entity_selector'
-    . sha1(json_encode($_SESSION['glpiactiveprofile']['entities']))
-    . sha1($base_path) // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
-;
+\Glpi\Debug\Profiler::getInstance()->start('Generate entity tree');
+$entitiestree = [];
+foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+    $default_entity_id = $default_entity['id'];
 
-//TODO Use cache to avoid extra DB work to get entity names? Implement at getTreeForItem() level via optional $use_cache parameter (default false)?
-$entitiestree = null;//$GLPI_CACHE->get($ckey);
+    $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
+    $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
+        foreach ($entities as $entities_id => &$entity) {
+            $entity['key']   = $entities_id;
 
-/* calculates the tree to save it in the cache if it is not already there */
-if ($entitiestree === null) {
-    \Glpi\Debug\Profiler::getInstance()->start('Generate entity tree');
-    $entitiestree = [];
-    foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
-        $default_entity_id = $default_entity['id'];
+            $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
+            $entity['title'] = $title;
+            unset($entity['name']);
 
-        $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
-        $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
-            foreach ($entities as $entities_id => &$entity) {
-                $entity['key']   = $entities_id;
+            if (isset($entity['tree']) && count($entity['tree']) > 0) {
+                $entity['folder'] = true;
 
-                $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
-                $entity['title'] = $title;
-                unset($entity['name']);
+                $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
+            <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
+            </a>";
 
-                if (isset($entity['tree']) && count($entity['tree']) > 0) {
-                    $entity['folder'] = true;
-
-                    $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
-                <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
-                </a>";
-
-                    $children = $adapt_tree($entity['tree']);
-                    $entity['children'] = array_values($children);
-                }
-
-                unset($entity['tree']);
+                $children = $adapt_tree($entity['tree']);
+                $entity['children'] = array_values($children);
             }
 
-            return $entities;
-        };
-        $adapt_tree($entitytree);
+            unset($entity['tree']);
+        }
 
-        $entitiestree = array_merge($entitiestree, $entitytree);
-    }
-    \Glpi\Debug\Profiler::getInstance()->stop('Generate entity tree');
+        return $entities;
+    };
+    $adapt_tree($entitytree);
 
-    $GLPI_CACHE->set($ckey, $entitiestree);
+    $entitiestree = array_merge($entitiestree, $entitytree);
 }
+\Glpi\Debug\Profiler::getInstance()->stop('Generate entity tree');
 
 /* scans the tree to select the active entity */
 $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {

@@ -613,9 +613,6 @@ class Entity extends CommonTreeDropdown
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
         // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
         $_SESSION['glpi_multientitiesmode'] = 1;
-
-       // clean entity tree cache
-        $this->cleanEntitySelectorCache();
     }
 
     public function post_updateItem($history = true)
@@ -624,9 +621,6 @@ class Entity extends CommonTreeDropdown
         global $GLPI_CACHE;
 
         parent::post_updateItem($history);
-
-       // clean entity tree cache
-        $this->cleanEntitySelectorCache();
 
         // Delete any cache entry corresponding to an updated entity config
         // for current entities and all its children
@@ -671,9 +665,6 @@ class Entity extends CommonTreeDropdown
                 Entity_RSSFeed::class,
             ]
         );
-
-       // clean entity tree cache
-        $this->cleanEntitySelectorCache();
     }
 
 
@@ -683,13 +674,11 @@ class Entity extends CommonTreeDropdown
      * @since 10.0
      *
      * @return void
+     * @deprecated 10.0.12
      */
     public function cleanEntitySelectorCache()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-
-        $GLPI_CACHE->delete('entity_selector');
+        Toolbox::deprecated('Entity::cleanEntitySelectorCache no longer has any effect as the entity selector is no longer cached as a unique entry');
     }
 
     public function rawSearchOptions()
