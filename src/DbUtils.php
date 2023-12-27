@@ -1051,7 +1051,7 @@ final class DbUtils
      * @phpstan-param non-empty-array<int>|int|numeric-string $items_id
      *
      * @return array Array of IDs of the ancestors. The keys and values should be identical. The result *may* include the IDs passed in the $items_id parameter.
-     * @todo Should this function really return the requested ID in the result? Especially if only a single ID is requested?
+     * @todo Should this function really allow returning the requested ID in the result? Especially if only a single ID is requested?
      */
     public function getAncestorsOf($table, $items_id)
     {
@@ -1210,6 +1210,9 @@ final class DbUtils
         } else {
             // Save the results to the cache for each requested item ID
             foreach ($items_id as $id) {
+                if (!isset($ancestors_by_id[$id])) {
+                    $ancestors_by_id[$id] = [];
+                }
                 $GLPI_CACHE->set("ancestors_cache_{$table}_{$id}", $ancestors_by_id[$id]);
             }
         }
