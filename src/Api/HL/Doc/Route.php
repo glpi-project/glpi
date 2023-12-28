@@ -51,7 +51,7 @@ class Route
     /**
      * @param string $description
      * @param string[] $methods
-     * @param array<Parameter|array{name: string, description?: string, location?: string, schema?: array{type?: string, format?: string}, example?: string, required?: bool}> $parameters
+     * @param array<Parameter|array{name: string, description?: string, location?: string, schema?: array{type?: string, format?: string}, example?: string, required?: bool, content_type?: string}> $parameters
      * @param array<Response|array{methods?: array<string>, description?: string, headers?: array, schema?: array{type?: string, format?: string}, examples?: array}> $responses
      */
     public function __construct(string $description = '', array $methods = [], array $parameters = [], array $responses = [])
@@ -74,6 +74,7 @@ class Route
                 schema: $schema,
                 example: $parameter['example'] ?? null,
                 required: filter_var(isset($parameter['required']) ? $parameter['required'] : false, FILTER_VALIDATE_BOOLEAN),
+                content_type: $parameter['content_type'] ?? 'application/json',
             );
         }, $parameters);
 

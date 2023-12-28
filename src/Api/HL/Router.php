@@ -583,6 +583,11 @@ EOT;
             }
         }
 
+        // Handle potential file uploads
+        if (isset($_FILES) && is_array($_FILES)) {
+            $request = $request->withUploadedFiles($_FILES);
+        }
+
         try {
             $this->handleAuth($request);
         } catch (OAuthServerException $e) {

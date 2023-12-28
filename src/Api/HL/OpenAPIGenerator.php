@@ -65,7 +65,7 @@ use Glpi\OAuth\Server;
  *      parameters: PathParameterSchema[],
  *      requestBody?: RequestBodySchema,
  * }
- * @phpstan-type RequestBodySchema array{content: array{"application/json": array{schema: SchemaArray}}}
+ * @phpstan-type RequestBodySchema array{content: array<string, array{schema: SchemaArray}>}
  */
 final class OpenAPIGenerator
 {
@@ -486,28 +486,29 @@ EOT;
             return null;
         }
         $request_body = [
-            'content' => [
-                'application/json' => [
-                    'schema' => [
-                        'type' => 'object',
-                        'properties' => [],
-                    ]
-                ]
-            ]
+            'content' => []
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
-        $request_body_param = array_filter($request_params, static function (Doc\Parameter $param) {
+        $request_body_params = array_filter($request_params, static function (Doc\Parameter $param) {
             return $param->getName() === '_';
         });
-        if (count($request_body_param) > 0) {
-            $request_body_param = array_values($request_body_param)[0];
-            if ($request_body_param->getSchema() instanceof SchemaReference) {
-                $body_schema = $this->getComponentReference($request_body_param->getSchema()['ref'], $route_path->getController());
-            } else {
-                $body_schema = $request_body_param->getSchema()->toArray();
+        if (count($request_body_params) > 0) {
+            foreach ($request_body_params as $request_body_param) {
+                if ($request_body_param->getSchema() instanceof SchemaReference) {
+                    $body_schema = $this->getComponentReference($request_body_param->getSchema()['ref'], $route_path->getController());
+                } else {
+                    $body_schema = $request_body_param->getSchema()->toArray();
+                }
+                $content_type = $request_body_param->getContentType();
+                if (!isset($request_body['content'][$content_type])) {
+                    $request_body['content'][$content_type] = [];
+                } else {
+                    // Cannot have multiple _ parameters with the same content type
+                    continue;
+                }
+                $request_body['content'][$content_type]['schema'] = $body_schema;
             }
-            $request_body['content']['application/json']['schema'] = $body_schema;
         }
 
         foreach ($request_params as $route_param) {
@@ -523,7 +524,16 @@ EOT;
             if (count($route_param->getSchema()->getProperties())) {
                 $body_param['properties'] = $route_param->getSchema()->getProperties();
             }
-            $request_body['content']['application/json']['schema']['properties'][$route_param->getName()] = $body_param;
+            $content_type = $route_param->getContentType();
+            if (!isset($request_body['content'][$content_type])) {
+                $request_body['content'][$content_type] = [
+                    'schema' => [
+                        'type' => 'object',
+                        'properties' => [],
+                    ]
+                ];
+            }
+            $request_body['content'][$content_type]['schema']['properties'][$route_param->getName()] = $body_param;
         }
         return $request_body;
     }
