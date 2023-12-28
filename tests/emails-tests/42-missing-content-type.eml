@@ -1,0 +1,43 @@
+Return-Path: <normal@glpi-project.org>
+Delivered-To: <unittests@glpi-project.org>
+Received: from mxs.XXXX
+	by mxs.XXXX with LMTP id 6OnXN+L3ZWVRYwAA1CwxZw
+	for <support@XXXX>; Tue, 28 Nov 2023 15:23:30 +0100
+Received: from rtr.XXXX (gateway [10.254.0.1])
+	by mxs.XXXX (Postfix) with ESMTP id D6C65116E44C9
+	for <support@XXXX>; Tue, 28 Nov 2023 15:23:30 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxs.XXXX D6C65116E44C9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=XXXX;
+	s=default; t=1701181410;
+	bh=jc3bzYXYh1Yhyino9PySDFP+COLU8x6+JVm73VOhvlw=;
+	h=From:To:Subject:Date:From;
+	b=qWnQGMou/CsqevHT3nfMuWcoVYaVx86YRJFeUOxIIfSXVa94rQyelwBIpzJa4ofbE
+	 iiehOUIMo9KXRDt6xFo2o8tdGlLNSkDEA9+Ng89RdiecJhldoSKrC8MKb0FbdtI6dW
+	 ksy5vboNJNlUlLdEJdwDL0y+AfSqn9MA8NOvg96z23zHJHR2GdgFanDVN1HhNfiLxf
+	 YxCg1S6bzPqLHVKjJFnZIjMx1jkxIlAMFp4wkpWRdJ7K5WCpVTna+fJJQg/dRL5TgX
+	 DKfwlqZMC18JF2KyqcEb/KFP61iOMX3v2r0zXIu3Y6NEEMymWwaNdyI0sow3+OC02H
+	 t21xTSoQv6j4g==
+From: <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Subject: 42 - Missing Content Type
+Date: Tue, 28 Nov 2023 15:23:30 +0100
+X-Rspamd-Queue-Id: D6C65116E44C9
+X-Rspamd-Server: mxs.XXXX
+X-Spamd-Result: default: False [0.00 / 15.00];
+	IP_WHITELIST(0.00)[10.254.0.1]
+X-Rspamd-Pre-Result: action=no action;
+	module=multimap;
+	Matched map: IP_WHITELIST
+
+Notifications in this message: 3
+================================
+
+15:23:03 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:03 +0100
+
+Communications with UPS SC1500I lost
+15:23:08 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:08 +0100
+
+UPS SC1500I is unavailable
+15:23:13 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:13 +0100
+
+Communications with UPS SC1500I established

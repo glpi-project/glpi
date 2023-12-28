@@ -792,6 +792,7 @@ class MailCollector extends DbTestCase
                     '40.2 - Empty content (html)',
                     '40.3 - Empty content (plain text)',
                     '41 - Image src without quotes',
+                    '42 - Missing Content Type'
                 ]
             ],
          // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -889,6 +890,20 @@ PLAINTEXT,
             '40.1 - Empty content (multipart)' => '',
             '40.2 - Empty content (html)' => '',
             '40.3 - Empty content (plain text)' => '',
+            '42 - Missing Content Type' => <<<PLAINTEXT
+Notifications in this message: 3
+================================
+
+15:23:03 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:03 +0100
+
+Communications with UPS SC1500I lost
+15:23:08 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:08 +0100
+
+UPS SC1500I is unavailable
+15:23:13 UPS Notification from rtr.XXXX - Tue, 28 Nov 2023 15:23:13 +0100
+
+Communications with UPS SC1500I established
+PLAINTEXT,
         ];
 
         foreach ($actors_specs as $actor_specs) {
