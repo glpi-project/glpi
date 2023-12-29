@@ -118,7 +118,7 @@ class DomainRelation extends CommonDropdown
 
     public function pre_deleteItem()
     {
-        if (in_array([self::BELONGS, self::MANAGE], $this->fields['id'])) {
+        if (in_array($this->fields['id'], [self::BELONGS, self::MANAGE])) {
            //keep defaults
             return false;
         }
