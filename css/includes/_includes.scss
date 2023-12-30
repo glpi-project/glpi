@@ -33,10 +33,10 @@
 
 $is-dark: false !default;
 
-@import "~@tabler/core/src/scss/core";
+//@import "~@tabler/core/src/scss/core";
+@import "tabler_compat";
 @import "base";
 @import "mixins/badges_fixes";
-@import "global-variables";
 @import "highcontrast";
 @import "components/autocomplete";
 @import "components/asset-form";

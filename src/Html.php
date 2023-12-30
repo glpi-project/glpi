@@ -1272,6 +1272,7 @@ HTML;
         } else {
             $theme_path = $theme->getPath();
         }
+        $tpl_vars['css_files'][] = ['path' => 'css/tabler.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         if ($theme->isCustomTheme()) {
             $tpl_vars['css_files'][] = ['path' => $theme_path];

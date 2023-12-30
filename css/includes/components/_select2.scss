@@ -43,10 +43,9 @@
     .select2-selection {
         background-color: var(--tblr-bg-forms);
         border: var(--tblr-border-width) solid var(--tblr-border-color);
-
-        @include border-radius($input-border-radius);
-        @include box-shadow($input-box-shadow);
-        @include transition($input-transition);
+        border-radius: var(--tblr-border-radius);
+        box-shadow: var(--tblr-box-shadow);
+        transition: $input-transition;
 
         .select2-selection__rendered input[type="search"] {
             color: var(--tblr-body-color);
@@ -63,7 +62,7 @@
             }
 
             .select2-selection__rendered {
-                line-height: $input-height;
+                line-height: $input-line-height;
                 direction: rtl; // ellipsis on left
                 text-align: left;
                 color: var(--tblr-body-color);
@@ -90,10 +89,6 @@
                         margin-top: -4px;
                     }
                 }
-
-                .select2-selection__rendered {
-                    line-height: $input-height-sm;
-                }
             }
 
             .form-select-lg + & {
@@ -108,15 +103,11 @@
                         margin-top: -1px;
                     }
                 }
-
-                .select2-selection__rendered {
-                    line-height: $input-height-lg;
-                }
             }
         }
 
         &.select2-selection--multiple {
-            @include font-size($input-font-size * 0.875);
+            @include font-size($input-font-size-sm);
 
             min-height: $input-height;
 
@@ -136,8 +127,7 @@
                 .select2-selection__choice {
                     background-color: var(--tblr-active-bg);
                     border: var(--tblr-border-width) solid var(--tblr-border-color);
-
-                    @include border-radius($input-border-radius-sm);
+                    border-radius: var(--tblr-border-radius-sm);
 
                     padding: 1px 3px;
                     margin: 3px 3px 0 0;
@@ -145,7 +135,7 @@
                     white-space: normal;
 
                     .select2-selection__choice__remove {
-                        color: $dark;
+                        color: var(--tblr-dark);
                         font-weight: bold;
                         margin: 0 0 0 3px;
 
@@ -191,14 +181,14 @@
 
         &.select2-dropdown--below {
             border-top: none;
-
-            @include border-bottom-radius($input-border-radius);
+            border-bottom-left-radius: var(--tblr-border-radius);
+            border-bottom-right-radius: var(--tblr-border-radius);
         }
 
         &.select2-dropdown--above {
             border-top: 1px solid var(--tblr-border-color);
-
-            @include border-top-radius($input-border-radius);
+            border-top-left-radius: var(--tblr-border-radius);
+            border-top-right-radius: var(--tblr-border-radius);
         }
 
         .select2-search {
@@ -206,8 +196,7 @@
                 border: var(--tblr-border-width) solid var(--tblr-border-color);
                 background-color: var(--tblr-bg-forms);
                 color: var(--tblr-body-color);
-
-                @include border-radius($input-border-radius);
+                border-radius: var(--tblr-border-radius);
             }
         }
 
@@ -263,5 +252,5 @@
 
 // fix z-index issue for select2 dropdown container with a boostrap modal
 .modal-backdrop ~ .select2-container--open {
-    z-index: $zindex-modal + 1;
+    z-index: calc(var(--glpi-zindex-modal) + 1);
 }

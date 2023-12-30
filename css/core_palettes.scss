@@ -31,8 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-// Base light/dark mode palettes
-@import "includes/palette_light";
+// Base dark mode palette. Base for light palette is in css/includes/_base.scss.
 @import "includes/palette_dark";
 
 // Palettes

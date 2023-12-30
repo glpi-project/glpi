@@ -31,8 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-@import "logos";
-
 :root[data-glpi-theme-dark="1"] {
     --tblr-dark: #000;
     --tblr-light: #e6e6e6;
@@ -95,22 +93,22 @@
     .table-danger {
         --tblr-table-bg: #642b2b;
         --tblr-table-striped-bg: #642b2b;
-        --tblr-table-striped-color: var(--light);
+        --tblr-table-striped-color: var(--tblr-light);
         --tblr-table-active-bg: #642b2b;
-        --tblr-table-active-color: var(--light);
+        --tblr-table-active-color: var(--tblr-light);
         --tblr-table-hover-bg: #642b2b;
-        --tblr-table-hover-color: var(--light);
+        --tblr-table-hover-color: var(--tblr-light);
 
-        color: var(--light);
+        color: var(--tblr-light);
         border-color: #6d000a;
     }
 
     .accordion-item .accordion-button {
-        background-color: var(--dark) !important;
+        background-color: var(--tblr-dark) !important;
     }
 
     .search_page .search-container .search-card .search-results.deleted-results td {
-        color: var(--light);
+        color: var(--tblr-light);
     }
 
     .navbar-collapsed {
@@ -128,14 +126,14 @@
 
     .page-anonymous {
         .glpi-logo {
-            --logo: url(#{$logo-light-login}) !important;
+            --logo: var(--glpi-logo-light-login) !important;
         }
     }
 
     .qtip-bootstrap,
     .popover .popover-body {
         background-color: var(--tblr-active-bg) !important;
-        color: var(--light) !important;
+        color: var(--tblr-light) !important;
     }
 
     .popover .popover-arrow::after {

@@ -75,6 +75,7 @@ $break_tablet: 1400px;
 }
 
 .dashboard {
+    --glpi-dashboard-soft-border: rgba(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
     position: relative;
     padding-top: $toolbar_height;
 
@@ -252,7 +253,7 @@ $break_tablet: 1400px;
             }
 
             .filters-control {
-                border-color: var(--light-mix);
+                border-color: var(--glpi-dashboard-soft-border);
 
                 .add-filter {
                     display: inline-block;
@@ -297,13 +298,13 @@ $break_tablet: 1400px;
 
         select.dashboard_select {
             padding: 5px;
-            border: 2px solid var(--input-border);
+            border: 2px solid var(--tblr-border-color);
             border-radius: 3px;
             min-width: 140px;
             cursor: pointer;
 
             option {
-                border-color: var(--input-border) !important;
+                border-color: var(--tblr-border-color) !important;
             }
         }
 
@@ -377,7 +378,7 @@ $break_tablet: 1400px;
             align-items: stretch;
 
             fieldset.filter {
-                border: 2px solid var(--input-border);
+                border: 2px solid var(--tblr-border-color);
                 border-radius: 4px;
                 padding: 6px 12px 5px;
                 text-align: center;
@@ -566,11 +567,11 @@ $break_tablet: 1400px;
         position: absolute;
         top: calc(#{$toolbar_height} + #{$filter_height} + 5px);
         width: calc(100% + 1px);
-        border: 1px solid var(--input-border);
+        border: 1px solid var(--tblr-border-color);
         border-width: 0 1px 1px 0;
         background-image:
-            linear-gradient(to right, var(--input-border) 1px, transparent 1px),
-            linear-gradient(to bottom, var(--input-border) 1px, transparent 1px);
+            linear-gradient(to right, var(--tblr-border-color) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--tblr-border-color) 1px, transparent 1px);
 
         .cell-add {
             opacity: 0;
@@ -1325,20 +1326,20 @@ $break_tablet: 1400px;
         }
     }
 
-    background: var(--dark);
-    color: var(--contrast-light);
+    background: var(--tblr-dark);
+    color: var(--tblr-light);
 
     .grid-guide {
-        border: 1px solid var(--light-mix);
+        border: 1px solid var(--glpi-dashboard-soft-border);
         background-image:
-            linear-gradient(to right, var(--light-mix) 1px, transparent 1px),
-            linear-gradient(to bottom, var(--light-mix) 1px, transparent 1px);
+            linear-gradient(to right, var(--glpi-dashboard-soft-border) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--glpi-dashboard-soft-border) 1px, transparent 1px);
     }
 
     .filters_toolbar {
         .filters {
             fieldset.filter:not(.filled) {
-                border: 2px solid var(--light-mix);
+                border: 2px solid var(--glpi-dashboard-soft-border);
             }
         }
     }

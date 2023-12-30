@@ -40,7 +40,7 @@
         left: 0;
         right: 0;
         bottom: 8px;
-        z-index: $zindex-fixed;
+        z-index: var(--glpi-zindex-fixed);
     }
 
     .answer-action {
