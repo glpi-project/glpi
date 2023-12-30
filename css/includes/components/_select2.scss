@@ -62,7 +62,7 @@
             }
 
             .select2-selection__rendered {
-                line-height: $input-line-height;
+                line-height: $input-height;
                 direction: rtl; // ellipsis on left
                 text-align: left;
                 color: var(--tblr-body-color);
