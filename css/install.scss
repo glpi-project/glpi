@@ -33,8 +33,7 @@
 
 $is-dark: false !default;
 
-@import "includes/fonts";
-@import "lib/tabler/core/src/scss/core";
+@import "tabler";
 @import "includes/base";
 @import "includes/components/select2";
 

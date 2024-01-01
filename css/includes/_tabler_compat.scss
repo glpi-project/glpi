@@ -55,6 +55,7 @@ $bs-breakpoints: (
 
 @mixin media-breakpoint-down($max) {
     $max: max-width-value(map-get($bs-breakpoints, $max));
+
     @media (max-width: $max) {
         @content;
     }
@@ -71,7 +72,6 @@ $theme-colors: (
     "dark": var(--tblr-dark),
     "muted": var(--tblr-muted),
 );
-
 $extra-colors: (
     "blue": var(--tblr-blue),
     "azure": var(--tblr-azure),
@@ -86,7 +86,6 @@ $extra-colors: (
     "teal": var(--tblr-teal),
     "cyan": var(--tblr-cyan),
 );
-
 $social-colors: (
     "facebook": var(--tblr-facebook),
     "twitter": var(--tblr-twitter),
@@ -104,7 +103,6 @@ $social-colors: (
     "bitbucket": var(--tblr-bitbucket),
     "tabler": var(--tblr-tabler),
 );
-
 $zindex-dropdown: 1000;
 $zindex-sticky: 1020;
 $zindex-fixed: 1030;
@@ -115,21 +113,19 @@ $zindex-modal: 1055;
 $zindex-popover: 1070;
 $zindex-tooltip: 1080;
 $zindex-toast: 1090;
-
 $sidebar-width: 15rem;
 $popover-arrow-outer-color: var(--tblr-border-color);
 $input-transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-$input-line-height: 1.4285714286em;  // 1.25rem / --tblr-body-font-size
+$input-line-height: calc(20em / 14);
 $input-btn-padding-y: 0.625rem - 0.0625rem;
 $input-btn-padding-y-sm: 0.125rem !default;
 $input-btn-padding-y-lg: 0.5rem !default;
-$input-height: calc(1.4285714286em + (#{$input-btn-padding-y} * 2) + 2px);
+$input-height: calc(#{$input-line-height} + (#{$input-btn-padding-y} * 2) + 2px);
 $input-font-size: var(--tblr-body-font-size);
 $input-font-size-sm: calc(#{$input-font-size} * 0.875);
 $input-font-size-lg: calc(#{$input-font-size} * 1.25);
 $input-height-sm: calc((#{$input-line-height} * 1em) + (#{$input-btn-padding-y-sm} * 2) + 2px);
 $input-height-lg: calc((#{$input-line-height} * 1em) + (#{$input-btn-padding-y-lg} * 2) + 2px);
-
 $component-active-bg: var(--tblr-primary);
 $input-focus-border-color: color-mix(in srgb, var(--tblr-primary), white 50%);
 $input-focus-box-shadow: 0 0 1 .25rem color-mix(in srgb, var(--tblr-primary), transparent 75%);

@@ -76,6 +76,7 @@ $break_tablet: 1400px;
 
 .dashboard {
     --glpi-dashboard-soft-border: rgba(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
+
     position: relative;
     padding-top: $toolbar_height;
 
