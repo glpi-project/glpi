@@ -116,11 +116,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                 break;
 
             case 2: // GLPI_SESSION_DIR not writable
-                $errors[] = __('Checking write permissions for session files');
+                $errors[] = __('Logins are not possible at this time. Please contact your administrator.');
                 break;
 
             case 3:
-                $errors[] = __('Invalid use of session ID');
+                $errors[] = __('Your session has expired. Please log in again.');
                 break;
         }
     }
