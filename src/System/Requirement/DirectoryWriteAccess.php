@@ -90,6 +90,9 @@ class DirectoryWriteAccess extends AbstractRequirement
                 break;
             case realpath(GLPI_SESSION_DIR):
                 $title = __('Permissions for session files');
+                $session_handler = ini_get('session.save_handler');
+                $optional = $session_handler !== false && strtolower($session_handler) !== 'files';
+                $description = __('If you have "session.save_handler" set to something besides "files" in your php.ini, this is not required.');
                 break;
             case realpath(GLPI_TMP_DIR):
                 $title = __('Permissions for temporary files');
