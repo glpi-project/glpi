@@ -2159,4 +2159,15 @@ class Session
         // TODO (10.1 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
     }
+
+    /**
+     * Checks if the GLPI sessions directory can be written to if the PHP session save handler is set to "files".
+     * @return bool True if the directory is writable, or if the session save handler is not set to "files".
+     */
+    public static function canWriteSessionFiles(): bool
+    {
+        $session_handler = ini_get('session.save_handler');
+        return $session_handler !== false
+            && (strtolower($session_handler) !== 'files' || is_writable(GLPI_SESSION_DIR));
+    }
 }

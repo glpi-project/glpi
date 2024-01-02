@@ -518,19 +518,24 @@ final class StatusChecker
                     'status' => self::STATUS_OK
                 ]
             ];
-           // Check session dir (useful when NFS mounted))
-            if (!is_dir(GLPI_SESSION_DIR)) {
-                $status['session_dir'] = [
-                    'status' => self::STATUS_PROBLEM,
-                    'status_msg'   => sprintf(_x('glpi_status', '%s variable is not a directory'), 'GLPI_SESSION_DIR')
-                ];
-                $status['status'] = self::STATUS_PROBLEM;
-            } else if (!is_writable(GLPI_SESSION_DIR)) {
-                $status['session_dir'] = [
-                    'status' => self::STATUS_PROBLEM,
-                    'status_msg'   => sprintf(_x('glpi_status', '%s variable is not writable'), 'GLPI_SESSION_DIR')
-                ];
-                $status['status'] = self::STATUS_PROBLEM;
+            $session_handler = ini_get('session.save_handler');
+            if ($session_handler !== false && strtolower($session_handler) === 'files') {
+                // Check session dir (useful when NFS mounted))
+                if (!is_dir(GLPI_SESSION_DIR)) {
+                    $status['session_dir'] = [
+                        'status' => self::STATUS_PROBLEM,
+                        'status_msg'   => sprintf(_x('glpi_status', '%s variable is not a directory'), 'GLPI_SESSION_DIR')
+                    ];
+                    $status['status'] = self::STATUS_PROBLEM;
+                } else if (!is_writable(GLPI_SESSION_DIR)) {
+                    $status['session_dir'] = [
+                        'status' => self::STATUS_PROBLEM,
+                        'status_msg'   => sprintf(_x('glpi_status', '%s variable is not writable'), 'GLPI_SESSION_DIR')
+                    ];
+                    $status['status'] = self::STATUS_PROBLEM;
+                }
+            } else {
+                $status['session_dir']['status_msg'] = _x('glpi_status', 'PHP is not configured to use the "files" session save handler');
             }
         }
 

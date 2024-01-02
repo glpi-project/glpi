@@ -48,7 +48,7 @@ include('../inc/includes.php');
 
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
-    if (!is_writable(GLPI_SESSION_DIR)) {
+    if (!Session::canWriteSessionFiles()) {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
     } else {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");

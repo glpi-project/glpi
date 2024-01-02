@@ -380,7 +380,7 @@ class Application extends BaseApplication
     private function initSession()
     {
 
-        if (!is_writable(GLPI_SESSION_DIR)) {
+        if (!Session::canWriteSessionFiles()) {
             throw new \Symfony\Component\Console\Exception\RuntimeException(
                 sprintf(__('Cannot write in "%s" directory.'), GLPI_SESSION_DIR)
             );
