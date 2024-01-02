@@ -70,7 +70,7 @@
             tabindex="6"
             data-question-description
             {# Mark as secondary if empty #}
-            {{ question is null or question.fields.description|length == 0 ? "data-question-extra-details" : ""}}
+            {{ question is null or question.fields.description|length == 0 ? "data-question-extra-details" : "" }}
         >
             {{ fields.textareaField(
                 input_prefix is not null ? input_prefix ~ '[description]' : 'description',
