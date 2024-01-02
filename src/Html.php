@@ -3888,7 +3888,6 @@ JS;
         }
 
         $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
-        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/standalone/tinymce_skin.scss', ['force_no_version' => true]));
 
         // init tinymce
         $js = <<<JS
@@ -3906,7 +3905,7 @@ JS;
                plugins: {$pluginsjs},
 
                // Appearance
-               skin_url: '{$skin_url}',
+               skin_url: CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 

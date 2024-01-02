@@ -35,3 +35,11 @@ $enable-negative-margins: true;
 $link-hover-decoration: none;
 
 @import "includes/includes";
+
+html:not([data-glpi-theme-dark="1"]) {
+    @import "../public/lib/tinymce/skins/ui/oxide/skin";
+}
+
+html[data-glpi-theme-dark="1"] {
+    @import "../public/lib/tinymce/skins/ui/oxide-dark/skin";
+}
