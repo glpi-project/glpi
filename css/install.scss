@@ -33,7 +33,7 @@
 
 $is-dark: false !default;
 
-@import "tabler";
+@import "includes/tabler_compat";
 @import "includes/base";
 @import "includes/components/select2";
 

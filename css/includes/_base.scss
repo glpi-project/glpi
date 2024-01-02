@@ -159,7 +159,7 @@ body.in_modal {
 .breadcrumb-alternate {
     a {
         &:hover {
-            text-decoration: $link-hover-decoration;
+            text-decoration: var(--tblr-link-hover-decoration);
         }
     }
 }
