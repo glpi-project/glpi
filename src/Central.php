@@ -152,7 +152,7 @@ class Central extends CommonGLPI
         if (Contract::canView()) {
             $grid_items[] = Contract::showCentral(false);
         }
-        if (Session::haveRight("logs", READ)) {
+        if (Session::haveRight(Log::$rightname, READ)) {
            //Show last add events
             $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
         }

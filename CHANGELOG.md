@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Permissions for historical data and system logs (Administration > Logs) are now managed by "Historical (READ)" and "System Logs (READ)" respectively.
 
 ### Deprecated
 

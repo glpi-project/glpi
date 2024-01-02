@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 /**
  * Profile class
  **/
@@ -945,6 +947,10 @@ class Profile extends CommonDBTM
                             $fn_get_rights(__CLASS__, 'central', ['scope' => 'global']),
                             $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(Event::class, 'central', [
+                                'scope' => 'global',
+                                'label' => __('System logs')
+                            ]),
                         ],
                         'inventory' => [
                             $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', [
