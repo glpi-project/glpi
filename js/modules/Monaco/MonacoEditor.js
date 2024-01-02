@@ -211,6 +211,28 @@ export default class MonacoEditor {
             wordWrap: "off",
         };
     }
+
+    /**
+     * Apply syntax hightlighting styles to the given text
+     * @param {string} text The text to colorize
+     * @param {string} language The language to use for colorizing
+     * @return {Promise<string>}
+     */
+    static colorizeText(text, language) {
+        return window.monaco.editor.colorize(text, language);
+    }
+
+    /**
+     * Apply syntax hightlighting styles to the given element
+     * @param {HTMLElement} element The element to colorize
+     * @param {string} language The language to use for colorizing
+     * @return {Promise<void>}
+     */
+    static colorizeElement(element, language) {
+        return window.monaco.editor.colorizeElement(element, {
+            language: language
+        });
+    }
 }
 
 window.GLPI.MonacoEditor = MonacoEditor;

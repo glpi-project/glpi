@@ -24,6 +24,7 @@
      * @property {boolean} main_widget=false
      */
     import {computed, ref, watch} from "vue";
+    import MonacoEditor from "../../../modules/Monaco/MonacoEditor.js";
 
     const props = defineProps({
         initial_request: {
@@ -146,8 +147,10 @@
     ];
 
     $.each(props.initial_request.sql.queries, (i, query) => {
-        // eslint-disable-next-line vue/no-mutating-props
-        props.initial_request.sql.queries[i].query = cleanSQLQuery(query.query);
+        cleanSQLQuery(query.query).then((clean_query) => {
+            // eslint-disable-next-line vue/no-mutating-props
+            props.initial_request.sql.queries[i].query = clean_query;
+        });
     });
     $(document).ajaxSend((event, xhr, settings) => {
         // If the request is going to the debug AJAX endpoint, don't do anything
@@ -247,31 +250,12 @@
     function cleanSQLQuery(query) {
         const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
         const post_newline_keywords = ['UNION'];
-        let clean_query = '';
-        window.CodeMirror.runMode(query, window.CodeMirror.languages.sql().language, (text, style) => {
-            text.replace('>', `&gt;`).replace('<', `&lt;`);
-            if (style !== null && style !== undefined) {
-                if (newline_keywords.includes(text.toUpperCase())) {
-                    clean_query += '</br>';
-                }
-                clean_query += `<span class="${style.replace(' ', '')}">${text}</span>`;
-                if (post_newline_keywords.includes(text.toUpperCase())) {
-                    clean_query += '</br>';
-                }
-            } else {
-                clean_query += text;
-            }
+        return Promise.resolve(MonacoEditor.colorizeText(query, 'sql')).then((html) => {
+            // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
+            const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
+            const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
+            return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();;
         });
-        if ($('#debug-toolbar style[data-cm-sql-styles]').length === 0) {
-            /** @var {string[]} */
-            const rules = window.CodeMirror.defaultHighlightStyle.module.rules;
-            // Rules are an array of complete css rules. We can just join them together and insert them into a style tag
-            const style_tag = $('<style data-cm-sql-styles></style>');
-            style_tag.text(rules.join(''));
-            $('#debug-toolbar').prepend(style_tag);
-        }
-
-        return clean_query;
     }
 
     function getCombinedSQLData() {
@@ -348,7 +332,9 @@
             ajax_request.profile = data;
 
             $.each(ajax_request.profile.sql.queries, (i, query) => {
-                ajax_request.profile.sql.queries[i].query = cleanSQLQuery(query.query);
+                cleanSQLQuery(query.query).then((clean_query) => {
+                    ajax_request.profile.sql.queries[i].query = clean_query;
+                });
             });
 
             const content_area = $('#debug-toolbar-expanded-content');

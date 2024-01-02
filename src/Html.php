@@ -1196,7 +1196,7 @@ HTML;
                 Html::requireJs('charts');
             }
 
-            if (in_array('codemirror', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            if (in_array('codemirror', $jslibs)) {
                 Html::requireJs('codemirror');
             }
 
@@ -1204,7 +1204,7 @@ HTML;
                 Html::requireJs('cable');
             }
 
-            if (in_array('monaco', $jslibs)) {
+            if (in_array('monaco', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                 Html::requireJs('monaco');
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
