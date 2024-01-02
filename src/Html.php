@@ -3836,6 +3836,7 @@ JS;
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
+            'css/tabler.scss',
             'css/glpi.scss',
             'css/core_palettes.scss',
         ];
@@ -3846,6 +3847,7 @@ JS;
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
+        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3905,7 +3907,7 @@ JS;
                plugins: {$pluginsjs},
 
                // Appearance
-               skin_url: CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
+               skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
