@@ -50,11 +50,12 @@ class PrinterLog extends DbTestCase
         ]);
         $this->integer($printers_id)->isGreaterThan(0);
 
-        $now = new \DateTime();
+        $_SESSION['glpi_currenttime'] = '2023-10-10 10:10:10';
+        $now = new \DateTime(\Session::getCurrentTime());
 
         $log = new \PrinterLog();
 
-        $cdate1 = new \DateTime('-14 months');
+        $cdate1 = (new \DateTime(\Session::getCurrentTime()))->modify('-14 months');
         $input = [
             'printers_id' => $printers_id,
             'total_pages' => 5132,
@@ -66,7 +67,7 @@ class PrinterLog extends DbTestCase
         ];
         $this->integer($log->add($input))->isGreaterThan(0);
 
-        $cdate2 = new \DateTime('-6 months');
+        $cdate2 = (new \DateTime(\Session::getCurrentTime()))->modify('-6 months');
         $input = [
             'printers_id' => $printers_id,
             'total_pages' => 6521,
@@ -78,7 +79,7 @@ class PrinterLog extends DbTestCase
         ];
         $this->integer($log->add($input))->isGreaterThan(0);
 
-        $cdate3 = new \DateTime('first day of previous month');
+        $cdate3 = (new \DateTime(\Session::getCurrentTime()))->modify('first day of previous month');
         $input = [
             'printers_id' => $printers_id,
             'total_pages' => 3464,
@@ -116,7 +117,7 @@ class PrinterLog extends DbTestCase
         $this->array($log->getMetrics($printer, end_date: $now)[$printer->getID()])->hasSize(3);
         $this->array($log->getMetrics($printer, start_date: $cdate1, end_date: $now->sub(new \DateInterval('P1D')))[$printer->getID()])->hasSize(3);
 
-        $datex = new \DateTime();
+        $datex = new \DateTime(\Session::getCurrentTime());
         for ($i = 0; $i < 21; $i++) {
             $datex->sub(new \DateInterval('P1D'));
             $input = [

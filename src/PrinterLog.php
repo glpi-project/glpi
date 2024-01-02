@@ -129,7 +129,7 @@ class PrinterLog extends CommonDBChild
         }
 
         if (!$start_date) {
-            $start_date = new DateTime();
+            $start_date = new DateTime(Session::getCurrentTime());
             $start_date->sub(new DateInterval($interval));
         }
 
