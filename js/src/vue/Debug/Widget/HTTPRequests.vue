@@ -41,6 +41,10 @@
     $('#debug-toolbar').on('keyup', (e) => {
         e.preventDefault();
         e.stopPropagation();
+        // ignore input inside monaco editors
+        if ($(e.target).closest('.monaco-editor').length > 0) {
+            return;
+        }
         if (e.keyCode === 84) { // 't'
             show_timeline.value = !show_timeline.value;
         }

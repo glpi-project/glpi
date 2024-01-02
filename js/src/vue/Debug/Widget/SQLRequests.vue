@@ -171,4 +171,7 @@
     #debug-sql-request-table tbody tr td:nth-of-type(4) {
         white-space: nowrap;
     }
+    #debug-sql-request-table::v-deep(span.mtk1) {
+        color: var(--tblr-body-color);
+    }
 </style>
