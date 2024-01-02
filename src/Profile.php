@@ -3022,11 +3022,26 @@ class Profile extends CommonDBTM
             'name'               => _n('Log', 'Logs', Session::getPluralNumber()),
             'datatype'           => 'right',
             'rightclass'         => 'Log',
-            'rightname'          => 'logs',
+            'rightname'          => Log::$rightname,
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'logs']
+                'condition'          => ['NEWTABLE.name' => Log::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '62',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => __('System logs'),
+            'datatype'           => 'right',
+            'rightclass'         => 'Log',
+            'rightname'          => Event::$rightname,
+            'nowrite'            => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Event::$rightname]
             ]
         ];
 
