@@ -1897,93 +1897,29 @@ class Entity extends CommonTreeDropdown
      */
     public static function showUiCustomizationOptions(Entity $entity)
     {
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
             return false;
         }
 
-       // Codemirror lib
-        echo Html::script("public/lib/codemirror.js");
-
        // Notification right applied
         $canedit = Session::haveRight(Config::$rightname, UPDATE)
          && Session::haveAccessToEntity($ID);
-
-        echo "<div class='spaced'>";
-        if ($canedit) {
-            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
-        }
-
-        echo "<table class='tab_cadre_fixe custom_css_configuration'>";
-
-        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
-
-        $rand = mt_rand();
-
-        echo "<tr><th colspan='2'>" . __('UI options') . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Enable CSS customization') . "</td>";
-        echo "<td>";
-        $values = [];
+        $enable_css_options = [];
         if (($ID > 0) ? 1 : 0) {
-            $values[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
+            $enable_css_options[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
         }
-        $values[0] = __('No');
-        $values[1] = __('Yes');
-        echo Dropdown::showFromArray(
-            'enable_custom_css',
-            $values,
-            [
-                'display' => false,
-                'rand'    => $rand,
-                'value'   => $entity->fields['enable_custom_css']
-            ]
-        );
-        echo "</td></tr>";
+        $enable_css_options[0] = __('No');
+        $enable_css_options[1] = __('Yes');
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td colspan='2'>";
-        echo "<div id='custom_css_container' class='custom_css_container'>";
-        $value = $entity->fields['enable_custom_css'];
-       // wrap call in function to prevent modifying variables from current scope
-        call_user_func(function () use ($value, $ID) {
-            $_POST  = [
-                'enable_custom_css' => $value,
-                'entities_id'       => $ID
-            ];
-            include GLPI_ROOT . '/ajax/entityCustomCssCode.php';
-        });
-        echo "</div>\n";
-        echo "</td></tr>";
-
-        Ajax::updateItemOnSelectEvent(
-            'dropdown_enable_custom_css' . $rand,
-            'custom_css_container',
-            $CFG_GLPI['root_doc'] . '/ajax/entityCustomCssCode.php',
-            [
-                'enable_custom_css' => '__VALUE__',
-                'entities_id'       => $ID
-            ]
-        );
-
-        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => []]);
-
-        echo "</table>";
-
-        if ($canedit) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-            echo "</div>";
-            Html::closeForm();
-        }
-
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/admin/entity/custom_ui.html.twig', [
+            'item' => $entity,
+            'enable_css_options' => $enable_css_options,
+            'params' => [
+                'canedit' => $canedit,
+                'candel' => false, // No deleting from the non-main tab
+            ],
+        ]);
     }
 
     /**

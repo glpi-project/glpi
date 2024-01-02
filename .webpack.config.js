@@ -98,13 +98,12 @@ let config = {
         ), // Clean lib dir content
         new MiniCssExtractPlugin(), // Extract styles into CSS files
         new MonacoWebpackPlugin({
-            'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig'],
+            'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig', 'css', 'scss'],
             'publicPath': '/public/lib/'
         }),
     ],
     resolve: {
         fallback: {
-            'process/browser': require.resolve('process/browser.js'), // required by @lezer/lr (codemirror dependency)
             "path": require.resolve("path-browserify"),
         },
         // Use only main file in requirement resolution as we do not yet handle modules correctly

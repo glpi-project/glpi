@@ -24,7 +24,6 @@
      * @property {boolean} main_widget=false
      */
     import {computed, ref, watch} from "vue";
-    import MonacoEditor from "../../../modules/Monaco/MonacoEditor.js";
 
     const props = defineProps({
         initial_request: {
@@ -251,7 +250,7 @@
         const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
         const post_newline_keywords = ['UNION'];
         query = query.replace(/\n/g, ' ');
-        return Promise.resolve(MonacoEditor.colorizeText(query, 'sql')).then((html) => {
+        return Promise.resolve(window.GLPI.Monaco.colorizeText(query, 'sql')).then((html) => {
             // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
             const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
             const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');

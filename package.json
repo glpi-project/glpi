@@ -10,7 +10,6 @@
     },
     "dependencies": {
         "@algolia/autocomplete-js": "^1.12.1",
-        "@codemirror/lang-css": "^6.2.1",
         "@fontsource/inter": "^4.5.15",
         "@fortawesome/fontawesome-free": "^6.5.1",
         "@fullcalendar/bootstrap": "^4.4.2",
@@ -27,7 +26,6 @@
         "@tabler/icons-webfont": "^2.42.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.2",
-        "codemirror": "^6.0.1",
         "cropperjs": "^2.0.0-beta.4",
         "cytoscape": "^3.27.0",
         "cytoscape-canvas": "^3.0.1",

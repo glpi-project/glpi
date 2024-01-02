@@ -1196,16 +1196,11 @@ HTML;
                 Html::requireJs('charts');
             }
 
-            if (in_array('codemirror', $jslibs)) {
-                Html::requireJs('codemirror');
-            }
-
             if (in_array('cable', $jslibs)) {
                 Html::requireJs('cable');
             }
 
             if (in_array('monaco', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-                Html::requireJs('monaco');
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
             }
@@ -6378,9 +6373,6 @@ HTML;
             case 'log_filters':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/log_filters.js';
                 break;
-            case 'codemirror':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/codemirror.js';
-                break;
             case 'photoswipe':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/photoswipe.js';
                 break;
@@ -6389,9 +6381,6 @@ HTML;
                 break;
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
-                break;
-            case 'monaco':
-                $_SESSION['glpi_js_toload'][$name][] = 'public/lib/monaco.js';
                 break;
             case 'autocomplete':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/autocomplete.js';
