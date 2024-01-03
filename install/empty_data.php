@@ -784,7 +784,7 @@ $empty_data_builder = new class
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
-            ],], [
+            ], [
                 'id' => 44,
                 'itemtype' => 'PrinterCartridgeLevelAlert',
                 'name' => 'PrinterCartridgeLevelAlert',
