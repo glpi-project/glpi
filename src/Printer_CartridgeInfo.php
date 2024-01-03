@@ -64,12 +64,10 @@ class Printer_CartridgeInfo extends CommonDBChild
         return $info;
     }
 
-    public function getCartridgeTagInfoForPrinter(Printer $printer)
+    public function getCartridgeTagInfoForPrinter($id)
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        $id = $printer->fields['id'];
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -103,7 +101,7 @@ class Printer_CartridgeInfo extends CommonDBChild
     {
         $info = $this->getInfoForPrinter($printer);
 
-        $mapping = $this->getCartridgeTagInfoForPrinter($printer);
+        $mapping = $this->getCartridgeTagInfoForPrinter($printer->fields['id']);
 
         echo "<h3>" . $this->getTypeName(Session::getPluralNumber()) . "</h3>";
 
