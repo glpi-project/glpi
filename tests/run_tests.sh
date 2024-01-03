@@ -73,10 +73,11 @@ done
 
 # Flag to indicate wether services containers are usefull
 USE_SERVICES_CONTAINERS=0
-SCOPE="default"
+SELECTED_SCOPE="default"
 
 # Extract list of tests suites to run
-TESTS_TO_RUN=()
+SELECTED_TESTS_TO_RUN=()
+
 if [[ $# -gt 0 ]]; then
   ARGS=("$@")
 
@@ -84,7 +85,7 @@ if [[ $# -gt 0 ]]; then
     INDEX=0
     for VALID_KEY in "${TESTS_SUITES[@]}"; do
       if [[ "$VALID_KEY" == "$KEY" ]]; then
-        TESTS_TO_RUN[$INDEX]=$KEY
+        SELECTED_TESTS_TO_RUN[$INDEX]=$KEY
         continue 2 # Go to next arg
       fi
       INDEX+=1
@@ -95,19 +96,19 @@ if [[ $# -gt 0 ]]; then
   # Ensure install test is executed if something else than "lint" or "javascript" is executed.
   # This is mandatory as database is initialized by this test suite.
   # Also, check wether services containes are usefull.
-  for TEST_SUITE in "${TESTS_TO_RUN[@]}"; do
+  for TEST_SUITE in "${SELECTED_TESTS_TO_RUN[@]}"; do
     if [[ ! " lint javascript " =~ " ${TEST_SUITE} " ]]; then
       USE_SERVICES_CONTAINERS=1
       break
     fi
   done
 elif [[ "$ALL" = true ]]; then
-  TESTS_TO_RUN=("${TESTS_SUITES[@]}")
+  SELECTED_TESTS_TO_RUN=("${TESTS_SUITES[@]}")
 
   # Remove specific lint test, because of global "lint" test suite
-  for TEST in "${!TESTS_TO_RUN[@]}"; do
-    if [[ "${TESTS_TO_RUN[TEST]}" =~ ^lint_.+ ]]; then
-      unset 'TESTS_TO_RUN[TEST]'
+  for TEST in "${!SELECTED_TESTS_TO_RUN[@]}"; do
+    if [[ "${SELECTED_TESTS_TO_RUN[TEST]}" =~ ^lint_.+ ]]; then
+      unset 'SELECTED_TESTS_TO_RUN[TEST]'
     fi
   done
 
@@ -120,7 +121,7 @@ if [[ "$INTERACTIVE" = true ]]; then
 fi
 
 # Display help if user asks for it, or if it does not provide which test suite has to be executed
-if [[ "$HELP" = true || ( ${#TESTS_TO_RUN[@]} -eq 0 && "$INTERACTIVE" = false ) ]]; then
+if [[ "$HELP" = true || ( ${#SELECTED_TESTS_TO_RUN[@]} -eq 0 && "$INTERACTIVE" = false ) ]]; then
   cat << EOF
 This command runs the tests in an environment similar to what is done by CI.
 
@@ -130,10 +131,12 @@ Examples:
  - run_tests.sh --all
  - run_tests.sh --build ldap imap
  - run_tests.sh lint
+ - run_tests.sh --interactive
 
 Available options:
  --all      run all tests suites
  --build    build dependencies and translation files before running test suites
+ --interactive run tests in interactive mode
 
 Available tests suites:
  - lint
@@ -249,11 +252,11 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "units")
-         docker-compose exec -T app .github/actions/test_tests-units.sh -s $SCOPE \
+         docker-compose exec -T app .github/actions/test_tests-units.sh -s $SELECTED_SCOPE \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker-compose exec -T app .github/actions/test_tests-functional.sh -s $SCOPE \
+         docker-compose exec -T app .github/actions/test_tests-functional.sh -s $SELECTED_SCOPE \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")
@@ -291,21 +294,26 @@ run_single_test () {
 
 run_tests () {
   LAST_EXIT_CODE=0
-  for TEST_SUITE in "${TESTS_TO_RUN[@]}";
-  do
-    run_single_test $TEST_SUITE
-  done
+  # If no tests are selected, display the info
+  if [[ ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
+    show_info
+  else
+    for TEST_SUITE in "${TESTS_TO_RUN[@]}";
+    do
+      run_single_test $TEST_SUITE
+    done
+  fi
 }
 
 show_info () {
   # If no tests are selected, display a message with information about how to select tests
-  if [[ ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
-    echo -e "Selected tests: none"
-    echo -e "No tests selected. You can select tests by using the 'settest' command."
+  if [[ ${#SELECTED_TESTS_TO_RUN[@]} -eq 0 ]]; then
+    echo -e "Selected actions: none"
+    echo -e "No actions selected. You can select actions by using the 'set action' command."
   else
-    echo -e "Selected tests: ${TESTS_TO_RUN[@]}"
+    echo -e "Selected actions: ${SELECTED_TESTS_TO_RUN[@]}"
   fi
-  echo -e "Selected scope: ${SCOPE}\n"
+  echo -e "Selected scope: ${SELECTED_SCOPE}\n"
 }
 
 cleanup_and_exit () {
@@ -324,6 +332,8 @@ trap cleanup_and_exit INT
 
 if [[ "$INTERACTIVE" = false ]]; then
   # Do not automatically run tests if in interactive mode
+  TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
+  SCOPE=$SELECTED_SCOPE
   run_tests
 else
   echo -e "GLPI Tests (Interactive mode)\n"
@@ -332,26 +342,39 @@ fi
 
 if [[ "$INTERACTIVE" = true ]]; then
   CHOICE=""
+  TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
+  SCOPE=$SELECTED_SCOPE
+  show_info
   while [[ "$CHOICE" != "exit" ]]; do
     read -e -p "GLPI Tests > " CHOICE
-    if [[ "$CHOICE" = "test" ]]; then
+    if [[ "$CHOICE" = run* ]]; then
+      # If actions were specified after the run choice, use them instead of the ones selected
+      if [[ "$CHOICE" != "run" ]]; then
+        RUN_OPTS=(${CHOICE#run })
+        # TESTS_TO_RUN is the first argument. It should be a single word without spaces.
+        # The second argument, if it exists, is the scope. If it doesn't exist, the scope is the selected one.
+        TESTS_TO_RUN=(${RUN_OPTS[0]})
+        if [[ ${#RUN_OPTS[@]} -gt 1 ]]; then
+          SCOPE=${RUN_OPTS[1]}
+        fi
+      fi
       run_tests
     elif [[ "$CHOICE" = "help" ]]; then
       cat << EOF
 Available commands:
-  - test: Run the currently selected tests.
-  - settest [tests]: Change the currently selected tests.
-  - setscope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
-  - info: Display information about the currently selected tests and scope.
+  - run [action] [scope]: Run the currently selected actions or run the single specified action with the specified scope (defaults to the selected scope).
+  - set action [actions]: Change the currently selected actions.
+  - set scope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
+  - info: Display information about the currently selected actions and scope.
   - exit: Stop the containers and exit.
   - help: See this list of commands.
 EOF
-    elif [[ "$CHOICE" = settest* ]]; then
-      TESTS_TO_RUN=(${CHOICE#settest })
-    elif [[ "$CHOICE" = setscope* ]]; then
-      SCOPE=${CHOICE#setscope }
-      if [[ ! "$SCOPE" =~ ^tests/ && "$SCOPE" != "default" && "$SCOPE" != "" && "$SCOPE" != *"::"* ]]; then
-        SCOPE="tests/$SCOPE"
+    elif [[ "$CHOICE" = set[[:space:]]action* ]]; then
+      SELECTED_TESTS_TO_RUN=(${CHOICE#set[[:space:]]action })
+    elif [[ "$CHOICE" = set[[:space:]]scope* ]]; then
+      SELECTED_SCOPE=${CHOICE#set[[:space:]]scope }
+      if [[ ! "$SELECTED_SCOPE" =~ ^tests/ && "$SELECTED_SCOPE" != "default" && "$SELECTED_SCOPE" != "" && "$SELECTED_SCOPE" != *"::"* ]]; then
+        SELECTED_SCOPE="tests/$SELECTED_SCOPE"
       fi
     elif [[ "$CHOICE" = "info" ]]; then
       show_info
