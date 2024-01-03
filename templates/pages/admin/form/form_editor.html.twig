@@ -124,9 +124,10 @@
                             {% for question in section.getQuestions() %}
                                 {# Render admin template for the given question type #}
                                 {{ include('pages/admin/form/form_question.html.twig', {
-                                    'question_type': question_types[question.fields.type],
-                                    'question'     : question,
-                                    'input_prefix' : '_questions[' ~ question_index ~ ']',
+                                    'question_types': question_types,
+                                    'question_type' : question_types[question.fields.type],
+                                    'question'      : question,
+                                    'question_index': question_index,
                                 }, with_context = false) }}
                                 {% set question_index = question_index + 1 %}
                             {% endfor %}
@@ -272,9 +273,10 @@
 {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
 <div id="question_type_model_container" class="d-none">
     {% for key, question_type in question_types %}
-        <div id="question_type_model_{{ key|slug }}">
+        <div id="question_type_model_{{ key }}">
             {# Render admin template for the given question type #}
             {{ include('pages/admin/form/form_question.html.twig', {
+                'question_types': question_types,
                 'question_type': question_type,
                 'question': null,
             }, with_context = false) }}
@@ -409,22 +411,21 @@
             );
         });
 
-
         // Handle new questions
         let question_index = {{ question_index }};
-        $("#form_add_question").on("click", function(e) {
-            // Copy template
-            const copy = $("#question_type_model_{{ default_question_type|slug }}")
-                .children() // Skip model container
-                .clone();
 
-            // Keep track of how many textarea we process
-            let textarea_index = 0;
+        /**
+         * Copy a given question template into the given destination
+         */
+        const copy_model = function(selector, question_index, destination) {
+            const copy = selector.clone();
+
+            // Keep track of editors that need to be initialized
             const tiny_mce_to_init = [];
 
             // Input must have unique name so we will use the
             // "_questions[index][input_name] key format
-            copy.find("input, textarea").each(function() {
+            copy.find("select, input, textarea").each(function() {
                 const input_name = $(this).attr("name");
                 $(this).attr("name", `_questions[${question_index}][${input_name}]`);
 
@@ -434,8 +435,8 @@
                     const config = window["tiny_editor_config_" + $(this).attr("id")];
 
                     // Rename id so it can be unique
-                    $(this).attr("id", `_questions_${question_index}_${input_name}_${textarea_index}`);
-                    textarea_index++;
+                    const uid = uniqid(); // Avoid ID conflicts
+                    $(this).attr("id", `_questions_${question_index}_${input_name}_${uid}`);
 
                     // Push config into init queue
                     config.selector = "#" + $(this).attr("id"); // Ref to updated id
@@ -444,12 +445,34 @@
             });
 
             // Insert the new question
-            setActiveQuestion(copy);
-            copy.appendTo(".questions");
-            question_index++;
+            copy.appendTo(destination);
 
             // Init editor (must be done after copy)
             tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
+
+            return copy;
+        }
+
+        $("#form_add_question").on("click", function(e) {
+            // Javascript doesn't like singular backslashes
+            {% set escaped_question_type = default_question_type|replace({"\\": "\\\\"}) %}
+            const target = $("#question_type_model_" + $.escapeSelector("{{ escaped_question_type }}"))
+                .children(); // Skip container, we only want the content
+
+            // Insert the new template into the questions area
+            const copy = copy_model(
+                target,
+                question_index,
+                ".questions"
+            )
+
+            // Set question index (needed in case the question type is modified later on and we need to re-render
+            // a part of the question)
+            copy.attr("data-question-index", question_index);
+
+            // Set question as active and increment index
+            setActiveQuestion(copy);
+            question_index++;
         });
 
         // Handle question deletion
@@ -487,6 +510,21 @@
         });
         $(document).on("click", ".form-details", function() {
             setActiveQuestion(null);
+        });
+
+        // Handle type change for a question
+        $(document).on("change", "[data-question-type-selector]", function(e) {
+            const type = $(e.target).val().replaceAll("\\", "\\\\"); // JS doesn't like single backslashes
+
+            // Clear the specific part of the HTML form of the current question type
+            $(e.target).closest("[data-question-container]").find("[data-question-type-specific]").children().remove();
+
+            // Copy the specific part the new question type's template into the current question
+            copy_model(
+                $("#question_type_model_" + type).find("[data-question-type-specific]").children(),
+                $(e.target).closest("[data-question-container]").data('questionIndex'),
+                $(e.target).closest("[data-question-container]").find("[data-question-type-specific]")
+            );
         });
     })();
 </script>

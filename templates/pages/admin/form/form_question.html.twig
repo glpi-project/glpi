@@ -31,11 +31,15 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var question_type Glpi\Form\QuestionType\QuestionTypeInterface #}
-{# @var question      Glpi\Form\Question|null #}
-{# @var input_prefix  string|null #}
+{# @var question_types Glpi\Form\QuestionType\QuestionTypeInterface[] #}
+{# @var question_type  Glpi\Form\QuestionType\QuestionTypeInterface #}
+{# @var question       Glpi\Form\Question|null #}
+{# @var question_index string|null #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Compute input names base prefix #}
+{% set input_prefix =  question_index is not null ? '_questions[' ~ question_index ~ ']' : null %}
 
 {% set base_field_options = {
     'is_horizontal': false,
@@ -46,6 +50,9 @@
 <div
     class="card mb-3 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
     data-question-container
+    {% if question_index is not null %}
+        data-question-index="{{ question_index }}"
+    {% endif %}
 >
     <div class="card-body">
         {# Display question's title #}
@@ -62,7 +69,14 @@
         </div>
 
         {# Render the specific question type #}
-        {{ question_type.renderAdminstrationTemplate(question, input_prefix)|raw }}
+        <div data-question-type-specific>
+            {# Wrapper div needed as we will run some $.find() queries to try to locate inputs inside
+            [data-question-type-specific].children() and $.find() do not target top level items.
+            A top level input would thus be ignored without this intermdiate wrapper div  #}
+            <div>
+                {{ question_type.renderAdminstrationTemplate(question, input_prefix)|raw }}
+            </div>
+        </div>
 
         {# Display common fields #}
         <div
@@ -89,10 +103,28 @@
         </div>
 
         <div
-            class="d-flex align-items-end"
+            class="d-flex align-items-center"
             data-question-extra-details
         >
-            <label class="form-check form-switch 2 ms-auto me-2 cursor-pointer">
+            <select
+                name="{{ input_prefix is not null ? input_prefix ~ '[type]' : 'type' }}"
+                class="form-select form-select-sm"
+                aria-label="{{ __('Question type') }}"
+                style="width: auto;"
+                data-question-type-selector
+            >
+                {% for possible_question_type in question_types %}
+                    {# TODO: add icon, use select2 ? #}
+                    <option
+                        value="{{ get_class(possible_question_type) }}"
+                        {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
+                    >
+                        {{ possible_question_type.getName() }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
                 <input type="hidden" value="0" name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}">
                 <input
                     class="form-check-input"
@@ -117,11 +149,6 @@
     </div>
 
     {# Common hidden data #}
-    <input
-        type="hidden"
-        name="{{ input_prefix is not null ? input_prefix ~ '[type]' : 'type' }}"
-        value="{{ get_class(question_type) }}"
-    />
     <input
         type="hidden"
         name="{{ input_prefix is not null ? input_prefix ~ '[id]' : 'id' }}"

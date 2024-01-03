@@ -50,6 +50,7 @@ class QuestionTypesLoader
     {
         return [
             QuestionTypeShortAnswer::class => new QuestionTypeShortAnswer(),
+            QuestionTypeLongAnswer::class => new QuestionTypeLongAnswer(),
         ];
     }
 }

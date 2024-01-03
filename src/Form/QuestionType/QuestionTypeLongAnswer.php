@@ -39,22 +39,32 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 
 /**
- * Short answers are single line inputs use to answer simple questions.
+ * Long answers are multi line inputs use to answer questions with as much details as needed.
  */
-class QuestionTypeShortAnswer implements QuestionTypeInterface
+class QuestionTypeLongAnswer implements QuestionTypeInterface
 {
     public function renderAdminstrationTemplate(
         ?Question $question = null,
         ?string $input_prefix = null
     ): string {
         $template = <<<TWIG
-            <input
-                class="form-control mb-2"
-                type="text"
-                name="{{ input_prefix is not null ? input_prefix ~ '[default_value]' : 'default_value' }}"
-                placeholder="{{ __("No default value") }}"
-                value="{{ question is not null ? question.fields.default_value : '' }}"
-            />
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {{ fields.textareaField(
+                input_prefix is not null ? input_prefix ~ '[default_value]' : 'default_value',
+                question is not null ? question.fields.default_value : '',
+                "",
+                {
+                    'placeholder': __('Long text'),
+                    'enable_richtext': true,
+                    'editor_height': "0",
+                    'rows' : 1,
+                    'init': question is not null ? true : false,
+                    'is_horizontal': false,
+                    'full_width'   : true,
+                    'no_label'     : true,
+                }
+            ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
@@ -67,14 +77,25 @@ TWIG;
     public function renderEndUserTemplate(
         Question $question,
     ): string {
+        // TODO: handle required
+
         $template = <<<TWIG
-            <input
-                type="text"
-                class="form-control"
-                name="answers[{{ question.fields.id }}]"
-                value="{{ question.fields.default_value }}"
-                {{ question.fields.is_mandatory ? 'required' : '' }}
-            >
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {{ fields.textareaField(
+                "answers[" ~ question.fields.id ~ "]",
+                question.fields.default_value,
+                "",
+                {
+                    'enable_richtext': true,
+                    'editor_height': "0",
+                    'rows' : 1,
+                    'init': question is not null ? true : false,
+                    'is_horizontal': false,
+                    'full_width'   : true,
+                    'no_label'     : true,
+                }
+            ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
@@ -86,7 +107,7 @@ TWIG;
     public function renderAnswerTemplate($answer): string
     {
         $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer }}</div>
+            <div class="form-control-plaintext">{{ answer|raw }}</div>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
@@ -97,6 +118,6 @@ TWIG;
 
     public function getName(): string
     {
-        return __("Short answer");
+        return __("Long answer");
     }
 }
