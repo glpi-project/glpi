@@ -890,7 +890,7 @@ class Profile extends CommonDBTM
                             $fn_get_rights(Report::class, 'central'),
                             $fn_get_rights(Alerting::class, 'central', [
                                 'label' => _n('Alerting summary', 'Alerting summaries', Session::getPluralNumber())
-                            ]),               
+                            ]),
                             $fn_get_rights(KnowbaseItem::class, 'central'),
                             $fn_get_rights(ReservationItem::class, 'central'),
                         ],
