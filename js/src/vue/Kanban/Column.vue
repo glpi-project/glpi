@@ -197,7 +197,7 @@
                           :style="`${bg_color ? 'background-color:' + bg_color : 'transparent'}; ${text_color ? 'color:' + text_color : 'color: var(--tblr-body-color)'}`"></span>
                 </span>
                 <span class="content-right">
-                    <span class="kanban_nb badge bg-secondary" v-text="card_count"></span>
+                    <span class="kanban_nb badge bg-secondary text-secondary-fg" v-text="card_count"></span>
                     <span class="kanban-column-toolbar align-middle">
                         <template v-if="rights.canCreateItem() && (rights.getAllowedColumnsForNewCards().length === 0 || rights.getAllowedColumnsForNewCards().includes(column_id))">
                             <div class="dropdown d-inline-block">

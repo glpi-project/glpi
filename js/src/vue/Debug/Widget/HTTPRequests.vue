@@ -210,7 +210,7 @@
                                 <td>{{ request.number }}</td>
                                 <td :title="request.url"
                                     :data-truncated="urlNeedsTruncated(request.url)">{{ request.url.substring(0, REQUEST_PATH_LENGTH) }}<button
-                                        v-if="urlNeedsTruncated(request.url)" class="ms-1 badge bg-secondary" name="show_full_url"
+                                        v-if="urlNeedsTruncated(request.url)" class="ms-1 badge bg-secondary text-secondary-fg" name="show_full_url"
                                         @click="expandRequestURL($event)">
                                         <i class="ti ti-dots"></i>
                                     </button>
