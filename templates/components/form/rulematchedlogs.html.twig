@@ -1,0 +1,87 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% block more_fields %}
+    {{ printerAjaxPager|raw }}
+    <table class="tab_cadre_fixe">
+        <tr>
+            <th colspan="5"> {{ __('Rule import logs') }} </th>
+        </tr>
+        <tr>
+            <th> {{ _n('Date', 'Dates', 1) }}</th>
+            <th>{{ __('Rule name') }}</th>
+            <th>{{ typename }}</th>
+            <th>{{ __('Module') }}</th>
+            <th style="width: 30%">{{ __('Criteria') }}</th>
+        </tr>
+        {% for data in rows %}
+            <tr>
+                <td>{{ data['date']|formatted_datetime }}</td>
+                <td>{{ get_item_link('RuleImportAsset', data['rules_id']) }}</td>
+                <td>
+                    {{ get_item_link(data['itemtype'], data['items_id']) }}</td>
+                <td>{{ data['modulename'] }}</td>
+                <td>
+                    {% if data['criteria'] is not empty %}
+                        {% set rand = random() %}
+                        <div class="accordion" id="criteriaAccordion{{ rand }}">
+                            <div class="" id="item{{ rand }}">
+                                <a data-bs-toggle="collapse" href="#collapse{{ rand }}">{{ __("See Criteria") }}</a>
+                            </div>
+                            <div id="collapse{{ rand }}" class="accordion-collapse collapse" data-bs-parent="#criteriaAccordion{{ rand }}">
+                                <div class="nested list-group list-group-flush card">
+                                    <div class="list-group-item ">
+                                        {% for criterion, value in data['criteria'] %}
+                                            {% if value is iterable %}
+                                                <b>{{ criterion }}</b> :
+                                                {% for subvalue in value %}
+                                                    <br>&emsp;&bull;{{ subvalue }}
+                                                {% endfor %}
+                                                <br>
+                                            {% else %}
+                                                <b>{{ criterion }}</b> : {{ value }}<br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        {{ __('No criteria') }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {{ printerAjaxPager|raw }}
+{% endblock %}

@@ -34,6 +34,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
 /**
@@ -202,9 +203,6 @@ class RuleMatchedLog extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $rule    = new RuleImportAsset();
-        $agent = new Agent();
-
         if (isset($_GET["start"])) {
             $start = $_GET["start"];
         } else {
@@ -221,38 +219,6 @@ class RuleMatchedLog extends CommonDBTM
         ];
         $iterator = $DB->request($params);
         $number   = $iterator->current()['cpt'];
-
-       // Display the pager
-        Html::printAjaxPager(self::getTypeName(2), $start, $number);
-
-        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
-        echo "<tr>";
-        echo "<th colspan='4'>";
-        echo __('Rule import logs');
-
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo _n('Date', 'Dates', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Rule name');
-
-        echo "</th>";
-        echo "<th>";
-        echo Agent::getTypeName(1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Module');
-
-        echo "</th>";
-        echo "</tr>";
-
         $params = [
             'FROM'   => self::getTable(),
             'WHERE'  => [
@@ -263,31 +229,28 @@ class RuleMatchedLog extends CommonDBTM
             'START'  => (int)$start,
             'LIMIT'  => (int)$_SESSION['glpilist_limit']
         ];
+        $rows = [];
         foreach ($DB->request($params) as $data) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo Html::convDateTime($data['date']);
-            echo "</td>";
-            echo "<td>";
-            if ($rule->getFromDB($data['rules_id'])) {
-                echo $rule->getLink(1);
+            $row = [
+                'date'          => $data['date'],
+                'rules_id'      => $data['rules_id'],
+                'itemtype'      => Agent::class,
+                'items_id'      => $data['agents_id'],
+                'modulename'    => Request::getModuleName($data['method']),
+            ];
+            if (isset($data['criteria'])) {
+                $row['criteria'] = json_decode($data['criteria'], true);
             }
-            echo "</td>";
-            echo "<td>";
-            if ($agent->getFromDB($data['agents_id'])) {
-                echo $agent->getLink(1);
-            }
-            echo "</td>";
-            echo "<td>";
-            echo Request::getModuleName($data['method']);
-            echo "</td>";
-            echo "</tr>";
+            $rows[] = $row;
         }
-        echo "</table>";
 
-       // Display the pager
-        Html::printAjaxPager(self::getTypeName(2), $start, $number);
-
+        TemplateRenderer::getInstance()->display('components/form/rulematchedlogs.html.twig', [
+            'pagetype'          => 'Item',
+            'agenttypename'     => Agent::getTypeName(1),
+            'rows'             => $rows,
+            'typename'          => _n('Agent', 'Agents', 1),
+            'printerAjaxPager'  => Html::printAjaxPager(self::getTypeName(2), $start, $number, '', false),
+        ]);
         return true;
     }
 
@@ -299,67 +262,56 @@ class RuleMatchedLog extends CommonDBTM
      */
     public function showFormAgent($agents_id)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
-        $rule = new RuleImportAsset();
-
-        echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-
-        echo "<tr>";
-        echo "<th colspan='5'>";
-        echo __('Rule import logs');
-
-        echo "</th>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<th>";
-        echo _n('Date', 'Dates', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Rule name');
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Item type');
-
-        echo "</th>";
-        echo "<th>";
-        echo _n('Item', 'Items', 1);
-
-        echo "</th>";
-        echo "<th>";
-        echo __('Module');
-
-        echo "</th>";
-        echo "</tr>";
-
-        $allData = $this->find(['agents_id' => $agents_id], ['date DESC']);
-        foreach ($allData as $data) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td align='center'>";
-            echo Html::convDateTime($data['date']);
-            echo "</td>";
-            echo "<td align='center'>";
-            if ($rule->getFromDB($data['rules_id'])) {
-                echo $rule->getLink(1);
-            }
-            echo "</td>";
-            echo "<td align='center'>";
-            $itemtype = $data['itemtype'];
-            $item = new $itemtype();
-            echo $item->getTypeName();
-            echo "</td>";
-            echo "<td align='center'>";
-            if ($item->getFromDB($data['items_id'])) {
-                echo $item->getLink(1);
-            }
-            echo "</td>";
-            echo "<td>";
-            echo Request::getModuleName($data['method']);
-            echo "</td>";
-            echo "</tr>";
+        if (isset($_GET["start"])) {
+            $start = $_GET["start"];
+        } else {
+            $start = 0;
         }
-        echo "</table>";
+
+        $params = [
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'agents_id'  => intval($agents_id),
+                'itemtype' => $CFG_GLPI['inventory_types']
+            ],
+            'COUNT'  => 'cpt'
+        ];
+        $iterator = $DB->request($params);
+        $number   = $iterator->current()['cpt'];
+        $params = [
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'agents_id'  => intval($agents_id),
+                'itemtype' => $CFG_GLPI['inventory_types']
+            ],
+            'ORDER'  => 'date DESC',
+            'START'  => (int)$start,
+            'LIMIT'  => (int)$_SESSION['glpilist_limit']
+        ];
+        $rows = [];
+        foreach ($DB->request($params) as $data) {
+            $row = [
+                'date'          => $data['date'],
+                'rules_id'      => $data['rules_id'],
+                'itemtype'      => $data['itemtype'],
+                'items_id'      => $data['items_id'],
+                'modulename'    => Request::getModuleName($data['method']),
+            ];
+            if (isset($data['criteria'])) {
+                $row['criteria'] = json_decode($data['criteria'], true);
+            }
+            $rows[] = $row;
+        }
+        TemplateRenderer::getInstance()->display('components/form/rulematchedlogs.html.twig', [
+            'rows'             => $rows,
+            'typename'          => _n('Item', 'Items', 1),
+            'printerAjaxPager'  => Html::printAjaxPager(self::getTypeName(2), $start, $number, '', false),
+        ]);
     }
 }
