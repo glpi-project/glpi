@@ -71,4 +71,11 @@ interface QuestionTypeInterface
      * @return string
      */
     public function renderAnswerTemplate($answer): string;
+
+    /**
+     * Get the name of this questions type.
+     *
+     * @return string
+     */
+    public function getName(): string;
 }
