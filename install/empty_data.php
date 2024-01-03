@@ -2230,6 +2230,7 @@ $empty_data_builder = new class
                 'default_infocom_alert' => 0,
                 'default_cartridges_alarm_threshold' => 10,
                 'default_consumables_alarm_threshold' => 10,
+                'printer_cartridge_levels_alert_repeat' => -2,
                 'delay_send_emails' => 0,
                 'is_notif_enable_default' => 1,
                 'autofill_decommission_date' => 0,
