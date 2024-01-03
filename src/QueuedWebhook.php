@@ -162,15 +162,9 @@ class QueuedWebhook extends CommonDBChild
             return false;
         }
 
-        $options['timeout'] = 5;
-        if (!empty($CFG_GLPI["proxy_name"])) {
-            $proxy_creds = '';
-            if (!empty($CFG_GLPI['proxy_user'])) {
-                $proxy_creds = $CFG_GLPI['proxy_user'] . ":" . (new \GLPIKey())->decrypt($CFG_GLPI['proxy_passwd']) . "@";
-            }
-            $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-            $options['proxy'] = $proxy_string;
-        }
+        $guzzle_options = [
+            'timeout' => 5
+        ];
 
         $webhook = new Webhook();
         if (!$webhook->getFromDB($queued_webhook->fields['webhooks_id'])) {
@@ -189,7 +183,7 @@ class QueuedWebhook extends CommonDBChild
         $bearer_token = null;
         if ($webhook->fields['use_oauth']) {
             // Send OAuth Client Credentials
-            $client = new \GuzzleHttp\Client($options);
+            $client = Toolbox::getGuzzleClient($guzzle_options);
             try {
                 $response = $client->request('POST', $webhook->fields['oauth_url'], [
                     \GuzzleHttp\RequestOptions::FORM_PARAMS => [
@@ -211,7 +205,7 @@ class QueuedWebhook extends CommonDBChild
             }
         }
 
-        $client = new \GuzzleHttp\Client($options);
+        $client = Toolbox::getGuzzleClient($guzzle_options);
         $headers = json_decode($queued_webhook->fields['headers'], true);
         // Remove headers with empty values
         $headers = array_filter($headers, static function ($value) {

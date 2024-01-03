@@ -40,6 +40,7 @@ use Glpi\Event;
 use Glpi\Http\Response;
 use Glpi\Mail\Protocol\ProtocolInterface;
 use Glpi\Rules\RulesManager;
+use GuzzleHttp\Client;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Psr\Log\LoggerInterface;
@@ -1277,6 +1278,26 @@ class Toolbox
         $curl_error = null;
         $content = self::callCurl($url, [], $msgerr, $curl_error, true);
         return $content;
+    }
+
+    /**
+     * Get a new Guzzle client with proxy if configured and the specified other options.
+     * @param array $extra_options Extra options to pass to the Guzzle client constructor
+     * @return Client Guzzle client
+     * @throws SodiumException
+     */
+    public static function getGuzzleClient(array $extra_options): Client
+    {
+        $options = $extra_options;
+        // add proxy string if configured in glpi
+        if (!empty($CFG_GLPI["proxy_name"])) {
+            $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
+                ? $CFG_GLPI["proxy_user"] . ":" . (new \GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
+                : "";
+            $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
+            $options['proxy'] = $proxy_string;
+        }
+        return new Client($options);
     }
 
     /**

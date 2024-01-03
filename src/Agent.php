@@ -706,17 +706,8 @@ class Agent extends CommonDBTM
                 'connect_timeout' => self::TIMEOUT,
             ];
 
-            // add proxy string if configured in glpi
-            if (!empty($CFG_GLPI["proxy_name"])) {
-                $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
-                : "";
-                $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-                $options['proxy'] = $proxy_string;
-            }
-
             // init guzzle client with base options
-            $httpClient = new Guzzle_Client($options);
+            $httpClient = Toolbox::getGuzzleClient($options);
             try {
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;

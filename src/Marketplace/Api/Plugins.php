@@ -70,25 +70,11 @@ class Plugins
 
     public function __construct()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $options = [
+        // init guzzle client with base options
+        $this->httpClient = Toolbox::getGuzzleClient([
             'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
             'connect_timeout' => self::TIMEOUT,
-        ];
-
-        // add proxy string if configured in glpi
-        if (!empty($CFG_GLPI["proxy_name"])) {
-            $proxy_creds      = !empty($CFG_GLPI["proxy_user"])
-                ? $CFG_GLPI["proxy_user"] . ":" . (new \GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]) . "@"
-                : "";
-            $proxy_string     = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-            $options['proxy'] = $proxy_string;
-        }
-
-        // init guzzle client with base options
-        $this->httpClient = new Guzzle_Client($options);
+        ]);
     }
 
 
