@@ -60,6 +60,11 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
                 'type'  => 'dropdownValue',
                 'list'  => true
             ], [
+                'name'  => 'pendingreasons_id',
+                'label' => PendingReason::getTypeName(1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ], [
                 'name'  => 'is_private',
                 'label' => __('Private'),
                 'type'  => 'bool'

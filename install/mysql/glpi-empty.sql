@@ -7153,6 +7153,7 @@ CREATE TABLE `glpi_tasktemplates` (
   `taskcategories_id` int unsigned NOT NULL DEFAULT '0',
   `actiontime` int NOT NULL DEFAULT '0',
   `comment` text,
+  `pendingreasons_id` int unsigned NOT NULL DEFAULT '0',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `state` int NOT NULL DEFAULT '0',
@@ -7168,7 +7169,8 @@ CREATE TABLE `glpi_tasktemplates` (
   KEY `date_creation` (`date_creation`),
   KEY `is_private` (`is_private`),
   KEY `users_id_tech` (`users_id_tech`),
-  KEY `groups_id_tech` (`groups_id_tech`)
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `pendingreasons_id` (`pendingreasons_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -8574,6 +8576,7 @@ CREATE TABLE `glpi_itilfollowuptemplates` (
   `requesttypes_id` int unsigned NOT NULL DEFAULT '0',
   `is_private` tinyint NOT NULL DEFAULT '0',
   `comment` text,
+  `pendingreasons_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_recursive` (`is_recursive`),
@@ -8581,7 +8584,8 @@ CREATE TABLE `glpi_itilfollowuptemplates` (
   KEY `entities_id` (`entities_id`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `is_private` (`is_private`)
+  KEY `is_private` (`is_private`),
+  KEY `pendingreasons_id` (`pendingreasons_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_itilfollowups`;
