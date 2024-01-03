@@ -1120,6 +1120,26 @@ class Migration
     }
 
     /**
+     * Remove configuration value(s) to current context; @see Migration::removeConfig()
+     *
+     * @since 9.2
+     *
+     * @param array  $values  Value(s) to remove
+     * @param string $context Context to remove on (optional)
+     *
+     * @return Migration
+     */
+    public function removeConfig($values, $context = null)
+    {
+        $context = $context ?? $this->context;
+        if (!isset($this->configs[$context])) {
+            $this->configs[$context] = [];
+        }
+        $this->configs[$context] += (array)$values;
+        return $this;
+    }
+
+    /**
      * Store configuration values that does not exists
      *
      * @since 9.2

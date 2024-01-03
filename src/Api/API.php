@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Glpi\Api\HL\Router;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
@@ -159,7 +160,9 @@ abstract class API
         }
 
        // construct api url
-        self::$api_url = trim($CFG_GLPI['url_base_api'], "/");
+        $api_version_info = array_filter(Router::getAPIVersions(), static fn ($info) => (int) $info['api_version'] === 1);
+        $api_version_info = reset($api_version_info);
+        self::$api_url = trim($api_version_info['endpoint'], "/");
 
        // Don't display error in result
         ini_set('display_errors', 'Off');
