@@ -35,6 +35,7 @@
 
 namespace tests\units;
 
+use Glpi\Toolbox\Sanitizer;
 use Profile_User;
 use QuerySubQuery;
 
@@ -44,6 +45,8 @@ class User extends \DbTestCase
 {
     public function testGenerateUserToken()
     {
+        $this->login(TU_USER, TU_PASS); // must be authenticated to be able to regenerate self personal token
+
         $user = getItemByTypeName('User', TU_USER);
         $this->variable($user->fields['personal_token_date'])->isNull();
         $this->variable($user->fields['personal_token'])->isNull();
@@ -61,8 +64,6 @@ class User extends \DbTestCase
      */
     public function testLostPassword()
     {
-        // would not be logical to login here
-        $_SESSION['glpicronuserrunning'] = "cron_phpunit";
         $user = getItemByTypeName('User', TU_USER);
 
         // Test request for a password with invalid email
@@ -80,7 +81,9 @@ class User extends \DbTestCase
         $this->boolean($result)->isTrue();
 
         // Test reset password with a bad token
-        $token = $user->getField('password_forget_token');
+        $token = $user->fields['password_forget_token'];
+        $this->string($token)->isNotEmpty();
+
         $input = [
             'password_forget_token' => $token . 'bad',
             'password'  => TU_PASS,
@@ -88,7 +91,7 @@ class User extends \DbTestCase
         ];
         $this->exception(
             function () use ($user, $input) {
-                $result = $user->updateForgottenPassword($input);
+                $user->updateForgottenPassword($input);
             }
         )
         ->isInstanceOf(\Glpi\Exception\ForgetPasswordException::class);
@@ -107,23 +110,21 @@ class User extends \DbTestCase
         // 3 - check the update succeeds
         $result = $user->updateForgottenPassword($input);
         $this->boolean($result)->isTrue();
-        $newHash = $user->getField('password');
-
-        // 4 - Restore the initial password in the DB before checking the updated password
-        // This ensure the original password is restored even if the next test fails
-        $updateSuccess = $user->update([
-            'id'        => $user->getID(),
-            'password'  => TU_PASS,
-            'password2' => TU_PASS
-        ]);
-        $this->variable($updateSuccess)->isNotFalse('password update failed');
+        $newHash = $user->fields['password'];
 
         // Test the new password was saved
         $this->variable(\Auth::checkPassword('NewPassword', $newHash))->isNotFalse();
+
+        // Validates that password reset token has been removed
+        $user = getItemByTypeName('User', TU_USER);
+        $token = $user->fields['password_forget_token'];
+        $this->string($token)->isEmpty();
     }
 
     public function testGetDefaultEmail()
     {
+        $this->login(); // must be authenticated to update emails
+
         $user = new \User();
 
         $this->string($user->getDefaultEmail())->isIdenticalTo('');
@@ -160,6 +161,8 @@ class User extends \DbTestCase
 
     public function testUpdateEmail()
     {
+        $this->login(); // must be authenticated to update emails
+
         // Create a user with some emails
         $user1 = new \User();
         $uid1 = (int)$user1->add([
@@ -277,10 +280,14 @@ class User extends \DbTestCase
     {
         $user = $this->newTestedInstance;
         $uid = (int)$user->add([
-            'name'   => 'test_token'
+            'name'      => 'test_token',
+            'password'  => 'test_password',
+            'password2' => 'test_password',
         ]);
         $this->integer($uid)->isGreaterThan(0);
         $this->boolean($user->getFromDB($uid))->isTrue();
+
+        $this->login('test_token', 'test_password'); // must be authenticated to be able to regenerate self personal token
 
         $token = $user->getToken($uid);
         $this->boolean($user->getFromDB($uid))->isTrue();
@@ -1239,30 +1246,136 @@ class User extends \DbTestCase
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
         $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
 
+        $itil_layout_1 = '{"collapsed":"true","expanded":"false","items":{"item-main":"false","actors":"false","items":"false","service-levels":"false","linked_tickets":"false"}}';
         $this->boolean(
-            $user->update([
+            $user->update(Sanitizer::dbEscapeRecursive([
                 'id' => $users_id,
-                'show_count_on_tabs' => '0'
-            ])
+                'show_count_on_tabs' => '0',
+                'itil_layout' => $itil_layout_1,
+            ]))
         )->isTrue();
 
+        // pref should be updated even without logout/login
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_1);
+
+        // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_1);
+
+
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isEqualTo(0);
-        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(0);
+        $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_1);
 
+        $itil_layout_2 = '{"collapsed":"false","expanded":"true"}';
         $this->boolean(
-            $user->update([
+            $user->update(Sanitizer::dbEscapeRecursive([
                 'id' => $users_id,
-                'show_count_on_tabs' => '1'
-            ])
+                'show_count_on_tabs' => '1',
+                'itil_layout' => $itil_layout_2,
+            ]))
         )->isTrue();
 
+        // pref should be updated even without logout/login
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_2);
+
+        // logout/login and check prefs
         $this->logOut();
         $this->login('for preferences', 'for preferences');
+        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($_SESSION['glpiitil_layout'])->isEqualTo($itil_layout_2);
+
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
-        $this->variable($_SESSION['glpishow_count_on_tabs'])->isEqualTo(1);
+        $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_2);
+    }
+
+    /**
+     * Test that user_dn_hash is correctly set on user creation and update
+     *
+     * @return void
+     */
+    public function testUserDnIsHashedOnAddAndUpdate(): void
+    {
+        // Create user whithout dn and check that user_dn_hash is not set
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__,
+        ]);
+        $this->variable($user->fields['user_dn'])->isNull();
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Create user with dn and check that user_dn_hash is set
+        $dn = 'user=' . __FUNCTION__ . '_created,dc=test,dc=glpi-project,dc=org';
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__ . '_created',
+            'user_dn'   => $dn
+        ]);
+        $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Update user dn and check that user_dn_hash is updated
+        $dn = 'user=' . __FUNCTION__ . '_updated,dc=test,dc=glpi-project,dc=org';
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => $dn
+        ]);
+        $user->getFromDB($user->getID());
+        $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Set user_dn to empty and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => ''
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Set user_dn to null and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => null
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+    }
+
+    /**
+     * Test that user_dn_hash is correctly used in getFromDBbyDn method
+     *
+     * @return void
+     */
+    public function testUserDnHashIsUsedInGetFromDBbyDn(): void
+    {
+        global $DB;
+
+        $retrievedUser = new \User();
+
+        // Get a user with a bad dn
+        $this->boolean($retrievedUser->getFromDBbyDn(__FUNCTION__))
+            ->isFalse();
+        $this->boolean($retrievedUser->isNewItem())->isTrue();
+
+        // Create a user with a dn
+        $dn = 'user=' . __FUNCTION__ . ',dc=test,dc=glpi-project,dc=org';
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__,
+            'user_dn'   => $dn
+        ]);
+
+        // Retrieve the user using getFromDBbyDn method
+        $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->isNewItem())->isFalse();
+
+        // Unset user_dn to check that user_dn_hash is used
+        $DB->update(
+            \User::getTable(),
+            ['user_dn' => ''],
+            ['id' => $user->getID()]
+        );
+
+        // Retrieve the user using getFromDBbyDn and check if user_dn_hash is used
+        $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->isNewItem())->isFalse();
+        $this->string($retrievedUser->fields['user_dn'])->isEmpty();
     }
 }

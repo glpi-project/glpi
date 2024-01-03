@@ -273,7 +273,7 @@ class Calendar extends CommonDropdown
     {
 
         if (!isset($this->fields['id'])) {
-            return false;
+            return 0;
         }
 
         if ($end < $start) {
@@ -568,7 +568,7 @@ class Calendar extends CommonDropdown
                         $timeoftheday = $cache_duration[$dayofweek];
                     }
 
-                    if ($delay === 0 && $timeoftheday === 0) {
+                    if ($delay === 0 && $timeoftheday === 0 && $this->isAWorkingHour($timestart)) {
                         // Special case:
                         // - current day is a working day;
                         // - there is no delay to add;

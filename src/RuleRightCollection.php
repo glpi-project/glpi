@@ -176,6 +176,7 @@ class RuleRightCollection extends RuleCollection
      **/
     public function getFieldsToLookFor()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $params = [];
@@ -218,7 +219,7 @@ class RuleRightCollection extends RuleCollection
      * @param array $input  input datas
      * @param array $params extra parameters given
      *
-     * @return an array of attributes
+     * @return array of attributes
      **/
     public function prepareInputDataForProcess($input, $params)
     {

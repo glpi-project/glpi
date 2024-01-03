@@ -238,6 +238,7 @@ class Inventory
      */
     public function doInventory($test_rules = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         //check
@@ -281,12 +282,26 @@ class Inventory
             $all_props = get_object_vars($contents);
             unset($all_props['versionclient'], $all_props['versionprovider']); //already handled in extractMetadata
 
+            $empty_props = [];
+            if (
+                (!property_exists($this->raw_data, 'itemtype') || $this->raw_data->itemtype == 'Computer')
+                && (!property_exists($this->raw_data, 'partial') || !$this->raw_data->partial)
+            ) {
+                //if inventory is not partial, we consider following properties are empty if not present; so they'll be removed
+                $empty_props = [
+                    'virtualmachines',
+                    'remote_mgmt'
+                ];
+            }
+
             $data = [];
             //parse schema properties and handle if it exists in raw_data
             //it is important to keep schema order, changes may have side effects
             foreach ($properties as $property) {
                 if (property_exists($contents, $property)) {
                     $data[$property] = $contents->$property;
+                } else if (in_array($property, $empty_props)) {
+                    $data[$property] = [];
                 }
             }
 
@@ -397,9 +412,9 @@ class Inventory
 
 
     /**
-     * Get rawdata
+     * Get raw data
      *
-     * @return array
+     * @return object|null
      */
     public function getRawData(): ?object
     {
@@ -810,7 +825,7 @@ class Inventory
         return $this->metadata;
     }
 
-    public function getMainAsset(): InventoryAsset
+    public function getMainAsset(): MainAsset
     {
         return $this->mainasset;
     }
@@ -875,6 +890,7 @@ class Inventory
      **/
     public static function cronCleanorphans($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $cron_status = 0;

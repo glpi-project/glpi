@@ -267,6 +267,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      */
     public static function dropdownAllTypes(CommonDBTM $item, $name)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $onlyglobal = 0;
@@ -296,6 +297,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      **/
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
@@ -352,7 +354,7 @@ class KnowbaseItem_Item extends CommonDBRelation
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = 0,
+        $is_deleted = false,
         CommonDBTM $checkitem = null
     ) {
 

@@ -259,7 +259,11 @@ class Conf extends CommonGLPI
                 ];
             }
         } catch (\Throwable $e) {
-            throw $e;
+            $result = [
+                'success' => false,
+                'message' => sprintf(__('An error occurs during import: `%s`.'), $e->getMessage()),
+                'items'   => $inventory_request->getInventory()->getItems(),
+            ];
         }
 
         $result['request'] = $inventory_request;
@@ -293,7 +297,7 @@ class Conf extends CommonGLPI
     /**
      * Get possible actions for stale agents
      *
-     * @return string
+     * @return array
      */
     public static function getStaleAgentActions(): array
     {
@@ -355,6 +359,10 @@ class Conf extends CommonGLPI
      **/
     public function showConfigForm()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         $config = \Config::getConfigurationValues('inventory');

@@ -76,6 +76,14 @@ interface RequirementInterface
     public function isOptional(): bool;
 
     /**
+     * Indicates if requirement is recommended for security reasons.
+     *
+     * @return bool
+     */
+    // TODO Uncomment this in GLPI 10.1
+    // public function isRecommendedForSecurity(): bool;
+
+    /**
      * Indicates if requirement is considered as out of context
      * (i.e. system is not compatible).
      *

@@ -93,13 +93,14 @@ class TicketParameters extends CommonITILObjectParameters
 
     protected function defineValues(CommonDBTM $ticket): array
     {
-        /** @var Ticket $ticket  */
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-       // Output "unsanitized" values
+        // Output "unsanitized" values
         $fields = Sanitizer::unsanitize($ticket->fields);
 
         $values = parent::defineValues($ticket);
 
+        /** @var Ticket $ticket  */
         $values['type'] = $ticket::getTicketTypeName($fields['type']);
         $values['global_validation'] = TicketValidation::getStatus($fields['global_validation']);
         $values['tto'] = $fields['time_to_own'];

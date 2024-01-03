@@ -845,11 +845,12 @@ HTML
 
     protected function testGetVisibilityCriteriaProvider(): iterable
     {
-        yield from $this->testGetVisibilityCriteriaProvider_FAQ();
+        yield from $this->testGetVisibilityCriteriaProvider_FAQ_public();
         yield from $this->testGetVisibilityCriteriaProvider_KB();
+        yield from $this->testGetVisibilityCriteriaProvider_FAQ_logged();
     }
 
-    protected function testGetVisibilityCriteriaProvider_FAQ(): iterable
+    protected function testGetVisibilityCriteriaProvider_FAQ_public(): iterable
     {
         global $DB, $CFG_GLPI;
 
@@ -904,6 +905,216 @@ HTML
         // Revert session / config
         $_SESSION['glpi_multientitiesmode'] = 1;
         $CFG_GLPI['use_public_faq'] = false;
+    }
+
+    protected function testGetVisibilityCriteriaProvider_FAQ_logged(): iterable
+    {
+        global $DB;
+
+        $this->login('glpi', 'glpi');
+
+        // Removing existing data
+        $DB->delete(\KnowbaseItem::getTable(), [1]);
+        $this->integer(countElementsInTable(\KnowbaseItem::getTable()))->isEqualTo(0);
+
+        // Create set of test subjects
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->createItems("KnowbaseItem", [
+            [
+                'name'     => 'FAQ 1',
+                'answer'   => 'FAQ 1',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 2',
+                'answer'   => 'FAQ 2',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 3',
+                'answer'   => 'FAQ 3',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 4',
+                'answer'   => 'FAQ 4',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 5',
+                'answer'   => 'FAQ 5',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 6',
+                'answer'   => 'FAQ 6',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 7',
+                'answer'   => 'FAQ 7',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 8',
+                'answer'   => 'FAQ 8',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 9',
+                'answer'   => 'FAQ 9',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 10',
+                'answer'   => 'FAQ 10',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+            [
+                'name'     => 'FAQ 11',
+                'answer'   => 'FAQ 11',
+                'is_faq'   => true,
+                'users_id' => $glpi_user,
+            ],
+        ]);
+
+        // Target user
+        $this->createItems("KnowbaseItem_User", [
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 1", true),
+                'users_id'         => getItemByTypeName("User", "post-only", true),
+            ],
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 2", true),
+                'users_id'         => getItemByTypeName("User", "tech", true),
+            ],
+        ]);
+
+        // Target profile
+        $this->createItems("KnowbaseItem_Profile", [
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 3", true),
+                'profiles_id'      => getItemByTypeName("Profile", "Self-Service", true),
+            ],
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 4", true),
+                'profiles_id'      => getItemByTypeName("Profile", "Technician", true),
+            ],
+        ]);
+
+        // Target group
+        $group = new \Group();
+        $postonly_group = (int)$group->add([
+            'name' => 'Post-only group',
+            'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
+            'is_recursive' => 1,
+        ]);
+        $this->integer($postonly_group)->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer(
+            (int)$group_user->add([
+                'groups_id'    => $postonly_group,
+                'users_id'     => getItemByTypeName("User", "post-only", true),
+            ])
+        );
+        $tech_group = (int)$group->add([
+            'name' => 'Tech group',
+            'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
+            'is_recursive' => 1,
+        ]);
+        $this->integer($tech_group)->isGreaterThan(0);
+        $this->integer(
+            (int)$group_user->add([
+                'groups_id'    => $tech_group,
+                'users_id'     => getItemByTypeName("User", "tech", true),
+            ])
+        );
+
+        $this->createItems("Group_KnowbaseItem", [
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 5", true),
+                'groups_id'        => $postonly_group,
+                'entities_id'      => getItemByTypeName("Entity", "_test_root_entity", true),
+                'is_recursive'     => 1,
+            ],
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 6", true),
+                'groups_id'        => $tech_group,
+                'entities_id'      => getItemByTypeName("Entity", "_test_root_entity", true),
+                'is_recursive'     => 1,
+            ],
+        ]);
+
+        // Target entity
+        $entity = new \Entity();
+        $faq_entity1 = (int)$entity->add([
+            'name' => 'FAQ 1 entity',
+            'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
+        ]);
+        $this->integer($faq_entity1)->isGreaterThan(0);
+        $faq_entity2 = (int)$entity->add([
+            'name' => 'FAQ 2 entity',
+            'entities_id' => getItemByTypeName("Entity", "_test_root_entity", true),
+        ]);
+        $this->integer($faq_entity2)->isGreaterThan(0);
+        $faq_entity11 = (int)$entity->add([
+            'name' => 'FAQ 1.1 entity',
+            'entities_id' => $faq_entity1,
+        ]);
+        $this->integer($faq_entity11)->isGreaterThan(0);
+
+        $this->createItems("Entity_KnowbaseItem", [
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 7", true),
+                'entities_id'      => getItemByTypeName("Entity", "_test_root_entity", true),
+                'is_recursive'     => 1,
+            ],
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 8", true),
+                'entities_id'      => $faq_entity1,
+            ],
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 9", true),
+                'entities_id'      => $faq_entity2,
+            ],
+            [
+                'knowbaseitems_id' => getItemByTypeName("KnowbaseItem", "FAQ 10", true),
+                'entities_id'      => $faq_entity11,
+            ],
+        ]);
+
+        // admin should see all articles
+        yield ['articles' => ['FAQ 1', 'FAQ 2', 'FAQ 3', 'FAQ 4', 'FAQ 5', 'FAQ 6', 'FAQ 7', 'FAQ 8', 'FAQ 9', 'FAQ 10', 'FAQ 11']];
+
+        // Check articles visible for "post-only" user
+        $this->login('post-only', 'postonly');
+        yield ['articles' => ['FAQ 1', 'FAQ 3', 'FAQ 5', 'FAQ 7', 'FAQ 8', 'FAQ 9', 'FAQ 10']];
+        $this->setEntity("FAQ 1 entity", true);
+        yield ['articles' => ['FAQ 1', 'FAQ 5', 'FAQ 7', 'FAQ 8', 'FAQ 10']];
+        $this->setEntity("FAQ 2 entity", true);
+        yield ['articles' => ['FAQ 1', 'FAQ 5', 'FAQ 7', 'FAQ 9']];
+        $this->setEntity("FAQ 1.1 entity", true);
+        yield ['articles' => ['FAQ 1', 'FAQ 5', 'FAQ 7', 'FAQ 10']];
+
+        // Check articles visible for "tech" user
+        $this->login('tech', 'tech');
+        yield ['articles' => ['FAQ 2', 'FAQ 4', 'FAQ 6', 'FAQ 7', 'FAQ 8', 'FAQ 9', 'FAQ 10']];
+        $this->setEntity("FAQ 1 entity", true);
+        yield ['articles' => ['FAQ 2', 'FAQ 6', 'FAQ 7', 'FAQ 8', 'FAQ 10']];
+        $this->setEntity("FAQ 2 entity", true);
+        yield ['articles' => ['FAQ 2', 'FAQ 6', 'FAQ 7', 'FAQ 9']];
+        $this->setEntity("FAQ 1.1 entity", true);
+        yield ['articles' => ['FAQ 2', 'FAQ 6', 'FAQ 7', 'FAQ 10']];
     }
 
     protected function testGetVisibilityCriteriaProvider_KB(): iterable

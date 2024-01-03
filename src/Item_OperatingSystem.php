@@ -83,6 +83,7 @@ class Item_OperatingSystem extends CommonDBRelation
      */
     public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($sort === null) {
@@ -147,6 +148,7 @@ class Item_OperatingSystem extends CommonDBRelation
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //default options
@@ -371,6 +373,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -389,6 +392,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => _n('Version', 'Versions', 1),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -407,6 +411,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => OperatingSystemServicePack::getTypeName(1),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -425,6 +430,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'license_number',
             'name'               => __('Serial number'),
             'datatype'           => 'string',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
@@ -438,6 +444,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'licenseid',
             'name'               => __('Product ID'),
             'datatype'           => 'string',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
@@ -451,6 +458,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'install_date',
             'name'               => __('Installation date'),
             'datatype'           => 'datetime',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
@@ -464,6 +472,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => _n('Architecture', 'Architectures', 1),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -482,6 +491,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => _n('Kernel', 'Kernels', 1),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -505,6 +515,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => _n('Kernel version', 'Kernel versions', 1),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -523,6 +534,7 @@ class Item_OperatingSystem extends CommonDBRelation
             'field'              => 'name',
             'name'               => _n('Edition', 'Editions', 1),
             'datatype'           => 'dropdown',
+            'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
                 'beforejoin'         => [
@@ -541,6 +553,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
@@ -562,6 +575,7 @@ class Item_OperatingSystem extends CommonDBRelation
 
     public static function showFormMassiveUpdate($ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();

@@ -231,6 +231,7 @@ class Item_Devices extends CommonDBRelation
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options = [];
@@ -402,6 +403,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function itemAffinity()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
@@ -421,6 +423,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getDeviceTypes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // If the size of $CFG_GLPI['item_device_types'] and $CFG_GLPI['device_types'] then,
@@ -451,6 +454,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getItemAffinities($itemtype)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $items_affinities = $GLPI_CACHE->get('item_device_affinities', ['' => static::getDeviceTypes()]);
@@ -479,6 +483,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getConcernedItems()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtypes = $CFG_GLPI['itemdevices_types'];
@@ -519,6 +524,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function getItemsAssociatedTo($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $res = [];
@@ -596,6 +602,7 @@ class Item_Devices extends CommonDBRelation
 
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $is_device = ($item instanceof CommonDevice);
@@ -802,6 +809,10 @@ class Item_Devices extends CommonDBRelation
                     ]
                 ];
                 $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(getTableForItemType($peer_type));
+            } else {
+                //peer_type not defined is related to Item_DeviceXXX without associated assets
+                //so restrict entity criteria to current Item_DeviceXXX
+                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria($ctable);
             }
         } else {
             $fk = $this->getDeviceForeignKey();
@@ -845,6 +856,7 @@ class Item_Devices extends CommonDBRelation
         HTMLTableSuperHeader $delete_column = null,
         $dynamic_column
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $is_device = ($item instanceof CommonDevice);
@@ -1355,6 +1367,7 @@ class Item_Devices extends CommonDBRelation
      **/
     public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         foreach (self::getItemAffinities($itemtype) as $link_type) {
@@ -1511,6 +1524,7 @@ class Item_Devices extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($input[static::$items_id_2]) || !$input[static::$items_id_2]) {
@@ -1590,6 +1604,7 @@ class Item_Devices extends CommonDBRelation
 
     public static function getSearchURL($full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');

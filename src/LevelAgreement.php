@@ -203,7 +203,8 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Maximum time') . "</td>";
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
-            'min'   => 0
+            'min'   => 0,
+            'max'   => 1000
         ]);
         $possible_values = self::getDefinitionTimeValues();
         $rand = Dropdown::showFromArray(
@@ -330,6 +331,7 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public static function showForSLM(SLM $slm)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$slm->can($slm->fields['id'], READ)) {
@@ -467,6 +469,7 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function showRulesList()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fk      = static::getFieldNames($this->fields['type'])[1];
@@ -600,6 +603,7 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function getDataForTicket($tickets_id, $type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         list($dateField, $field) = static::getFieldNames($type);
@@ -1098,6 +1102,7 @@ abstract class LevelAgreement extends CommonDBChild
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ticketfield = static::$prefix . "levels_id_ttr";
@@ -1119,6 +1124,7 @@ abstract class LevelAgreement extends CommonDBChild
 
     public function cleanDBonPurge()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Clean levels
@@ -1163,5 +1169,43 @@ abstract class LevelAgreement extends CommonDBChild
     public function getLevelTicketClass(): string
     {
         return static::$levelticketclass;
+    }
+
+    /**
+     * Remove level of previously assigned level agreements for a given ticket
+     *
+     * @param int $tickets_id
+     *
+     * @return void
+     */
+    public function clearInvalidLevels(int $tickets_id): void
+    {
+        // CLear levels of others LA of the same type
+        // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
+        $level_ticket_class = $this->getLevelTicketClass();
+        $level_class = $this->getLevelClass();
+        $levels = (new $level_ticket_class())->find([
+            'tickets_id' => $tickets_id,
+            [$level_class::getForeignKeyField() => ['!=', $this->getID()]],
+            [
+                $level_class::getForeignKeyField() => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM' => $level_class::getTable(),
+                    'WHERE' => [
+                        static::getForeignKeyField() => new QuerySubQuery([
+                            'SELECT' => 'id',
+                            'FROM' => static::getTable(),
+                            'WHERE' => ['type' => $this->fields['type']],
+                        ])
+                    ]
+                ]),
+            ]
+        ]);
+
+        // Delete invalid levels
+        foreach ($levels as $level) {
+            $em = new $level_ticket_class();
+            $em->delete(['id' => $level['id']]);
+        }
     }
 }

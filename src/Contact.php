@@ -105,6 +105,7 @@ class Contact extends CommonDBTM
      */
     public function getAddress()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -142,6 +143,7 @@ class Contact extends CommonDBTM
      **/
     public function getWebsite()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

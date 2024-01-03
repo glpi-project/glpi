@@ -81,6 +81,7 @@ class Item_Cluster extends CommonDBRelation
      **/
     public static function showItems(Cluster $cluster)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $cluster->fields['id'];
@@ -179,7 +180,11 @@ class Item_Cluster extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         echo "<div class='center'>";
 
@@ -283,7 +288,7 @@ class Item_Cluster extends CommonDBRelation
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {

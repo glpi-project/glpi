@@ -60,7 +60,6 @@ class OperatingSystem extends CommonDropdown
     {
         return [
             'OperatingSystem$main'  => 'Operating system',
-            'Log$1'                 => 'Historical'
         ];
     }
 

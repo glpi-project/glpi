@@ -97,6 +97,7 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
      */
     protected function getDocuments(): iterable
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $i = 0;
@@ -151,8 +152,8 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     /**
      * Get detailed error message
      *
-     * @param int   $type     Error type
-     * @param array $document Invalid document's data
+     * @param int   $type         Error type
+     * @param array $document_row Invalid document's data
      *
      * @return string
      */
@@ -160,14 +161,14 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     {
         switch ($type) {
             case self::ERROR_MISSING_FILE:
-                $message = __("file not found");
+                $message = __("File not found");
                 break;
             case self::ERROR_UNEXPECTED_CONTENT:
-                $message = __("invalid checksum");
+                $message = __("Invalid checksum");
                 break;
             default:
                 // Should not happen
-                $message = __("unknown error");
+                $message = __("Unknown error");
                 break;
         }
 

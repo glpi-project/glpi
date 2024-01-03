@@ -185,9 +185,9 @@ class RuleAsset extends Rule
 
         $actions['users_id_tech']['table']      = 'glpi_users';
         $actions['users_id_tech']['type']       = 'dropdown_users';
-        $actions['users_id_tech']['name']       = __('Technician in charge of the hardware');
+        $actions['users_id_tech']['name']       = __('Technician in charge');
 
-        $actions['groups_id_tech']['name']      = __('Group in charge of the hardware');
+        $actions['groups_id_tech']['name']      = __('Group in charge');
         $actions['groups_id_tech']['type']      = 'dropdown';
         $actions['groups_id_tech']['table']     = 'glpi_groups';
         $actions['groups_id_tech']['condition'] = ['is_assign' => 1];

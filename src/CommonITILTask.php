@@ -91,7 +91,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @since 0.84
      *
-     * @return object of the concerned item or false on error
+     * @return false|CommonDBTM object of the concerned item or false on error
      **/
     public function getItem()
     {
@@ -168,7 +168,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         switch ($field) {
             case 'state':
-                return Planning::getState($values[$field]);
+                return Planning::getStatusIcon($values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -202,7 +202,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (
             ($item->getType() == $this->getItilObjectItemType())
             && $this->canView()
@@ -230,6 +230,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $itemtype = $this->getItilObjectItemType();
@@ -262,6 +263,29 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 'task_groups_id_tech' => $this->fields['groups_id_tech']
             ];
             NotificationEvent::raiseEvent('delete_task', $item, $options);
+        }
+    }
+
+    /**
+     * Handle the task duration and planned duration logic.
+     *
+     * This function ensures a bi-directional link between the task duration and the planned duration.
+     * These two fields can be a bit redundant when task planning is enabled.
+     *
+     * @param array $input The input array, passed by reference.
+     * @param int $timestart The start time of the task.
+     * @param int $timeend The end time of the task.
+     * @return void
+     */
+    private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
+    {
+        // If 'actiontime' is set and different from the current 'actiontime'
+        if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
+            // Compute the end date based on 'actiontime'
+            $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
+        } else {
+            // If 'actiontime' is not set, compute it based on the start and end times
+            $input["actiontime"] = $timeend - $timestart;
         }
     }
 
@@ -308,7 +332,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             $timestart              = strtotime($input["begin"]);
             $timeend                = strtotime($input["end"]);
-            $input["actiontime"]    = $timeend - $timestart;
+
+            $this->handleTaskDuration($input, $timestart, $timeend);
 
             unset($input["plan"]);
 
@@ -361,8 +386,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handle rich-text images and uploaded documents
@@ -521,7 +547,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
             $timestart              = strtotime($input["begin"]);
             $timeend                = strtotime($input["end"]);
-            $input["actiontime"]    = $timeend - $timestart;
+
+            $this->handleTaskDuration($input, $timestart, $timeend);
 
             unset($input["plan"]);
             if (!$this->test_valid_date($input)) {
@@ -569,6 +596,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handle rich-text images and uploaded documents
@@ -633,6 +661,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ];
             NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
         }
+
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
 
        // Add log entry in the ITIL object
         $changes = [
@@ -1062,7 +1092,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public static function genericPopulatePlanning($itemtype, $options = [])
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $interv = [];
 
@@ -1076,8 +1110,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (!$item = getItemForItemtype($itemtype)) {
             return;
         }
+
+        if (!$item instanceof CommonITILTask) {
+            return;
+        }
+
         $parentitemtype = $item->getItilObjectItemType();
         if (!$parentitem = getItemForItemtype($parentitemtype)) {
+            return;
+        }
+
+        if (!$parentitem instanceof CommonITILObject) {
             return;
         }
 
@@ -1281,7 +1324,11 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
                       /// Specific for tickets
                         $interv[$key]["device"] = [];
-                        if (isset($parentitem->hardwaredatas) && !empty($parentitem->hardwaredatas)) {
+                        if (
+                            $parentitem instanceof Ticket
+                            && isset($parentitem->hardwaredatas)
+                            && !empty($parentitem->hardwaredatas)
+                        ) {
                             foreach ($parentitem->hardwaredatas as $hardwaredata) {
                                 $interv[$key]["device"][$hardwaredata->fields['id']] = ($hardwaredata
                                                    ? $hardwaredata->getName() : '');
@@ -1331,6 +1378,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      **/
     public static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $html = "";
@@ -1346,6 +1394,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $parenttype = str_replace('Task', '', $itemtype);
         if ($parent = getItemForItemtype($parenttype)) {
+            if (!$parent instanceof CommonITILObject) {
+                return;
+            }
             $parenttype_fk = $parent->getForeignKeyField();
         } else {
             return;
@@ -1492,6 +1543,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $prep_req = ['SELECT' => self::getTable() . '.id', 'FROM' => self::getTable()];
@@ -1556,6 +1608,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public static function showCentralList($start, $status = 'todo', $showgrouptickets = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = self::getTaskList($status, $showgrouptickets);
@@ -1713,6 +1766,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     public static function showVeryShort($ID, $itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $job  = new $itemtype();
@@ -1792,6 +1846,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     private static function getItemsAsVCalendars(array $criteria)
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         $item = new static();
@@ -1833,6 +1888,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function getAsVCalendar()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$this->canViewItem()) {

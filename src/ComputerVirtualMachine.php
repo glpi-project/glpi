@@ -69,7 +69,7 @@ class ComputerVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && ($item->getType() == 'Computer')
+            && $item instanceof Computer
             && Computer::canView()
         ) {
             $nb = 0;
@@ -412,6 +412,7 @@ class ComputerVirtualMachine extends CommonDBChild
      **/
     public static function findVirtualMachine($fields = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($fields['uuid']) || empty($fields['uuid'])) {

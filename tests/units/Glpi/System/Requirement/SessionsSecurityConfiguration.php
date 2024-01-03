@@ -39,11 +39,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
 {
     protected function configProvider(): iterable
     {
-        $invalid_secure_msg   = 'PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.';
-        $invalid_httponly_msg = 'PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.';
-        $invalid_samesite_msg = 'PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.';
-        $valid_msg            = 'Sessions configuration is secured.';
-
         // Totally unsecure config
         yield [
             'cookie_secure'   => '0',
@@ -52,7 +47,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             'server_https'    => 'on',
             'server_port'     => '443',
             'is_valid'        => false,
-            'messages'        => [$invalid_secure_msg, $invalid_httponly_msg, $invalid_samesite_msg],
         ];
 
         // Strict config
@@ -63,7 +57,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             'server_https'    => 'on',
             'server_port'     => '443',
             'is_valid'        => true,
-            'messages'        => [$valid_msg],
         ];
 
         // cookie_secure can be 0 if query is not on HTTPS
@@ -74,7 +67,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             'server_https'    => 'off',
             'server_port'     => '80',
             'is_valid'        => true,
-            'messages'        => [$valid_msg],
         ];
 
         // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['HTTPS'])
@@ -85,7 +77,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             'server_https'    => 'on',
             'server_port'     => null,
             'is_valid'        => false,
-            'messages'        => [$invalid_secure_msg],
         ];
 
         // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['SERVER_PORT'])
@@ -96,7 +87,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             'server_https'    => null,
             'server_port'     => '443',
             'is_valid'        => false,
-            'messages'        => [$invalid_secure_msg],
         ];
 
         // cookie_httponly should be 1
@@ -107,7 +97,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
             'server_https'    => 'off',
             'server_port'     => '80',
             'is_valid'        => false,
-            'messages'        => [$invalid_httponly_msg],
         ];
 
         // cookie_samesite should be 'Lax', 'Strict', or ''
@@ -126,7 +115,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
                 'server_https'    => 'off',
                 'server_port'     => '80',
                 'is_valid'        => $is_valid,
-                'messages'        => $is_valid ? [$valid_msg] : [$invalid_samesite_msg],
             ];
             yield [
                 'cookie_secure'   => '0',
@@ -135,7 +123,6 @@ class SessionsSecurityConfiguration extends \GLPITestCase
                 'server_https'    => 'off',
                 'server_port'     => '80',
                 'is_valid'        => $is_valid,
-                'messages'        => $is_valid ? [$valid_msg] : [$invalid_samesite_msg],
             ];
         }
     }
@@ -149,8 +136,7 @@ class SessionsSecurityConfiguration extends \GLPITestCase
         string $cookie_samesite,
         ?string $server_https,
         ?string $server_port,
-        bool $is_valid,
-        array $messages
+        bool $is_valid
     ) {
         $this->function->ini_get = function ($name) use ($cookie_secure, $cookie_httponly, $cookie_samesite) {
             switch ($name) {
@@ -176,6 +162,14 @@ class SessionsSecurityConfiguration extends \GLPITestCase
 
         $this->newTestedInstance();
         $this->boolean($this->testedInstance->isValidated())->isEqualTo($is_valid);
-        $this->array($this->testedInstance->getValidationMessages())->isEqualTo($messages);
+        $this->array($this->testedInstance->getValidationMessages())->isEqualTo(
+            [
+                'Checking the session cookie configuration of the web server cannot be done in the CLI context.',
+                'You should apply the following recommendations for configuring the web server.',
+                'PHP directive "session.cookie_secure" should be set to "on" when GLPI can be accessed on HTTPS protocol.',
+                'PHP directive "session.cookie_httponly" should be set to "on" to prevent client-side script to access cookie values.',
+                'PHP directive "session.cookie_samesite" should be set, at least, to "Lax", to prevent cookie to be sent on cross-origin POST requests.',
+            ]
+        );
     }
 }

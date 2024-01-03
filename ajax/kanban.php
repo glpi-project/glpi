@@ -39,6 +39,9 @@ use Glpi\Features\Teamwork;
 use Glpi\Http\Response;
 use Glpi\Toolbox\Sanitizer;
 
+/** @var array $_UPOST */
+global $_UPOST;
+
 $AJAX_INCLUDE = 1;
 
 include('../inc/includes.php');
@@ -48,16 +51,17 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-/** @global array $_UPOST */
-
 if (!isset($_REQUEST['action'])) {
     Response::sendError(400, "Missing action parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }
 $action = $_REQUEST['action'];
 
-$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'show_card_edit_form', 'delete_item', 'load_item_panel',
+$nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delete_item', 'load_item_panel',
     'add_teammember', 'delete_teammember', 'restore_item'
 ];
+
+$itemtype = null;
+$item = null;
 if (isset($_REQUEST['itemtype'])) {
     if (!in_array($_REQUEST['action'], $nonkanban_actions) && !Toolbox::hasTrait($_REQUEST['itemtype'], Kanban::class)) {
        // Bad request
@@ -70,7 +74,7 @@ if (isset($_REQUEST['itemtype'])) {
 }
 
 // Rights Checks
-if (isset($itemtype)) {
+if ($item !== null) {
     if (in_array($action, ['refresh', 'get_switcher_dropdown', 'get_column', 'load_item_panel'])) {
         if (!$item->canView()) {
            // Missing rights
@@ -79,8 +83,7 @@ if (isset($itemtype)) {
         }
     }
     if (in_array($action, ['update', 'load_item_panel', 'delete_teammember'])) {
-        $item->getFromDB($_REQUEST['items_id']);
-        if (!$item->canUpdateItem()) {
+        if (!$item->can($_REQUEST['items_id'], UPDATE)) {
             // Missing rights
             http_response_code(403);
             return;
@@ -88,7 +91,7 @@ if (isset($itemtype)) {
     }
     if (in_array($action, ['add_teammember'])) {
         $item->getFromDB($_REQUEST['items_id']);
-        $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->canUpdateItem();
+        $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->can($_REQUEST['items_id'], UPDATE);
         if (!$can_assign) {
            // Missing rights
             http_response_code(403);
@@ -143,7 +146,11 @@ if (($_POST['action'] ?? null) === 'update') {
     $inputs = [];
     parse_str($_UPOST['inputs'], $inputs);
 
-    $item->add(Sanitizer::sanitize($inputs));
+    $result = $item->add(Sanitizer::sanitize($inputs));
+    if (!$result) {
+        http_response_code(400);
+        return;
+    }
 } else if (($_POST['action'] ?? null) === 'bulk_add_item') {
     $checkParams(['inputs']);
     $item = new $itemtype();
@@ -247,15 +254,6 @@ if (($_POST['action'] ?? null) === 'update') {
     header("Content-Type: application/json; charset=UTF-8", true);
     $column = $itemtype::getKanbanColumns($_REQUEST['items_id'], $_REQUEST['column_field'], [$_REQUEST['column_id']]);
     echo json_encode($column, JSON_FORCE_OBJECT);
-} else if ($_REQUEST['action'] === 'show_card_edit_form') {
-    $checkParams(['card']);
-    $item->getFromDB($_REQUEST['card']);
-    if ($item->canViewItem() && $item->canUpdateItem()) {
-        $item->showForm($_REQUEST['card']);
-    } else {
-        http_response_code(403);
-        return;
-    }
 } else if (($_POST['action'] ?? null) === 'delete_item') {
     $checkParams(['items_id']);
     $item->getFromDB($_POST['items_id']);

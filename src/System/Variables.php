@@ -49,7 +49,6 @@ class Variables
     {
         return [
             'GLPI_CACHE_DIR',
-            'GLPI_CONFIG_DIR',
             'GLPI_CRON_DIR',
             'GLPI_DOC_DIR',
             'GLPI_DUMP_DIR',

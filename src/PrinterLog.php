@@ -105,6 +105,7 @@ class PrinterLog extends CommonDBChild
      */
     public function getMetrics(Printer $printer, $user_filters = []): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $bdate = new DateTime();

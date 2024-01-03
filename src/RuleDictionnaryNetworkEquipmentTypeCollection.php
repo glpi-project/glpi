@@ -43,6 +43,6 @@ class RuleDictionnaryNetworkEquipmentTypeCollection extends RuleDictionnaryDropd
      **/
     public function getTitle()
     {
-        return __('Dictionnary of network equipment types');
+        return __('Dictionary of network equipment types');
     }
 }

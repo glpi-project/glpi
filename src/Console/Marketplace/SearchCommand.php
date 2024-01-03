@@ -58,6 +58,7 @@ class SearchCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!GLPINetwork::isRegistered()) {

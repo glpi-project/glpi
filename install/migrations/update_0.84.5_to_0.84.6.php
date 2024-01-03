@@ -40,6 +40,10 @@
  **/
 function update0845to0846()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult     = true;
@@ -75,7 +79,7 @@ function update0845to0846()
                      ON  `doc`.`id` = `doc_i`.`documents_id`
                    SET `doc_i`.`entities_id` = `doc`.`entities_id`,
                        `doc_i`.`is_recursive` = `doc`.`is_recursive`";
-    $DB->queryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
+    $DB->doQueryOrDie($query_doc_i, "0.84.6 change entities_id in documents_items");
 
     $status  = ['new'           => CommonITILObject::INCOMING,
         'assign'        => CommonITILObject::ASSIGNED,
@@ -96,7 +100,7 @@ function update0845to0846()
                 SET `value` = '$new'
                 WHERE `value` = '$old'
                       AND `num` = 12";
-        $DB->queryOrDie($query, "0.84.6 status in glpi_tickettemplatepredefinedfields $old to $new");
+        $DB->doQueryOrDie($query, "0.84.6 status in glpi_tickettemplatepredefinedfields $old to $new");
     }
     foreach (['glpi_ipaddresses', 'glpi_networknames'] as $table) {
         $migration->dropKey($table, 'item');

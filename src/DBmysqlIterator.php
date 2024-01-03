@@ -109,7 +109,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function execute($table, $crit = "", $debug = false)
     {
         $this->buildQuery($table, $crit, $debug);
-        $this->res = ($this->conn ? $this->conn->query($this->sql) : false);
+        $this->res = ($this->conn ? $this->conn->doQuery($this->sql) : false);
         $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
         return $this;
@@ -131,7 +131,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         $is_legacy = false;
 
-        if (is_string($table) && strpos($table, " ")) {
+        if (is_string($table) && strpos($table, " ") !== false) {
             $names = preg_split('/\s+AS\s+/i', $table);
             if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
                 $is_legacy = true;
@@ -139,9 +139,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
 
         if ($is_legacy) {
-           //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-           //   trigger_error("Deprecated usage of SQL in DB/request (full query)", E_USER_DEPRECATED);
-           //}
+            Toolbox::deprecated(
+                'Direct query usage is strongly discouraged!',
+                false
+            );
             $this->sql = $table;
         } else {
            // Modern way

@@ -50,28 +50,35 @@ abstract class AbstractRequirement implements RequirementInterface
     /**
      * Flag that indicates if requirement is considered as optional.
      *
-     * @var bool
+     * @var bool|null
      */
-    protected $optional = false;
+    protected $optional;
+
+    /**
+     * Flag that indicates if requirement is recommended for security reasons.
+     *
+     * @var bool|null
+     */
+    protected ?bool $recommended_for_security;
 
     /**
      * Flag that indicates if requirement is considered as out of context.
      *
-     * @var bool
+     * @var bool|null
      */
-    protected $out_of_context = false;
+    protected $out_of_context;
 
     /**
      * Requirement title.
      *
-     * @var string
+     * @var string|null
      */
     protected $title;
 
     /**
      * Requirement description.
      *
-     * @var string
+     * @var string|null
      */
     protected $description;
 
@@ -88,6 +95,20 @@ abstract class AbstractRequirement implements RequirementInterface
      * @var string[]
      */
     protected $validation_messages = [];
+
+    public function __construct(
+        ?string $title,
+        ?string $description = null,
+        ?bool $optional = false,
+        ?bool $recommended_for_security = false,
+        ?bool $out_of_context = false
+    ) {
+        $this->title = $title;
+        $this->description = $description;
+        $this->optional = $optional;
+        $this->recommended_for_security = $recommended_for_security;
+        $this->out_of_context = $out_of_context;
+    }
 
     /**
      * Check requirement.
@@ -114,13 +135,23 @@ abstract class AbstractRequirement implements RequirementInterface
 
     public function getTitle(): string
     {
+        if ($this->title !== null) {
+            // No need to run checks if variable is defined by constructor.
+            return $this->title;
+        }
+
         $this->doCheck();
 
-        return $this->title;
+        return $this->title ?? '';
     }
 
     public function getDescription(): ?string
     {
+        if ($this->description !== null) {
+            // No need to run checks if variable is defined by constructor.
+            return $this->description;
+        }
+
         $this->doCheck();
 
         return $this->description;
@@ -142,16 +173,38 @@ abstract class AbstractRequirement implements RequirementInterface
 
     public function isOptional(): bool
     {
+        if ($this->optional !== null) {
+            // No need to run checks if variable is defined by constructor.
+            return $this->optional;
+        }
+
         $this->doCheck();
 
-        return $this->optional;
+        return $this->optional ?? false;
+    }
+
+    public function isRecommendedForSecurity(): bool
+    {
+        if ($this->recommended_for_security !== null) {
+            // No need to run checks if variable is defined by constructor.
+            return $this->recommended_for_security;
+        }
+
+        $this->doCheck();
+
+        return $this->recommended_for_security ?? false;
     }
 
     public function isOutOfContext(): bool
     {
+        if ($this->out_of_context !== null) {
+            // No need to run checks if variable is defined by constructor.
+            return $this->out_of_context;
+        }
+
         $this->doCheck();
 
-        return $this->out_of_context;
+        return $this->out_of_context ?? false;
     }
 
     public function isValidated(): bool

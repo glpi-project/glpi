@@ -271,8 +271,9 @@ class NetworkName extends FQDNLabel
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $this->post_workOnItem();
@@ -325,6 +326,7 @@ class NetworkName extends FQDNLabel
      **/
     public static function unaffectAddressesOfItem($items_id, $itemtype)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -397,7 +399,11 @@ class NetworkName extends FQDNLabel
      **/
     public static function showFormForNetworkPort($networkPortID)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $name         = new self();
         $number_names = 0;
@@ -469,25 +475,25 @@ class NetworkName extends FQDNLabel
         );
         echo "</td>\n";
 
-        echo "</tr><tr class='tab_bg_1'>\n";
+        echo "</tr>";
 
-        echo "<td>" . IPAddress::getTypeName(Session::getPluralNumber());
-        IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses');
-        echo "</td>";
-        echo "<td>";
-        IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses');
-        echo "</td>";
+        if ($name->isNewItem()) {
+            $canedit = $name->canCreate();
+        } else {
+            $canedit = $name->can($name->getID(), UPDATE);
+        }
 
-       // MoYo : really need to display it here ?
-       // make confure because not updatable
-       // echo "<td>".IPNetwork::getTypeName(Session::getPluralNumber())."&nbsp;";
-       // Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
-       // echo "</td><td>";
-       // IPNetwork::showIPNetworkProperties($name->getEntityID());
-       // echo "</td>\n";
-        echo "<td colspan='2'>&nbsp;</td>";
-
-        echo "</tr>\n";
+        if ($canedit) {
+            echo "<tr class='tab_bg_1'>\n";
+            echo "<td>" . IPAddress::getTypeName(Session::getPluralNumber());
+            IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses', $canedit);
+            echo "</td>";
+            echo "<td>";
+            IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses', $canedit);
+            echo "</td>";
+            echo "<td colspan='2'>&nbsp;</td>";
+            echo "</tr>\n";
+        }
     }
 
 
@@ -559,6 +565,7 @@ class NetworkName extends FQDNLabel
         HTMLTableCell $father = null,
         array $options = []
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $column_name = __CLASS__;
@@ -898,6 +905,7 @@ class NetworkName extends FQDNLabel
      **/
     public static function countForItem(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         switch ($item->getType()) {

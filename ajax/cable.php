@@ -35,6 +35,9 @@
 
 use Glpi\Socket;
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 include('../inc/includes.php');
 
 // Send UTF8 Headers
@@ -50,7 +53,7 @@ switch ($action) {
             $_POST['itemtype']::dropdown(['name'                => $_POST['dom_name'],
                 'rand'                => $_POST['dom_rand'],
                 'display_emptychoice' => true,
-                'display_dc_position' => true,
+                'display_dc_position' => in_array($_POST['itemtype'], $CFG_GLPI['rackable_types']),
                 'width'               => '100%',
             ]);
         }

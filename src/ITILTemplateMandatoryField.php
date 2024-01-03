@@ -71,6 +71,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
 
     public function post_purgeItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
@@ -111,6 +112,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
      **/
     public function getMandatoryFields($ID, $withtypeandcategory = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -154,12 +156,13 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
      * @since 0.83
      *
      * @param ITILTemplate $tt           ITIL Template
-     * @param boolean      $withtemplate Template or basic item (default 0)
+     * @param integer      $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $tt->fields['id'];

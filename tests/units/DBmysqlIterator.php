@@ -54,14 +54,51 @@ class DBmysqlIterator extends DbTestCase
     public function testQuery()
     {
         $req = 'SELECT Something FROM Somewhere';
-        $it = $this->it->execute($req);
-        $this->string($it->getSql())->isIdenticalTo($req);
+        $this->when($this->it->execute($req))
+            ->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Direct query usage is strongly discouraged!')
+            ->exists();
+        $this->string($this->it->getSql())->isIdenticalTo($req);
 
         $req = 'SELECT @@sql_mode as mode';
-        $it = $this->it->execute($req);
-        $this->string($it->getSql())->isIdenticalTo($req);
+        $this->when($this->it->execute($req))
+            ->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Direct query usage is strongly discouraged!')
+            ->exists();
+        $this->string($this->it->getSql())->isIdenticalTo($req);
     }
 
+    protected function legacyQueryProvider(): iterable
+    {
+        yield [
+            'input'  => 'SELECT * FROM glpi_computers',
+            'output' => 'SELECT * FROM glpi_computers',
+        ];
+
+        yield [
+            'input'  => <<<SQL
+                SELECT * FROM glpi_computers
+SQL
+            ,
+            'output' => ' SELECT * FROM glpi_computers',
+        ];
+    }
+
+    /**
+     * @dataProvider legacyQueryProvider
+     */
+    public function testBuildQueryLegacy(string $input, string $output): void
+    {
+        $this->when($this->it->buildQuery($input))
+            ->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Direct query usage is strongly discouraged!')
+            ->exists();
+
+        $this->string($this->it->getSql())->isIdenticalTo($output);
+    }
 
     public function testSqlError()
     {

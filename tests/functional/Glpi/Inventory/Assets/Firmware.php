@@ -127,6 +127,64 @@ class Firmware extends AbstractInventoryAsset
            ->isTrue('Firmware has not been linked to computer :(');
     }
 
+    public function testLockedFieldandFirmware()
+    {
+        global $DB;
+        $device_fw = new \DeviceFirmware();
+        $item_fw = new \Item_DeviceFirmware();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+      <REQUEST>
+        <CONTENT>
+          <FIRMWARES>
+            <DESCRIPTION>device firmware</DESCRIPTION>
+            <MANUFACTURER>Cisco</MANUFACTURER>
+            <NAME>UCS 6248UP 48-Port</NAME>
+            <TYPE>device</TYPE>
+            <VERSION>5.0(3)N2(4.02b)</VERSION>
+          </FIRMWARES>
+          <FIRMWARES>
+            <DESCRIPTION>HP Web Management Software version</DESCRIPTION>
+            <MANUFACTURER>HP</MANUFACTURER>
+            <NAME>HP-HttpMg-Version</NAME>
+            <TYPE>system</TYPE>
+            <VERSION>WC.16.02.0003</VERSION>
+          </FIRMWARES>
+          <HARDWARE>
+            <NAME>pc002</NAME>
+          </HARDWARE>
+          <BIOS>
+            <SSN>ggheb7ne7</SSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test-pc002</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+      </REQUEST>";
+
+        //add lockedfield to check for DB warning on manage DeviceFirmware lockedField
+        $this->integer(
+            (int)$DB->insert("glpi_lockedfields", ["field" => mt_rand(), "itemtype" => "Item_DeviceFirmware", "is_global" => 0])
+        )->isGreaterThan(0);
+
+
+        //computer inventory knows only "UCS 6248UP 48-Port" and "HP-HttpMg-Version" firmwares
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //we still have 2 firmwares + 1 bios
+        $fws = $device_fw->find();
+        $this->integer(count($fws))->isIdenticalTo(3);
+
+        //we still have 2 firmwares items linked to the computer
+        $fws = $item_fw->find(['itemtype' => 'Computer', 'items_id' => $agent['items_id']]);
+        $this->integer(count($fws))->isIdenticalTo(2);
+    }
+
     public function testInventoryUpdate()
     {
         $computer = new \Computer();

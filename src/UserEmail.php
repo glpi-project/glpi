@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
+
 /**
  * UserEmail class
  **/
@@ -62,6 +64,7 @@ class UserEmail extends CommonDBChild
      **/
     public static function getDefaultForUser($users_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Get default one
@@ -91,6 +94,7 @@ class UserEmail extends CommonDBChild
      **/
     public static function getAllForUser($users_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $emails = [];
@@ -120,6 +124,7 @@ class UserEmail extends CommonDBChild
      **/
     public static function isEmailForUser($users_id, $email)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -216,7 +221,7 @@ class UserEmail extends CommonDBChild
             !$user->can($users_id, READ)
             && ($users_id != Session::getLoginUserID())
         ) {
-            return false;
+            return;
         }
         $canedit = ($user->can($users_id, UPDATE) || ($users_id == Session::getLoginUserID()));
 
@@ -274,7 +279,7 @@ class UserEmail extends CommonDBChild
      */
     private function checkInputEmailValidity(array $input): bool
     {
-        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress($input['email']);
+        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress(Sanitizer::unsanitize($input['email']));
     }
 
 
@@ -291,8 +296,9 @@ class UserEmail extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if default is set : unsed others for the users
@@ -318,6 +324,7 @@ class UserEmail extends CommonDBChild
 
     public function post_addItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if default is set : unset others for the users
@@ -340,6 +347,7 @@ class UserEmail extends CommonDBChild
 
     public function post_deleteFromDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if default is set : set default to another one

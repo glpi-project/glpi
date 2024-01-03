@@ -1285,7 +1285,7 @@ DIFF,
     /**
      * @dataProvider schemaProvider
      */
-    public function testGetNomalizedSql(
+    public function testGetNormalizedSql(
         string $schema, // ignored
         array $raw_tables,
         array $normalized_tables,
@@ -1306,7 +1306,7 @@ DIFF,
         );
 
         foreach ($raw_tables as $table_name => $raw_sql) {
-            $this->string($this->callPrivateMethod($this->testedInstance, 'getNomalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
+            $this->string($this->callPrivateMethod($this->testedInstance, 'getNormalizedSql', $raw_sql))->isEqualTo($normalized_tables[$table_name]);
         }
     }
 
@@ -1340,7 +1340,7 @@ DIFF,
             $this->mockGenerator->orphanize('__construct');
             $query_result = new \mock\mysqli_result();
             $this->calling($query_result)->fetch_assoc = ['Create Table' => $effective_sql];
-            $this->calling($db)->query = $query_result;
+            $this->calling($db)->doQuery = $query_result;
 
             $this->boolean($this->testedInstance->hasDifferences($table_name, $raw_sql))->isEqualTo(!empty($expected_diff));
             $this->string($this->testedInstance->getDiff($table_name, $raw_sql))->isEqualTo($expected_diff);
@@ -1399,7 +1399,7 @@ DIFF,
         $db = $this->geDbMock($args);
 
         $that = $this;
-        $this->calling($db)->query = function ($query) use ($effective_tables, $that) {
+        $this->calling($db)->doQuery = function ($query) use ($effective_tables, $that) {
             $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
             if (array_key_exists($table_name, $effective_tables)) {
                 $that->mockGenerator->orphanize('__construct');
@@ -1490,7 +1490,7 @@ SQL,
             };
             $that = $this;
             $this->calling($db)->listTables = [['TABLE_NAME' => "glpi_{$table_prefix}unknowntable"]]; // $DB->listTables() is used to list unknown tables
-            $this->calling($db)->query = function ($query) use ($that, $table_prefix, $existingtable_sql, $unknowntable_sql) {
+            $this->calling($db)->doQuery = function ($query) use ($that, $table_prefix, $existingtable_sql, $unknowntable_sql) {
                 $table_name = preg_replace('/SHOW CREATE TABLE `([^`]+)`/', '$1', $query);
                 $result = null;
                 switch ($table_name) {
@@ -1597,7 +1597,7 @@ SQL;
         $that = $this;
 
         // Case 1: "DEFAULT ''" not returned by MySQL should not be detected as a difference for GLPI < 10.0.1
-        $this->calling($db)->query = function ($query) use ($that) {
+        $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
                 $res = new \mock\mysqli_result();
@@ -1661,7 +1661,7 @@ SQL
 
         // Case 2: "DEFAULT ''" returned by MariaDB should be detected as a difference for GLPI >= 10.0.1
         $db->use_utf8mb4 = true;
-        $this->calling($db)->query = function ($query) use ($that) {
+        $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
                 $res = new \mock\mysqli_result();
@@ -1751,7 +1751,7 @@ CREATE TABLE `glpi_notimportedemails` (
 SQL;
 
         $that = $this;
-        $this->calling($db)->query = function ($query) use ($that) {
+        $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
                 $res = new \mock\mysqli_result();
@@ -1845,7 +1845,7 @@ CREATE TABLE `glpi_notimportedemails` (
 SQL;
 
         $that = $this;
-        $this->calling($db)->query = function ($query) use ($that) {
+        $this->calling($db)->doQuery = function ($query) use ($that) {
             if (preg_match('/^SHOW CREATE TABLE/', $query) === 1) {
                 $that->mockGenerator->orphanize('__construct');
                 $res = new \mock\mysqli_result();

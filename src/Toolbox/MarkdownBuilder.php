@@ -154,7 +154,7 @@ class MarkdownBuilder
     /**
      * Add a table header
      *
-     * @param array $values
+     * @param array $headers
      */
     public function addTableHeader(array $headers)
     {

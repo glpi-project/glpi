@@ -123,6 +123,7 @@ class Itil_Project extends CommonDBRelation
      **/
     public static function showForProject(Project $project)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $project->getField('id');
@@ -272,6 +273,7 @@ class Itil_Project extends CommonDBRelation
      **/
     public static function showForItil(CommonITILObject $itil)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $itil->getField('id');

@@ -111,6 +111,10 @@ trait Inventoriable
      */
     protected function showInventoryInfo()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         if (!$this->isDynamic()) {
@@ -182,6 +186,7 @@ trait Inventoriable
      */
     protected function displayAgentInformation()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo '<tr class="tab_bg_1">';
@@ -243,6 +248,7 @@ JAVASCRIPT;
 
     public function getInventoryAgent(): ?Agent
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $agent = $this->getMostRecentAgent([
@@ -310,6 +316,7 @@ JAVASCRIPT;
      */
     private function getMostRecentAgent(array $conditions): ?Agent
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([

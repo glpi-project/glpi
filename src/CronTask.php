@@ -127,8 +127,8 @@ class CronTask extends CommonDBTM
     {
 
         return $this->getFromDBByCrit([
-            $this->getTable() . '.name'      => $name,
-            $this->getTable() . '.itemtype'  => $itemtype
+            $this->getTable() . '.name'      => (string)$name,
+            $this->getTable() . '.itemtype'  => (string)$itemtype
         ]);
     }
 
@@ -173,6 +173,7 @@ class CronTask extends CommonDBTM
      **/
     public static function getUsedItemtypes()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $types = [];
@@ -216,6 +217,7 @@ class CronTask extends CommonDBTM
      **/
     public function start()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id']) || ($DB->isSlave())) {
@@ -238,7 +240,7 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->affectedRows($result) > 0) {
+        if ($DB->affectedRows() > 0) {
             $this->timer  = microtime(true);
             $this->volume = 0;
             $log = new CronTaskLog();
@@ -301,6 +303,7 @@ class CronTask extends CommonDBTM
      **/
     public function end($retcode, int $log_state = CronTaskLog::STATE_STOP)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($this->fields['id'])) {
@@ -318,7 +321,7 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->affectedRows($result) > 0) {
+        if ($DB->affectedRows() > 0) {
            // No gettext for log but add gettext line to be parsed for pot generation
            // order is important for insertion in english in the database
             if ($log_state === CronTaskLog::STATE_ERROR) {
@@ -388,6 +391,7 @@ class CronTask extends CommonDBTM
      **/
     public function getNeedToRun($mode = 0, $name = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $hour_criteria = new QueryExpression('hour(curtime())');
@@ -494,6 +498,7 @@ class CronTask extends CommonDBTM
      */
     private function sendNotificationOnError(): void
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $alert_iterator = $DB->request(
@@ -571,6 +576,7 @@ class CronTask extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canView() || !$this->getFromDB($ID)) {
@@ -925,6 +931,7 @@ class CronTask extends CommonDBTM
      **/
     private static function get_lock()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
@@ -944,6 +951,7 @@ class CronTask extends CommonDBTM
      **/
     private static function release_lock()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (self::$lockname) {
@@ -964,6 +972,7 @@ class CronTask extends CommonDBTM
      **/
     public static function launch($mode, $max = 1, $name = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // No cron in maintenance mode
@@ -1017,6 +1026,7 @@ class CronTask extends CommonDBTM
                             try {
                                   $retcode = call_user_func($function, $crontask);
                             } catch (\Throwable $e) {
+                                /** @var \GLPI $GLPI */
                                 global $GLPI;
                                 $GLPI->getErrorHandler()->handleException($e);
                                 Toolbox::logInFile(
@@ -1138,6 +1148,7 @@ class CronTask extends CommonDBTM
      **/
     public static function unregister($plugin)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($plugin)) {
@@ -1173,6 +1184,7 @@ class CronTask extends CommonDBTM
      **/
     public function showStatistics()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         echo "<br><div class='center'>";
@@ -1318,6 +1330,7 @@ class CronTask extends CommonDBTM
      **/
     public function showHistory()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($_GET["crontasklogs_id"]) && $_GET["crontasklogs_id"]) {
@@ -1412,6 +1425,7 @@ class CronTask extends CommonDBTM
      **/
     public function showHistoryDetail($logid)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         echo "<br><div class='center'>";
@@ -1565,7 +1579,7 @@ class CronTask extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var CronTask $item */
         switch ($ma->getAction()) {
             case 'reset':
                 foreach ($ids as $key) {
@@ -1594,6 +1608,7 @@ class CronTask extends CommonDBTM
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -1970,6 +1985,7 @@ class CronTask extends CommonDBTM
      **/
     public static function cronLogs($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $vol = 0;
@@ -2015,6 +2031,7 @@ class CronTask extends CommonDBTM
      **/
     public static function cronWatcher($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // CronTasks running for more than 1 hour or 2 frequency
@@ -2095,12 +2112,31 @@ class CronTask extends CommonDBTM
      **/
     public static function callCronForce()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+        if (self::mustRunWebTasks()) {
+            $path = $CFG_GLPI['root_doc'] . "/front/cron.php";
+            echo "<div style=\"background-image: url('$path');\"></div>";
+        }
 
-        echo "<div style=\"background-image: url('$path');\"></div>";
         return true;
+    }
+
+
+    /**
+     * Check if any web cron task exist and is enabled
+     *
+     * @return bool
+     **/
+    protected static function mustRunWebTasks(): bool
+    {
+        $web_tasks_count = countElementsInTable(self::getTable(), [
+            'mode'  => self::MODE_INTERNAL, // "GLPI" mode
+            'state' => self::STATE_WAITING,
+        ]);
+
+        return $web_tasks_count > 0;
     }
 
 

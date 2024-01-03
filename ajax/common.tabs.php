@@ -35,6 +35,14 @@
 
 use Glpi\Toolbox\Sanitizer;
 
+/**
+ * @var array $CFG_GLPI
+ * @var array $_UGET
+ */
+global $CFG_GLPI, $_UGET;
+
+$SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to public FAQ tabs
+
 include('../inc/includes.php');
 $AJAX_INCLUDE = 1;
 
@@ -73,8 +81,6 @@ if (!isset($_GET["withtemplate"])) {
 if (isset($_GET['id']) && !empty($_GET['id'])) {
     $_GET['id'] = (int)$_GET['id'];
 }
-
-/** @global array $_UGET */
 
 if ($item = getItemForItemtype($_UGET['_itemtype'])) {
     if ($item->get_item_to_display_tab) {

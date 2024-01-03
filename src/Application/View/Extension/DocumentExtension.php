@@ -61,6 +61,7 @@ class DocumentExtension extends AbstractExtension
      */
     public function getDocumentIcon(string $filename): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));

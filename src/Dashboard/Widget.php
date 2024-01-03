@@ -63,6 +63,7 @@ class Widget
      */
     public static function getAllTypes(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [
@@ -1812,7 +1813,7 @@ HTML;
         ];
 
         ob_start();
-        $params = Search::manageParams($p['itemtype'], $params);
+        $params = Search::manageParams($p['itemtype'], $params, false);
        // remove parts of search list
         $params = array_merge($params, [
             'showmassiveactions' => false,
@@ -2059,6 +2060,7 @@ JAVASCRIPT;
         string $css_dom_parent = "",
         bool $revert = true
     ) {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $palette = self::getGradientPalette($bgcolor, $nb_series, $revert);

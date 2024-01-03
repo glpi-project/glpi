@@ -96,7 +96,12 @@ abstract class CommonITILActor extends CommonDBRelation
      **/
     public function getActors($items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
+
+        if (empty($items_id)) {
+            return [];
+        }
 
         $users = [];
         $iterator = $DB->request([
@@ -117,10 +122,11 @@ abstract class CommonITILActor extends CommonDBRelation
      **/
     public function isAlternateEmailForITILObject($items_id, $email)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::getItilObjectForeignKey()   => $items_id,
                 'alternative_email'                 => $email
@@ -301,13 +307,14 @@ abstract class CommonITILActor extends CommonDBRelation
 
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
         $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 
-        if ($item instanceof CommonDBTM) {
+        if ($item instanceof CommonITILObject) {
             if (
                 ($item->countSuppliers(CommonITILActor::ASSIGN) == 0)
                 && ($item->countUsers(CommonITILActor::ASSIGN) == 0)

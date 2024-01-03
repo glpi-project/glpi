@@ -177,7 +177,7 @@
                      }
                   ) }}
                </div>
-               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
+               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                   <div class="row">
 
                      {% set task_template_lbl %}
@@ -237,16 +237,21 @@
                      {% set task_state_lbl %}
                         <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
                      {% endset %}
-                     {{ fields.dropdownArrayField('state', subitem.fields['state'], {
-                        0: _n('Information', 'Information', 1),
-                        1: __('To do'),
-                        2: __('Done')
-                     }, task_state_lbl, {
-                        'full_width': true,
-                        'icon_label': true,
-                        'rand': rand,
-                     }) }}
 
+                     {% set task_state %}
+                        {% do call('Planning::dropdownState', ['state', subitem.fields['state'], true, {'rand': rand}]) %}
+                     {% endset %}
+
+                     {{ fields.htmlField(
+                        'state',
+                        task_state,
+                        task_state_lbl,
+                        {
+                           'full_width': true,
+                           'icon_label': true,
+                           'rand': rand,
+                        }
+                     ) }}
 
                      {% set task_private_lbl %}
                         <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
@@ -391,33 +396,35 @@
 
             {% set pending_reasons %}
                {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
-               <span
-                  class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
-                  id="pending-reasons-control-{{ rand }}"
-               >
-                  <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
-                        data-bs-toggle="tooltip" data-bs-placement="top" role="button">
-                     <i class="fas fa-pause me-2"></i>
-                     <label class="form-check form-switch mt-2">
-                        <input type="hidden"   name="pending" value="0" />
-                        <input type="checkbox" name="pending" value="1" class="form-check-input"
-                              id="enable-pending-reasons-{{ rand }}"
-                              role="button"
-                              {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
-                              data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
-                     </label>
-                  </span>
+               {% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
+                  <span
+                     class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
+                     id="pending-reasons-control-{{ rand }}"
+                  >
+                     <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top" role="button">
+                        <i class="fas fa-pause me-2"></i>
+                        <label class="form-check form-switch mt-2">
+                           <input type="hidden"   name="pending" value="0" />
+                           <input type="checkbox" name="pending" value="1" class="form-check-input"
+                                 id="enable-pending-reasons-{{ rand }}"
+                                 role="button"
+                                 {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
+                                 data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
+                        </label>
+                     </span>
 
-                  {% if not has_pending_reason %}
-                     <div
-                        class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
-                        aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
-                        id="pending-reasons-setup-{{ rand }}"
-                     >
-                        {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                     </div>
-                  {% endif %}
-               </span>
+                     {% if not has_pending_reason %}
+                        <div
+                           class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
+                           aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
+                           id="pending-reasons-setup-{{ rand }}"
+                        >
+                           {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
+                        </div>
+                     {% endif %}
+                  </span>
+               {% endif %}
             {% endset %}
 
             {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
@@ -467,9 +474,7 @@
             }).done(function (data) {
                 if (data.content !== undefined) {
                     // set textarea content
-                    if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                        tasktinymce.setContent(data.content);
-                    }
+                    setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
                 if (data.taskcategories_id !== undefined) {

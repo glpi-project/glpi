@@ -113,6 +113,7 @@ trait PlanningEvent
 
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -257,7 +258,7 @@ trait PlanningEvent
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         if (
             !isset($this->input['_no_check_plan'])
@@ -381,7 +382,11 @@ trait PlanningEvent
      **/
     public static function populatePlanning($options = []): array
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $default_options = [
             'genical'             => false,
@@ -652,10 +657,11 @@ trait PlanningEvent
      *                    default '')
      * @param $complete   complete display (more details) (default 0)
      *
-     * @return Nothing (display function)
+     * @return void (display function)
      **/
     public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $html = "";

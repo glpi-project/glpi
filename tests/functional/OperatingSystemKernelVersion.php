@@ -75,7 +75,6 @@ class OperatingSystemKernelVersion extends CommonDropdown
     {
         return [
             'OperatingSystemKernelVersion$main' => 'Kernel version',
-            'Log$1'                             => 'Historical'
         ];
     }
 

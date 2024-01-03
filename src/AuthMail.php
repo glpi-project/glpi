@@ -348,7 +348,7 @@ class AuthMail extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
             $ong = [];
             $ong[1] = _sx('button', 'Test');    // test connexion
@@ -360,7 +360,7 @@ class AuthMail extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        /** @var AuthMail $item */
         switch ($tabnum) {
             case 1:
                 $item->showFormTestMail();

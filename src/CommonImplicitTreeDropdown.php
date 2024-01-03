@@ -97,7 +97,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         $this->alterElementInsideTree("update");
@@ -125,6 +125,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
    // Key function to manage the children of the node
     private function alterElementInsideTree($step)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $oldParent     = null;

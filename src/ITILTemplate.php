@@ -70,7 +70,7 @@ abstract class ITILTemplate extends CommonDropdown
      * @param $ID                    integer  ID of the item to get
      * @param $withtypeandcategory   boolean  with type and category (true by default)
      *
-     * @return true if succeed else false
+     * @return boolean
      **/
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {
@@ -315,7 +315,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @see self::getAllowedFields()
      */
-    public static function getExtraAllowedFields($withtypeandcategory = 0, $withitemtype = 0)
+    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
     {
         return [];
     }
@@ -614,6 +614,7 @@ abstract class ITILTemplate extends CommonDropdown
      **/
     public function mergeTemplateFields($target_id, $source_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Tables linked to ticket template
@@ -671,6 +672,7 @@ abstract class ITILTemplate extends CommonDropdown
      */
     public function mergeTemplateITILCategories($target_id, $source_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $to_merge = [];

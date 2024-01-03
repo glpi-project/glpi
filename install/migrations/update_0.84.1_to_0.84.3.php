@@ -40,6 +40,10 @@
  **/
 function update0841to0843()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $updateresult     = true;
@@ -87,7 +91,7 @@ function update0841to0843()
     $query = "SELECT *
              FROM `glpi_bookmarks`";
 
-    if ($result = $DB->query($query)) {
+    if ($result = $DB->doQuery($query)) {
         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetchAssoc($result)) {
                 $num     = 0;
@@ -152,7 +156,7 @@ function update0841to0843()
                        SET `query` = '" . addslashes(Toolbox::append_params($options)) . "'
                        WHERE `id` = '" . $data['id'] . "'";
 
-                $DB->queryOrDie($query2, "0.84.3 update bookmarks");
+                $DB->doQueryOrDie($query2, "0.84.3 update bookmarks");
             }
         }
     }
@@ -166,14 +170,14 @@ function update0841to0843()
                 FROM `glpi_displaypreferences`
                 WHERE `itemtype` = '$type'";
 
-        if ($result = $DB->query($query)) {
+        if ($result = $DB->doQuery($query)) {
             if ($DB->numrows($result) > 0) {
                 while ($data = $DB->fetchAssoc($result)) {
                     $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
                          WHERE `users_id` = '" . $data['users_id'] . "'
                                AND `itemtype` = '$type'";
-                    $result = $DB->query($query);
+                    $result = $DB->doQuery($query);
                     $rank   = $DB->result($result, 0, 0);
                     $rank++;
 
@@ -183,13 +187,13 @@ function update0841to0843()
                             WHERE `users_id` = '" . $data['users_id'] . "'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                        if ($result2 = $DB->query($query)) {
+                        if ($result2 = $DB->doQuery($query)) {
                             if ($DB->numrows($result2) == 0) {
                                  $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '" . $rank++ . "',
                                           '" . $data['users_id'] . "')";
-                                 $DB->query($query);
+                                 $DB->doQuery($query);
                             }
                         }
                     }
@@ -200,7 +204,7 @@ function update0841to0843()
                     $query = "INSERT INTO `glpi_displaypreferences`
                                 (`itemtype` ,`num` ,`rank` ,`users_id`)
                          VALUES ('$type', '$newval', '" . $rank++ . "', '0')";
-                    $DB->query($query);
+                    $DB->doQuery($query);
                 }
             }
         }

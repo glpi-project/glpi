@@ -37,11 +37,13 @@ namespace Glpi\Console\Database;
 
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\ForceNoPluginsOptionCommandInterface;
 use Glpi\Console\Traits\TelemetryActivationTrait;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
+use GLPIKey;
 use Migration;
 use Session;
 use Symfony\Component\Console\Helper\Table;
@@ -50,7 +52,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Update;
 
-class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionCommandInterface
+class UpdateCommand extends AbstractCommand implements ConfigurationCommandInterface, ForceNoPluginsOptionCommandInterface
 {
     use TelemetryActivationTrait;
 
@@ -103,7 +105,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
             '--skip-db-checks',
             's',
             InputOption::VALUE_NONE,
-            __('Do not check database schema integrity before performing the update')
+            __('Do not check database schema integrity before and after performing the update')
         );
 
         $this->addOption(
@@ -119,6 +121,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
 
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance(); // Use dedicated "installer" cache
 
@@ -205,6 +208,7 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
         $this->askForConfirmation();
 
+        /** @var \Migration $migration */
         global $migration; // Migration scripts are using global `$migration`
         $migration = new Migration(GLPI_VERSION);
         $migration->setOutputHandler($output);
@@ -217,7 +221,18 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
 
         $this->handTelemetryActivation($input, $output);
 
-        if (!$update->isUpdatedSchemaConsistent()) {
+        if ($this->input->getOption('skip-db-checks')) {
+            $this->output->writeln(
+                [
+                    '<comment>' . __('The database schema integrity check has been skipped.') . '</comment>',
+                    '<comment>' . sprintf(
+                        __('It is recommended to run the "%s" command to validate that the database schema is consistent with the current GLPI version.'),
+                        'php bin/console database:check_schema_integrity'
+                    ) . '</comment>'
+                ],
+                OutputInterface::VERBOSITY_QUIET
+            );
+        } elseif (!$update->isUpdatedSchemaConsistent()) {
             // Exit with an error if database schema is not consistent.
             // Keep this code at end of command to ensure that the whole migration is still executed.
             // Many old GLPI instances will likely have differences, and people will have to fix them manually.
@@ -336,5 +351,14 @@ class UpdateCommand extends AbstractCommand implements ForceNoPluginsOptionComma
         }
 
         return $version_cleaned;
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        if (!(new GLPIKey())->keyExists()) {
+            return ['glpicrypt.key'];
+        }
+
+        return [];
     }
 }

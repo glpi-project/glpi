@@ -187,7 +187,8 @@ class Lockedfield extends DbTestCase
         $this->variable($computer->fields['otherserial'])->isEqualTo('');
 
         $this->boolean($lockedfield->isHandled($computer))->isTrue();
-        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
+        //lockedfield value must be null because it's a global lock
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update does not override otherserial again
         $this->boolean(
@@ -200,7 +201,8 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['otherserial'])->isEqualTo('');
-        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
+        //lockedfield must be null because it's a global lock
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure new dynamic update do not set new lock on regular update
         $this->boolean(
@@ -213,7 +215,8 @@ class Lockedfield extends DbTestCase
 
         $this->boolean($computer->getFromDB($cid))->isTrue();
         $this->variable($computer->fields['name'])->isEqualTo('Computer name changed');
-        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => '789012']);
+        //lockedfield must be null because it's a global lock
+        $this->array($lockedfield->getLockedValues($computer->getType(), $cid))->isIdenticalTo(['otherserial' => null]);
 
         //ensure regular update do work on locked field
         $this->boolean(
@@ -374,8 +377,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $printer->update([
                 'id' => $printers_id,
-                'locations_id' => $locations_id,
-                'id_dynamic' => true
+                'locations_id' => $locations_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
@@ -576,8 +578,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $printer->update([
                 'id' => $printers_id,
-                'locations_id' => $locations_id,
-                'id_dynamic' => true
+                'locations_id' => $locations_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($printer->getType(), $printers_id))->isIdenticalTo(['locations_id' => null]);
@@ -689,8 +690,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $cos->update([
                 'id' => $cos->fields['id'],
-                'operatingsystemarchitectures_id' => $newarchs_id,
-                'id_dynamic' => true
+                'operatingsystemarchitectures_id' => $newarchs_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => null]);
@@ -702,8 +702,7 @@ class Lockedfield extends DbTestCase
         $this->boolean(
             $iav->update([
                 'id' => $iav->fields['id'],
-                'manufacturers_id' => $newmanufacturers_id,
-                'id_dynamic' => true
+                'manufacturers_id' => $newmanufacturers_id
             ])
         )->isTrue();
         $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => null]);

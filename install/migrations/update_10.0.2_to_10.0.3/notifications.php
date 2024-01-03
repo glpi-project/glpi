@@ -36,8 +36,8 @@
 use Glpi\Toolbox\Sanitizer;
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 /* BEGIN: Fixes default notification targets */
@@ -97,6 +97,10 @@ $template_iterator = $DB->request([
     'FROM'   => 'glpi_notificationtemplatetranslations',
 ]);
 foreach ($template_iterator as $template_data) {
+    if ($template_data['content_html'] === null) {
+        continue;
+    }
+
     $content_html = Sanitizer::decodeHtmlSpecialChars($template_data['content_html']);
 
     if (str_contains($content_html, '&lt;p&gt;') && str_contains($content_html, '&lt;/p&gt;')) {

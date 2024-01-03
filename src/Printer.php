@@ -136,6 +136,7 @@ class Printer extends CommonDBTM
      **/
     public function canUnrecurs()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $this->fields['id'];
@@ -249,6 +250,7 @@ class Printer extends CommonDBTM
 
     public function cleanDBonPurge()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->update(
@@ -294,11 +296,12 @@ class Printer extends CommonDBTM
     /**
      * Return the linked items (in computers_items)
      *
-     * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
     public function getLinkedItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -599,7 +602,7 @@ class Printer extends CommonDBTM
             'table'              => 'glpi_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
-            'name'               => __('Technician in charge of the hardware'),
+            'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
             'right'              => 'own_ticket'
         ];
@@ -609,7 +612,7 @@ class Printer extends CommonDBTM
             'table'              => 'glpi_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id_tech',
-            'name'               => __('Group in charge of the hardware'),
+            'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'datatype'           => 'dropdown'
         ];
@@ -679,7 +682,7 @@ class Printer extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '131',
+            'id'                 => '1431',
             'table'              => 'glpi_computers_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of printers'),
@@ -707,6 +710,7 @@ class Printer extends CommonDBTM
      **/
     public function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //Look for the software by his name in GLPI for a specific entity
@@ -743,15 +747,16 @@ class Printer extends CommonDBTM
     /**
      * Create a new printer
      *
-     * @param $name         the printer's name (need to be addslashes)
-     * @param $manufacturer the printer's manufacturer (need to be addslashes)
-     * @param $entity       the entity in which the printer must be added
-     * @param $comment      (default '')
+     * @param string  $name         the printer's name (need to be addslashes)
+     * @param string  $manufacturer the printer's manufacturer (need to be addslashes)
+     * @param integer $entity       the entity in which the printer must be added
+     * @param string  $comment      (default '')
      *
-     * @return the printer's ID
+     * @return integer the printer's ID
      **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $manufacturer_id = 0;

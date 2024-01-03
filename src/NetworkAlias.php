@@ -199,6 +199,7 @@ class NetworkAlias extends FQDNLabel
         HTMLTableCell $father = null,
         array $options = []
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($item)) {
@@ -256,7 +257,11 @@ class NetworkAlias extends FQDNLabel
      **/
     public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $ID = $item->getID();
         if (!$item->can($ID, READ)) {
@@ -389,6 +394,7 @@ class NetworkAlias extends FQDNLabel
      **/
     public static function showForFQDN(CommonGLPI $item, $withtemplate)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $alias   = new self();

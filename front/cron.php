@@ -33,9 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 // Ensure current directory when run from crontab
 chdir(__DIR__);
 
+$SECURITY_STRATEGY = 'no_check'; // in GLPI mode, cronjob can also be triggered from public pages
 
 include('../inc/includes.php');
 

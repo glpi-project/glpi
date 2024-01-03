@@ -19,7 +19,7 @@ jobs:
           --volume /glpi:/var/glpi
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
       - name: "Deploy source into app container"
         run: |
           sudo cp --no-target-directory --preserve --recursive `pwd` /glpi
@@ -37,7 +37,7 @@ jobs:
           docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
       - name: "Store archive"
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
             name: ${{ env.release_name }}.tar.gz
             path: ${{ github.workspace }}/${{ env.release_name }}.tar.gz

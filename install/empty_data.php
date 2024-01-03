@@ -309,8 +309,6 @@ $empty_data_builder = new class
             'dbversion' => 'FILLED AT INSTALL',
             'smtp_max_retries' => '5',
             'smtp_sender' => null,
-            'from_email' => null,
-            'from_email_name' => null,
             'instance_uuid' => null,
             'registration_uuid' => null,
             'smtp_retry_time' => '5',
@@ -2866,7 +2864,7 @@ $empty_data_builder = new class
                 'is_active' => 1,
             ], [
                 'id' => 72,
-                'name' => 'New user mentionned',
+                'name' => 'New user mentioned',
                 'itemtype' => 'Ticket',
                 'event' => 'user_mention',
                 'is_recursive' => 1,

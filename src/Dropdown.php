@@ -82,12 +82,13 @@ class Dropdown
      *    - readonly             : boolean / return self::getDropdownValue if true (default false)
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
      *
-     * @return boolean : false if error and random id if OK
+     * @return string|false|integer
      *
      * @since 9.5.0 Usage of string in condition option is removed
      **/
     public static function show($itemtype, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -184,7 +185,7 @@ class Dropdown
 
         if ($params['readonly']) {
             return '<span class="form-control" readonly'
-                . ($params['width'] ? 'style="width: ' . $params["width"] . '"' : '') . '>'
+                . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
         }
@@ -473,6 +474,7 @@ class Dropdown
      **/
     public static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true, string $default = '&nbsp;')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $item = getItemForItemtype(getItemTypeForTable($table));
@@ -721,6 +723,7 @@ class Dropdown
      **/
     public static function getDropdownArrayNames($table, $ids)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tabs = [];
@@ -813,6 +816,7 @@ class Dropdown
      **/
     public static function dropdownUsedItemTypes($name, $itemtype_ref, $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p['value'] = 0;
@@ -887,6 +891,7 @@ class Dropdown
                     )
                 );
 
+                /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
 
                 // templates for select2 dropdown
@@ -1387,6 +1392,7 @@ JAVASCRIPT;
      */
     public static function getLanguages()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $languages = [];
@@ -1407,6 +1413,7 @@ JAVASCRIPT;
      **/
     public static function getLanguageName($value)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($CFG_GLPI["languages"][$value][0])) {
@@ -1437,6 +1444,7 @@ JAVASCRIPT;
      **/
     public static function showHours($name, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p['value']          = '';
@@ -1524,6 +1532,7 @@ JAVASCRIPT;
      **/
     public static function showItemType($types = '', $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params['name']                = 'itemtype';
@@ -1603,6 +1612,7 @@ JAVASCRIPT;
      **/
     public static function showSelectItemFromItemtypes(array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [];
@@ -1723,6 +1733,7 @@ JAVASCRIPT;
      **/
     public static function showNumber($myname, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -1872,9 +1883,12 @@ JAVASCRIPT;
      *    - inhours         : only show timestamp in hours not in days
      *    - display         : boolean / display or return string
      *    - width           : string / display width of the item
+     *    - allow_max_change: boolean / allow to change max value according to max($params['value'], $params['max']) (default true).
+     *                        If false and the value is greater than the max, the value will be adjusted based on the step and then added to the dropdown as an extra option.
      **/
     public static function showTimeStamp($myname, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params['value']               = 0;
@@ -1890,6 +1904,7 @@ JAVASCRIPT;
         $params['display_emptychoice'] = true;
         $params['width']               = '';
         $params['class']               = 'form-select';
+        $params['allow_max_change']    = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1904,7 +1919,9 @@ JAVASCRIPT;
             $params['min'] = $params['step'];
         }
 
-        $params['max'] = max($params['value'], $params['max']);
+        if ($params['allow_max_change']) {
+            $params['max'] = max($params['value'], $params['max']);
+        }
 
        // Floor with MINUTE_TIMESTAMP for rounded purpose
         if (empty($params['value'])) {
@@ -1918,6 +1935,10 @@ JAVASCRIPT;
         } else if (!in_array($params['value'], $params['toadd'])) {
            // Round to a valid step except if value is already valid (defined in values to add)
             $params['value'] = floor(($params['value']) / $params['step']) * $params['step'];
+        }
+
+        if (!$params['allow_max_change'] && $params['value'] > $params['max']) {
+            $params['toadd'][] = $params['value'];
         }
 
         // Generate array keys
@@ -2004,6 +2025,7 @@ JAVASCRIPT;
      **/
     public static function showAdvanceDateRestrictionSwitch($enabled = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -2439,7 +2461,7 @@ JAVASCRIPT;
     /**
      * Import a value in a dropdown table.
      *
-     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
+     * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
      * @param string  $itemtype         name of the class
      * @param string  $value            Value of the new dropdown.
@@ -2448,7 +2470,7 @@ JAVASCRIPT;
      * @param string  $comment
      * @param boolean $add              if true, add it if not found. if false, just check if exists
      *
-     * @return integer : dropdown id.
+     * @return false|integer : dropdown id.
      **/
     public static function importExternal(
         $itemtype,
@@ -2495,6 +2517,7 @@ JAVASCRIPT;
      **/
     public static function showOutputFormat($itemtype = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
@@ -2528,6 +2551,7 @@ JAVASCRIPT;
      **/
     public static function showListLimit($onchange = '', $display = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($_SESSION['glpilist_limit'])) {
@@ -2583,7 +2607,11 @@ JAVASCRIPT;
      */
     public static function getDropdownValue($post, $json = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post)) {
@@ -3429,7 +3457,11 @@ JAVASCRIPT;
      */
     public static function getDropdownConnect($post, $json = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post)) {
@@ -3637,7 +3669,11 @@ JAVASCRIPT;
      */
     public static function getDropdownFindNum($post, $json = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // Security
         if (!$DB->tableExists($post['table'])) {
@@ -3787,6 +3823,7 @@ JAVASCRIPT;
      */
     public static function getDropdownNumber($post, $json = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $used = [];
@@ -3899,6 +3936,7 @@ JAVASCRIPT;
      */
     public static function getDropdownUsers($post, $json = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // check if asked itemtype is the one originaly requested by the form
@@ -4023,6 +4061,7 @@ JAVASCRIPT;
 
     public static function getDropdownActors($post, $json = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::validateIDOR($post)) {

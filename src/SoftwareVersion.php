@@ -229,6 +229,7 @@ class SoftwareVersion extends CommonDBChild
      **/
     public static function dropdownForOneSoftware($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        //$softwares_id,$value=0
@@ -298,6 +299,7 @@ class SoftwareVersion extends CommonDBChild
      **/
     public static function showForSoftware(Software $soft)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $softwares_id = $soft->getField('id');
@@ -399,8 +401,8 @@ class SoftwareVersion extends CommonDBChild
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Software':
+            switch (get_class($item)) {
+                case Software::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID()]);
                     }

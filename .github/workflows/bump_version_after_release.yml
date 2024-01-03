@@ -50,7 +50,7 @@ jobs:
           echo "CHANGELOG_ENTRY=${CHANGELOG_ENTRY//$'\n'/'\n'}" >> $GITHUB_ENV
       - name: "Checkout"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
       - name: "Update codebase"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
         run: |
@@ -70,7 +70,7 @@ jobs:
           git push origin ${{ env.BUMP_BRANCH }}
       - name: "Create Pull Request"
         if: ${{ env.IS_STABLE_RELEASE == 'yes' }}
-        uses: "actions/github-script@v6"
+        uses: "actions/github-script@v7"
         with:
           script: |
             const { repo, owner } = context.repo;

@@ -184,6 +184,15 @@ class Unmanaged extends CommonDBTM
             'name'         => __('IP'),
         ];
 
+        $tab[] = [
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_unmanaged' => 1]
+        ];
+
         return $tab;
     }
 
@@ -204,7 +213,7 @@ class Unmanaged extends CommonDBTM
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = 0,
+        $is_deleted = false,
         CommonDBTM $checkitem = null
     ) {
         if (self::canUpdate()) {
@@ -214,6 +223,7 @@ class Unmanaged extends CommonDBTM
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
@@ -231,6 +241,7 @@ class Unmanaged extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         switch ($ma->getAction()) {
             case 'convert':
@@ -252,6 +263,7 @@ class Unmanaged extends CommonDBTM
      */
     public function convert(int $items_id, string $itemtype = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $this->getFromDB($items_id);

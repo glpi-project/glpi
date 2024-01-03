@@ -40,6 +40,10 @@
  **/
 function update920to921()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
 
     $current_config   = Config::getConfigurationValues('core');
@@ -113,7 +117,7 @@ function update920to921()
                PRIMARY KEY (`id`),
                KEY `olalevels_id` (`olalevels_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.2 add table glpi_olalevelactions");
+        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevelactions");
     }
 
     if (!$DB->tableExists('glpi_olalevelcriterias')) {
@@ -127,7 +131,7 @@ function update920to921()
                KEY `olalevels_id` (`olalevels_id`),
                KEY `condition` (`condition`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.2 add table glpi_olalevelcriterias");
+        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevelcriterias");
     }
 
     if (!$DB->tableExists('glpi_olalevels')) {
@@ -146,7 +150,7 @@ function update920to921()
                KEY `is_active` (`is_active`),
                KEY `olas_id` (`olas_id`)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.2 add table glpi_olalevels");
+        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevels");
     }
 
     if (!$DB->tableExists('glpi_olalevels_tickets')) {
@@ -160,7 +164,7 @@ function update920to921()
                   KEY `olalevels_id` (`olalevels_id`),
                   KEY `unicity` (`tickets_id`,`olalevels_id`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.2 add table glpi_olalevels_tickets");
+        $DB->doQueryOrDie($query, "9.2 add table glpi_olalevels_tickets");
 
         $DB->insertOrDie("glpi_crontasks", [
             'itemtype'        => "OlaLevel_Ticket",
@@ -383,7 +387,7 @@ function update920to921()
                        (`notifications_id`, `mode`, `notificationtemplates_id`)
                        SELECT `id`, `mode`, `notificationtemplates_id`
                        FROM `glpi_notifications`";
-        $DB->queryOrDie($query, "9.2 migrate notifications templates");
+        $DB->doQueryOrDie($query, "9.2 migrate notifications templates");
 
        //migrate any existing mode before removing the field
         $migration->dropField('glpi_notifications', 'mode');

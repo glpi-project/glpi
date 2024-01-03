@@ -147,13 +147,6 @@ class Unmanaged extends MainAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
-        $default_states_id = $this->states_id_default ?? 0;
-        if ($items_id != 0 && $default_states_id != '-1') {
-            $val->states_id = $default_states_id;
-        } elseif ($items_id == 0) {
-            //if create mode default states_id can't be '-1' put 0 if needed
-            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
-        }
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
@@ -183,10 +176,10 @@ class Unmanaged extends MainAsset
         $this->handleLinks();
 
 
+        $need_to_add = false;
         if ($items_id == 0) {
             //before add check if an asset already exist with mac
             //if found, the Unmanaged device has been converted
-            $need_to_add = false;
 
             if (property_exists($val, "mac")) {
                 $result = NetworkPortInstantiation::getUniqueItemByMac(
@@ -220,21 +213,34 @@ class Unmanaged extends MainAsset
             }
         }
 
+        // compute states_id after check / get for 'real' asset (converted or not)
+        $default_states_id = $this->states_id_default ?? 0;
+        if ($items_id != 0 && $default_states_id != '-1') {
+            $val->states_id = $default_states_id;
+        } elseif ($items_id == 0) {
+            //if create mode default states_id can't be '-1' put 0 if needed
+            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
+        }
+
         //do not update itemtype / items_id Agent from Unmanaged item
         //just keep related items_id and entities_id for the rest of the process
         //like Printer or NetworkEquipment process
         $this->agent->fields['items_id'] = $items_id;
         $this->agent->fields['entities_id'] = $entities_id;
 
-        //check for any old agent to remove
-        $agent = new \Agent();
-        $agent->deleteByCriteria([
-            'itemtype' => $this->item->getType(),
-            'items_id' => $items_id,
-            'NOT' => [
-                'id' => $this->agent->fields['id']
-            ]
-        ]);
+        //check for any old agent to remove only if it an unmanaged
+        //to prevent agentdeletion from another asset handle by another agent
+        if ($need_to_add) {
+            $agent = new \Agent();
+            $agent->deleteByCriteria([
+                'itemtype' => $this->item->getType(),
+                'items_id' => $items_id,
+                'NOT' => [
+                    'id' => $this->agent->fields['id']
+                ]
+            ]);
+        }
+
 
         $val->id = $this->item->fields['id'];
 
@@ -334,6 +340,7 @@ class Unmanaged extends MainAsset
     public function checkConf(Conf $conf): bool
     {
         $this->conf = $conf;
+        $this->states_id_default = $conf->states_id_default;
         return $conf->import_unmanaged == 1;
     }
 

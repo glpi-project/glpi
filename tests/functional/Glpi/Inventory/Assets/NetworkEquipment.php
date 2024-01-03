@@ -2723,7 +2723,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->integer($networkPort->logical_number)->isEqualTo(1047);
     }
 
-    public function testUnmanagedNotDuplicatedAtEachInventory()
+    public function testUnmanagedNotDuplicatedAtEachInventoryWithLogicalNumber()
     {
         $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
       <REQUEST>
@@ -2795,6 +2795,84 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $unmanaged = new \Unmanaged();
         $this->boolean($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']))->isTrue();
+    }
+
+
+    public function testUnmanagedNotDuplicatedAtEachInventoryWithIfDescr()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+      <REQUEST>
+        <CONTENT>
+          <DEVICE>
+            <COMPONENTS>
+              <COMPONENT>
+                <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                <INDEX>-1</INDEX>
+                <NAME>Force10 S-series Stack</NAME>
+                <TYPE>stack</TYPE>
+              </COMPONENT>
+            </COMPONENTS>
+            <INFO>
+              <MAC>00:01:e8:d7:c9:1d</MAC>
+              <NAME>sw-s50</NAME>
+              <SERIAL>DL253300100</SERIAL>
+              <TYPE>NETWORKING</TYPE>
+            </INFO>
+            <PORTS>
+            <PORT>
+            <CONNECTIONS>
+              <CDP>1</CDP>
+              <CONNECTION>
+                <IFDESCR>GigabitEthernet0</IFDESCR>
+                <IP>10.2.32.239</IP>
+                <MODEL>cisco AIR-AP2802E-E-K9</MODEL>
+                <SYSDESCR>Cisco AP Software, ap3g3-k9w8 Version: 17.6.5.22
+  Technical Support: http://www.cisco.com/techsupport
+  Copyright (c) 2014-2015 by Cisco Systems, Inc.</SYSDESCR>
+                <SYSNAME>FR-LUC-GCL-WAP-INTRA-239</SYSNAME>
+              </CONNECTION>
+            </CONNECTIONS>
+            <IFALIAS>// Trunk to FR-LUC-GCL-WAP-INTRA-239 //</IFALIAS>
+            <IFDESCR>GigabitEthernet1/0/20</IFDESCR>
+            <IFINERRORS>0</IFINERRORS>
+            <IFINOCTETS>2628580054</IFINOCTETS>
+            <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+            <IFLASTCHANGE>245 days, 07:42:45.29</IFLASTCHANGE>
+            <IFMTU>1500</IFMTU>
+            <IFNAME>Gi1/0/20</IFNAME>
+            <IFNUMBER>28</IFNUMBER>
+            <IFOUTERRORS>0</IFOUTERRORS>
+            <IFOUTOCTETS>2281895971</IFOUTOCTETS>
+            <IFPORTDUPLEX>3</IFPORTDUPLEX>
+            <IFSPEED>1000000000</IFSPEED>
+            <IFSTATUS>1</IFSTATUS>
+            <IFTYPE>6</IFTYPE>
+            <MAC>c4:4d:84:13:5a:94</MAC>
+            <TRUNK>1</TRUNK>
+          </PORT>
+            </PORTS>
+          </DEVICE>
+          <MODULEVERSION>4.1</MODULEVERSION>
+          <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+      </REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDBByCrit(['name' => 'FR-LUC-GCL-WAP-INTRA-239']))->isTrue();
+
+        //redo inventory and check if we still have a single Unmanaged
+        $inventory = $this->doInventory($xml_source, true);
+
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDBByCrit(['name' => 'FR-LUC-GCL-WAP-INTRA-239']))->isTrue();
     }
 
 
@@ -2885,6 +2963,165 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             //53 because XML have 312 port with iftype 6 -> 52 port
             //and one management port, so 53 port per switch
             $this->integer(count($found_np))->isIdenticalTo(53, 'Must have 53 ports');
+        }
+    }
+
+    public function testRuleMatchedLog()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>C9300-24P</NAME>
+        <TYPE>device</TYPE>
+        <VERSION></VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco IOS Software [Bengaluru], Catalyst L3 Switch Software (CAT9K_IOSXE), Version 17.6.5, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2023 by Cisco Systems, Inc.
+Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
+        <FIRMWARE>Bengaluru 17.06.05</FIRMWARE>
+        <ID>1290</ID>
+        <IPS>
+          <IP>10.205.13.103</IP>
+        </IPS>
+        <LOCATION></LOCATION>
+        <MAC>10:h3:dg:a8:18:10</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>C9300-24P</MODEL>
+        <NAME>switch_import_test</NAME>
+        <RAM>1286</RAM>
+        <SERIAL>DFGKJ6545684SDF</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>6 days, 01:18:18.70</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <CONNECTIONS>
+            <CONNECTION>
+              <MAC>00:0b:84:09:c1:5e</MAC>
+            </CONNECTION>
+          </CONNECTIONS>
+          <IFALIAS>unmanaged</IFALIAS>
+          <IFDESCR>GigabitEthernet1/0/1</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>19636462</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>16 minutes, 37.49</IFLASTCHANGE>
+          <IFMTU>1500</IFMTU>
+          <IFNAME>Gi1/0/1</IFNAME>
+          <IFNUMBER>9</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>285784231</IFOUTOCTETS>
+          <IFPORTDUPLEX>3</IFPORTDUPLEX>
+          <IFSPEED>100000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>08:f3:fb:a1:04:01</MAC>
+          <TRUNK>0</TRUNK>
+          <VLANS>
+            <VLAN>
+              <NAME>INFRA</NAME>
+              <NUMBER>10</NUMBER>
+            </VLAN>
+          </VLANS>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>5.1</MODULEVERSION>
+    <PROCESSNUMBER>51554</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>switch_import_test</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $networkEquipment = new \NetworkEquipment();
+        $this->boolean($networkEquipment->getFromDB($network_device_id))->isTrue();
+
+        $this->string($networkEquipment->fields['serial'])->isIdenticalTo('DFGKJ6545684SDF');
+
+        $unmanaged = new \Unmanaged();
+        $found_unmanaged = $unmanaged->find();
+        $this->integer(count($found_unmanaged))->isIdenticalTo(1);
+
+        $rulematchedLog = new \RuleMatchedLog();
+        $found_rulematchedLog = $rulematchedLog->find(
+            [
+                'itemtype' => "Unmanaged",
+                'items_id' => current($found_unmanaged)['id'],
+            ]
+        );
+        $this->integer(count($found_rulematchedLog))->isIdenticalTo(1);
+
+        //redo inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $unmanaged = new \Unmanaged();
+        $found_unmanaged = $unmanaged->find();
+        //get only one RuleMatchedLog
+        $this->integer(count($found_unmanaged))->isIdenticalTo(1);
+
+        $rulematchedLog = new \RuleMatchedLog();
+        $found_rulematchedLog = $rulematchedLog->find(
+            [
+                'itemtype' => "Unmanaged",
+                'items_id' => current($found_unmanaged)['id'],
+            ]
+        );
+        //get two RuleMatchedLog
+        $this->integer(count($found_rulematchedLog))->isIdenticalTo(2);
+    }
+
+    /**
+     * Test stacked Cisco C9300 switch
+     *
+     */
+    public function testStackedCiscoSwitchC9300()
+    {
+        $xml_source = file_get_contents(GLPI_ROOT . '/tests/fixtures/inventories/cisco-C9300.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->boolean($inventory->inError())->isFalse();
+        $this->array($inventory->getErrors())->isIdenticalTo([]);
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $server_serial = [
+            'DKFJG3541DF' => 43, //42  Gi1/0/x + 1 -> Gi0/0
+            'FOC2637YAPH' => 42  //42  Gi2/0/x
+        ];
+
+        foreach ($server_serial as $serial => $nb_port) {
+            $this->boolean(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial])
+            )->isTrue("Switch s/n $serial doesn't exist");
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->integer(count($found_np))->isIdenticalTo($nb_port, 'Must have ' . $nb_port . ' ports');
         }
     }
 }

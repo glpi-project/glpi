@@ -6,8 +6,8 @@
 
 If you found a security issue, please contact us by:
 
-- [our huntr page](https://huntr.dev/repos/glpi-project/glpi/)
 - a mail to \[glpi-security AT ow2.org\]
+- open an advisory on [github](https://github.com/glpi-project/glpi/security/advisories/new)
 
 You should provide us all details about the issue and the way to reproduce it.
 You may also provide a script that can be used to check the issue exists.
@@ -23,7 +23,7 @@ Thank you for improving the security of glpi.
 | Version | Supported          |
 | ------- | ------------------ |
 | 10.0.x  | :heavy_check_mark: |
-| 9.5.x   | :heavy_check_mark: (only for critical issues) |
+| 9.5.x   | :x:                |
 | 9.4.x   | :x:                |
 | 9.3.x   | :x:                |
 | 9.2.x   | :x:                |

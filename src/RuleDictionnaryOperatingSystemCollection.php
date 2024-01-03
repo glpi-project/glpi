@@ -43,6 +43,6 @@ class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCo
      **/
     public function getTitle()
     {
-        return __('Dictionnary of operating systems');
+        return __('Dictionary of operating systems');
     }
 }

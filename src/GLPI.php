@@ -53,6 +53,10 @@ class GLPI
      */
     public function initLogger()
     {
+        /**
+         * @var \Psr\Log\LoggerInterface $PHPLOGGER
+         * @var \Psr\Log\LoggerInterface $SQLLOGGER
+         */
         global $PHPLOGGER, $SQLLOGGER;
 
         $this->log_level = Logger::WARNING;

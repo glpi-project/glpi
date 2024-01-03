@@ -37,6 +37,7 @@ namespace Glpi\Console\Maintenance;
 
 use Config;
 use Glpi\Console\AbstractCommand;
+use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -63,13 +64,14 @@ class EnableMaintenanceModeCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $values = [
             'maintenance_mode' => '1'
         ];
-        if ($input->hasOption('text')) {
-            $values['maintenance_text'] = $input->getOption('text');
+        if ($input->hasOption('text') && $input->getOption('text') !== null) {
+            $values['maintenance_text'] = Sanitizer::sanitize($input->getOption('text'));
         }
         $config = new Config();
         $config->setConfigurationValues('core', $values);

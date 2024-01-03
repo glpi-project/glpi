@@ -40,6 +40,11 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
+if (!is_string($_POST['itemtype']) || getItemForItemtype($_POST['itemtype']) === false) {
+    echo json_encode(['success' => false]);
+    exit();
+}
+
 $all_pinned = importArrayFromDB($_SESSION['glpisavedsearches_pinned']);
 $already_pinned = $all_pinned[$_POST['itemtype']] ?? 0;
 $all_pinned[$_POST['itemtype']] = $already_pinned ? 0 : 1;

@@ -39,12 +39,17 @@ use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\RequirementsManager;
+use Glpi\Toolbox\Filesystem;
 
 define('GLPI_ROOT', realpath('..'));
 
 include_once(GLPI_ROOT . "/inc/based_config.php");
 include_once(GLPI_ROOT . "/inc/db.function.php");
 
+/**
+ * @var \GLPI $GLPI
+ * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+ */
 global $GLPI, $GLPI_CACHE;
 
 $GLPI = new GLPI();
@@ -99,6 +104,7 @@ function footer_html()
 // choose language
 function choose_language()
 {
+    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
    // fix missing param for js drodpown
@@ -132,11 +138,20 @@ function step0()
 //Step 1 checking some compatibility issue and some write tests.
 function step1($update)
 {
-    $requiremements = (new RequirementsManager())->getCoreRequirementList();
+    $config_files_to_update = [
+        GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
+    ];
+    if ($update !== 'yes' || !(new GLPIKey())->keyExists()) {
+        $config_files_to_update[] = GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'glpicrypt.key';
+    }
+    $config_write_denied = !Filesystem::canWriteFiles($config_files_to_update);
+    $requiremements      = (new RequirementsManager())->getCoreRequirementList();
 
     TemplateRenderer::getInstance()->display('install/step1.html.twig', [
-        'update'       => $update,
-        'requirements' => $requiremements,
+        'update'                 => $update,
+        'config_write_denied'    => $config_write_denied,
+        'config_files_to_update' => $config_files_to_update,
+        'requirements'           => $requiremements,
     ]);
 }
 
@@ -229,9 +244,7 @@ function step4($databasename, $newdatabasename)
    //display the form to return to the previous step.
     echo "<h3>" . __('Initialization of the database') . "</h3>";
 
-    function prev_form($host, $user, $password)
-    {
-
+    $prev_form = function ($host, $user, $password) {
         echo "<br><form action='install.php' method='post'>";
         echo "<input type='hidden' name='db_host' value='" . $host . "'>";
         echo "<input type='hidden' name='db_user' value='" . $user . "'>";
@@ -241,11 +254,10 @@ function step4($databasename, $newdatabasename)
         echo "<p class='submit'><input type='submit' name='submit' class='submit' value='" .
             __s('Back') . "'></p>";
         Html::closeForm();
-    }
+    };
 
    //Display the form to go to the next page
-    function next_form()
-    {
+    $next_form = function () {
         (new CacheManager())->getInstallerCacheInstance();
 
         echo "<br><form action='install.php' method='post'>";
@@ -255,13 +267,13 @@ function step4($databasename, $newdatabasename)
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
         Html::closeForm();
-    }
+    };
 
    //create security key
     $glpikey = new GLPIKey();
     if (!$glpikey->generate()) {
         echo "<p><strong>" . __('Security key cannot be generated!') . "</strong></p>";
-        prev_form($host, $user, $password);
+        $prev_form($host, $user, $password);
         return;
     }
 
@@ -291,7 +303,7 @@ function step4($databasename, $newdatabasename)
         if (!$DB_selected) {
             echo __('Impossible to use the database:');
             echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
-            prev_form($host, $user, $password);
+            $prev_form($host, $user, $password);
         } else {
             $success = DBConnection::createMainConfig(
                 $host,
@@ -309,10 +321,10 @@ function step4($databasename, $newdatabasename)
                 Toolbox::createSchema($_SESSION["glpilanguage"]);
                 echo "<p>" . __('OK - database was initialized') . "</p>";
 
-                next_form();
+                $next_form();
             } else { // can't create config_db file
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                prev_form($host, $user, $password);
+                $prev_form($host, $user, $password);
             }
         }
     } else if (!empty($newdatabasename)) { // create new db
@@ -335,10 +347,10 @@ function step4($databasename, $newdatabasename)
             if ($success) {
                  Toolbox::createSchema($_SESSION["glpilanguage"]);
                  echo "<p>" . __('OK - database was initialized') . "</p>";
-                 next_form();
+                 $next_form();
             } else { // can't create config_db file
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                prev_form($host, $user, $password);
+                $prev_form($host, $user, $password);
             }
         } else { // try to create the DB
             if ($link->query("CREATE DATABASE IF NOT EXISTS `" . $newdatabasename . "`")) {
@@ -364,21 +376,20 @@ function step4($databasename, $newdatabasename)
                 if ($success) {
                     Toolbox::createSchema($_SESSION["glpilanguage"]);
                     echo "<p>" . __('OK - database was initialized') . "</p>";
-                    next_form();
+                    $next_form();
                 } else { // can't create config_db file
                     echo "<p>" . __('Impossible to write the database setup file') . "</p>";
-                    prev_form($host, $user, $password);
+                    $prev_form($host, $user, $password);
                 }
             } else { // can't create database
                 echo __('Error in creating database!');
                 echo "<br>" . sprintf(__('The server answered: %s'), $link->error);
-                prev_form($host, $user, $password);
+                $prev_form($host, $user, $password);
             }
         }
     } else { // no db selected
         echo "<p>" . __("You didn't select a database!") . "</p>";
-       //prev_form();
-        prev_form($host, $user, $password);
+        $prev_form($host, $user, $password);
     }
 
     $link->close();
@@ -387,6 +398,7 @@ function step4($databasename, $newdatabasename)
 //send telemetry information
 function step6()
 {
+    /** @var \DBmysql $DB */
     global $DB;
 
     include_once(GLPI_ROOT . "/inc/dbmysql.class.php");
@@ -462,6 +474,7 @@ function update1($dbname)
     if (empty($dbname)) {
         $error = __('Please select a database.');
     } else {
+        /** @var \DBmysql $DB */
         global $DB;
         $DB = DBConnection::getDbInstanceUsingParameters($host, $user, $password, $dbname);
         $update = new Update($DB);
@@ -517,12 +530,20 @@ Session::loadLanguage('', false);
  **/
 function checkConfigFile()
 {
+    /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
-    if (file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-        Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
-        die();
+    if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
+        return;
     }
+
+    include_once(GLPI_CONFIG_DIR . "/config_db.php");
+    if (!class_exists('DB', false)) {
+        return; // config file exists, but does not contains the `DB` config class
+    }
+
+    Html::redirect($CFG_GLPI['root_doc'] . "/index.php");
+    die();
 }
 
 if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {

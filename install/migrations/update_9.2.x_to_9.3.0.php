@@ -40,6 +40,10 @@
  **/
 function update92xto930()
 {
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration;
     $dbutils = new DbUtils();
 
@@ -81,7 +85,7 @@ function update92xto930()
          KEY `status` (`status`),
          KEY `ticketfollowups_id` (`ticketfollowups_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.3 add table glpi_itilsolutions");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_itilsolutions");
     }
 
    //add unicity key required for migration only
@@ -122,7 +126,7 @@ function update92xto930()
                   OR solutiontypes_id > 0
                GROUP BY ticket.`id`
                ORDER BY ticket.`id` ASC, log.id DESC";
-        $DB->queryOrDie($query, "9.3 migrate Ticket solution history");
+        $DB->doQueryOrDie($query, "9.3 migrate Ticket solution history");
         $migration->dropField('glpi_tickets', 'solution');
         $migration->dropKey('glpi_tickets', 'solutiontypes_id');
         $migration->dropField('glpi_tickets', 'solutiontypes_id');
@@ -158,7 +162,7 @@ function update92xto930()
                   OR solutiontypes_id > 0
                GROUP BY problem.`id`
                ORDER BY problem.`id` ASC, log.id DESC";
-        $DB->queryOrDie($query, "9.3 migrate Problem solution history");
+        $DB->doQueryOrDie($query, "9.3 migrate Problem solution history");
         $migration->dropField('glpi_problems', 'solution');
         $migration->dropKey('glpi_problems', 'solutiontypes_id');
         $migration->dropField('glpi_problems', 'solutiontypes_id');
@@ -194,7 +198,7 @@ function update92xto930()
                   OR solutiontypes_id > 0
                GROUP BY changes.`id`
                ORDER BY changes.`id` ASC, log.id DESC";
-        $DB->queryOrDie($query, "9.3 migrate Change solution history");
+        $DB->doQueryOrDie($query, "9.3 migrate Change solution history");
         $migration->dropField('glpi_changes', 'solution');
         $migration->dropKey('glpi_changes', 'solutiontypes_id');
         $migration->dropField('glpi_changes', 'solutiontypes_id');
@@ -221,7 +225,7 @@ function update92xto930()
                   KEY `locations_id` (`locations_id`),
                   KEY `is_deleted` (`is_deleted`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.3 add table glpi_datacenters");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_datacenters");
     }
 
     if (!$DB->tableExists('glpi_dcrooms')) {
@@ -245,7 +249,7 @@ function update92xto930()
                   KEY `datacenters_id` (`datacenters_id`),
                   KEY `is_deleted` (`is_deleted`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.3 add table glpi_dcrooms");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_dcrooms");
     }
     if (!$DB->fieldExists('glpi_dcrooms', 'blueprint')) {
         $migration->addField('glpi_dcrooms', 'blueprint', 'text', ['after' => 'vis_rows']);
@@ -263,7 +267,7 @@ function update92xto930()
                   KEY `name` (`name`),
                   KEY `product_number` (`product_number`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.3 add table glpi_rackmodels");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_rackmodels");
     }
 
     if (!$DB->tableExists('glpi_racktypes')) {
@@ -282,7 +286,7 @@ function update92xto930()
                   KEY `date_creation` (`date_creation`),
                   KEY `date_mod` (`date_mod`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 add table glpi_racktypes");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_racktypes");
     }
 
     if (!$DB->tableExists('glpi_racks')) {
@@ -331,7 +335,7 @@ function update92xto930()
                   KEY `is_deleted` (`is_deleted`),
                   KEY `dcrooms_id` (`dcrooms_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.3 add table glpi_racks");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_racks");
     }
 
     if (!$DB->tableExists('glpi_items_racks')) {
@@ -349,7 +353,7 @@ function update92xto930()
                   UNIQUE KEY `item` (`itemtype`,`items_id`, `is_reserved`),
                   KEY `relation` (`racks_id`,`itemtype`,`items_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.3 add table glpi_items_racks");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_items_racks");
     }
 
     $migration->addRight(
@@ -431,7 +435,7 @@ function update92xto930()
                   KEY `date_creation` (`date_creation`),
                   KEY `product_number` (`product_number`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 add table glpi_enclosuremodels");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_enclosuremodels");
     }
 
     if (!$DB->tableExists('glpi_enclosures')) {
@@ -468,7 +472,7 @@ function update92xto930()
                   KEY `states_id` (`states_id`),
                   KEY `manufacturers_id` (`manufacturers_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 add table glpi_enclosures");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_enclosures");
     }
 
     if (!$DB->tableExists('glpi_items_enclosures')) {
@@ -482,7 +486,7 @@ function update92xto930()
                   UNIQUE KEY `item` (`itemtype`,`items_id`),
                   KEY `relation` (`enclosures_id`,`itemtype`,`items_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 add table glpi_items_enclosures");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_items_enclosures");
     }
 
     if (!$DB->tableExists('glpi_pdumodels')) {
@@ -507,7 +511,7 @@ function update92xto930()
                   KEY `is_rackable` (`is_rackable`),
                   KEY `product_number` (`product_number`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 ad table glpi_pdumodels");
+        $DB->doQueryOrDie($query, "9.3 ad table glpi_pdumodels");
     }
     if ($DB->fieldExists('glpi_pdumodels', 'power_consumption')) {
         $migration->changeField(
@@ -535,7 +539,7 @@ function update92xto930()
                   KEY `date_creation` (`date_creation`),
                   KEY `date_mod` (`date_mod`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 add table glpi_pdutypes");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_pdutypes");
     }
 
     if (!$DB->tableExists('glpi_pdus')) {
@@ -572,7 +576,7 @@ function update92xto930()
                   KEY `manufacturers_id` (`manufacturers_id`),
                   KEY `pdutypes_id` (`pdutypes_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.3 add table glpi_pdus");
+        $DB->doQueryOrDie($query, "9.3 add table glpi_pdus");
     }
 
     if (!$DB->tableExists('glpi_plugs')) {
@@ -587,7 +591,7 @@ function update92xto930()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, '9.3 add table glpi_plugs');
+        $DB->doQueryOrDie($query, '9.3 add table glpi_plugs');
     }
 
     if (!$DB->tableExists('glpi_pdus_plugs')) {
@@ -602,7 +606,7 @@ function update92xto930()
                   KEY `plugs_id` (`plugs_id`),
                   KEY `pdus_id` (`pdus_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, '9.3 add table glpi_pdus_plugs');
+        $DB->doQueryOrDie($query, '9.3 add table glpi_pdus_plugs');
     }
 
     if (!countElementsInTable('glpi_plugs')) {
@@ -628,7 +632,7 @@ function update92xto930()
                   KEY `racks_id` (`racks_id`),
                   KEY `pdus_id` (`pdus_id`)
                   ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, '9.3 add table glpi_pdus_racks');
+        $DB->doQueryOrDie($query, '9.3 add table glpi_pdus_racks');
     }
 
     $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1,

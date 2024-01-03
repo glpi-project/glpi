@@ -1112,6 +1112,8 @@ class OperatingSystem extends AbstractInventoryAsset
     </OPERATINGSYSTEM>
     <HARDWARE>
       <NAME>pc002</NAME>
+      <WINCOMPANY>Test Company</WINCOMPANY>
+      <WINOWNER>Test Owner</WINOWNER>
     </HARDWARE>
     <BIOS>
       <SSN>ggheb7ne7</SSN>
@@ -1154,6 +1156,9 @@ class OperatingSystem extends AbstractInventoryAsset
         $this->integer($theos['operatingsystems_id'])->isIdenticalTo($os_id);
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
         $this->string($theos['install_date'])->isIdenticalTo("2022-01-01");
+        $this->string($theos['company'])->isIdenticalTo("Test Company");
+        $this->string($theos['owner'])->isIdenticalTo("Test Owner");
+        $this->string($theos['hostid'])->isIdenticalTo("a8c07701");
 
 
        //Redo inventory, but with updated operating system
@@ -1179,6 +1184,8 @@ class OperatingSystem extends AbstractInventoryAsset
     </OPERATINGSYSTEM>
     <HARDWARE>
       <NAME>pc002</NAME>
+      <WINCOMPANY>Test Company 2</WINCOMPANY>
+      <WINOWNER>Test Owner 2</WINOWNER>
     </HARDWARE>
     <BIOS>
       <SSN>ggheb7ne7</SSN>
@@ -1202,6 +1209,9 @@ class OperatingSystem extends AbstractInventoryAsset
         $this->integer($theos['operatingsystems_id'])->isNotIdenticalTo($os_id, 'Operating system link has not been updated');
         $this->integer($theos['is_dynamic'])->isIdenticalTo(1);
         $this->string($theos['install_date'])->isIdenticalTo("2022-10-14");
+        $this->string($theos['company'])->isIdenticalTo("Test Company 2");
+        $this->string($theos['owner'])->isIdenticalTo("Test Owner 2");
+        $this->string($theos['hostid'])->isIdenticalTo("a8c06c01");
     }
 
     public function testReplayRuleOnOS()

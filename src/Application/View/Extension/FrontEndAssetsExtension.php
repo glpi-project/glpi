@@ -49,6 +49,17 @@ use Twig\TwigFunction;
  */
 class FrontEndAssetsExtension extends AbstractExtension
 {
+    /**
+     * GLPI root dir.
+     * @var string
+     */
+    private $root_dir;
+
+    public function __construct(string $root_dir = GLPI_ROOT)
+    {
+        $this->root_dir = $root_dir;
+    }
+
     public function getFunctions(): array
     {
         return [
@@ -84,20 +95,34 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-        if (preg_match('/\.scss$/', $path)) {
-            $compiled_file = Html::getScssCompilePath($path);
+        $file_path = parse_url($path, PHP_URL_PATH); // Strip potential quey string from path
+
+        $extra_params = parse_url($path, PHP_URL_QUERY) ?: '';
+
+        if (preg_match('/\.scss$/', $file_path)) {
+            $compiled_file = Html::getScssCompilePath($file_path, $this->root_dir);
 
             if (!$is_debug && file_exists($compiled_file)) {
-                $path = str_replace(GLPI_ROOT, '', $compiled_file);
+                $path = str_replace($this->root_dir, '', $compiled_file);
             } else {
-                $path = '/front/css.php?file=' . $path . ($is_debug ? '&debug=1' : '');
+                $path = '/front/css.php?file=' . $file_path;
+                if ($is_debug) {
+                    $extra_params .= ($extra_params !== '' ? '&' : '') . 'debug=1';
+                }
             }
         } else {
-            $minified_path = str_replace('.css', '.min.css', $path);
+            $minified_path = str_replace('.css', '.min.css', $file_path);
 
-            if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
+            if (!$is_debug && file_exists($this->root_dir . '/' . $minified_path)) {
                 $path = $minified_path;
+            } else {
+                $path = $file_path;
             }
+        }
+
+        if ($extra_params !== '') {
+            // Append query string from initial path, if any
+            $path .= (str_contains($path, '?') ? '&' : '?') . $extra_params;
         }
 
         $path = Html::getPrefixedUrl($path);
@@ -120,7 +145,7 @@ class FrontEndAssetsExtension extends AbstractExtension
 
         $minified_path = str_replace('.js', '.min.js', $path);
 
-        if (!$is_debug && file_exists(GLPI_ROOT . '/' . $minified_path)) {
+        if (!$is_debug && file_exists($this->root_dir . '/' . $minified_path)) {
             $path = $minified_path;
         }
 
@@ -152,6 +177,7 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function customCss(): string
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $css = '';

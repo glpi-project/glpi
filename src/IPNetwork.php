@@ -461,7 +461,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $preparedInput = $this->prepareInput($input);
 
-        if (isset($preparedInput['error'])) {
+        if (isset($preparedInput['error']) && !isset($input['_no_message'])) {
             Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
         }
 
@@ -479,7 +479,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 
         $preparedInput = $this->prepareInput($input);
 
-        if (isset($preparedInput['error'])) {
+        if (isset($preparedInput['error']) && !isset($input['_no_message'])) {
             Session::addMessageAfterRedirect($preparedInput['error'], false, ERROR);
         }
 
@@ -506,7 +506,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         if ($this->networkUpdate) {
@@ -610,7 +610,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * @param integer $version    version of IP to look (only use when using arrays or string as input for
      *                            address or netmask n(default 0)
      *
-     * @return array  of networks found. If we want request several field, the return value will be
+     * @return false|array  of networks found. If we want request several field, the return value will be
      *                an array of array
      *
      * \warning The order of the elements inside the result are ordered from the nearest one to the
@@ -624,6 +624,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         $recursive = true,
         $version = 0
     ) {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($relation)) {
@@ -805,6 +806,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      **/
     public function getCriteriaForMatchingElement($tableName, $binaryFieldPrefix, $versionField)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $version = $this->fields["version"];
@@ -1038,6 +1040,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      **/
     public static function recreateTree()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Reset the tree
@@ -1179,6 +1182,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      **/
     public static function showIPNetworkProperties($entities_id = -1, $value = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();

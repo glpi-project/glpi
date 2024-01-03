@@ -95,7 +95,6 @@ class Config extends DbTestCase
             'Config$4'      => 'Assistance',
             'Config$12'     => 'Management',
             'GLPINetwork$1' => 'GLPI Network',
-            'Log$1'         => 'Historical',
         ];
         $this
          ->given($this->newTestedInstance)
@@ -894,5 +893,42 @@ class Config extends DbTestCase
             $infocom_exists = $infocom->getFromDBforDevice($asset_type, $asset_id2);
             $this->boolean($infocom_exists)->isFalse();
         }
+    }
+
+    public function testDetectRooDoc(): void
+    {
+        global $CFG_GLPI;
+
+        $uri_to_scriptname = [
+            '/'                        => '/index.php',
+            '/front/index.php?a=b'     => '/front/index.php',
+            '/api.php/endpoint/method' => '/api.php',
+            '//whatever/path/is'       => '/index.php', // considered as `path=/` + `pathinfo=/whatever/path/is` by GLPI router
+        ];
+
+        foreach (['', '/glpi', '/whatever/alias/is'] as $prefix) {
+            foreach ($uri_to_scriptname as $uri => $script_name) {
+                unset($CFG_GLPI['root_doc']);
+
+                chdir(GLPI_ROOT . dirname($script_name)); // cwd is expected to be the executed script dir
+
+                $server_bck = $_SERVER;
+                $_SERVER['REQUEST_URI'] = $prefix . $uri;
+                $_SERVER['SCRIPT_NAME'] = $prefix . $script_name;
+                \Config::detectRootDoc();
+                $_SERVER = $server_bck;
+
+                $this->string($CFG_GLPI['root_doc'])->isEqualTo($prefix);
+            }
+        }
+    }
+
+    public function testConfigLogNotEmpty()
+    {
+        $itemtype = 'Config';
+        $config_id = \Config::getConfigIDForContext('core');
+        $this->integer($config_id)->isGreaterThan(0);
+        $total_number = countElementsInTable("glpi_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);
+        $this->integer($total_number)->isGreaterThan(0);
     }
 }

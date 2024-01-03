@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $PLUGINS_EXCLUDED */
 global $PLUGINS_EXCLUDED;
 
 // follow download progress of a plugin with a minimal loading of files

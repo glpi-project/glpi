@@ -44,7 +44,7 @@ class NotificationAjax implements NotificationInterface
      * Check data
      *
      * @param mixed $value   The data to check (may differ for every notification mode)
-     * @param array $options Optionnal special options (may be needed)
+     * @param array $options Optional special options (may be needed)
      *
      * @return boolean
      **/
@@ -121,7 +121,11 @@ class NotificationAjax implements NotificationInterface
      */
     public static function getMyNotifications()
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $return = [];
         if ($CFG_GLPI['notifications_ajax']) {
@@ -168,6 +172,7 @@ class NotificationAjax implements NotificationInterface
      */
     public static function raisedNotification($id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $now = date('Y-m-d H:i:s');

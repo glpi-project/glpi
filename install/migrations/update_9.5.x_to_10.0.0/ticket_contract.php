@@ -38,8 +38,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();
@@ -55,7 +55,7 @@ if (!$DB->tableExists('glpi_tickets_contracts')) {
       UNIQUE KEY `unicity` (`tickets_id`,`contracts_id`),
       KEY `contracts_id` (`contracts_id`)
    ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "add table glpi_tickets_contracts");
+    $DB->doQueryOrDie($query, "add table glpi_tickets_contracts");
 }
 
 if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {

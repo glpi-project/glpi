@@ -9,18 +9,39 @@
 
 GLPI stands for **Gestionnaire Libre de Parc Informatique** is a Free Asset and IT Management Software package, that provides ITIL Service Desk features, licenses tracking and software auditing.
 
-GLPI features:
-* Inventory of computers, peripherals, network printers and any associated components through an interface, with inventory tools such as: [FusionInventory](http://fusioninventory.org/) or [OCS Inventory](https://www.ocsinventory-ng.org/)
-* Data Center Infrastructure Management (DCIM)
-* Item lifecycle management
-* Licenses management (ITIL compliant)
-* Management of warranty and financial information (purchase order, warranty and extension, damping)
-* Management of contracts, contacts, documents related to inventory items
-* Incidents, requests, problems and changes management
-* Knowledge base and Frequently-Asked Questions (FAQ)
-* Asset reservation
+Major GLPI Features:
 
-Moreover, GLPI supports many [plugins](http://plugins.glpi-project.org) that provide additional features.
+* **Service Asset and Configuration Management (SACM)**: Manages your IT assets and configurations, tracks computers, peripherals, network printers, and their associated components. With native dynamic inventory management from version 10 onwards, you can maintain an up-to-date configuration database, ensuring accurate and timely information about your assets.
+
+* **Request Fulfillment**: Streamlines request fulfillment processes, making it easy to manage service requests, incidents, and problems efficiently. This ensures that user requests are handled promptly and professionally, enhancing overall service quality.
+
+* **Incident and Problem Management**: Supports efficient handling of ITIL's Incident Management and Problem Management processes. Ensures that issues are addressed promptly, root causes are identified, and preventive measures are taken.
+
+* **Change Management**: Supports change management processes, enabling you to plan, review, and implement changes in a controlled and standardized manner. This helps minimize disruptions and risks associated with changes to your IT environment.
+
+* **Knowledge Management**: Includes a knowledge base and Frequently Asked Questions (FAQ) support, facilitating knowledge management. Allows you to capture, store, and share valuable information and solutions, empowering your team to resolve issues more effectively.
+
+* **Contract Management**: Offers comprehensive contract management capabilities, including managing contracts, contacts, and associated documents related to inventory items. Aligns with ITIL's Supplier Management process, ensuring you have control and visibility over your contracts and vendor relationships.
+
+* **Financial Management for IT Services**: Assists in managing financial information, such as purchase orders, warranty details, and depreciation. Aligns with ITIL's Financial Management for IT Services process, helping you optimize IT spending and investments.
+
+* **Asset Reservation**: Offers asset reservation functionality, allowing you to reserve IT assets for specific purposes or periods. Aligns with ITIL's Demand Management process, ensuring resources are allocated effectively based on demand.
+
+* **Data Center Infrastructure Management (DCIM)**: Provides features for managing data center infrastructure, enhancing control over critical assets.
+
+* **Software and License Management**: Includes functionality for managing software and licenses, ensuring compliance and cost control.
+
+* **Impact Analysis**: Supports impact analysis, helping assess the potential consequences of changes or incidents on IT services.
+
+* **Service Catalog (with SLM)**: Includes service catalog features, often linked with Service Level Management (SLM), to define and manage available services.
+
+* **Entity Separation**: Offers entity separation features, allowing distinct management of different organizational units or entities.
+
+* **Project Management**: Supports project management, helping organize and track projects and associated tasks.
+
+* **Intervention Planning**: Offers intervention planning capabilities for scheduling and managing on-site interventions.
+
+Moreover, supports many [plugins](http://plugins.glpi-project.org) that provide additional features.
 
 ## Demonstration
 
@@ -60,7 +81,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
     | ------------ | ----------- | ----------- |
     | 9.4.X        | 5.6         | 7.4         |
     | 9.5.X        | 7.2         | 8.0         |
-    | 10.0.X       | 7.4         | 8.1         |
+    | 10.0.X       | 7.4         | 8.2         |
 * Mandatory PHP extensions:
     - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
     - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)
@@ -122,6 +143,10 @@ See :
     * Tasks / HTTP Interface / Plugins
     * Bug reporting / Man pages
     * [Contribute to this documentation!](https://github.com/glpi-project/doc-agent)
+
+* [GLPI Plugins](https://glpi-plugins.readthedocs.io)
+    * Usage and features for some GLPI plugins
+    * [Contribute to this documentation!](https://github.com/pluginsglpi/doc)
 
 ## Additional resources
 

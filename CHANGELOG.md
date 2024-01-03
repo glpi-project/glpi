@@ -3,7 +3,54 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.10] unreleased
+## [10.0.12] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.11] 2023-12-13
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+- Usage of the `DBmysql::query()` method is deprecated, for security reasons, as it is most of the time used in an insecure way.
+  To execute DB queries, either `DBmysql::request()` can be used to craft query using the GLPI query builder,
+  either `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted SQL string.
+  This deprecation will not trigger any error, unless the `GLPI_STRICT_DEPRECATED` constant is set to `true`, to avoid
+  cluttering error logs.
+
+#### Removed
+
+
+## [10.0.10] 2023-09-25
 
 ### Added
 

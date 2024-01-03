@@ -60,6 +60,7 @@ class NotificationMailingSetting extends NotificationSetting
 
     public function showFormConfig($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($options['display'])) {

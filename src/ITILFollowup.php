@@ -93,9 +93,12 @@ class ITILFollowup extends CommonDBChild
      */
     public function canReadITILItem()
     {
-
-        $itemtype = $this->getItilObjectItemType();
-        $item     = new $itemtype();
+        if ($this->isParentAlreadyLoaded()) {
+            $item = $this->item;
+        } else {
+            $itemtype = $this->getItilObjectItemType();
+            $item     = new $itemtype();
+        }
         if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
             return false;
         }
@@ -128,7 +131,11 @@ class ITILFollowup extends CommonDBChild
     public function canViewItem()
     {
 
-        $itilobject = new $this->fields['itemtype']();
+        if ($this->isParentAlreadyLoaded()) {
+            $itilobject = $this->item;
+        } else {
+            $itilobject = new $this->fields['itemtype']();
+        }
         if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
         }
@@ -161,7 +168,11 @@ class ITILFollowup extends CommonDBChild
             return false;
         }
 
-        $itilobject = new $this->fields['itemtype']();
+        if ($this->isParentAlreadyLoaded()) {
+            $itilobject = $this->item;
+        } else {
+            $itilobject = new $this->fields['itemtype']();
+        }
 
         if (
             !$itilobject->can($this->getField('items_id'), READ)
@@ -177,8 +188,11 @@ class ITILFollowup extends CommonDBChild
 
     public function canPurgeItem()
     {
-
-        $itilobject = new $this->fields['itemtype']();
+        if ($this->isParentAlreadyLoaded()) {
+            $itilobject = $this->item;
+        } else {
+            $itilobject = new $this->fields['itemtype']();
+        }
         if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
         }
@@ -201,7 +215,11 @@ class ITILFollowup extends CommonDBChild
             return false;
         }
 
-        $itilobject = new $this->fields['itemtype']();
+        if ($this->isParentAlreadyLoaded()) {
+            $itilobject = $this->item;
+        } else {
+            $itilobject = new $this->fields['itemtype']();
+        }
         if (!$itilobject->can($this->getField('items_id'), READ)) {
             return false;
         }
@@ -237,6 +255,7 @@ class ITILFollowup extends CommonDBChild
     public function post_addItem()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Handle rich-text images and uploaded documents
@@ -266,6 +285,8 @@ class ITILFollowup extends CommonDBChild
             NotificationEvent::raiseEvent("add_followup", $parentitem, $options);
         }
 
+        PendingReason_Item::handlePendingReasonUpdateFromNewTimelineItem($this);
+
        // Add log entry in the ITILObject
         $changes = [
             0,
@@ -286,6 +307,7 @@ class ITILFollowup extends CommonDBChild
 
     public function post_deleteFromDB()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $donotif = $CFG_GLPI["use_notifications"];
@@ -444,8 +466,9 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $job      = new $this->fields['itemtype']();
@@ -520,16 +543,42 @@ class ITILFollowup extends CommonDBChild
         parent::post_updateItem($history);
     }
 
+    /**
+     * Check if $this->item already contains the correct parent item and thus
+     * help us to avoid reloading it for no reason
+     *
+     * @return bool
+     */
+    protected function isParentAlreadyLoaded(): bool
+    {
+        // If current item fields are not loaded, we can't know what its parent should be
+        if (!isset($this->fields['id']) || empty($this->fields['id'])) {
+            return false;
+        }
+
+        // Fail if no item are loaded un $this->item
+        if ($this->item === null) {
+            return false;
+        }
+
+        // Fail if loaded item's type doesn't match our expected parent itemtype
+        if ($this->item->getType() !== $this->fields['itemtype']) {
+            return false;
+        }
+
+        // Fail if loaded item's id is not what we expect
+        if ($this->item->getID() !== $this->fields['items_id']) {
+            return false;
+        }
+
+        return true;
+    }
 
     public function post_getFromDB()
     {
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading in GLPI 10.1
-        if (
-            $this->item == null // No item loaded
-            || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
-            || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
-        ) {
+        if (!$this->isParentAlreadyLoaded()) {
             $this->item = new $this->fields['itemtype']();
             $this->item->getFromDB($this->fields['items_id']);
         }
@@ -976,6 +1025,7 @@ class ITILFollowup extends CommonDBChild
      */
     public function isFromSupportAgent()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Get parent item

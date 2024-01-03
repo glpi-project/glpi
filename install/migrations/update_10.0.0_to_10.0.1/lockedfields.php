@@ -34,9 +34,9 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 if (!$DB->fieldExists("glpi_lockedfields", "is_global", false)) {

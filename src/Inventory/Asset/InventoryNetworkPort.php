@@ -136,6 +136,7 @@ trait InventoryNetworkPort
      */
     private function cleanUnmanageds()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $networkport = new NetworkPort();
@@ -188,6 +189,7 @@ trait InventoryNetworkPort
      */
     private function handleIpNetworks()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ipnetwork = new IPNetwork();
@@ -238,7 +240,8 @@ trait InventoryNetworkPort
                      'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
                      'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
                      'gateway'      => $port->gateway,
-                     'entities_id'  => $this->entities_id
+                     'entities_id'  => $this->entities_id,
+                     '_no_message'  => true //to prevent 'Network already defined in visible entities' message on add
                  ];
                  $ipnetwork->add(Sanitizer::sanitize($input));
             }
@@ -336,12 +339,13 @@ trait InventoryNetworkPort
      */
     private function handleUpdates()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
@@ -543,6 +547,7 @@ trait InventoryNetworkPort
      */
     private function handleInstantiation($type, $data, $ports_id, $load)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!in_array($type, ['NetworkPortEthernet', 'NetworkPortFiberchannel'])) {

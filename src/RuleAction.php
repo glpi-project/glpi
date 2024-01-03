@@ -62,7 +62,7 @@ class RuleAction extends CommonDBChild
 
 
     /**
-     * @param $rule_type
+     * @param string $rule_type
      **/
     public function __construct($rule_type = 'Rule')
     {
@@ -91,9 +91,9 @@ class RuleAction extends CommonDBChild
     /**
      * Get title used in rule
      *
-     * @param $nb  integer  (default 0)
+     * @param integer $nb (default 0)
      *
-     * @return Title of the rule
+     * @return string Title of the rule
      **/
     public static function getTypeName($nb = 0)
     {
@@ -328,10 +328,11 @@ class RuleAction extends CommonDBChild
      *
      * @param $ID the rule_description ID
      *
-     * @return an array of RuleAction objects
+     * @return array of RuleAction objects
      **/
     public function getRuleActions($ID)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -494,6 +495,7 @@ class RuleAction extends CommonDBChild
      **/
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($rule = getItemForItemtype($sub_type)) {
@@ -717,6 +719,7 @@ class RuleAction extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Yllen: you always have parent for action

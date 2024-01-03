@@ -49,7 +49,10 @@ class DbEngine extends AbstractRequirement
 
     public function __construct(\DBmysql $db)
     {
-        $this->title = __('DB engine version');
+        parent::__construct(
+            __('DB engine version')
+        );
+
         $this->db = $db;
     }
 

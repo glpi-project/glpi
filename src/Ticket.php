@@ -137,6 +137,7 @@ class Ticket extends CommonITILObject
 
     public static function getAdditionalMenuLinks()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $links = parent::getAdditionalMenuLinks();
@@ -506,7 +507,7 @@ class Ticket extends CommonITILObject
      * @since 9.2
      *
      * @param string  $laType (SLA | OLA)
-     * @param integer $id the sla/ola id
+     * @param integer $la_id the sla/ola id
      * @param integer $subtype (SLM::TTR | SLM::TTO)
      * @param bool    $delete_date (default false)
      *
@@ -734,6 +735,7 @@ class Ticket extends CommonITILObject
 
     public function pre_deleteItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -745,67 +747,73 @@ class Ticket extends CommonITILObject
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (static::canView()) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
-                switch ($item->getType()) {
-                    case 'User':
+                switch (get_class($item)) {
+                    case User::class:
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
                                 'glpi_tickets_users.tickets_id'  => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
                                 'glpi_tickets_users.users_id'    => $item->getID(),
-                                'glpi_tickets_users.type'        => CommonITILActor::REQUESTER
+                                'glpi_tickets_users.type'        => CommonITILActor::REQUESTER,
+                                'glpi_tickets.is_deleted'        => 0
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                          $title = __('Created tickets');
                         break;
 
-                    case 'Supplier':
+                    case Supplier::class:
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
                                 'glpi_suppliers_tickets.tickets_id'    => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                'glpi_suppliers_tickets.suppliers_id'  => $item->getID()
+                                'glpi_suppliers_tickets.suppliers_id'  => $item->getID(),
+                                'glpi_tickets.is_deleted'              => 0
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                         break;
 
-                    case 'SLA':
+                    case SLA::class:
                         $nb = countElementsInTable(
                             'glpi_tickets',
                             [
                                 'OR'  => [
                                     'slas_id_tto'  => $item->getID(),
                                     'slas_id_ttr'  => $item->getID()
-                                ]
+                                ],
+                                'is_deleted' => 0
                             ]
                         );
                         break;
-                    case 'OLA':
+
+                    case OLA::class:
                         $nb = countElementsInTable(
                             'glpi_tickets',
                             [
                                 'OR'  => [
                                     'olas_id_tto'  => $item->getID(),
                                     'olas_id_ttr'  => $item->getID()
-                                ]
+                                ],
+                                'is_deleted' => 0
                             ]
                         );
                         break;
 
-                    case 'Group':
-                          $nb = countElementsInTable(
-                              ['glpi_tickets', 'glpi_groups_tickets'],
-                              [
-                                  'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                  'glpi_groups_tickets.groups_id'  => $item->getID(),
-                                  'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER
-                              ] + getEntitiesRestrictCriteria(self::getTable())
-                          );
-                         $title = __('Created tickets');
+                    case Group::class:
+                        $nb = countElementsInTable(
+                            ['glpi_tickets', 'glpi_groups_tickets'],
+                            [
+                                'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_groups_tickets.groups_id'  => $item->getID(),
+                                'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
+                                'glpi_tickets.is_deleted'        => 0
+                            ] + getEntitiesRestrictCriteria(self::getTable())
+                        );
+                        $title = __('Created tickets');
                         break;
 
                     default:
@@ -863,26 +871,22 @@ class Ticket extends CommonITILObject
             }
         }
 
-       // Not check self::READALL for Ticket itself
-        switch ($item->getType()) {
-            case __CLASS__:
-                $ong    = [];
+        // Not check self::READALL for Ticket itself
+        if ($item instanceof self) {
+            $ong    = [];
 
-               // enquete si statut clos
-                $satisfaction = new TicketSatisfaction();
-                if (
-                    $satisfaction->getFromDB($item->getID())
-                    && $item->fields['status'] == self::CLOSED
-                ) {
-                    $ong[3] = __('Satisfaction');
-                }
-                if ($item->canView()) {
-                    $ong[4] = __('Statistics');
-                }
-                return $ong;
-
-           //   default :
-           //      return _n('Ticket','Tickets', Session::getPluralNumber());
+            // enquete si statut clos
+            $satisfaction = new TicketSatisfaction();
+            if (
+                $satisfaction->getFromDB($item->getID())
+                && $item->fields['status'] == self::CLOSED
+            ) {
+                $ong[3] = __('Satisfaction');
+            }
+            if ($item->canView()) {
+                $ong[4] = __('Statistics');
+            }
+            return $ong;
         }
 
         return '';
@@ -892,8 +896,8 @@ class Ticket extends CommonITILObject
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case __CLASS__:
+        switch (get_class($item)) {
+            case self::class:
                 switch ($tabnum) {
                     case 3:
                         $satisfaction = new TicketSatisfaction();
@@ -922,9 +926,9 @@ class Ticket extends CommonITILObject
                 }
                 break;
 
-            case 'Group':
-            case 'SLA':
-            case 'OLA':
+            case Group::class:
+            case SLA::class:
+            case OLA::class:
             default:
                 self::showListForItem($item, $withtemplate);
         }
@@ -1031,6 +1035,7 @@ class Ticket extends CommonITILObject
 
     public function prepareInputForUpdate($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $input = $this->transformActorsInput($input);
@@ -1272,8 +1277,10 @@ class Ticket extends CommonITILObject
             if ($user_id !== null && $user->getFromDB($user_id)) {
                 $input['_locations_id_of_requester']   = $user->fields['locations_id'];
                 $input['users_default_groups']         = $user->fields['groups_id'];
+                $input['profiles_id']         = $user->fields['profiles_id'];
                 $changes[]                             = '_locations_id_of_requester';
                 $changes[]                             = '_groups_id_of_requester';
+                $changes[]                             = 'profiles_id';
             }
 
             $input = $rules->processAllRules(
@@ -1538,6 +1545,7 @@ class Ticket extends CommonITILObject
 
         $sla = new SLA();
         if ($sla->getFromDB($slas_id)) {
+            $sla->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -1565,6 +1573,7 @@ class Ticket extends CommonITILObject
 
         $ola = new OLA();
         if ($ola->getFromDB($slas_id)) {
+            $ola->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -1634,8 +1643,9 @@ class Ticket extends CommonITILObject
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //for items added from rule
@@ -1930,11 +1940,13 @@ class Ticket extends CommonITILObject
                 ) {
                     $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                     $input['users_default_groups'] = $user->fields['groups_id'];
+                    $input['profiles_id'] = $user->fields['profiles_id']; //default profile
                     $tmprequester = $input["_users_id_requester"];
                 } else if (is_array($input["_users_id_requester"]) && ($user_id = reset($input["_users_id_requester"])) !== false) {
                     if ($user->getFromDB($user_id)) {
                         $input['_locations_id_of_requester'] = $user->fields['locations_id'];
                         $input['users_default_groups'] = $user->fields['groups_id'];
+                        $input['profiles_id'] = $user->fields['profiles_id']; //default profile
                     }
                 }
             }
@@ -2229,6 +2241,7 @@ class Ticket extends CommonITILObject
      **/
     public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = [];
@@ -2286,6 +2299,7 @@ class Ticket extends CommonITILObject
      **/
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2326,6 +2340,7 @@ class Ticket extends CommonITILObject
      */
     public function getActiveTicketsForItem($itemtype, $items_id, $type)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -2371,6 +2386,7 @@ class Ticket extends CommonITILObject
      **/
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -2443,7 +2459,7 @@ class Ticket extends CommonITILObject
      *
      * @param $type itemtype of object to add
      *
-     * @return rights
+     * @return boolean
      **/
     public function canAddItem($type)
     {
@@ -2671,6 +2687,7 @@ class Ticket extends CommonITILObject
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -2678,7 +2695,7 @@ class Ticket extends CommonITILObject
                 $rand = mt_rand();
                 $mergeparam = [
                     'name'         => "_mergeticket",
-                    'used'         => $ma->items['Ticket'],
+                    'used'         => $ma->getItems()['Ticket'],
                     'displaywith'  => ['id'],
                     'rand'         => $rand
                 ];
@@ -2762,7 +2779,7 @@ class Ticket extends CommonITILObject
                         solutiontemplates_id: value
                      }
                   }).done(function(data) {
-                     tinymce.get("{$content_id}").setContent(data.content);
+                     setRichTextEditorContent("{$content_id}", data.content);
 
                      var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))
                         ? 0
@@ -3040,6 +3057,7 @@ JAVASCRIPT;
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -3864,6 +3882,7 @@ JAVASCRIPT;
      **/
     public static function computeTco(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $totalcost = 0;
@@ -4051,6 +4070,7 @@ JAVASCRIPT;
      **/
     public static function showFormHelpdeskObserver($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //default values
@@ -4127,6 +4147,7 @@ JAVASCRIPT;
 
     public static function getDefaultValues($entity = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (is_numeric(Session::getLoginUserID(false))) {
@@ -4379,23 +4400,27 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
         $can_requester = $this->canRequesterUpdateItem();
-        $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
 
+        $item_ticket = null;
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
+            $canpriority = false;
+        } else {
+            $item_ticket = new Item_Ticket();
+            $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         }
 
         $sla = new SLA();
         $ola = new OLA();
-        $item_ticket = null;
 
-        $options['_canupdate'] = Session::haveRight('ticket', CREATE);
-        if ($options['_canupdate']) {
-            $item_ticket = new Item_Ticket();
+        if ($this->isNewItem()) {
+            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        } else {
+            $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
@@ -4434,6 +4459,7 @@ JAVASCRIPT;
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -4942,15 +4968,26 @@ JAVASCRIPT;
                         $options['criteria'][2]['link']       = 'AND';
 
                         if (Session::haveRight('ticket', Ticket::SURVEY)) {
-                            $options['criteria'][3]['field']      = 22; // author
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value']      = Session::getLoginUserID();
-                            $options['criteria'][3]['link']       = 'AND';
+                            $options['criteria'][3]['link']     = 'AND';
+                            $options['criteria'][3]['criteria'] = [
+                                [
+                                    'link'        => 'AND',
+                                    'field'       => 22, // author
+                                    'searchtype'  => 'equals',
+                                    'value'       => Session::getLoginUserID(),
+                                ],
+                                [
+                                    'link'        => 'OR',
+                                    'field'       => 4, // requester
+                                    'searchtype'  => 'equals',
+                                    'value'       => Session::getLoginUserID(),
+                                ]
+                            ];
                         } else {
-                            $options['criteria'][3]['field']      = 4; // requester
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value']      = Session::getLoginUserID();
-                            $options['criteria'][3]['link']       = 'AND';
+                            $options['criteria'][3]['field']        = 4; // requester
+                            $options['criteria'][3]['searchtype']   = 'equals';
+                            $options['criteria'][3]['value']        = Session::getLoginUserID();
+                            $options['criteria'][3]['link']         = 'AND';
                         }
                         $forcetab                 = 'Ticket$3';
 
@@ -5018,7 +5055,7 @@ JAVASCRIPT;
                     $row = [
                         'values' => []
                     ];
-                    if ($job->getFromDBwithData($data['id'], 0)) {
+                    if ($job->getFromDBwithData($data['id'])) {
                         $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
                         $row['values'][] = [
@@ -5139,58 +5176,7 @@ JAVASCRIPT;
         ];
 
         if ($foruser) {
-            $criteria['LEFT JOIN'] = [
-                'glpi_tickets_users' => [
-                    'ON' => [
-                        'glpi_tickets_users' => 'tickets_id',
-                        $table               => 'id'
-                    ]
-                ],
-                'glpi_ticketvalidations' => [
-                    'ON' => [
-                        'glpi_ticketvalidations'   => 'tickets_id',
-                        $table                     => 'id'
-                    ]
-                ]
-            ];
-
-            if (
-                Session::haveRight(self::$rightname, self::READGROUP)
-                && isset($_SESSION["glpigroups"])
-                && count($_SESSION["glpigroups"])
-            ) {
-                $criteria['LEFT JOIN']['glpi_groups_tickets'] = [
-                    'ON' => [
-                        'glpi_groups_tickets'   => 'tickets_id',
-                        $table                  => 'id', [
-                            'AND' => ['glpi_groups_tickets.type' => CommonITILActor::REQUESTER]
-                        ]
-                    ]
-                ];
-            }
-
-            $WHERE = [
-                'OR' => [
-                    'AND' => [
-                        'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-                        'OR' => [
-                            ['glpi_tickets_users.type' => CommonITILActor::REQUESTER],
-                            ['glpi_tickets_users.type' => CommonITILActor::OBSERVER]
-                        ],
-                    ],
-                    'glpi_tickets.users_id_recipient'            => Session::getLoginUserID(),
-                    'glpi_ticketvalidations.users_id_validate'   => Session::getLoginUserID()
-                ]
-            ];
-
-            if (
-                Session::haveRight(self::$rightname, self::READGROUP)
-                && isset($_SESSION["glpigroups"])
-                && count($_SESSION["glpigroups"])
-            ) {
-                $WHERE['OR']['glpi_groups_tickets.groups_id'] = $_SESSION['glpigroups'];
-            }
-            $criteria['WHERE'][] = $WHERE;
+            $criteria = array_merge_recursive($criteria, self::getCriteriaFromProfile());
         }
 
         return $criteria;
@@ -5204,7 +5190,11 @@ JAVASCRIPT;
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // show a tab with count of jobs in the central and give link
         if (!Session::haveRight(self::$rightname, self::READALL) && !self::canCreate()) {
@@ -5316,6 +5306,7 @@ JAVASCRIPT;
 
     public static function showCentralNewList()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::READALL)) {
@@ -5378,6 +5369,7 @@ JAVASCRIPT;
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -5400,8 +5392,8 @@ JAVASCRIPT;
             'reset'    => 'reset',
         ];
 
-        switch ($item->getType()) {
-            case 'User':
+        switch (get_class($item)) {
+            case User::class:
                 $restrict['glpi_tickets_users.users_id'] = $item->getID();
                 $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
 
@@ -5411,7 +5403,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'SLA':
+            case SLA::class:
                 $restrict[] = [
                     'OR' => [
                         'slas_id_tto'  => $item->getID(),
@@ -5426,7 +5418,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'OLA':
+            case OLA::class:
                 $restrict[] = [
                     'OR' => [
                         'olas_id_tto'  => $item->getID(),
@@ -5441,7 +5433,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Supplier':
+            case Supplier::class:
                 $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
                 $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
 
@@ -5451,7 +5443,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Group':
+            case Group::class:
                // Mini search engine
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
@@ -5846,6 +5838,7 @@ JAVASCRIPT;
      **/
     public static function cronCloseTicket($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -5927,7 +5920,11 @@ JAVASCRIPT;
      **/
     public static function cronAlertNotClosed($task)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;
@@ -5989,6 +5986,7 @@ JAVASCRIPT;
      **/
     public static function cronCreateInquest($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $conf        = new Entity();
@@ -6112,6 +6110,7 @@ JAVASCRIPT;
      **/
     public static function cronPurgeTicket(CronTask $task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ticket = new self();
@@ -6233,16 +6232,18 @@ JAVASCRIPT;
      **/
     public static function convertContentForTicket($html, $files, $tags)
     {
-
-        preg_match_all("/src\s*=\s*['|\"](.+?)['|\"]/", $html, $matches, PREG_PATTERN_ORDER);
-        if (isset($matches[1]) && count($matches[1])) {
-           // Get all image src
-
-            foreach ($matches[1] as $src) {
+        $src_patterns = [
+            'src\s*=\s*"[^"]+"',    // src="image.png"
+            "src\s*=\s*'[^']+'",    // src='image.png'
+            'src\s*=[^\s>]+',       // src=image.png
+        ];
+        $matches = [];
+        if (preg_match_all('/(' . implode('|', $src_patterns) . ')/', $html, $matches, PREG_PATTERN_ORDER) > 0) {
+            foreach ($matches[0] as $src_attr) {
                 // Set tag if image matches
                 foreach ($files as $data => $filename) {
-                    if (preg_match("/" . $data . "/i", $src)) {
-                        $html = preg_replace("/<img[^>]*src=['|\"]" . preg_quote($src, '/') . "['|\"][^>]*\>/s", "<p>" . Document::getImageTag($tags[$filename]) . "</p>", $html);
+                    if (preg_match("/" . $data . "/i", $src_attr)) {
+                        $html = preg_replace("/<img[^>]*" . preg_quote($src_attr, '/') . "[^>]*>/s", "<p>" . Document::getImageTag($tags[$filename]) . "</p>", $html);
                     }
                 }
             }
@@ -6427,6 +6428,7 @@ JAVASCRIPT;
      */
     private function fillInputForBusinessRules(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $entities_id = isset($input['entities_id'])
@@ -6622,6 +6624,7 @@ JAVASCRIPT;
      */
     public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $p = [
             'linktypes'          => [],

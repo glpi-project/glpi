@@ -77,6 +77,8 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
+    $computer = new Computer();
+    $computer->getFromDB($computer_vm->fields['computers_id']);
     Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
                   ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["purge"])) {

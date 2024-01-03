@@ -120,6 +120,7 @@ trait CalDAVPrincipalsTrait
     protected function getVisibleGroupsIterator(): Iterator
     {
 
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (

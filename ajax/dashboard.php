@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+$SECURITY_STRATEGY = 'no_check'; // specific checks done later to allow anonymous access to embed dashboards
+
 include('../inc/includes.php');
 
 use Glpi\Dashboard\Grid;
@@ -207,8 +209,9 @@ switch ($_REQUEST['action']) {
             try {
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
             } catch (\Throwable $e) {
-               // Send exception to logger without actually exiting.
-               // Use quiet mode to not break JSON result.
+                // Send exception to logger without actually exiting.
+                // Use quiet mode to not break JSON result.
+                /** @var \GLPI $GLPI */
                 global $GLPI;
                 $GLPI->getErrorHandler()->handleException($e, true);
             }

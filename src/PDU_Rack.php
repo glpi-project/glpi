@@ -83,7 +83,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {
@@ -215,6 +215,7 @@ class PDU_Rack extends CommonDBRelation
 
     public function showForm($ID, array $options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // search used racked (or sided mounted) pdus
@@ -314,6 +315,7 @@ class PDU_Rack extends CommonDBRelation
 
     public static function showListForRack(Rack $rack)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         echo "<h2>" . __("Side pdus") . "</h2>";
@@ -383,7 +385,11 @@ class PDU_Rack extends CommonDBRelation
 
     public static function showStatsForRack(Rack $rack)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $pdu   = new PDU();
         $pdu_m = new PDUModel();
@@ -529,6 +535,7 @@ JAVASCRIPT;
 
     public static function showVizForRack(Rack $rack, $side)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand  = mt_rand();
@@ -695,6 +702,7 @@ JAVASCRIPT;
      */
     public static function getForRackSide(Rack $rack, $side)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -714,6 +722,7 @@ JAVASCRIPT;
      */
     public static function getUsed()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->request([
@@ -724,23 +733,19 @@ JAVASCRIPT;
     /**
      * Return the opposite side from a passed side
      * @param  integer $side
-     * @return integer       the oposite side
+     * @return false|integer       the opposite side
      */
     public static function getOtherSide($side)
     {
         switch ($side) {
             case self::SIDE_TOP:
                 return self::SIDE_BOTTOM;
-            break;
             case self::SIDE_BOTTOM:
                 return self::SIDE_TOP;
-            break;
             case self::SIDE_LEFT:
                 return self::SIDE_RIGHT;
-            break;
             case self::SIDE_RIGHT:
                 return self::SIDE_LEFT;
-            break;
         }
         return false;
     }

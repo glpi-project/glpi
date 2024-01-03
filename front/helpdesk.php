@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
+$SECURITY_STRATEGY = 'no_check'; // Anonymous access may be allowed by configuration.
+
 include('../inc/includes.php');
 
 if ((int)$CFG_GLPI['use_anonymous_helpdesk'] === 0) {

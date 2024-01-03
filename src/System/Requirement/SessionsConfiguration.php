@@ -42,7 +42,9 @@ class SessionsConfiguration extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('Sessions configuration');
+        parent::__construct(
+            __('Sessions configuration')
+        );
     }
 
     protected function check()

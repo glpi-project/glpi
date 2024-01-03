@@ -60,7 +60,7 @@ class ComputerAntivirus extends CommonDBChild
 
        // can exists for template
         if (
-            ($item->getType() == 'Computer')
+            $item instanceof Computer
             && Computer::canView()
         ) {
             $nb = 0;
@@ -278,6 +278,7 @@ class ComputerAntivirus extends CommonDBChild
      **/
     public static function showForComputer(Computer $comp, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $comp->fields['id'];

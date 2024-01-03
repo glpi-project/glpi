@@ -34,10 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
-
 
 // Remove '' default values on glpi_impactcontexts.positions
 // MySQL does not allow default values on TEXT fields, while MariaDB does

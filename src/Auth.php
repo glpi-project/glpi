@@ -146,6 +146,7 @@ class Auth extends CommonGLPI
      */
     public function userExists($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request(
@@ -233,7 +234,7 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * Find a user in a LDAP and return is BaseDN
+     * Find a user in LDAP
      * Based on GRR auth system
      *
      * @param string    $ldap_method ldap_method array to use
@@ -241,7 +242,7 @@ class Auth extends CommonGLPI
      * @param string    $password    User Password
      * @param bool|null $error       Boolean flag that will be set to `true` if a LDAP error occurs during connection
      *
-     * @return string basedn of the user / false if not founded
+     * @return false|array
      */
     public function connection_ldap($ldap_method, $login, $password, ?bool &$error = null)
     {
@@ -398,6 +399,10 @@ class Auth extends CommonGLPI
      */
     public function connection_db($name, $password)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $pass_expiration_delay = (int)$CFG_GLPI['password_expiration_delay'];
@@ -511,6 +516,7 @@ class Auth extends CommonGLPI
      */
     public function getAlternateAuthSystemsUserLogin($authtype = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($authtype) {
@@ -766,7 +772,11 @@ class Auth extends CommonGLPI
      */
     public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $this->getAuthMethods();
         $this->user_present  = 1;
@@ -1116,6 +1126,7 @@ class Auth extends CommonGLPI
      */
     public static function dropdown($options = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $p = [
@@ -1312,6 +1323,7 @@ class Auth extends CommonGLPI
     public static function useAuthExt()
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        //Get all the ldap directories
@@ -1364,10 +1376,11 @@ class Auth extends CommonGLPI
      *                                (false by default)
      * @param string  $redirect_string redirect string if exists (default '')
      *
-     * @return void|integer nothing if redirect is true, else Auth system ID
+     * @return false|integer nothing if redirect is true, else Auth system ID
      */
     public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($_GET["noAUTO"]) || isset($_POST["noAUTO"])) {
@@ -1395,8 +1408,7 @@ class Auth extends CommonGLPI
         $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
         if (
             $CFG_GLPI["ssovariables_id"]
-            && ((isset($_SERVER[$ssovariable]) && !empty($_SERVER[$ssovariable]))
-              /*|| (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable]))*/)
+            && !empty($_SERVER[$ssovariable])
         ) {
             if ($redirect) {
                 Html::redirect($CFG_GLPI["root_doc"] . "/front/login.php" . $redir_string);
@@ -1440,6 +1452,7 @@ class Auth extends CommonGLPI
      */
     public static function redirectIfAuthenticated($redirect = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::getLoginUserID()) {
@@ -1487,7 +1500,11 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (Session::haveRight("user", User::UPDATEAUTHENT)) {
             echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('User') . "'>";
@@ -1512,7 +1529,7 @@ class Auth extends CommonGLPI
                             'name' => 'force_ldap_resynch'
                         ]);
 
-                        if (strlen($authldap->fields['sync_field']) > 0) {
+                        if (strlen($authldap->fields['sync_field'] ?? "") > 0) {
                             echo Html::submit("<i class='fas fa-broom'></i><span>" . __s('Clean LDAP fields and force synchronisation') . "</span>", [
                                 'name' => 'clean_ldap_fields'
                             ]);
@@ -1554,7 +1571,10 @@ class Auth extends CommonGLPI
      */
     public static function isValidLogin($login)
     {
-        return $login !== null && preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login);
+        return $login !== null && (
+            preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login)
+            || filter_var($login, FILTER_VALIDATE_EMAIL) != false
+        );
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -1599,6 +1619,7 @@ class Auth extends CommonGLPI
      */
     public static function showOtherAuthList()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
@@ -1805,6 +1826,7 @@ class Auth extends CommonGLPI
      */
     public static function getLoginAuthMethods()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $elements = [
@@ -1884,6 +1906,7 @@ class Auth extends CommonGLPI
      */
     public static function setRememberMeCookie(string $cookie_value): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $cookie_name     = session_name() . '_rememberme';

@@ -121,7 +121,7 @@
                      }
                   ) }}
                </div>
-               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
+               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                   <div class="row">
                      {% if candedit %}
                         {% if can_read_kb %}
@@ -255,9 +255,7 @@
                }
             }).done(function (data) {
                // set textarea content
-               if (tasktinymce = tinymce.get("content_{{ rand }}")) {
-                  tasktinymce.setContent(data.content);
-               }
+               setRichTextEditorContent("content_{{ rand }}", data.content);
 
                // set type
                var solutiontypes_id = isNaN(parseInt(data.solutiontypes_id))

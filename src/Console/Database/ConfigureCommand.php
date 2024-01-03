@@ -35,10 +35,11 @@
 
 namespace Glpi\Console\Database;
 
+use Glpi\Console\Command\ConfigurationCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ConfigureCommand extends AbstractConfigureCommand
+class ConfigureCommand extends AbstractConfigureCommand implements ConfigurationCommandInterface
 {
     protected function configure()
     {
@@ -55,5 +56,10 @@ class ConfigureCommand extends AbstractConfigureCommand
         $this->configureDatabase($input, $output);
 
         return 0; // Success if configuration throw no EarlyExitException
+    }
+
+    public function getConfigurationFilesToUpdate(InputInterface $input): array
+    {
+        return ['config_db.php'];
     }
 }

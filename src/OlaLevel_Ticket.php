@@ -55,10 +55,11 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @since 9.1 2 mandatory parameters
      *
-     * @return true if succeed else false
+     * @return boolean
      **/
     public function getFromDBForTicket($ID, $olaType)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -104,6 +105,7 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public function deleteForTicket($tickets_id, $olaType)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -162,6 +164,7 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public static function cronOlaTicket(CronTask $task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tot = 0;
@@ -321,6 +324,7 @@ class OlaLevel_Ticket extends CommonDBTM
      */
     public static function replayForTicket($tickets_id, $olaType)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [

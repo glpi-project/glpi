@@ -159,6 +159,7 @@ class NetworkPort extends InventoryAsset
      */
     private function prepareConnections(\stdClass $port)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $results = [];
@@ -403,6 +404,7 @@ class NetworkPort extends InventoryAsset
 
     private function handleVlans(\stdClass $port, int $netports_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!property_exists($port, 'logical_number')) {
@@ -445,7 +447,7 @@ class NetworkPort extends InventoryAsset
             foreach ($data as $key => $values) {
                 foreach ($db_vlans as $keydb => $valuesdb) {
                     if (
-                        $values->name ?? '' == $valuesdb['name']
+                        ($values->name ?? '') == $valuesdb['name']
                         && ($values->tag ?? 0) == $valuesdb['tag']
                         && ($values->tagged ?? 0) == $valuesdb['tagged']
                     ) {
@@ -471,7 +473,7 @@ class NetworkPort extends InventoryAsset
             $db_vlans[$row['name'] . '|' . $row['tag']] = $row['id'];
         }
 
-       //add new vlans
+        //add new vlans
         foreach ($data as $vlan_data) {
             $vlan_key = ($vlan_data->name ?? '') . '|' . $vlan_data->tag;
             $exists = isset($db_vlans[$vlan_key]);
@@ -663,23 +665,24 @@ class NetworkPort extends InventoryAsset
                 }
             }
             $items_id = $item->add(Sanitizer::sanitize($input));
-
-            $rulesmatched = new \RuleMatchedLog();
-            $agents_id = $this->agent->fields['id'];
-            if (empty($agents_id)) {
-                $agents_id = 0;
-            }
-            $inputrulelog = [
-                'date'      => date('Y-m-d H:i:s'),
-                'rules_id'  => $rules_id,
-                'items_id'  => $items_id,
-                'itemtype'  => $itemtype,
-                'agents_id' => $agents_id,
-                'method'    => 'inventory'
-            ];
-            $rulesmatched->add($inputrulelog, [], false);
-            $rulesmatched->cleanOlddata($items_id, $itemtype);
         }
+
+        $rulesmatched = new \RuleMatchedLog();
+        $agents_id = $this->agent->fields['id'];
+        if (empty($agents_id)) {
+            $agents_id = 0;
+        }
+
+        $inputrulelog = [
+            'date'      => date('Y-m-d H:i:s'),
+            'rules_id'  => $rules_id,
+            'items_id'  => $items_id,
+            'itemtype'  => $itemtype,
+            'agents_id' => $agents_id,
+            'method'    => 'inventory'
+        ];
+        $rulesmatched->add($inputrulelog, [], false);
+        $rulesmatched->cleanOlddata($items_id, $itemtype);
 
         if (!count($ports_id)) {
            //create network port
@@ -707,6 +710,7 @@ class NetworkPort extends InventoryAsset
 
             if (property_exists($port, 'ifdescr') && !empty($port->ifdescr)) {
                 $input['name'] = $port->ifdescr;
+                $input['ifdescr'] = $port->ifdescr;
             }
 
             if (property_exists($port, 'mac') && !empty($port->mac)) {
@@ -737,6 +741,7 @@ class NetworkPort extends InventoryAsset
      */
     public function getNameForMac($mac)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $exploded = explode(':', $mac);
@@ -795,11 +800,19 @@ class NetworkPort extends InventoryAsset
             $bkp_ports = $this->ports;
             $stack_id = $mainasset->getStackId();
             $need_increment_index = false;
+            $count_char = 0;
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
                     preg_match('@[\w\s+]+(\d+)/[\w]@', $val->name, $matches)
                 ) {
+                    //reset increment when name lenght differ
+                    //Gi0/0 then Gi0/0/1, Gi0/0/2, Gi0/0/3
+                    if ($count_char && $count_char != strlen($val->name)) {
+                        $need_increment_index = false;
+                    }
+                    $count_char = strlen($val->name);
+
                     //in case when port is related to chassis index 0 (stack_id)
                     //ex : GigabitEthernet 0/1    Gi0/0/1
                     //GLPI compute stack_id by starting with 1 (see: NetworkEquipment->getStackedSwitches)
@@ -809,7 +822,6 @@ class NetworkPort extends InventoryAsset
                         //current NetworkEquipement must have the index incremented
                         $need_increment_index = true;
                     }
-
                     if ($matches[1] != $stack_id) {
                         //port attached to another stack entry, remove from here
                         unset($this->ports[$k]);

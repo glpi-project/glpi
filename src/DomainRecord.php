@@ -254,7 +254,7 @@ class DomainRecord extends CommonDBChild
      * @param array   $input Input values
      * @param boolean $add   True when we're adding a record
      *
-     * @return aray|false
+     * @return array|false
      */
     private function prepareInput($input, $add = false)
     {
@@ -332,6 +332,7 @@ class DomainRecord extends CommonDBChild
 
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -502,6 +503,7 @@ JAVASCRIPT;
      **/
     public static function showForDomain(Domain $domain)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];

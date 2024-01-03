@@ -107,6 +107,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $entity_restrict = -1,
         $options = []
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,

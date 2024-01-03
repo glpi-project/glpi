@@ -59,6 +59,7 @@ define('GLPI_VAR_DIR', null);
 define('GLPI_FORCE_MAIL', null);
 define('GLPI_LOG_LVL', null);
 define('GLPI_SQL_DEBUG', null);
+define('GLPI_STRICT_DEPRECATED', null);
 
 // Other constants
 define('GLPI_AJAX_DASHBOARD', null);
@@ -84,3 +85,4 @@ define('GLPI_USE_CSRF_CHECK', null);
 define('GLPI_USE_IDOR_CHECK', null);
 define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
 define('GLPI_CENTRAL_WARNINGS', null);
+define('GLPI_TEXT_MAXSIZE', null);

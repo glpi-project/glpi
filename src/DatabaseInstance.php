@@ -94,6 +94,7 @@ class DatabaseInstance extends CommonDBTM
 
     public function getDatabases(): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $dbs = [];
 
@@ -114,6 +115,7 @@ class DatabaseInstance extends CommonDBTM
 
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -235,7 +237,7 @@ class DatabaseInstance extends CommonDBTM
         echo "</td></tr>\n";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_groups_id_tech$rand'>" . __('Group in charge of the hardware') . "</label></td>";
+        echo "<td><label for='dropdown_groups_id_tech$rand'>" . __('Group in charge') . "</label></td>";
         echo "<td>";
         Group::dropdown([
             'name'      => 'groups_id_tech',
@@ -257,7 +259,7 @@ class DatabaseInstance extends CommonDBTM
         echo "</textarea></td></tr>";
 
         echo "<tr class='tab_bg_1'>";
-        echo "<td><label for='dropdown_users_id_tech$rand'>" . __('Technician in charge of the hardware') . "</label></td>";
+        echo "<td><label for='dropdown_users_id_tech$rand'>" . __('Technician in charge') . "</label></td>";
         echo "<td>";
         User::dropdown(['name'   => 'users_id_tech',
             'value'  => $this->fields["users_id_tech"],
@@ -480,8 +482,11 @@ class DatabaseInstance extends CommonDBTM
                 if ($itemtype !== null && class_exists($itemtype)) {
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
-                        $item->getFromDB($values[$field]);
-                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        if ($item->getFromDB($values[$field])) {
+                            return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        } else {
+                            return ' ';
+                        }
                     }
                 } else {
                     return ' ';
@@ -501,6 +506,7 @@ class DatabaseInstance extends CommonDBTM
      */
     public static function getTypes($all = false): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['databaseinstance_types'];
@@ -561,6 +567,7 @@ class DatabaseInstance extends CommonDBTM
 
     public static function showInstances(CommonDBTM $item, $withtemplate)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $instances = $DB->request([

@@ -26,7 +26,6 @@
         "ext-session": "*",
         "ext-simplexml": "*",
         "ext-zlib": "*",
-        "blueimp/jquery-file-upload": "^10.32",
         "donatj/phpuseragentparser": "^1.7",
         "elvanto/litemoji": "^4.1",
         "glpi-project/inventory_format": "^1.1",
@@ -80,7 +79,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
         "friendsoftwig/twigcs": "^6.1",
-        "glpi-project/tools": "^0.6",
+        "glpi-project/tools": "^0.7",
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.3",
@@ -113,6 +112,9 @@
         "sort-packages": true,
         "allow-plugins": {
             "phpstan/extension-installer": true
+        },
+        "audit": {
+            "abandoned": "report"
         }
     },
     "autoload": {
@@ -141,14 +143,16 @@
             "@php -f vendor/bin/build_hw_jsons",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true"
+            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true",
+            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/php-markdown-php8-compat.patch || true"
         ],
         "post-update-cmd": [
             "@php -r \"file_put_contents('.composer.hash', sha1_file('composer.lock'));\"",
             "@php -f vendor/bin/build_hw_jsons",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-invalid-header-ignore.patch || true",
             "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true"
+            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-4.1.0...4.2.0.patch || true",
+            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/php-markdown-php8-compat.patch || true"
         ],
         "build": [
             "bin/console dependencies install && bin/console locales:compile"

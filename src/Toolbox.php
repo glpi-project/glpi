@@ -63,7 +63,7 @@ class Toolbox
         if (!$max) {
             $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
         }
-        return $max;
+        return (int)$max;
     }
 
 
@@ -299,6 +299,7 @@ class Toolbox
     public static function unclean_cross_side_scripting_deep($value)
     {
         Toolbox::deprecated('Use "Glpi\Toolbox\Sanitizer::decodeHtmlSpecialCharsRecursive()"');
+        /** @var \DBmysql $DB */
         global $DB;
         return $DB->escape(Sanitizer::decodeHtmlSpecialCharsRecursive($value));
     }
@@ -407,6 +408,7 @@ class Toolbox
         $tps = microtime(true);
 
         if ($logger === null) {
+            /** @var \Monolog\Logger $PHPLOGGER */
             global $PHPLOGGER;
             $logger = $PHPLOGGER;
         }
@@ -418,6 +420,7 @@ class Toolbox
             error_log($e);
         }
 
+        /** @var \Monolog\Logger $SQLLOGGER */
         global $SQLLOGGER;
         if (isCommandLine() && $level >= Logger::WARNING && $logger !== $SQLLOGGER) {
            // Do not output related messages to $SQLLOGGER as they are redundant with
@@ -486,6 +489,7 @@ class Toolbox
      */
     public static function logSqlDebug()
     {
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         $args = func_get_args();
         self::log($SQLLOGGER, Logger::DEBUG, $args);
@@ -496,6 +500,7 @@ class Toolbox
      */
     public static function logSqlWarning()
     {
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         $args = func_get_args();
         self::log($SQLLOGGER, Logger::WARNING, $args);
@@ -506,6 +511,7 @@ class Toolbox
      */
     public static function logSqlError()
     {
+        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
         global $SQLLOGGER;
         $args = func_get_args();
         self::log($SQLLOGGER, Logger::ERROR, $args);
@@ -567,11 +573,15 @@ class Toolbox
      * @param  string $message the message to send
      * @return void
      */
-    public static function deprecated($message = "Called method is deprecated")
+    public static function deprecated($message = "Called method is deprecated", $strict = true)
     {
-        trigger_error($message, E_USER_DEPRECATED);
+        if (
+            $strict === true ||
+            (defined('GLPI_STRICT_DEPRECATED') && GLPI_STRICT_DEPRECATED === true)
+        ) {
+            trigger_error($message, E_USER_DEPRECATED);
+        }
     }
-
 
     /**
      * Log a message in log file
@@ -584,6 +594,7 @@ class Toolbox
      **/
     public static function logInFile($name, $text, $force = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $user = '';
@@ -599,6 +610,7 @@ class Toolbox
             $ok = error_log(date("Y-m-d H:i:s") . "$user\n" . $text, 3, GLPI_LOG_DIR . "/" . $name . ".log");
         }
 
+        /** @var \Glpi\Console\Application $application */
         global $application;
         if ($application instanceof Application) {
             $application->getOutput()->writeln('<comment>' . $text . '</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
@@ -629,6 +641,7 @@ class Toolbox
      **/
     public static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($mode)) {
@@ -659,10 +672,10 @@ class Toolbox
      * Send a file (not a document) to the navigator
      * See Document->send();
      *
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
-     * @param boolean     $add_expires add expires headers maximize cacheability ?
+     * @param string      $file            storage filename
+     * @param string      $filename        file title
+     * @param string|null $mime            file mime type
+     * @param boolean     $expires_headers add expires headers maximize cacheability ?
      *
      * @return void
      **/
@@ -768,6 +781,7 @@ class Toolbox
      **/
     public static function addslashes_deep($value)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $value = ((array) $value === $value)
@@ -853,7 +867,7 @@ class Toolbox
 
        // no K M or G
         if (isset($matches[1])) {
-            $mem = $matches[1];
+            $mem = (int)$matches[1];
             if (isset($matches[2])) {
                 switch ($matches[2]) {
                     case "G":
@@ -1243,6 +1257,7 @@ class Toolbox
      **/
     public static function getItemTypeFormURL($itemtype, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1272,6 +1287,7 @@ class Toolbox
      **/
     public static function getItemTypeSearchURL($itemtype, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
@@ -1306,6 +1322,7 @@ class Toolbox
      **/
     public static function getItemTypeTabsURL($itemtype, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $filename = "/ajax/common.tabs.php";
@@ -1437,6 +1454,7 @@ class Toolbox
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ) {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
@@ -1597,6 +1615,7 @@ class Toolbox
      **/
     public static function manageRedirect($where)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($where)) {
@@ -1619,10 +1638,10 @@ class Toolbox
                     }
                 }
 
-                // Redirect to relative url -> redirect with glpi url to prevent exploits
+                // Redirect to relative url
                 if ($decoded_where[0] == '/') {
-                    $redirect_to = $CFG_GLPI["url_base"] . $decoded_where;
-                   //echo $redirect_to; exit();
+                    // prevent exploit (//example.com) and force a redirect from glpi root
+                    $redirect_to = $CFG_GLPI["root_doc"] . "/" . ltrim($decoded_where, '/');
                     Html::redirect($redirect_to);
                 }
 
@@ -1887,7 +1906,7 @@ class Toolbox
     {
 
         if (!Config::canUpdate()) {
-            return false;
+            return '';
         }
 
         $tab = Toolbox::parseMailServerConnectString($value);
@@ -2333,16 +2352,17 @@ class Toolbox
     /**
      * Create the GLPI default schema
      *
-     * @param string  $lang Language to install
-     * @param DBmysql $db   Database instance to use, will fallback to a new instance of DB if null
+     * @param string   $lang     Language to install
+     * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
      *
      * @return void
      *
      * @since 9.1
-     * @since 9.4.7 Added $db parameter
+     * @since 9.4.7 Added $database parameter
      **/
     public static function createSchema($lang = 'en_GB', DBmysql $database = null)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (null === $database) {
@@ -2351,7 +2371,8 @@ class Toolbox
             $database = new DB();
         }
 
-       // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
+        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
+        /** @var \DBmysql $DB */
         $DB = $database;
 
         if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
@@ -2482,7 +2503,7 @@ class Toolbox
      *
      * @param string $value  encoded value
      *
-     * @return string  decoded array
+     * @return array  decoded array
      *
      * @since 0.83.91
      **/
@@ -2511,6 +2532,7 @@ class Toolbox
     {
         Toolbox::deprecated('Checking `HTTP_REFERER` does not provide any security.');
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $isvalidReferer = true;
@@ -2691,6 +2713,7 @@ class Toolbox
      **/
     public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $document = new Document();
@@ -2885,7 +2908,7 @@ class Toolbox
      * **Fast** JSON detection of a given var
      * From https://stackoverflow.com/a/45241792
      *
-     * @param mixed the var to test
+     * @param mixed $json the var to test
      *
      * @return bool
      */
@@ -3242,7 +3265,7 @@ class Toolbox
      * Get picture URL.
      *
      * @param string $path
-     * @param bool  bool get full path
+     * @param bool   $full get full path
      *
      * @return null|string
      *
@@ -3250,6 +3273,7 @@ class Toolbox
      */
     public static function getPictureUrl($path, $full = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $path = Html::cleanInputText($path); // prevent xss
@@ -3542,6 +3566,7 @@ HTML;
      */
     public static function cleanTarget(string $target): string
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $file = preg_replace('/^' . preg_quote($CFG_GLPI['root_doc'], '/') . '/', '', $target);
@@ -3555,8 +3580,8 @@ HTML;
     /**
      * Get available tabs for a given item
      *
-     * @param string   $itemtype Type of the item
-     * @param int|string|null $itemtype Id the item, optional
+     * @param string          $itemtype Type of the item
+     * @param int|string|null $id       Id the item, optional
      *
      * @return array
      */
@@ -3593,6 +3618,7 @@ HTML;
      */
     public static function handleProfileChangeRedirect(): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $redirect = $_SESSION['_redirected_from_profile_selector'] ?? false;
@@ -3684,7 +3710,7 @@ HTML;
         ];
         if (count($matches) >= 3 && isset($supported_sizes[strtolower($matches[2])])) {
             // Known format
-            $size = $matches[1];
+            $size = (int)$matches[1];
             $size *= pow(1024, $supported_sizes[strtolower($matches[2])]);
         }
         return $size;

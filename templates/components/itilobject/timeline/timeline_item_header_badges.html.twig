@@ -32,20 +32,34 @@
  #}
 
 {% set timeline_display_date = session('glpitimeline_date_format') %}
+{% set date_creation_formatted = date_creation %}
+{% set date_mod_formatted = date_mod %}
+{% set date_creation_relative = date_creation %}
+{% set date_mod_relative = date_mod %}
+
+{% if not (anchor starts with 'Log_') %}
+    {# Workaround issue where log data already has a formatted datetime -- see https://github.com/glpi-project/glpi/pull/15901 #}
+    {# TODO in GLPI 10.1: Remove this workaround #}
+    {% set date_creation_formatted = date_creation|formatted_datetime %}
+    {% set date_mod_formatted = date_mod|formatted_datetime %}
+    {% set date_creation_relative = date_creation|relative_datetime %}
+    {% set date_mod_relative = date_mod|relative_datetime %}
+{% endif %}
+
 <span class="badge user-select-auto text-wrap d-none d-md-block">
    {% set date_span %}
       <span
          {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
-            title="{{ date_creation|formatted_datetime }}"
+            title="{{ date_creation_formatted }}"
             data-bs-toggle="tooltip" data-bs-placement="bottom"
          {% endif %}
       >
          <i class="far fa-clock me-1"></i>
          <a href="#{{ anchor }}">
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
-               {{ date_creation|relative_datetime }}
+               {{ date_creation_relative }}
             {% else %}
-               {{ date_creation|formatted_datetime }}
+               {{ date_creation_formatted }}
             {% endif %}
          </a>
       </span>
@@ -55,6 +69,7 @@
       {% set creator_span %}
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id,
+            'user_object': user_object,
             'enable_anonymization': anonym_user
          }, with_context = false) }}
       {% endset %}
@@ -70,15 +85,15 @@
       {% set date_span %}
          <span
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
-               title="{{ date_mod|formatted_datetime }}"
+               title="{{ date_mod_formatted }}"
                data-bs-toggle="tooltip" data-bs-placement="bottom"
             {% endif %}
          >
             <i class="far fa-clock me-1"></i>
             {% if timeline_display_date == constant('Config::TIMELINE_RELATIVE_DATE') %}
-               {{ date_mod|relative_datetime }}
+               {{ date_mod_relative }}
             {% else %}
-               {{ date_mod|formatted_datetime }}
+               {{ date_mod_formatted }}
             {% endif %}
          </span>
       {% endset %}
@@ -88,6 +103,7 @@
       {% set editor_span %}
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id_editor,
+            'user_object': users_id == users_id_editor ? user_object : null,
             'enable_anonymization': anonym_editor
          }, with_context = false) }}
       {% endset %}

@@ -35,6 +35,9 @@
 
 include('../inc/includes.php');
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 Session::checkRight("config", UPDATE);
 
 $config = new Config();

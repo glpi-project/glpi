@@ -105,6 +105,7 @@ class NotificationTargetObjectLock extends NotificationTarget
 
     public function addDataForTemplate($event, $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $events = $this->getEvents();

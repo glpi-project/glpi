@@ -34,9 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
- * @var array $ADDTODISPLAYPREF
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();

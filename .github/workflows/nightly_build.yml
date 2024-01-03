@@ -29,7 +29,7 @@ jobs:
           --volume /glpi:/var/glpi
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v3"
+        uses: "actions/checkout@v4"
         with:
           ref: ${{ matrix.branch }}
       - name: "Build if updated during the last 24h"
@@ -37,9 +37,9 @@ jobs:
         run: |
           SHA=$( git rev-parse HEAD )
           if [ -n "$( git rev-list -n 1 --after="24 hours" $SHA )" ]; then
-            echo "::set-output name=build::yes"
+            echo "build=yes" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=build::no"
+            echo "build=no" >> $GITHUB_OUTPUT
           fi
       - name: "Deploy source into app container"
         if: ${{ steps.updated.outputs.build == 'yes' }}
@@ -55,7 +55,7 @@ jobs:
         if: ${{ steps.updated.outputs.build == 'yes' }}
         run: |
           REF_NAME=$(echo ${{ matrix.branch }} | sed -E 's|/bugfixes||')
-          echo "::set-output name=basename::$REF_NAME"
+          echo "basename=$REF_NAME" >> $GITHUB_OUTPUT
           SHA=$(git rev-parse --short HEAD)
           echo "release_name=$REF_NAME-$SHA" >> $GITHUB_ENV
       - name: "Build"
@@ -64,7 +64,7 @@ jobs:
           docker exec --interactive ${{ job.services.app.id }} tools/make_release.sh -y . ${{ env.release_name }}
           docker cp ${{ job.services.app.id }}:/tmp/glpi-${{ env.release_name }}.tgz ${{ github.workspace }}/${{ env.release_name }}.tar.gz
           cp ${{ github.workspace }}/${{ env.release_name }}.tar.gz ${{ github.workspace }}/${{ steps.release-name.outputs.basename }}.tar.gz
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         if: ${{ steps.updated.outputs.build == 'yes' }}
         with:
           repository: ${{ github.repository_owner }}/glpi-project.github.io

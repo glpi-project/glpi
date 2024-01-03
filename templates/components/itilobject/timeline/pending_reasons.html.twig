@@ -33,8 +33,11 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
-{% if subitem.isNewItem() or pending_item or call('PendingReason_Item::isLastTimelineItem', [subitem])  %}
+{% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
+   {% set pending_item = call('PendingReason_Item::getForItem', [subitem, true]) %}
+   {% set pending_item_parent = call('PendingReason_Item::getForItem', [item, true]) %}
+   {% set pendingreasons_id = pending_item.fields['pendingreasons_id'] ?? pending_item_parent.fields['pendingreasons_id'] ?? 0 %}
+
    <div class="row">
       <div class="col-12 col-sm-4" title="{{ "PendingReason"|itemtype_name }}"
            data-bs-toggle="tooltip" data-bs-placement="top">
@@ -55,7 +58,7 @@
          {{ fields.dropdownField(
             'PendingReason',
             'pendingreasons_id',
-            subitem.fields['pendingreasons_id'],
+            pendingreasons_id,
             pendingreasons_lbl,
             {
                'label_class': 'col-1',
@@ -96,12 +99,12 @@
          </script>
       </div>
 
-      <div class="collapse col-12 col-sm-8" id="pending-reasons-more_options_{{ rand }}">
+      <div class="collapse col-12 col-sm-8 {{ pendingreasons_id ? "show" : "" }}" id="pending-reasons-more_options_{{ rand }}">
          <div class="row">
             <div class="col-12 col-sm-6" title="{{ __('Automatic follow-up') }}"
                   data-bs-toggle="tooltip" data-bs-placement="top">
                {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
-                  pending_item.fields["followup_frequency"],
+                  pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent.fields['followup_frequency'],
                   "",
                   {
                      'rand': rand
@@ -127,7 +130,7 @@
             <div class="col-12 col-sm-6" title="{{ __('Automatic resolution') }}"
                  data-bs-toggle="tooltip" data-bs-placement="top">
                {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
-                     pending_item.fields["followups_before_resolution"],
+                     pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent.fields['followups_before_resolution'],
                      "",
                      {
                         'rand': rand

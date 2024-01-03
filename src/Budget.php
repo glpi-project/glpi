@@ -95,7 +95,7 @@ class Budget extends CommonDropdown
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     $item->showValuesByEntity();
@@ -320,6 +320,7 @@ class Budget extends CommonDropdown
      **/
     public function showItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -663,6 +664,7 @@ class Budget extends CommonDropdown
      **/
     public function showValuesByEntity()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];

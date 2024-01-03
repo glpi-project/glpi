@@ -82,7 +82,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         if (
             !$withtemplate
-            && ($item->getType() == $this->getType())
+            && ($item instanceof static)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -165,6 +165,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function pre_deleteItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Not set in case of massive delete : use parent
@@ -196,6 +197,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function prepareInputForUpdate($input)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         if (isset($input[$this->getForeignKeyField()])) {
@@ -232,6 +234,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
      **/
     public function regenerateTreeUnderID($ID, $updateName, $changeParent)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
        //drop from sons cache when needed
@@ -305,6 +311,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     protected function cleanParentsSons($id = null, $cache = true)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         if ($id === null) {
@@ -350,6 +360,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     protected function addSonInParents()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
        //add sons cache when needed
@@ -389,7 +400,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
 
         $ID           = $this->getID();
@@ -509,6 +520,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      */
     public function showChildren()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID            = $this->getID();
@@ -863,6 +875,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
     public function findID(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($input['completename'])) {
@@ -934,7 +947,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
 
        // Import a full tree from completename
-        $names  = explode('>', $input['completename']);
+        $names  = explode('>', self::unsanitizeSeparatorInCompletename($input['completename']));
         $fk     = $this->getForeignKeyField();
         $i      = count($names);
         $parent = 0;
@@ -996,5 +1009,24 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
         $separator = ' > ';
         return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
+    }
+
+    /**
+     * Separator may be encoded in input, but should sometimes be decoded to have a complename
+     * that fits the value expected to be stored in DB.
+     *
+     * This method aims to normalize the completename value.
+     *
+     * @param string|null $completename
+     *
+     * @return string|null
+     */
+    public static function unsanitizeSeparatorInCompletename(?string $completename): ?string
+    {
+        if (empty($completename)) {
+            return $completename;
+        }
+        $separator = ' > ';
+        return implode($separator, explode(Sanitizer::sanitize($separator), $completename));
     }
 }

@@ -1540,8 +1540,7 @@ class Computer extends AbstractInventoryAsset
         //check relation has been created - and there is only one remaining
         $domain_item = new \Domain_Item();
         $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $domain->fields['id']]))->isTrue();
-        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id]))->isTrue();
-        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id, 'is_deleted' => 1]))->isTrue();
+        $this->boolean($domain_item->getFromDBByCrit(['domains_id' => $first_id]))->isFalse();
 
         //check if one has been added non dynamic
         $ndyn_domain = new \Domain();
@@ -1612,5 +1611,157 @@ class Computer extends AbstractInventoryAsset
         $lockedfield = new \Lockedfield();
         $locks = $lockedfield->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($locks))->isIdenticalTo(0);
+    }
+
+    public function testErrorOnFieldUnicityChecks()
+    {
+        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $computer_name = __FUNCTION__;
+
+        $this->login();
+
+        $this->createItem(
+            \FieldUnicity::class,
+            [
+                'name'          => 'Unique computer name',
+                'entities_id'   => 0,
+                'is_recursive'  => 1,
+                'is_active'     => 1,
+                'itemtype'      => \Computer::class,
+                '_fields'       => ['name'],
+                'action_refuse' => 1,
+            ]
+        );
+
+        $this->createItem(\Computer::class, ['name' => $computer_name, 'entities_id' => $root_entity_id]);
+
+        $this->exception(
+            function () use ($computer_name) {
+                $inventory_request = new \Glpi\Inventory\Request();
+                $inventory_request->handleRequest(
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+                    <REQUEST>
+                    <CONTENT>
+                      <HARDWARE>
+                        <NAME>{$computer_name}</NAME>
+                        <UUID>5BCB-25C1BB60B18F-5404A6A534C4</UUID>
+                      </HARDWARE>
+                      <BIOS>
+                        <MSN>640HP72</MSN>
+                      </BIOS>
+                      <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+                    </CONTENT>
+                    <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+                    <QUERY>INVENTORY</QUERY>
+                    </REQUEST>"
+                );
+            }
+        )->hasMessage('Unable to create item.');
+    }
+
+    public function testHwDescription()
+    {
+        global $DB;
+        $json_str = file_get_contents(self::INV_FIXTURES . 'computer_1.json');
+        $json = json_decode($json_str);
+
+        //add workgroup
+        $json->content->hardware->description = "describ'ed from registry";
+
+        $this->doInventory($json);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+            ->string['itemtype']->isIdenticalTo('Computer');
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check hw description has been stored
+        $this->string($computer->fields['comment'])->isIdenticalTo("describ'ed from registry");
+    }
+
+    public function testOsCommentRuleLocation()
+    {
+        global $DB;
+        $computer = new \Computer();
+        $location = new \Location();
+        $locations_id = $location->add([
+            'name' => 'Caen',
+        ]);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        $rule = new \Rule();
+        $input = [
+            'is_active' => 1,
+            'name'      => 'Location os comment -> caen',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleLocation',
+            'ranking'   => 1
+        ];
+        $rules_id = $rule->add($input);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        $rulecriteria = new \RuleCriteria();
+        $input = [
+            'rules_id'  => $rules_id,
+            'criteria'  => "oscomment",
+            'pattern'   => "Caen",
+            'condition' => \Rule::PATTERN_CONTAIN
+        ];
+        $this->integer($rulecriteria->add($input))->isGreaterThan(0);
+
+        $ruleaction = new \RuleAction();
+        $input = [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'locations_id',
+            'value'       => $locations_id
+        ];
+        $this->integer($ruleaction->add($input))->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <DESCRIPTION>TECLIB-CAEN</DESCRIPTION>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72316892</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check created agent itemtype / deviceid / entities_id
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('glpixps.teclib.infra-2018-10-03-08-42-36')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['entities_id']->isIdenticalTo(0); //root entity
+
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        //load / test computer entities_id root
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        $this->integer($computer->fields['locations_id'])->isEqualTo($locations_id);
     }
 }

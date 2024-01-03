@@ -113,7 +113,7 @@ class Notepad extends CommonDBChild
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
         }
-        return false;
+        return '';
     }
 
 
@@ -151,6 +151,7 @@ class Notepad extends CommonDBChild
      **/
     public static function getAllForItem(CommonDBTM $item)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $data = [];

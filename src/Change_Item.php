@@ -224,8 +224,10 @@ class Change_Item extends CommonItilObject_Item
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
+        /** @var CommonDBTM $item */
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {

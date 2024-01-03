@@ -237,6 +237,7 @@ class DeviceHardDrive extends CommonDevice
 
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];

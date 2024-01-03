@@ -408,7 +408,7 @@ abstract class InventoryAsset
         }
 
         $citem = new \Computer_Item();
-        $citem->add($input, [], false);
+        $citem->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
     }
 
     protected function setNew(): self
@@ -425,12 +425,12 @@ abstract class InventoryAsset
 
     protected function handleInput(\stdClass $value, ?CommonDBTM $item = null): array
     {
-        $input = [];
+        $input = ['_auto' => 1];
         $locks = [];
 
         if ($item !== null) {
             $lockeds = new \Lockedfield();
-            $locks = $lockeds->getLockedNames($item->getType(), $item->fields['id'] ?? 0);
+            $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
         foreach ($value as $key => $val) {

@@ -46,6 +46,7 @@ define('GLPI_ROOT', __DIR__ . '/../');
 define('GLPI_CONFIG_DIR', getenv('GLPI_CONFIG_DIR') ?: __DIR__ . '/config');
 define('GLPI_VAR_DIR', getenv('GLPI_VAR_DIR') ?: __DIR__ . '/files');
 define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:8088');
+define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
 
 define(
     'PLUGINS_DIRECTORIES',
@@ -76,6 +77,8 @@ if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
 
 \Glpi\Tests\BootstrapUtils::initVarDirectories();
 
+include_once __DIR__ . '/../inc/includes.php';
+
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
    // Use configured cache for cache tests
@@ -85,8 +88,6 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
    // Use "in-memory" cache for other tests
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
-
-include_once __DIR__ . '/../inc/includes.php';
 
 // Errors/exceptions that are not explicitely validated by `$this->error()` or `$this->exception` asserter will already make test fails.
 // There is no need to pollute the output with error messages.

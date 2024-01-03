@@ -34,8 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $migration->displayMessage("Adding recurrent changes");
@@ -59,7 +59,7 @@ $DB->updateOrDie(
 
 $recurrent_change_table = 'glpi_recurrentchanges';
 if (!$DB->tableExists($recurrent_change_table)) {
-    $DB->queryOrDie("CREATE TABLE `$recurrent_change_table` (
+    $DB->doQueryOrDie("CREATE TABLE `$recurrent_change_table` (
          `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
          `name` varchar(255) DEFAULT NULL,
          `comment` text,

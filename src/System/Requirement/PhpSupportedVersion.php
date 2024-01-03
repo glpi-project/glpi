@@ -41,33 +41,35 @@ namespace Glpi\System\Requirement;
 class PhpSupportedVersion extends AbstractRequirement
 {
     /**
-     * Minimal supported version of PHP version.
+     * Minimal version of PHP version that still get security fixes.
      *
      * @var string
      * @see https://www.php.net/supported-versions
      */
-    private const MIN_SUPPORTED_VERSION = '8.0';
+    private const MIN_SECURITY_SUPPORTED_VERSION = '8.1';
 
     public function __construct()
     {
-        $this->title = __('PHP supported version');
-        $this->description = __('An officially supported PHP version should be used to get the benefits of security and bug fixes.');
-        $this->optional = true;
+        parent::__construct(
+            __('PHP maintained version'),
+            __('A PHP version maintained by the PHP community should be used to get the benefits of PHP security and bug fixes.'),
+            true,
+            true
+        );
     }
 
     protected function check()
     {
         $php_version =  preg_replace('/^(\d+\.\d+)\..*$/', '$1', phpversion());
 
-        if (version_compare($php_version, self::MIN_SUPPORTED_VERSION, '>=')) {
+        if (version_compare($php_version, self::MIN_SECURITY_SUPPORTED_VERSION, '>=')) {
             $this->validated = true;
             // No validation message as we cannot be sure that PHP is up-to-date.
         } else {
             $this->validated = false;
-            $this->validation_messages[] = sprintf(
-                __('PHP %s official support has ended. An upgrade to a more recent PHP version is recommended.'),
-                $php_version
-            );
+            $this->validation_messages[] = sprintf(__('PHP %s is no longer maintained by its community.'), $php_version);
+            $this->validation_messages[] = __('Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.');
+            $this->validation_messages[] = __('Indeed, this PHP version may contain unpatched security vulnerabilities.');
         }
     }
 }

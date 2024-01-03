@@ -155,6 +155,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $sum = 0;
@@ -178,7 +179,7 @@ class CalendarSegment extends CommonDBChild
 
         foreach ($iterator as $data) {
             list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
-            $sum += $hour * HOUR_TIMESTAMP + $minute * MINUTE_TIMESTAMP + $second;
+            $sum += (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
         }
         return $sum;
     }
@@ -204,6 +205,7 @@ class CalendarSegment extends CommonDBChild
     ) {
         // TODO: unit test this method with complex calendars using multiple
         // disconnected segments per day
+        /** @var \DBmysql $DB */
         global $DB;
 
         // Common SELECT for both modes
@@ -265,19 +267,19 @@ class CalendarSegment extends CommonDBChild
 
         foreach ($iterator as $data) {
             list($hour, $minute, $second) = explode(':', $data['TDIFF']);
-            $tstamp = $hour * HOUR_TIMESTAMP + $minute * MINUTE_TIMESTAMP + $second;
+            $tstamp = (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
 
             // Delay is completed
             if ($delay <= $tstamp) {
                 if (!$negative_delay) {
                     // Add time
                     list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
-                    $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
+                    $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
                     $endstamp = $beginstamp + $delay;
                 } else {
                     // Substract time
                     list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['END']);
-                    $beginstamp = $begin_hour * HOUR_TIMESTAMP + $begin_minute * MINUTE_TIMESTAMP + $begin_second;
+                    $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
                     $endstamp = $beginstamp - $delay;
                 }
                 $units      = Toolbox::getTimestampTimeUnits($endstamp);
@@ -302,6 +304,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function getFirstWorkingHour($calendars_id, $day)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Do not check hour if day before the end day of after the begin day
@@ -327,6 +330,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function getLastWorkingHour($calendars_id, $day)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Do not check hour if day before the end day of after the begin day
@@ -353,6 +357,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function isAWorkingHour($calendars_id, $day, $hour)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // Do not check hour if day before the end day of after the begin day
@@ -377,6 +382,7 @@ class CalendarSegment extends CommonDBChild
      **/
     public static function showForCalendar(Calendar $calendar)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $calendar->getField('id');
@@ -479,15 +485,14 @@ class CalendarSegment extends CommonDBChild
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Calendar':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable(
-                            $this->getTable(),
-                            ['calendars_id' => $item->getID()]
-                        );
-                    }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            if ($item instanceof Calendar) {
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb = countElementsInTable(
+                        $this->getTable(),
+                        ['calendars_id' => $item->getID()]
+                    );
+                }
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
             }
         }
         return '';

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $CFG_GLPI */
+global $CFG_GLPI;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
     $AJAX_INCLUDE = 1;
@@ -42,8 +45,6 @@ if (strpos($_SERVER['PHP_SELF'], "visibility.php")) {
 }
 
 Session::checkLoginUser();
-
-/** @global array $CFG_GLPI */
 
 if (
     isset($_POST['type']) && !empty($_POST['type'])

@@ -45,7 +45,7 @@ if (is_null($preset)) {
     Response::sendError(400, "Missing mandatory 'preset' parameter", Response::CONTENT_TYPE_TEXT_HTML);
 }
 
-echo Html::includeHeader(__("Template variables documentation"));
+Html::includeHeader(__("Template variables documentation"));
 echo "<body class='documentation-page'>";
 echo "<div id='page'>";
 echo "<div class='documentation documentation-large'>";

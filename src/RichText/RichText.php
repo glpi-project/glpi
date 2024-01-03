@@ -108,6 +108,7 @@ final class RichText
         bool $preserve_case = false,
         bool $preserve_line_breaks = false
     ): string {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $content = self::normalizeHtmlContent($content, false);
@@ -263,10 +264,13 @@ final class RichText
 
         if ($enhanced_html) {
             // URLs have to be transformed into <a> tags.
+            /** @var array $autolink_options */
             global $autolink_options;
             $autolink_options['strip_protocols'] = false;
             $content = autolink($content, false, ' target="_blank"');
         }
+
+        $content = self::fixImagesPath($content);
 
         return $content;
     }
@@ -287,7 +291,7 @@ final class RichText
             'images_gallery' => false,
             'user_mentions'  => true,
             'images_lazy'    => true,
-            'text_maxsize'   => 4000,
+            'text_maxsize'   => GLPI_TEXT_MAXSIZE,
         ];
         $p = array_replace($p, $params);
 
@@ -317,6 +321,41 @@ final class RichText
 </div>
 HTML;
             $content .= HTML::scriptBlock('$(function() { read_more(); });');
+        }
+
+        return $content;
+    }
+
+
+    /**
+     * Ensure current GLPI URL prefix (`$CFG_GLPI["root_doc"]`) is used in images URLs.
+     * It permits to fix path to images that are broken when GLPI URL prefix is changed.
+     *
+     * @param string $content
+     *
+     * @return string
+     */
+    private static function fixImagesPath(string $content): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $patterns = [
+            // href attribute, surrounding by " or '
+            '/ (href)="[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
+
+            // src attribute, surrounding by " or '
+            '/ (src)="[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (src)='[^']*\/front\/document\.send\.php([^']+)' /",
+        ];
+
+        foreach ($patterns as $pattern) {
+            $content = preg_replace(
+                $pattern,
+                sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
+                $content
+            );
         }
 
         return $content;

@@ -273,6 +273,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function showForEntity(Entity $entity)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $entity->getField('id');
@@ -464,6 +465,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function showForProfile(Profile $prof)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID      = $prof->fields['id'];
@@ -655,6 +657,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getUserEntities($user_ID, $is_recursive = true, $default_first = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -664,7 +667,7 @@ class Profile_User extends CommonDBRelation
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profiles_users',
-            'WHERE'           => ['users_id' => $user_ID]
+            'WHERE'           => ['users_id' => (int)$user_ID]
         ]);
         $entities = [];
 
@@ -677,10 +680,10 @@ class Profile_User extends CommonDBRelation
             }
         }
 
-       // Set default user entity at the begin
+       // Set default user entity at the beginning
         if ($default_first) {
             $user = new User();
-            if ($user->getFromDB($user_ID)) {
+            if ($user->getFromDB((int)$user_ID)) {
                 $ent = $user->getField('entities_id');
                 if (in_array($ent, $entities)) {
                     array_unshift($entities, $ent);
@@ -708,6 +711,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getUserEntitiesForRight($user_ID, $rightname, $rights, $is_recursive = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $putable = Profile_User::getTable();
@@ -735,7 +739,7 @@ class Profile_User extends CommonDBRelation
                 ]
             ],
             'WHERE'           => [
-                "$putable.users_id"  => $user_ID,
+                "$putable.users_id"  => (int)$user_ID,
                 "$prtable.name"      => $rightname,
                 "$prtable.rights"    => ['&', $rights]
             ]
@@ -772,11 +776,12 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getUserProfiles($user_ID, $sqlfilter = [])
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $profiles = [];
 
-        $where = ['users_id' => $user_ID];
+        $where = ['users_id' => (int)$user_ID];
         if (count($sqlfilter) > 0) {
             $where = $where + $sqlfilter;
         }
@@ -808,14 +813,15 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => ['entities_id', 'is_recursive'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'users_id'     => $users_id,
-                'profiles_id'  => $profiles_id
+                'users_id'     => (int)$users_id,
+                'profiles_id'  => (int)$profiles_id
             ]
         ]);
 
@@ -849,12 +855,13 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getEntitiesForUser($users_id, $child = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => ['entities_id', 'is_recursive'],
             'FROM'   => 'glpi_profiles_users',
-            'WHERE'  => ['users_id' => $users_id]
+            'WHERE'  => ['users_id' => (int)$users_id]
         ]);
 
         $entities = [];
@@ -884,7 +891,7 @@ class Profile_User extends CommonDBRelation
      **/
     public static function getForUser($user_ID, $only_dynamic = false)
     {
-        $condition = ['users_id' => $user_ID];
+        $condition = ['users_id' => (int)$user_ID];
 
         if ($only_dynamic) {
             $condition['is_dynamic'] = 1;
@@ -900,14 +907,15 @@ class Profile_User extends CommonDBRelation
      **/
     public static function haveUniqueRight($user_ID, $profile_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'users_id'     => $user_ID,
-                'profiles_id'  => $profile_id
+                'users_id'     => (int)$user_ID,
+                'profiles_id'  => (int)$profile_id
             ]
         ])->current();
         return $result['cpt'];
@@ -922,7 +930,7 @@ class Profile_User extends CommonDBRelation
     {
 
         $crit = [
-            'users_id' => $user_ID,
+            'users_id' => (int)$user_ID,
         ];
 
         if ($only_dynamic) {
@@ -1031,6 +1039,7 @@ class Profile_User extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$withtemplate) {

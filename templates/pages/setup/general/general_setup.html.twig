@@ -256,7 +256,7 @@
         'lock_use_lock_item',
         config['lock_use_lock_item'],
         __('Use locks'),
-        inline_field_options|merge({
+        field_options|merge({
             'id': id_lock_use_lock_item,
         })
     ) }}
@@ -332,14 +332,14 @@
         'login_remember_default',
         config['login_remember_default'],
         __("Default state of checkbox"),
-        inline_field_options
+        field_options
     ) }}
 
     {{ fields.checkboxField(
         'display_login_source',
         config['display_login_source'],
         __('Display source dropdown on login page'),
-        inline_field_options
+        field_options
     ) }}
 </div>
 

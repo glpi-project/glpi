@@ -381,6 +381,7 @@ final class StatusChecker
      */
     public static function getCASStatus($public_only = true): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         static $status = null;

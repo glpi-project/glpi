@@ -34,8 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();
@@ -52,7 +52,7 @@ if (!$DB->tableExists('glpi_knowbaseitems_knowbaseitemcategories')) {
       KEY `knowbaseitems_id` (`knowbaseitems_id`),
       KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
       ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
-    $DB->queryOrDie($query, "add table glpi_knowbaseitems_knowbaseitemcategories");
+    $DB->doQueryOrDie($query, "add table glpi_knowbaseitems_knowbaseitemcategories");
 }
 
 if ($DB->fieldExists('glpi_knowbaseitems', 'knowbaseitemcategories_id')) {

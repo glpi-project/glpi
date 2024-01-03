@@ -34,8 +34,7 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
  */
 
 // Replace old rule criteria itilcategories_id_cn

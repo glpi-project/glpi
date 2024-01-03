@@ -148,7 +148,11 @@ class RuleImportEntity extends Rule
      **/
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        global $PLUGIN_HOOKS, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var array $PLUGIN_HOOKS
+         */
+        global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if ($criteria['field'] == '_source') {
             $tab = ['GLPI' => __('GLPI'), 'NATIVE_INVENTORY' => AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY)];
@@ -262,12 +266,12 @@ class RuleImportEntity extends Rule
                 'type' => 'yesno'
             ],
             'groups_id_tech' => [
-                'name' => __('Group in charge of the hardware'),
+                'name' => __('Group in charge'),
                 'type' => 'dropdown',
                 'table' => Group::getTable()
             ],
             'users_id_tech' => [
-                'name' => __('Technician in charge of the hardware'),
+                'name' => __('Technician in charge'),
                 'type' => 'dropdown_users'
             ]
         ];

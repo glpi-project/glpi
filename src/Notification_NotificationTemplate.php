@@ -110,12 +110,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print the notification templates
      *
      * @param Notification $notif        Notification object
-     * @param boolean      $withtemplate Template or basic item (default '')
+     * @param integer      $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
     public static function showForNotification(Notification $notif, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $notif->getID();
@@ -209,12 +210,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print associated notifications
      *
      * @param NotificationTemplate $template     Notification template object
-     * @param boolean              $withtemplate Template or basic item (default '')
+     * @param integer              $withtemplate Template or basic item (default '')
      *
      * @return void
      */
     public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $template->getID();
@@ -318,7 +320,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *     - target for the Form
      *     - computers_id ID of the computer for add process
      *
-     * @return true if displayed  false if item not found or not right to display
+     * @return boolean true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -395,6 +397,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      */
     public static function registerMode($mode, $label, $from)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         self::getModes();
@@ -405,14 +408,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
     /**
-     * Get notification method label
+     * Get modes
      *
-     * @since 0.84
-     *
-     * @return the mode's label
+     * @return array
      **/
     public static function getModes()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $core_modes = [
@@ -549,6 +551,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      */
     public static function hasActiveMode()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         foreach (array_keys(self::getModes()) as $mode) {
             if ($CFG_GLPI['notifications_' . $mode]) {

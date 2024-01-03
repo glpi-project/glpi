@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\Sanitizer;
 use PHPMailer\PHPMailer\PHPMailer;
 
 class NotificationEventMailing extends NotificationEventAbstract
@@ -73,6 +74,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     public static function getAdminData()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $admin = Config::getAdminEmailSender();
@@ -87,12 +89,13 @@ class NotificationEventMailing extends NotificationEventAbstract
             return $admin;
         }
 
-        return false;
+        return [];
     }
 
 
     public static function getEntityAdminsData($entity)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $admin = Config::getAdminEmailSender($entity);
@@ -107,12 +110,16 @@ class NotificationEventMailing extends NotificationEventAbstract
             return [$admin];
         }
 
-        return false;
+        return [];
     }
 
 
     public static function send(array $data)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $processed = [];
@@ -166,10 +173,10 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
                 }
 
-                $mmail->SetFrom($current->fields['sender'], $current->fields['sendername']);
+                $mmail->SetFrom($current->fields['sender'], Sanitizer::decodeHtmlSpecialChars($current->fields['sendername']));
 
                 if ($current->fields['replyto']) {
-                    $mmail->AddReplyTo($current->fields['replyto'], $current->fields['replytoname']);
+                    $mmail->AddReplyTo($current->fields['replyto'], Sanitizer::decodeHtmlSpecialChars($current->fields['replytoname']));
                 }
                 $mmail->Subject = $current->fields['name'];
 
@@ -379,7 +386,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     $mmail->AltBody .= $text;
                 }
 
-                $mmail->AddAddress($recipient, $current->fields['recipientname']);
+                $mmail->AddAddress($recipient, Sanitizer::decodeHtmlSpecialChars($current->fields['recipientname']));
 
                 if (!empty($current->fields['messageid'])) {
                     $mmail->MessageID = "<" . $current->fields['messageid'] . ">";
@@ -423,6 +430,7 @@ class NotificationEventMailing extends NotificationEventAbstract
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $messageerror = __('Error in sending the email');
@@ -480,6 +488,7 @@ class NotificationEventMailing extends NotificationEventAbstract
      */
     private static function attachDocuments(GLPIMailer $mmail, array $documents_ids)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$CFG_GLPI['attach_ticket_documents_to_mail']) {

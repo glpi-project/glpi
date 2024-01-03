@@ -35,7 +35,7 @@ import SearchInput from "../SearchTokenizer/SearchInput.js";
 
 /* global escapeMarkupText */
 /* global sortable */
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_toast_warning, glpi_toast_info */
 
 /**
  * Kanban rights structure
@@ -466,7 +466,7 @@ class GLPIKanbanRights {
             let column_overflow_dropdown = "<ul id='kanban-overflow-dropdown' class='kanban-dropdown  dropdown-menu' style='display: none'>";
             let add_itemtype_bulk_dropdown = "<ul id='kanban-bulk-add-dropdown' class='dropdown-menu' style='display: none'>";
             Object.keys(self.supported_itemtypes).forEach(function(itemtype) {
-                if (self.supported_itemtypes[itemtype]['allow_create'] !== false) {
+                if (self.supported_itemtypes[itemtype]['allow_create'] !== false && self.supported_itemtypes[itemtype]['allow_bulk_add'] !== false) {
                     add_itemtype_bulk_dropdown += "<li id='kanban-bulk-add-" + itemtype + "' class='dropdown-item'><span>" + self.supported_itemtypes[itemtype]['name'] + '</span></li>';
                 }
             });
@@ -1003,6 +1003,29 @@ class GLPIKanbanRights {
                         // Re-open form
                         self.showAddItemForm($(`#${column_el_id}`), itemtype);
                     });
+                }).always(() => {
+                    $.ajax({
+                        method: 'GET',
+                        url: (self.ajax_root + "displayMessageAfterRedirect.php"),
+                        data: {
+                            'get_raw': true
+                        }
+                    }).done((messages) => {
+                        $.each(messages, (level, level_messages) => {
+                            $.each(level_messages, (index, message) => {
+                                switch (parseInt(level)) {
+                                    case 1:
+                                        glpi_toast_error(message);
+                                        break;
+                                    case 2:
+                                        glpi_toast_warning(message);
+                                        break;
+                                    default:
+                                        glpi_toast_info(message);
+                                }
+                            });
+                        });
+                    });
                 });
             });
 
@@ -1047,13 +1070,33 @@ class GLPIKanbanRights {
                     column_field: self.column_field.id
                 }
             }).done(function(data) {
+                // Data is sent by the server as an associative array using sorted
+                // ids as property names.
+                // This is unreliable as js object keys are not ordered.
+                // To fix this, we'll convert data into an array which can be
+                // reliably sorted.
+                Object.keys(data).forEach(function(key) {
+                    if (data[key].id === undefined) {
+                        data[key].id = key;
+                    }
+                });
+                let sorted_data = Object.values(data); // Cast Object to array
+                const collator = new Intl.Collator(undefined, {
+                    numeric: true,
+                    sensitivity: 'base'
+                });
+                sorted_data.sort((a, b)  => collator.compare(a.name, b.name));
+
                 const form_content = $(self.add_column_form + " .kanban-item-content");
                 form_content.empty();
                 form_content.append("<input type='text' class='form-control' name='column-name-filter' placeholder='" + __('Search') + "'/>");
                 let list = "<ul class='kanban-columns-list'>";
-                $.each(data, function(column_id, column) {
-                    let list_item = "<li data-list-id='"+column_id+"'>";
-                    if (columns_used.includes(column_id)) {
+
+                sorted_data.forEach(function(column) {
+                    let list_item = "<li data-list-id='"+column.id+"'>";
+                    // The `columns_used` array seems to store the ids as strings
+                    // We'll check if the values exist as they are or as strings to cover both formats
+                    if (column.id && (columns_used.includes(column.id) || columns_used.includes(column.id.toString()))) {
                         list_item += "<input type='checkbox' checked='true' class='form-check-input' />";
                     } else {
                         list_item += "<input type='checkbox' class='form-check-input' />";
@@ -1853,6 +1896,29 @@ class GLPIKanbanRights {
                 }).done(function() {
                     $('#'+formID).remove();
                     self.refresh();
+                }).always(() => {
+                    $.ajax({
+                        method: 'GET',
+                        url: (self.ajax_root + "displayMessageAfterRedirect.php"),
+                        data: {
+                            'get_raw': true
+                        }
+                    }).done((messages) => {
+                        $.each(messages, (level, level_messages) => {
+                            $.each(level_messages, (index, message) => {
+                                switch (parseInt(level)) {
+                                    case 1:
+                                        glpi_toast_error(message);
+                                        break;
+                                    case 2:
+                                        glpi_toast_warning(message);
+                                        break;
+                                    default:
+                                        glpi_toast_info(message);
+                                }
+                            });
+                        });
+                    });
                 });
             });
         };

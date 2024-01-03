@@ -42,35 +42,85 @@ class PhpSupportedVersion extends \GLPITestCase
         yield [
             'phpversion' => '7.4.0-rc1',
             'validated'  => false,
-            'messages'   => ['PHP 7.4 official support has ended. An upgrade to a more recent PHP version is recommended.'],
+            'messages'   => [
+                'PHP 7.4 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
         ];
 
         yield [
             'phpversion' => '7.4.3',
             'validated'  => false,
-            'messages'   => ['PHP 7.4 official support has ended. An upgrade to a more recent PHP version is recommended.'],
+            'messages'   => [
+                'PHP 7.4 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
         ];
 
         yield [
             'phpversion' => '7.4.99',
             'validated'  => false,
-            'messages'   => ['PHP 7.4 official support has ended. An upgrade to a more recent PHP version is recommended.'],
+            'messages'   => [
+                'PHP 7.4 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
         ];
 
         yield [
             'phpversion' => '8.0.0-rc1',
+            'validated'  => false,
+            'messages'   => [
+                'PHP 8.0 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
+        ];
+
+        yield [
+            'phpversion' => '8.0.15',
+            'validated'  => false,
+            'messages'   => [
+                'PHP 8.0 is no longer maintained by its community.',
+                'Even if GLPI still supports this PHP version, an upgrade to a more recent PHP version is recommended.',
+                'Indeed, this PHP version may contain unpatched security vulnerabilities.',
+            ],
+        ];
+
+        yield [
+            'phpversion' => '8.1.0-rc1',
             'validated'  => true,
             'messages'   => [],
         ];
 
         yield [
-            'phpversion' => '8.0.15',
+            'phpversion' => '8.1.7',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.2.0-alpha3',
             'validated'  => true,
             'messages'   => [],
         ];
 
         yield [
             'phpversion' => '8.2.34',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.3.0-dev',
+            'validated'  => true,
+            'messages'   => [],
+        ];
+
+        yield [
+            'phpversion' => '8.3.1',
             'validated'  => true,
             'messages'   => [],
         ];

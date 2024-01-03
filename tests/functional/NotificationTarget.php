@@ -99,119 +99,148 @@ class NotificationTarget extends DbTestCase
         $this->string($ntarget_child_2->getSubjectPrefix())->isEqualTo("[prefix_child_2] ");
     }
 
-    public function testGetReplyTo()
+    protected function getReplyToProvider(): iterable
     {
+        $this->login(); // must be logged-in to update entities
+
+        $root_entity_id    = 0;
+        $parent_entity_id  = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child_1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+
+        yield [
+            'global_config'    => [],
+            'entities_configs' => [],
+            'allow_response'   => true,
+            'expected_results' => [
+                $root_entity_id    => ['email' => null, 'name'  => null],
+                $parent_entity_id  => ['email' => null, 'name'  => null],
+                $child_1_entity_id => ['email' => null, 'name'  => null],
+                $child_2_entity_id => ['email' => null, 'name'  => null],
+            ]
+        ];
+
+        // Global config is used if no entity configuration is defined
+        yield [
+            'global_config'    => [
+                'replyto_email'      => 'test@global.tld',
+                'replyto_email_name' => 'test global',
+                'noreply_email'      => 'noreply@global.tld',
+                'noreply_email_name' => 'noreply global',
+            ],
+            'entities_configs' => [],
+            'allow_response'   => true,
+            'expected_results' => [
+                $root_entity_id    => ['email' => 'test@global.tld', 'name'  => 'test global'],
+                $parent_entity_id  => ['email' => 'test@global.tld', 'name'  => 'test global'],
+                $child_1_entity_id => ['email' => 'test@global.tld', 'name'  => 'test global'],
+                $child_2_entity_id => ['email' => 'test@global.tld', 'name'  => 'test global'],
+            ]
+        ];
+
+        yield [
+            'global_config'    => [
+                'replyto_email'      => 'test@global.tld',
+                'replyto_email_name' => 'test global',
+                'noreply_email'      => 'noreply@global.tld',
+                'noreply_email_name' => 'noreply global',
+            ],
+            'entities_configs' => [],
+            'allow_response'   => false,
+            'expected_results' => [
+                $root_entity_id    => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
+                $parent_entity_id  => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
+                $child_1_entity_id => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
+                $child_2_entity_id => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
+            ]
+        ];
+
+        // Closest entity config is used, fallback on global
+        yield [
+            'global_config'    => [
+                'replyto_email'      => 'test@global.tld',
+                'replyto_email_name' => 'test global',
+                'noreply_email'      => 'noreply@global.tld',
+                'noreply_email_name' => 'noreply global',
+            ],
+            'entities_configs' => [
+                $parent_entity_id  => [
+                    'replyto_email'      => 'test@parent.tld',
+                    'replyto_email_name' => 'test parent',
+                    'noreply_email'      => 'noreply@parent.tld',
+                    'noreply_email_name' => 'noreply parent',
+                ],
+                $child_2_entity_id => [
+                    'replyto_email'      => 'test@child2.tld',
+                    'replyto_email_name' => 'test child2',
+                    'noreply_email'      => 'noreply@child2.tld',
+                    'noreply_email_name' => 'noreply child2',
+                ],
+            ],
+            'allow_response'   => true,
+            'expected_results' => [
+                $root_entity_id    => ['email' => 'test@global.tld', 'name'  => 'test global'],
+                $parent_entity_id  => ['email' => 'test@parent.tld', 'name'  => 'test parent'],
+                $child_1_entity_id => ['email' => 'test@parent.tld', 'name'  => 'test parent'],
+                $child_2_entity_id => ['email' => 'test@child2.tld', 'name'  => 'test child2'],
+            ]
+        ];
+
+        yield [
+            'global_config'    => [
+                'replyto_email'      => 'test@global.tld',
+                'replyto_email_name' => 'test global',
+                'noreply_email'      => 'noreply@global.tld',
+                'noreply_email_name' => 'noreply global',
+            ],
+            'entities_configs' => [
+                $parent_entity_id  => [
+                    'replyto_email'      => 'test@parent.tld',
+                    'replyto_email_name' => 'test parent',
+                    'noreply_email'      => 'noreply@parent.tld',
+                    'noreply_email_name' => 'noreply parent',
+                ],
+                $child_2_entity_id => [
+                    'replyto_email'      => 'test@child2.tld',
+                    'replyto_email_name' => 'test child2',
+                    'noreply_email'      => 'noreply@child2.tld',
+                    'noreply_email_name' => 'noreply child2',
+                ],
+            ],
+            'allow_response'   => false,
+            'expected_results' => [
+                $root_entity_id    => ['email' => 'noreply@global.tld', 'name'  => 'noreply global'],
+                $parent_entity_id  => ['email' => 'noreply@parent.tld', 'name'  => 'noreply parent'],
+                $child_1_entity_id => ['email' => 'noreply@parent.tld', 'name'  => 'noreply parent'],
+                $child_2_entity_id => ['email' => 'noreply@child2.tld', 'name'  => 'noreply child2'],
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getReplyToProvider
+     */
+    public function testGetReplyTo(
+        array $global_config,
+        array $entities_configs,
+        bool $allow_response,
+        array $expected_results
+    ): void {
         global $CFG_GLPI;
 
-        $this->login();
+        foreach ($global_config as $config_key => $config_value) {
+            $CFG_GLPI[$config_key] = $config_value;
+        }
 
-        $root    = getItemByTypeName('Entity', 'Root entity', true);
-        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
-        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
-        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+        foreach ($entities_configs as $entity_id => $entity_config) {
+            $this->updateItem(Entity::class, $entity_id, $entity_config);
+        }
 
-        $ntarget_parent  = new \NotificationTarget($parent);
-        $ntarget_child_1 = new \NotificationTarget($child_1);
-        $ntarget_child_2 = new \NotificationTarget($child_2);
-
-       // test global settings
-        $CFG_GLPI['replyto_email'] = 'test@global.tld';
-        $CFG_GLPI['replyto_email_name'] = 'test global';
-        $CFG_GLPI['from_email'] = '';
-
-        $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-            'email' => 'test@global.tld',
-            'name'  => 'test global'
-        ]);
-        $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-            'email' => 'test@global.tld',
-            'name'  => 'test global'
-        ]);
-        $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-            'email' => 'test@global.tld',
-            'name'  => 'test global'
-        ]);
-
-       // test root entity settings
-        $entity  = new \Entity();
-        $this->boolean($entity->update([
-            'id'                 => $root,
-            'replyto_email'      => "test@root.tld",
-            'replyto_email_name' => "test root",
-        ]))->isTrue();
-
-        $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-            'email' => 'test@root.tld',
-            'name'  => 'test root'
-        ]);
-        $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-            'email' => 'test@root.tld',
-            'name'  => 'test root'
-        ]);
-        $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-            'email' => 'test@root.tld',
-            'name'  => 'test root'
-        ]);
-
-       // test parent entity settings
-        $this->boolean($entity->update([
-            'id'                 => $parent,
-            'replyto_email'      => "test@parent.tld",
-            'replyto_email_name' => "test parent",
-        ]))->isTrue();
-
-        $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-            'email' => 'test@parent.tld',
-            'name'  => 'test parent'
-        ]);
-        $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-            'email' => 'test@parent.tld',
-            'name'  => 'test parent'
-        ]);
-        $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-            'email' => 'test@parent.tld',
-            'name'  => 'test parent'
-        ]);
-
-       // test child_1 entity settings
-        $this->boolean($entity->update([
-            'id'                 => $child_1,
-            'replyto_email'      => "test@child1.tld",
-            'replyto_email_name' => "test child1",
-        ]))->isTrue();
-
-        $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-            'email' => 'test@parent.tld',
-            'name'  => 'test parent'
-        ]);
-        $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-            'email' => 'test@child1.tld',
-            'name'  => 'test child1'
-        ]);
-        $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-            'email' => 'test@parent.tld',
-            'name'  => 'test parent'
-        ]);
-
-       // test child_2 entity settings
-        $this->boolean($entity->update([
-            'id'                 => $child_2,
-            'replyto_email'      => "test@child2.tld",
-            'replyto_email_name' => "test child2",
-        ]))->isTrue();
-
-        $this->array($ntarget_parent->getReplyTo())->isEqualTo([
-            'email' => 'test@parent.tld',
-            'name'  => 'test parent'
-        ]);
-        $this->array($ntarget_child_1->getReplyTo())->isEqualTo([
-            'email' => 'test@child1.tld',
-            'name'  => 'test child1'
-        ]);
-        $this->array($ntarget_child_2->getReplyTo())->isEqualTo([
-            'email' => 'test@child2.tld',
-            'name'  => 'test child2'
-        ]);
+        foreach ($expected_results as $entity_id => $expected_result) {
+            $target = new \NotificationTarget($entity_id);
+            $target->setAllowResponse($allow_response);
+            $this->array($target->getReplyTo())->isEqualTo($expected_result);
+        }
     }
 
     /**

@@ -113,7 +113,7 @@ abstract class ITILTemplateField extends CommonDBChild
      * @since 0.83
      *
      * @param ITILTemplate $tt           ITIL Template
-     * @param boolean      $withtemplate Template or basic item (default 0)
+     * @param integer      $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/

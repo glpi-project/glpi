@@ -33,13 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+/** @var array $_UGET */
+global $_UGET;
+
+// TODO: in GLPI 10.1 if we drop the old tab parameter then we can use
+// PLUGINS_INCLUDED=false here to speed up the framework initiation time
 include('../inc/includes.php');
 
 if (!basename($_SERVER['SCRIPT_NAME']) == "helpdesk.faq.php") {
     Session::checkLoginUser();
 }
-
-/** @global array $_UGET */
 
 // Manage tabs
 if (

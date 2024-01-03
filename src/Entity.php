@@ -158,6 +158,7 @@ class Entity extends CommonTreeDropdown
 
     public function pre_updateInDB()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (($key = array_search('name', $this->updates)) !== false) {
@@ -187,6 +188,7 @@ class Entity extends CommonTreeDropdown
 
     public function pre_deleteItem()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // Security do not delete root entity
@@ -326,6 +328,7 @@ class Entity extends CommonTreeDropdown
      **/
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
@@ -422,6 +425,7 @@ class Entity extends CommonTreeDropdown
      */
     private function handleConfigStrategyFields(array $input): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         foreach ($input as $field => $value) {
@@ -615,8 +619,9 @@ class Entity extends CommonTreeDropdown
         $this->cleanEntitySelectorCache();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         parent::post_updateItem($history);
@@ -682,6 +687,7 @@ class Entity extends CommonTreeDropdown
      */
     public function cleanEntitySelectorCache()
     {
+        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $GLPI_CACHE->delete('entity_selector');
@@ -1492,6 +1498,7 @@ class Entity extends CommonTreeDropdown
      **/
     public static function getEntitiesToNotify($field)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $entities = [];
@@ -1760,8 +1767,7 @@ class Entity extends CommonTreeDropdown
             return false;
         }
 
-       // Notification right applied
-        $canedit = (Infocom::canUpdate() && Session::haveAccessToEntity($ID));
+        $canedit = $entity->can($ID, UPDATE);
 
         echo "<div class='spaced'>";
         if ($canedit) {
@@ -1947,11 +1953,11 @@ class Entity extends CommonTreeDropdown
             'value'      => $entity->fields['transfers_id'],
             'display_emptychoice' => false
         ];
+        $params['toadd'] = [
+            self::CONFIG_NEVER => __('No automatic transfer')
+        ];
         if ($entity->fields['id'] > 0) {
-            $params['toadd'] = [
-                self::CONFIG_NEVER => __('No automatic transfer'),
-                self::CONFIG_PARENT => __('Inheritance of the parent entity')
-            ];
+            $params['toadd'][self::CONFIG_PARENT] = __('Inheritance of the parent entity');
         }
         Dropdown::show('Transfer', $params);
         if ($entity->fields['transfers_strategy'] == self::CONFIG_PARENT) {
@@ -2548,6 +2554,7 @@ class Entity extends CommonTreeDropdown
     public static function showUiCustomizationOptions(Entity $entity)
     {
 
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID = $entity->getField('id');
@@ -2674,6 +2681,7 @@ class Entity extends CommonTreeDropdown
      **/
     private static function getEntityIDByField($field, $value)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -2766,6 +2774,7 @@ class Entity extends CommonTreeDropdown
      **/
     public static function showHelpdeskOptions(Entity $entity)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID = $entity->getField('id');
@@ -3271,6 +3280,10 @@ class Entity extends CommonTreeDropdown
      **/
     public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
     {
+        /**
+         * @var \DBmysql $DB
+         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
+         */
         global $DB, $GLPI_CACHE;
 
         $id_using_strategy = [
@@ -3788,6 +3801,7 @@ class Entity extends CommonTreeDropdown
             case 'transfers_id':
                 $strategy = $values['transfers_strategy'] ?? $values[$field];
                 if ($strategy == self::CONFIG_NEVER) {
+                    return __('No automatic transfer');
                 }
                 if ($strategy == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');

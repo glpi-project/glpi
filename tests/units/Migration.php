@@ -61,9 +61,10 @@ class Migration extends \GLPITestCase
         parent::beforeTestMethod($method);
         if ($method !== 'testConstructor') {
             $this->db = new \mock\DB();
+            $this->db->disableTableCaching();
             $queries = [];
             $this->queries = &$queries;
-            $this->calling($this->db)->query = function ($query) use (&$queries) {
+            $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
                 $queries[] = $query;
                 return true;
             };
@@ -242,7 +243,7 @@ class Migration extends \GLPITestCase
                '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\''
         ]);
 
-       //try to backup existant tables
+        //try to backup existant tables
         $this->queries = [];
         $this->calling($this->db)->tableExists = true;
         $DB = $this->db;
@@ -252,9 +253,6 @@ class Migration extends \GLPITestCase
                 $this->migration->executeMigration();
             }
         )->message->contains('Unable to rename table glpi_existingtest (ok) to backup_glpi_existingtest (nok)!');
-       /*)->isIdenticalTo("glpi_existingtest table already exists. " .
-         "A backup have been done to backup_glpi_existingtest" .
-         "You can delete backup tables if you have no need of them.Task completed.");*/
 
         $this->array($this->queries)->isIdenticalTo([
             0 => 'DROP TABLE `backup_glpi_existingtest`',
@@ -295,11 +293,11 @@ class Migration extends \GLPITestCase
         )->isIdenticalTo("Change of the database layout - change_tableTask completed.");
 
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `id`  ,\n" .
+            "ALTER TABLE `change_table` DROP `id` ,\n" .
          "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
         ]);
 
-       // Test change field with move to after an other column
+       // Test change field with move to after another column
         $this->queries = [];
         $this->calling($this->db)->fieldExists = true;
 
@@ -312,7 +310,7 @@ class Migration extends \GLPITestCase
 
         $collate = $DB->use_utf8mb4 ? 'utf8mb4_unicode_ci' : 'utf8_unicode_ci';
         $this->array($this->queries)->isIdenticalTo([
-            "ALTER TABLE `change_table` DROP `name`  ,\n" .
+            "ALTER TABLE `change_table` DROP `name` ,\n" .
          "CHANGE `NAME` `name` VARCHAR(255) COLLATE $collate DEFAULT NULL   AFTER `id` ",
         ]);
     }
@@ -823,7 +821,7 @@ class Migration extends \GLPITestCase
 
         $queries = [];
         $this->queries = &$queries;
-        $this->calling($this->db)->query = function ($query) use (&$queries) {
+        $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
             if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
                   // Make DbUtils::isIndex return false
                   return false;

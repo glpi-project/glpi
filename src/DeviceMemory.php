@@ -59,7 +59,7 @@ class DeviceMemory extends CommonDevice
                 ],
                 [
                     'name'  => 'frequence',
-                    'label' => __('Frequency'),
+                    'label' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
                     'unit'  => __('MHz')
@@ -95,7 +95,7 @@ class DeviceMemory extends CommonDevice
             'id'                 => '12',
             'table'              => $this->getTable(),
             'field'              => 'frequence',
-            'name'               => __('Frequency'),
+            'name'               => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
             'datatype'           => 'integer',
         ];
 
@@ -167,7 +167,7 @@ class DeviceMemory extends CommonDevice
             case 'Computer':
                 Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
                 $base->addHeader('devicememory_type', _n('Type', 'Types', 1), $super, $father);
-                $base->addHeader('devicememory_frequency', __('Frequency'), $super, $father);
+                $base->addHeader('devicememory_frequency', sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')), $super, $father);
                 break;
         }
     }
@@ -224,6 +224,7 @@ class DeviceMemory extends CommonDevice
 
     public static function rawSearchOptionsToAdd($class, $main_joinparams)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];

@@ -34,8 +34,8 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $migration->displayMessage("Adding unicity key to reservationitem");
@@ -64,7 +64,7 @@ $select = $DB->request([
 ])->getSql();
 
 // "IGNORE" keyword used to avoid duplicates
-$DB->queryOrDie("INSERT IGNORE INTO $quote_tmp_table $select");
+$DB->doQueryOrDie("INSERT IGNORE INTO $quote_tmp_table $select");
 
 // Replace table with the new version
 $migration->dropTable($table);

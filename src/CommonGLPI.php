@@ -322,6 +322,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     final public function defineAllTabs($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $onglets = [];
@@ -405,6 +406,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function addImpactTab(array &$ong, array $options)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Check if impact analysis is enabled for this item type
@@ -437,7 +439,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array for menu
+     * @return false|array array for menu
      **/
     public static function getMenuContent()
     {
@@ -520,7 +522,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array for menu
+     * @return false|array array for menu
      **/
     public static function getAdditionalMenuContent()
     {
@@ -559,7 +561,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array of additional options
+     * @return false|array
      **/
     public static function getAdditionalMenuLinks()
     {
@@ -602,7 +604,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @since 0.83
      *
      * @param CommonGLPI $item         Item on which the tab need to be displayed
-     * @param boolean    $withtemplate is a template object ? (default 0)
+     * @param integer    $withtemplate is a template object ? (default 0)
      *
      *  @return string tab name
      **/
@@ -619,7 +621,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @param CommonGLPI $item         Item on which the tab need to be displayed
      * @param integer    $tabnum       tab number (default 1)
-     * @param boolean    $withtemplate is a template object ? (default 0)
+     * @param integer    $withtemplate is a template object ? (default 0)
      *
      * @return boolean
      **/
@@ -634,7 +636,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @param CommonGLPI $item         Item on which the tab need to be displayed
      * @param string     $tab          tab name
-     * @param boolean    $withtemplate is a template object ? (default 0)
+     * @param integer    $withtemplate is a template object ? (default 0)
      * @param array      $options      additional options to pass
      *
      * @return boolean true
@@ -673,6 +675,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $options['withtemplate'] = $withtemplate;
 
                 if ($tabnum == 'main') {
+                    /** @var CommonDBTM $item */
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);
                     $ret = $item->showForm($item->getID(), $options);
 
@@ -706,7 +709,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @param string  $text text to display
      * @param integer $nb   number of items (default 0)
      *
-     *  @return array array containing the onglets
+     *  @return string
      **/
     public static function createTabEntry($text, $nb = 0)
     {
@@ -727,6 +730,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function redirectToList()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -944,6 +948,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function showNavigationHeader($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // for objects not in table like central
@@ -1223,6 +1228,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function showDebugInfo()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (method_exists($this, 'showDebug')) {
@@ -1365,6 +1371,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function showDislayOptions($sub_itemtype = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $options      = static::getAvailableDisplayOptions();
@@ -1435,6 +1442,7 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public static function getDisplayOptionsLink($sub_itemtype = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand = mt_rand();
@@ -1500,6 +1508,10 @@ class CommonGLPI implements CommonGLPIInterface
      **/
     public function getKBLinks()
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         if (!($this instanceof CommonDBTM)) {

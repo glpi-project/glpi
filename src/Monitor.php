@@ -163,6 +163,7 @@ class Monitor extends CommonDBTM
      **/
     public function getLinkedItems()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -408,7 +409,7 @@ class Monitor extends CommonDBTM
             'table'              => 'glpi_users',
             'field'              => 'name',
             'linkfield'          => 'users_id_tech',
-            'name'               => __('Technician in charge of the hardware'),
+            'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
             'right'              => 'own_ticket'
         ];
@@ -418,7 +419,7 @@ class Monitor extends CommonDBTM
             'table'              => 'glpi_groups',
             'field'              => 'completename',
             'linkfield'          => 'groups_id_tech',
-            'name'               => __('Group in charge of the hardware'),
+            'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'datatype'           => 'dropdown'
         ];
@@ -476,7 +477,7 @@ class Monitor extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '129',
+            'id'                 => '1429',
             'table'              => 'glpi_computers_items',
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of monitors'),

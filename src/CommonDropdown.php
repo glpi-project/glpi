@@ -148,6 +148,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function getAdditionalFields()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $fields = [];
@@ -189,6 +190,20 @@ abstract class CommonDropdown extends CommonDBTM
             ];
         }
         return $fields;
+    }
+
+    /**
+     * Return properties of additional field having given name.
+     */
+    final public function getAdditionalField(string $name): ?array
+    {
+        foreach ($this->getAdditionalFields() as $field) {
+            if ($field['name'] === $name) {
+                return $field;
+            }
+        }
+
+        return null;
     }
 
 
@@ -240,6 +255,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function prepareInputForAdd($input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
        // if item based on location, create item in the same entity as location
@@ -289,7 +305,7 @@ abstract class CommonDropdown extends CommonDBTM
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
         $this->addFilesFromRichText();
 
@@ -323,9 +339,9 @@ abstract class CommonDropdown extends CommonDBTM
         $fields = $this->getAdditionalFields();
         foreach ($fields as $field) {
             $type           = $field['type'] ?? '';
-            $disable_images = $field['disable_images'] ?? false;
-            if ($type === 'tinymce' && !$disable_images) {
-                // Add files from inline images
+            $convert_images = $field['convert_images_to_documents'] ?? true;
+            if ($type === 'tinymce' && $convert_images) {
+                // Convert inline images into documents
                 $this->input = $this->addFiles(
                     $this->input,
                     [
@@ -401,6 +417,7 @@ abstract class CommonDropdown extends CommonDBTM
 
     public function rawSearchOptions()
     {
+        /** @var \DBmysql $DB */
         global $DB;
         $tab = [];
 
@@ -527,6 +544,7 @@ abstract class CommonDropdown extends CommonDBTM
      */
     public function isUsed()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $RELATION = getDbRelations();
@@ -680,6 +698,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function findID(array &$input)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!empty($input["name"])) {
@@ -749,7 +768,7 @@ abstract class CommonDropdown extends CommonDBTM
     /**
      * Import a value in a dropdown table.
      *
-     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
+     * This import a new dropdown if it doesn't exist - Play dictionary if needed
      *
      * @param string  $value           Value of the new dropdown (need to be addslashes)
      * @param integer $entities_id     Entity in case of specific dropdown (default -1)
@@ -868,7 +887,7 @@ abstract class CommonDropdown extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var CommonDropdown $item */
         switch ($ma->getAction()) {
             case 'merge':
                 $fk = $item->getForeignKeyField();
@@ -887,21 +906,21 @@ abstract class CommonDropdown extends CommonDBTM
                             }
                         } else {
                             $input2 = $item->fields;
-                         // Remove keys (and name, tree dropdown will use completename)
+                            // Remove keys (and name, tree dropdown will use completename)
                             if ($item instanceof CommonTreeDropdown) {
                                 unset($input2['id'], $input2['name'], $input2[$fk]);
                             } else {
                                 unset($input2['id']);
                             }
-                      // Change entity
+                            // Change entity
                             $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                             $input2['is_recursive'] = 1;
                             $input2 = Toolbox::addslashes_deep($input2);
-                      // Import new
+                            // Import new
                             if ($newid = $item->import($input2)) {
                                // Delete old
                                 if ($newid > 0 && $key != $newid) {
-                               // delete with purge for dropdown with trashbin (Budget)
+                                    // delete with purge for dropdown with trashbin (Budget)
                                     $item->delete(['id'          => $key,
                                         '_replace_by' => $newid
                                     ], 1);
@@ -932,6 +951,7 @@ abstract class CommonDropdown extends CommonDBTM
      **/
     public function getLinks($withname = false)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = '';

@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+// Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
+$SECURITY_STRATEGY = 'no_check';
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");

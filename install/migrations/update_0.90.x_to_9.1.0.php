@@ -40,6 +40,11 @@
  **/
 function update090xto910()
 {
+    /**
+     * @var array $CFG_GLPI
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
     global $DB, $migration, $CFG_GLPI;
 
     $current_config   = Config::getConfigurationValues('core');
@@ -85,7 +90,7 @@ function update090xto910()
                  PRIMARY KEY (`id`),
                  UNIQUE INDEX `item` (`itemtype`, `items_id`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-        $DB->queryOrDie($query, "9.1 add table glpi_objectlocks");
+        $DB->doQueryOrDie($query, "9.1 add table glpi_objectlocks");
 
        // insert new profile (read only access for locks)
         $query = "INSERT INTO `glpi_profiles`
@@ -100,9 +105,9 @@ function update090xto910()
                         0, 0,
                         '{\"1\":{\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"9\":{\"1\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"10\":{\"1\":0,\"9\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"7\":{\"1\":0,\"9\":0,\"10\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"4\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"11\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"12\":0,\"5\":0,\"8\":0,\"6\":0},\"12\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"5\":0,\"8\":0,\"6\":0},\"5\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"8\":0,\"6\":0},\"8\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"6\":0},\"6\":{\"1\":0,\"9\":0,\"10\":0,\"7\":0,\"4\":0,\"11\":0,\"12\":0,\"5\":0,\"8\":0}}')";
 
-        $DB->queryOrDie($query, "9.1 update profile with Unlock profile");
+        $DB->doQueryOrDie($query, "9.1 update profile with Unlock profile");
         $ro_p_id = $DB->insertId();
-        $DB->queryOrDie("INSERT INTO `glpi_profilerights`
+        $DB->doQueryOrDie("INSERT INTO `glpi_profilerights`
                               (`profiles_id`, `name`, `rights`)
                        VALUES ($ro_p_id, 'backup',                    '1'),
                               ($ro_p_id, 'bookmark_public',           '1'),
@@ -176,7 +181,8 @@ function update090xto910()
                               ($ro_p_id, 'typedoc',                   '1'),
                               ($ro_p_id, 'user',                      '2177')");
 
-       // updates rights for Super-Admin profile
+        // updates rights for Super-Admin profile
+        $rightnames = [];
         foreach ($CFG_GLPI['lock_lockable_objects'] as $itemtype) {
             $rightnames[] = $itemtype::$rightname;
         }
@@ -344,7 +350,7 @@ function update090xto910()
                   KEY `wwn` (`wwn`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->query($query);
+        $DB->doQuery($query);
     }
 
    /************** Kernel version for os *************/
@@ -366,7 +372,7 @@ function update090xto910()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
+        $DB->doQueryOrDie($query, "9.1 add table glpi_operatingsystemarchitectures");
     }
 
    /************** Task's templates *************/
@@ -386,7 +392,7 @@ function update090xto910()
                   KEY `taskcategories_id` (`taskcategories_id`),
                   KEY `entities_id` (`entities_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.1 add table glpi_tasktemplates");
+        $DB->doQueryOrDie($query, "9.1 add table glpi_tasktemplates");
     }
 
    /************** Installation date for softwares *************/
@@ -409,7 +415,7 @@ function update090xto910()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "add table glpi_budgettypes");
+        $DB->doQueryOrDie($query, "add table glpi_budgettypes");
     }
 
     $new = $migration->addField("glpi_budgets", "budgettypes_id", "integer");
@@ -457,7 +463,7 @@ function update090xto910()
                   KEY `date_mod` (`date_mod`),
                   KEY `is_active` (`is_active`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.1 add table glpi_apiclients");
+        $DB->doQueryOrDie($query, "9.1 add table glpi_apiclients");
 
         $DB->insertOrDie(
             "glpi_apiclients",
@@ -727,7 +733,7 @@ function update090xto910()
                   KEY `date_mod` (`date_mod`),
                   KEY `date_creation` (`date_creation`)
                 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;";
-        $DB->queryOrDie($query, "Add antivirus table");
+        $DB->doQueryOrDie($query, "Add antivirus table");
     }
 
     if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
@@ -847,7 +853,7 @@ function update090xto910()
                   KEY `date_creation` (`date_creation`),
                   KEY `slas_id` (`slas_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-        $DB->queryOrDie($query, "9.1 add table glpi_slts");
+        $DB->doQueryOrDie($query, "9.1 add table glpi_slts");
 
        // Sla migration
         $slasIterator = $DB->request("glpi_slas");

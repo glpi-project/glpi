@@ -252,8 +252,9 @@ class DomainRecordType extends CommonDropdown
         return parent::prepareInputForUpdate($input);
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (in_array('fields', $this->updates)) {

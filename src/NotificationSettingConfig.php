@@ -44,7 +44,7 @@ class NotificationSettingConfig extends CommonDBTM
     protected $displaylist  = false;
     public static $rightname       = 'config';
 
-    public function update(array $input, $history = 1, $options = [])
+    public function update(array $input, $history = true, $options = [])
     {
         $success = true;
 
@@ -90,6 +90,7 @@ class NotificationSettingConfig extends CommonDBTM
      */
     public function showConfigForm($options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($options['display'])) {

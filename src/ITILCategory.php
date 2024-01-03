@@ -55,14 +55,14 @@ class ITILCategory extends CommonTreeDropdown
             ],
             [
                 'name'      => 'users_id',
-                'label'     => __('Technician in charge of the hardware'),
+                'label'     => __('Technician in charge'),
                 'type'      => 'UserDropdown',
                 'right'     => 'own_ticket',
                 'list'      => true,
             ],
             [
                 'name'      => 'groups_id',
-                'label'     => __('Group in charge of the hardware'),
+                'label'     => __('Group in charge'),
                 'type'      => 'dropdownValue',
                 'condition' => ['is_assign' => 1],
                 'list'      => true,
@@ -157,7 +157,7 @@ class ITILCategory extends CommonTreeDropdown
             'id'                 => '70',
             'table'              => 'glpi_users',
             'field'              => 'name',
-            'name'               => __('Technician in charge of the hardware'),
+            'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
             'right'              => 'own_ticket'
         ];
@@ -346,6 +346,7 @@ class ITILCategory extends CommonTreeDropdown
      **/
     private static function getITILCategoryIDByField($field, $value)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -437,7 +438,11 @@ class ITILCategory extends CommonTreeDropdown
      **/
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $itilcategory = new self();
         $ID           = $tt->fields['id'];

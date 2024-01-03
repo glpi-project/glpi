@@ -71,7 +71,7 @@ class RequirementsList implements \IteratorAggregate
     public function hasMissingMandatoryRequirements()
     {
         foreach ($this->requirements as $requirement) {
-            if (!$requirement->isOutOfContext() && $requirement->isMissing() && !$requirement->isOptional()) {
+            if (!$requirement->isOptional() && !$requirement->isOutOfContext() && $requirement->isMissing()) {
                 return true;
             }
         }
@@ -86,7 +86,7 @@ class RequirementsList implements \IteratorAggregate
     public function hasMissingOptionalRequirements()
     {
         foreach ($this->requirements as $requirement) {
-            if (!$requirement->isOutOfContext() && $requirement->isMissing() && $requirement->isOptional()) {
+            if ($requirement->isOptional() && !$requirement->isOutOfContext() && $requirement->isMissing()) {
                 return true;
             }
         }

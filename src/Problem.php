@@ -161,6 +161,7 @@ class Problem extends CommonITILObject
 
     public function pre_deleteItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI['use_notifications']) {
@@ -249,8 +250,9 @@ class Problem extends CommonITILObject
     }
 
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         parent::post_updateItem($history);
@@ -331,6 +333,7 @@ class Problem extends CommonITILObject
 
     public function post_addItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         parent::post_addItem();
@@ -750,7 +753,11 @@ class Problem extends CommonITILObject
      **/
     public static function showCentralList($start, $status = "process", $showgroupproblems = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!static::canView()) {
             return false;
@@ -1071,7 +1078,11 @@ class Problem extends CommonITILObject
      **/
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
        // show a tab with count of jobs in the central and give link
         if (!static::canView()) {
@@ -1292,12 +1303,13 @@ class Problem extends CommonITILObject
      * Will also display problems of linked items
      *
      * @param CommonDBTM $item
-     * @param boolean    $withtemplate
+     * @param integer    $withtemplate
      *
      * @return void
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::READALL)) {
@@ -1539,6 +1551,7 @@ class Problem extends CommonITILObject
             'entities_id'                => $_SESSION['glpiactive_entity'],
             'itilcategories_id'          => 0,
             'actiontime'                 => 0,
+            'date'                      => 'NULL',
             '_add_validation'            => 0,
             'users_id_validate'          => [],
             '_tasktemplates_id'          => [],
@@ -1559,6 +1572,7 @@ class Problem extends CommonITILObject
      */
     public function getActiveProblemsForItem($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->request([

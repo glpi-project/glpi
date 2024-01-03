@@ -65,6 +65,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $kbi_cat_table = self::getTable();
@@ -278,7 +279,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = 0,
+        $is_deleted = false,
         CommonDBTM $checkitem = null
     ) {
 

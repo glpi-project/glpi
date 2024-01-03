@@ -1603,7 +1603,7 @@ class Inventory extends InventoryTestCase
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
         ]);
-        $this->integer(count($logs))->isIdenticalTo(1); //FIXME: should be 0
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //real computer update
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json'));
@@ -1781,18 +1781,12 @@ class Inventory extends InventoryTestCase
             'FROM' => \Log::getTable(),
             'LIMIT' => countElementsInTable(\Log::getTable()),
             'OFFSET' => $nblogsnow,
-            'WHERE' => [
-                'NOT' => [ //prevent logs check on Agent last contact
-                    'itemtype' => \Agent::getType(),
-                    'id_search_option' => 4
-                ]
-            ]
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4411);
+        $this->integer(count($logs))->isIdenticalTo(4412);
 
         $expected_types_count = [
-            0 => 2, //Agent version, disks usage
+            0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
@@ -4036,7 +4030,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(count($unmanageds))->isIdenticalTo(36);
     }
 
-    public function testImportRefusedFromAssetRules()
+    public function testImportRefusedFromAssetRulesWithNoLog()
     {
         $rule = new \Rule();
 
@@ -4050,6 +4044,105 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $rule->getFromDBByCrit(['name' => 'Computer import denied'])
         )->isTrue();
         $rules_id_refuse = $rule->fields['id'];
+        // update action to refused import with no log
+        $action = new \RuleAction();
+        $action->getFromDBByCrit([
+            "rules_id" => $rules_id_refuse,
+        ]);
+        $action->fields['field'] = '_inventory';
+        $action->fields['value'] = 2;
+        $action->update($action->fields);
+
+
+        $this->boolean(
+            $rule->getFromDBByCrit(['name' => 'Computer import (by name)'])
+        )->isTrue();
+        $rules_id_toaccept = $rule->fields['id'];
+
+        //move rule to refuse computer inventory
+        $rulecollection = new \RuleImportAssetCollection();
+        $this->boolean(
+            $rulecollection->moveRule(
+                $rules_id_refuse,
+                $rules_id_torefuse,
+                \RuleCollection::MOVE_BEFORE
+            )
+        )->isTrue();
+
+        //do inventory
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
+        $inventory = $this->doInventory($json);
+
+        //move rule back to accept computer inventory
+        $this->boolean(
+            $rulecollection->moveRule(
+                $rules_id_refuse,
+                $rules_id_toaccept,
+                \RuleCollection::MOVE_AFTER
+            )
+        )->isTrue();
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->array($metadata)->hasSize(7)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('FusionInventory-Agent_v2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
+         ->variable['port']->isIdenticalTo(null)
+         ->string['action']->isIdenticalTo('inventory');
+        $this->array($metadata['provider'])->hasSize(10);
+
+        global $DB;
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+         ->string['deviceid']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['name']->isIdenticalTo('glpixps-2018-07-09-09-07-13')
+         ->string['version']->isIdenticalTo('2.5.2-1.fc31')
+         ->string['itemtype']->isIdenticalTo('Computer')
+         ->string['tag']->isIdenticalTo('000005')
+         ->integer['agenttypes_id']->isIdenticalTo($agenttype['id']);
+
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isIdenticalTo(0);
+
+        $iterator = $DB->request([
+            'FROM'   => \RefusedEquipment::getTable(),
+        ]);
+        $this->integer(count($iterator))->isIdenticalTo(0);
+    }
+
+    public function testImportRefusedFromAssetRulesWithLog()
+    {
+        $rule = new \Rule();
+
+        //prepares needed rules id
+        $this->boolean(
+            $rule->getFromDBByCrit(['name' => 'Computer constraint (name)'])
+        )->isTrue();
+        $rules_id_torefuse = $rule->fields['id'];
+
+
+        $this->boolean(
+            $rule->getFromDBByCrit(['name' => 'Computer import denied'])
+        )->isTrue();
+        $rules_id_refuse = $rule->fields['id'];
+
+        //update ruleAction to refused import with log
+        $ruleaction = new \RuleAction();
+        $this->boolean($ruleaction->getFromDBByCrit(['rules_id' => $rules_id_refuse]))->isTrue();
+        $this->boolean(
+            $ruleaction->update([
+                'id'    => $ruleaction->fields['id'],
+                'field' => '_ignore_import',
+                'action_type' => 'assign',
+                'value' => 1
+            ])
+        )->isTrue();
 
         $this->boolean(
             $rule->getFromDBByCrit(['name' => 'Computer import (by name)'])
@@ -4229,7 +4322,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(
             $rulecriteria->add([
                 'rules_id'  => $rules_id,
-                'criteria'  => "name",
+                'criteria'  => "deviceid",
                 'pattern'   => "/^glpixps.*/",
                 'condition' => \RuleImportEntity::REGEX_MATCH
             ])
@@ -4817,7 +4910,167 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array(array_pop($databases))
             ->string['name']->isIdenticalTo('glpi')
             ->integer['size']->isIdenticalTo(55000);
+
+        //test sql syntax error
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2_partial_dbs.json'));
+        $mysql = $json->content->databases_services[0];
+        //update version
+        $mysql->name = "Maria'DB";
+        $dbs = $mysql->databases;
+
+        $db_glpi = &$dbs[0];
+        $db_glpi->size = 55000;
+        $db_glpi->last_backup_date = '2021-06-25 08:52:44';
+
+        $db_new = &$dbs[1];
+        $db_new->name = 'new_database';
+        $db_new->size = 2048;
+
+        $services = [$mysql];
+        $json->content->databases_services = $services;
+
+        $this->doInventory($json);
+
+        //check created databases & instances
+        $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
+        $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 1]))->isIdenticalTo(2);
+
+        //ensure database version has been updated
+        $database = new \DatabaseInstance();
+        $this->boolean($database->getFromDBByCrit(['name' => 'MariaDB']))->isTrue();
+        $this->string($database->fields['version'])->isIdenticalTo('Ver 15.1 Distrib 10.5.10-MariaDB-modified');
+
+        //- ensure existing instances has been updated
+        $databases = $database->getDatabases();
+        $this->array($databases)->hasSize(2);
+        $this->array(array_pop($databases))
+            ->string['name']->isIdenticalTo('new_database')
+            ->integer['size']->isIdenticalTo(2048);
+        $this->array(array_pop($databases))
+            ->string['name']->isIdenticalTo('glpi')
+            ->integer['size']->isIdenticalTo(55000);
     }
+
+
+    public function testImportPhoneSimCardNoReset()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SIMCARDS>
+        <COUNTRY>fr</COUNTRY>
+        <OPERATOR_CODE>2081</OPERATOR_CODE>
+        <OPERATOR_NAME>Orange F</OPERATOR_NAME>
+        <SERIAL>89330126162002971850</SERIAL>
+        <STATE>SIM_STATE_READY</STATE>
+        <LINE_NUMBER></LINE_NUMBER>
+        <SUBSCRIBER_ID>1</SUBSCRIBER_ID>
+    </SIMCARDS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  <ITEMTYPE>Phone</ITEMTYPE>
+</REQUEST>";
+
+        $this->doInventory($xml, true);
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+
+        //check created computer
+        $phone = new \Phone();
+        $this->boolean($phone->getFromDB($agent['items_id']))->isTrue();
+
+        //check for components
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_first))->isIdenticalTo(1);
+
+        //re run inventory to check if item_simcard ID is changed
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'phone_1.json'));
+
+        $this->doInventory($json);
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_second))->isIdenticalTo(1);
+
+        $this->array($simcards_first)->isIdenticalTo($simcards_second);
+    }
+
+    public function testImportPhoneMultiSimCardNoReset()
+    {
+        global $DB;
+
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SIMCARDS>
+        <COUNTRY>fr</COUNTRY>
+        <OPERATOR_CODE>2081</OPERATOR_CODE>
+        <OPERATOR_NAME>Orange F</OPERATOR_NAME>
+        <SERIAL>89330126162002971850</SERIAL>
+        <STATE>SIM_STATE_READY</STATE>
+        <LINE_NUMBER></LINE_NUMBER>
+        <SUBSCRIBER_ID>1</SUBSCRIBER_ID>
+    </SIMCARDS>
+    <SIMCARDS>
+        <COUNTRY>fr</COUNTRY>
+        <OPERATOR_CODE>2081</OPERATOR_CODE>
+        <OPERATOR_NAME>Orange F</OPERATOR_NAME>
+        <SERIAL>23168441316812316511</SERIAL>
+        <STATE>SIM_STATE_READY</STATE>
+        <LINE_NUMBER></LINE_NUMBER>
+        <SUBSCRIBER_ID>2</SUBSCRIBER_ID>
+    </SIMCARDS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  <ITEMTYPE>Phone</ITEMTYPE>
+</REQUEST>";
+
+        $this->doInventory($xml, true);
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+
+        //check created computer
+        $phone = new \Phone();
+        $this->boolean($phone->getFromDB($agent['items_id']))->isTrue();
+
+        //check for components
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_first = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_first))->isIdenticalTo(2);
+
+        //re run inventory to check if item_simcard ID is changed
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'phone_1.json'));
+
+        $this->doInventory($json);
+        $item_devicesimcard = new \Item_DeviceSimcard();
+        $simcards_second = $item_devicesimcard->find(['itemtype' => 'Phone' , 'items_id' => $agent['items_id']]);
+        $this->integer(count($simcards_second))->isIdenticalTo(2);
+
+        $this->array($simcards_first)->isIdenticalTo($simcards_second);
+    }
+
 
     public function testImportPhone()
     {
@@ -4868,7 +5121,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $iterator = $DB->request($criteria);
         $this->integer(count($iterator))->isIdenticalTo(1);
-        $this->string($iterator->current()['name'])->isIdenticalTo('Global import (by serial)');
+        $this->string($iterator->current()['name'])->isIdenticalTo('Phone import (by serial + uuid)');
         $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
         //get phone models, manufacturer, ...
@@ -6039,7 +6292,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'name'      => 'use TAG as otherserial',
             'match'     => 'AND',
             'sub_type'  => 'RuleAsset',
-            'condition' => \RuleAsset::ONUPDATE
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
         ];
 
         $rule = new \Rule();
@@ -6133,5 +6386,1438 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $computer = new \Computer();
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
         $this->string($computer->fields['otherserial'])->isIdenticalTo($tag);
+    }
+
+    public function testBusinessRuleOnAddComputer()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'Business rule test',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \Computer::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular Computer add
+        $computer = new \Computer();
+        $computers_id = $computer->add(['name' => 'Test computer', 'entities_id' => 0]);
+        $this->integer($computers_id)->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new computer
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testBusinessRuleOnUpdateComputer()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name' => 'Business rule test',
+            'match' => 'AND',
+            'sub_type' => 'RuleAsset',
+            'condition' => \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id' => $rules_id,
+            'criteria' => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \Computer::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular Computer add
+        $computer = new \Computer();
+        $computers_id = $computer->add(['name' => 'Test computer', 'entities_id' => 0]);
+        $this->integer($computers_id)->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->variable($computer->fields['comment'])->isNull();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo(0);
+
+        //update computer
+        $this->boolean(
+            $computer->update([
+                'id' => $computers_id,
+                'comment' => 'Another comment'
+            ])
+        )->isTrue();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new computer
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->variable($computer->fields['comment'])->isNull();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo(0);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testBusinessRuleOnAddAndOnUpdateComputer()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name' => 'Business rule test',
+            'match' => 'AND',
+            'sub_type' => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id' => $rules_id,
+            'criteria' => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \Computer::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular Computer add
+        $computer = new \Computer();
+        $computers_id = $computer->add(['name' => 'Test computer', 'entities_id' => 0]);
+        $this->integer($computers_id)->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //update computer
+        $this->boolean(
+            $computer->update([
+                'id' => $computers_id,
+                'comment' => 'Another comment'
+            ])
+        )->isTrue();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new computer
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+            <REQUEST>
+            <CONTENT>
+              <HARDWARE>
+                <NAME>glpixps</NAME>
+                <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+              </HARDWARE>
+              <BIOS>
+                <MSN>640HP72</MSN>
+              </BIOS>
+              <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+            </CONTENT>
+            <DEVICEID>test_setstatusifinventory</DEVICEID>
+            <QUERY>INVENTORY</QUERY>
+            </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->string($computer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($computer->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testBusinessRuleOnAddNetworkEquipment()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'Business rule test',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \NetworkEquipment::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular Network Equipment add
+        $neteq = new \NetworkEquipment();
+        $networkeequipments_id = $neteq->add(['name' => 'Test network equipment', 'entities_id' => 0]);
+        $this->integer($networkeequipments_id)->isGreaterThan(0);
+        $this->boolean($neteq->getFromDB($networkeequipments_id))->isTrue();
+
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new network equipment
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>UCS 6248UP 48-Port</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>5.0(3)N2(4.02b)</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <CPU>4</CPU>
+        <FIRMWARE>5.0(3)N2(4.02b)</FIRMWARE>
+        <ID>0</ID>
+        <LOCATION>paris.pa3</LOCATION>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>UCS 6248UP 48-Port</MODEL>
+        <NAME>ucs6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>482 days, 05:42:18.50</UPTIME>
+        <IPS>
+           <IP>127.0.0.1</IP>
+           <IP>10.2.5.10</IP>
+           <IP>192.168.12.5</IP>
+        </IPS>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created networkequipment
+        $neteq = new \NetworkEquipment();
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        //location is not set by rule on update, but is set from inventory data
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'paris.pa3', true));
+    }
+
+    public function testBusinessRuleOnUpdateNetworkEquipment()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name' => 'Business rule test',
+            'match' => 'AND',
+            'sub_type' => 'RuleAsset',
+            'condition' => \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id' => $rules_id,
+            'criteria' => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \NetworkEquipment::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular Network equipment add
+        $neteq = new \NetworkEquipment();
+        $networkequipments_id = $neteq->add(['name' => 'Test network equipment', 'entities_id' => 0]);
+        $this->integer($networkequipments_id)->isGreaterThan(0);
+        $this->boolean($neteq->getFromDB($networkequipments_id))->isTrue();
+
+        $this->variable($neteq->fields['comment'])->isNull();
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo(0);
+
+        //update network equipment
+        $this->boolean(
+            $neteq->update([
+                'id' => $networkequipments_id,
+                'comment' => 'Another comment'
+            ])
+        )->isTrue();
+        $this->boolean($neteq->getFromDB($networkequipments_id))->isTrue();
+
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new network equipment
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>UCS 6248UP 48-Port</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>5.0(3)N2(4.02b)</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <CPU>4</CPU>
+        <FIRMWARE>5.0(3)N2(4.02b)</FIRMWARE>
+        <ID>0</ID>
+        <LOCATION>paris.pa3</LOCATION>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>UCS 6248UP 48-Port</MODEL>
+        <NAME>ucs6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>482 days, 05:42:18.50</UPTIME>
+        <IPS>
+           <IP>127.0.0.1</IP>
+           <IP>10.2.5.10</IP>
+           <IP>192.168.12.5</IP>
+        </IPS>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created network equipment
+        $neteq = new \NetworkEquipment();
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+        $this->variable($neteq->fields['comment'])->isNull();
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'paris.pa3', true));
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testBusinessRuleOnAddAndOnUpdateNetworkEquipment()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name' => 'Business rule test',
+            'match' => 'AND',
+            'sub_type' => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id' => $rules_id,
+            'criteria' => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \NetworkEquipment::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular Network equipment add
+        $neteq = new \NetworkEquipment();
+        $networkequipments_id = $neteq->add(['name' => 'Test network equipment', 'entities_id' => 0]);
+        $this->integer($networkequipments_id)->isGreaterThan(0);
+        $this->boolean($neteq->getFromDB($networkequipments_id))->isTrue();
+
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //update network equipment
+        $this->boolean(
+            $neteq->update([
+                'id' => $networkequipments_id,
+                'comment' => 'Another comment'
+            ])
+        )->isTrue();
+        $this->boolean($neteq->getFromDB($networkequipments_id))->isTrue();
+
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new network equipment
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <NAME>UCS 6248UP 48-Port</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>5.0(3)N2(4.02b)</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <CPU>4</CPU>
+        <FIRMWARE>5.0(3)N2(4.02b)</FIRMWARE>
+        <ID>0</ID>
+        <LOCATION>paris.pa3</LOCATION>
+        <MAC>8c:60:4f:8d:ae:fc</MAC>
+        <MANUFACTURER>Cisco</MANUFACTURER>
+        <MODEL>UCS 6248UP 48-Port</MODEL>
+        <NAME>ucs6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>482 days, 05:42:18.50</UPTIME>
+        <IPS>
+           <IP>127.0.0.1</IP>
+           <IP>10.2.5.10</IP>
+           <IP>192.168.12.5</IP>
+        </IPS>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created network equipment
+        $neteq = new \NetworkEquipment();
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($neteq->getFromDBByCrit(['serial' => 'SSI1912014B']))->isTrue();
+        $this->string($neteq->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($neteq->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($neteq->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testBusinessRuleOnAddPrinter()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'Business rule test',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \Printer::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular printer add
+        $printer = new \Printer();
+        $printers_id = $printer->add(['name' => 'Test printer', 'entities_id' => 0]);
+        $this->integer($printers_id)->isGreaterThan(0);
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new printer
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <COMMENTS>RICOH MP C5503 1.38 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</COMMENTS>
+                <ID>1</ID>
+                <IPS>
+                  <IP>0.0.0.0</IP>
+                  <IP>10.100.51.207</IP>
+                  <IP>127.0.0.1</IP>
+                </IPS>
+                <LOCATION>Location</LOCATION>
+                <MAC>00:26:73:12:34:56</MAC>
+                <MANUFACTURER>Ricoh</MANUFACTURER>
+                <MEMORY>1</MEMORY>
+                <MODEL>MP C5503</MODEL>
+                <NAME>CLPSF99</NAME>
+                <RAM>1973</RAM>
+                <SERIAL>E1234567890</SERIAL>
+                <TYPE>PRINTER</TYPE>
+                <UPTIME>33 days, 22:19:01.00</UPTIME>
+              </INFO>
+              <PAGECOUNTERS>
+                <TOTAL>1164615</TOTAL>
+              </PAGECOUNTERS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>7</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>
+        ';
+
+        $this->doInventory($xml_source, true);
+
+        //check created printer
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        //location is not set by rule on update, but is set from inventory data
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'Location', true));
+    }
+
+    public function testBusinessRuleOnUpdatePrinter()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name' => 'Business rule test',
+            'match' => 'AND',
+            'sub_type' => 'RuleAsset',
+            'condition' => \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id' => $rules_id,
+            'criteria' => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \Printer::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular printer add
+        $printer = new \Printer();
+        $printers_id = $printer->add(['name' => 'Test printer', 'entities_id' => 0]);
+        $this->integer($printers_id)->isGreaterThan(0);
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+
+        $this->variable($printer->fields['comment'])->isNull();
+        $this->integer($printer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo(0);
+
+        //update printer
+        $this->boolean(
+            $printer->update([
+                'id' => $printers_id,
+                'comment' => 'Another comment'
+            ])
+        )->isTrue();
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new printer
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <COMMENTS>RICOH MP C5503 1.38 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</COMMENTS>
+                <ID>1</ID>
+                <IPS>
+                  <IP>0.0.0.0</IP>
+                  <IP>10.100.51.207</IP>
+                  <IP>127.0.0.1</IP>
+                </IPS>
+                <LOCATION>Location</LOCATION>
+                <MAC>00:26:73:12:34:56</MAC>
+                <MANUFACTURER>Ricoh</MANUFACTURER>
+                <MEMORY>1</MEMORY>
+                <MODEL>MP C5503</MODEL>
+                <NAME>CLPSF99</NAME>
+                <RAM>1973</RAM>
+                <SERIAL>E1234567890</SERIAL>
+                <TYPE>PRINTER</TYPE>
+                <UPTIME>33 days, 22:19:01.00</UPTIME>
+              </INFO>
+              <PAGECOUNTERS>
+                <TOTAL>1164615</TOTAL>
+              </PAGECOUNTERS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>7</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>
+        ';
+
+        $this->doInventory($xml_source, true);
+
+        //check created printer
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
+        $this->variable($printer->fields['comment'])->isNull();
+        $this->integer($printer->fields['states_id'])->isIdenticalTo(0);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo(getItemByTypeName(\Location::class, 'Location', true));
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testBusinessRuleOnAddAndOnUpdatePrinter()
+    {
+        global $DB;
+
+        //prepare rule contents
+        $state = new \State();
+        $states_id = $state->add(['name' => 'Test status']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        $location = new \Location();
+        $locations_id = $location->add(['name' => 'Test location']);
+        $this->integer($locations_id)->isGreaterThan(0);
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name' => 'Business rule test',
+            'match' => 'AND',
+            'sub_type' => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id' => $rules_id,
+            'criteria' => '_itemtype',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => \Printer::getType()
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create actions
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'locations_id',
+            'value' => $locations_id
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        $input_action = [
+            'rules_id' => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'comment',
+            'value' => 'A comment'
+        ];
+        $rule_action = new \RuleAction();
+        $this->integer($rule_action->add($input_action))->isGreaterThan(0);
+
+        //ensure business rule work on regular printer add
+        $printer = new \Printer();
+        $printers_id = $printer->add(['name' => 'Test printer', 'entities_id' => 0]);
+        $this->integer($printers_id)->isGreaterThan(0);
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //update network equipment
+        $this->boolean(
+            $printer->update([
+                'id' => $printers_id,
+                'comment' => 'Another comment'
+            ])
+        )->isTrue();
+        $this->boolean($printer->getFromDB($printers_id))->isTrue();
+
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //inventory a new printer
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <COMMENTS>RICOH MP C5503 1.38 / RICOH Network Printer C model / RICOH Network Scanner C model / RICOH Network Facsimile C model</COMMENTS>
+                <ID>1</ID>
+                <IPS>
+                  <IP>0.0.0.0</IP>
+                  <IP>10.100.51.207</IP>
+                  <IP>127.0.0.1</IP>
+                </IPS>
+                <LOCATION>Location</LOCATION>
+                <MAC>00:26:73:12:34:56</MAC>
+                <MANUFACTURER>Ricoh</MANUFACTURER>
+                <MEMORY>1</MEMORY>
+                <MODEL>MP C5503</MODEL>
+                <NAME>CLPSF99</NAME>
+                <RAM>1973</RAM>
+                <SERIAL>E1234567890</SERIAL>
+                <TYPE>PRINTER</TYPE>
+                <UPTIME>33 days, 22:19:01.00</UPTIME>
+              </INFO>
+              <PAGECOUNTERS>
+                <TOTAL>1164615</TOTAL>
+              </PAGECOUNTERS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>7</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>
+        ';
+
+        $this->doInventory($xml_source, true);
+
+        //check created printer
+        $printer = new \Printer();
+        $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($printer->getFromDBByCrit(['serial' => 'E1234567890']))->isTrue();
+        $this->string($printer->fields['comment'])->isIdenticalTo('A comment');
+        $this->integer($printer->fields['states_id'])->isIdenticalTo($states_id);
+        $this->integer($printer->fields['locations_id'])->isIdenticalTo($locations_id);
+    }
+
+    public function testStatusIfInventoryOnAdd()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'set status if inventory',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => '1'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        $state = new \State();
+        $states_id = $state->add(['name' => 'test_status_if_inventory']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+    }
+
+    public function testStatusIfInventoryOnUpdate()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'set status if inventory',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => '1'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        $state = new \State();
+        $states_id = $state->add(['name' => 'test_status_if_inventory']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo(0);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+    }
+
+    public function testStatusIfInventoryOnAddUpdate()
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'set status if inventory',
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => '_auto',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern' => '1'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        $state = new \State();
+        $states_id = $state->add(['name' => 'test_status_if_inventory']);
+        $this->integer($states_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'assign',
+            'field' => 'states_id',
+            'value' => $states_id
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_setstatusifinventory</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_setstatusifinventory']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+
+        //redo inventory
+        $this->doInventory($xml_source, true);
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
     }
 }

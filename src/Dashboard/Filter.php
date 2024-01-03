@@ -86,6 +86,7 @@ class Filter extends \CommonDBChild
      */
     public static function getRegisteredFilterClasses(): array
     {
+        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $filters = [
@@ -308,6 +309,7 @@ JAVASCRIPT;
      */
     public static function getForDashboard(int $dashboards_id = 0): string
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $dr_iterator = $DB->request([
@@ -333,6 +335,7 @@ JAVASCRIPT;
      */
     public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->updateOrInsert(

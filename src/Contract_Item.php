@@ -210,6 +210,7 @@ class Contract_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
        // Can exists on template
@@ -238,6 +239,7 @@ class Contract_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($item->getType()) {
@@ -437,7 +439,11 @@ class Contract_Item extends CommonDBRelation
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $instID = $contract->fields['id'];
 
@@ -651,7 +657,7 @@ class Contract_Item extends CommonDBRelation
                     }
 
                     if ($item->can($objdata['id'], READ)) {
-                        $link     = $itemtype::getFormURLWithID($objdata['id']);
+                        $link     = $item::getFormURLWithID($objdata['id']);
                         $namelink = "<a href=\"" . $link . "\">" . $name . "</a>";
                     } else {
                         $namelink = $name;
@@ -704,6 +710,7 @@ class Contract_Item extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();

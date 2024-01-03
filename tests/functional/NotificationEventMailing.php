@@ -92,7 +92,7 @@ class NotificationEventMailing extends DbTestCase
 
         $this->when(
             function () {
-                $this->boolean(\NotificationEventMailing::getAdminData())->isFalse();
+                $this->array(\NotificationEventMailing::getAdminData())->isIdenticalTo([]);
             }
         )->error
          ->withType(E_USER_WARNING)

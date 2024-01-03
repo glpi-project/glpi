@@ -33,6 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var array $CFG_GLPI
+ * @var array $_UPOST
+ */
+global $CFG_GLPI, $_UPOST;
+
+$SECURITY_STRATEGY = 'no_check'; // Anonymous access may be allowed by configuration.
+
 include('../inc/includes.php');
 
 if (

@@ -106,6 +106,7 @@ class Appliance_Item extends CommonDBRelation
      **/
     public static function showItems(Appliance $appliance)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $appliance->fields['id'];
@@ -239,7 +240,7 @@ class Appliance_Item extends CommonDBRelation
      * @since 9.5.2
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param boolean    $withtemplate not used (to be deleted)
+     * @param integer    $withtemplate not used (to be deleted)
      *
      * @return void
      **/
@@ -388,7 +389,7 @@ class Appliance_Item extends CommonDBRelation
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {
@@ -455,6 +456,7 @@ class Appliance_Item extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();

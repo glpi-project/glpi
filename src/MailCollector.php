@@ -140,6 +140,7 @@ class MailCollector extends CommonDBTM
 
     public function post_getEmpty()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->fields['filesize_max'] = $CFG_GLPI['default_mailcollector_filesize_max'];
@@ -234,6 +235,7 @@ class MailCollector extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initForm($ID, $options);
@@ -358,16 +360,9 @@ class MailCollector extends CommonDBTM
 
                var li       = $(this);
                var input_id = li.data('input-id');
-               var folder   = li.children('.folder-name').html();
+               var folder   = li.find('.folder-name').data('globalname');
 
-               var _label = '';
-               var _parents = li.parents('li').children('.folder-name');
-               for (i = _parents.length -1 ; i >= 0; i--) {
-                  _label += $(_parents[i]).html() + '/';
-               }
-               _label += folder;
-
-               $('#'+input_id).val(_label);
+               $('#'+input_id).val(folder);
 
                var modalEl = $('#'+input_id+'_modal')[0];
                var modal = bootstrap.Modal.getInstance(modalEl);
@@ -427,10 +422,11 @@ class MailCollector extends CommonDBTM
      */
     private function displayFolder($folder, $input_id)
     {
-        $fname = mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP");
+        $fglobalname = htmlspecialchars(mb_convert_encoding($folder->getGlobalName(), "UTF-8", "UTF7-IMAP"), ENT_QUOTES);
+        $flocalname  = htmlspecialchars(mb_convert_encoding($folder->getLocalName(), "UTF-8", "UTF7-IMAP"), ENT_QUOTES);
         echo "<li class='pointer' data-input-id='$input_id'>
                <i class='fa fa-folder'></i>&nbsp;
-               <span class='folder-name'>" . $fname . "</span>";
+               <span class='folder-name' data-globalname='" . $fglobalname . "'>" . $flocalname . "</span>";
         echo "<ul>";
 
         foreach ($folder as $sfolder) {
@@ -552,6 +548,15 @@ class MailCollector extends CommonDBTM
             'datatype'           => 'integer'
         ];
 
+        $tab[] = [
+            'id'                 => '23',
+            'table'              => $this->getTable(),
+            'field'              => 'last_collect_date',
+            'name'               => __('Date of last collection'),
+            'datatype'           => 'datetime',
+            'massiveaction'      => false
+        ];
+
         return $tab;
     }
 
@@ -563,6 +568,7 @@ class MailCollector extends CommonDBTM
      **/
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -688,6 +694,10 @@ class MailCollector extends CommonDBTM
      **/
     public function collect($mailgateID, $display = 0)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \GLPI $GLPI
+         */
         global $CFG_GLPI, $GLPI;
 
         if ($this->getFromDB($mailgateID)) {
@@ -703,6 +713,15 @@ class MailCollector extends CommonDBTM
                     false,
                     ERROR
                 );
+
+                // Update last collect date even if an error occurs.
+                // This will prevent collectors that are constantly errored to be stuck at the begin of the
+                // crontask process queue.
+                $this->update([
+                    'id' => $this->getID(),
+                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                ]);
+
                 return;
             }
 
@@ -803,6 +822,7 @@ class MailCollector extends CommonDBTM
                         $requester = $this->getRequesterEmail($message);
 
                         if (!$tkt['_blacklisted']) {
+                              /** @var \DBmysql $DB */
                               global $DB;
                               $rejinput['from']              = $requester ?? '';
                               $rejinput['to']                = $headers['to'];
@@ -960,6 +980,11 @@ class MailCollector extends CommonDBTM
                     $this->deleteMails($uid, $folder);
                 }
 
+                $this->update([
+                    'id' => $this->getID(),
+                    'last_collect_date' => $_SESSION["glpi_currenttime"],
+                ]);
+
               //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
                 $msg = sprintf(
                     __('Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, refused=%4$d, errors=%5$d, blacklisted=%6$d'),
@@ -1008,6 +1033,10 @@ class MailCollector extends CommonDBTM
      */
     public function buildTicket($uid, \Laminas\Mail\Storage\Message $message, $options = [])
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
         $play_rules = (isset($options['play_rules']) && $options['play_rules']);
@@ -1053,7 +1082,7 @@ class MailCollector extends CommonDBTM
                 $tkt['_tag']      = $this->tags;
             } else {
                //TRANS: %s is a directory
-                Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR . "/"));
+                Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR . "/") . '\n');
             }
         }
 
@@ -1298,6 +1327,7 @@ class MailCollector extends CommonDBTM
      **/
     public function cleanContent($string)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $original = $string;
@@ -1868,12 +1898,15 @@ class MailCollector extends CommonDBTM
      **/
     public static function cronMailgate($task)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         NotImportedEmail::deleteLog();
         $iterator = $DB->request([
             'FROM'   => 'glpi_mailcollectors',
-            'WHERE'  => ['is_active' => 1]
+            'WHERE'  => ['is_active' => 1],
+            'ORDER'  => 'last_collect_date ASC',
+            'LIMIT'  => 100,
         ]);
 
         $max = $task->fields['param'];
@@ -1900,11 +1933,11 @@ class MailCollector extends CommonDBTM
 
         if ($max == $task->fields['param']) {
             return 0; // Nothin to do
-        } else if ($max > 0) {
-            return 1; // done
+        } else if ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
+            return -1; // still messages to retrieve
         }
 
-        return -1; // still messages to retrieve
+        return 1; // done
     }
 
 
@@ -1933,7 +1966,11 @@ class MailCollector extends CommonDBTM
      **/
     public static function cronMailgateError($task)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
             return 0;
@@ -1967,6 +2004,10 @@ class MailCollector extends CommonDBTM
 
     public function showSystemInformations($width)
     {
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
         global $CFG_GLPI, $DB;
 
        // No need to translate, this part always display in english (for copy/paste to forum)
@@ -2026,16 +2067,17 @@ class MailCollector extends CommonDBTM
      **/
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $mmail = new GLPIMailer();
         $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
-        $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
+        $mmail->SetFrom($CFG_GLPI["admin_email"], Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["admin_email_name"]));
         $mmail->AddAddress($to);
        // Normalized header, no translation
         $mmail->Subject  = 'Re: ' . $subject;
         $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-                         "\n-- \n" . $CFG_GLPI["mailing_signature"];
+                         "\n-- \n" . Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]);
         $mmail->Send();
     }
 
@@ -2080,6 +2122,7 @@ class MailCollector extends CommonDBTM
      */
     public static function countCollectors($active = false)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [

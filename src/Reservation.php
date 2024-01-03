@@ -90,6 +90,7 @@ class Reservation extends CommonDBChild
 
     public function pre_deleteItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -138,8 +139,9 @@ class Reservation extends CommonDBChild
     /**
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = 1)
+    public function post_updateItem($history = true)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -212,6 +214,7 @@ class Reservation extends CommonDBChild
 
     public function post_addItem()
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -229,6 +232,7 @@ class Reservation extends CommonDBChild
      **/
     public function getUniqueGroupFor($reservationitems_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         do {
@@ -256,6 +260,7 @@ class Reservation extends CommonDBChild
      **/
     public function is_reserved()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -389,6 +394,7 @@ class Reservation extends CommonDBChild
 
     public function post_purgeItem()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($this->input['_delete_group']) && $this->input['_delete_group']) {
@@ -414,6 +420,7 @@ class Reservation extends CommonDBChild
      **/
     public static function showCalendar(int $ID = 0)
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
@@ -492,6 +499,7 @@ JAVASCRIPT;
 
     public static function getEvents(array $params): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $defaults = [
@@ -595,6 +603,7 @@ JAVASCRIPT;
 
     public static function getResources()
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $res_i_table = ReservationItem::getTable();
@@ -670,6 +679,7 @@ JAVASCRIPT;
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
@@ -795,7 +805,8 @@ JAVASCRIPT;
             'min'        => 0,
             'max'        => 24 * HOUR_TIMESTAMP,
             'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
+            'emptylabel' => __('Specify an end date'),
+            'allow_max_change' => false
         ]);
         echo "<br><div id='date_end$rand'></div>";
         $params = [
@@ -1073,7 +1084,11 @@ JAVASCRIPT;
      **/
     public static function showForUser($ID)
     {
-        global $DB, $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         $resaID = 0;
 
@@ -1261,6 +1276,7 @@ JAVASCRIPT;
      */
     public static function getReservableItemtypes(): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return array_filter(

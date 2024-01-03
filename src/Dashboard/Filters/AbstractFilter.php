@@ -155,7 +155,7 @@ abstract class AbstractFilter
                         $('.dashboard .card.filter-{$id}').removeClass('filter-impacted');
                     });
                 });
- JAVASCRIPT;
+JAVASCRIPT;
          $js = Html::scriptBlock($js);
 
          $html  = <<<HTML

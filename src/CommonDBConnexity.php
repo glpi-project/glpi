@@ -112,6 +112,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      **/
     public function cleanDBonItemDelete($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = static::getSQLCriteriaToSearchForItem($itemtype, $items_id);
@@ -198,6 +199,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      */
     public static function getItemsAssociationRequest($itemtype, $items_id)
     {
+        /** @var \DBmysql $DB */
         global $DB;
         return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
     }
@@ -282,7 +284,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param $input   array   the new values for the current item
      * @param $fields  array   list of fields that define the attached items
      *
-     * @return true if the attached item has changed, false if the attached items has not changed
+     * @return boolean true if the attached item has changed, false if the attached items has not changed
      **/
     public function checkAttachedItemChangesAllowed(array $input, array $fields)
     {
@@ -396,7 +398,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param string          $items_id      the name of the field of the id of the item to get
      * @param CommonDBTM|null &$item         the item concerned by the item
      *
-     * @return true if we have absolute right to create the current connexity
+     * @return boolean true if we have absolute right to create the current connexity
      **/
     public function canConnexityItem(
         $methodItem,
@@ -532,7 +534,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = 0,
+        $is_deleted = false,
         CommonDBTM $checkitem = null
     ) {
 

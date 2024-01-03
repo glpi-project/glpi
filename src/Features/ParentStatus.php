@@ -65,6 +65,7 @@ trait ParentStatus
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
                     'followup_frequency'          => $input['followup_frequency'] ?? 0,
                     'followups_before_resolution' => $input['followups_before_resolution'] ?? 0,
+                    'previous_status'             => $parentitem->fields['status'],
                 ]);
                 PendingReason_Item::createForItem($this, [
                     'pendingreasons_id'           => $input['pendingreasons_id'] ?? 0,
@@ -135,7 +136,12 @@ trait ParentStatus
                     || $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
                 ) {
                     $needupdateparent = true;
-                    $update['status'] = CommonITILObject::ASSIGNED;
+                    // If begin date is defined, the status must be planned if it exists, rather than assigned.
+                    if (!empty($this->fields['begin']) && $parentitem->isStatusExists(CommonITILObject::PLANNED)) {
+                        $update['status'] = CommonITILObject::PLANNED;
+                    } else {
+                        $update['status'] = CommonITILObject::ASSIGNED;
+                    }
                 }
             } else {
                //check if lifecycle allowed new status
@@ -159,7 +165,8 @@ trait ParentStatus
         }
 
         if (
-            !empty($this->fields['begin'])
+            !$is_set_pending
+            && !empty($this->fields['begin'])
             && $parentitem->isStatusExists(CommonITILObject::PLANNED)
             && (($parentitem->fields["status"] == CommonITILObject::INCOMING)
               || ($parentitem->fields["status"] == CommonITILObject::ASSIGNED)
@@ -168,7 +175,7 @@ trait ParentStatus
             $input['_status'] = CommonITILObject::PLANNED;
         }
 
-       //change ITILObject status only if imput change
+       //change ITILObject status only if input change
         if (
             !$reopened
             && $input['_status'] != $parentitem->fields['status']

@@ -34,9 +34,9 @@
  */
 
 /**
- * @var DB $DB
- * @var Migration $migration
+ * @var \Migration $migration
  */
+
 $migration->addConfig(
     [
         'smtp_oauth_provider'      => '',

@@ -46,6 +46,7 @@ use Glpi\Toolbox\Sanitizer;
 use Group;
 use Group_Ticket;
 use ITILCategory;
+use Profile_User;
 use Supplier;
 use Supplier_Ticket;
 use Symfony\Component\DomCrawler\Crawler;
@@ -3507,137 +3508,6 @@ class Ticket extends DbTestCase
         $this->integer((int)$supplier_count)->isEqualTo(3);
     }
 
-    /**
-     * @see self::testGetAssociatedDocumentsCriteria()
-     */
-    protected function getAssociatedDocumentsCriteriaProvider()
-    {
-        $ticket = new \Ticket();
-        $ticket_id = $ticket->add([
-            'name'            => "test",
-            'content'         => "test",
-        ]);
-        $this->integer((int)$ticket_id)->isGreaterThan(0);
-
-        return [
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => 0,
-                    \ITILFollowup::$rightname => 0,
-                    \TicketTask::$rightname   => 0,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s') OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                    $ticket_id
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => 0,
-                    \TicketTask::$rightname   => 0,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-                    \TicketTask::$rightname   => \TicketTask::SEEPUBLIC,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => \ITILFollowup::SEEPRIVATE,
-                    \TicketTask::$rightname   => 0,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-                    \TicketTask::$rightname   => \TicketTask::SEEPRIVATE,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s'))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider getAssociatedDocumentsCriteriaProvider
-     */
-    public function testGetAssociatedDocumentsCriteria($rights, $ticket_id, $bypass_rights, $expected_where)
-    {
-        $this->login();
-
-        $ticket = new \Ticket();
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-
-        $session_backup = $_SESSION['glpiactiveprofile'];
-        foreach ($rights as $rightname => $rightvalue) {
-            $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
-        }
-        $crit = $ticket->getAssociatedDocumentsCriteria($bypass_rights);
-        $_SESSION['glpiactiveprofile'] = $session_backup;
-
-        $it = new \DBmysqlIterator(null);
-        $it->execute('glpi_tickets', $crit);
-        $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_tickets` WHERE (' . $expected_where . ')');
-    }
-
     public function testKeepScreenshotsOnFormReload()
     {
        //login to get session
@@ -4229,51 +4099,74 @@ HTML
             'expected' => '',
         ];
 
-       // Content with embedded image.
-        yield [
-            'content'  => <<<HTML
+        foreach (['"', "'", ''] as $quote_style) {
+            // `img` of embedded image that has only a `src` attribute.
+            yield [
+                'content'  => <<<HTML
 Here is the screenshot:
-<img src="screenshot.png" />
+<img src={$quote_style}screenshot.png{$quote_style}>
 blabla
 HTML
-         ,
-            'files'    => [
-                'screenshot.png' => 'screenshot.png',
-            ],
-            'tags'     => [
-                'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
-            ],
-            'expected' => <<<HTML
+                ,
+                'files'    => [
+                    'screenshot.png' => 'screenshot.png',
+                ],
+                'tags'     => [
+                    'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
+                ],
+                'expected' => <<<HTML
 Here is the screenshot:
 <p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
 blabla
 HTML
-         ,
-        ];
-
-       // Content with leading external image that will not be replaced by a tag.
-        yield [
-            'content'  => <<<HTML
-<img src="http://test.glpi-project.org/logo.png" />
+                ,
+            ];
+            // `img` of embedded image that has multiple attributes.
+            yield [
+                'content'  => <<<HTML
 Here is the screenshot:
-<img src="img.jpg" />
+<img id="img-id" src={$quote_style}screenshot.png{$quote_style} height="150" width="100" />
 blabla
 HTML
-         ,
-            'files'    => [
-                'img.jpg' => 'img.jpg',
-            ],
-            'tags'     => [
-                'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
-            ],
-            'expected' => <<<HTML
-<img src="http://test.glpi-project.org/logo.png" />
+                ,
+                'files'    => [
+                    'screenshot.png' => 'screenshot.png',
+                ],
+                'tags'     => [
+                    'screenshot.png' => '9faff0a6-f37490bd-60e2af9721f420.96500246',
+                ],
+                'expected' => <<<HTML
+Here is the screenshot:
+<p>#9faff0a6-f37490bd-60e2af9721f420.96500246#</p>
+blabla
+HTML
+                ,
+            ];
+
+            // Content with leading external image that will not be replaced by a tag.
+            yield [
+                'content'  => <<<HTML
+<img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
+Here is the screenshot:
+<img src={$quote_style}img.jpg{$quote_style} />
+blabla
+HTML
+                ,
+                'files'    => [
+                    'img.jpg' => 'img.jpg',
+                ],
+                'tags'     => [
+                    'img.jpg' => '3eaff0a6-f37490bd-60e2a59721f420.96500246',
+                ],
+                'expected' => <<<HTML
+<img src={$quote_style}http://test.glpi-project.org/logo.png{$quote_style} />
 Here is the screenshot:
 <p>#3eaff0a6-f37490bd-60e2a59721f420.96500246#</p>
 blabla
 HTML
-         ,
-        ];
+                ,
+            ];
+        }
     }
 
     /**
@@ -5647,59 +5540,172 @@ HTML
         }
     }
 
-
-    public function testGetEntitiesForRequesters()
+    protected function requestersEntitiesProvider(): iterable
     {
         $this->login();
 
-        // Create entities
-        $entity = new Entity();
-        $entity1_id = $entity->add([
-            'name' => __METHOD__ . '1',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->integer($entity1_id)->isGreaterThan(0);
+        $entity_1 = $this->createItem(
+            Entity::class,
+            [
+                'name'        => __FUNCTION__ . '1',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
 
-        $entity2_id = $entity->add([
-            'name' => __METHOD__ . '2',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->integer($entity2_id)->isGreaterThan(0);
-        $this->integer($entity2_id)->isGreaterThan($entity1_id);
+        $entity_2 = $this->createItem(
+            Entity::class,
+            [
+                'name'        => __FUNCTION__ . '2',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
 
         $profile_id = getItemByTypeName('Profile', 'Self-Service', true);
 
-        // Create user with 1 profile and 1 entity as default entity
-        $rand = mt_rand();
-        $user = new User();
-        $user_id = $user->add([
-            'name' => "testGetEntitiesForRequesters$rand",
-            'password' => "testGetEntitiesForRequesters",
-            'password2' => "testGetEntitiesForRequesters",
-            '_profiles_id' => $profile_id,
-            '_entities_id' => $entity2_id,
-            'entities_id' => $entity2_id,
-        ]);
-        $this->integer($user_id)->isGreaterThan(0);
-
-        $ticket = new \Ticket();
-        $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
-        $this->array($entities)->isIdenticalTo([$entity2_id]);
-
-        // Add user to another entity
-        $profile_user = new \Profile_User();
-        $profile_user_id = (int)$profile_user->add(
+        // User 1 is attached only to Entity 1
+        $user_1 = $this->createItem(
+            User::class,
             [
-                'entities_id' => $entity1_id,
-                'profiles_id' => $profile_id,
-                'users_id'    => $user_id,
+                'name'         => __FUNCTION__ . '1',
+                '_profiles_id' => $profile_id,
+                '_entities_id' => $entity_1->getID(),
+                'entities_id'  => $entity_1->getID(),
             ]
         );
-        $this->integer($profile_user_id)->isGreaterThan(0);
 
-        // Chek that default entity is first in the list
-        $entities = $ticket->getEntitiesForRequesters(["_users_id_requester" => $user_id]);
-        $this->array($entities)->isIdenticalTo([$entity2_id, $entity1_id]);
+        // User 2 is attached to Entity 1 and Entity 2
+        $user_2 = $this->createItem(
+            User::class,
+            [
+                'name'         => __FUNCTION__ . '2',
+                '_profiles_id' => $profile_id,
+                '_entities_id' => $entity_1->getID(),
+                'entities_id'  => $entity_1->getID(),
+            ]
+        );
+        $this->createItem(
+            Profile_User::class,
+            [
+                'entities_id' => $entity_2->getID(),
+                'profiles_id' => $profile_id,
+                'users_id'    => $user_2->getID(),
+            ]
+        );
+
+        // Check for User 1
+        yield [
+            'params'   => [
+                '_users_id_requester' => $user_1->getID(),
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_1->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+
+        // Check for User 2
+        yield [
+            'params'   => [
+                '_users_id_requester' => $user_2->getID(),
+            ],
+            'expected' => [
+                $entity_1->getID(),
+                $entity_2->getID(),
+            ],
+        ];
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_2->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => [
+                $entity_1->getID(),
+                $entity_2->getID(),
+            ],
+        ];
+
+        // Check for User 1 + User 2
+        yield [
+            'params'   => [
+                '_users_id_requester' => [$user_1->getID(), $user_2->getID()],
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_1->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => $user_2->getID(),
+                            'use_notification'  => 1,
+                            'alternative_email' => '',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => [
+                $entity_1->getID(),
+            ],
+        ];
+
+        // Check for "email" actor
+        yield [
+            'params'   => [
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype'          => User::class,
+                            'items_id'          => 0,
+                            'use_notification'  => 1,
+                            'alternative_email' => 'notaglpiuser@domain.tld',
+                        ],
+                    ],
+                ]
+            ],
+            'expected' => array_values($_SESSION['glpiactiveentities']),
+        ];
+    }
+
+    /**
+     * @dataProvider requestersEntitiesProvider
+     */
+    public function testGetEntitiesForRequesters(array $params, array $expected)
+    {
+        $this->newTestedInstance();
+        $this->array($this->testedInstance->getEntitiesForRequesters($params))->isIdenticalTo($expected);
     }
 
     public function testShowCentralCountCriteria()
@@ -6019,6 +6025,77 @@ HTML
         $this->array($tasks_content)->isEqualTo($expected_tasks);
     }
 
+    /**
+     * Check that when a ticket has multiple timeline items with the same creation date, they are ordered by ID
+     * @return void
+     * @see https://github.com/glpi-project/glpi/issues/15761
+     */
+    public function testGetTimelineItemsSameDate()
+    {
+        $this->login();
+
+        $ticket = new \Ticket();
+        $this->integer($tickets_id = $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+
+        $task = new \TicketTask();
+        $date = date('Y-m-d H:i:s');
+        // Create one task with a different creation date after the others
+        $this->integer($task->add([
+            'tickets_id' => $tickets_id,
+            'content' => __FUNCTION__ . 'after',
+            'date_creation' => date('Y-m-d H:i:s', strtotime('+1 second', strtotime($date))),
+        ]))->isGreaterThan(0);
+        // Create one task with a different creation date before the others
+        $this->integer($task->add([
+            'tickets_id' => $tickets_id,
+            'content' => __FUNCTION__ . 'before',
+            'date_creation' => date('Y-m-d H:i:s', strtotime('-1 second', strtotime($date))),
+        ]))->isGreaterThan(0);
+        for ($i = 0; $i < 20; $i++) {
+            $this->integer($task->add([
+                'tickets_id' => $tickets_id,
+                'content' => __FUNCTION__,
+                'date_creation' => $date,
+            ]))->isGreaterThan(0);
+        }
+
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+        $timeline_items = $ticket->getTimelineItems();
+
+        // Ensure that the tasks are ordered by creation date. And, if they have the same creation date, by ID
+        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === \TicketTask::class));
+        // Check tasks are in order of creation date
+        $creation_dates = array_map(static fn($entry) => $entry['item']['date_creation'], $tasks);
+        $sorted_dates = $creation_dates;
+        sort($sorted_dates);
+        $this->array($creation_dates)->isEqualTo($sorted_dates);
+        // Check tasks with same creation date are ordered by ID
+        $same_date_tasks = array_filter($tasks, static fn($entry) => $entry['item']['date_creation'] === $date);
+        $ids = array_map(static fn($entry) => $entry['item']['id'], $same_date_tasks);
+        $sorted_ids = $ids;
+        sort($sorted_ids, SORT_NUMERIC);
+        $this->array(array_values($ids))->isEqualTo(array_values($sorted_ids));
+
+        // Check reverse timeline order
+        $timeline_items = $ticket->getTimelineItems(['sort_by_date_desc' => true]);
+        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === \TicketTask::class));
+        $creation_dates = array_map(static fn($entry) => $entry['item']['date_creation'], $tasks);
+        $sorted_dates = $creation_dates;
+        sort($sorted_dates);
+        $sorted_dates = array_reverse($sorted_dates);
+        $this->array($creation_dates)->isEqualTo($sorted_dates);
+        $same_date_tasks = array_filter($tasks, static fn($entry) => $entry['item']['date_creation'] === $date);
+        $ids = array_map(static fn($entry) => $entry['item']['id'], $same_date_tasks);
+        $sorted_ids = $ids;
+        sort($sorted_ids, SORT_NUMERIC);
+        $sorted_ids = array_reverse($sorted_ids);
+        $this->array(array_values($ids))->isEqualTo(array_values($sorted_ids));
+    }
 
     /**
      * Data provider for the testCountActors function
@@ -6327,5 +6404,22 @@ HTML
         $this->array($simplied_actors[User::class])->isEqualTo($expected_users);
         $this->array($simplied_actors[Group::class])->isEqualTo($expected_groups);
         $this->array($simplied_actors[Supplier::class])->isEqualTo($expected_suppliers);
+    }
+
+    public function testDynamicProperties(): void
+    {
+        $ticket = new \Ticket();
+
+        $this->when(
+            function () use ($ticket) {
+                $ticket->plugin_xxx_data = 'test';
+            }
+        )
+         ->error
+         ->withMessage('Creation of dynamic property Ticket::$plugin_xxx_data is deprecated')
+         ->exists();
+
+        $this->boolean(property_exists($ticket, 'plugin_xxx_data'))->isTrue();
+        $this->string($ticket->plugin_xxx_data)->isEqualTo('test');
     }
 }
