@@ -805,15 +805,44 @@ class Infocom extends CommonDBChild
         }
 
         if ($item->canView()) {
-            echo "<span data-bs-toggle='modal' data-bs-target='#infocom$itemtype$device_id' style='cursor:pointer'>
+            echo "<span class='infocom_link' style='cursor:pointer' data-itemtype='{$itemtype}' data-items_id='{$device_id}'>
                <img src=\"" . $CFG_GLPI["root_doc"] . "/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
-            Ajax::createIframeModalWindow(
-                'infocom' . $itemtype . $device_id,
-                Infocom::getFormURL() .
-                                          "?itemtype=$itemtype&items_id=$device_id",
-                ['height' => 600]
-            );
+            $form_url = Infocom::getFormURL();
+            $html = <<<HTML
+                <div id="infocom_display_modal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <h3></h3>
+                            </div>
+                            <div class="modal-body">
+                                <iframe id='iframeinfocom_display_modal' class="iframe hidden border-0 w-100" style="height: 600px"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+HTML;
+            $js = <<<JS
+                $(() => {
+                    if ($('#infocom_display_modal').length === 0) {
+                        $('body').append(`$html`);
+                        const modal_el = $('#infocom_display_modal');
+                        $(document).on('click', '.infocom_link', (e) => {
+                            modal_el.data('itemtype', e.currentTarget.getAttribute('data-itemtype'));
+                            modal_el.data('items_id', e.currentTarget.getAttribute('data-items_id'));
+                            modal_el.modal('show');
+                        });
+                        modal_el.on('shown.bs.modal', () => {
+                            $('#iframeinfocom_display_modal')
+                                .attr('src', '{$form_url}?itemtype=' + modal_el.data('itemtype') + '&items_id=' + modal_el.data('items_id'))
+                                .removeClass('hidden');
+                        });
+                    }
+                });
+JS;
+            echo Html::scriptBlock($js);
         }
     }
 
