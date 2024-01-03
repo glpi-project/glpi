@@ -379,6 +379,7 @@ $break_tablet: 1400px;
             align-items: stretch;
 
             fieldset.filter {
+                --tblr-box-shadow-input: none;
                 border: 2px solid var(--tblr-border-color);
                 border-radius: 4px;
                 padding: 6px 12px 5px;
