@@ -48,11 +48,11 @@ echo TemplateRenderer::getInstance()->render(
             [
                 'type'    => __('Alert Types'),
                 'entries' => [
-                                [
-                                        'label' => __('Printer Cartridge Level Alerts'),
-                                        'link'  => PrinterCartridgeLevelAlert::getSearchURL(),
-                                ]
-                             ]
+                    [
+                        'label' => __('Printer Cartridge Level Alerts'),
+                        'link'  => PrinterCartridgeLevelAlert::getSearchURL(),
+                    ]
+                ]
             ],
         ]
     ]
