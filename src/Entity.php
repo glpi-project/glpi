@@ -2227,7 +2227,7 @@ class Entity extends CommonTreeDropdown
         }
 
         echo "</td></tr>";
-     
+
         echo "<tr class='tab_bg_1'>";
         echo "<th colspan='2' rowspan='2'>";
         echo _n('Consumable', 'Consumables', Session::getPluralNumber());
