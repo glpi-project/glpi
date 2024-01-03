@@ -59,6 +59,7 @@ The present file will list all changes made to the project; according to the
 - Manage tab for Knowledgebase (Unpublished is now a toggle in the browse tab).
 - The database "master" property in the status checker (/status.php and glpi:system:status), replaced by "main".
 - The database "slaves" property in the status checker (/status.php and glpi:system:status), replaced by "replicas".
+- API URL is no longer customizable within GLPI. Use alias/rewrite rules in your web server configuration instead if needed.
 
 ### API changes
 
