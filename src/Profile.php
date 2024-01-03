@@ -888,6 +888,9 @@ class Profile extends CommonDBTM
                                 'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber())
                             ]),
                             $fn_get_rights(Report::class, 'central'),
+                            $fn_get_rights(Alerting::class, 'central', [
+                                'label' => _n('Alerting summary', 'Alerting summaries', Session::getPluralNumber())
+                            ]),               
                             $fn_get_rights(KnowbaseItem::class, 'central'),
                             $fn_get_rights(ReservationItem::class, 'central'),
                         ],
@@ -3473,6 +3476,20 @@ class Profile extends CommonDBTM
             'datatype'           => 'right',
             'rightclass'         => 'SavedSearch',
             'rightname'          => 'bookmark_public',
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => 'bookmark_public']
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '65',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => _n('Alerting summary', 'Alerting summaries', Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => 'Alerting',
+            'rightname'          => Alerting::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'bookmark_public']
