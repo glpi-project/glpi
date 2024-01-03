@@ -39,7 +39,6 @@
   **/
 class Alerting extends CommonGLPI
 {
-
     public static $rightname                = 'alerting_summary';
 
     public static function getTypeName($nb = 0)
