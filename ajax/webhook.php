@@ -39,7 +39,7 @@ Html::header_nocache();
 
 Session::checkRight("config", READ);
 
-$action = $_POST['action'] ?? null;
+$action = $_REQUEST['action'] ?? null;
 
 switch ($action) {
     case 'valide_cra_challenge':
@@ -164,6 +164,13 @@ switch ($action) {
             http_response_code(200);
         } else {
             http_response_code(400);
+        }
+        die();
+    case 'get_monaco_suggestions':
+        try {
+            echo json_encode(Webhook::getMonacoSuggestions($_GET['itemtype']), JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            http_response_code(500);
         }
         die();
 }

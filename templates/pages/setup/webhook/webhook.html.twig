@@ -104,6 +104,26 @@
                 e.originalEvent.formData.append('url', editors[0].getValue());
             }
         });
+        $('#{{ url_editor_container_id }}').closest('form').find('select[name="itemtype"]').on('change', (e) => {
+            // Get new Monaco suggestions from the server and then recreate the editor while preserving the value
+            $.ajax({
+                url: '{{ config('root_doc') }}/ajax/webhook.php',
+                data: {
+                    action: 'get_monaco_suggestions',
+                    itemtype: e.target.value
+                },
+                dataType: 'json',
+                success: (data) => {
+                    const editors = window.monaco.editor.getEditors().filter((editor) => {
+                        return editor._domElement.classList.contains('webhook_url');
+                    });
+                    const url_field_editor = editors[0];
+                    const url_field_value = url_field_editor.getValue();
+                    url_field_editor.dispose();
+                    new window.GLPI.MonacoEditor('{{ url_editor_container_id }}', 'twig', url_field_value, data, editor_options);
+                }
+            });
+        });
     </script>
 
     {{ fields.dropdownArrayField(
