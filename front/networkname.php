@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("internet", READ);
+Session::checkRightsOr(NetworkName::$rightname, [READ, NetworkName::$read_assigned]);
 
 Html::header(
     NetworkName::getTypeName(Session::getPluralNumber()),

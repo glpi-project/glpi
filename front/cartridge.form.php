@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("cartridge", READ);
+Session::checkRightsOr(Cartridge::$rightname, [READ, Cartridge::$read_assigned]);
 
 $cart    = new Cartridge();
 $cartype = new CartridgeItem();

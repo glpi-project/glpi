@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("computer", READ);
+Session::checkRightsOr(Computer::$rightname, [READ, Computer::$read_assigned]);
 
 Html::header(Computer::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "computer");
 

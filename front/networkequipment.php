@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("networking", READ);
+Session::checkRightsOr(NetworkEquipment::$rightname, [READ, NetworkEquipment::$read_assigned]);
 
 Html::header(NetworkEquipment::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "networkequipment");
 

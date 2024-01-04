@@ -37,6 +37,8 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
+Session::checkRightsOr(NetworkName::$rightname, [READ, NetworkName::$read_assigned]);
+
 $nn = new NetworkName();
 
 if (isset($_POST["add"])) {

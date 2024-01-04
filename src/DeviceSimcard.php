@@ -118,9 +118,17 @@ class DeviceSimcard extends CommonDevice
         ];
     }
 
-
     public static function getIcon()
     {
         return "fas fa-sim-card";
+    }
+
+    public function getRights($interface = 'central')
+    {
+        $rights = parent::getRights($interface);
+        // Update labels to match other assets
+        $rights[READ] = __('View all');
+        $rights[UPDATE] = __('Update all');
+        return $rights;
     }
 }

@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("monitor", READ);
+Session::checkRightsOr(Monitor::$rightname, [READ, Monitor::$read_assigned]);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";

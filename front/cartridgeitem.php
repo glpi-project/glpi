@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("cartridge", READ);
+Session::checkRightsOr(Cartridge::$rightname, [READ, Cartridge::$read_assigned]);
 
 Html::header(Cartridge::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "cartridgeitem");
 

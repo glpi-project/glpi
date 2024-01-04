@@ -209,3 +209,13 @@ foreach ($it as $data) {
         ]);
     }
 }
+
+$assignable_asset_rights = [
+    'computer', 'monitor', 'software', 'networking', 'printer',
+    'cartridge', 'consumable', 'phone', 'peripheral', 'internet'
+];
+foreach ($assignable_asset_rights as $rightname) {
+    // Computer class used here for access to properties in AssignableAsset trait since direct access is deprecated by PHP
+    $migration->addRight($rightname, Computer::$read_assigned, [$rightname => READ]);
+    $migration->addRight($rightname, Computer::$update_assigned, [$rightname => UPDATE]);
+}

@@ -5700,43 +5700,43 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'computer',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Computer::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'monitor',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Monitor::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'software',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Software::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'networking',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | NetworkEquipment::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'internet',
-                'rights' => READ,
+                'rights' => READ | NetworkName::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'printer',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Printer::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'peripheral',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Peripheral::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'cartridge',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Cartridge::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'consumable',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Consumable::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'phone',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Phone::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'queuednotification',
@@ -5996,43 +5996,43 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'computer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Computer::$read_assigned | Computer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'monitor',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Monitor::$read_assigned | Monitor::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'software',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Software::$read_assigned | Software::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'networking',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | NetworkEquipment::$read_assigned | NetworkEquipment::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT,
+                'rights' => ALLSTANDARDRIGHT | NetworkName::$read_assigned | NetworkName::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'printer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Printer::$read_assigned | Printer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'peripheral',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Peripheral::$read_assigned | Peripheral::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Cartridge::$read_assigned | Cartridge::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Consumable::$read_assigned | Consumable::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'phone',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Phone::$read_assigned | Phone::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'queuednotification',
@@ -6296,43 +6296,43 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'computer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Computer::$read_assigned | Computer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'monitor',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Monitor::$read_assigned | Monitor::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'software',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Software::$read_assigned | Software::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'networking',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | NetworkEquipment::$read_assigned | NetworkEquipment::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | UNLOCK | NetworkName::$read_assigned | NetworkName::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'printer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Printer::$read_assigned | Printer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'peripheral',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Peripheral::$read_assigned | Peripheral::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Cartridge::$read_assigned | Cartridge::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Consumable::$read_assigned | Consumable::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'phone',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Phone::$read_assigned | Phone::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'contact_enterprise',
@@ -6881,43 +6881,43 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'computer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Computer::$read_assigned | Computer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'monitor',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Monitor::$read_assigned | Monitor::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'software',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Software::$read_assigned | Software::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'networking',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | NetworkEquipment::$read_assigned | NetworkEquipment::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT,
+                'rights' => ALLSTANDARDRIGHT | NetworkName::$read_assigned | NetworkName::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'printer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Printer::$read_assigned | Printer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'peripheral',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Peripheral::$read_assigned | Peripheral::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Cartridge::$read_assigned | Cartridge::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Consumable::$read_assigned | Consumable::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'phone',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Phone::$read_assigned | Phone::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'queuednotification',
@@ -7172,43 +7172,43 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'computer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Computer::$read_assigned | Computer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'monitor',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Monitor::$read_assigned | Monitor::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'software',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Software::$read_assigned | Software::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'networking',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | NetworkEquipment::$read_assigned | NetworkEquipment::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT,
+                'rights' => ALLSTANDARDRIGHT | NetworkName::$read_assigned | NetworkName::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'printer',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Printer::$read_assigned | Printer::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'peripheral',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Peripheral::$read_assigned | Peripheral::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Cartridge::$read_assigned | Cartridge::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Consumable::$read_assigned | Consumable::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'phone',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Phone::$read_assigned | Phone::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'queuednotification',
@@ -7471,7 +7471,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'cartridge',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Cartridge::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'change',
@@ -7483,7 +7483,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'computer',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Computer::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'config',
@@ -7491,7 +7491,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'consumable',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Consumable::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'contact_enterprise',
@@ -7539,7 +7539,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'internet',
-                'rights' => READ,
+                'rights' => READ | NetworkName::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'itilcategory',
@@ -7567,7 +7567,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'monitor',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Monitor::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'cable_management',
@@ -7575,7 +7575,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'networking',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | NetworkEquipment::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'notification',
@@ -7587,11 +7587,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'peripheral',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Peripheral::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'phone',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Phone::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'planning',
@@ -7599,7 +7599,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'printer',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Printer::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'problem',
@@ -7687,7 +7687,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'software',
-                'rights' => READ | READNOTE,
+                'rights' => READ | READNOTE | Software::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'solutiontemplate',

@@ -49,6 +49,8 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class NetworkName extends FQDNLabel
 {
+    use Glpi\Features\AssignableAsset;
+
    // From CommonDBChild
     public static $itemtype              = 'itemtype';
     public static $items_id              = 'items_id';

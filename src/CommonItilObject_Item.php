@@ -1509,6 +1509,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 }
 
                 $types = static::$itemtype_1::getAllTypesForHelpdesk();
+                $types = array_filter($types, static fn ($k) => $k::canView(), ARRAY_FILTER_USE_KEY);
                 $emptylabel = __('General');
                 if ($params[static::$items_id_1] > 0) {
                     $emptylabel = Dropdown::EMPTY_VALUE;

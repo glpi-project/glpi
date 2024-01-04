@@ -38,6 +38,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\AssignableAsset;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
 
@@ -3385,6 +3386,10 @@ JAVASCRIPT;
                     }
             }
 
+            if (Toolbox::hasTrait($post['itemtype'], AssignableAsset::class)) {
+                $where[] = $post['itemtype']::getAssignableVisiblityCriteria();
+            }
+
             $criteria = array_merge(
                 $criteria,
                 [
@@ -3839,8 +3844,12 @@ JAVASCRIPT;
             $post['page_limit'] = $CFG_GLPI['dropdown_max'];
         }
 
-        $start = intval(($post['page'] - 1) * $post['page_limit']);
-        $limit = intval($post['page_limit']);
+        if (Toolbox::hasTrait($post['itemtype'], AssignableAsset::class)) {
+            $where[] = $post['itemtype']::getAssignableVisiblityCriteria();
+        }
+
+        $start = (int) (($post['page'] - 1) * $post['page_limit']);
+        $limit = (int) $post['page_limit'];
 
         $iterator = $DB->request([
             'FROM'   => $post['table'],
