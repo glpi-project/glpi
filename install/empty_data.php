@@ -351,6 +351,7 @@ $empty_data_builder = new class
             '2fa_grace_days' => 0,
             'is_notif_enable_default' => 1,
             'show_search_form' => 0,
+            'is_demo_dashboards' => 1, // Not configurable by users except to disable via a button on the dashboards. Switches dashboard data provider to demo data when enabled.
         ];
 
         $tables['glpi_configs'] = [];
@@ -919,10 +920,12 @@ $empty_data_builder = new class
         $tables['glpi_dashboards_items'] = [];
         $i = $j = 1;
         foreach ($dashboards_data as $default_dashboard) {
+            $translated_name = $default_dashboard['translated_name'];
+            unset($default_dashboard['translated_name']);
             $items = $default_dashboard['_items'];
             unset($default_dashboard['_items']);
             $tables['glpi_dashboards_dashboards'][] = array_merge([
-                'id' => $i
+                'id' => $i,
             ], $default_dashboard);
 
             foreach ($items as $item) {
@@ -933,7 +936,6 @@ $empty_data_builder = new class
 
                 $j++;
             }
-
             $i++;
         }
 

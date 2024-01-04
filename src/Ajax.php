@@ -398,20 +398,7 @@ HTML;
                      tab_key: href_url_params.get('_glpi_tab'),
                      withtemplate: $withtemplate
                   }
-               ).done(function() {
-                    // try to restore the scroll on a specific anchor
-                    if (url_hash.length > 0) {
-                        // as we load content by ajax, when full page was ready, the anchor was not present
-                        // se we recall it to force the scroll.
-                        window.location.href = url_hash;
-
-                        // animate item with a flash
-                        $(url_hash).addClass('animate__animated animate__shakeX animate__slower');
-
-                        // unset hash (to avoid scrolling when changing tabs)
-                        url_hash   = '';
-                    }
-               });
+               );
             }
             if ($(target).html() && !force_reload) {
                 updateCurrentTab();
@@ -427,6 +414,19 @@ HTML;
                if (update_session_tab) {
                    updateCurrentTab();
                }
+            }).done(function() {
+                // try to restore the scroll on a specific anchor
+                if (url_hash.length > 0) {
+                    // as we load content by ajax, when full page was ready, the anchor was not present
+                    // se we recall it to force the scroll.
+                    window.location.href = url_hash;
+
+                    // animate item with a flash
+                    $(url_hash).addClass('animate__animated animate__shakeX animate__slower');
+
+                    // unset hash (to avoid scrolling when changing tabs)
+                    url_hash   = '';
+                }
             });
          };
 

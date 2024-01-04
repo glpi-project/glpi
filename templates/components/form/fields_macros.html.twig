@@ -55,11 +55,12 @@
    </div>
 {% endmacro %}
 
-{% macro smallTitle(label, icon = '', helper = '') %}
+{% macro smallTitle(label, icon = '', helper = '', id = '') %}
    {% set margins = 'mt-2 mb-2' %}
+   {% set id = id != '' ? id : 'formsection' ~ random() %}
 
    <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
-      <div class="card-header mb-1 p-0 ps-3 py-1">
+      <div id="{{ id }}" class="card-header mb-1 p-0 ps-3 py-1">
          <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">

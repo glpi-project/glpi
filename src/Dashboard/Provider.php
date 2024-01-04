@@ -172,7 +172,7 @@ class Provider
             if (is_subclass_of($itemtype, 'CommonDBTM')) {
                 $item = new $itemtype();
                 $item->getEmpty();
-                return self::bigNumberItem($item, $arguments[0] ?? []);
+                return static::bigNumberItem($item, $arguments[0] ?? []);
             }
         }
 
@@ -187,7 +187,7 @@ class Provider
                 $itemtype    = $tmp[0];
                 $fk_itemtype = $tmp[1];
 
-                return self::nbItemByFk(
+                return static::nbItemByFk(
                     new $itemtype(),
                     new $fk_itemtype(),
                     $arguments[0] ?? []
@@ -200,7 +200,7 @@ class Provider
             if (is_subclass_of($itemtype, 'CommonDBTM')) {
                 $item = new $itemtype();
                 $item->getEmpty();
-                return self::articleListItem($item, $arguments[0] ?? []);
+                return static::articleListItem($item, $arguments[0] ?? []);
             }
         }
     }

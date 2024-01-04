@@ -43,6 +43,7 @@ $migration->addConfig([
     'toast_location'    => 'bottom-right',
     'set_followup_tech' => '0',
     'set_solution_tech' => '0',
+    'is_demo_dashboards' => '0',
 ]);
 $migration->addField('glpi_users', 'toast_location', 'string');
 

@@ -36,7 +36,8 @@
 return [
     [
         'key'     => 'central',
-        'name'    => __("Central"),
+        'name'    => "Central",
+        'translated_name' => __("Central"), // For gettext extraction
         'context' => 'core',
         '_items'  => [
             [
@@ -173,7 +174,8 @@ return [
         ]
     ], [
         'key'     => 'assets',
-        'name'    => __("Assets"),
+        'name'    => "Assets",
+        'translated_name'    => __("Assets"), // For gettext extraction
         'context' => 'core',
         '_items'  => [
             [
@@ -255,7 +257,8 @@ return [
         ]
     ], [
         'key'     => 'assistance',
-        'name'    => __("Assistance"),
+        'name'    => "Assistance",
+        'translated_name'    => __("Assistance"), // For gettext extraction
         'context' => 'core',
         '_items'  => [
             [
@@ -342,7 +345,8 @@ return [
         ]
     ], [
         'key'     => 'mini_tickets',
-        'name'    => __("Mini tickets dashboard"),
+        'name'    => "Mini tickets dashboard",
+        'translated_name'    => __("Mini tickets dashboard"), // For gettext extraction
         'context' => 'mini_core',
         '_items'  => [
             [
