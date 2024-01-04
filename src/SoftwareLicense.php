@@ -332,6 +332,24 @@ class SoftwareLicense extends CommonTreeDropdown
         return true;
     }
 
+    /**
+     * Is the license recursive ?
+     *
+     * @return boolean
+     **/
+    public function isRecursive()
+    {
+        $soft = new Software();
+        if (
+            isset($this->fields["softwares_id"])
+            && $soft->getFromDB($this->fields["softwares_id"])
+        ) {
+            return $soft->isRecursive();
+        }
+
+        return false;
+    }
+
 
     public function rawSearchOptions()
     {
