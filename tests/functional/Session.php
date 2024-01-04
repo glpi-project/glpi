@@ -480,7 +480,8 @@ class Session extends \DbTestCase
      *
      * @return void
      */
-    public function testGetEntityTreeCacheKey(): void {
+    public function testGetEntityTreeCacheKey(): void
+    {
         global $CFG_GLPI;
 
         $this->login();
