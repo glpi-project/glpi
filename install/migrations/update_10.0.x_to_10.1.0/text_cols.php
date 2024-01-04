@@ -42,7 +42,6 @@ $text_cols = [
     ['glpi_notificationtemplatetranslations', 'content_text', 'longtext'],
     ['glpi_notificationtemplatetranslations', 'content_html', 'longtext'],
     ['glpi_items_kanbans', 'state', 'mediumtext'],
-    ['glpi_webhooks', 'payload', 'longtext'],
 ];
 
 foreach ($text_cols as $data) {

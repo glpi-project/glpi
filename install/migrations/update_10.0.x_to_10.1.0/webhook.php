@@ -51,7 +51,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
       `comment` text,
       `itemtype` varchar(255) DEFAULT NULL,
       `event` varchar(255) DEFAULT NULL,
-      `payload` text,
+      `payload` longtext,
       `use_default_payload` tinyint NOT NULL DEFAULT '1',
       `custom_headers` text,
       `url` varchar(255) DEFAULT NULL,
