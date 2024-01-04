@@ -58,6 +58,7 @@ class Grid
     protected $grid_cols       = 26;
     protected $grid_rows       = 24;
     protected $current         = "";
+    /** @var Dashboard|null */
     protected $dashboard       = null;
     protected $items           = [];
     protected $context            = '';
@@ -287,7 +288,6 @@ HTML;
         $clone_label      = __("Clone this dashboard");
         $edit_label       = __("Toggle edit mode");
         $filter_label     = __("Toggle filter mode");
-        $add_filter_lbl   = __("Add filter");
         $add_dash_label   = __("Add a new dashboard");
         $save_label       = _x('button', "Save");
 
@@ -370,17 +370,53 @@ HTML;
 HTML;
 
         $filters = "";
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
         if (!$mini) {
-            $filters = <<<HTML
-         <div class='filters_toolbar'>
-            <span class='filters'></span>
-            <span class='filters-control'>
-               <i class="btn btn-sm btn-ghost-secondary fas fa-plus plus-sign add-filter">
-                  <span class='add-filter-lbl'>{$add_filter_lbl}</span>
-               </i>
-            </span>
-         </div>
-HTML;
+            $params = [
+                'is_placeholder' => $CFG_GLPI['is_demo_dashboards'] ?? 0,
+                'messages' => [
+                    'add_filter' => __("Add filter"),
+                    'placeholder_main' => __("You are viewing demonstration data."),
+                    'disable_demo_msg' => __('Disable demonstration'),
+                ],
+                'can_disable_demo' => Session::haveRight(Config::$rightname, UPDATE) ? 1 : 0,
+            ];
+            $filters = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class='filters_toolbar m-2 {{ is_placeholder ? "d-none" : "" }}'>
+                    <span class='filters'></span>
+                    <span class='filters-control'>
+                        <i class="btn btn-sm btn-ghost-secondary fas fa-plus plus-sign add-filter">
+                            <span class='add-filter-lbl'>{{ messages['add_filter'] }}</span>
+                        </i>
+                    </span>
+                </div>
+                <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
+                    <div class="alert alert-info">
+                        <div class="d-flex">
+                            <i class="ti ti-info-circle fa-2x me-3"></i>
+                            <div>
+                                <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
+                                <div class="mt-2">
+                                    <button class="btn btn-info btn-sm disable-dashboard-demo me-2 {{ can_disable_demo ? '' : 'd-none' }}" type="button">
+                                        <i class="ti ti-presentation-off"></i>
+                                        <span>{{ messages['disable_demo_msg'] }}</span>
+                                    </button>
+                                    <script>
+                                        $('button.disable-dashboard-demo').on('click', function() {
+                                            $.post(CFG_GLPI.root_doc + '/ajax/dashboard.php', {
+                                                action: 'disable_placeholders'
+                                            }).then(() => {
+                                                window.location.reload();
+                                            });
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+TWIG, $params);
         }
 
        // display the grid
@@ -545,6 +581,9 @@ JAVASCRIPT;
      */
     public function getGridItemsHtml(bool $with_lock = true, bool $embed = false): string
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         if ($embed) {
             self::$embed = true;
         }
@@ -934,11 +973,19 @@ HTML;
                         'label' => $card['label'] ?? ""
                     ]
                 ];
-                if (isset($card_options['args']['apply_filters'])) {
-                    $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
-                }
+
+                /** @var array $CFG_GLPI */
+                global $CFG_GLPI;
                 Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
-                $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
+                if ($CFG_GLPI['is_demo_dashboards'] ?? 0) {
+                    $fake_provider_func = FakeProvider::class . '::' . explode('::', $card['provider'])[1];
+                    $widget_args = call_user_func_array($fake_provider_func, array_values($provider_args));
+                } else {
+                    if (isset($card_options['args']['apply_filters'])) {
+                        $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
+                    }
+                    $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
+                }
                 Profiler::getInstance()->stop($card['provider'] . ' (Provider function)');
             }
             $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
@@ -1362,7 +1409,7 @@ HTML;
 
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
-                'label'      => __("List of reminders"),
+                'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
                 'group'      => __('Tools'),
                 'provider'   => "Glpi\\Dashboard\\Provider::getArticleListReminder",
                 'filters'    => Filter::getAppliableFilters(Reminder::getTable()),

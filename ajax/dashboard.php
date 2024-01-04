@@ -129,6 +129,14 @@ switch ($_POST['action'] ?? null) {
         $new_dashboard = $dashboard->cloneCurrent();
         echo json_encode($new_dashboard);
         exit;
+
+    case 'disable_placeholders':
+        if (!Session::haveRight(Config::$rightname, UPDATE)) {
+            http_response_code(403);
+            exit();
+        }
+        Config::setConfigurationValues('core', ['is_demo_dashboards' => 0]);
+        exit();
 }
 
 switch ($_GET['action'] ?? null) {

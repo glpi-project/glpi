@@ -696,6 +696,17 @@ class GLPIDashboard {
                 this.grid.makeWidget(elem);
             });
             this.getCardsAjax();
+
+            const is_placeholder = CFG_GLPI['is_demo_dashboards'] === "1";
+            if (is_placeholder) {
+                // Hide filters toolbar and show the placeholder info
+                $(this.elem_id).find('.filters_toolbar').addClass('d-none');
+                $(this.elem_id).find('.placeholder_info').removeClass('d-none');
+            } else {
+                // Hide the placeholder info and show filters toolbar
+                $(this.elem_id).find('.placeholder_info').addClass('d-none');
+                $(this.elem_id).find('.filters_toolbar').removeClass('d-none');
+            }
         });
     }
 

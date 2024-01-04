@@ -233,6 +233,10 @@ class TestUpdatedDataCommand extends Command
             'glpi_rules',
             'glpi_rulecriterias',
             'glpi_ruleactions',
+
+            // Dashbords may have placeholders which are only present on new installs
+            'glpi_dashboards_dashboards',
+            'glpi_dashboards_items'
         ];
     }
 

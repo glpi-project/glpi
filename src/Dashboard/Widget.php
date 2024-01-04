@@ -1291,7 +1291,12 @@ JAVASCRIPT;
         }
 
        // simple line graphs are always multiple lines
-        $series = [$series];
+        $series = [
+            [
+                'name' => $params['label'],
+                'data'  => $series,
+            ]
+        ];
 
         return self::getLinesGraph($params, $labels, $series);
     }
@@ -1400,14 +1405,11 @@ JAVASCRIPT;
         $nb_series = count($series);
         $nb_labels = min($p['limit'], count($labels));
         array_splice($labels, 0, -$nb_labels);
-        if ($p['multiple']) {
-            foreach ($series as &$tmp_serie) {
-                if (isset($tmp_serie['data'])) {
-                    array_splice($tmp_serie['data'], 0, -$nb_labels);
-                }
+
+        foreach ($series as &$tmp_serie) {
+            if (isset($tmp_serie['data'])) {
+                array_splice($tmp_serie['data'], 0, -$nb_labels);
             }
-        } else {
-            array_splice($series[0], 0, -$nb_labels);
         }
 
         $palette = self::getPalette($p['palette'], $nb_series);
