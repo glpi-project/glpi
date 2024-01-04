@@ -88,6 +88,7 @@ final class Search
      * @var array Cache of table names for foreign keys.
      */
     private array $fkey_tables = [];
+    private \DBmysql $db_read;
 
     private function __construct(array $schema, array $request_params)
     {
@@ -99,6 +100,7 @@ final class Search
         $this->tables = array_keys($this->table_schemas);
         $this->union_search_mode = count($this->tables) > 1;
         $this->rsql_parser = new Parser($this);
+        $this->db_read = \DBConnection::getReadConnection();
     }
 
     /**
@@ -182,9 +184,6 @@ final class Search
      */
     private function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $prop = $this->flattened_properties[$prop_name];
         if ($prop['x-writeonly'] ?? false) {
             // Do not expose write-only fields
@@ -199,7 +198,7 @@ final class Search
             if (!isset($prop['x-mapper'])) {
                 // Do not select fields mapped after the results are retrieved
                 $sql_field = $this->getSQLFieldForProperty($prop_name);
-                $expression = $DB::quoteName($sql_field);
+                $expression = $this->db_read::quoteName($sql_field);
                 if (str_contains($sql_field, '.')) {
                     $join_name = substr($sql_field, 0, strrpos($sql_field, '.'));
                     $join_name = str_replace(chr(0x1F), '.', $join_name);
@@ -328,21 +327,18 @@ final class Search
      */
     private function getFrom(array $criteria)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         if ($this->union_search_mode) {
             $queries = [];
             foreach ($this->tables as $table) {
                 $query = $criteria;
                 // Remove join props from the select for now (complex to handle)
-                $query['SELECT'] = array_filter($query['SELECT'], static function ($select) use ($DB) {
+                $query['SELECT'] = array_filter($query['SELECT'], function ($select) {
                     $select_str = (string) $select;
-                    return str_starts_with($select_str, $DB::quoteName('_.id'));
+                    return str_starts_with($select_str, $this->db_read::quoteName('_.id'));
                 });
                 //Inject a field for the schema name as the first select
                 $schema_name = $this->table_schemas[$table];
-                $itemtype_field = new QueryExpression($DB::quoteValue($schema_name), '_itemtype');
+                $itemtype_field = new QueryExpression($this->db_read::quoteValue($schema_name), '_itemtype');
                 array_unshift($query['SELECT'], $itemtype_field);
 
                 $query['FROM'] = $table . ' AS _';
@@ -534,9 +530,6 @@ final class Search
      */
     private function criteriaHasJoinFilter(array $where): bool
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         if (empty($where)) {
             return false;
         }
@@ -546,7 +539,7 @@ final class Search
                 return true;
             }
             foreach ($this->joins as $join_alias => $join_definition) {
-                if (str_starts_with((string)$where_field, $DB::quoteName($join_alias) . '.')) {
+                if (str_starts_with((string)$where_field, $this->db_read::quoteName($join_alias) . '.')) {
                     return true;
                 }
             }
@@ -591,9 +584,6 @@ final class Search
      */
     private function getMatchingRecords($ignore_pagination = false): array
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $records = [];
 
         $criteria = [
@@ -629,7 +619,7 @@ final class Search
         }
 
         // request just to get the ids/union itemtypes
-        $iterator = $DB->request($criteria);
+        $iterator = $this->db_read->request($criteria);
         $this->validateIterator($iterator);
 
         if ($this->union_search_mode) {
@@ -669,7 +659,7 @@ final class Search
                     '_.id' => array_column($type_records, 'id')
                 ];
             }
-            $iterator = $DB->request($criteria);
+            $iterator = $this->db_read->request($criteria);
             $this->validateIterator($iterator);
             foreach ($iterator as $data) {
                 $itemtype = $this->union_search_mode ? $data['_itemtype'] : $this->schema['x-itemtype'];
@@ -897,9 +887,6 @@ final class Search
 
     private function hydrateRecords(array $records): array
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $hydrated_records = [];
         /** All data retrieved by table */
         $fetched_records = [];
@@ -956,9 +943,9 @@ final class Search
                             }, ARRAY_FILTER_USE_KEY)) > 0;
                             return !$is_join && !$mapped_from_other;
                         }, ARRAY_FILTER_USE_BOTH);
-                        $criteria['FROM'] = "$table AS " . $DB::quoteName('_');
+                        $criteria['FROM'] = "$table AS " . $this->db_read::quoteName('_');
                         if ($this->union_search_mode) {
-                            $criteria['SELECT'][] = new QueryExpression($DB::quoteValue($schema_name), '_itemtype');
+                            $criteria['SELECT'][] = new QueryExpression($this->db_read::quoteValue($schema_name), '_itemtype');
                         }
                     } else {
                         $join_name = substr($fkey, 0, strrpos($fkey, chr(0x1F)));
@@ -972,7 +959,7 @@ final class Search
                             return $prop_parent === $join_name;
                         }, ARRAY_FILTER_USE_KEY);
 
-                        $criteria['FROM'] = "$table AS " . $DB::quoteName(str_replace('.', chr(0x1F), $join_name));
+                        $criteria['FROM'] = "$table AS " . $this->db_read::quoteName(str_replace('.', chr(0x1F), $join_name));
                         $id_field = str_replace('.', chr(0x1F), $join_name) . '.id';
                     }
                     $criteria['WHERE'] = [$id_field => $ids_to_fetch];
@@ -1024,7 +1011,7 @@ final class Search
                     }
 
                     // Fetch the data for the current dehydrated record
-                    $it = $DB->request($criteria);
+                    $it = $this->db_read->request($criteria);
                     $this->validateIterator($it);
                     foreach ($it as $data) {
                         $cleaned_data = [];
