@@ -215,8 +215,8 @@ class Reservation extends CommonDBChild
         }
 
         if (isset($input['items']) && count($input['items']) && isset($input['users_id'])) {
+            ksort($dates_to_add);
             foreach ($input['items'] as $reservationitems_id) {
-                ksort($dates_to_add);
                 $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
 
                 foreach ($dates_to_add as $begin => $end) {
