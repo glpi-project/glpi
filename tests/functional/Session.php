@@ -474,4 +474,47 @@ class Session extends \DbTestCase
         \Session::loadLanguage('fr_FR');
         $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
     }
+
+    /**
+     * Tests for thegetEntityTreeCacheKey method
+     *
+     * @return void
+     */
+    public function testGetEntityTreeCacheKey(): void {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Initital base_path found in ajax/entitytreesons.php
+        $base_path = $CFG_GLPI['root_doc'] . "/front/central.php";
+        $cache_key_1 = \Session::getEntityTreeCacheKey($base_path);
+
+        // Call function without changing anything, cache key shouldn't change
+        $cache_key_2 = \Session::getEntityTreeCacheKey($base_path);
+        $this->string($cache_key_2)->isEqualTo($cache_key_1);
+
+        // Change base_path, cache key should change
+        $base_path = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php";
+        $cache_key_3 = \Session::getEntityTreeCacheKey($base_path);
+        $this->string($cache_key_3)->isNotEqualTo($cache_key_2);
+
+        // Add a new entity, cache key should change
+        $entity = $this->createItem('Entity', ['name' => 'test testGetEntityTreeCacheKey']);
+        $cache_key_4 = \Session::getEntityTreeCacheKey($base_path);
+        $this->string($cache_key_4)->isNotEqualTo($cache_key_3);
+
+        // Update entity, cache key should change
+        // Need to change glpi_currenttime to make sure date_mod is different
+        $_SESSION['glpi_currenttime'] = date('2020-12-13 16:00:00');
+        $this->updateItem("Entity", $entity->getID(), [
+            'name' => 'test testGetEntityTreeCacheKey 2',
+        ]);
+        $cache_key_5 = \Session::getEntityTreeCacheKey($base_path);
+        $this->string($cache_key_5)->isNotEqualTo($cache_key_4);
+
+        // Delete entity, cache key should change
+        $entity->delete(['id' => $entity->getID(), true]);
+        $cache_key_6 = \Session::getEntityTreeCacheKey($base_path);
+        $this->string($cache_key_6)->isNotEqualTo($cache_key_5);
+    }
 }

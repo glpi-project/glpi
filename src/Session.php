@@ -2040,4 +2040,31 @@ class Session
         // TODO (10.1 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
     }
+
+    /**
+     * Get the key cache used to store the entities tree
+     *
+     * @param string $base_path Cached value contains links based on `$base_path`,
+     *                          so cache key should change when `$base_path` changes
+     *
+     * @return string
+     */
+    public static function getEntityTreeCacheKey(string $base_path): string
+    {
+        global $DB;
+
+        // Build cache key using last update date of every entity
+        // This should trigger a cache refresh when an entity is created, updated or deleted
+        $data = $DB->request([
+            'SELECT' => 'date_mod',
+            'FROM'   => 'glpi_entities',
+        ]);
+        $dates_hash = sha1(json_encode(iterator_to_array($data)));
+
+        return 'entity_selector'
+            . sha1(json_encode($_SESSION['glpiactiveprofile']['entities']))
+            . sha1($base_path)
+            . $dates_hash
+        ;
+    }
 }
