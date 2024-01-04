@@ -249,6 +249,11 @@ class User extends CommonDBTM
         if ($CFG_GLPI['show_count_on_tabs'] == -1) {
             $this->fields['show_count_on_tabs'] = 0;
         }
+
+        // Fallback for invalid language
+        if (!isset($CFG_GLPI['languages'][$this->fields["language"]])) {
+            $this->fields["language"] = $CFG_GLPI["language"];
+        }
     }
 
     /**
@@ -3127,7 +3132,7 @@ HTML;
                 echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
                // Language is stored as null in DB if value is same as the global config.
                 $language = $this->fields["language"];
-                if (null === $this->fields["language"]) {
+                if (null === $this->fields["language"] || !isset($CFG_GLPI['languages'][$this->fields["language"]])) {
                     $language = $CFG_GLPI['language'];
                 }
                 Dropdown::showLanguages(
