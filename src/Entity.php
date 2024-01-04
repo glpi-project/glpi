@@ -667,6 +667,19 @@ class Entity extends CommonTreeDropdown
         );
     }
 
+    /**
+     * Clean caches related to entity selector.
+     *
+     * @since 10.0
+     *
+     * @return void
+     * @deprecated 10.0.12
+     */
+    public function cleanEntitySelectorCache()
+    {
+        Toolbox::deprecated('Entity::cleanEntitySelectorCache no longer has any effect as the entity selector is no longer cached as a unique entry');
+    }
+
     public function rawSearchOptions()
     {
         $tab = [];
@@ -4111,18 +4124,5 @@ class Entity extends CommonTreeDropdown
             return self::badgeCompletenameLink($entity);
         }
         return null;
-    }
-
-    /**
-     * Clean caches related to entity selector.
-     *
-     * @since 10.0
-     *
-     * @return void
-     * @deprecated 10.0.12
-     */
-    public function cleanEntitySelectorCache()
-    {
-        Toolbox::deprecated('Entity::cleanEntitySelectorCache no longer has any effect as the entity selector is no longer cached as a unique entry');
     }
 }

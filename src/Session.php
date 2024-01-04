@@ -2051,6 +2051,7 @@ class Session
      */
     public static function getEntityTreeCacheKey(string $base_path): string
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         // Build cache key using last update date of every entity
