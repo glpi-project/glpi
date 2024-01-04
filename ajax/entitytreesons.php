@@ -55,9 +55,20 @@ if (Session::getCurrentInterface() == 'helpdesk') {
 
 $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
+// Build cache key using last update date of every entity
+// This should trigger a cache refresh when an entity is created, updated or deleted
+global $DB;
+
+$data = $DB->request([
+    'SELECT' => 'date_mod',
+    'FROM'   => 'glpi_entities',
+]);
+$dates_hash = sha1(json_encode(iterator_to_array($data)));
+
 $ckey = 'entity_selector'
     . sha1(json_encode($_SESSION['glpiactiveprofile']['entities']))
     . sha1($base_path) // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
+    . $dates_hash
 ;
 
 $entitiestree = $GLPI_CACHE->get($ckey);
