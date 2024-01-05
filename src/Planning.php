@@ -1312,6 +1312,10 @@ JAVASCRIPT;
      */
     public static function sendAddUserForm($params = [])
     {
+        if (!isset($params['users_id']) || (int) $params['users_id'] <= 0) {
+            Session::addMessageAfterRedirect(__('A user selection is required'), false, ERROR);
+            return;
+        }
         $_SESSION['glpi_plannings']['plannings']["user_" . $params['users_id']]
          = ['color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
              'display' => true,
@@ -1358,6 +1362,10 @@ JAVASCRIPT;
      */
     public static function sendAddGroupUsersForm($params = [])
     {
+        if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
+            Session::addMessageAfterRedirect(__('A group selection is required'), false, ERROR);
+            return;
+        }
         $current_group = &$_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id'] . "_users"];
         $current_group = ['display' => true,
             'type'    => 'group_users',
@@ -1461,6 +1469,10 @@ JAVASCRIPT;
      */
     public static function sendAddGroupForm($params = [])
     {
+        if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
+            Session::addMessageAfterRedirect(__('A group selection is required'), false, ERROR);
+            return;
+        }
         $_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id']]
          = ['color'   => self::getPaletteColor(
              'bg',
@@ -1520,6 +1532,10 @@ JAVASCRIPT;
      */
     public static function sendAddExternalForm($params = [])
     {
+        if (empty($params['url'])) {
+            Session::addMessageAfterRedirect(__('A url is required'), false, ERROR);
+            return;
+        }
         $raw_url = Sanitizer::decodeHtmlSpecialChars($params['url']);
         if (!Toolbox::isUrlSafe($raw_url)) {
             Session::addMessageAfterRedirect(
