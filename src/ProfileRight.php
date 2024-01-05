@@ -302,38 +302,28 @@ class ProfileRight extends CommonDBChild
     public function post_addItem($history = true)
     {
         // Refresh session rights to avoid log out and login when rights change
-        $this->forceCurrentSessionRights($this->fields['profiles_id'], $this->fields['name'], $this->fields['rights']);
+        $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);
     }
 
     public function post_updateItem($history = true)
     {
         // Refresh session rights to avoid log out and login when rights change
-        $this->forceCurrentSessionRights($this->fields['profiles_id'], $this->fields['name'], $this->fields['rights']);
+        $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);
     }
 
     /**
-     * Force rights for given rightname on current session.
+     * Update last rights update for given profile.
      *
      * @param int $profile_id
-     * @param string $rightname
-     * @param int $rights
      * @return void
      */
-    private function forceCurrentSessionRights(int $profile_id, string $rightname, int $rights): void
+    private function updateProfileLastRightsUpdate(int $profile_id): void
     {
-        if (
-            isset($_SESSION['glpiactiveprofile']['id'])
-            && $_SESSION['glpiactiveprofile']['id'] == $profile_id
-            && (
-                !isset($_SESSION['glpiactiveprofile'][$rightname])
-                || $_SESSION['glpiactiveprofile'][$rightname] != $rights
-            )
-        ) {
-            $_SESSION['glpiactiveprofile'][$rightname] = $rights;
-            unset($_SESSION['glpimenu']);
-        }
+        Profile::getById($profile_id)->update([
+            'id'                 => $profile_id,
+            'last_rights_update' => Session::getCurrentTime()
+        ]);
     }
-
 
     /**
      * @since 085

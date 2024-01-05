@@ -1265,6 +1265,8 @@ class Migration
                 ],
                 sprintf('%1$s add right for %2$s', $this->version, $name)
             );
+
+            $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
         $this->displayWarning(
@@ -1329,6 +1331,8 @@ class Migration
                 ],
                 sprintf('%1$s update right for %2$s', $this->version, $name)
             );
+
+            $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
         $this->displayWarning(
@@ -1398,6 +1402,8 @@ class Migration
                 ],
                 sprintf('%1$s update right for %2$s', $this->version, $name)
             );
+
+            $this->updateProfileLastRightsUpdate($profile['id']);
         }
 
         $this->displayWarning(
@@ -1406,6 +1412,35 @@ class Migration
                 $name
             ),
             true
+        );
+    }
+
+    /**
+     * Update last rights update for given profile.
+     *
+     * @param int $profile_id
+     * @return void
+     */
+    private function updateProfileLastRightsUpdate(int $profile_id): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Check if the 'last_rights_update' field exists before trying to update it.
+        // This field may not exist yet as it is added by a migration, and other migrations
+        // that add a right could be executed before the migration that adds this field.
+        if (!$DB->fieldExists('glpi_profiles', 'last_rights_update')) {
+            return;
+        }
+
+        $DB->updateOrDie(
+            'glpi_profiles',
+            [
+                'last_rights_update' => Session::getCurrentTime()
+            ],
+            [
+                'id' => $profile_id,
+            ]
         );
     }
 
