@@ -1052,14 +1052,18 @@ JAVASCRIPT;
         if ($filter_data['type'] == 'user') {
             $uID = $actor[1];
             $user = new User();
-            $user->getFromDB($actor[1]);
-            $title = $user->getName();
-            $caldav_item_url = self::getCaldavBaseCalendarUrl($user);
+            $user_exists = $user->getFromDB($actor[1]);
+            $title = $user->getName(); // Will return N/A if it doesn't exist anymore
+            if ($user_exists) {
+                $caldav_item_url = self::getCaldavBaseCalendarUrl($user);
+            }
         } else if ($filter_data['type'] == 'group_users') {
             $group = new Group();
-            $group->getFromDB($actor[1]);
-            $title = $group->getName();
-            $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            $group_exists = $group->getFromDB($actor[1]);
+            $title = $group->getName(); // Will return N/A if it doesn't exist anymore
+            if ($group_exists) {
+                $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            }
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
                 if ($user['display']) {
@@ -1075,9 +1079,11 @@ JAVASCRIPT;
         } else if ($filter_data['type'] == 'group') {
             $gID = $actor[1];
             $group = new Group();
-            $group->getFromDB($actor[1]);
-            $title = $group->getName();
-            $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            $group_exists = $group->getFromDB($actor[1]);
+            $title = $group->getName(); // Will return N/A if it doesn't exist anymore
+            if ($group_exists) {
+                $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            }
         } else if ($filter_data['type'] == 'external') {
             $title = $filter_data['name'];
         } else if ($filter_data['type'] == 'event_filter') {
@@ -1154,7 +1160,7 @@ JAVASCRIPT;
             if ($params['show_delete']) {
                 echo "<li class='delete_planning dropdown-item' value='$filter_key'>" . __("Delete") . "</li>";
             }
-            if ($filter_data['type'] != 'group_users' && $filter_data['type'] != 'external') {
+            if ($caldav_item_url !== '' && $filter_data['type'] != 'group_users' && $filter_data['type'] != 'external') {
                 $url = parse_url($CFG_GLPI["url_base"]);
                 $port = 80;
                 if (isset($url['port'])) {
@@ -1195,7 +1201,7 @@ JAVASCRIPT;
         }
         echo "</span>";
 
-        if ($filter_data['type'] == 'group_users') {
+        if ($caldav_item_url !== '' && $filter_data['type'] == 'group_users') {
             echo "<ul class='group_listofusers filters'>";
             foreach ($filter_data['users'] as $user_key => $userdata) {
                 self::showSingleLinePlanningFilter(
