@@ -6054,7 +6054,6 @@ JAVASCRIPT;
 
             $nb            = 0;
             $max_closedate = '';
-
             foreach ($iterator as $tick) {
                 $max_closedate = $tick['closedate'];
                 if (mt_rand(1, 100) <= $rate) {
@@ -6070,13 +6069,18 @@ JAVASCRIPT;
                 }
             }
 
-           // conservation de toutes les max_closedate des entites filles
+            // keep all max_closedate of child entities
             if (
                 !empty($max_closedate)
                 && (!isset($maxentity[$parent])
                  || ($max_closedate > $maxentity[$parent]))
             ) {
                 $maxentity[$parent] = $max_closedate;
+            }
+            if (!empty($max_closedate)) {
+                // Save children's max_closedate to avoid testing the same tickets twice
+                $conf->getFromDB($entity);
+                $conf->update(['id' => $conf->fields['id'], 'max_closedate' => $max_closedate]);
             }
 
             if ($nb) {
@@ -6090,7 +6094,7 @@ JAVASCRIPT;
             }
         }
 
-       // Sauvegarde du max_closedate pour ne pas tester les m??me tickets 2 fois
+        // Save max_closedate to avoid testing the same tickets twice
         foreach ($maxentity as $parent => $maxdate) {
             $conf->getFromDB($parent);
             $conf->update(['id'            => $conf->fields['id'],

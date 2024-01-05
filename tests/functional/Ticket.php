@@ -4925,6 +4925,53 @@ HTML
         $this->integer($it->count())->isEqualTo(1);
     }
 
+    public function testCronSurveyCreation()
+    {
+        global $DB;
+        $this->login();
+        // Since processing is too fast, we need to set the current time to a time before it was started.
+        $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s", strtotime('-2 second'));
+        $entity = new \Entity();
+        //create entity with inquest_rate > 0
+        $this->boolean($entity->update([
+            'id'                => 0,
+            'inquest_config'    => 1,
+            'inquest_rate'      => 100,
+            'inquest_delay'     => 0,
+            'max_closedate'     => $_SESSION['glpi_currenttime']
+        ]))->isTrue();
+
+        // Recover glpi_currentitme base value
+        $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+
+       // create ticket closed for survey
+        $ticket = new \Ticket();
+        $tickets_id_1 = $ticket->add([
+            'name'        => "test survey 1",
+            'content'     => "test survey 1",
+            'entities_id' => 0,
+            'status'      => \CommonITILObject::CLOSED
+        ]);
+        $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+
+        $ticket_satisfaction = new \TicketSatisfaction();
+        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $tickets_id_1])))->isEqualTo(0);
+
+        // launch Cron for survey creation
+        $mode = - \CronTask::MODE_INTERNAL; // force
+        \CronTask::launch($mode, 1, 'createinquest');
+
+        // Get current entity max_closedate
+        $this->boolean($entity->getFromDB(0))->isTrue();
+
+        // check survey has been created
+        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $tickets_id_1])))->isGreaterThan(0);
+
+        // check entity max_closedate has been updated
+        $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
+        $this->string($entity->fields['max_closedate'])->isEqualTo($ticket->fields['closedate']);
+    }
+
     public function testAddAssignWithoutUpdateRight()
     {
         $this->login();
