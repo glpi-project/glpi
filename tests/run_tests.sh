@@ -342,10 +342,10 @@ fi
 
 if [[ "$INTERACTIVE" = true ]]; then
   CHOICE=""
-  TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
-  SCOPE=$SELECTED_SCOPE
-  show_info
   while [[ "$CHOICE" != "exit" ]]; do
+    TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
+    SCOPE=$SELECTED_SCOPE
+    show_info
     read -e -p "GLPI Tests > " CHOICE
     if [[ "$CHOICE" = run* ]]; then
       # If actions were specified after the run choice, use them instead of the ones selected
