@@ -49,8 +49,6 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class NetworkName extends FQDNLabel
 {
-    use Glpi\Features\AssignableAsset;
-
    // From CommonDBChild
     public static $itemtype              = 'itemtype';
     public static $items_id              = 'items_id';
@@ -972,5 +970,14 @@ class NetworkName extends FQDNLabel
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
+    }
+
+    public function getRights($interface = 'central')
+    {
+        $rights = parent::getRights($interface);
+        // Rename READ and UPDATE right labels to match other assets
+        $rights['READ'] = __('View all');
+        $rights['UPDATE'] = __('Update all');
+        return $rights;
     }
 }

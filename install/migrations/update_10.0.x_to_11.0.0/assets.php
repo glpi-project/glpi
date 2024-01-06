@@ -212,7 +212,7 @@ foreach ($it as $data) {
 
 $assignable_asset_rights = [
     'computer', 'monitor', 'software', 'networking', 'printer',
-    'cartridge', 'consumable', 'phone', 'peripheral', 'internet'
+    'cartridge', 'consumable', 'phone', 'peripheral'
 ];
 foreach ($assignable_asset_rights as $rightname) {
     // Computer class used here for access to properties in AssignableAsset trait since direct access is deprecated by PHP

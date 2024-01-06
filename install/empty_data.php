@@ -5716,7 +5716,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'internet',
-                'rights' => READ | NetworkName::$read_assigned,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'printer',
@@ -5728,11 +5728,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'cartridge',
-                'rights' => READ | READNOTE | Cartridge::$read_assigned,
+                'rights' => READ | READNOTE | CartridgeItem::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'consumable',
-                'rights' => READ | READNOTE | Consumable::$read_assigned,
+                'rights' => READ | READNOTE | ConsumableItem::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'phone',
@@ -6012,7 +6012,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT | NetworkName::$read_assigned | NetworkName::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'printer',
@@ -6024,11 +6024,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Cartridge::$read_assigned | Cartridge::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | CartridgeItem::$read_assigned | CartridgeItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Consumable::$read_assigned | Consumable::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | ConsumableItem::$read_assigned | ConsumableItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'phone',
@@ -6312,7 +6312,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT | UNLOCK | NetworkName::$read_assigned | NetworkName::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | UNLOCK,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'printer',
@@ -6324,11 +6324,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Cartridge::$read_assigned | Cartridge::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | CartridgeItem::$read_assigned | CartridgeItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | Consumable::$read_assigned | Consumable::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | UNLOCK | ConsumableItem::$read_assigned | ConsumableItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'phone',
@@ -6897,7 +6897,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT | NetworkName::$read_assigned | NetworkName::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'printer',
@@ -6909,11 +6909,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Cartridge::$read_assigned | Cartridge::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | CartridgeItem::$read_assigned | CartridgeItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Consumable::$read_assigned | Consumable::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | ConsumableItem::$read_assigned | ConsumableItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'phone',
@@ -7188,7 +7188,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'internet',
-                'rights' => ALLSTANDARDRIGHT | NetworkName::$read_assigned | NetworkName::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'printer',
@@ -7200,11 +7200,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'cartridge',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Cartridge::$read_assigned | Cartridge::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | CartridgeItem::$read_assigned | CartridgeItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'consumable',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Consumable::$read_assigned | Consumable::$update_assigned,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | ConsumableItem::$read_assigned | ConsumableItem::$update_assigned,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'phone',
@@ -7471,7 +7471,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'cartridge',
-                'rights' => READ | READNOTE | Cartridge::$read_assigned,
+                'rights' => READ | READNOTE | CartridgeItem::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'change',
@@ -7491,7 +7491,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'consumable',
-                'rights' => READ | READNOTE | Consumable::$read_assigned,
+                'rights' => READ | READNOTE | ConsumableItem::$read_assigned,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'contact_enterprise',
@@ -7539,7 +7539,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'internet',
-                'rights' => READ | NetworkName::$read_assigned,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'itilcategory',

@@ -37,6 +37,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
+use Glpi\Features\AssignableAsset;
 
 /**
  * CartridgeItem Class
@@ -46,6 +47,7 @@ use Glpi\Features\AssetImage;
 class CartridgeItem extends CommonDBTM
 {
     use AssetImage;
+    use AssignableAsset;
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Cartridge', 'Infocom'];

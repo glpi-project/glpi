@@ -114,12 +114,15 @@ trait AssignableAsset
             return [new QueryExpression('1')];
         }
         if (Session::haveRight(static::$rightname, self::$read_assigned)) {
-            return [
+            $criteria = [
                 'OR' => [
                     'users_id_tech' => $_SESSION['glpiID'],
-                    'groups_id_tech' => $_SESSION['glpigroups'],
                 ],
             ];
+            if (count($_SESSION['glpigroups'])) {
+                $criteria['OR']['groups_id_tech'] = $_SESSION['glpigroups'];
+            }
+            return [$criteria];
         }
         return [new QueryExpression('0')];
     }

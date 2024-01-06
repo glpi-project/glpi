@@ -46,7 +46,6 @@ use Glpi\Event;
 class Consumable extends CommonDBChild
 {
     use Glpi\Features\Clonable;
-    use Glpi\Features\AssignableAsset;
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Infocom'];
@@ -57,6 +56,8 @@ class Consumable extends CommonDBChild
    // From CommonDBChild
     public static $itemtype             = 'ConsumableItem';
     public static $items_id             = 'consumableitems_id';
+    public static int $read_assigned = 256;
+    public static int $update_assigned = 512;
 
     public function getCloneRelations(): array
     {
@@ -1089,13 +1090,7 @@ class Consumable extends CommonDBChild
 
     public function getRights($interface = 'central')
     {
-        $ci = new ConsumableItem();
-        $rights = $ci->getRights($interface);
-        $rights[READ] = __('View all');
-        $rights[self::$read_assigned] = __('View assigned');
-        $rights[UPDATE] = __('Update all');
-        $rights[self::$update_assigned] = __('Update assigned');
-        return $rights;
+        return (new ConsumableItem())->getRights($interface);
     }
 
 

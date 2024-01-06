@@ -435,6 +435,7 @@ class CommonDBTM extends DbTestCase
         );
         $this->boolean($res)->isTrue();
     }
+
     /**
      * Check right on Recursive object
      *
@@ -477,12 +478,12 @@ class CommonDBTM extends DbTestCase
         ]);
         $this->integer($id[3])->isGreaterThan(0);
 
-       // Super admin
+        // Super admin
         $this->login('glpi', 'glpi');
         $this->variable($_SESSION['glpiactiveprofile']['id'])->isEqualTo(4);
-        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(255);
+        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(1023);
 
-       // See all
+        // See all
         $this->boolean(\Session::changeActiveEntities('all'))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
@@ -495,7 +496,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
 
-       // See only in main entity
+        // See only in main entity
         $this->boolean(\Session::changeActiveEntities($ent0))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
@@ -508,7 +509,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
-       // See only in child entity 1 + parent if recursive
+        // See only in child entity 1 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent1))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isFalse("Fail can't read Printer 1");
@@ -521,7 +522,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
-       // See only in child entity 2 + parent if recursive
+        // See only in child entity 2 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent2))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isFalse("Fail can't read Printer 1");

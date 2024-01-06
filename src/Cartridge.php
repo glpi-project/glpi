@@ -42,7 +42,6 @@
 class Cartridge extends CommonDBRelation
 {
     use Glpi\Features\Clonable;
-    use Glpi\Features\AssignableAsset;
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Infocom'];
@@ -57,6 +56,8 @@ class Cartridge extends CommonDBRelation
     public static $itemtype_2 = 'Printer';
     public static $items_id_2 = 'printers_id';
     public static $mustBeAttached_2 = false;
+    public static int $read_assigned = 256;
+    public static int $update_assigned = 512;
 
     public function getCloneRelations(): array
     {
@@ -1433,13 +1434,7 @@ class Cartridge extends CommonDBRelation
 
     public function getRights($interface = 'central')
     {
-        $ci = new CartridgeItem();
-        $rights = $ci->getRights($interface);
-        $rights[READ] = __('View all');
-        $rights[self::$read_assigned] = __('View assigned');
-        $rights[UPDATE] = __('Update all');
-        $rights[self::$update_assigned] = __('Update assigned');
-        return $rights;
+        return (new CartridgeItem())->getRights($interface);
     }
 
     public static function getIcon()
