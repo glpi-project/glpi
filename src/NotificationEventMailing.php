@@ -186,7 +186,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $mail->from(new Address($current->fields['sender'], $current->fields['sendername']));
 
-                if ($current->fields['replyto']) {
+                if (!empty($current->fields['replyto'])) {
                     $mail->replyTo(new Address($current->fields['replyto'], $current->fields['replytoname']));
                 }
                 $mail->subject($current->fields['name']);
@@ -433,11 +433,13 @@ class NotificationEventMailing extends NotificationEventAbstract
                         $current->fields['name'] . "\n"
                     )
                 );
-                $processed[] = $current->getID();
-                $current->update(['id'        => $current->fields['id'],
-                    'sent_time' => $_SESSION['glpi_currenttime']
-                ]);
-                $current->delete(['id'        => $current->fields['id']]);
+                if (!$current->isNewItem()) {
+                    $processed[] = $current->getID();
+                    $current->update(['id' => $current->fields['id'],
+                        'sent_time' => $_SESSION['glpi_currenttime']
+                    ]);
+                    $current->delete(['id' => $current->fields['id']]);
+                }
             }
         }
 
@@ -485,18 +487,23 @@ class NotificationEventMailing extends NotificationEventAbstract
                      $notification->fields['name'] . "\n"
                  )
              );
-             $notification->delete(['id' => $notification->fields['id']]);
+             // The notification may not relate to anything in the DB when sending immediately after a notification event is raised.
+             if (!$notification->isNewItem()) {
+                 $notification->delete(['id' => $notification->fields['id']]);
+             }
         }
 
-        $input = [
-            'id'        => $notification->fields['id'],
-            'sent_try'  => $notification->fields['sent_try'] + 1
-        ];
+        if (!$notification->isNewItem()) {
+            $input = [
+                'id' => $notification->fields['id'],
+                'sent_try' => $notification->fields['sent_try'] + 1
+            ];
 
-        if ($CFG_GLPI["smtp_retry_time"] > 0) {
-            $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_GLPI["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
+            if ($CFG_GLPI["smtp_retry_time"] > 0) {
+                $input['send_time'] = date("Y-m-d H:i:s", strtotime('+' . $CFG_GLPI["smtp_retry_time"] . ' minutes')); //Delay X minutes to try again
+            }
+            $notification->update($input);
         }
-        $notification->update($input);
     }
 
     /**

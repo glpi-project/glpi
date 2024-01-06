@@ -202,4 +202,32 @@ class NotificationMailingTest extends DbTestCase
             "users_id" => \Session::getLoginUserID()
         ], true));
     }
+
+    public function testSendImmediately()
+    {
+        $this->login();
+
+        $mail = new \NotificationMailing();
+        $this->boolean($mail->sendNotification([
+            '_itemtype'                   => 'User',
+            '_items_id'                   => \Session::getLoginUserID(),
+            '_notificationtemplates_id'   => 0,
+            '_entities_id'                => $this->getTestRootEntity(true),
+            'fromname'                    => 'TEST',
+            'subject'                     => 'Test notification',
+            'content_text'                => "Hello, this is a test notification.",
+            'to'                          => 'test@localhost',
+            'from'                        => 'glpi@tests',
+            'toname'                      => '',
+            'event'                       => 'passwordforget',
+            'send_immediately'            => true
+        ]))->isTrue();
+
+        // the email should only be in the queue because we cannot send email in tests
+        // to identify that it was attempted to be sent immediately, we check the sent_try field
+        $queued = getAllDataFromTable('glpi_queuednotifications');
+        $this->array($queued)->hasSize(1);
+        $queued = reset($queued);
+        $this->integer($queued['sent_try'])->isEqualTo(1);
+    }
 }

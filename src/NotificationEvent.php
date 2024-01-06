@@ -193,6 +193,7 @@ class NotificationEvent extends CommonDBTM
                      $processed[$data['mode']] = [];
                 }
                 $options['processed'] = &$processed[$data['mode']];
+                /** @var class-string<NotificationEventInterface> $eventclass */
                 $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');
                 if (class_exists($eventclass)) {
                     $eventclass::raise(
