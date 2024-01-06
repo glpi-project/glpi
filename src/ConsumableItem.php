@@ -464,16 +464,6 @@ class ConsumableItem extends CommonDBTM
         NotificationEvent::debugEvent($this, $options);
     }
 
-
-    public function canUpdateItem()
-    {
-
-        if (!$this->checkEntity(true)) { //check entities recursively
-            return false;
-        }
-        return true;
-    }
-
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
