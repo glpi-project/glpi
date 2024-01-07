@@ -50,14 +50,6 @@ class TicketTask extends CommonITILTask
               || Session::haveRight('ticket', Ticket::OWN));
     }
 
-
-    public static function canView()
-    {
-        return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
-              || Session::haveRight('ticket', Ticket::OWN));
-    }
-
-
     public static function canUpdate()
     {
         return (Session::haveRight(self::$rightname, parent::UPDATEALL)

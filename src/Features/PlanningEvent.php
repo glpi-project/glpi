@@ -875,7 +875,7 @@ trait PlanningEvent
     {
         $itemtype = $this->getType();
         if ($item = getItemForItemtype($itemtype)) {
-            $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item->getItilObjectItemType() : $itemtype);
+            $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item::getItilObjectItemType() : $itemtype);
 
            //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
             $out  = sprintf(
