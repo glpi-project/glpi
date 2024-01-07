@@ -118,6 +118,7 @@ The present file will list all changes made to the project; according to the
 - The `date_mod` property for historical entries returned by `Log::getHistoryData` is no longer formatted based on the user's preferences.
 - `Rule::dropdownRulesMatch()` has been made protected.
 - `ITILTemplateField::showForITILTemplate()` method is no longer abstract.
+- `CommonITILTask::getItilObjectItemType` is now static.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
