@@ -328,7 +328,8 @@ class Provider
                         'field'      => 55,
                         'searchtype' => 'equals',
                         'value'      => CommonITILValidation::WAITING,
-                    ]
+                    ],
+                    $notold
                 ];
 
                 if ($params['validation_check_user']) {
@@ -341,6 +342,7 @@ class Provider
                 }
 
                 $where = [
+                    'NOT' => ['glpi_tickets.status' => [...Ticket::getSolvedStatusArray(), ...Ticket::getClosedStatusArray()]],
                     'glpi_ticketvalidations.status' => CommonITILValidation::WAITING,
                 ];
 
