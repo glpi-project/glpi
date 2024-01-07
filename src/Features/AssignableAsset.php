@@ -56,7 +56,7 @@ trait AssignableAsset
         }
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
-            in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'], true);
+            in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
 
         if (!Session::haveRight(static::$rightname, READ)) {
             return $is_assigned && Session::haveRight(static::$rightname, self::$read_assigned);
@@ -78,7 +78,7 @@ trait AssignableAsset
         }
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
-            in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'], true);
+            in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
 
         if (!Session::haveRight(static::$rightname, UPDATE)) {
             return $is_assigned && Session::haveRight(static::$rightname, self::$update_assigned);

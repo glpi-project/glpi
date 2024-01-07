@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(NetworkName::$rightname, [READ, NetworkName::$read_assigned]);
+Session::checkRight(NetworkName::$rightname, READ);
 
 $nn = new NetworkName();
 
