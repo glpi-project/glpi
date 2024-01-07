@@ -51,6 +51,10 @@ The present file will list all changes made to the project; according to the
 - Entity, profile, debug mode flag, and language are restored after ending impersonation.
 - Volumes now show `Used percentage` instead of `Free percentage`.
 - Budget "Main" tab now shows negative values for "Total remaining in the budget" in parentheses instead of with a negative sign to align with typical accounting practices.
+- Followups and Tasks no longer visible without the "See public" or "See private" rights even if the user has permission to be assigned the parent ITIL Object.
+- Followups, Tasks and Solutions now check the `canView()` method of the parent ITIL Object rather than just the "See my/See author" right of the parent item.
+  This means they now take into account "See all", "See group", etc. rights for the global permission check.
+  Permission checks at the item-level have not been changed.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
