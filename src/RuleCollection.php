@@ -50,7 +50,7 @@ class RuleCollection extends CommonDBTM
     public $use_output_rule_process_as_next_input = false;
    /// Rule collection can be replay (for dictionary)
     public $can_replay_rules                      = false;
-   /// List of rules of the rule collection
+    /** @var SingletonRuleList $RuleList List of rules of the rule collection */
     public $RuleList                              = null;
    /// Menu type
     public $menu_type                             = "rule";
@@ -1694,6 +1694,7 @@ JAVASCRIPT;
         $input = $this->prepareInputDataForTestProcess($condition);
 
         if (count($input)) {
+            /** @var Rule $rule */
             $rule      = $this->getRuleClass();
             $criterias = $rule->getAllCriteria();
             echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
@@ -1701,7 +1702,7 @@ JAVASCRIPT;
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='2'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th></tr>\n";
 
-           //Brower all criterias
+            //Brower all criterias
             foreach ($input as $criteria) {
                 echo "<tr class='tab_bg_1'>";
 
@@ -1953,7 +1954,11 @@ JAVASCRIPT;
 
         $output        = $this->cleanTestOutputCriterias($output);
         unset($output["result"]);
-        $global_result = (count($output) ? 1 : 0);
+        if (count($output) === 1 && ($output['_no_rule_matches'] ?? false)) {
+            $global_result = 0;
+        } else {
+            $global_result = (count($output) ? 1 : 0);
+        }
 
         echo "<br><table class='tab_cadrehov'>";
         $this->showTestResults($rule, $output, $global_result);

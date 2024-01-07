@@ -81,12 +81,10 @@ class RuleRightCollection extends RuleCollection
         if (isset($output["_ldap_rules"]["rules_entities"])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center' colspan='4'>" . __('Entities assignment') . "</td>";
-            foreach ($output["_ldap_rules"]["rules_entities"] as $entities) {
-                foreach ($entities as $entity) {
-                    $this->displayActionByName("entity", $entity[0]);
-                    if (isset($entity[1])) {
-                        $this->displayActionByName("recursive", $entity[1]);
-                    }
+            foreach ($output["_ldap_rules"]["rules_entities"] as $entity) {
+                $this->displayActionByName("entity", $entity[0]);
+                if (isset($entity[1])) {
+                    $this->displayActionByName("recursive", $entity[1]);
                 }
             }
         }
@@ -232,23 +230,21 @@ class RuleRightCollection extends RuleCollection
         $params_lower = array_change_key_case($params, CASE_LOWER);
 
        //common parameters
-        $rule_parameters = [
+        $rule_parameters = array_merge($params_lower, [
             'TYPE'       => $params_lower["type"] ?? "",
             'LOGIN'      => $params_lower["login"] ?? "",
             'MAIL_EMAIL' => $params_lower["email"] ?? $params_lower["mail_email"] ?? "",
-            '_groups_id' => $groups
-        ];
+        ]);
 
        //IMAP/POP login method
-        if ($params_lower["type"] == Auth::MAIL) {
+        if ($rule_parameters["TYPE"] == Auth::MAIL) {
             $rule_parameters["MAIL_SERVER"] = $params_lower["mail_server"] ?? "";
         }
 
-       //LDAP type method
-        if ($params_lower["type"] == Auth::LDAP) {
-           //Get all the field to retrieve to be able to process rule matching
-            $rule_fields = $this->getFieldsToLookFor();
-
+        //LDAP type method
+        //Get all the field to retrieve to be able to process rule matching
+        $rule_fields = $this->getFieldsToLookFor();
+        if ($rule_parameters["TYPE"] == Auth::LDAP && count($rule_fields)) {
            //Get all the data we need from ldap to process the rules
             $sz = @ldap_read(
                 $params_lower["connection"],
