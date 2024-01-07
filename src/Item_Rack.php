@@ -600,7 +600,7 @@ JAVASCRIPT;
             }
         }
         // find used pdu (not racked)
-        foreach (PDU_Rack::getUsed() as $used_pdu) {
+        foreach (PDU_Rack::getUsed(['pdus_id']) as $used_pdu) {
             $used['PDU'][] = $used_pdu['pdus_id'];
         }
 
