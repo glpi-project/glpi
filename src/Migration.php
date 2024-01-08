@@ -1125,17 +1125,27 @@ class Migration
      * @since 10.1.0
      *
      * @param array  $values  Value(s) to remove
-     * @param string $context Context to remove on (optional)
+     * @param ?string $context Context to remove on. Defaults to the context of this migration instance.
      *
      * @return Migration
      */
-    public function removeConfig($values, $context = null)
+    public function removeConfig(array $values, ?string $context = null)
     {
-        $context = $context ?? $this->context;
-        if (!isset($this->configs[$context])) {
-            $this->configs[$context] = [];
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (empty($values)) {
+            return $this;
         }
-        $this->configs[$context] += (array)$values;
+
+        $context = $context ?? $this->context;
+        $DB->delete(
+            'glpi_configs',
+            [
+                'context' => $context,
+                'name'    => $values
+            ]
+        );
         return $this;
     }
 
