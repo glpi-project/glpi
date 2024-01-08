@@ -112,7 +112,6 @@
                     action: 'get_monaco_suggestions',
                     itemtype: e.target.value
                 },
-                dataType: 'json',
                 success: (data) => {
                     const editors = window.monaco.editor.getEditors().filter((editor) => {
                         return editor._domElement.classList.contains('webhook_url');
