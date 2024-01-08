@@ -1480,7 +1480,12 @@ final class DbUtils
         $iterator = $DB->request([
             'SELECT' => ['id', 'name', $parentIDfield],
             'FROM'   => $table,
-            'WHERE'  => [$parentIDfield => $sons],
+            'WHERE'  => [
+                'OR' => [
+                    'id' => $IDf,
+                    $parentIDfield => $sons
+                ],
+            ],
             'ORDER'  => 'name'
         ]);
 
@@ -1491,7 +1496,7 @@ final class DbUtils
 
         return [
             $IDf => [
-                'name' => Dropdown::getDropdownName($table, $IDf),
+                'name' => $id_found[$IDf]['name'],
                 'tree' => $this->constructTreeFromList($id_found, $IDf),
             ],
         ];
