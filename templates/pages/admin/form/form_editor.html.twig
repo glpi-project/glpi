@@ -124,10 +124,10 @@
                             {% for question in section.getQuestions() %}
                                 {# Render admin template for the given question type #}
                                 {{ include('pages/admin/form/form_question.html.twig', {
-                                    'question_types': question_types,
-                                    'question_type' : question_types[question.fields.type],
-                                    'question'      : question,
-                                    'question_index': question_index,
+                                    'question_types'     : question_types,
+                                    'question_type'      : question.getQuestionType(),
+                                    'question'           : question,
+                                    'question_index'     : question_index,
                                 }, with_context = false) }}
                                 {% set question_index = question_index + 1 %}
                             {% endfor %}
@@ -272,17 +272,30 @@
 
 {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
 <div id="question_type_model_container" class="d-none">
-    {% for key, question_type in question_types %}
-        <div id="question_type_model_{{ key }}">
+    {% for question_type in question_types.getFinalTypes() %}
+        <div id="question_type_model_{{ get_class(question_type) }}">
             {# Render admin template for the given question type #}
             {{ include('pages/admin/form/form_question.html.twig', {
                 'question_types': question_types,
-                'question_type': question_type,
-                'question': null,
+                'question_type' : question_type,
+                'question'      : null,
             }, with_context = false) }}
         </div>
     {% endfor %}
 </div>
+
+{# Load all possible subtypes #}
+<select id="question_subtypes" class="d-none">
+    {% for question_type in question_types.getFinalTypes() %}
+        <option
+            data-parent-type="{{ question_type.getParentType() }}"
+            value="{{ get_class(question_type) }}"
+        >
+            {{ question_type.getName() }}
+        </option>
+    {% endfor %}
+</select>
+
 
 {# Preview form modal #}
 <div
@@ -514,6 +527,33 @@
 
         // Handle type change for a question
         $(document).on("change", "[data-question-type-selector]", function(e) {
+            const type = $(e.target).val().replaceAll("\\", "\\\\"); // JS doesn't like single backslashes
+            const copy = $("#question_subtypes").find("option[data-parent-type='" + type + "']");
+
+            // Clear the subtype options of the current question type
+            $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").children().remove();
+
+            // Copy the new subtypes into the current question
+            copy_model(
+                copy,
+                $(e.target).closest("[data-question-container]").data('questionIndex'),
+                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]")
+            );
+
+            // Hide options if only one option is available
+            if (copy.length <= 1) {
+                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").addClass("d-none");
+            } else {
+                // Remove potential d-none
+                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").removeClass("d-none");
+            }
+
+            // Trigger subtype change
+            $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").trigger("change");
+        });
+
+        // Handle subtype change for a question
+        $(document).on("change", "[data-question-subtype-selector]", function(e) {
             const type = $(e.target).val().replaceAll("\\", "\\\\"); // JS doesn't like single backslashes
 
             // Clear the specific part of the HTML form of the current question type

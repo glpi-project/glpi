@@ -41,8 +41,22 @@ use Glpi\Form\Question;
 /**
  * Short answers are single line inputs use to answer simple questions.
  */
-class QuestionTypeShortAnswer implements QuestionTypeInterface
+abstract class QuestionTypeShortAnswer implements QuestionTypeInterface
 {
+    /**
+     * Specific input type for child classes
+     *
+     * @return string
+     */
+    abstract public function getInputType(): string;
+
+    /**
+     * Placeholder to display in the administration template
+     *
+     * @return string
+     */
+    abstract public function getAdministrationTemplatePlaceholder(): string;
+
     public function renderAdminstrationTemplate(
         ?Question $question = null,
         ?string $input_prefix = null
@@ -50,17 +64,19 @@ class QuestionTypeShortAnswer implements QuestionTypeInterface
         $template = <<<TWIG
             <input
                 class="form-control mb-2"
-                type="text"
+                type="{{ input_type }}"
                 name="{{ input_prefix is not null ? input_prefix ~ '[default_value]' : 'default_value' }}"
-                placeholder="{{ __("No default value") }}"
+                placeholder="{{ input_placeholder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
             />
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'     => $question,
-            'input_prefix' => $input_prefix,
+            'question'          => $question,
+            'input_prefix'      => $input_prefix,
+            'input_type'        => $this->getInputType(),
+            'input_placeholder' => $this->getAdministrationTemplatePlaceholder(),
         ]);
     }
 
@@ -69,7 +85,7 @@ TWIG;
     ): string {
         $template = <<<TWIG
             <input
-                type="text"
+                type="{{ input_type }}"
                 class="form-control"
                 name="answers[{{ question.fields.id }}]"
                 value="{{ question.fields.default_value }}"
@@ -79,7 +95,8 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question,
+            'question'   => $question,
+            'input_type' => $this->getInputType(),
         ]);
     }
 
@@ -95,7 +112,12 @@ TWIG;
         ]);
     }
 
-    public function getName(): string
+    public function getParentType(): string
+    {
+        return self::class;
+    }
+
+    public function getParentName(): string
     {
         return __("Short answer");
     }

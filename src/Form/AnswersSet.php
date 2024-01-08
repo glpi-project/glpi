@@ -38,7 +38,7 @@ namespace Glpi\Form;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\QuestionType\QuestionTypesLoader;
+use Glpi\Form\AnswersHandler\AnswersHandler;
 use Search;
 use User;
 
@@ -150,12 +150,14 @@ class AnswersSet extends CommonDBChild
         $this->getFromDB($id);
         $this->initForm($id, $options);
 
+        $answer_handler = new AnswersHandler();
+
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/display_answers.html.twig', [
             'item'           => $this,
+            'answers'        => $answer_handler->prepareAnswersForDisplay($this->fields['answers']),
             'params'         => $options,
-            'question_types' => QuestionTypesLoader::getQuestionTypes(),
         ]);
         return true;
     }

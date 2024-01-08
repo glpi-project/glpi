@@ -107,22 +107,44 @@
             data-question-extra-details
         >
             <select
-                name="{{ input_prefix is not null ? input_prefix ~ '[type]' : 'type' }}"
-                class="form-select form-select-sm"
+                {# Note: _parent_type is not used by the backend as we only save the final type #}
+                name="{{ input_prefix is not null ? input_prefix ~ '[_parent_type]' : '_parent_type' }}"
+                class="form-select form-select-sm me-2"
                 aria-label="{{ __('Question type') }}"
                 style="width: auto;"
                 data-question-type-selector
             >
-                {% for possible_question_type in question_types %}
+                {% for parent_question_type_key, parent_question_type_label in question_types.getParentTypes() %}
                     {# TODO: add icon, use select2 ? #}
-                    <option
-                        value="{{ get_class(possible_question_type) }}"
-                        {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
+                     <option
+                        value="{{ parent_question_type_key }}"
+                        {{ parent_question_type_key == question_type.getParentType() ? 'selected' : '' }}
                     >
-                        {{ possible_question_type.getName() }}
+                        {{ parent_question_type_label }}
                     </option>
                 {% endfor %}
             </select>
+
+            {# If question type has a real parent, display all its siblings in a second dropdown #}
+            {% if question_type.getParentType() != get_class(question_type) %}
+                <select
+                    name="{{ input_prefix is not null ? input_prefix ~ '[type]' : 'type' }}"
+                    class="form-select form-select-sm"
+                    aria-label="{{ __('Question sub type') }}"
+                    style="width: auto;"
+                    data-question-subtype-selector
+                >
+                    {% for possible_question_type in question_types.getChilden(question_type.getParentType()) %}
+                        {# TODO: add icon, use select2 ? #}
+                        <option
+                            value="{{ get_class(possible_question_type) }}"
+                            {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
+                        >
+                            {{ possible_question_type.getName() }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif %}
 
             <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
                 <input type="hidden" value="0" name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}">

@@ -88,7 +88,6 @@ $migration->createTable(
         `forms_sections_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         `name` varchar(255) NOT NULL DEFAULT '',
         `type` varchar(255) NOT NULL DEFAULT '',
-        `subtype` varchar(255) NOT NULL DEFAULT '',
         `is_mandatory` tinyint NOT NULL DEFAULT '0',
         `rank` int NOT NULL DEFAULT '0',
         `description` longtext,
@@ -134,4 +133,32 @@ if (GLPI_VERSION == "10.1.0-dev") {
     $migration->changeField("glpi_forms_forms", "header", "header", "longtext");
     $migration->changeField("glpi_forms_sections", "header", "header", "longtext");
     $migration->changeField("glpi_forms_questions", "header", "header", "longtext");
+
+    // Deletion of subtype, use final type in `type` field instead
+    if ($DB->fieldExists("glpi_forms_questions", "subtype")) {
+        $migration->dropField("glpi_forms_questions", "subtype");
+
+        // Set a concrete type instead the "parent type" that was used before this migration
+        $questions = $DB->request([
+            'SELECT' => ['id', 'type'],
+            'FROM' => 'glpi_forms_questions',
+        ]);
+        foreach ($questions as $question) {
+            if ($question['type'] == "Glpi\Form\QuestionType\QuestionTypeShortAnswer") {
+                // Default subtype for short answers
+                $new_type = "Glpi\Form\QuestionType\QuestionTypeShortAnswerText";
+            } elseif ($question['type'] == "Glpi\Form\QuestionType\QuestionTypeLongAnswer") {
+                // Long answers have no sub types, use parent
+                $new_type = $question['type'];
+            } else {
+                die("Unexpected question type: " . $question['type']);
+            }
+
+            $migration->addPostQuery($DB->buildUpdate(
+                'glpi_forms_questions',
+                ['type' => $new_type],
+                ['id' => $question['id']]
+            ));
+        }
+    }
 }

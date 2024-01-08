@@ -39,7 +39,7 @@ use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswer;
+use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesLoader;
 use Log;
 
@@ -99,8 +99,8 @@ class Form extends CommonDBTM
         $twig->display('pages/admin/form/form_editor.html.twig', [
             'item'                  => $this,
             'params'                => $options,
-            'question_types'        => QuestionTypesLoader::getQuestionTypes(),
-            'default_question_type' => QuestionTypeShortAnswer::class,
+            'question_types'        => new QuestionTypesLoader(),
+            'default_question_type' => QuestionTypeShortAnswerText::class,
         ]);
         return true;
     }

@@ -120,4 +120,15 @@ TWIG;
     {
         return __("Long answer");
     }
+
+    public function getParentType(): string
+    {
+        return self::class;
+    }
+
+    public function getParentName(): string
+    {
+        // No parent
+        return $this->getName();
+    }
 }

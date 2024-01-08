@@ -49,17 +49,20 @@
 
             {% for section in form.getSections() %}
                 {% for question in section.getQuestions() %}
-                    {% set question_type = question_types[question.fields.type] %}
-                    <div class="mb-3">
-                        <label class="form-label">
-                            {{ question.fields.name }}
-                            {% if question.fields.is_mandatory %}
-                                <span class="text-danger">*</span>
-                            {% endif %}
-                        </label>
-                        {{ question_type.renderEndUserTemplate(question)|raw }}
-                        <div class="form-text">{{ question.fields.description|safe_html }}</div>
-                    </div>
+                    {% set question_type = question.getQuestionType() %}
+                    {# Skip unknown types (may be a disabled plugin) #}
+                    {% if question_type is not null %}
+                        <div class="mb-3">
+                            <label class="form-label">
+                                {{ question.fields.name }}
+                                {% if question.fields.is_mandatory %}
+                                    <span class="text-danger">*</span>
+                                {% endif %}
+                            </label>
+                            {{ question_type.renderEndUserTemplate(question)|raw }}
+                            <div class="form-text">{{ question.fields.description|safe_html }}</div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
 

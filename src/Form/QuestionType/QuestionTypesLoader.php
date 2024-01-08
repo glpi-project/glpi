@@ -38,19 +38,112 @@ namespace Glpi\Form\QuestionType;
 /**
  * Helper class to load all available question types
  */
-class QuestionTypesLoader
+final class QuestionTypesLoader
 {
     /**
-     * Return an array of question types instance, using their classes name as
-     * keys
+     * Internal buffer of computed question types
+     * See computeQuestionTypes for the format
+     *
+     * @var array
+     */
+    protected array $types;
+
+    public function __construct()
+    {
+        $this->types = self::computeQuestionTypes();
+    }
+
+    /**
+     * Get all the available question types
      *
      * @return QuestionTypeInterface[]
      */
-    public static function getQuestionTypes(): array
+    public function getFinalTypes(): array
     {
-        return [
-            QuestionTypeShortAnswer::class => new QuestionTypeShortAnswer(),
-            QuestionTypeLongAnswer::class => new QuestionTypeLongAnswer(),
+        $types = [];
+
+        foreach ($this->types as $parent_type_data) {
+            array_push($types, ...$parent_type_data['subtypes']);
+        }
+
+        return $types;
+    }
+
+    /**
+     * Get all the available parent questions types
+     *
+     * @return array
+     */
+    public function getParentTypes(): array
+    {
+        $types = [];
+
+        foreach ($this->types as $parent_type_class => $parent_type_data) {
+            $types[$parent_type_class] = $parent_type_data['label'];
+        }
+
+        return $types;
+    }
+
+    /**
+     * Get available types for a given parent category
+     *
+     * @return QuestionTypeInterface[]
+     */
+    public function getChilden(string $parent_type): array
+    {
+        return $this->types[$parent_type]['subtypes'];
+    }
+
+    /**
+     * Return an array of question types instance using the following format:
+     * [
+     *     'parent_type' => [
+     *         'label' => 'Parent type label',
+     *         'subtypes' => QuestionTypeInterface[],
+     *     ],
+     * ]
+     *
+     * @return array
+     */
+    protected function computeQuestionTypes(): array
+    {
+        $types = [];
+        $raw_types = [
+            // Short answer
+            new QuestionTypeShortAnswerText(),
+            new QuestionTypeShortAnswerEmail(),
+            new QuestionTypeShortAnswerNumber(),
+
+            // long answer
+            new QuestionTypeLongAnswer(),
         ];
+
+        // Build types array
+        foreach ($raw_types as $type) {
+            if (!($type instanceof QuestionTypeInterface)) {
+                throw new \Exception(
+                    sprintf(
+                        "Question type '%s' must implement '%s'",
+                        get_class($type),
+                        QuestionTypeInterface::class
+                    )
+                );
+            }
+
+
+            if (!isset($types[$type->getParentType()])) {
+                // First type encountering this parent type, init values
+                $types[$type->getParentType()] = [
+                    'label'    => $type->getParentName(),
+                    'subtypes' => [$type],
+                ];
+            } else {
+                // Parent type is already initalized, append the new value
+                $types[$type->getParentType()]['subtypes'][] = $type;
+            }
+        }
+
+        return $types;
     }
 }

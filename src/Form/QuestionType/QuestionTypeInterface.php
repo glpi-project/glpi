@@ -85,4 +85,20 @@ interface QuestionTypeInterface
      * @return string
      */
     public function getName(): string;
+
+
+    /**
+     * Get parent question type.
+     * If the type has no parent, it must return ifself.
+     *
+     * @return string
+     */
+    public function getParentType(): string;
+
+    /**
+     * Get parent question type name.
+     *
+     * @return string
+     */
+    public function getParentName(): string;
 }

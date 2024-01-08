@@ -33,30 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Renderer;
+namespace Glpi\Form\QuestionType;
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
-
-/**
- * Utility class used to easily render a form
- * TODO: could be a singleton to hightlight its role as a service and support
- * DI in the future
- */
-final class FormRenderer
+class QuestionTypeShortAnswerEmail extends QuestionTypeShortAnswer
 {
-    /**
-     * Render a form using the `render_form.html.twig` template
-     *
-     * @param Form $form Form to be displayed
-     *
-     * @return string
-     */
-    public function render(Form $form): string
+    public function getInputType(): string
     {
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/render_form.html.twig', [
-            'form' => $form,
-        ]);
+        return 'email';
+    }
+
+    public function getAdministrationTemplatePlaceholder(): string
+    {
+        return __('Email');
+    }
+
+    public function getName(): string
+    {
+        return __("Email");
     }
 }
