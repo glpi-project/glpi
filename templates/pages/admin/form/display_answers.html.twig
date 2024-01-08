@@ -55,14 +55,13 @@
             </div>
         </div>
 
-        {% for answer in item.fields.answers %}
+        {% for answer in answers %}
             {% if answer.value is not empty %}
                 <div class="mb-3">
                     <label class="form-label">
                         {{ answer.label }}
                     </label>
-                    {% set question_type = question_types[answer.type] %}
-                    {{ question_type.renderAnswerTemplate(answer.value)|raw }}
+                    {{ answer.type.renderAnswerTemplate(answer.value)|raw }}
                 </div>
             {% endif %}
         {% endfor %}

@@ -42,6 +42,8 @@ use Glpi\Form\Question;
  */
 interface QuestionTypeInterface
 {
+    public function __construct();
+
     /**
      * Render the administration template for the given question.
      * This template is used on the form editor page.
@@ -78,4 +80,11 @@ interface QuestionTypeInterface
      * @return string
      */
     public function getName(): string;
+
+    /**
+     * Get the category of this question type.
+     *
+     * @return QuestionTypesCategory
+     */
+    public function getCategory(): QuestionTypesCategory;
 }

@@ -31,9 +31,9 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var question_types Glpi\Form\QuestionType\QuestionTypeInterface[] #}
-{# @var question_type Glpi\Form\QuestionType\QuestionTypeInterface #}
-{# @var question      Glpi\Form\Question|null #}
+{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypeInterface[] #}
+{# @var question_type          Glpi\Form\QuestionType\QuestionTypeInterface #}
+{# @var question               Glpi\Form\Question|null #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -100,14 +100,35 @@
             data-glpi-form-editor-question-extra-details
         >
             <select
-                name="type"
-                class="form-select form-select-sm"
+                {# Note: _type_category is not saved by the backend as we can guess it from the type itself #}
+                name="_type_category"
+                class="form-select form-select-sm me-2"
                 aria-label="{{ __('Question type') }}"
+                style="width: auto;"
+                data-glpi-form-editor-on-change="change-question-type-category"
+            >
+
+                {% for category in question_types_manager.getCategories() %}
+                    {# TODO: add icon, use select2 ? #}
+                     <option
+                        value="{{ category.value }}"
+                        {{ category.value == question_type.getCategory().value ? 'selected' : '' }}
+                    >
+                        {{ category.getLabel() }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
+            <select
+                name="type"
+                class="form-select form-select-sm {{ types|length == 1 ? 'd-none' : '' }}"
+                aria-label="{{ __('Question sub type') }}"
                 style="width: auto;"
                 data-glpi-form-editor-on-change="change-question-type"
                 data-glpi-form-editor-question-type-selector
             >
-                {% for possible_question_type in question_types %}
+                {% for possible_question_type in types %}
                     {# TODO: add icon, use select2 ? #}
                     <option
                         value="{{ get_class(possible_question_type) }}"

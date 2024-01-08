@@ -31,6 +31,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{# @var item   Glpi\Form\Form #}
+{# @var params array #}
+{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
+
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set base_field_options = {
@@ -130,9 +134,9 @@
                             {% for question in section.getQuestions() %}
                                 {# Render admin template for the given question type #}
                                 {{ include('pages/admin/form/form_question.html.twig', {
-                                    'question_types': question_types,
-                                    'question_type' : question_types[question.fields.type],
-                                    'question'      : question,
+                                    'question_types_manager': question_types_manager,
+                                    'question_type'         : question.getQuestionType(),
+                                    'question'              : question,
                                 }, with_context = false) }}
                             {% endfor %}
                         {% endfor %}
@@ -283,18 +287,29 @@
     <div data-glpi-form-editor-templates class="d-none">
 
         {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-        <div id="question_type_model_container" class="d-none">
-            {% for key, question_type in question_types %}
-                <div data-glpi-form-editor-question-template="{{ key }}">
-                    {# Render admin template for the given question type #}
-                    {{ include('pages/admin/form/form_question.html.twig', {
-                        'question_types': question_types,
-                        'question_type': question_type,
-                        'question': null,
-                    }, with_context = false) }}
-                </div>
+        {% for key, question_type in question_types_manager.getQuestionTypes() %}
+            <div data-glpi-form-editor-question-template="{{ key }}">
+                {# Render admin template for the given question type #}
+                {{ include('pages/admin/form/form_question.html.twig', {
+                    'question_types_manager' : question_types_manager,
+                    'question_type'          : question_type,
+                    'question'               : null,
+                    'section'                : null,
+                }, with_context = false) }}
+            </div>
+        {% endfor %}
+
+        {# Load all possible question types values #}
+        <select data-glpi-form-editor-question-types-values>
+            {% for key, question_type in question_types_manager.getQuestionTypes() %}
+                <option
+                    data-glpi-form-editor-question-type="{{ question_type.getCategory().value }}"
+                    value="{{ key }}"
+                >
+                    {{ question_type.getName() }}
+                </option>
             {% endfor %}
-        </div>
+        </select>
 
     </div>
 {% endif %}
@@ -315,7 +330,7 @@
     new GlpiFormEditorController(
         "[data-glpi-form-editor-container]",
         {{ item.fields.is_draft ? "true" : "false" }},
-        "{{ default_question_type|escape('js') }}",
+        "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
         "[data-glpi-form-editor-templates]"
     );
 </script>

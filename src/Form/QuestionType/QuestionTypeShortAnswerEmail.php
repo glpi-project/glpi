@@ -33,30 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Renderer;
+namespace Glpi\Form\QuestionType;
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
+use Override;
+use Session;
 
-/**
- * Utility class used to easily render a form
- * TODO: could be a singleton to hightlight its role as a service and support
- * DI in the future
- */
-final class FormRenderer
+class QuestionTypeShortAnswerEmail extends QuestionTypeShortAnswer
 {
-    /**
-     * Render the given form.
-     *
-     * @param Form $form
-     *
-     * @return string
-     */
-    public function render(Form $form): string
+    #[Override]
+    public function getInputType(): string
     {
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/form_renderer.html.twig', [
-            'form' => $form,
-        ]);
+        return 'email';
+    }
+
+    #[Override]
+    public function getName(): string
+    {
+        return _n('Email', 'Emails', Session::getPluralNumber());
     }
 }

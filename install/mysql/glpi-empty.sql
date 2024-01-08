@@ -9511,7 +9511,6 @@ CREATE TABLE `glpi_forms_questions` (
     `forms_sections_id` int unsigned NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `type` varchar(255) NOT NULL DEFAULT '',
-    `subtype` varchar(255) NOT NULL DEFAULT '',
     `is_mandatory` tinyint NOT NULL DEFAULT '0',
     `rank` int NOT NULL DEFAULT '0',
     `description` longtext,
