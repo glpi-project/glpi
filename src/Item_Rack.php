@@ -595,9 +595,8 @@ JAVASCRIPT;
         foreach ($iterator as $row) {
             if ($row['is_reserved']) {
                 $used_reserved[$row['itemtype']][] = $row['items_id'];
-            } else {
-                $used[$row['itemtype']][] = $row['items_id'];
             }
+            $used[$row['itemtype']][] = $row['items_id'];
         }
         // find used pdu (not racked)
         foreach (PDU_Rack::getUsed(['pdus_id']) as $used_pdu) {
