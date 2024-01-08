@@ -1484,15 +1484,21 @@ final class DbUtils
             'ORDER'  => 'name'
         ]);
 
+        $grouped = [];
         foreach ($iterator as $row) {
-            $id_found[$row['id']]['parent'] = $row[$parentIDfield];
-            $id_found[$row['id']]['name']   = $row['name'];
+            $grouped[$row[$parentIDfield]][] = [
+                'id'   => $row['id'],
+                'name' => $row['name']
+            ];
         }
 
+        \Glpi\Debug\Profiler::getInstance()->start('constructTreeFromList');
+        $constructed = $this->constructTreeFromList($grouped, $IDf, true);
+        \Glpi\Debug\Profiler::getInstance()->stop('constructTreeFromList');
         return [
             $IDf => [
                 'name' => Dropdown::getDropdownName($table, $IDf),
-                'tree' => $this->constructTreeFromList($id_found, $IDf),
+                'tree' => $constructed,
             ],
         ];
     }
@@ -1502,20 +1508,35 @@ final class DbUtils
      *
      * @param array   $list the list
      * @param integer $root root of the tree
+     * @param boolean $grouped Is the list already grouped by parent ID?
      *
      * @return array list of items in the tree
      */
-    public function constructTreeFromList($list, $root)
+    public function constructTreeFromList($list, $root, bool $grouped = false)
     {
-
         $tree = [];
-        foreach ($list as $ID => $data) {
-            if ($data['parent'] == $root) {
-                unset($list[$ID]);
-                $tree[$ID]['name'] = $data['name'];
-                $tree[$ID]['tree'] = $this->constructTreeFromList($list, $ID);
+        if (!$grouped) {
+            foreach ($list as $ID => $data) {
+                if ($data['parent'] == $root) {
+                    unset($list[$ID]);
+                    $tree[$ID]['name'] = $data['name'];
+                    $tree[$ID]['tree'] = [];
+                }
+            }
+            if (count($list)) {
+                foreach ($tree as $id => $data) {
+                    $tree[$id]['tree'] = $this->constructTreeFromList($list, $id);
+                }
+            }
+        } else {
+            if (array_key_exists($root, $list)) {
+                foreach ($list[$root] as $data) {
+                    $tree[$data['id']]['name'] = $data['name'];
+                    $tree[$data['id']]['tree'] = $this->constructTreeFromList($list, $data['id'], true);
+                }
             }
         }
+
         return $tree;
     }
 
