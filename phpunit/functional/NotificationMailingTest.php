@@ -222,6 +222,14 @@ class NotificationMailingTest extends DbTestCase
             'event'                       => 'passwordforget',
             'send_immediately'            => true
         ]))->isTrue();
+        if (count($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
+            foreach ($_SESSION['MESSAGE_AFTER_REDIRECT'] as $k => $message) {
+                if (str_contains($message, 'Unable to write bytes on the wire')) {
+                    // This failure is acceptable in test environment
+                    unset($_SESSION['MESSAGE_AFTER_REDIRECT'][$k]);
+                }
+            }
+        }
 
         // the email should only be in the queue because we cannot send email in tests
         // to identify that it was attempted to be sent immediately, we check the sent_try field
