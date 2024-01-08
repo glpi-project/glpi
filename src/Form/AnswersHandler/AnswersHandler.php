@@ -37,6 +37,7 @@ namespace Glpi\Form\AnswersHandler;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Session;
 
 /**
@@ -99,5 +100,30 @@ class AnswersHandler
         ]);
 
         return $id !== false ? $answers_set : false;
+    }
+
+    /**
+     * Insert additionnal data into the given raw answers array to be used when rendering
+     *
+     * @param array $answers The raw answers array
+     *
+     * @return array The formatted answers array
+     */
+    public function prepareAnswersForDisplay(array $answers): array
+    {
+        $computed_answers = [];
+
+        // Insert types objects which will be used to render the answers
+        foreach ($answers as $answer) {
+            $type = $answer['type'] ?? "";
+            if (!is_a($answer['type'], QuestionTypeInterface::class, true)) {
+                continue;
+            }
+
+            $answer['type'] = new $type();
+            $computed_answers[] = $answer;
+        }
+
+        return $computed_answers;
     }
 }

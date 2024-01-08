@@ -36,22 +36,29 @@
 namespace Glpi\Form\QuestionType;
 
 /**
- * Helper class to load all available question types
- * TODO: singleton
+ * List of valid question types categories
  */
-class QuestionTypesLoader
+enum QuestionTypesCategory: string
 {
     /**
-     * Return an array of question types instance, using their classes name as
-     * keys
-     *
-     * @return QuestionTypeInterface[]
+     * Questions that expect short single line answers (text, number, ...)
      */
-    public function getQuestionTypes(): array
+    case SHORT_ANSWER = "short_answer";
+
+    /**
+     * Question that expect long detailled answers (textarea)
+     */
+    case LONG_ANSWER = "long_answer";
+
+    /**
+     * Get category label
+     * @return string
+     */
+    public function getLabel(): string
     {
-        return [
-            QuestionTypeShortAnswer::class => new QuestionTypeShortAnswer(),
-            QuestionTypeLongAnswer::class => new QuestionTypeLongAnswer(),
-        ];
+        return match ($this) {
+            self::SHORT_ANSWER => __("Short answer"),
+            self::LONG_ANSWER  => __("Long answer"),
+        };
     }
 }

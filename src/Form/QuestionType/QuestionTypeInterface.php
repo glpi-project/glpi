@@ -78,4 +78,11 @@ interface QuestionTypeInterface
      * @return string
      */
     public function getName(): string;
+
+    /**
+     * Get the category of this question type.
+     *
+     * @return QuestionTypesCategory
+     */
+    public function getCategory(): QuestionTypesCategory;
 }

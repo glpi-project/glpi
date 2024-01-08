@@ -212,6 +212,14 @@ class GlpiFormEditorController
                 this.#computeDynamicInputSize(target[0]);
                 break;
 
+            // Change the type category of the target question
+            case "change-question-type-category":
+                this.#changeQuestionTypeCategory(
+                    target.closest("[data-glpi-form-editor-question]"),
+                    target.val()
+                );
+                break;
+
             // Change the type of the target question
             case "change-question-type":
                 this.#changeQuestionType(
@@ -604,9 +612,42 @@ class GlpiFormEditorController
     }
 
     /**
+     * Change the type category of the given question.
+     * @param {jQuery} question  Question to update
+     * @param {string} category  New category
+     */
+    #changeQuestionTypeCategory(question, category) {
+        // Find types available in the new category
+        const e_category = $.escapeSelector(category);
+        const new_options = $(this.#templates)
+            .find(`option[data-glpi-form-editor-question-type=${e_category}]`);
+
+        // Remove current types options
+        const types_select = question
+            .find("[data-glpi-form-editor-question-type-selector]");
+        types_select.children().remove();
+
+        // Copy the new types options into the dropdown
+        this.#copy_template(
+            new_options,
+            types_select,
+        );
+
+        // Hide type selector if only one type is available
+        if (new_options.length <= 1) {
+            types_select.addClass("d-none");
+        } else {
+            types_select.removeClass("d-none");
+        }
+
+        // Trigger type change
+        types_select.trigger("change");
+    }
+
+    /**
      * Change the type of the given question.
      * @param {jQuery} question Question to update
-     * @param {string} type     New parent type
+     * @param {string} type     New type
      */
     #changeQuestionType(question, type) {
         // Clear the specific form of the question

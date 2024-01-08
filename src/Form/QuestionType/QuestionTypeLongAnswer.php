@@ -37,12 +37,14 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
+use Override;
 
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
 class QuestionTypeLongAnswer implements QuestionTypeInterface
 {
+    #[Override]
     public function renderAdminstrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
@@ -72,6 +74,7 @@ TWIG;
         ]);
     }
 
+    #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
         // TODO: handle required
@@ -100,6 +103,7 @@ TWIG;
         ]);
     }
 
+    #[Override]
     public function renderAnswerTemplate($answer): string
     {
         $template = <<<TWIG
@@ -112,8 +116,15 @@ TWIG;
         ]);
     }
 
+    #[Override]
     public function getName(): string
     {
         return __("Long answer");
+    }
+
+    #[Override]
+    public function getCategory(): QuestionTypesCategory
+    {
+        return QuestionTypesCategory::LONG_ANSWER;
     }
 }

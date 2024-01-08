@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\Form\QuestionType\QuestionTypeInterface;
 
 /**
  * Question of a given helpdesk form's section
@@ -44,4 +45,20 @@ class Question extends CommonDBChild
 {
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
+
+    /**
+     * Get type object for the current object.
+     *
+     * @return QuestionTypeInterface|null
+     */
+    public function getQuestionType(): ?QuestionTypeInterface
+    {
+        $type = $this->fields['type'] ?? "";
+
+        if (!is_a($type, QuestionTypeInterface::class, true)) {
+            return null;
+        }
+
+        return new $type();
+    }
 }
