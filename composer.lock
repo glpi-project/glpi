@@ -638,16 +638,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v6.7.0",
+            "version": "v6.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "71278f20b0a623389beefe87a641d03948a38870"
+                "reference": "a49db6f0a5033aef5143295342f1c95521b075ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/71278f20b0a623389beefe87a641d03948a38870",
-                "reference": "71278f20b0a623389beefe87a641d03948a38870",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/a49db6f0a5033aef5143295342f1c95521b075ff",
+                "reference": "a49db6f0a5033aef5143295342f1c95521b075ff",
                 "shasum": ""
             },
             "require": {
@@ -695,9 +695,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/v6.7.0"
+                "source": "https://github.com/firebase/php-jwt/tree/v6.10.0"
             },
-            "time": "2023-06-14T15:29:26+00:00"
+            "time": "2023-12-01T16:26:39+00:00"
         },
         {
             "name": "glpi-project/inventory_format",
@@ -6425,22 +6425,22 @@
         },
         {
             "name": "thenetworg/oauth2-azure",
-            "version": "v2.2.1",
+            "version": "v2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/TheNetworg/oauth2-azure.git",
-                "reference": "e092f6fca469f8109aab4694e9e2dee98717af17"
+                "reference": "be204a5135f016470a9c33e82ab48785bbc11af2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/TheNetworg/oauth2-azure/zipball/e092f6fca469f8109aab4694e9e2dee98717af17",
-                "reference": "e092f6fca469f8109aab4694e9e2dee98717af17",
+                "url": "https://api.github.com/repos/TheNetworg/oauth2-azure/zipball/be204a5135f016470a9c33e82ab48785bbc11af2",
+                "reference": "be204a5135f016470a9c33e82ab48785bbc11af2",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "ext-openssl": "*",
-                "firebase/php-jwt": "~3.0||~4.0||~5.0||~6.0 < 6.8",
+                "firebase/php-jwt": "~3.0||~4.0||~5.0||~6.0",
                 "league/oauth2-client": "~2.0",
                 "php": "^7.1|^8.0"
             },
@@ -6479,9 +6479,9 @@
             ],
             "support": {
                 "issues": "https://github.com/TheNetworg/oauth2-azure/issues",
-                "source": "https://github.com/TheNetworg/oauth2-azure/tree/v2.2.1"
+                "source": "https://github.com/TheNetworg/oauth2-azure/tree/v2.2.2"
             },
-            "time": "2023-08-01T09:16:29+00:00"
+            "time": "2023-12-19T12:10:48+00:00"
         },
         {
             "name": "twig/markdown-extra",
