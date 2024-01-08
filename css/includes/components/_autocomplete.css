@@ -41,8 +41,8 @@
 
 .aa-Panel {
    position: absolute; z-index: 1000;
-   background-color: var(--input-bg);
-   color: var(--input-color);
+   background-color: var(--tblr-bg-forms);
+   color: var(--tblr-body-color);
    max-height: 200px;
    overflow: auto;
 }
@@ -58,6 +58,6 @@
 }
 
 .aa-Autocomplete .aa-InputWrapper input.aa-Input {
-   color: var(--input-color) !important;
-   background-color: var(--input-bg) !important;
+   color: var(--tblr-body-color) !important;
+   background-color: var(--tblr-bg-forms) !important;
 }

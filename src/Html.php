@@ -1272,6 +1272,7 @@ HTML;
         } else {
             $theme_path = $theme->getPath();
         }
+        $tpl_vars['css_files'][] = ['path' => 'css/tabler.scss'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
         if ($theme->isCustomTheme()) {
             $tpl_vars['css_files'][] = ['path' => $theme_path];
@@ -3835,6 +3836,7 @@ JS;
        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
+            'css/tabler.scss',
             'css/glpi.scss',
             'css/core_palettes.scss',
         ];
@@ -3845,6 +3847,7 @@ JS;
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
+        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3887,7 +3890,6 @@ JS;
         }
 
         $mandatory_field_msg = json_encode(__('The %s field is mandatory'));
-        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss('css/standalone/tinymce_skin.scss', ['force_no_version' => true]));
 
         // init tinymce
         $js = <<<JS
@@ -3905,7 +3907,7 @@ JS;
                plugins: {$pluginsjs},
 
                // Appearance
-               skin_url: '{$skin_url}',
+               skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
 
@@ -6844,18 +6846,20 @@ HTML;
        // Enable imports of ".scss" files from "css/lib", when path starts with "~".
         $scss->addImportPath(
             function ($path) {
-                $file_chunks = [];
                 //Force bootstrap imports to be prefixed by ~
                 if (str_starts_with($path, 'bootstrap/scss')) {
                     $path = '~' . $path;
                 }
-                if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
+
+                $file_chunks = [];
+                if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+?)(?:(\.(?<extension>s?css))?)$/', $path, $file_chunks)) {
                     return null;
                 }
 
+                $extension = $file_chunks['extension'] ?? 'scss';
                 $possible_filenames = [
-                    sprintf('%s/css/lib/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
-                    sprintf('%s/css/lib/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+                    sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
+                    sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
                 ];
                 foreach ($possible_filenames as $filename) {
                     if (file_exists($filename)) {

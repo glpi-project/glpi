@@ -52,8 +52,14 @@
     --glpi-tabs-active-bg: var(--tblr-bg-surface);
     --glpi-tabs-active-fg: var(--tblr-body-color);
     --glpi-tabs-active-border-color: var(--glpi-tabs-border-color);
-    --glpi-logo: "../pics/logos/logo-GLPI-100-white.png";
-    --glpi-logo-reduced: "../pics/logos/logo-G-100-white.png";
+    --glpi-logo-light: url("../pics/logos/logo-GLPI-100-white.png");
+    --glpi-logo-light-reduced: url("../pics/logos/logo-G-100-white.png");
+    --glpi-logo-dark: url("../pics/logos/logo-GLPI-100-black.png");
+    --glpi-logo-dark-reduced: url("../pics/logos/logo-G-100-black.png");
+    --glpi-logo-dark-login: url("../pics/logos/logo-GLPI-250-black.png");
+    --glpi-logo-light-login: url("../pics/logos/logo-GLPI-250-white.png");
+    --glpi-logo: var(--glpi-logo-light);
+    --glpi-logo-reduced: var(--glpi-logo-light-reduced);
     --glpi-mainmenu-bg: #2f3f64;
     --glpi-mainmenu-fg: #f4f6fa;
     --glpi-mainmenu-active-bg: color-mix(in srgb, var(--glpi-mainmenu-bg), white 45%);
@@ -93,6 +99,7 @@
     --glpi-timeline-log-bg: #cacaca21;
     --glpi-timeline-badge-bg: rgba(97, 97, 97, 15%);
     --glpi-timeline-badge-fg: rgba(43, 43, 43, 80%);
+    --glpi-hover-bg: rgba(var(--tblr-secondary-rgb), .08);
     --tblr-gray-100: var(--tblr-light);
     --tblr-gray-200: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 4%);
     --tblr-gray-300: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 6%);
@@ -103,6 +110,23 @@
     --tblr-gray-800: color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 84%);
     --tblr-gray-900: var(--tblr-dark);
     --tblr-gray-50: var(--tblr-gray-200);
+    --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
+    --glpi-zindex-dropdown: $zindex-dropdown;
+    --glpi-zindex-sticky: $zindex-sticky;
+    --glpi-zindex-fixed: $zindex-fixed;
+    --glpi-zindex-offcanvas-backdrop: $zindex-offcanvas-backdrop;
+    --glpi-zindex-offcanvas: $zindex-offcanvas;
+    --glpi-zindex-modal-backdrop: $zindex-modal-backdrop;
+    --glpi-zindex-modal: $zindex-modal;
+    --glpi-zindex-popover: $zindex-popover;
+    --glpi-zindex-tooltip: $zindex-tooltip;
+    --glpi-zindex-toast: $zindex-toast;
+}
+
+@media(prefers-reduced-motion) {
+    :root {
+        --animate-duration: 0s !important; // No prefix because it is overrides animate.js default
+    }
 }
 
 body.iframed,
@@ -113,7 +137,7 @@ body.in_modal {
 
 .page {
     .glpi-logo {
-        background: url($logo) no-repeat;
+        background: var(--glpi-logo) no-repeat;
         height: 55px;
         width: 100px;
     }
@@ -135,7 +159,7 @@ body.in_modal {
 .breadcrumb-alternate {
     a {
         &:hover {
-            text-decoration: $link-hover-decoration;
+            text-decoration: var(--tblr-link-hover-decoration);
         }
     }
 }
@@ -267,7 +291,7 @@ body.in_modal {
 
 .page-anonymous {
     .glpi-logo {
-        --logo: url(#{$logo-dark-login});
+        --logo: var(--glpi-logo-dark-login);
 
         content: var(--logo);
         width: 200px;
@@ -359,12 +383,12 @@ table {
 
 .qtip-bootstrap,
 .popover .popover-body {
-    background-color: var(--contrast-light);
-    color: var(--dark);
+    background-color: var(--tblr-bg-surface);
+    color: var(--tblr-dark);
 }
 
 .popover .popover-arrow::after {
-    border-top-color: var(--contrast-light);
+    border-top-color: var(--tblr-bg-surface);
 }
 
 kbd {

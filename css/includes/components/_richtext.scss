@@ -30,13 +30,14 @@
  *
  * ---------------------------------------------------------------------
  */
+:root:not([glpi-theme-dark="1"]) {
+    body.mce-content-body {
+        background: transparent;
+    }
+}
 
 body.mce-content-body {
     margin: 15px 10px;
-
-    @if not $is-dark {
-        background: transparent;
-    }
 
     [data-user-mention="true"] {
         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
@@ -47,12 +48,9 @@ body.mce-content-body {
     border-top: transparent;
 }
 
-@import "~bootstrap/scss/mixins/border-radius";
-
 .tox.tox-tinymce {
     border: var(--tblr-border-width) solid var(--tblr-border-color);
-
-    @include border-radius(var(--tblr-border-radius), 0);
+    border-radius: var(--tblr-border-radius);
 }
 
 .rich_text_container {

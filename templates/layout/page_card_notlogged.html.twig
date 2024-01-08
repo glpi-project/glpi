@@ -35,8 +35,9 @@
 {% if css_files is not defined %}
    {% set css_files = [
        {'path': 'public/lib/base.css'},
+       {'path': 'css/tabler.scss'},
        {'path': 'css/glpi.scss'},
-       {'path': 'css/palettes/core_palettes.scss'}
+       {'path': 'css/core_palettes.scss'}
    ] %}
    {# TODO : load hight contrast css #}
 {% endif %}

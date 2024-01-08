@@ -170,7 +170,7 @@
             width: calc(100% + var(--tblr-gutter-x, 1.5rem) * 2);
 
             .glpi-logo {
-                background: url($logo_reduced) no-repeat;
+                background: var(--glpi-logo-reduced) no-repeat;
                 background-size: contain;
                 width: 40px;
                 height: 40px;
@@ -200,7 +200,7 @@
                 }
 
                 .dropdown-menu {
-                    box-shadow: $box-shadow-card-hover;
+                    box-shadow: color-mix(in srgb, var(--tblr-body-color), transparent 84%) 0 2px 16px 0;
 
                     &.show {
                         display: none;
@@ -296,7 +296,7 @@
 
     // fix z-index issues on responsive menu
     .sidebar {
-        z-index: $zindex-fixed;
+        z-index: var(--glpi-zindex-fixed);
 
         & ~ .navbar {
             z-index: inherit;

@@ -395,7 +395,7 @@ export default class SearchInput {
         } else if (token.exclusion) {
             tag_color_override = '#80000080';
         }
-        const dark_mode = $('html').css('--is-dark').trim() === 'true';
+        const dark_mode = document.documentElement.getAttribute('data-glpi-theme-dark') === '1';
         const text_color = $(document.body).css('color');
         let style_overrides = '';
         if (!token.tag) {
