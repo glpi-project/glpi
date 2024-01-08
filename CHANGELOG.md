@@ -21,6 +21,7 @@ The present file will list all changes made to the project; according to the
 #### Changes
 
 #### Deprecated
+- `Entity::cleanEntitySelectorCache` no longer has any effect as the entity selector is no longer cached as a unique entry
 
 #### Removed
 
