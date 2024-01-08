@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Event;
+
 /**
  * Profile class
  **/
@@ -945,6 +947,10 @@ class Profile extends CommonDBTM
                             $fn_get_rights(__CLASS__, 'central', ['scope' => 'global']),
                             $fn_get_rights(QueuedNotification::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
+                            $fn_get_rights(Event::class, 'central', [
+                                'scope' => 'global',
+                                'label' => __('System logs')
+                            ]),
                         ],
                         'inventory' => [
                             $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', [
@@ -3016,11 +3022,26 @@ class Profile extends CommonDBTM
             'name'               => _n('Log', 'Logs', Session::getPluralNumber()),
             'datatype'           => 'right',
             'rightclass'         => 'Log',
-            'rightname'          => 'logs',
+            'rightname'          => Log::$rightname,
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'logs']
+                'condition'          => ['NEWTABLE.name' => Log::$rightname]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '62',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => __('System logs'),
+            'datatype'           => 'right',
+            'rightclass'         => 'Log',
+            'rightname'          => Event::$rightname,
+            'nowrite'            => true,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Event::$rightname]
             ]
         ];
 

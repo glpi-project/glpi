@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2015-2023 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-include('../inc/includes.php');
-
-Session::checkRight(Event::$rightname, READ);
-
-Html::header(Event::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "admin", "Glpi\\Event");
-
-Event::showList($_SERVER['PHP_SELF'], $_GET['order'] ?? 'DESC', $_GET['sort']  ?? 'date', $_GET['start'] ?? 0);
-
-Html::footer();
+// Grant READ right to system_logs to everyone who has READ and UPDATE 'config' rights already
+$migration->addRight('system_logs', READ);
