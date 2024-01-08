@@ -57,9 +57,6 @@ function isCommandLine()
  */
 function isAPI()
 {
-    /** @var array $CFG_GLPI */
-    global $CFG_GLPI;
-
     $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
     if (str_contains($script, 'api.php')) {
         return true;
