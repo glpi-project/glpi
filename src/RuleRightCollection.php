@@ -229,23 +229,23 @@ class RuleRightCollection extends RuleCollection
         // Some of the rule criteria is uppercase, but most other rule criterias are lowercase only
         $params_lower = array_change_key_case($params, CASE_LOWER);
 
-       //common parameters
-        $rule_parameters = array_merge($params_lower, [
+        // common parameters
+        $rule_parameters = array_replace($params_lower, [
             'TYPE'       => $params_lower["type"] ?? "",
             'LOGIN'      => $params_lower["login"] ?? "",
             'MAIL_EMAIL' => $params_lower["email"] ?? $params_lower["mail_email"] ?? "",
         ]);
 
-       //IMAP/POP login method
+        // IMAP/POP login method
         if ($rule_parameters["TYPE"] == Auth::MAIL) {
             $rule_parameters["MAIL_SERVER"] = $params_lower["mail_server"] ?? "";
         }
 
         //LDAP type method
-        //Get all the field to retrieve to be able to process rule matching
-        $rule_fields = $this->getFieldsToLookFor();
-        if ($rule_parameters["TYPE"] == Auth::LDAP && count($rule_fields)) {
+        // Get all the field to retrieve to be able to process rule matching
+        if ($rule_parameters["TYPE"] == Auth::LDAP) {
            //Get all the data we need from ldap to process the rules
+            $rule_fields = $this->getFieldsToLookFor();
             $sz = @ldap_read(
                 $params_lower["connection"],
                 $params_lower["userdn"],
