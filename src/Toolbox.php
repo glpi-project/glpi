@@ -1288,6 +1288,9 @@ class Toolbox
      */
     public static function getGuzzleClient(array $extra_options): Client
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $options = $extra_options;
         // add proxy string if configured in glpi
         if (!empty($CFG_GLPI["proxy_name"])) {
