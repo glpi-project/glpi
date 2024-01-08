@@ -57,7 +57,7 @@
         "ramsey/uuid": "^4.7",
         "rlanvin/php-rrule": "^2.4",
         "robthree/twofactorauth": "^2.1",
-        "sabre/dav": "^4.5",
+        "sabre/dav": "^4.6",
         "sabre/http": "^5.1",
         "sabre/uri": "^2.3",
         "sabre/vobject": "^4.5",
