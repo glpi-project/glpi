@@ -5954,11 +5954,11 @@ HTML;
                             is_array($content)
                             && array_key_exists('checked', $content)
                         ) {
-                            $nb_cb_per_col[$col_name]['total'] ++;
-                            $nb_cb_per_row[$row_name]['total'] ++;
+                            $nb_cb_per_col[$col_name]['total']++;
+                            $nb_cb_per_row[$row_name]['total']++;
                             if ($content['checked']) {
-                                $nb_cb_per_col[$col_name]['checked'] ++;
-                                $nb_cb_per_row[$row_name]['checked'] ++;
+                                $nb_cb_per_col[$col_name]['checked']++;
+                                $nb_cb_per_row[$row_name]['checked']++;
                             }
                         }
                     }

@@ -233,7 +233,7 @@ class MassiveAction
                             foreach ($ids as $id => $checked) {
                                 if ($checked == 1) {
                                     $items[$id] = $id;
-                                    $this->nb_items ++;
+                                    $this->nb_items++;
                                 }
                             }
                              $POST['items'][$itemtype] = $items;
