@@ -5044,8 +5044,8 @@ CREATE TABLE `glpi_notificationtemplatetranslations` (
   `notificationtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `language` varchar(10) NOT NULL DEFAULT '',
   `subject` varchar(255) NOT NULL,
-  `content_text` text,
-  `content_html` text,
+  `content_text` longtext,
+  `content_html` longtext,
   PRIMARY KEY (`id`),
   KEY `notificationtemplates_id` (`notificationtemplates_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
@@ -8760,7 +8760,7 @@ CREATE TABLE `glpi_items_kanbans` (
   `itemtype` varchar(100) NOT NULL,
   `items_id` int unsigned DEFAULT NULL,
   `users_id` int unsigned NOT NULL,
-  `state` text,
+  `state` mediumtext,
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -9663,7 +9663,7 @@ CREATE TABLE `glpi_webhooks` (
   `comment` text,
   `itemtype` varchar(255) DEFAULT NULL,
   `event` varchar(255) DEFAULT NULL,
-  `payload` text,
+  `payload` longtext,
   `use_default_payload` tinyint NOT NULL DEFAULT '1',
   `custom_headers` text,
   `url` varchar(255) DEFAULT NULL,
