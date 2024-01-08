@@ -269,27 +269,29 @@
           $('.popover').popover('hide');
       });
 
-       actor_select.parent().popover({
-           selector: '[data-glpi-popover-source]',
-           container: actor_select.parent(),
-           html: true,
-           sanitize: false,
-           trigger: 'hover',
-           delay: {
+      $(function () {
+         actor_select.parent().popover({
+            selector: '[data-glpi-popover-source]',
+            container: actor_select.parent(),
+            html: true,
+            sanitize: false,
+            trigger: 'hover',
+            delay: {
                hide: 300
-           },
-           template: '<' + 'div class="popover shadow" role="tooltip"><' + 'div class="popover-arrow"><' + '/div><' + 'h3 class="popover-header"><' + '/h3><' + 'div class="popover-body"><' + '/div><' + '/div>',
-           content: function() {
+            },
+            template: '<' + 'div class="popover shadow" role="tooltip"><' + 'div class="popover-arrow"><' + '/div><' + 'h3 class="popover-header"><' + '/h3><' + 'div class="popover-body"><' + '/div><' + '/div>',
+            content: function() {
                // Close other popovers
                $('.popover').popover('hide');
                return $('#' + $(this).attr('data-glpi-popover-source')).html();
-           }
-       }).on('hide.bs.popover', function () {
+            }
+         }).on('hide.bs.popover', function () {
             // prevent closing popover when user card is hover
             if ($('.user-info-card:hover').length > 0) {
-                return false;
+               return false;
             }
-        });
+         });
+      });
 
         // when the mouse leave the user card in the popover, close it
         $(document).on('mouseleave', '.user-info-card', function() {
