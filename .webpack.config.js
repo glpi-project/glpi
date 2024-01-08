@@ -183,6 +183,11 @@ var filesToCopy = [
         to: scssOutputPath,
     },
     {
+        package: 'tinymce',
+        from: 'skins/ui/oxide*/skin.css',
+        to: scssOutputPath,
+    },
+    {
         package: 'swagger-ui-dist',
         from: 'oauth2-redirect.html'
     }

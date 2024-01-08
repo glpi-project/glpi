@@ -6846,18 +6846,20 @@ HTML;
        // Enable imports of ".scss" files from "css/lib", when path starts with "~".
         $scss->addImportPath(
             function ($path) {
-                $file_chunks = [];
                 //Force bootstrap imports to be prefixed by ~
                 if (str_starts_with($path, 'bootstrap/scss')) {
                     $path = '~' . $path;
                 }
-                if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+)(?:(\.scss)?)/', $path, $file_chunks)) {
+
+                $file_chunks = [];
+                if (!preg_match('/^~@?(?<directory>.*)\/(?<file>[^\/]+?)(?:(\.(?<extension>s?css))?)$/', $path, $file_chunks)) {
                     return null;
                 }
 
+                $extension = $file_chunks['extension'] ?? 'scss';
                 $possible_filenames = [
-                    sprintf('%s/css/lib/%s/%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
-                    sprintf('%s/css/lib/%s/_%s.scss', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file']),
+                    sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
+                    sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
                 ];
                 foreach ($possible_filenames as $filename) {
                     if (file_exists($filename)) {
