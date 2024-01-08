@@ -37,9 +37,9 @@ $link-hover-decoration: none;
 @import "includes/includes";
 
 html:not([data-glpi-theme-dark="1"]) {
-    @import "../public/lib/tinymce/skins/ui/oxide/skin";
+    @import "~tinymce/skins/ui/oxide/skin.css";
 }
 
 html[data-glpi-theme-dark="1"] {
-    @import "../public/lib/tinymce/skins/ui/oxide-dark/skin";
+    @import "~tinymce/skins/ui/oxide-dark/skin.css";
 }

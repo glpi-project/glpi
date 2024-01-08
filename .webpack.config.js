@@ -172,6 +172,11 @@ var filesToCopy = [
         from: '{fonts/*,tabler-icons.scss}',
         to: scssOutputPath,
     },
+    // {
+    //     package: 'tinymce',
+    //     from: 'skins/ui/oxide-*/skin.css',
+    //     to: scssOutputPath,
+    // },
     {
         package: 'bootstrap',
         from: 'scss/**/*.scss',
