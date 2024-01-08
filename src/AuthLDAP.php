@@ -1917,21 +1917,25 @@ class AuthLDAP extends CommonDBTM
                     $sr === false
                     || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false
                 ) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    $error_code = ldap_errno($ds);
-                    if (ldap_errno($ds) !== 32) {
-                        $error_message = sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter);
-                        if ($error_code === -1) {
-                            $error_message = ldap_error($ds);
-                        }
+                    if (ldap_errno($ds) === -1) {
                         trigger_error(
                             static::buildError(
                                 $ds,
-                                $error_message
+                                ldap_error($ds)
                             ),
                             E_USER_WARNING
                         );
                         exit;
+                    }
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if (ldap_errno($ds) !== 32) {
+                        trigger_error(
+                            static::buildError(
+                                $ds,
+                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
+                            ),
+                            E_USER_WARNING
+                        );
                     }
                     return false;
                 }
@@ -1943,21 +1947,25 @@ class AuthLDAP extends CommonDBTM
             } else {
                 $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
                 if ($sr === false) {
-                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                    $error_code = ldap_errno($ds);
-                    if (ldap_errno($ds) !== 32) {
-                        $error_message = sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter);
-                        if ($error_code === -1) {
-                            $error_message = ldap_error($ds);
-                        }
+                    if (ldap_errno($ds) === -1) {
                         trigger_error(
                             static::buildError(
                                 $ds,
-                                $error_message
+                                ldap_error($ds)
                             ),
                             E_USER_WARNING
                         );
                         exit;
+                    }
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if (ldap_errno($ds) !== 32) {
+                        trigger_error(
+                            static::buildError(
+                                $ds,
+                                sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
+                            ),
+                            E_USER_WARNING
+                        );
                     }
                     return false;
                 }
@@ -3596,21 +3604,25 @@ class AuthLDAP extends CommonDBTM
 
         $result = @ldap_search($ds, $values['basedn'], $filter, $attrs);
         if ($result === false) {
-            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-            $error_code = ldap_errno($ds);
-            if (ldap_errno($ds) !== 32) {
-                $error_message = sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter);
-                if ($error_code === -1) {
-                    $error_message = ldap_error($ds);
-                }
+            if (ldap_errno($ds) === -1) {
                 trigger_error(
                     static::buildError(
                         $ds,
-                        $error_message
+                        ldap_error($ds)
                     ),
                     E_USER_WARNING
                 );
                 exit;
+            }
+            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+            if (ldap_errno($ds) !== 32) {
+                trigger_error(
+                    static::buildError(
+                        $ds,
+                        sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
+                    ),
+                    E_USER_WARNING
+                );
             }
             return false;
         }
@@ -3651,21 +3663,25 @@ class AuthLDAP extends CommonDBTM
 
         $result = @ldap_read($ds, Sanitizer::unsanitize($dn), $condition, $attrs);
         if ($result === false) {
-            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-            $error_code = ldap_errno($ds);
-            if (ldap_errno($ds) !== 32) {
-                $error_message = sprintf('LDAP search with base DN `%s` and filter `%s` failed', $dn, $condition);
-                if ($error_code === -1) {
-                    $error_message = ldap_error($ds);
-                }
+            if (ldap_errno($ds) === -1) {
                 trigger_error(
                     static::buildError(
                         $ds,
-                        $error_message
+                        ldap_error($ds)
                     ),
                     E_USER_WARNING
                 );
                 exit;
+            }
+            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+            if (ldap_errno($ds) !== 32) {
+                trigger_error(
+                    static::buildError(
+                        $ds,
+                        sprintf('Unable to get LDAP object having DN `%s` with filter `%s`', $dn, $condition)
+                    ),
+                    E_USER_WARNING
+                );
             }
             return false;
         }

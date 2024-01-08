@@ -2190,21 +2190,25 @@ class User extends CommonDBTM
         $sr = @ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
         if ($sr === false) {
-            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-            $error_code = ldap_errno($ds);
-            if (ldap_errno($ds) !== 32) {
-                $error_message = sprintf('LDAP search with base DN `%s` and filter `%s` failed', $ldap_base_dn, $filter);
-                if ($error_code === -1) {
-                    $error_message = ldap_error($ds);
-                }
+            if (ldap_errno($ds) === -1) {
                 trigger_error(
                     AuthLDAP::buildError(
                         $ds,
-                        $error_message
+                        ldap_error($ds)
                     ),
                     E_USER_WARNING
                 );
                 exit;
+            }
+            // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+            if (ldap_errno($ds) !== 32) {
+                trigger_error(
+                    AuthLDAP::buildError(
+                        $ds,
+                        sprintf('LDAP search with base DN `%s` and filter `%s` failed', $ldap_base_dn, $filter)
+                    ),
+                    E_USER_WARNING
+                );
             }
             return $groups;
         }
