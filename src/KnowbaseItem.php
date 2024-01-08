@@ -2136,7 +2136,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $faq = !Session::haveRight(self::$rightname, READ);
 
         $criteria = [
-            'SELECT'    => ['glpi_knowbaseitems.*'],
+            'SELECT'    => ['glpi_knowbaseitems' => ['id', 'name', 'is_faq']],
             'DISTINCT'  => true,
             'FROM'      => self::getTable(),
             'WHERE'     => [],
