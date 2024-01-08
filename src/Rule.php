@@ -2243,16 +2243,31 @@ class Rule extends CommonDBTM
         $output = $this->preProcessPreviewResults($output);
 
         foreach ($output as $criteria => $value) {
-            if (isset($actions[$criteria])) {
+            $action_def = array_filter($actions, static function ($def, $key) use ($criteria) {
+                return $key === $criteria || (array_key_exists('appendto', $def) && $def['appendto'] === $criteria);
+            }, ARRAY_FILTER_USE_BOTH);
+            $action_def_key = key($action_def);
+            if (count($action_def)) {
+                $action_def = reset($action_def);
+            } else {
+                continue;
+            }
+
+            if (isset($action_def['type'])) {
+                $actiontype = $action_def['type'];
+            } else {
+                $actiontype = '';
+            }
+
+            // Some action values can be an array (appendto actions). So, we will force everything to be an array and loop over it when displaying the rows.
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+            foreach ($value as $v) {
+                $action_value = $this->getActionValue($action_def_key, $actiontype, $v);
                 echo "<tr class='tab_bg_2'>";
-                echo "<td>" . $actions[$criteria]["name"] . "</td>";
-                if (isset($actions[$criteria]['type'])) {
-                    $actiontype = $actions[$criteria]['type'];
-                } else {
-                    $actiontype = '';
-                }
-                echo "<td>" . $this->getActionValue($criteria, $actiontype, $value);
-                echo "</td></tr>\n";
+                echo "<td>" . $action_def["name"] . "</td>";
+                echo "<td>$action_value</td></tr>";
             }
         }
 
