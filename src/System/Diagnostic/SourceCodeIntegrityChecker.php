@@ -187,21 +187,9 @@ class SourceCodeIntegrityChecker
         $version_to_get = VersionParser::getNormalizedVersion(GLPI_VERSION);
         $gh_releases_endpoint = 'https://api.github.com/repos/glpi-project/glpi/releases/tags/' . $version_to_get;
 
-        $options = [
+        $client = \Toolbox::getGuzzleClient([
             'connect_timeout' => 10, // 10 seconds timeout
-        ];
-        // add proxy string if configured in glpi
-        if (!empty($CFG_GLPI['proxy_name'])) {
-            $options['proxy'] = sprintf(
-                'http://%s%s:%d',
-                !empty($CFG_GLPI['proxy_user'])
-                    ? sprintf('%s:%s@', $CFG_GLPI['proxy_user'], (new GLPIKey())->decrypt($CFG_GLPI['proxy_passwd']))
-                    : '',
-                $CFG_GLPI['proxy_name'],
-                $CFG_GLPI['proxy_port']
-            );
-        }
-        $client = new Client($options);
+        ]);
 
         $dest = null;
         try {
