@@ -35,12 +35,15 @@
 {# @var question_type  Glpi\Form\QuestionType\QuestionTypeInterface #}
 {# @var question       Glpi\Form\Question|null #}
 {# @var question_index string|null #}
+{# @var section        Glpi\Form\Section|null #}
+{# @var section_index  string|null #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{# Compute input names base prefix #}
-{% set input_prefix =  question_index is not null ? '_questions[' ~ question_index ~ ']' : null %}
+{# Compute inputs names base prefix #}
+{% set input_prefix = question_index is not null ? '_questions[' ~ section_index ~ '][' ~ question_index ~ ']' : null %}
 
+{# Common params for any fields #}
 {% set base_field_options = {
     'is_horizontal': false,
     'full_width'   : true,
@@ -81,7 +84,6 @@
         {# Display common fields #}
         <div
             class="content-editable-tinymce"
-            tabindex="6"
             data-question-description
             {# Mark as secondary if empty #}
             {{ question is null or question.fields.description|length == 0 ? "data-question-extra-details" : "" }}
@@ -175,5 +177,10 @@
         type="hidden"
         name="{{ input_prefix is not null ? input_prefix ~ '[id]' : 'id' }}"
         value="{{ question is not null ? question.fields.id : 0 }}"
+    />
+    <input
+        type="hidden"
+        name="{{ input_prefix is not null ? input_prefix ~ '[forms_sections_id]' : 'forms_sections_id' }}"
+        value="{{ section is not null ? section.fields.id : 0 }}"
     />
 </div>

@@ -152,9 +152,15 @@ class Form extends CommonDBTM
         return $search_options;
     }
 
+    public function post_addItem()
+    {
+        // Automatically create the first form section
+        $this->createFirstSection();
+    }
+
     public function prepareInputForUpdate($input)
     {
-        // Insert date_mod event if the framework would handle it by itself
+        // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
         // its questions are
         $input['date_mod'] = $_SESSION['glpi_currenttime'];
@@ -225,28 +231,18 @@ class Form extends CommonDBTM
     }
 
     /**
-     * Temporary function to get the working section
-     * Will be removed once multiple sections are supported
+     * Create the first section of a form
      *
-     * @return Section
+     * @return void
      */
-    protected function getUniqueSection(): Section
+    protected function createFirstSection(): void
     {
-        // For now use a single hidden section as users cant interact with them
         $section = new Section();
-        $sections = $section->find(['forms_forms_id' => $this->fields['id']]);
-        if (!count($sections)) {
-            $section = new Section();
-            $section->add([
-                'forms_forms_id' => $this->fields['id'],
-                'name'           => 'tmp',
-                'rank'           => 1,
-            ]);
-
-            return $section;
-        } else {
-            return Section::getById(array_pop($sections)['id']);
-        }
+        $section->add([
+            'forms_forms_id' => $this->fields['id'],
+            'name'           => __("First section"),
+            'rank'           => 1,
+        ]);
     }
 
     /**
@@ -257,48 +253,88 @@ class Form extends CommonDBTM
      */
     protected function updateQuestions(): void
     {
+        $sections = $this->input['_sections'] ?? [];
         $questions = $this->input['_questions'] ?? [];
-        $section = $this->getUniqueSection();
 
-        // Keep track of newly created questions id's so that they can be used
-        // by futures client side requests
+        // Keep track of newly created sections and questions id's so that they
+        // can be used by futures client side requests
         $this->extra_response_data['added_questions'] = [];
+        $this->extra_response_data['added_sections'] = [];
 
         // Keep track of questions found
+        $found_sections = [];
         $found_questions = [];
 
-        // Parse each submitted question
-        foreach ($questions as $input_index => $form_data) {
-            $question = new Question();
-
-            // Insert forced section id
-            $form_data['forms_sections_id'] = $section->fields['id'];
+        // Parse each submitted section
+        foreach ($sections as $input_index => $form_data) {
+            $section = new Section();
 
             if ($form_data['id'] == 0) {
-                // Add new question
+                // Add new section
                 unset($form_data['id']);
-                $id = $question->add($form_data);
+                $id = $section->add($form_data);
 
                 if (!$id) {
-                    trigger_error("Failed to add question", E_USER_WARNING);
+                    trigger_error("Failed to add section", E_USER_WARNING);
                     continue;
                 }
 
                 // Keep track of its id
-                $found_questions[] = $id;
-                $this->extra_response_data['added_questions'][] = [
+                $found_sections[] = $id;
+                $this->extra_response_data['added_sections'][] = [
                     'input_index' => $input_index,
                     'id'          => $id,
                 ];
             } else {
-                // Update existing question
-                $success = $question->update($form_data);
+                // Update existing section
+                $success = $section->update($form_data);
                 if (!$success) {
-                    trigger_error("Failed to update question", E_USER_WARNING);
+                    trigger_error("Failed to update section", E_USER_WARNING);
                 }
 
                 // Keep track of its id
-                $found_questions[] = $form_data['id'];
+                $found_sections[] = $form_data['id'];
+            }
+        }
+
+        // Parse each submitted question
+        foreach ($questions as $section_input_index => $section_questions) {
+            foreach ($section_questions as $question_input_index => $form_data) {
+                $question = new Question();
+
+                // Set correct parent FK for questions inside newly added sections
+                if ($form_data['forms_sections_id'] == 0) {
+                    $added_sections = $this->extra_response_data['added_sections'];
+                    $form_data['forms_sections_id'] = $added_sections[$section_input_index]['id'];
+                }
+
+                if ($form_data['id'] == 0) {
+                    // Add new question
+                    unset($form_data['id']);
+                    $id = $question->add($form_data);
+
+                    if (!$id) {
+                        trigger_error("Failed to add question", E_USER_WARNING);
+                        continue;
+                    }
+
+                    // Keep track of its id
+                    $found_questions[] = $id;
+                    $this->extra_response_data['added_questions'][] = [
+                        'section_index'  => $section_input_index,
+                        'question_index' => $question_input_index,
+                        'id'             => $id,
+                    ];
+                } else {
+                    // Update existing question
+                    $success = $question->update($form_data);
+                    if (!$success) {
+                        trigger_error("Failed to update question", E_USER_WARNING);
+                    }
+
+                    // Keep track of its id
+                    $found_questions[] = $form_data['id'];
+                }
             }
         }
 
@@ -335,7 +371,36 @@ class Form extends CommonDBTM
             }
         }
 
+        // Safety check to avoid deleting all sections if some code run an update
+        // without the _sections keys.
+        // Deletion is only done if the special "_delete_missing_sections" key
+        // is present
+        $delete_missing_sections = $this->input['_delete_missing_sections'] ?? false;
+        if ($delete_missing_sections) {
+            // Avoid empty IN clause
+            if (empty($found_sections)) {
+                $found_sections = [-1];
+            }
+
+            $missing_sections = (new Section())->find([
+                // Is part of this form
+                'forms_forms_id' => $this->fields['id'],
+
+                // Was not found in the submitted data
+                'id' => ['NOT IN', $found_sections],
+            ]);
+
+            foreach ($missing_sections as $row) {
+                $section = new Section();
+                $success = $section->delete($row);
+                if (!$success) {
+                    trigger_error("Failed to delete section", E_USER_WARNING);
+                }
+            }
+        }
+
         // Special input has been handled, it can be deleted
         unset($this->input['_questions']);
+        unset($this->input['_sections']);
     }
 }

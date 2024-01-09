@@ -58,7 +58,6 @@
 >
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
-
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
     {# Need more elements (questions, sections) before finalizing the design #}
@@ -76,7 +75,7 @@
                         <div class="card-body">
 
                             {# Header #}
-                            <div class="d-flex mt-2">
+                            <div class="d-flex">
                                 {# Form's name #}
                                 <input
                                     type="text"
@@ -100,7 +99,7 @@
                             </div>
 
                             {# Form's hader #}
-                            <div class="content-editable-tinymce" tabindex="5">
+                            <div class="content-editable-tinymce">
                                 {{ fields.textareaField(
                                     'header',
                                     item.fields.header,
@@ -118,28 +117,32 @@
                     </div>
 
                     {# Display all questions here #}
-                    <div class="questions">
-                        {% set question_index = 0 %}
+                    <div class="sections">
+                        {% set section_input_index = 0 %}
+                        {% set number_of_sections = item.getSections()|length %}
                         {% for section in item.getSections() %}
-                            {% for question in section.getQuestions() %}
-                                {# Render admin template for the given question type #}
-                                {{ include('pages/admin/form/form_question.html.twig', {
-                                    'question_types'     : question_types,
-                                    'question_type'      : question.getQuestionType(),
-                                    'question'           : question,
-                                    'question_index'     : question_index,
-                                }, with_context = false) }}
-                                {% set question_index = question_index + 1 %}
-                            {% endfor %}
+                            {{ include('pages/admin/form/form_section.html.twig', {
+                                'form'               : item,
+                                'section'            : section,
+                                'section_input_index': section_input_index,
+                                'question_types'     : question_types,
+                                'can_update'         : item.canUpdate(),
+                                'show_section_form'  : number_of_sections > 1,
+                            }, with_context = false) }}
+                            {% set section_input_index = section_input_index + 1 %}
                         {% endfor %}
                     </div>
 
-                    {# Add question action #}
+                    {# Single add section action at the end of the form#}
                     {# TODO: UI/UX #}
                     {% if item.canUpdate() %}
-                        <div id="form_add_question" class="card cursor-pointer align-items-center">
+                        {% set add_section_action_visible = number_of_sections > 1 or (item.getSections()|first).getQuestions()|length > 0 %}
+                        <div
+                            id="form_add_section"
+                            class="card cursor-pointer align-items-center {{ add_section_action_visible ? "" : "d-none" }}"
+                        >
                             <div class="card-body">
-                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add question") }}</h3>
+                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add section") }}</h3>
                             </div>
                         </div>
                     {% endif %}
@@ -257,8 +260,9 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
-    {# Special input to indicate that missing question must be deleted #}
+    {# Special inputs to indicate that missing sections and question must be deleted #}
     <input type="hidden" name="_delete_missing_questions" value="1">
+    <input type="hidden" name="_delete_missing_sections" value="1">
 
     {# Set as non draft once saved #}
     {% if item.fields.is_draft %}
@@ -270,32 +274,47 @@
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
 
-{# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-<div id="question_type_model_container" class="d-none">
-    {% for question_type in question_types.getFinalTypes() %}
-        <div id="question_type_model_{{ get_class(question_type) }}">
-            {# Render admin template for the given question type #}
-            {{ include('pages/admin/form/form_question.html.twig', {
-                'question_types': question_types,
-                'question_type' : question_type,
-                'question'      : null,
-            }, with_context = false) }}
-        </div>
-    {% endfor %}
-</div>
+{% if item.canUpdate() %}
+    {# Load new section template #}
+    <div id="empty_section_template" class="d-none">
+        {{ include('pages/admin/form/form_section.html.twig', {
+            'form'               : item,
+            'section'            : null,
+            'section_input_index': null,
+            'can_update'         : true,
+            'show_section_form'  : true,
+        }, with_context = false) }}
+    </div>
 
-{# Load all possible subtypes #}
-<select id="question_subtypes" class="d-none">
-    {% for question_type in question_types.getFinalTypes() %}
-        <option
-            data-parent-type="{{ question_type.getParentType() }}"
-            value="{{ get_class(question_type) }}"
-        >
-            {{ question_type.getName() }}
-        </option>
-    {% endfor %}
-</select>
+    {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
+    <div id="question_type_model_container" class="d-none">
+        {% for question_type in question_types.getFinalTypes() %}
+            <div id="question_type_model_{{ get_class(question_type) }}">
+                {# Render admin template for the given question type #}
+                {{ include('pages/admin/form/form_question.html.twig', {
+                    'question_types'     : question_types,
+                    'question_type'      : question_type,
+                    'question'           : null,
+                    'question_index'     : null,
+                    'section'            : null,
+                    'section_input_index': null,
+                }, with_context = false) }}
+            </div>
+        {% endfor %}
+    </div>
 
+    {# Load all possible subtypes #}
+    <select id="question_subtypes" class="d-none">
+        {% for question_type in question_types.getFinalTypes() %}
+            <option
+                data-parent-type="{{ question_type.getParentType() }}"
+                value="{{ get_class(question_type) }}"
+            >
+                {{ question_type.getName() }}
+            </option>
+        {% endfor %}
+    </select>
+{% endif %}
 
 {# Preview form modal #}
 <div
@@ -344,7 +363,18 @@
             // Data contains two keys: input_index and id
             response.added_questions.forEach(function(data) {
                 // Update ID input
-                $("input[name='_questions[" + data.input_index + "][id]']").val(data.id);
+                $(`input[name='_questions[${data.section_index}][${data.question_index}][id]']`).val(data.id);
+            });
+        }
+
+        // Handle newly added sections ids, they must be inserted into their
+        // form so they can be updated correctly instead of re-added on the next
+        // submit
+        if (response.added_sections !== undefined) {
+            // Data contains two keys: input_index and id
+            response.added_sections.forEach(function(data) {
+                // Update ID input
+                $("input[name='_sections[" + data.input_index + "][id]']").val(data.id);
             });
         }
     };
@@ -424,23 +454,42 @@
             );
         });
 
-        // Handle new questions
-        let question_index = {{ question_index }};
+        // Keep track of input index for sections
+        let section_input_index = {{ section_input_index }};
+
+        // Keep track of last question index for each sections;
+        let next_question_indexes = {};
+        $("[data-section-container]:visible").each(function() { // :visible to filter out templates
+            const section_index = $(this).data("sectionIndex");
+            const questions = $(this).find("[data-question-container]");
+
+            if (questions.length) {
+                const last_index = questions.last().data('questionIndex');
+                next_question_indexes[section_index] = last_index + 1;
+            } else {
+                next_question_indexes[section_index] = 0;
+            }
+        });
 
         /**
          * Copy a given question template into the given destination
          */
-        const copy_model = function(selector, question_index, destination) {
+        const copy_model = function(selector, destination, section_index, question_index = null) {
             const copy = selector.clone();
 
             // Keep track of editors that need to be initialized
             const tiny_mce_to_init = [];
 
+            /// Build base input name using question and section indexes
+            const base_input_name = question_index === null ?
+                `_sections[${section_index}]`:
+                `_questions[${section_index}][${question_index}]`;
+
             // Input must have unique name so we will use the
             // "_questions[index][input_name] key format
             copy.find("select, input, textarea").each(function() {
                 const input_name = $(this).attr("name");
-                $(this).attr("name", `_questions[${question_index}][${input_name}]`);
+                $(this).attr("name", `${base_input_name}[${input_name}]`);
 
                 // Special actions for tinymce
                 if ($(this).prop("tagName") == "TEXTAREA") {
@@ -449,7 +498,7 @@
 
                     // Rename id so it can be unique
                     const uid = uniqid(); // Avoid ID conflicts
-                    $(this).attr("id", `_questions_${question_index}_${input_name}_${uid}`);
+                    $(this).attr("id", `_tinymce_${uid}`);
 
                     // Push config into init queue
                     config.selector = "#" + $(this).attr("id"); // Ref to updated id
@@ -464,28 +513,63 @@
             tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
 
             return copy;
-        }
+        };
 
-        $("#form_add_question").on("click", function(e) {
+        /**
+         * Update the first section visiblity according to the number of existing sections
+         */
+        const updateFirstSectionVisiblity = function() {
+            if ($("[data-section-container]:visible").length <= 1) {  // :visible to filter out templates
+                $("[data-section-form-container]").addClass("d-none");
+            } else {
+                $("[data-section-form-container]").removeClass("d-none");
+            }
+        };
+
+        /**
+         * Hide the "add section" action until at least one question is added
+         */
+        const updateAddSectionActionVisiblity = function() {
+            if ($("[data-question-container]:visible").length == 0) { // :visible to filter out templates
+                $("#form_add_section").addClass("d-none");
+            } else {
+                $("#form_add_section").removeClass("d-none");
+            }
+        };
+
+        $(document).on("click", "[data-form-add-question-action]", function(e) {
             // Javascript doesn't like singular backslashes
             {% set escaped_question_type = default_question_type|replace({"\\": "\\\\"}) %}
             const target = $("#question_type_model_" + $.escapeSelector("{{ escaped_question_type }}"))
                 .children(); // Skip container, we only want the content
 
+            // Find next question index for this section
+            const section_container = $(e.target).closest("[data-section-container]");
+            const section_index = section_container.data("sectionIndex");
+            const question_index = next_question_indexes[section_index];
+
             // Insert the new template into the questions area
             const copy = copy_model(
                 target,
+                section_container.find("[data-questions-container]"),
+                section_index,
                 question_index,
-                ".questions"
-            )
+            );
 
             // Set question index (needed in case the question type is modified later on and we need to re-render
             // a part of the question)
             copy.attr("data-question-index", question_index);
 
+            // Set correct FK for the parent section
+            const section_input = copy.find(`input[name='_questions[${section_index}][${question_index}][forms_sections_id]']`);
+            const section_id = section_container.find(`input[name='_sections[${section_index}][id]']`).val();
+            section_input.val(section_id);
+
             // Set question as active and increment index
             setActiveQuestion(copy);
-            question_index++;
+            next_question_indexes[section_index] = question_index + 1;
+
+            updateAddSectionActionVisiblity();
         });
 
         // Handle question deletion
@@ -495,6 +579,8 @@
 
             // Remove question
             question_container.remove();
+
+            updateAddSectionActionVisiblity();
         });
 
         // Add mandatory class to mandatory questions
@@ -524,6 +610,9 @@
         $(document).on("click", ".form-details", function() {
             setActiveQuestion(null);
         });
+        $(document).on("click", "[data-section-form-container]", function() {
+            setActiveQuestion(null);
+        });
 
         // Handle type change for a question
         $(document).on("change", "[data-question-type-selector]", function(e) {
@@ -536,8 +625,8 @@
             // Copy the new subtypes into the current question
             copy_model(
                 copy,
+                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]"),
                 $(e.target).closest("[data-question-container]").data('questionIndex'),
-                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]")
             );
 
             // Hide options if only one option is available
@@ -562,9 +651,37 @@
             // Copy the specific part the new question type's template into the current question
             copy_model(
                 $("#question_type_model_" + type).find("[data-question-type-specific]").children(),
+                $(e.target).closest("[data-question-container]").find("[data-question-type-specific]"),
                 $(e.target).closest("[data-question-container]").data('questionIndex'),
-                $(e.target).closest("[data-question-container]").find("[data-question-type-specific]")
             );
+        });
+
+        // Add section action
+        $("#form_add_section").on("click", function() {
+            // Copy the new section template into the sections area
+            const copy = copy_model(
+                $("#empty_section_template").children(),
+                ".sections",
+                section_input_index,
+            );
+
+            // Set section index
+            copy.attr("data-section-index", section_input_index);
+            next_question_indexes[section_input_index] = 0;
+            section_input_index++;
+
+            updateFirstSectionVisiblity();
+        });
+
+        // Handle section deletion
+        $(document).on("click", "[data-delete-section-action]", function(e) {
+            // Get section container
+            const section_container = $(e.target).closest("[data-section-container]");
+
+            // Remove question
+            section_container.remove();
+
+            updateFirstSectionVisiblity();
         });
     })();
 </script>
