@@ -264,7 +264,8 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'value',
             'name'               => _x('price', 'Value'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
+            'searchtype'         => ['contains', 'notcontains', 'equals', 'notequals'],
         ];
 
         $tab[] = [
