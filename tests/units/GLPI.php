@@ -64,4 +64,14 @@ class GLPI extends \GLPITestCase
             "Locales files present in directory are missing from configuration:\n" . print_r($cfg_missing, true)
         );
     }
+
+    /**
+     * Verify the value of the GLPI_YEAR const
+     *
+     * @return void
+     */
+    public function test_GlpiYear(): void
+    {
+        $this->string(GLPI_YEAR)->isEqualTo(date('Y'));
+    }
 }
