@@ -2190,16 +2190,6 @@ class User extends CommonDBTM
         $sr = @ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
         if ($sr === false) {
-            if (ldap_errno($ds) === -1) {
-                trigger_error(
-                    AuthLDAP::buildError(
-                        $ds,
-                        ldap_error($ds)
-                    ),
-                    E_USER_WARNING
-                );
-                exit;
-            }
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
                 trigger_error(
@@ -2209,6 +2199,7 @@ class User extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
+                throw new \RuntimeException(ldap_error($ds));
             }
             return $groups;
         }

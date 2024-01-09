@@ -1917,16 +1917,6 @@ class AuthLDAP extends CommonDBTM
                     $sr === false
                     || @ldap_parse_result($ds, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) === false
                 ) {
-                    if (ldap_errno($ds) === -1) {
-                        trigger_error(
-                            static::buildError(
-                                $ds,
-                                ldap_error($ds)
-                            ),
-                            E_USER_WARNING
-                        );
-                        exit;
-                    }
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
                         trigger_error(
@@ -1936,6 +1926,7 @@ class AuthLDAP extends CommonDBTM
                             ),
                             E_USER_WARNING
                         );
+                        throw new \RuntimeException(ldap_error($ds));
                     }
                     return false;
                 }
@@ -1947,16 +1938,6 @@ class AuthLDAP extends CommonDBTM
             } else {
                 $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
                 if ($sr === false) {
-                    if (ldap_errno($ds) === -1) {
-                        trigger_error(
-                            static::buildError(
-                                $ds,
-                                ldap_error($ds)
-                            ),
-                            E_USER_WARNING
-                        );
-                        exit;
-                    }
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
                         trigger_error(
@@ -1966,6 +1947,7 @@ class AuthLDAP extends CommonDBTM
                             ),
                             E_USER_WARNING
                         );
+                        throw new \RuntimeException(ldap_error($ds));
                     }
                     return false;
                 }
@@ -3604,16 +3586,6 @@ class AuthLDAP extends CommonDBTM
 
         $result = @ldap_search($ds, $values['basedn'], $filter, $attrs);
         if ($result === false) {
-            if (ldap_errno($ds) === -1) {
-                trigger_error(
-                    static::buildError(
-                        $ds,
-                        ldap_error($ds)
-                    ),
-                    E_USER_WARNING
-                );
-                exit;
-            }
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
                 trigger_error(
@@ -3623,6 +3595,7 @@ class AuthLDAP extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
+                throw new \RuntimeException(ldap_error($ds));
             }
             return false;
         }
@@ -3663,16 +3636,6 @@ class AuthLDAP extends CommonDBTM
 
         $result = @ldap_read($ds, Sanitizer::unsanitize($dn), $condition, $attrs);
         if ($result === false) {
-            if (ldap_errno($ds) === -1) {
-                trigger_error(
-                    static::buildError(
-                        $ds,
-                        ldap_error($ds)
-                    ),
-                    E_USER_WARNING
-                );
-                exit;
-            }
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
                 trigger_error(
@@ -3682,6 +3645,7 @@ class AuthLDAP extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
+                throw new \RuntimeException(ldap_error($ds));
             }
             return false;
         }
