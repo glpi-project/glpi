@@ -1919,14 +1919,13 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
-                        trigger_error(
+                        throw new \RuntimeException(
                             static::buildError(
                                 $ds,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
                             ),
                             E_USER_WARNING
                         );
-                        throw new \RuntimeException(ldap_error($ds));
                     }
                     return false;
                 }
@@ -1940,7 +1939,7 @@ class AuthLDAP extends CommonDBTM
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
-                        trigger_error(
+                        throw new \RuntimeException(
                             static::buildError(
                                 $ds,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
@@ -2635,7 +2634,7 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
-                        trigger_error(
+                        throw new \RuntimeException(
                             static::buildError(
                                 $ldap_connection,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
@@ -2655,7 +2654,7 @@ class AuthLDAP extends CommonDBTM
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
-                        trigger_error(
+                        throw new \RuntimeException(
                             static::buildError(
                                 $ldap_connection,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
@@ -3588,7 +3587,7 @@ class AuthLDAP extends CommonDBTM
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
-                trigger_error(
+                throw new \RuntimeException(
                     static::buildError(
                         $ds,
                         sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
