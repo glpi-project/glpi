@@ -1468,37 +1468,52 @@ final class DbUtils
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
 
-        // IDs to be present in the final array
+       // IDs to be present in the final array
         $id_found = [];
+       // current ID found to be added
+        $found = [];
 
-        $sons = $this->getSonsOf($table, $IDf);
-        if (!isset($sons[(int) $IDf])) {
-            $sons[(int) $IDf] = (int) $IDf;
-        }
-
-        // First request init the variables
+       // First request init the  variables
         $iterator = $DB->request([
-            'SELECT' => ['id', 'name', $parentIDfield],
             'FROM'   => $table,
-            'WHERE'  => [$parentIDfield => $sons],
+            'WHERE'  => [$parentIDfield => $IDf],
             'ORDER'  => 'name'
         ]);
 
-        $grouped = [];
         foreach ($iterator as $row) {
-            $grouped[$row[$parentIDfield]][] = [
-                'id'   => $row['id'],
-                'name' => $row['name']
-            ];
+            $id_found[$row['id']]['parent'] = $IDf;
+            $id_found[$row['id']]['name']   = $row['name'];
+            $found[$row['id']]              = $row['id'];
         }
 
-        $constructed = $this->constructTreeFromList($grouped, $IDf, true);
-        return [
+       // Get the leafs of previous founded item
+        while (count($found) > 0) {
+           // Get next elements
+            $iterator = $DB->request([
+                'FROM'   => $table,
+                'WHERE'  => [$parentIDfield => $found],
+                'ORDER'  => 'name'
+            ]);
+
+           // CLear the found array
+            unset($found);
+            $found = [];
+
+            foreach ($iterator as $row) {
+                if (!isset($id_found[$row['id']])) {
+                    $id_found[$row['id']]['parent'] = $row[$parentIDfield];
+                    $id_found[$row['id']]['name']   = $row['name'];
+                    $found[$row['id']]              = $row['id'];
+                }
+            }
+        }
+        $tree = [
             $IDf => [
                 'name' => Dropdown::getDropdownName($table, $IDf),
-                'tree' => $constructed,
+                'tree' => $this->constructTreeFromList($id_found, $IDf),
             ],
         ];
+        return $tree;
     }
 
     /**
@@ -1506,35 +1521,20 @@ final class DbUtils
      *
      * @param array   $list the list
      * @param integer $root root of the tree
-     * @param boolean $grouped Is the list already grouped by parent ID?
      *
      * @return array list of items in the tree
      */
-    public function constructTreeFromList($list, $root, bool $grouped = false)
+    public function constructTreeFromList($list, $root)
     {
+
         $tree = [];
-        if (!$grouped) {
-            foreach ($list as $ID => $data) {
-                if ($data['parent'] == $root) {
-                    unset($list[$ID]);
-                    $tree[$ID]['name'] = $data['name'];
-                    $tree[$ID]['tree'] = [];
-                }
-            }
-            if (count($list)) {
-                foreach ($tree as $id => $data) {
-                    $tree[$id]['tree'] = $this->constructTreeFromList($list, $id);
-                }
-            }
-        } else {
-            if (array_key_exists($root, $list)) {
-                foreach ($list[$root] as $data) {
-                    $tree[$data['id']]['name'] = $data['name'];
-                    $tree[$data['id']]['tree'] = $this->constructTreeFromList($list, $data['id'], true);
-                }
+        foreach ($list as $ID => $data) {
+            if ($data['parent'] == $root) {
+                unset($list[$ID]);
+                $tree[$ID]['name'] = $data['name'];
+                $tree[$ID]['tree'] = $this->constructTreeFromList($list, $ID);
             }
         }
-
         return $tree;
     }
 
