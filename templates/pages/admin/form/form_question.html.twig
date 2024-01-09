@@ -31,9 +31,11 @@
  # ---------------------------------------------------------------------
  #}
 
-{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypeInterface[] #}
+{# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
 {# @var question_type          Glpi\Form\QuestionType\QuestionTypeInterface #}
 {# @var question               Glpi\Form\Question|null #}
+{# @var section                Glpi\Form\Section|null #}
+
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -173,5 +175,15 @@
         type="hidden"
         name="id"
         value="{{ question is not null ? question.fields.id : 0 }}"
+    />
+    <input
+        type="hidden"
+        name="_use_uuid_for_sections_id"
+        value="{{ section is not null ? 0 : 1 }}"
+    />
+    <input
+        type="hidden"
+        name="forms_sections_id"
+        value="{{ section is not null ? section.fields.id : 0 }}"
     />
 </div>

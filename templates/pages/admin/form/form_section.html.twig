@@ -1,0 +1,169 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var form                   Glpi\Form #}
+{# @var section                Glpi\Form\Section|null #}
+{# @var section_index          int|null #}
+{# @var question_types_manager QuestionTypesManager #}
+{# @var can_update             bool #}
+{# @var show_section_form      bool #}
+{# @var number_of_sections     int #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{# Common params for any fields #}
+{% set base_field_options = {
+    'is_horizontal': false,
+    'full_width'   : true,
+    'no_label'     : true,
+} %}
+
+<div
+    data-glpi-form-editor-section
+>
+    <div
+        class="bg-primary px-2 py-1 rounded-top {{ show_section_form ? "": "d-none"}}"
+        style="width: fit-content;"
+        data-glpi-form-editor-section-number-display
+    >
+        {{ __("Section %d of %d")|format(section_index, number_of_sections) }}
+    </div>
+    <div
+        class="card mb-3 {{ show_section_form ? "" : "d-none" }}"
+        style="border-top-left-radius:0;"
+        data-glpi-form-editor-section-form-container
+        data-glpi-form-editor-on-click="set-active"
+    >
+        <div
+            class="card-status-start bg-primary"
+            data-active-status
+        ></div>
+        <div class="card-body">
+            {# Header #}
+            <div class="d-flex">
+                {# Section's name #}
+                <input
+                    type="text"
+                    class="form-control content-editable-h2"
+                    name="name"
+                    value="{{ section is not null ? section.fields.name : '' }}"
+                    placeholder="{{ __("New section") }}"
+                >
+
+                {# Extra actions #}
+                <div class="dropdown ms-auto cursor-pointer">
+                    <i
+                        class="ti ti-dots-vertical show"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        <li>
+                            <a
+                                href="#"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="delete-section"
+                            >
+                                <i class="ti ti-trash me-2"></i>
+                                <span>{{ __("Delete section") }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            {# Section's description #}
+            <div class="content-editable-tinymce">
+                {{ fields.textareaField(
+                    "description",
+                    section is not null ? section.fields.description : '',
+                    __('Header'),
+                    base_field_options|merge({
+                        'enable_richtext': true,
+                        'placeholder': __('Add a description to this section...'),
+                        'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                        'editor_height': "0",
+                        'rows' : 1,
+                        'toolbar_location': 'bottom',
+                        'init': section is not null ? true : false,
+                    })
+                ) }}
+            </div>
+
+            <input
+                type="hidden"
+                name="_use_uuid"
+                value="{{ section is not null ? 0 : 1 }}"
+            />
+            <input
+                type="hidden"
+                name="id"
+                value="{{ section is not null ? section.fields.id : 0 }}"
+            />
+            <input
+                type="hidden"
+                name="forms_forms_id"
+                value="{{ form.fields.id }}"
+            />
+        </div>
+    </div>
+
+     <div data-glpi-form-editor-section-questions>
+        {% for question in section.getQuestions() %}
+            {# Render admin template for the given question type #}
+            {{ include('pages/admin/form/form_question.html.twig', {
+                'question_types_manager': question_types_manager,
+                'question_type'         : question.getQuestionType(),
+                'question'              : question,
+                'section'               : section,
+            }, with_context = false) }}
+        {% endfor %}
+    </div>
+
+    {# Add question action at the end of each sections #}
+    {# TODO: UI/UX #}
+    {% if can_update %}
+        <div
+            class="card cursor-pointer align-items-center mb-4"
+            data-glpi-form-editor-on-click="add-question"
+        >
+            <div class="card-body">
+                <h3 class="d-flex align-items-center">
+                    <i class="ti ti-circle-plus me-2"></i>
+                    {{ __("Add question") }}
+                </h3>
+            </div>
+        </div>
+    {% endif %}
+</div>
+

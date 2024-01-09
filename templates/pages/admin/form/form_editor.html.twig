@@ -129,28 +129,31 @@
                     </div>
 
                     {# Display all questions here #}
-                    <div data-glpi-form-editor-questions>
+                    <div data-glpi-form-editor-sections>
+                        {% set number_of_sections = item.getSections()|length %}
                         {% for section in item.getSections() %}
-                            {% for question in section.getQuestions() %}
-                                {# Render admin template for the given question type #}
-                                {{ include('pages/admin/form/form_question.html.twig', {
-                                    'question_types_manager': question_types_manager,
-                                    'question_type'         : question.getQuestionType(),
-                                    'question'              : question,
-                                }, with_context = false) }}
-                            {% endfor %}
+                            {{ include('pages/admin/form/form_section.html.twig', {
+                                'form'                  : item,
+                                'section'               : section,
+                                'question_types_manager': question_types_manager,
+                                'section_index'         : loop.index,
+                                'can_update'            : item.canUpdate(),
+                                'show_section_form'     : number_of_sections > 1,
+                                'number_of_sections'    : number_of_sections,
+                            }, with_context = false) }}
                         {% endfor %}
                     </div>
 
-                    {# Add question action #}
+                    {# Single add section action at the end of the form#}
                     {# TODO: UI/UX #}
                     {% if item.canUpdate() %}
+                        {% set add_section_action_visible = number_of_sections > 1 or (item.getSections()|first).getQuestions()|length > 0 %}
                         <div
-                            class="card cursor-pointer align-items-center"
-                            data-glpi-form-editor-on-click="add-question"
+                            class="card cursor-pointer align-items-center {{ add_section_action_visible ? "" : "d-none" }}"
+                            data-glpi-form-editor-on-click="add-section"
                         >
                             <div class="card-body">
-                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add question") }}</h3>
+                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add section") }}</h3>
                             </div>
                         </div>
                     {% endif %}
@@ -269,8 +272,9 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
-    {# Special input to indicate that missing question must be deleted #}
+    {# Special inputs to indicate that missing sections and question must be deleted #}
     <input type="hidden" name="_delete_missing_questions" value="1">
+    <input type="hidden" name="_delete_missing_sections" value="1">
 
     {# Set as non draft once saved #}
     {% if item.fields.is_draft %}
@@ -298,6 +302,17 @@
                 }, with_context = false) }}
             </div>
         {% endfor %}
+
+        {# Load new section template #}
+        <div data-glpi-form-editor-section-template>
+            {{ include('pages/admin/form/form_section.html.twig', {
+                'form'               : item,
+                'section'            : null,
+                'can_update'         : true,
+                'show_section_form'  : true,
+                'number_of_sections' : 0,
+            }, with_context = false) }}
+        </div>
 
         {# Load all possible question types values #}
         <select data-glpi-form-editor-question-types-values>

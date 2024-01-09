@@ -189,7 +189,9 @@ class GlpiFormEditorController
 
             // Add a new question at the end of the current section
             case "add-question":
-                this.#addQuestion();
+                this.#addQuestion(
+                    target.closest("[data-glpi-form-editor-section]")
+                );
                 break;
 
             // Delete the target question
@@ -228,6 +230,17 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // Add a new section at the end of the form
+            case "add-section":
+                this.#addSection();
+                break;
+
+            // Delete the target section
+            case "delete-section":
+                this.#deleteSection(
+                    target.closest("[data-glpi-form-editor-section]")
+                );
+                break;
 
             // Unknown action
             default:
@@ -244,17 +257,29 @@ class GlpiFormEditorController
      */
     #computeState() {
         // Find all sections
-        const s_index = 0; // Only one section for now
-        const questions = $(this.#target).find("[data-glpi-form-editor-question]");
-        questions.each((q_index, question) => {
-            // Compute state for each questions
+        const sections = $(this.#target).find("[data-glpi-form-editor-section]");
+        sections.each((s_index, section) => {
+            // Compute state for each sections
             this.#formatInputsNames(
-                $(question),
-                s_index,
-                q_index,
+                $(section).find("[data-glpi-form-editor-section-form-container]"),
+                s_index
             );
-            this.#remplaceEmptyIdByUuid($(question));
-            this.#setKey($(question));
+            this.#remplaceEmptyIdByUuid($(section));
+            this.#setKey($(section));
+
+            // Find all questions for this section
+            const questions = $(section).find("[data-glpi-form-editor-question]");
+            questions.each((q_index, question) => {
+                // Compute state for each questions
+                this.#formatInputsNames(
+                    $(question),
+                    s_index,
+                    q_index,
+                );
+                this.#remplaceEmptyIdByUuid($(question));
+                this.#setParentSection($(question), $(section));
+                this.#setKey($(question));
+            });
         });
     }
 
@@ -308,6 +333,27 @@ class GlpiFormEditorController
             // Replace by UUID
             this.#setItemInput(item, "id", getUUID());
         }
+    }
+
+    /**
+     * Must not be called directly, use #computeState() instead.
+     *
+     * Set the parent section of the given question.
+     *
+     * @param {jQuery} question Target question
+     * @param {jQuery} section  Parent section
+     *
+     */
+    #setParentSection(question, section) {
+        const id = this.#getItemInput(section, "id");
+        this.#setItemInput(question, "forms_sections_id", id);
+
+        // If parent is using a UUID, we need to indicate it in the question too
+        this.#setItemInput(
+            question,
+            "_use_uuid_for_sections_id",
+            this.#getItemInput(section, "_use_uuid")
+        );
     }
 
     /**
@@ -452,8 +498,9 @@ class GlpiFormEditorController
 
     /**
      * Add a new question at the end of the form
+     * @param {jQuery} section
      */
-    #addQuestion() {
+    #addQuestion(section) {
         // Get template content
         const template_content = this.#getQuestionTemplate(
             this.#defaultQuestionType
@@ -462,11 +509,12 @@ class GlpiFormEditorController
         // Insert the new template into the questions area of the current section
         const new_question = this.#copy_template(
             template_content,
-            $(this.#target).find("[data-glpi-form-editor-questions]"),
+            section.find("[data-glpi-form-editor-section-questions]"),
         );
 
         // Update UX
         this.#setActiveItem(new_question);
+        this.#updateAddSectionActionVisiblity();
     }
 
     /**
@@ -476,6 +524,7 @@ class GlpiFormEditorController
     #deleteQuestion(question) {
         // Remove question and update UX
         question.remove();
+        this.#updateAddSectionActionVisiblity();
     }
 
     /**
@@ -666,5 +715,104 @@ class GlpiFormEditorController
             new_specific_content,
             specific,
         );
+    }
+
+    /**
+     * Add a new section at the end of the form.
+     */
+    #addSection() {
+        // Find the section template
+        const template = $(this.#templates)
+            .find("[data-glpi-form-editor-section-template]")
+            .children();
+
+        // Copy the new section template into the sections area
+        const section = this.#copy_template(
+            template,
+            $(this.#target).find("[data-glpi-form-editor-sections]"),
+        );
+
+        // Update UX
+        this.#updateSectionCountLabels();
+        this.#updateSectionsDetailsVisiblity();
+        this.#setActiveItem(
+            section.find("[data-glpi-form-editor-section-form-container]")
+        );
+    }
+
+    /**
+     * Delete the given section.
+     * @param {jQuery} section
+     */
+    #deleteSection(section) {
+        // Remove question and update UX
+        section.remove();
+        this.#updateSectionCountLabels();
+        this.#updateSectionsDetailsVisiblity();
+    }
+
+    /**
+     * Update the visibility of the "add section" action.
+     * The action is hidden if there are no questions in the form.
+     */
+    #updateAddSectionActionVisiblity() {
+        const questions_count = $(this.#target)
+            .find("[data-glpi-form-editor-question]")
+            .length;
+
+        // Hide the "add section" action unless there is at least one question
+        if (questions_count == 0) {
+            $("[data-glpi-form-editor-on-click='add-section']")
+                .addClass("d-none");
+        } else {
+            $("[data-glpi-form-editor-on-click='add-section']")
+                .removeClass("d-none");
+        }
+    }
+
+    /**
+     * Update the visibility of the sections details.
+     * The details are hidden if there is only one section.
+     */
+    #updateSectionsDetailsVisiblity() {
+        const sections_count = $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .length;
+
+        if (sections_count <= 1) {
+            // Only one section, do not display its details
+            $(this.#target)
+                .find("[data-glpi-form-editor-section-form-container]")
+                .addClass("d-none");
+            $(this.#target)
+                .find("[data-glpi-form-editor-section-number-display]")
+                .addClass("d-none");
+        } else {
+            // Mutliple sections, display all details
+            $(this.#target)
+                .find("[data-glpi-form-editor-section-form-container]")
+                .removeClass("d-none");
+            $(this.#target)
+                .find("[data-glpi-form-editor-section-number-display]")
+                .removeClass("d-none");
+        }
+    }
+
+    /**
+     * Update section index and total number in the special section header
+     * "Section X of Y".
+     */
+    #updateSectionCountLabels() {
+        const sections = $(this.#target).find("[data-glpi-form-editor-section]");
+        sections.each((s_index, section) => {
+            const display = $(section)
+                .find("[data-glpi-form-editor-section-number-display]");
+
+            display.html(
+                __("Section 1%d of 2%d")
+                    .replace("1%d", s_index + 1)
+                    .replace("2%d", sections.length)
+            );
+        });
     }
 }
