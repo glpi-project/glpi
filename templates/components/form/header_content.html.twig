@@ -40,18 +40,17 @@
 {% set in_navheader = in_navheader|default(false) %}
 
 {% set entity_name = entity_name|default('') %}
-{% if entity_id is not defined and item.isEntityAssign() %}
-   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
-      {% set entity_id = null %}
-   {% else %}
-      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
-   {% endif %}
-
-   {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', item.getEntityID()) %}
-   {% endif %}
-{% elseif entity_id is not defined %}
-   {% set entity_id = 0 %}
+{% if entity_id is not defined %}
+    {% if item.getType() == 'Entity' %}
+        {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
+    {% elseif item.isEntityAssign() %}
+        {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
+    {% else %}
+        {% set entity_id = 0 %}
+    {% endif %}
+    {% if is_multi_entities_mode() %}
+        {% set entity_name = entity_id is not null ? get_item_name('Entity', entity_id) : null %}
+    {% endif %}
 {% endif %}
 
 {% set template_name = item.fields['template_name'] %}
