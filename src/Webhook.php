@@ -537,7 +537,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      * @param string $itemtype The itemtype to get the parent item schema for.
      * @return array
      */
-    private function getParentItemSchema(string $itemtype): array
+    private static function getParentItemSchema(string $itemtype): array
     {
         $supported = self::getAPIItemtypeData();
         $parent_itemtypes = [];
@@ -594,7 +594,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         } else {
             return;
         }
-        $parent_schema = $this->getParentItemSchema($itemtype);
+        $parent_schema = self::getParentItemSchema($itemtype);
         // filter properties in parent schema by the resolved parent itemtype (checks the x-parent-itemtype property)
         foreach ($parent_schema['properties'] as $property_name => $property_data) {
             if (in_array($parent_itemtype, $property_data['x-parent-itemtype'] ?? [], true)) {
@@ -725,7 +725,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook.html.twig', [
             'item' => $this,
-            'response_schema' => $this->getMonacoSuggestions(),
+            'response_schema' => self::getMonacoSuggestions($this->fields['itemtype']),
         ]);
 
         return true;
@@ -805,7 +805,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook_headers.html.twig', [
             'item' => $this,
             'item_fields' => $item_fields,
-            'response_schema' => $this->getMonacoSuggestions(),
+            'response_schema' => self::getMonacoSuggestions($this->fields['itemtype']),
             'params' => [
                 'candel' => false,
                 'formfooter' => false,
@@ -898,11 +898,14 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $controller_class::getKnownSchemas()[$schema_name] ?? null;
     }
 
-    private function getMonacoSuggestions(): array
+    public static function getMonacoSuggestions(string|null $itemtype): array
     {
-        $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
+        if (empty($itemtype)) {
+            return [];
+        }
+        $schema = self::getAPISchemaBySupportedItemtype($itemtype);
         $props = Schema::flattenProperties($schema['properties'], 'item.');
-        $parent_schema = $this->getParentItemSchema($this->fields['itemtype']);
+        $parent_schema = self::getParentItemSchema($itemtype);
         $parent_props = !empty($parent_schema) ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
 
         $response_schema = [
@@ -947,7 +950,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     private function showPayloadEditor(): void
     {
         $schema = self::getAPISchemaBySupportedItemtype($this->fields['itemtype']);
-        $response_schema = $this->getMonacoSuggestions();
+        $response_schema = self::getMonacoSuggestions($this->fields['itemtype']);
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/payload_editor.html.twig', [
             'item' => $this,
