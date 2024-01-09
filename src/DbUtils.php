@@ -1492,9 +1492,7 @@ final class DbUtils
             ];
         }
 
-        \Glpi\Debug\Profiler::getInstance()->start('constructTreeFromList');
         $constructed = $this->constructTreeFromList($grouped, $IDf, true);
-        \Glpi\Debug\Profiler::getInstance()->stop('constructTreeFromList');
         return [
             $IDf => [
                 'name' => Dropdown::getDropdownName($table, $IDf),

@@ -4127,6 +4127,53 @@ class Entity extends CommonTreeDropdown
         return null;
     }
 
+    private static function getEntityTree(int $entities_id_root): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $sons = getSonsOf('glpi_entities', $entities_id_root);
+        if (!isset($sons[$entities_id_root])) {
+            $sons[$entities_id_root] = $entities_id_root;
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'name', 'entities_id'],
+            'FROM'   => 'glpi_entities',
+            'WHERE'  => ['entities_id' => $sons],
+            'ORDER'  => 'name'
+        ]);
+
+        $grouped = [];
+        foreach ($iterator as $row) {
+            $grouped[$row['entities_id']][] = [
+                'id'   => $row['id'],
+                'name' => $row['name']
+            ];
+        }
+
+        \Glpi\Debug\Profiler::getInstance()->start('constructTreeFromList');
+        $fn_construct_tree_from_list = static function (array $list, int $root) use (&$fn_construct_tree_from_list): array {
+            $tree = [];
+            if (array_key_exists($root, $list)) {
+                foreach ($list[$root] as $data) {
+                    $tree[$data['id']]['name'] = $data['name'];
+                    $tree[$data['id']]['tree'] = $fn_construct_tree_from_list($list, $data['id']);
+                }
+            }
+            return $tree;
+        };
+
+        $constructed = $fn_construct_tree_from_list($grouped, $entities_id_root);
+        \Glpi\Debug\Profiler::getInstance()->stop('constructTreeFromList');
+        return [
+            $entities_id_root => [
+                'name' => Dropdown::getDropdownName('glpi_entities', $entities_id_root),
+                'tree' => $constructed,
+            ],
+        ];
+    }
+
     public static function getEntitySelectorTree(): array
     {
         /** @var array $CFG_GLPI */
@@ -4143,8 +4190,8 @@ class Entity extends CommonTreeDropdown
         $entitiestree = [];
         foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
             $default_entity_id = $default_entity['id'];
+            $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
 
-            $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
             $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
                 foreach ($entities as $entities_id => &$entity) {
                     $entity['key']   = $entities_id;
