@@ -1919,7 +1919,8 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
-                        throw new \RuntimeException(
+                        $error = true;
+                        trigger_error(
                             static::buildError(
                                 $ds,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
@@ -1939,14 +1940,14 @@ class AuthLDAP extends CommonDBTM
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
-                        throw new \RuntimeException(
+                        $error = true;
+                        trigger_error(
                             static::buildError(
                                 $ds,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
                             ),
                             E_USER_WARNING
                         );
-                        throw new \RuntimeException(ldap_error($ds));
                     }
                     return false;
                 }
@@ -2553,6 +2554,7 @@ class AuthLDAP extends CommonDBTM
         if ($sr === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ldap_connection) !== 32) {
+                $error = true;
                 trigger_error(
                     static::buildError(
                         $ldap_connection,
@@ -2634,7 +2636,8 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
-                        throw new \RuntimeException(
+                        $error = true;
+                        trigger_error(
                             static::buildError(
                                 $ldap_connection,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
@@ -2654,7 +2657,8 @@ class AuthLDAP extends CommonDBTM
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
-                        throw new \RuntimeException(
+                        $error = true;
+                        trigger_error(
                             static::buildError(
                                 $ldap_connection,
                                 sprintf('LDAP search with base DN `%s` and filter `%s` failed', $config_ldap->fields['basedn'], $filter)
@@ -2892,7 +2896,7 @@ class AuthLDAP extends CommonDBTM
             ];
 
             try {
-                $infos = self::searchUserDn($ds, $attribs);
+                $infos = self::searchUserDn($ds, $attribs, $error);
 
                 if ($infos && $infos['dn']) {
                     $user_dn = $infos['dn'];
@@ -2966,7 +2970,7 @@ class AuthLDAP extends CommonDBTM
                     }
                     return false;
                 }
-                if ($action != self::ACTION_IMPORT) {
+                if (!$error && $action != self::ACTION_IMPORT) {
                     $users_id = User::getIdByField($params['user_field'], $params['value']);
                     User::manageDeletedUserInLdap($users_id);
                     return ['action' => self::USER_DELETED_LDAP,
@@ -3529,7 +3533,7 @@ class AuthLDAP extends CommonDBTM
      * @return array|boolean dn of the user, else false
      * @throws \RuntimeException
      */
-    public static function searchUserDn($ds, $options = [])
+    public static function searchUserDn($ds, $options = [], ?bool &$error = null)
     {
 
         $values = [
@@ -3558,7 +3562,7 @@ class AuthLDAP extends CommonDBTM
        //First : if a user dn is provided, look for it in the directory
        //Before trying to find the user using his login_field
         if ($values['user_dn']) {
-            $info = self::getUserByDn($ds, $values['user_dn'], $attrs);
+            $info = self::getUserByDn($ds, $values['user_dn'], $attrs, true, $error);
 
             if ($info) {
                 $ret = [
@@ -3587,14 +3591,14 @@ class AuthLDAP extends CommonDBTM
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
-                throw new \RuntimeException(
+                $error = true;
+                trigger_error(
                     static::buildError(
                         $ds,
                         sprintf('LDAP search with base DN `%s` and filter `%s` failed', $values['basedn'], $filter)
                     ),
                     E_USER_WARNING
                 );
-                throw new \RuntimeException(ldap_error($ds));
             }
             return false;
         }
@@ -3627,7 +3631,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array|boolean false if failed
      */
-    public static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true)
+    public static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true, ?bool &$error = null)
     {
         if (!$clean) {
             Toolbox::deprecated('Use of $clean = false is deprecated');
@@ -3637,6 +3641,7 @@ class AuthLDAP extends CommonDBTM
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
+                $error = true;
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -3644,7 +3649,6 @@ class AuthLDAP extends CommonDBTM
                     ),
                     E_USER_WARNING
                 );
-                throw new \RuntimeException(ldap_error($ds));
             }
             return false;
         }
@@ -3668,13 +3672,13 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array|boolean false if failed
      */
-    public static function getUserByDn($ds, $user_dn, $attrs, $clean = true)
+    public static function getUserByDn($ds, $user_dn, $attrs, $clean = true, ?bool &$error = null)
     {
         if (!$clean) {
             Toolbox::deprecated('Use of $clean = false is deprecated');
         }
 
-        return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs);
+        return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs, $clean, $error);
     }
 
     /**

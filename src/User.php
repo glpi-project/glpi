@@ -2192,7 +2192,8 @@ class User extends CommonDBTM
         if ($sr === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
-                throw new \RuntimeException(
+                $error = true;
+                trigger_error(
                     AuthLDAP::buildError(
                         $ds,
                         sprintf('LDAP search with base DN `%s` and filter `%s` failed', $ldap_base_dn, $filter)
