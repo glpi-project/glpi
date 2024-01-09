@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2022 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,10 @@
 
 namespace Glpi\Security;
 
+use Glpi\DBAL\QueryExpression;
 use Profile;
 use Profile_User;
 use ProfileRight;
-use QueryExpression;
 
 /**
  * Permission manager class.
@@ -69,6 +69,7 @@ final class PermissionManager
      */
     private function getAllProfilesForUser(?int $users_id, int $entities_id): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $profiles = [];
@@ -84,7 +85,7 @@ final class PermissionManager
         }
 
         $profile_table = Profile::getTable();
-        $iterator = $DB->request([
+        $criteria = [
             'SELECT' => ['profiles_id'],
             'FROM' => Profile_User::getTable(),
             'LEFT JOIN' => [
@@ -101,14 +102,19 @@ final class PermissionManager
             ],
             'WHERE' => [
                 'OR' => [
-                    Profile_User::getTableField('entities_id') => $entities_id,
-                    'AND' => [
-                        Profile_User::getTableField('entities_id') => $parent_entities,
-                        Profile_User::getTableField('is_recursive') => 1
-                    ]
+                    Profile_User::getTableField('entities_id') => $entities_id
                 ]
             ]
-        ]);
+        ];
+        if (count($parent_entities)) {
+            $criteria['WHERE']['OR'][] = [
+                'AND' => [
+                    Profile_User::getTableField('entities_id') => $parent_entities,
+                    Profile_User::getTableField('is_recursive') => 1
+                ]
+            ];
+        }
+        $iterator = $DB->request($criteria);
         foreach ($iterator as $row) {
             $profiles[] = $row['profiles_id'];
         }
@@ -124,6 +130,7 @@ final class PermissionManager
      */
     public function getAggregatedRights(array $profiles): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($profiles)) {
@@ -171,6 +178,7 @@ final class PermissionManager
      */
     public function haveRight(?int $users_id, string $module, int $right, bool $all_profiles = false, int $entities_id = -1): bool
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($entities_id === null) {
@@ -226,6 +234,7 @@ final class PermissionManager
      */
     public function getPossibleProfiles(string $module, int $right): array
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $profiles = [];
@@ -259,6 +268,7 @@ final class PermissionManager
      */
     public function hasProfile(?int $users_id, int $profiles_id): bool
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($users_id === null) {
