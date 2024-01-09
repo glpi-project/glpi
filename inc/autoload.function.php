@@ -57,25 +57,11 @@ function isCommandLine()
  */
 function isAPI()
 {
-    /** @var array $CFG_GLPI */
-    global $CFG_GLPI;
-
-    $called_url = (!empty($_SERVER['HTTPS'] ?? "") && ($_SERVER['HTTPS'] ?? "") !== 'off'
-                     ? 'https'
-                     : 'http') .
-                 '://' . ($_SERVER['HTTP_HOST'] ?? "") .
-                 ($_SERVER['REQUEST_URI'] ?? "");
-
-    $base_api_url = $CFG_GLPI['url_base_api'] ?? ""; // $CFG_GLPI may be not defined if DB is not available
-    if (!empty($base_api_url) && strpos($called_url, $base_api_url) !== false) {
-        return true;
-    }
-
     $script = isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : '';
-    if (strpos($script, 'api.php') !== false) {
+    if (str_contains($script, 'api.php')) {
         return true;
     }
-    if (strpos($script, 'apirest.php') !== false) {
+    if (str_contains($script, 'apirest.php')) {
         return true;
     }
 

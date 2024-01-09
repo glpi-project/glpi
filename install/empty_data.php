@@ -290,7 +290,6 @@ $empty_data_builder = new class
             'enable_api' => '0',
             'enable_api_login_credentials' => '0',
             'enable_api_login_external_token' => '1',
-            'url_base_api' => 'http://localhost/glpi/api',
             'login_remember_time' => '604800',
             'login_remember_default' => '1',
             'use_notifications' => '0',

@@ -1271,4 +1271,33 @@ class Migration extends \GLPITestCase
             ]
         ]);
     }
+
+    public function testRemoveConfig()
+    {
+        global $DB;
+
+        $this->variable($DB->insert('glpi_configs', [
+            'name' => __FUNCTION__,
+            'value' => 'test',
+            'context' => 'test'
+        ]))->isNotEqualTo(false);
+
+        $this->migration->removeConfig([__FUNCTION__]);
+        // Shouldn't be deleted. Wrong context
+        $this->integer(count($DB->request([
+            'FROM' => 'glpi_configs',
+            'WHERE' => [
+                'name' => __FUNCTION__
+            ]
+        ])))->isEqualTo(1);
+
+        $this->migration->removeConfig([__FUNCTION__], 'test');
+        // Should be deleted
+        $this->integer(count($DB->request([
+            'FROM' => 'glpi_configs',
+            'WHERE' => [
+                'name' => __FUNCTION__
+            ]
+        ])))->isEqualTo(0);
+    }
 }

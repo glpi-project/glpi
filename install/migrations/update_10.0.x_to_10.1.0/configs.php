@@ -48,3 +48,5 @@ $migration->addField('glpi_users', 'toast_location', 'string');
 
 $migration->addField('glpi_users', 'set_followup_tech', 'tinyint DEFAULT NULL');
 $migration->addField('glpi_users', 'set_solution_tech', 'tinyint DEFAULT NULL');
+
+$migration->removeConfig(['url_base_api']);

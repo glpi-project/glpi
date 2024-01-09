@@ -186,13 +186,6 @@ class Config extends CommonDBTM
             }
         }
 
-        if (isset($input["url_base_api"]) && !empty($input["url_base_api"])) {
-            if (!Toolbox::isValidWebUrl($input["url_base_api"])) {
-                Session::addMessageAfterRedirect(__('Invalid API base URL!'), false, ERROR);
-                return false;
-            }
-        }
-
         $input = $this->handleSmtpInput($input);
 
         if (isset($input["proxy_passwd"]) && empty($input["proxy_passwd"])) {
@@ -538,6 +531,8 @@ class Config extends CommonDBTM
 
         // Options just for new API
         $api_versions = \Glpi\Api\HL\Router::getAPIVersions();
+        $legacy_version = array_filter($api_versions, static fn ($version) => $version['api_version'] === '1');
+        $legacy_version = reset($legacy_version);
         $current_version = array_filter($api_versions, static fn ($version) => $version['version'] === \Glpi\Api\HL\Router::API_VERSION);
         $current_version = reset($current_version);
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
@@ -549,8 +544,8 @@ class Config extends CommonDBTM
             'getting_started_doc_url' => $getting_started_doc,
             'endpoint_doc_url' => $endpoint_doc,
             'api_url' => $current_version['endpoint'],
-            'legacy_doc_url' => trim($CFG_GLPI['url_base_api'], '/') . "/",
-            'legacy_api_url' => $CFG_GLPI["url_base_api"],
+            'legacy_doc_url' => $legacy_version['endpoint'],
+            'legacy_api_url' => $legacy_version['endpoint'],
         ]);
         TemplateRenderer::getInstance()->display('pages/setup/general/api_apiclients_section.html.twig');
     }
