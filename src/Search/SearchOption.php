@@ -487,6 +487,7 @@ final class SearchOption implements \ArrayAccess
                     case 'count':
                     case 'number':
                     case "integer":
+                    case 'decimal':
                         $opt = [
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
