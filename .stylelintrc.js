@@ -7,8 +7,6 @@ module.exports = {
         "css/lib/**/*",
     ],
     "rules": {
-        "max-line-length": null,
-
         // DISABLED pure naming rules, no functional impact
         "scss/at-function-pattern": null, // DISABLE Expected function name to be kebab-case
         "scss/dollar-variable-pattern": null, // DISABLE: Expected variable to be kebab-case
