@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -332,6 +332,24 @@ class SoftwareLicense extends CommonTreeDropdown
         }
 
         return true;
+    }
+
+    /**
+     * Is the license recursive ?
+     *
+     * @return boolean
+     **/
+    public function isRecursive()
+    {
+        $soft = new Software();
+        if (
+            isset($this->fields["softwares_id"])
+            && $soft->getFromDB($this->fields["softwares_id"])
+        ) {
+            return $soft->isRecursive();
+        }
+
+        return false;
     }
 
 
@@ -1226,8 +1244,8 @@ class SoftwareLicense extends CommonTreeDropdown
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Software':
+            switch (get_class($item)) {
+                case Software::class:
                     if (!self::canView()) {
                         return '';
                     }
@@ -1239,8 +1257,8 @@ class SoftwareLicense extends CommonTreeDropdown
                         (($nb >= 0) ? $nb : '&infin;'),
                         $item::getType()
                     );
-                break;
-                case 'SoftwareLicense':
+
+                case SoftwareLicense::class:
                     if (!self::canView()) {
                         return '';
                     }
@@ -1255,7 +1273,6 @@ class SoftwareLicense extends CommonTreeDropdown
                         (($nb >= 0) ? $nb : '&infin;'),
                         $item::getType()
                     );
-                break;
             }
         }
         return '';

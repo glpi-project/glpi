@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -60,7 +60,7 @@ class ComputerAntivirus extends CommonDBChild
 
        // can exists for template
         if (
-            ($item->getType() == 'Computer')
+            $item instanceof Computer
             && Computer::canView()
         ) {
             $nb = 0;
@@ -152,6 +152,7 @@ class ComputerAntivirus extends CommonDBChild
             'field'              => 'name',
             'name'               => __('Name'),
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -166,6 +167,7 @@ class ComputerAntivirus extends CommonDBChild
             'field'              => 'antivirus_version',
             'name'               => _n('Version', 'Versions', 1),
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
@@ -185,6 +187,7 @@ class ComputerAntivirus extends CommonDBChild
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'searchtype'         => ['equals']
         ];
 
@@ -200,6 +203,7 @@ class ComputerAntivirus extends CommonDBChild
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'searchtype'         => ['equals']
         ];
 
@@ -209,6 +213,7 @@ class ComputerAntivirus extends CommonDBChild
             'field'              => 'signature_version',
             'name'               => __('Signature database version'),
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
@@ -222,6 +227,7 @@ class ComputerAntivirus extends CommonDBChild
             'field'              => 'date_expiration',
             'name'               => __('Expiration date'),
             'forcegroupby'       => true,
+            'usehaving'          => true,
             'massiveaction'      => false,
             'datatype'           => 'date',
             'joinparams'         => [

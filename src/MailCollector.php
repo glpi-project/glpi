@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1567,13 +1567,15 @@ class MailCollector extends CommonDBTM
          : new RecursiveIteratorIterator($message);
 
         foreach ($parts as $part) {
+            // Per rfc 2045 (MIME Part One: Format of Internet Message Bodies), the default content type for Internet mail is text/plain.
+            $content_type = 'text/plain';
             if (
-                !$part->getHeaders()->has('content-type')
-                || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)
+                $part->getHeaders()->has('content-type')
+                && (($content_type_obj = $part->getHeader('content-type')) instanceof ContentType)
             ) {
-                continue;
+                $content_type = strtolower($content_type_obj->getType());
             }
-            if ($content_type->getType() == 'text/html') {
+            if ($content_type === 'text/html') {
                 $this->body_is_html = true;
                 $content = $this->getDecodedContent($part);
 
@@ -1609,7 +1611,7 @@ class MailCollector extends CommonDBTM
                 // do not check for text part if we found html one.
                 break;
             }
-            if ($content_type->getType() == 'text/plain' && $content === null) {
+            if ($content_type === 'text/plain' && $content === null) {
                 $this->body_is_html = false;
                 $content = $this->getDecodedContent($part);
             }

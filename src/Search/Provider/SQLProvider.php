@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1427,8 +1427,8 @@ final class SQLProvider implements SearchProviderInterface
             case "glpi_problems.status":
             case "glpi_changes.status":
                 $tocheck = [];
-                /** @var \CommonITILObject $item */
-                if ($item = getItemForItemtype($itemtype)) {
+                $item = getItemForItemtype($itemtype);
+                if ($item instanceof CommonITILObject) {
                     switch ($val) {
                         case 'process':
                             $tocheck = $item->getProcessStatusArray();
@@ -1459,12 +1459,12 @@ final class SQLProvider implements SearchProviderInterface
                             $tocheck = array_keys($item::getAllStatusArray());
                             break;
                     }
-                }
 
-                if (count($tocheck) === 0) {
-                    $statuses = $item::getAllStatusArray();
-                    if (isset($statuses[$val])) {
-                        $tocheck = [$val];
+                    if (count($tocheck) === 0) {
+                        $statuses = $item::getAllStatusArray();
+                        if (isset($statuses[$val])) {
+                            $tocheck = [$val];
+                        }
                     }
                 }
 
@@ -5102,7 +5102,7 @@ final class SQLProvider implements SearchProviderInterface
                         return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/" .
                             $data[$ID][0]['name'] . "'>";
                     }
-                    return "&nbsp;";
+                    return '';
 
                 case "glpi_documents.filename":
                     $doc = new \Document();
@@ -5339,7 +5339,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $waitingtime = 0;
                         }
-                        if ($totaltime != 0) {
+                        if (($totaltime - $waitingtime) != 0) {
                             $percentage = round((100 * ($currenttime - $waitingtime)) / ($totaltime - $waitingtime));
                         } else {
                             // Total time is null : no active time
@@ -5475,7 +5475,7 @@ final class SQLProvider implements SearchProviderInterface
                             return implode("<br>", $items);
                         }
                     }
-                    return '&nbsp;';
+                    return '';
 
                 case 'glpi_items_tickets.itemtype':
                 case 'glpi_items_problems.itemtype':
@@ -5498,7 +5498,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
 
-                    return '&nbsp;';
+                    return '';
 
                 case 'glpi_tickets.name':
                 case 'glpi_problems.name':
@@ -5653,7 +5653,7 @@ final class SQLProvider implements SearchProviderInterface
                             $data["refID"] . "' title=\"" . __s('See planning') . "\">" .
                             "<i class='far fa-calendar-alt'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
                     } else {
-                        return "&nbsp;";
+                        return '';
                     }
 
                 case "glpi_tickets.priority":
@@ -5926,7 +5926,7 @@ final class SQLProvider implements SearchProviderInterface
                             $out .= "</a>";
                         }
                     }
-                    return (empty($out) ? "&nbsp;" : $out);
+                    return (empty($out) ? '' : $out);
 
                 case "weblink":
                     $orig_link = trim((string)$data[$ID][0]['name']);
@@ -5939,7 +5939,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         return "<a href=\"" . \Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link</a>";
                     }
-                    return "&nbsp;";
+                    return '';
 
                 case "count":
                 case "number":

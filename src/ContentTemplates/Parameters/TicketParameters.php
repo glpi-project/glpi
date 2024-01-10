@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -92,7 +92,6 @@ class TicketParameters extends CommonITILObjectParameters
 
     protected function defineValues(CommonDBTM $ticket): array
     {
-        /** @var Ticket $ticket  */
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
@@ -100,6 +99,7 @@ class TicketParameters extends CommonITILObjectParameters
 
         $values = parent::defineValues($ticket);
 
+        /** @var Ticket $ticket  */
         $values['type'] = $ticket::getTicketTypeName($fields['type']);
         $values['global_validation'] = TicketValidation::getStatus($fields['global_validation']);
         $values['tto'] = $fields['time_to_own'];

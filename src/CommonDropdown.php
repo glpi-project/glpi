@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -876,7 +876,7 @@ abstract class CommonDropdown extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var CommonDropdown $item */
         switch ($ma->getAction()) {
             case 'merge':
                 $fk = $item->getForeignKeyField();
@@ -895,20 +895,20 @@ abstract class CommonDropdown extends CommonDBTM
                             }
                         } else {
                             $input2 = $item->fields;
-                         // Remove keys (and name, tree dropdown will use completename)
+                            // Remove keys (and name, tree dropdown will use completename)
                             if ($item instanceof CommonTreeDropdown) {
                                 unset($input2['id'], $input2['name'], $input2[$fk]);
                             } else {
                                 unset($input2['id']);
                             }
-                      // Change entity
+                            // Change entity
                             $input2['entities_id']  = $_SESSION['glpiactive_entity'];
                             $input2['is_recursive'] = 1;
-                      // Import new
+                            // Import new
                             if ($newid = $item->import($input2)) {
                                // Delete old
                                 if ($newid > 0 && $key != $newid) {
-                               // delete with purge for dropdown with trashbin (Budget)
+                                    // delete with purge for dropdown with trashbin (Budget)
                                     $item->delete(['id'          => $key,
                                         '_replace_by' => $newid
                                     ], 1);

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -907,7 +907,7 @@ describe('Dashboard', () => {
         expect($('.edit-dashboard').get(0)).toHaveClass('active');
         expect(dashboard.element.get(0)).toHaveClass('edit-mode');
         expect(dashboard.grid.setStatic).toHaveBeenCalledWith(false);
-        expect(window.sortable).toHaveBeenCalledWith('#dashboard-12345 .filters', 'enable');
+        // not call as there is no filters expect(window.sortable).toHaveBeenCalledWith('#dashboard-12345 .filters', 'enable');
         expect(dashboard.saveDashboard).not.toHaveBeenCalled();
 
         $('body .grid-stack-item').remove();
@@ -919,7 +919,7 @@ describe('Dashboard', () => {
         expect($('.edit-dashboard').get(0)).not.toHaveClass('active');
         expect(dashboard.element.get(0)).not.toHaveClass('edit-mode');
         expect(dashboard.grid.setStatic).toHaveBeenCalledWith(true);
-        expect(window.sortable).toHaveBeenCalledWith('#dashboard-12345 .filters', 'disable');
+        // not call as there is no filters expect(window.sortable).toHaveBeenCalledWith('#dashboard-12345 .filters', 'disable');
         expect(dashboard.saveDashboard).not.toHaveBeenCalled();
 
         $('body').append(`<div class="grid-stack-item dirty"></div><div class="grid-stack-item dirty"></div>`);

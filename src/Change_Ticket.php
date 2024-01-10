@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -61,8 +61,8 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Change':
+            switch (get_class($item)) {
+                case Change::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_changes_tickets',
@@ -71,7 +71,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     }
                     return self::createTabEntry(Ticket::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
-                case 'Ticket':
+                case Ticket::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_changes_tickets',
@@ -108,6 +108,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             case 'add_task':
                 $tasktype = 'TicketTask';
                 if ($ttype = getItemForItemtype($tasktype)) {
+                    /** @var CommonITILTask $ttype */
                     $ttype->showMassiveActionAddTaskForm();
                     return true;
                 }

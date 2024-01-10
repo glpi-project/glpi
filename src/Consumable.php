@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -129,7 +129,7 @@ class Consumable extends CommonDBChild
      * send back to stock
      *
      * @param array $input Array of item fields. Only the ID field is used here.
-     * @param int $history Not used
+     * @param boolean $history Not used
      *
      * @return bool
      */
@@ -263,7 +263,7 @@ class Consumable extends CommonDBChild
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var Consumable $item */
         switch ($ma->getAction()) {
             case 'backtostock':
                 foreach ($ids as $id) {
@@ -442,7 +442,7 @@ class Consumable extends CommonDBChild
      *
      * @return string to display
      **/
-    public static function getCount($tID, $alarm_threshold, $nohtml = 0)
+    public static function getCount($tID, $alarm_threshold, $nohtml = false)
     {
 
        // Get total
@@ -586,7 +586,7 @@ class Consumable extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForConsumableItem(ConsumableItem $consitem, $show_old = 0)
+    public static function showForConsumableItem(ConsumableItem $consitem, $show_old = false)
     {
         /** @var \DBmysql $DB */
         global $DB;

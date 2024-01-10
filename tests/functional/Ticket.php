@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -3567,137 +3567,6 @@ class Ticket extends DbTestCase
         $this->integer((int)$group_count)->isEqualTo(2);
        // Target ticket should have all suppliers not marked as duplicates above
         $this->integer((int)$supplier_count)->isEqualTo(3);
-    }
-
-    /**
-     * @see self::testGetAssociatedDocumentsCriteria()
-     */
-    protected function getAssociatedDocumentsCriteriaProvider()
-    {
-        $ticket = new \Ticket();
-        $ticket_id = $ticket->add([
-            'name'            => "test",
-            'content'         => "test",
-        ]);
-        $this->integer((int)$ticket_id)->isGreaterThan(0);
-
-        return [
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => 0,
-                    \ITILFollowup::$rightname => 0,
-                    \TicketTask::$rightname   => 0,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s') OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                    $ticket_id
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => 0,
-                    \TicketTask::$rightname   => 0,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-                    \TicketTask::$rightname   => \TicketTask::SEEPUBLIC,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => \ITILFollowup::SEEPRIVATE,
-                    \TicketTask::$rightname   => 0,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-            [
-                'rights'   => [
-                    \Change::$rightname       => 0,
-                    \Problem::$rightname      => 0,
-                    \Ticket::$rightname       => \READ,
-                    \ITILFollowup::$rightname => \ITILFollowup::SEEPUBLIC,
-                    \TicketTask::$rightname   => \TicketTask::SEEPRIVATE,
-                ],
-                'ticket_id'      => $ticket_id,
-                'bypass_rights'  => false,
-                'expected_where' => sprintf(
-                    "(`glpi_documents_items`.`itemtype` = 'Ticket' AND `glpi_documents_items`.`items_id` = '%1\$s')"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILFollowup' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilfollowups` WHERE `glpi_itilfollowups`.`itemtype` = 'Ticket' AND `glpi_itilfollowups`.`items_id` = '%1\$s' AND ((`is_private` = '0' OR `users_id` = '%2\$s'))))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'ITILSolution' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_itilsolutions` WHERE `glpi_itilsolutions`.`itemtype` = 'Ticket' AND `glpi_itilsolutions`.`items_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketValidation' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_ticketvalidations` WHERE `glpi_ticketvalidations`.`tickets_id` = '%1\$s'))"
-                    . " OR (`glpi_documents_items`.`itemtype` = 'TicketTask' AND `glpi_documents_items`.`items_id` IN (SELECT `id` FROM `glpi_tickettasks` WHERE `tickets_id` = '%1\$s'))",
-                    $ticket_id,
-                    getItemByTypeName('User', TU_USER, true)
-                ),
-            ],
-        ];
-    }
-
-    /**
-     * @dataProvider getAssociatedDocumentsCriteriaProvider
-     */
-    public function testGetAssociatedDocumentsCriteria($rights, $ticket_id, $bypass_rights, $expected_where)
-    {
-        $this->login();
-
-        $ticket = new \Ticket();
-        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
-
-        $session_backup = $_SESSION['glpiactiveprofile'];
-        foreach ($rights as $rightname => $rightvalue) {
-            $_SESSION['glpiactiveprofile'][$rightname] = $rightvalue;
-        }
-        $crit = $ticket->getAssociatedDocumentsCriteria($bypass_rights);
-        $_SESSION['glpiactiveprofile'] = $session_backup;
-
-        $it = new \DBmysqlIterator(null);
-        $it->execute('glpi_tickets', $crit);
-        $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `glpi_tickets` WHERE (' . $expected_where . ')');
     }
 
     public function testKeepScreenshotsOnFormReload()

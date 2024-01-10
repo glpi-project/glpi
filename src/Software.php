@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -82,17 +82,13 @@ class Software extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (!$withtemplate) {
-            switch ($item->getType()) {
-                case __CLASS__:
-                    if (
-                        $item->isRecursive()
-                        && $item->can($item->fields['id'], UPDATE)
-                    ) {
-                        return __('Merging');
-                    }
-                    break;
-            }
+        if (
+            !$withtemplate
+            && $item instanceof self
+            && $item->isRecursive()
+            && $item->can($item->fields['id'], UPDATE)
+        ) {
+            return __('Merging');
         }
         return '';
     }
@@ -101,7 +97,7 @@ class Software extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             $item->showMergeCandidates();
         }
         return true;
@@ -295,7 +291,7 @@ class Software extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var Software $item */
         switch ($ma->getAction()) {
             case 'merge':
                 $input = $ma->getInput();
@@ -753,12 +749,12 @@ class Software extends CommonDBTM
     /**
      * Create a new software
      *
-     * @param name                          the software's name
-     * @param manufacturer_id               id of the software's manufacturer
-     * @param entity                        the entity in which the software must be added
-     * @param comment                       (default '')
-     * @param is_recursive         boolean  must the software be recursive (false by default)
-     * @param is_helpdesk_visible           show in helpdesk, default : from config (false by default)
+     * @param string   $name                the software's name
+     * @param integer  $manufacturer_id     id of the software's manufacturer
+     * @param integer  $entity              the entity in which the software must be added
+     * @param string   $comment             (default '')
+     * @param boolean  $is_recursive        must the software be recursive (false by default)
+     * @param ?boolean $is_helpdesk_visible show in helpdesk, default : from config (false by default)
      *
      * @return integer the software's ID
      **/
@@ -806,12 +802,12 @@ class Software extends CommonDBTM
     /**
      * Add a software. If already exist in trashbin restore it
      *
-     * @param name                            the software's name
-     * @param manufacturer                    the software's manufacturer
-     * @param entity                          the entity in which the software must be added
-     * @param comment                         comment (default '')
-     * @param is_recursive           boolean  must the software be recursive (false by default)
-     * @param is_helpdesk_visible             show in helpdesk, default = config value (false by default)
+     * @param string  $name                the software's name
+     * @param string  $manufacturer        the software's manufacturer
+     * @param integer $entity              the entity in which the software must be added
+     * @param string  $comment             comment (default '')
+     * @param boolean $is_recursive        must the software be recursive (false by default)
+     * @param boolean $is_helpdesk_visible show in helpdesk, default = config value (false by default)
      */
     public function addOrRestoreFromTrash(
         $name,
@@ -1020,8 +1016,8 @@ class Software extends CommonDBTM
     /**
      * Merge software with current
      *
-     * @param $item array of software ID to be merged
-     * @param boolean display html progress bar
+     * @param array   $item array of software ID to be merged
+     * @param boolean $html display html progress bar
      *
      * @return boolean about success
      **/

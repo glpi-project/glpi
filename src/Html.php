@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -887,7 +887,7 @@ class Html
                 }
             }
             $inner_style = 'width: 0%; overflow: visible;';
-            $inner_class = 'progress-bar';
+            $inner_class = 'progress-bar text-dark';
             if (!$apply_custom_colors) {
                 $inner_class .= ' progress-bar-striped bg-info';
             } else {
@@ -899,7 +899,7 @@ class Html
                 }
             }
             $out = <<<HTML
-            <div class="progress" style="$outer_style" id="{$id}">
+            <div class="progress bg-primary-emphasis bg-light" style="$outer_style" id="{$id}">
                <div class="$inner_class" role="progressbar"
                      style="$inner_style"
                      aria-valuenow="0"
@@ -5973,11 +5973,11 @@ HTML;
                             is_array($content)
                             && array_key_exists('checked', $content)
                         ) {
-                            $nb_cb_per_col[$col_name]['total'] ++;
-                            $nb_cb_per_row[$row_name]['total'] ++;
+                            $nb_cb_per_col[$col_name]['total']++;
+                            $nb_cb_per_row[$row_name]['total']++;
                             if ($content['checked']) {
-                                $nb_cb_per_col[$col_name]['checked'] ++;
-                                $nb_cb_per_row[$row_name]['checked'] ++;
+                                $nb_cb_per_col[$col_name]['checked']++;
+                                $nb_cb_per_row[$row_name]['checked']++;
                             }
                         }
                     }

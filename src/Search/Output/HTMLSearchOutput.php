@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -309,7 +309,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
             $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
             $value = '<div class="fup-popup">' . $value . '</div>';
-            $valTip = "&nbsp;" . \Html::showToolTip(
+            $valTip = ' ' . \Html::showToolTip(
                 $value,
                 [
                     'awesome-class'   => 'fa-comments',

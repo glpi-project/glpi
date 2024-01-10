@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -141,7 +141,7 @@ function getTableForItemType($itemtype)
  *
  * @param $itemtype   string   itemtype
  *
- * @return CommonDBTM|boolean itemtype object or false if class does not exists
+ * @return CommonDBTM|false itemtype object or false if class does not exists
  **/
 function getItemForItemtype($itemtype)
 {

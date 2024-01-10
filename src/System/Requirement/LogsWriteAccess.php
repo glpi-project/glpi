@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,8 +55,11 @@ class LogsWriteAccess extends AbstractRequirement
      */
     public function __construct(LoggerInterface $logger)
     {
+        parent::__construct(
+            __('Permissions for log files')
+        );
+
         $this->logger = $logger;
-        $this->title = __('Permissions for log files');
     }
 
     protected function check()

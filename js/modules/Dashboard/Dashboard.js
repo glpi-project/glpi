@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -901,7 +901,9 @@ class GLPIDashboard {
         this.grid.setStatic(!activate);
 
         // set filters as sortable (draggable) or not
-        sortable(this.filters_selector, activate ? 'enable' : 'disable');
+        if ($(this.filters_selector).children().length > 0) {
+            sortable(this.filters_selector, activate ? 'enable' : 'disable');
+        }
 
         if (!this.edit_mode) {
             // save markdown textareas set as dirty

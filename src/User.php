@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -254,6 +254,11 @@ class User extends CommonDBTM
         if ($CFG_GLPI['show_count_on_tabs'] == -1) {
             $this->fields['show_count_on_tabs'] = 0;
         }
+
+        // Fallback for invalid language
+        if (!isset($CFG_GLPI['languages'][$this->fields["language"]])) {
+            $this->fields["language"] = $CFG_GLPI["language"];
+        }
     }
 
     /**
@@ -321,13 +326,12 @@ class User extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        switch ($item->getType()) {
-            case __CLASS__:
-                /** @var User $item */
+        switch (get_class($item)) {
+            case self::class:
                 $item->showItems($tabnum == 2);
                 return true;
 
-            case 'Preference':
+            case Preference::class:
                 $user = new self();
                 $user->showMyForm(
                     $CFG_GLPI['root_doc'] . "/front/preference.php",
@@ -557,15 +561,20 @@ class User extends CommonDBTM
     /**
      * Retrieve a user from the database using it's dn.
      *
-     * @since 0.84
-     *
      * @param string $user_dn dn of the user
      *
      * @return boolean
      */
     public function getFromDBbyDn($user_dn)
     {
-        return $this->getFromDBByCrit(['user_dn' => $user_dn]);
+        /**
+         * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
+         * The 'user_dn_hash' field is a hashed version of the 'user_dn' field
+         * and is indexed in the database, making it faster to search.
+         */
+        return $this->getFromDBByCrit([
+            'user_dn_hash' => md5($user_dn)
+        ]);
     }
 
     /**
@@ -848,6 +857,14 @@ class User extends CommonDBTM
         );
     }
 
+    public function pre_addInDB()
+    {
+        // Hash user_dn if set
+        if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
+            $this->input['user_dn_hash'] = md5($this->input['user_dn']);
+        }
+    }
+
     public function post_addItem()
     {
 
@@ -941,7 +958,7 @@ class User extends CommonDBTM
             }
             if ($newPicture) {
                 if (!$fullpath = realpath(GLPI_TMP_DIR . "/" . $input["_picture"])) {
-                    return;
+                    return false;
                 }
                 if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
@@ -1057,7 +1074,7 @@ class User extends CommonDBTM
         if (
             count(array_intersect($protected_input_keys, array_keys($input))) > 0
             && !Session::isCron() // cron context is considered safe
-            && $input['id'] !== Session::getLoginUserID()
+            && (int) $input['id'] !== Session::getLoginUserID()
             && !$this->currentUserHaveMoreRightThan($input['id'])
         ) {
             foreach ($protected_input_keys as $input_key) {
@@ -1231,8 +1248,6 @@ class User extends CommonDBTM
             );
         }
     }
-
-
 
     /**
      * Apply rules to determine dynamic rights of the user.
@@ -3203,7 +3218,7 @@ JAVASCRIPT;
                 echo "<td><label for='dropdown_language$langrand'>" . __('Language') . "</label></td><td>";
                // Language is stored as null in DB if value is same as the global config.
                 $language = $this->fields["language"];
-                if (null === $this->fields["language"]) {
+                if (null === $this->fields["language"] || !isset($CFG_GLPI['languages'][$this->fields["language"]])) {
                     $language = $CFG_GLPI['language'];
                 }
                 Dropdown::showLanguages(
@@ -3569,6 +3584,12 @@ JAVASCRIPT;
                 unset($this->updates[$key]);
                 unset($this->oldvalues['comment']);
             }
+        }
+
+        // Hash user_dn if is updated
+        if (in_array('user_dn', $this->updates)) {
+            $this->updates[] = 'user_dn_hash';
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0 ? md5($this->input['user_dn']) : null;
         }
     }
 
@@ -4271,9 +4292,9 @@ JAVASCRIPT;
      * @param string          $search           pattern (default '')
      * @param integer         $start            start LIMIT value (default 0)
      * @param integer         $limit            limit LIMIT value (default -1 no limit)
-     * @param boolean         $inactive_deleted true to retreive also inactive or deleted users
+     * @param boolean         $inactive_deleted true to retrieve also inactive or deleted users
      *
-     * @return mysqli_result|boolean
+     * @return DBmysqlIterator
      */
     public static function getSqlSearchResult(
         $count = true,
@@ -4284,7 +4305,7 @@ JAVASCRIPT;
         $search = '',
         $start = 0,
         $limit = -1,
-        $inactive_deleted = 0,
+        $inactive_deleted = false,
         $with_no_right = 0
     ) {
         /** @var \DBmysql $DB */
@@ -4768,6 +4789,7 @@ JAVASCRIPT;
         $valuesnames = [];
 
         if (!$p['multiple']) {
+            /** @var array $user */
             $user = getUserName($p['value'], 2, true);
 
             if ($p['readonly']) {
@@ -4789,6 +4811,7 @@ JAVASCRIPT;
             // get multiple values name
             foreach ($p['values'] as $value) {
                 if (!empty($value) && ($value > 0)) {
+                    /** @var array $user */
                     $user = getUserName($value, 2);
                     $valuesnames[] = $user["name"];
                 } else {
@@ -4838,7 +4861,7 @@ JAVASCRIPT;
                 false
             );
             if ($result['count'] === 0) {
-                return;
+                return '';
             }
         }
 
@@ -5910,7 +5933,7 @@ JAVASCRIPT;
     {
 
         if ($this->fields['authtype'] != Auth::LDAP) {
-            return false;
+            return;
         }
         echo "<div class='spaced'>";
         echo "<table class='tab_cadre_fixe'>";
@@ -6125,7 +6148,7 @@ JAVASCRIPT;
      * @since 0.85
      *
      * @param string $picture Picture field value
-     * @param bool  bool get full path
+     * @param bool  $full     get full path
      *
      * @return string
      */
@@ -6288,7 +6311,7 @@ JAVASCRIPT;
     /**
      * Print the switch language form.
      *
-     * @return void
+     * @return string
      */
     public static function showSwitchLangForm()
     {
@@ -6661,8 +6684,7 @@ JAVASCRIPT;
     /**
      * Get anonymized name for user instance.
      *
-     * @param int $users_id
-     * @param int $entities_id
+     * @param ?int $entities_id
      *
      * @return string|null
      */

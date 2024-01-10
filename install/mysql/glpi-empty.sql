@@ -5,7 +5,7 @@
 --
 -- http://glpi-project.org
 --
--- @copyright 2015-2023 Teclib' and contributors.
+-- @copyright 2015-2024 Teclib' and contributors.
 -- @copyright 2003-2014 by the INDEPNET Development Team.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
@@ -7783,6 +7783,7 @@ CREATE TABLE `glpi_users` (
   `password_forget_token` char(40) DEFAULT NULL,
   `password_forget_token_date` timestamp NULL DEFAULT NULL,
   `user_dn` text,
+  `user_dn_hash` varchar(32),
   `registration_number` varchar(255) DEFAULT NULL,
   `show_count_on_tabs` tinyint DEFAULT NULL,
   `refresh_views` int DEFAULT NULL,
@@ -7869,6 +7870,7 @@ CREATE TABLE `glpi_users` (
   KEY `users_id_supervisor` (`users_id_supervisor`),
   KEY `auths_id` (`auths_id`),
   KEY `default_requesttypes_id` (`default_requesttypes_id`),
+  KEY `user_dn_hash` (`user_dn_hash`),
   KEY `substitution_end_date` (`substitution_end_date`),
   KEY `substitution_start_date` (`substitution_start_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

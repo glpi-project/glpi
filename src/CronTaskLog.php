@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,20 +83,19 @@ class CronTaskLog extends CommonDBTM
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'CronTask':
-                    $ong    = [];
-                    $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  countElementsInTable(
-                            $this->getTable(),
-                            ['crontasks_id' => $item->getID(),
-                                'state'        => self::STATE_STOP
-                            ]
-                        );
-                    }
-                    $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
-                    return $ong;
+            if ($item instanceof CronTask) {
+                $ong    = [];
+                $ong[1] = self::createTabEntry(__('Statistics'), 0, $item::getType(), 'ti ti-report-analytics');
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb =  countElementsInTable(
+                        $this->getTable(),
+                        ['crontasks_id' => $item->getID(),
+                            'state'        => self::STATE_STOP
+                        ]
+                    );
+                }
+                $ong[2] = self::createTabEntry(_n('Log', 'Logs', Session::getPluralNumber()), $nb, $item::getType());
+                return $ong;
             }
         }
         return '';
@@ -106,7 +105,7 @@ class CronTaskLog extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == 'CronTask') {
+        if ($item instanceof  CronTask) {
             switch ($tabnum) {
                 case 1:
                     $item->showStatistics();

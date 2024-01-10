@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -827,7 +827,7 @@ class Config extends CommonDBTM
             $dir = getcwd();
             chdir(GLPI_ROOT);
             $returnCode = 1;
-            /** @var array $output */
+            $output = [];
             $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
             $gitbranch = '';
             if (!$returnCode) {
@@ -1300,11 +1300,11 @@ class Config extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'Preference':
+        switch (get_class($item)) {
+            case Preference::class:
                 return __('Personalization');
 
-            case 'User':
+            case User::class:
                 if (
                     User::canUpdate()
                     && $item->currentUserHaveMoreRightThan($item->getID())
@@ -1313,7 +1313,7 @@ class Config extends CommonDBTM
                 }
                 break;
 
-            case __CLASS__:
+            case self::class:
                 $tabs = [
                     1 => self::createTabEntry(__('General setup')),  // Display
                     2 => self::createTabEntry(__('Default values')), // Prefs
@@ -1353,18 +1353,18 @@ class Config extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if ($item->getType() == 'Preference') {
+        if ($item instanceof Preference) {
             $config = new self();
             $user   = new User();
             if ($user->getFromDB(Session::getLoginUserID())) {
                 $user->computePreferences();
                 $config->showFormUserPrefs($user->fields);
             }
-        } else if ($item->getType() == 'User') {
+        } else if ($item instanceof User) {
             $config = new self();
             $item->computePreferences();
             $config->showFormUserPrefs($item->fields);
-        } else if ($item->getType() == __CLASS__) {
+        } else if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     $item->showFormDisplay();

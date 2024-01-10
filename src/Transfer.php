@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1282,7 +1282,8 @@ class Transfer extends CommonDBTM
                     $this->transferDocuments($itemtype, $ID, $newID);
 
                     if (is_a($itemtype, CommonITILObject::class, true)) {
-                       // Transfer ITIL childs documents too
+                        // Transfer ITIL childs documents too
+                        /** @var CommonITILObject $itil_item */
                         $itil_item = getItemForItemtype($itemtype);
                         $itil_item->getFromDB($ID);
                         $document_item_obj = new Document_Item();

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -589,11 +589,11 @@ class Search
      * @param string  $itemtype     item type
      * @param integer $ID           ID of the item to add
      * @param boolean $meta         boolean is a meta
-     * @param integer $meta_type    meta type table ID (default 0)
+     * @param string  $meta_type    meta item type
      *
      * @return string Select string
      **/
-    public static function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0)
+    public static function addSelect($itemtype, $ID, $meta = false, $meta_type = '')
     {
         if ($meta_type === 0) {
             $meta_type = '';
@@ -708,7 +708,7 @@ class Search
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
      * @param boolean $meta                 Is it a meta item ? (default 0)
-     * @param integer $meta_type            Meta type table (default 0)
+     * @param string  $meta_type            Meta item type
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
      *
@@ -720,8 +720,8 @@ class Search
         array &$already_link_tables,
         $new_table,
         $linkfield,
-        $meta = 0,
-        $meta_type = 0,
+        $meta = false,
+        $meta_type = '',
         $joinparams = [],
         $field = ''
     ) {
@@ -798,7 +798,7 @@ class Search
      * @param string  $itemtype        item type
      * @param integer $ID              ID of the SEARCH_OPTION item
      * @param array   $data            array containing data results
-     * @param boolean $meta            is a meta item ? (default 0)
+     * @param boolean $meta            is a meta item ? (default false)
      * @param array   $addobjectparams array added parameters for union search
      * @param string  $orig_itemtype   Original itemtype, used for union_search_type
      *
@@ -808,7 +808,7 @@ class Search
         $itemtype,
         $ID,
         array $data,
-        $meta = 0,
+        $meta = false,
         array $addobjectparams = [],
         $orig_itemtype = null
     ) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -84,22 +84,27 @@ class Stat extends CommonGLPI
 
         switch ($type) {
             case "technicien":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedTechBetween($date1, $date2);
                 break;
 
             case "technicien_followup":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedTechTaskBetween($date1, $date2);
                 break;
 
             case "suppliers_id_assign":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedSupplierBetween($date1, $date2);
                 break;
 
             case "user":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedAuthorBetween($date1, $date2);
                 break;
 
             case "users_id_recipient":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedRecipientBetween($date1, $date2);
                 break;
 
@@ -206,38 +211,47 @@ class Stat extends CommonGLPI
                 break;
 
             case "group":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedGroupBetween($date1, $date2);
                 break;
 
             case "groups_id_assign":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedAssignGroupBetween($date1, $date2);
                 break;
 
             case "priority":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedPriorityBetween($date1, $date2);
                 break;
 
             case "urgency":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedUrgencyBetween($date1, $date2);
                 break;
 
             case "impact":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedImpactBetween($date1, $date2);
                 break;
 
             case "requesttypes_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedRequestTypeBetween($date1, $date2);
                 break;
 
             case "solutiontypes_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedSolutionTypeBetween($date1, $date2);
                 break;
 
             case "usertitles_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, true);
                 break;
 
             case "usercategories_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, false);
                 break;
 
@@ -949,6 +963,7 @@ class Stat extends CommonGLPI
         if (!$item = getItemForItemtype($itemtype)) {
             return;
         }
+        /** @var CommonITILObject $item */
         $table          = $item->getTable();
         $fkfield        = $item->getForeignKeyField();
 
@@ -1558,10 +1573,10 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param $target
-     * @param $date1
-     * @param $date2
-     * @param $start
+     * @param string $target
+     * @param string $date1
+     * @param string $date2
+     * @param int $start
      **/
     public static function showItems($target, $date1, $date2, $start)
     {

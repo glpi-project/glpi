@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -139,9 +139,6 @@ abstract class API
 
     /**
      * Constructor
-     *
-     * @var array $CFG_GLPI
-     * @var DBmysql $DB
      *
      * @return void
      */
@@ -1115,7 +1112,7 @@ abstract class API
         if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
             $range = explode("-", $params['range']);
             $params['start']      = $range[0];
-            $params['list_limit'] = $range[1] - $range[0] + 1;
+            $params['list_limit'] = (int)$range[1] - (int)$range[0] + 1;
             $params['range']      = $range;
         } else {
             $this->returnError("range must be in format : [start-end] with integers");
@@ -1664,7 +1661,7 @@ abstract class API
             if (preg_match("/^[0-9]+-[0-9]+\$/", $params['range'])) {
                 $range = explode("-", $params['range']);
                 $params['start']      = $range[0];
-                $params['list_limit'] = $range[1] - $range[0] + 1;
+                $params['list_limit'] = (int)$range[1] - (int)$range[0] + 1;
                 $params['range']      = $range;
             } else {
                 $this->returnError("range must be in format : [start-end] with integers");
@@ -2518,7 +2515,7 @@ abstract class API
 
                 if (
                     !empty($value)
-                    || $key == 'entities_id' && $value >= 0
+                    || $key == 'entities_id' && !is_array($value) && $value >= 0
                 ) {
                     $tablename = getTableNameForForeignKeyField($key);
                     $itemtype = getItemTypeForTable($tablename);
