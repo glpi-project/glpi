@@ -544,12 +544,14 @@ class Auth extends CommonGLPI
                 } else {
                     // Starting from version 1.6.0, `$service_base_url` argument was added at 5th position, and `$changeSessionID`
                     // was moved at 6th position.
+                    $url_base = parse_url($CFG_GLPI["url_base"]);
+                    $service_base_url = $url_base["scheme"] . "://" . $url_base["host"] . (isset($url_base["port"]) ? ":" . $url_base["port"] : "");
                     phpCAS::client(
                         constant($CFG_GLPI["cas_version"]),
                         $CFG_GLPI["cas_host"],
                         intval($CFG_GLPI["cas_port"]),
                         $CFG_GLPI["cas_uri"],
-                        $CFG_GLPI["url_base"],
+                        $service_base_url,
                         false
                     );
                 }
