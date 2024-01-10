@@ -155,8 +155,7 @@ class State extends DbTestCase
         $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
 
         $this->when(
-            function() use ($item, $states_id)
-            {
+            function () use ($item, $states_id) {
                 $this->boolean($item->isStateVisible($states_id))->isTrue();
             }
         )
