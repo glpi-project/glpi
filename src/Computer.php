@@ -440,6 +440,7 @@ class Computer extends CommonDBTM
                     ]
                 ]
             ]
+         */
 
         $tab[] = [
             'id'                 => '42',
