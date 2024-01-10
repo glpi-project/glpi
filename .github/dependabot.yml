@@ -19,6 +19,11 @@ updates:
     target-branch: "10.0/bugfixes"
     versioning-strategy: "increase"
     rebase-strategy: "disabled"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "*"
+
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
@@ -29,6 +34,10 @@ updates:
     target-branch: "10.0/bugfixes"
     versioning-strategy: "increase"
     rebase-strategy: "disabled"
+    groups:
+      dev-dependencies:
+        patterns:
+          - "*"
 
 
   # Update production dependencies on future release branch (main).
@@ -42,6 +51,24 @@ updates:
     target-branch: "main"
     versioning-strategy: "increase"
     rebase-strategy: "disabled"
+    groups:
+      cytoscape:
+        patterns:
+          - "cytoscape"
+          - "cytoscape-*"
+      leaflet:
+        patterns:
+          - "leaflet"
+          - "leaflet-*"
+          - "leaflet.*"
+      fullcalendar:
+        patterns:
+          - "@fullcalendar/*"
+      tabler:
+        patterns:
+          - "@tabler/*"
+          - "bootstrap"
+
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
@@ -52,3 +79,21 @@ updates:
     target-branch: "main"
     versioning-strategy: "increase"
     rebase-strategy: "disabled"
+    groups:
+      guzzlehttp:
+        patterns:
+          - "guzzlehttp/*"
+      sabre:
+        patterns:
+          - "sabre/*"
+      symfony:
+        patterns:
+          - "symfony/*"
+        exclude-patterns:
+          - "symfony/polyfill-*"
+      symfony-polyfills:
+        patterns:
+          - "symfony/polyfill-*"
+      twig:
+        patterns:
+          - "twig/*"
