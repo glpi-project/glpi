@@ -202,9 +202,9 @@ class Ticket_Ticket extends DbTestCase
 
         $ticket_ticket = new \Ticket_Ticket();
         $this->integer($ticket_ticket->add([
-                'tickets_id_1' => $this->tone->getID(),
-                'tickets_id_2' => $this->ttwo->getID(),
-                'link'         => \Ticket_Ticket::LINK_TO
+            'tickets_id_1' => $this->tone->getID(),
+            'tickets_id_2' => $this->ttwo->getID(),
+            'link'         => \Ticket_Ticket::LINK_TO
         ]))->isGreaterThan(0);
 
         $ticket = new \Ticket();
