@@ -204,7 +204,8 @@ final class RuleController extends AbstractController
                         'x-join' => [
                             'table' => 'glpi_rulecriterias',
                             'fkey' => 'id',
-                            'field' => 'rules_id'
+                            'field' => 'rules_id',
+                            'primary-property' => 'id'
                         ],
                         'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY)
                     ]
@@ -218,7 +219,8 @@ final class RuleController extends AbstractController
                         'x-join' => [
                             'table' => 'glpi_ruleactions',
                             'fkey' => 'id',
-                            'field' => 'rules_id'
+                            'field' => 'rules_id',
+                            'primary-property' => 'id'
                         ],
                         'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY)
                     ]
