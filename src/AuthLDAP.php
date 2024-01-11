@@ -1919,7 +1919,6 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
-                        $error = true;
                         trigger_error(
                             static::buildError(
                                 $ds,
@@ -1940,7 +1939,6 @@ class AuthLDAP extends CommonDBTM
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ds) !== 32) {
-                        $error = true;
                         trigger_error(
                             static::buildError(
                                 $ds,
@@ -2554,7 +2552,6 @@ class AuthLDAP extends CommonDBTM
         if ($sr === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ldap_connection) !== 32) {
-                $error = true;
                 trigger_error(
                     static::buildError(
                         $ldap_connection,
@@ -2636,7 +2633,6 @@ class AuthLDAP extends CommonDBTM
                 ) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
-                        $error = true;
                         trigger_error(
                             static::buildError(
                                 $ldap_connection,
@@ -2657,7 +2653,6 @@ class AuthLDAP extends CommonDBTM
                 if ($sr === false) {
                     // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
                     if (ldap_errno($ldap_connection) !== 32) {
-                        $error = true;
                         trigger_error(
                             static::buildError(
                                 $ldap_connection,
@@ -2896,7 +2891,12 @@ class AuthLDAP extends CommonDBTM
             ];
 
             try {
+                $error = null;
                 $infos = self::searchUserDn($ds, $attribs, $error);
+
+                if ($error === true) {
+                    return false;
+                }
 
                 if ($infos && $infos['dn']) {
                     $user_dn = $infos['dn'];
@@ -2970,7 +2970,7 @@ class AuthLDAP extends CommonDBTM
                     }
                     return false;
                 }
-                if (!$error && $action != self::ACTION_IMPORT) {
+                if ($action != self::ACTION_IMPORT) {
                     $users_id = User::getIdByField($params['user_field'], $params['value']);
                     User::manageDeletedUserInLdap($users_id);
                     return ['action' => self::USER_DELETED_LDAP,
@@ -3529,6 +3529,7 @@ class AuthLDAP extends CommonDBTM
      *          - search_parameters array of search parameters
      *          - user_params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
      *          - condition : ldap condition used
+     * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean dn of the user, else false
      * @throws \RuntimeException
@@ -3563,6 +3564,10 @@ class AuthLDAP extends CommonDBTM
        //Before trying to find the user using his login_field
         if ($values['user_dn']) {
             $info = self::getUserByDn($ds, $values['user_dn'], $attrs, true, $error);
+
+            if ($error === true) {
+                return false;
+            }
 
             if ($info) {
                 $ret = [
@@ -3604,7 +3609,11 @@ class AuthLDAP extends CommonDBTM
         }
 
         //search has been done, let's check for found results
-        $info = self::get_entries_clean($ds, $result);
+        $info = self::get_entries_clean($ds, $result, $error);
+
+        if ($error === true) {
+            return false;
+        }
 
         if (is_array($info) && ($info['count'] == 1)) {
             $ret = [
@@ -3623,11 +3632,12 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get an object from LDAP by giving his DN
      *
-     * @param resource $ds        the active connection to the directory
-     * @param string   $condition the LDAP filter to use for the search
-     * @param string   $dn        DN of the object
-     * @param array    $attrs     Array of the attributes to retrieve
-     * @param boolean  $clean     (true by default)
+     * @param resource  $ds         the active connection to the directory
+     * @param string    $condition  the LDAP filter to use for the search
+     * @param string    $dn         DN of the object
+     * @param array     $attrs      Array of the attributes to retrieve
+     * @param boolean   $clean      (true by default)
+     * @param bool|null $error      Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean false if failed
      */
@@ -3665,10 +3675,11 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get user by domain name
      *
-     * @param resource $ds      the active connection to the directory
-     * @param string   $user_dn domain name
-     * @param array    $attrs   attributes
-     * @param boolean  $clean   (true by default)
+     * @param resource  $ds         the active connection to the directory
+     * @param string    $user_dn    domain name
+     * @param array     $attrs      attributes
+     * @param boolean   $clean      (true by default)
+     * @param bool|null $error      Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean false if failed
      */
@@ -4471,15 +4482,17 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get ldap query results and clean them at the same time
      *
-     * @param resource $link   link to the directory connection
-     * @param array    $result the query results
+     * @param resource  $link   link to the directory connection
+     * @param array     $result the query results
+     * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array which contains ldap query results
      */
-    public static function get_entries_clean($link, $result)
+    public static function get_entries_clean($link, $result, ?bool &$error = null)
     {
         $entries = @ldap_get_entries($link, $result);
         if ($entries === false) {
+            $error = true;
             trigger_error(
                 static::buildError(
                     $link,
