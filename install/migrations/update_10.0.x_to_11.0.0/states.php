@@ -89,7 +89,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
             if (isset($state['is_visible_' . $known_visibility])) {
                 $insert_data['visible_itemtype'] = $known_visibility;
                 $insert_data['is_visible'] = $state['is_visible_' . $known_visibility];
-                $DB->doQueryOrDie($DB->buildInsert('glpi_statevisibilities', $insert_data));
+                $DB->doQueryOrDie($DB->buildInsert('glpi_dropdownvisibilities', $insert_data));
             }
         }
     }
