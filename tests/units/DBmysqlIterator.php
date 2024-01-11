@@ -43,6 +43,7 @@ use QueryExpression;
 
 class DBmysqlIterator extends DbTestCase
 {
+    /** @var \DBmysqlIterator */
     private $it;
 
     public function beforeTestMethod($method)
@@ -1441,5 +1442,14 @@ SQL
         ];
 
         return new \QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+    }
+
+    public function testRawFKeyCondition()
+    {
+        $this->string(
+            $this->it->analyseCrit([
+                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+            ])
+        )->isEqualTo("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)");
     }
 }
