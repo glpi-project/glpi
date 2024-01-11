@@ -381,6 +381,10 @@ class RuleRight extends Rule
         $actions['timezone']['name']                          = __('Timezone');
         $actions['timezone']['type']                          = 'timezone';
 
+        $actions['_deny_login']['name']                       = __('Deny login');
+        $actions['_deny_login']['type']                       = 'yesonly';
+        $actions['_deny_login']['table']                      = '';
+
         return $actions;
     }
 

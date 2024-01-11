@@ -60,6 +60,8 @@ class Auth extends CommonGLPI
     public $user_present = 0;
     /** @var int Indicates if the user password expired */
     public $password_expired = false;
+    /** @var bool Indicates the login was valid by explicitly denied by a rule */
+    public $denied_by_rule = false;
 
     /**
      * Indicated if user was found in the directory.
@@ -1031,42 +1033,48 @@ class Auth extends CommonGLPI
         // if not, we update him.
 
         if ($mfa_pre_auth || $this->validateLogin($login_name, $login_password, $noauto, $login_auth)) {
-            // Check MFA
-            $totp = new TOTPManager();
-            $web_access = !isAPI() && !isCommandLine();
+            if (isset($this->user->fields['_deny_login'])) {
+                $this->addToError(__('User not authorized to connect in GLPI'));
+                $this->auth_succeded = false;
+                $this->denied_by_rule = true;
+            } else {
+                // Check MFA
+                $totp = new TOTPManager();
+                $web_access = !isAPI() && !isCommandLine();
 
-            // In some cases, the session is restored from a remember me cookie.
-            // This results in a redirect loop because there is no mfa_pre_auth session variable, but the login is revalidated when the username and password passed here are empty.
-            // In this case, since the user is technically still logged in, we can just say the login is valid and not process any MFA stuff.
-            if ($web_access && $this->auth_type !== self::COOKIE) {
-                $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
-                if ($totp->is2FAEnabled($this->user->fields['id'])) {
-                    if (!isset($mfa_params['totp_code']) && !isset($mfa_params['backup_code'])) {
-                        // Need to remember that this user entered the correct username/password, and then ask for the TOTP token
-                        $_SESSION['mfa_pre_auth'] = [
-                            'user' => $this->user->fields,
-                            'auth_type' => $this->auth_type,
-                            'extauth' => $this->extauth,
-                            'remember_me' => $remember_me,
-                        ];
-                        Html::redirect($CFG_GLPI["root_doc"] . '/?mfa=1');
-                    } else if (isset($mfa_params['totp_code']) && !$totp->verifyCodeForUser($mfa_params['totp_code'], $this->user->fields['id'])) {
-                        $this->addToError(__('Invalid TOTP code'));
-                        $this->auth_succeded = false;
-                    } else if (isset($mfa_params['backup_code']) && !$totp->verifyBackupCodeForUser($mfa_params['backup_code'], $this->user->fields['id'])) {
-                        $this->addToError(__('Invalid backup code'));
-                        $this->auth_succeded = false;
-                    }
-                } else if ($enforcement !== TOTPManager::ENFORCEMENT_OPTIONAL) {
-                    if ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || !isset($_REQUEST['skip_mfa'])) {
-                        // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
-                        $_SESSION['mfa_pre_auth'] = [
-                            'user' => $this->user->fields,
-                            'auth_type' => $this->auth_type,
-                            'extauth' => $this->extauth,
-                            'remember_me' => $remember_me,
-                        ];
-                        Html::redirect($CFG_GLPI["root_doc"] . '/?mfa_setup=1');
+                // In some cases, the session is restored from a remember me cookie.
+                // This results in a redirect loop because there is no mfa_pre_auth session variable, but the login is revalidated when the username and password passed here are empty.
+                // In this case, since the user is technically still logged in, we can just say the login is valid and not process any MFA stuff.
+                if ($web_access && $this->auth_type !== self::COOKIE) {
+                    $enforcement = $totp->get2FAEnforcement($this->user->fields['id']);
+                    if ($totp->is2FAEnabled($this->user->fields['id'])) {
+                        if (!isset($mfa_params['totp_code']) && !isset($mfa_params['backup_code'])) {
+                            // Need to remember that this user entered the correct username/password, and then ask for the TOTP token
+                            $_SESSION['mfa_pre_auth'] = [
+                                'user' => $this->user->fields,
+                                'auth_type' => $this->auth_type,
+                                'extauth' => $this->extauth,
+                                'remember_me' => $remember_me,
+                            ];
+                            Html::redirect($CFG_GLPI["root_doc"] . '/?mfa=1');
+                        } else if (isset($mfa_params['totp_code']) && !$totp->verifyCodeForUser($mfa_params['totp_code'], $this->user->fields['id'])) {
+                            $this->addToError(__('Invalid TOTP code'));
+                            $this->auth_succeded = false;
+                        } else if (isset($mfa_params['backup_code']) && !$totp->verifyBackupCodeForUser($mfa_params['backup_code'], $this->user->fields['id'])) {
+                            $this->addToError(__('Invalid backup code'));
+                            $this->auth_succeded = false;
+                        }
+                    } else if ($enforcement !== TOTPManager::ENFORCEMENT_OPTIONAL) {
+                        if ($enforcement === TOTPManager::ENFORCEMENT_MANDATORY || !isset($_REQUEST['skip_mfa'])) {
+                            // If MFA is mandatory the user has not already skipped MFA while in a grace period for this login, then we need to ask for it now
+                            $_SESSION['mfa_pre_auth'] = [
+                                'user' => $this->user->fields,
+                                'auth_type' => $this->auth_type,
+                                'extauth' => $this->extauth,
+                                'remember_me' => $remember_me,
+                            ];
+                            Html::redirect($CFG_GLPI["root_doc"] . '/?mfa_setup=1');
+                        }
                     }
                 }
             }
@@ -1135,12 +1143,20 @@ class Auth extends CommonGLPI
                         "Connection failed for " . $login_name . " ($ip)"
                     );
                 } else {
-                    //TRANS: %1$s is the login of the user and %2$s its IP address
-                    Event::log(0, "system", 3, "login", sprintf(
-                        __('Failed login for %1$s from IP %2$s'),
-                        $login_name,
-                        $ip
-                    ));
+                    if ($this->denied_by_rule) {
+                        Event::log(0, "system", 3, "login", sprintf(
+                            __('Login for %1$s denied by authorization rules from IP %2$s'),
+                            $login_name,
+                            $ip
+                        ));
+                    } else {
+                        //TRANS: %1$s is the login of the user and %2$s its IP address
+                        Event::log(0, "system", 3, "login", sprintf(
+                            __('Failed login for %1$s from IP %2$s'),
+                            $login_name,
+                            $ip
+                        ));
+                    }
                 }
             }
         }
