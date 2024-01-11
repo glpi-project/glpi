@@ -6464,6 +6464,18 @@ HTML
         $idor = \Session::getNewIDORToken(\Ticket::class, $dropdown_params);
         $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
         $this->array($values['results'])->size->isGreaterThan(1);
+        $this->boolean($fn_dropdown_has_id($values['results'], $not_my_tickets_id))->isFalse();
+
+        // Add user as requester
+        $ticket_user = new \Ticket_User();
+        $ticket_user->add([
+            'tickets_id' => $not_my_tickets_id,
+            'users_id' => $_SESSION['glpiID'],
+            'type' => CommonITILActor::REQUESTER,
+        ]);
+        $idor = \Session::getNewIDORToken(\Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+        $this->array($values['results'])->size->isGreaterThan(1);
         $this->boolean($fn_dropdown_has_id($values['results'], $not_my_tickets_id))->isTrue();
     }
 }
