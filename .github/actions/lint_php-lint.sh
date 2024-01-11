@@ -21,6 +21,6 @@ vendor/bin/phpcs \
 echo "Run code static analysis"
 vendor/bin/phpstan analyze \
   --ansi \
-  --memory-limit=2G \
+  --memory-limit=2500M \
   --no-interaction \
   --no-progress
