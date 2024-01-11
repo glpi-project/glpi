@@ -88,7 +88,12 @@ class TaskTemplate extends AbstractITILChildTemplate
             ['name'  => 'groups_id_tech',
                 'label' => Group::getTypeName(1),
                 'type'  => 'groups_id_tech'
-            ],
+            ], [
+                'name'  => 'pendingreasons_id',
+                'label' => PendingReason::getTypeName(1),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ]
         ];
     }
 
