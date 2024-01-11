@@ -104,10 +104,12 @@
 
                 <label id="upload_source_label" class="form-label">{{ __("Upload from") }}</label>
                 <div class="d-inline" role="group" aria-labelledby="upload_source_label">
-                    <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenshot">
-                        <i class="ti ti-photo"></i>
-                        <span>{{ __('Screenshot') }}</span>
-                    </button>
+                    {% if '.png'|is_valid_doc is not empty %}
+                        <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenshot">
+                            <i class="ti ti-photo"></i>
+                            <span>{{ __('Screenshot') }}</span>
+                        </button>
+                    {% endif %}
                     {% if '.webm'|is_valid_doc is not empty %}
                         {# TODO hide the screen recording option behind a permission? #}
                         <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenrecording">
