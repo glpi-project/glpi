@@ -1157,7 +1157,90 @@ class Entity extends DbTestCase
         $this->string($new_entity->fields['name'])->isEqualTo('New entity');
     }
 
-    public function testEntitySelector()
+    protected function entityTreeProvider(): iterable
+    {
+        $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
+        $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
+        $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
+
+        yield [
+            'entity_id' => 0,
+            'result'    => [
+                0 => [
+                    'name' => 'Root entity',
+                    'tree' => [
+                        $entity_test_root->getID() => [
+                            'name' => $entity_test_root->fields['name'],
+                            'tree' => [
+                                $entity_test_child_1->getID() => [
+                                    'name' => $entity_test_child_1->fields['name'],
+                                    'tree' => [],
+                                ],
+                                $entity_test_child_2->getID() => [
+                                    'name' => $entity_test_child_2->fields['name'],
+                                    'tree' => [],
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        yield [
+            'entity_id' => $entity_test_root->getID(),
+            'result'    => [
+                $entity_test_root->getID() => [
+                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_root->fields['completename']),
+                    'tree' => [
+                        $entity_test_child_1->getID() => [
+                            'name' => $entity_test_child_1->fields['name'],
+                            'tree' => [],
+                        ],
+                        $entity_test_child_2->getID() => [
+                            'name' => $entity_test_child_2->fields['name'],
+                            'tree' => [],
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        yield [
+            'entity_id' => $entity_test_child_1->getID(),
+            'result'    => [
+                $entity_test_child_1->getID() => [
+                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_1->fields['completename']),
+                    'tree' => [
+                    ]
+                ]
+            ]
+        ];
+
+        yield [
+            'entity_id' => $entity_test_child_2->getID(),
+            'result'    => [
+                $entity_test_child_2->getID() => [
+                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_2->fields['completename']),
+                    'tree' => [
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider entityTreeProvider
+     */
+    public function testGetEntityTree(int $entity_id, array $result): void
+    {
+        $this->login();
+
+        $entity = $this->newTestedInstance();
+        $this->array($this->callPrivateMethod($entity, 'getEntityTree', $entity_id))->isEqualTo($result);
+    }
+
+    public function testGetEntitySelectorTree(): void
     {
         /** @var \DBmysql $DB */
         global $DB;

@@ -678,7 +678,7 @@ class Entity extends CommonTreeDropdown
      */
     public function cleanEntitySelectorCache()
     {
-        Toolbox::deprecated('Entity::cleanEntitySelectorCache no longer has any effect as the entity selector is no longer cached as a unique entry');
+        Toolbox::deprecated('`Entity::cleanEntitySelectorCache()` no longer has any effect as the entity selector is no longer cached as a unique entry');
     }
 
     public function rawSearchOptions()
@@ -4146,6 +4146,9 @@ class Entity extends CommonTreeDropdown
 
         $grouped = [];
         foreach ($iterator as $row) {
+            if (!array_key_exists($row['entities_id'], $grouped)) {
+                $grouped[$row['entities_id']] = [];
+            }
             $grouped[$row['entities_id']][] = [
                 'id'   => $row['id'],
                 'name' => $row['name']
@@ -4157,8 +4160,10 @@ class Entity extends CommonTreeDropdown
             $tree = [];
             if (array_key_exists($root, $list)) {
                 foreach ($list[$root] as $data) {
-                    $tree[$data['id']]['name'] = $data['name'];
-                    $tree[$data['id']]['tree'] = $fn_construct_tree_from_list($list, $data['id']);
+                    $tree[$data['id']] = [
+                        'name' => $data['name'],
+                        'tree' => $fn_construct_tree_from_list($list, $data['id']),
+                    ];
                 }
             }
             return $tree;
