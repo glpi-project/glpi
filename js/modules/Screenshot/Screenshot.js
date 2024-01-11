@@ -35,11 +35,43 @@
 class Screenhot {
 
     constructor() {
-        /**
-         * Array storing the size used for the preview canvas in the format [width, height].
-         * @type {number[]}
-         */
-        this.preview_size = [200, 180];
+
+    }
+
+    /**
+     * Listen on the file upload element to handle removal of previews when the file is removed.
+     * @param {HTMLElement} fileupload_element
+     * */
+    listenOnFileUpload(fileupload_element) {
+        // Need to use a mutation observer as click handlers added after the upload is done are not triggered
+        // We can restrict the observer to only watch DOM removals under the fileupload element
+        const $fileupload_element = $(fileupload_element);
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.removedNodes.forEach((node) => {
+                    if (node.nodeType === 1 && node.id !== undefined && node.id.startsWith('doc_uploader_filename')) {
+                        // Enumerate preview items and remove the one whose data-filename appears at the end of the filename (the upload process adds a prefix)
+                        let filename_input = null;
+                        // find the input element under the removed node's children that has a name starting with _filename
+                        for (let i = 0; i < node.children.length; i++) {
+                            if (node.children[i].name !== undefined && node.children[i].name.startsWith('_filename')) {
+                                filename_input = node.children[i];
+                                break;
+                            }
+                        }
+                        if (filename_input === null) {
+                            return;
+                        }
+                        $fileupload_element.closest('form').find('.upload-preview-item').each((i, item) => {
+                            if (filename_input.value.endsWith($(item).data('filename'))) {
+                                $(item).remove();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+        observer.observe(fileupload_element, {childList: true, subtree: true});
     }
 
     isSupported() {
@@ -153,7 +185,7 @@ class Screenhot {
 
     appendPreviewImg(preview_container, canvas, height, filename) {
         const preview_item = $(`
-            <div class="position-relative d-inline-block overflow-hidden" style="height: ${height}">
+            <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${filename}" style="height: ${height}">
                 <button class="btn btn-sm btn-danger position-absolute top-0 start-0" type="button" title="${__('Delete')}">
                     <i class="ti ti-x"></i>
                 </button>
@@ -164,8 +196,11 @@ class Screenhot {
         img.style.height = '200px';
         img.classList.add('mx-2');
         preview_item.append(img);
+
+        const form = preview_container.closest('form');
+        const fileupload_btn_selector = '.fileupload input[name^="_filename"][value$="' + filename + '"]';
         preview_item.find('button').on('click', () => {
-            preview_container.closest('form').find('.fileupload input[name^="_filename"][value$="' + filename + '"]')
+            form.find(fileupload_btn_selector)
                 .parent().find('.ti-circle-x').click();
             preview_item.remove();
         });
@@ -173,7 +208,7 @@ class Screenhot {
 
     appendPreviewVideo(preview_container, blob, height, filename) {
         const preview_item = $(`
-            <div class="position-relative d-inline-block overflow-hidden" style="height: ${height}">
+            <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${filename}" style="height: ${height}">
                 <button class="btn btn-sm btn-danger position-absolute top-0 start-0" type="button" title="${__('Delete')}">
                     <i class="ti ti-x"></i>
                 </button>
@@ -185,8 +220,11 @@ class Screenhot {
         video.classList.add('mx-2');
         video.controls = true;
         preview_item.append(video);
+
+        const form = preview_container.closest('form');
+        const fileupload_btn_selector = '.fileupload input[name^="_filename"][value$="' + filename + '"]';
         preview_item.find('button').on('click', () => {
-            preview_container.closest('form').find('.fileupload input[name^="_filename"][value$="' + filename + '"]')
+            form.find(fileupload_btn_selector)
                 .parent().find('.ti-circle-x').click();
             preview_item.remove();
         });

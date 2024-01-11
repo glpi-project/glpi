@@ -194,4 +194,50 @@ describe('Screenshot', () => {
         expect($('#screenshot-previews').children().length).toBe(0);
         expect($('#screenshot-previews').parent().find('.fileupload').children().length).toBe(0);
     });
+
+    test('Screenshot preview removed after file deleted', async () => {
+        $('body').append(`
+            <form>
+                <div id="screenshot-previews"></div>
+                <div class="fileupload">
+                    <div id="doc_uploader_filename89f8sef9s8df9j">
+                        <input type="hidden" name="_filename[0]" value="randomprefixtest.png">
+                        <span class="ti ti-circle-x" onclick="$(this).parent().remove()"></span>
+                    </div>
+                </div>
+            </form>
+        `);
+        const fake_canvas = {
+            toDataURL: () => {
+                return 'data:image/png;base64,FAKE_BASE64_DATA';
+            }
+        };
+        Screenshot.listenOnFileUpload(document.querySelector('.fileupload'));
+        Screenshot.appendPreviewImg($('#screenshot-previews'), fake_canvas, '200px', 'test.png');
+        expect($('#screenshot-previews').children().length).toBe(1);
+        $('.fileupload .ti-circle-x').click();
+        await new Promise(process.nextTick);
+        expect($('#screenshot-previews').children().length).toBe(0);
+    });
+
+    test('Recording preview removed after file deleted', async () => {
+        $('body').append(`
+            <form>
+                <div id="screenshot-previews"></div>
+                <div class="fileupload">
+                    <div id="doc_uploader_filename89f8sef9s8df9j">
+                        <input type="hidden" name="_filename[0]" value="randomprefixtest.webm">
+                        <span class="ti ti-circle-x" onclick="$(this).parent().remove()"></span>
+                    </div>
+                </div>
+            </form>
+        `);
+        const fake_blob = new Blob(['FAKE_BLOB_DATA'], {type: 'video/webm'});
+        Screenshot.listenOnFileUpload(document.querySelector('.fileupload'));
+        Screenshot.appendPreviewVideo($('#screenshot-previews'), fake_blob, '200px', 'test.webm');
+        expect($('#screenshot-previews').children().length).toBe(1);
+        $('.fileupload .ti-circle-x').click();
+        await new Promise(process.nextTick);
+        expect($('#screenshot-previews').children().length).toBe(0);
+    });
 });
