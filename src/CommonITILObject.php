@@ -9911,4 +9911,27 @@ abstract class CommonITILObject extends CommonDBTM
         // All actions should be attached to thread instanciated by `new` event
         return 'new';
     }
+
+    /**
+     * Is the current user have right to update the current ITIL object ?
+     *
+     * @return boolean
+     **/
+    public function canUpdateItem()
+    {
+        if (!$this->checkEntity()) {
+            return false;
+        }
+
+        return self::canUpdate();
+    }
+
+    public function canDeleteItem()
+    {
+
+        if (!$this->checkEntity()) {
+            return false;
+        }
+        return self::canDelete();
+    }
 }
