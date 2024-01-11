@@ -3663,7 +3663,12 @@ class AuthLDAP extends CommonDBTM
             return false;
         }
 
-        $info = self::get_entries_clean($ds, $result);
+        $info = self::get_entries_clean($ds, $result, $error);
+
+        if ($error === true) {
+            return false;
+        }
+
         if (is_array($info) && ($info['count'] == 1)) {
             return $info[0];
         }
