@@ -1104,8 +1104,11 @@ final class DbUtils
             return $ancestors;
         } else if ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static function ($id) use ($table) {
+                return "ancestors_cache_{$table}_{$id}";
+            }, $ids_needed_to_fetch));
             foreach ($ids_needed_to_fetch as $id) {
-                if (($ancestors = $GLPI_CACHE->get("ancestors_cache_{$table}_{$id}")) !== null) {
+                if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
                     unset($ids_needed_to_fetch[$id]);
                 }
@@ -1209,12 +1212,14 @@ final class DbUtils
             $GLPI_CACHE->set($ckey, $ancestors_by_id[$to_get]);
         } else {
             // Save the results to the cache for each requested item ID
+            $to_cache = [];
             foreach ($items_id as $id) {
                 if (!isset($ancestors_by_id[$id])) {
                     $ancestors_by_id[$id] = [];
                 }
-                $GLPI_CACHE->set("ancestors_cache_{$table}_{$id}", $ancestors_by_id[$id]);
+                $to_cache["ancestors_cache_{$table}_{$id}"] = $ancestors_by_id[$id];
             }
+            $GLPI_CACHE->setMultiple($to_cache);
         }
 
         // Combine the results for all requested item IDs
