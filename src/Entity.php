@@ -613,9 +613,6 @@ class Entity extends CommonTreeDropdown
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
         // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
         $_SESSION['glpi_multientitiesmode'] = 1;
-
-       // clean entity tree cache
-        $this->cleanEntitySelectorCache();
     }
 
     public function post_updateItem($history = true)
@@ -624,9 +621,6 @@ class Entity extends CommonTreeDropdown
         global $GLPI_CACHE;
 
         parent::post_updateItem($history);
-
-       // clean entity tree cache
-        $this->cleanEntitySelectorCache();
 
         // Delete any cache entry corresponding to an updated entity config
         // for current entities and all its children
@@ -671,9 +665,6 @@ class Entity extends CommonTreeDropdown
                 Entity_RSSFeed::class,
             ]
         );
-
-       // clean entity tree cache
-        $this->cleanEntitySelectorCache();
     }
 
 
@@ -683,13 +674,11 @@ class Entity extends CommonTreeDropdown
      * @since 10.0
      *
      * @return void
+     * @deprecated 10.0.12
      */
     public function cleanEntitySelectorCache()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
-
-        $GLPI_CACHE->delete('entity_selector');
+        Toolbox::deprecated('`Entity::cleanEntitySelectorCache()` no longer has any effect as the entity selector is no longer cached as a unique entry');
     }
 
     public function rawSearchOptions()
@@ -4136,5 +4125,124 @@ class Entity extends CommonTreeDropdown
             return self::badgeCompletenameLink($entity);
         }
         return null;
+    }
+
+    private static function getEntityTree(int $entities_id_root): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $sons = getSonsOf('glpi_entities', $entities_id_root);
+        if (!isset($sons[$entities_id_root])) {
+            $sons[$entities_id_root] = $entities_id_root;
+        }
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'name', 'entities_id'],
+            'FROM'   => 'glpi_entities',
+            'WHERE'  => ['entities_id' => $sons],
+            'ORDER'  => 'name'
+        ]);
+
+        $grouped = [];
+        foreach ($iterator as $row) {
+            if (!array_key_exists($row['entities_id'], $grouped)) {
+                $grouped[$row['entities_id']] = [];
+            }
+            $grouped[$row['entities_id']][] = [
+                'id'   => $row['id'],
+                'name' => $row['name']
+            ];
+        }
+
+        \Glpi\Debug\Profiler::getInstance()->start('constructTreeFromList');
+        $fn_construct_tree_from_list = static function (array $list, int $root) use (&$fn_construct_tree_from_list): array {
+            $tree = [];
+            if (array_key_exists($root, $list)) {
+                foreach ($list[$root] as $data) {
+                    $tree[$data['id']] = [
+                        'name' => $data['name'],
+                        'tree' => $fn_construct_tree_from_list($list, $data['id']),
+                    ];
+                }
+            }
+            return $tree;
+        };
+
+        $constructed = $fn_construct_tree_from_list($grouped, $entities_id_root);
+        \Glpi\Debug\Profiler::getInstance()->stop('constructTreeFromList');
+        return [
+            $entities_id_root => [
+                'name' => Dropdown::getDropdownName('glpi_entities', $entities_id_root),
+                'tree' => $constructed,
+            ],
+        ];
+    }
+
+    public static function getEntitySelectorTree(): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $base_path = $CFG_GLPI['root_doc'] . "/front/central.php";
+        if (Session::getCurrentInterface() == 'helpdesk') {
+            $base_path = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php";
+        }
+
+        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+
+        \Glpi\Debug\Profiler::getInstance()->start('Generate entity tree');
+        $entitiestree = [];
+        foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+            $default_entity_id = $default_entity['id'];
+            $entitytree = $default_entity['is_recursive'] ? self::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
+
+            $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
+                foreach ($entities as $entities_id => &$entity) {
+                    $entity['key']   = $entities_id;
+
+                    $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
+                    $entity['title'] = $title;
+                    unset($entity['name']);
+
+                    if (isset($entity['tree']) && count($entity['tree']) > 0) {
+                        $entity['folder'] = true;
+
+                        $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
+            <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
+            </a>";
+
+                        $children = $adapt_tree($entity['tree']);
+                        $entity['children'] = array_values($children);
+                    }
+
+                    unset($entity['tree']);
+                }
+
+                return $entities;
+            };
+            $adapt_tree($entitytree);
+
+            $entitiestree = array_merge($entitiestree, $entitytree);
+        }
+        \Glpi\Debug\Profiler::getInstance()->stop('Generate entity tree');
+
+        /* scans the tree to select the active entity */
+        $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
+            foreach ($entities as &$entity) {
+                if (isset($ancestors[$entity['key']])) {
+                    $entity['expanded'] = 'true';
+                }
+                if ($entity['key'] == $_SESSION['glpiactive_entity']) {
+                    $entity['selected'] = 'true';
+                }
+                if (isset($entity['children'])) {
+                    $select_tree($entity['children']);
+                }
+            }
+        };
+        $select_tree($entitiestree);
+
+        return $entitiestree;
     }
 }
