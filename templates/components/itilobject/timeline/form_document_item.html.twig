@@ -102,6 +102,25 @@
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
+                <label id="upload_source_label" class="form-label">{{ __("Upload from") }}</label>
+                <div class="d-inline" role="group" aria-labelledby="upload_source_label">
+                    <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenshot">
+                        <i class="ti ti-photo"></i>
+                        <span>{{ __('Screenshot') }}</span>
+                    </button>
+                    {% if '.webm'|is_valid_doc is not empty %}
+                        {# TODO hide the screen recording option behind a permission? #}
+                        <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenrecording">
+                            <i class="ti ti-camera"></i>
+                            <span>{{ __('Screen recording') }}</span>
+                        </button>
+                    {% endif %}
+                </div>
+                <div id="screen_capture_preview" class="w-100">
+                    <div class="previews overflow-x-scroll my-2 d-flex px-2"></div>
+                    <button type="button" name="stop_recording" class="btn btn-secondary d-none">{{ __('Stop recording') }}</button>
+                </div>
+                <hr class="my-1">
                 {% if get_current_interface() == 'central' %}
                     {{ fields.dropdownField(
                         'DocumentCategory',
@@ -151,5 +170,62 @@
                 </div>
             </form>
         </div>
+        <script type="module">
+            import('{{ js_path('js/modules/Screenshot/Screenshot.js') }}').then((m) => {
+                const screenshot = m.default;
+                if (screenshot.isSupported()) {
+                    const btn_screenshot = $('.document_item button[name="add_screenshot"]');
+                    const btn_screenrecording = $('.document_item button[name="add_screenrecording"]');
+                    const btn_stop_recording = $('.document_item button[name="stop_recording"]');
+                    const preview_container = $('#screen_capture_preview');
+                    btn_screenshot.removeClass('d-none');
+                    btn_screenrecording.removeClass('d-none');
+
+                    btn_screenshot.on('click', function() {
+                        btn_stop_recording.addClass('d-none');
+                        screenshot.captureScreenshot().then((temp_canvas) => {
+                            const img_index = preview_container.find('.previews').children().length;
+                            const fake_filename = `screenshot${img_index}.png`;
+                            screenshot.appendPreviewImg(preview_container.find('.previews'), temp_canvas, '200px', fake_filename);
+                            // Add the blob to the file upload control
+                            temp_canvas.toBlob((blob) => {
+                                // Add fake name to the blob with '.png' extension as matching on "blob.type" isn't working
+                                blob.name = fake_filename;
+                                window.uploadFile(blob, {
+                                    getElement: () => {
+                                        return preview_container.get(0)
+                                    }
+                                });
+                                temp_canvas.remove();
+                            }, 'image/png');
+                        });
+                    });
+
+                    btn_screenrecording.on('click', function() {
+                        const chunks = [];
+                        screenshot.startRecording().then((recorder) => {
+                            btn_stop_recording.removeClass('d-none');
+                            recorder.ondataavailable = (e) => {
+                                // No time slice specified when starting the recorder, so this event fires only once when the recording stops
+                                chunks.push(e.data);
+                                const img_index = preview_container.find('.previews').children().length;
+                                const fake_filename = `screen_capture${img_index}.webm`;
+                                e.data.name = fake_filename;
+                                screenshot.appendPreviewVideo(preview_container.find('.previews'), e.data, '200px', fake_filename);
+                                window.uploadFile(e.data, {
+                                    getElement: () => {
+                                        return preview_container.get(0)
+                                    }
+                                });
+                            };
+                            btn_stop_recording.on('click', () => {
+                                recorder.stop();
+                                recorder.stream.getTracks().forEach((track) => track.stop());
+                            });
+                        });
+                    });
+                }
+            });
+        </script>
    {% endif %}
 {% endblock %}
