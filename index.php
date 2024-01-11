@@ -83,6 +83,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     }
     die();
 } else {
+    /** @var array $CFG_GLPI */
+    global $CFG_GLPI;
     include(GLPI_ROOT . "/inc/includes.php");
     $_SESSION["glpicookietest"] = 'testcookie';
 
@@ -106,19 +108,19 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
     Auth::checkAlternateAuthSystems(true, $redirect);
 
-    $errors = "";
+    $errors = [];
     if (isset($_GET['error']) && $redirect !== '') {
         switch ($_GET['error']) {
             case 1: // cookie error
-                $errors .= __('You must accept cookies to reach this application');
+                $errors[] = __('You must accept cookies to reach this application');
                 break;
 
             case 2: // GLPI_SESSION_DIR not writable
-                $errors .= __('Checking write permissions for session files');
+                $errors[] = __('Logins are not possible at this time. Please contact your administrator.');
                 break;
 
             case 3:
-                $errors .= __('Invalid use of session ID');
+                $errors[] = __('Your session has expired. Please log in again.');
                 break;
         }
     }
@@ -128,66 +130,72 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         Toolbox::manageRedirect($redirect);
     }
 
-    if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
-        Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
-    }
-    if (isset($_SESSION['mfa_pre_auth'])) {
-        if (isset($_GET['mfa_setup'])) {
-            if (isset($_POST['secret'], $_POST['totp_code'])) {
-                $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
-                $totp = new \Glpi\Security\TOTPManager();
-                if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
-                    $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
+    if (count($errors)) {
+        TemplateRenderer::getInstance()->display('pages/login_error.html.twig', [
+            'errors'    => $errors,
+            'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . str_replace("?", "&", $redirect),
+        ]);
+    } else {
+        if (isset($_SESSION['mfa_pre_auth'], $_POST['skip_mfa'])) {
+            Html::redirect($CFG_GLPI['root_doc'] . '/front/login.php?skip_mfa=1');
+        }
+        if (isset($_SESSION['mfa_pre_auth'])) {
+            if (isset($_GET['mfa_setup'])) {
+                if (isset($_POST['secret'], $_POST['totp_code'])) {
+                    $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
+                    $totp = new \Glpi\Security\TOTPManager();
+                    if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
+                        $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
+                    } else {
+                        Session::addMessageAfterRedirect(__('Invalid code'), false, ERROR);
+                    }
+                    Html::redirect(Preference::getSearchURL());
                 } else {
-                    Session::addMessageAfterRedirect(__('Invalid code'), false, ERROR);
+                    // Login started. 2FA needs configured.
+                    $totp = new \Glpi\Security\TOTPManager();
+                    $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
                 }
-                Html::redirect(Preference::getSearchURL());
             } else {
-                // Login started. 2FA needs configured.
+                // Login started. Need to ask for the TOTP code.
                 $totp = new \Glpi\Security\TOTPManager();
-                $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
+                $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
             }
         } else {
-            // Login started. Need to ask for the TOTP code.
-            $totp = new \Glpi\Security\TOTPManager();
-            $totp->showTOTPPrompt((int) $_SESSION['mfa_pre_auth']['user']['id']);
-        }
-    } else {
-        // Random number for html id/label
-        $rand = mt_rand();
+            // Random number for html id/label
+            $rand = mt_rand();
 
-        // Regular login
-        TemplateRenderer::getInstance()->display('pages/login.html.twig', [
-            'rand'                => $rand,
-            'card_bg_width'       => true,
-            'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
-            'title'               => __('Authentication'),
-            'noAuto'              => $_GET["noAUTO"] ?? 0,
-            'redirect'            => $redirect,
-            'text_login'          => $CFG_GLPI['text_login'],
-            'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
-            'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
-            'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
-            'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
-                && countElementsInTable('glpi_notifications', [
-                    'itemtype' => 'User',
-                    'event' => 'passwordforget',
-                    'is_active' => 1
-                ]),
-            'languages_dropdown'  => Dropdown::showLanguages('language', [
-                'display'             => false,
+            // Regular login
+            TemplateRenderer::getInstance()->display('pages/login.html.twig', [
                 'rand'                => $rand,
-                'display_emptychoice' => true,
-                'emptylabel'          => __('Default (from user profile)'),
-                'width'               => '100%'
-            ]),
-            'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
-                || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
-                || $CFG_GLPI["use_public_faq"],
-            'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
-            'copyright_message'   => Html::getCopyrightMessage(false),
-            'errors'              => $errors
-        ]);
+                'card_bg_width'       => true,
+                'lang'                => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
+                'title'               => __('Authentication'),
+                'noAuto'              => $_GET["noAUTO"] ?? 0,
+                'redirect'            => $redirect,
+                'text_login'          => $CFG_GLPI['text_login'],
+                'namfield'            => ($_SESSION['namfield'] = uniqid('fielda')),
+                'pwdfield'            => ($_SESSION['pwdfield'] = uniqid('fieldb')),
+                'rmbfield'            => ($_SESSION['rmbfield'] = uniqid('fieldc')),
+                'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
+                    && countElementsInTable('glpi_notifications', [
+                        'itemtype' => 'User',
+                        'event' => 'passwordforget',
+                        'is_active' => 1
+                    ]),
+                'languages_dropdown'  => Dropdown::showLanguages('language', [
+                    'display'             => false,
+                    'rand'                => $rand,
+                    'display_emptychoice' => true,
+                    'emptylabel'          => __('Default (from user profile)'),
+                    'width'               => '100%'
+                ]),
+                'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
+                    || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
+                    || $CFG_GLPI["use_public_faq"],
+                'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
+                'copyright_message'   => Html::getCopyrightMessage(false)
+            ]);
+        }
     }
 }
 // call cron
