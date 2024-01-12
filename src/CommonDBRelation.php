@@ -1903,18 +1903,26 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 9.3.1
      *
      * @param CommonDBTM $item Item instance
+     * @param integer    $start Start index
+     * @param integer    $limit Limit of results. If 0, no limit.
+     * @param array      $order The order for the results where the first element is the column name that will be sorted and the second element is the direction of the sorting (ASC or DESC)
      *
      * @return DBmysqlIterator
      */
-    public static function getListForItem(CommonDBTM $item)
+    public static function getListForItem(CommonDBTM $item, int $start = 0, int $limit = 0, array $order = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
         $params = static::getListForItemParams($item);
-        $iterator = $DB->request($params);
-
-        return $iterator;
+        $params['START'] = $start;
+        if ($limit > 0) {
+            $params['LIMIT'] = $limit;
+        }
+        if (!empty($order)) {
+            $params['ORDER'] = $order;
+        }
+        return $DB->request($params);
     }
 
     /**
