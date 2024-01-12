@@ -126,10 +126,10 @@ class Screenhot {
                 return new Promise((resolve, reject) => {
                     try {
                         video.addEventListener('loadeddata', () => {
-                            video.play().then(() => {
+                            return video.play().then(() => {
                                 this.updateCanvas(video, temp_canvas);
                                 track.stop();
-                                return temp_canvas;
+                                resolve(temp_canvas);
                             });
                         });
                     } catch(error) {
