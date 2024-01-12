@@ -701,7 +701,9 @@ JAVASCRIPT
         }
        //ID > 0 : dropdown item might be translated !
         if ($ID > 0) {
-            if (!$item->maybeTranslated) {
+            $item = new $itemtype();
+            $item->getFromDB($ID);
+            if (!$item->maybeTranslated()) {
                 return $value;
             }
 
