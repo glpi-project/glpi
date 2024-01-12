@@ -41,6 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesLoader;
+use Html;
 use Log;
 
 /**
@@ -93,6 +94,9 @@ class Form extends CommonDBTM
             $this->getEmpty();
         }
         $this->initForm($id, $options);
+
+        // We will be previewing forms from this page
+        echo Html::script("js/form_renderer_controller.js");
 
         // Render twig template
         $twig = TemplateRenderer::getInstance();
