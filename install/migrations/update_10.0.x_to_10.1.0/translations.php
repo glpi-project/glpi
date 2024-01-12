@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
- Config::deleteConfigurationValues('core', [
+Config::deleteConfigurationValues('core', [
     'translate_dropdowns',
     'translate_kb',
     'translate_reminders',
- ]);
+]);

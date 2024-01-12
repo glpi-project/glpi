@@ -1020,7 +1020,7 @@ class CommonDBTM extends CommonGLPI
      * @since 0.85
      *
      * @return void
-     **/        
+     **/
     public function cleanTranslations()
     {
 
