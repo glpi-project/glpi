@@ -727,7 +727,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             } else if (count($values) == 3) {
                 $condition = array_pop($values);
                 $fkey = $this->analyseFkey($values);
-                $condition_value = $this->analyseCrit(current($condition));
+                $condition_value = $this->analyseCrit($condition);
                 if (!empty(trim($condition_value))) {
                     return $fkey . ' ' . key($condition) . ' ' . $condition_value;
                 }

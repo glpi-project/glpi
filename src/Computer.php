@@ -419,28 +419,26 @@ class Computer extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
-        //FIXME: add a search option for the state
-        /*$tab[] = [
+        $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
             'joinparams'         => [
+                'condition' => [
+                    '`glpi_computers`.`states_id`' => '`NEWTABLE`.`id`',
+                ],
+                'jointype' => 'itemtype_item_revert',
+                'specific_itemtype' => State::getType(),
                 'beforejoin' => [
-                    'table'      => StateVisibility::getTable(),
+                    'table'      => DropdownVisibility::getTable(),
                     'joinparams' => [
-                        'jointype' => 'child',
-                        'beforejoin' => [
-                            'table'      => State::getTable(),
-                        ],
-                        'condition' => [
-                            'NEWTABLE.itemtype' => 'Computer'
-                        ]
+                        'jointype' => 'itemtypeonly',
                     ]
                 ]
             ]
-         */
+        ];
 
         $tab[] = [
             'id'                 => '42',
