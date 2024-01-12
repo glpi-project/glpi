@@ -427,7 +427,7 @@ class Computer extends CommonDBTM
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'condition' => [
-                    '`glpi_computers`.`states_id`' => '`NEWTABLE`.`id`',
+                    '`glpi_computers`.`states_id`' => new \Glpi\DBAL\QueryExpression('`NEWTABLE`.`id`'),
                 ],
                 'jointype' => 'itemtype_item_revert',
                 'specific_itemtype' => State::getType(),
