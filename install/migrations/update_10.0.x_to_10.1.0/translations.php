@@ -33,29 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @since 9.2
- */
-
-$AJAX_INCLUDE = 1;
-
-include('../inc/includes.php');
-header("Content-Type: application/json; charset=UTF-8");
-Html::header_nocache();
-
-Session::checkLoginUser();
-
-if (isset($_POST['projecttasktemplates_id']) && ($_POST['projecttasktemplates_id'] > 0)) {
-    $template = new ProjectTaskTemplate();
-    $template->getFromDB($_POST['projecttasktemplates_id']);
-
-    $template->fields['description'] = DropdownTranslation::getTranslatedValue(
-        $template->getID(),
-        $template->getType(),
-        'description',
-        $_SESSION['glpilanguage'],
-        $template->fields['description']
-    );
-
-    echo json_encode($template->fields);
-}
+Config::deleteConfigurationValues('core', [
+    'translate_dropdowns',
+    'translate_kb',
+    'translate_reminders',
+]);

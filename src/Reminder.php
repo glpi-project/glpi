@@ -945,7 +945,7 @@ class Reminder extends CommonDBVisible implements
         // Do not force the inclusion of reminders created by the current user
         unset($public_criteria['WHERE']['glpi_reminders.users_id'], $public_criteria['WHERE']['OR']['glpi_reminders.users_id']);
 
-        if (ReminderTranslation::isReminderTranslationActive()) {
+        if (countElementsInTable('glpi_remindertranslations') > 0) {
             $additional_criteria = [
                 'SELECT'    => ["glpi_remindertranslations.name AS transname", "glpi_remindertranslations.text AS transtext"],
                 'LEFT JOIN' => [

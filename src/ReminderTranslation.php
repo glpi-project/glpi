@@ -296,14 +296,15 @@ class ReminderTranslation extends CommonDBChild
     /**
      * Is reminder translation functionality active
      *
+     * @deprecated 10.1.0
+     *
      * @return boolean
      **/
     public static function isReminderTranslationActive()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        Toolbox::deprecated("Reminders translations are now always active");
 
-        return $CFG_GLPI['translate_reminders'];
+        return true;
     }
 
 
@@ -319,8 +320,7 @@ class ReminderTranslation extends CommonDBChild
     public static function canBeTranslated(CommonGLPI $item)
     {
 
-        return (self::isReminderTranslationActive()
-              && $item instanceof Reminder);
+        return ($item instanceof Reminder);
     }
 
 

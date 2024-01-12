@@ -372,14 +372,15 @@ class KnowbaseItemTranslation extends CommonDBChild
     /**
      * Is kb item translation functionality active
      *
+     * @deprecated 10.1.0
+     *
      * @return true if active, false if not
      **/
     public static function isKbTranslationActive()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        Toolbox::deprecated("KB translations are now always active");
 
-        return $CFG_GLPI['translate_kb'];
+        return true;
     }
 
 
@@ -395,8 +396,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     public static function canBeTranslated(CommonGLPI $item)
     {
 
-        return (self::isKbTranslationActive()
-              && $item instanceof KnowbaseItem);
+        return $item instanceof KnowbaseItem;
     }
 
 
