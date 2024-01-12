@@ -250,11 +250,12 @@
     function cleanSQLQuery(query) {
         const newline_keywords = ['UNION', 'FROM', 'WHERE', 'INNER JOIN', 'LEFT JOIN', 'ORDER BY', 'SORT'];
         const post_newline_keywords = ['UNION'];
+        query = query.replace(/\n/g, ' ');
         return Promise.resolve(MonacoEditor.colorizeText(query, 'sql')).then((html) => {
             // get all 'span' elements with mtk6 class (keywords) and insert the needed line breaks
             const newline_before_selector = newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
             const post_newline_selector = post_newline_keywords.map((keyword) => `span.mtk6:contains(${keyword})`).join(',');
-            return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();;
+            return $($.parseHTML(html)).find(newline_before_selector).before('</br>').end().find(post_newline_selector).after('</br>').end().html();
         });
     }
 
