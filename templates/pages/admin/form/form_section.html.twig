@@ -51,14 +51,15 @@
 } %}
 
 <div
-    data-section-container
+    data-glpi-form-editor-section
     {% if section_input_index is not null %}
-        data-section-index="{{ section_input_index }}"
+        data-glpi-form-editor-section-index="{{ section_input_index }}"
     {% endif %}
 >
     <div
         class="card card-stacked mb-3 {{ show_section_form ? "": "d-none"}}"
-        data-section-form-container
+        data-glpi-form-editor-section-form-container
+        data-glpi-form-editor-on-click="set-active"
     >
         <div class="card-body">
             {# Header #}
@@ -74,7 +75,10 @@
                 >
 
                 {# TODO, use a dot menu instead with multiple options and a delete confirmation #}
-                <i class="ti ti-trash ms-2 text-danger cursor-pointer" data-delete-section-action></i>
+                <i
+                    class="ti ti-trash ms-2 text-danger cursor-pointer"
+                    data-glpi-form-editor-on-click="delete-section"
+                ></i>
             </div>
 
             {# Section's description #}
@@ -108,7 +112,7 @@
         </div>
     </div>
 
-    <div data-questions-container>
+    <div data-glpi-form-editor-section-questions>
         {% set question_index = 0 %}
         {% for question in section.getQuestions() %}
             {# Render admin template for the given question type #}
@@ -127,9 +131,15 @@
     {# Add question action at the end of each sections #}
     {# TODO: UI/UX #}
     {% if can_update %}
-        <div data-form-add-question-action class="card cursor-pointer align-items-center mb-4">
+        <div
+            class="card cursor-pointer align-items-center mb-4"
+            data-glpi-form-editor-on-click="add-question"
+        >
             <div class="card-body">
-                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add question") }}</h3>
+                <h3 class="d-flex align-items-center">
+                    <i class="ti ti-circle-plus me-2"></i>
+                    {{ __("Add question") }}
+                </h3>
             </div>
         </div>
     {% endif %}

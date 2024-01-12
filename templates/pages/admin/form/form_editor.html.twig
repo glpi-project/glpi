@@ -41,8 +41,8 @@
 
 <form
     id="form-form"
+    data-glpi-form-editor-container
     class="
-        form-editor-container
         d-flex
         flex-column
         {# Negative margins to cancel parent padding, this is needed as we use a
@@ -70,7 +70,10 @@
                 <div class="col-7">
 
                     {# Card containing the main form data: title, header and status #}
-                    <div class="card form-details mb-3">
+                    <div
+                        class="card form-details mb-3"
+                        data-glpi-form-editor-on-click="set-active"
+                    >
                         <div class="card-status-top bg-primary"></div>
                         <div class="card-body">
 
@@ -117,7 +120,7 @@
                     </div>
 
                     {# Display all questions here #}
-                    <div class="sections">
+                    <div data-glpi-form-editor-sections>
                         {% set section_input_index = 0 %}
                         {% set number_of_sections = item.getSections()|length %}
                         {% for section in item.getSections() %}
@@ -138,8 +141,8 @@
                     {% if item.canUpdate() %}
                         {% set add_section_action_visible = number_of_sections > 1 or (item.getSections()|first).getQuestions()|length > 0 %}
                         <div
-                            id="form_add_section"
                             class="card cursor-pointer align-items-center {{ add_section_action_visible ? "" : "d-none" }}"
+                            data-glpi-form-editor-on-click="add-section"
                         >
                             <div class="card-body">
                                 <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add section") }}</h3>
@@ -172,7 +175,8 @@
             form="form-form"
             title="{{ __("Preview") }}"
             data-bs-toggle="modal"
-            data-bs-target="#preview_form_modal"
+            data-bs-target="#glpi_form_editor_preview_modal"
+            data-glpi-form-editor-on-click="show-preview"
         >
             <i class="ti ti-eye me-1"></i>
             <span class="d-none d-xl-block">{{ __("Preview") }}</span>
@@ -275,21 +279,14 @@
 </form>
 
 {% if item.canUpdate() %}
-    {# Load new section template #}
-    <div id="empty_section_template" class="d-none">
-        {{ include('pages/admin/form/form_section.html.twig', {
-            'form'               : item,
-            'section'            : null,
-            'section_input_index': null,
-            'can_update'         : true,
-            'show_section_form'  : true,
-        }, with_context = false) }}
-    </div>
+    {# Templates, must be outside the main form to avoid submitting their inputs #}
+    <div data-glpi-form-editor-templates class="d-none">
 
-    {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-    <div id="question_type_model_container" class="d-none">
+        {# Load all possible questions types as hidden DOM content that is ready
+           to be copied into a new question #}
         {% for question_type in question_types.getFinalTypes() %}
-            <div id="question_type_model_{{ get_class(question_type) }}">
+            {% set key = get_class(question_type) %}
+            <div data-glpi-form-editor-question-template="{{ key }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
                     'question_types'     : question_types,
@@ -301,28 +298,40 @@
                 }, with_context = false) }}
             </div>
         {% endfor %}
+
+        {# Load new section template #}
+        <div data-glpi-form-editor-section-template>
+            {{ include('pages/admin/form/form_section.html.twig', {
+                'form'               : item,
+                'section'            : null,
+                'section_input_index': null,
+                'can_update'         : true,
+                'show_section_form'  : true,
+            }, with_context = false) }}
+        </div>
+
+        {# Load all possible question types #}
+        <select data-glpi-form-editor-question-types-values>
+            {% for question_type in question_types.getFinalTypes() %}
+                <option
+                    data-glpi-form-editor-question-type="{{ question_type.getParentType() }}"
+                    value="{{ get_class(question_type) }}"
+                >
+                    {{ question_type.getName() }}
+                </option>
+            {% endfor %}
+        </select>
     </div>
 
-    {# Load all possible subtypes #}
-    <select id="question_subtypes" class="d-none">
-        {% for question_type in question_types.getFinalTypes() %}
-            <option
-                data-parent-type="{{ question_type.getParentType() }}"
-                value="{{ get_class(question_type) }}"
-            >
-                {{ question_type.getName() }}
-            </option>
-        {% endfor %}
-    </select>
 {% endif %}
 
 {# Preview form modal #}
 <div
-    id="preview_form_modal"
+    id="glpi_form_editor_preview_modal"
     class="modal modal-blur fade"
     aria-modal="true"
     role="dialog"
-    aria-labelledby="preview_form_modal_label"
+    aria-labelledby="preview_form_modal_label" {# TODO: broken ref #}
 >
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content"></div>
@@ -330,358 +339,20 @@
 </div>
 
 <script>
-    // TODO: script is getting bigger and might need its own file soon
+    /**
+     * Initialize the form editor controller
+     */
+    const glpi_form_editor_controller = new GlpiFormEditorController(
+        "[data-glpi-form-editor-container]",
+        "{{ default_question_type|escape('js') }}",
+        "[data-glpi-form-editor-templates]",
+        {{ item.fields.is_draft }}
+    );
 
     /**
      * Callback used when the form is updated
-     * Need to be a "var" to be accessible from the global scope
      */
     var glpi_form_ajax_update_callback = function (response) {
-        // Specific code enabled only if the item is a draft
-        let is_draft = {{ item.fields.is_draft }};
-
-        // Handle the ui changes to reflect the fact that the item is no longer a draft
-        if (is_draft) {
-            // Turn the "Add" button into "Save"
-            const add_button = $('#form-form button[name=update]');
-            add_button.find('.ti-plus').removeClass('ti-plus').addClass('ti-device-floppy');
-            add_button.find('.add-label').text("{{ __('Save') }}");
-            add_button.prop("title", "{{ __('Save') }}");
-
-            // Show the delete button
-            const del_button = $('#form-form button[name=delete]');
-            del_button.removeClass('d-none');
-
-            // Mark as no longer a draft to avoid running this code again
-            is_draft = false;
-        }
-
-        // Handle newly added questions ids, they must be inserted into their
-        // form so they can be updated correctly instead of re-added on the next
-        // submit
-        if (response.added_questions !== undefined) {
-            // Data contains two keys: input_index and id
-            response.added_questions.forEach(function(data) {
-                // Update ID input
-                $(`input[name='_questions[${data.section_index}][${data.question_index}][id]']`).val(data.id);
-            });
-        }
-
-        // Handle newly added sections ids, they must be inserted into their
-        // form so they can be updated correctly instead of re-added on the next
-        // submit
-        if (response.added_sections !== undefined) {
-            // Data contains two keys: input_index and id
-            response.added_sections.forEach(function(data) {
-                // Update ID input
-                $("input[name='_sections[" + data.input_index + "][id]']").val(data.id);
-            });
-        }
+        glpi_form_editor_controller.handleBackendUpdateResponse(response);
     };
-
-    // Global event manager for tinymce
-    var formEditor_OnTinyMCEChange = function(event) {
-        // Special handler for description field
-        const description_container = $(event.target.container).closest("[data-question-description]");
-        if (description_container.length) {
-            // Strip tags
-            const div = document.createElement("div");
-            div.innerHTML = event.level.content;
-            const raw_text = div.textContent || div.innerText || "";
-
-            // Mark as secondary data if empty
-            if (raw_text.length == 0) {
-                description_container.attr("data-question-extra-details", "");
-            } else {
-                description_container.removeAttr("data-question-extra-details");
-            }
-        }
-    };
-
-    // Isolate variables in a self calling function
-    (function(){
-        // Adjust height using javascript
-        // This is the only reliable way to make our content use the remaining
-        // height of the page as the tabs container doesn't define a height
-        const adjust_container_height = function() {
-            const window_height = document.body.offsetHeight ;
-            const editor_height = $('.form-editor-container').offset().top;
-            const tab_content_border = 1; // Border added at the bottom of the page, must be taken into account
-            $('.form-editor-container').css('height', (window_height - editor_height - tab_content_border) + "px");
-        };
-        adjust_container_height();
-
-        // Trigger on resize
-        const adjust_container_height_throttled = _.throttle(adjust_container_height, 100);
-        $(window).on('resize', function() {
-           adjust_container_height_throttled();
-        });
-
-        /**
-         * Mark the given question as active
-         */
-        const setActiveQuestion = function(question_container) {
-            $("[data-question-container]").removeClass("active-question");
-
-            if (question_container !== null) {
-                question_container.addClass("active-question");
-            }
-        };
-
-        // Handle preview
-        $('#form-form button[name=preview]').on('click', function(e) {
-            // Read form's id
-            const form = $(e.target).closest('form');
-            const id = form.find('input[name=id]').val();
-
-            // Unsaved changes wont be taken into account as the ajax endpoint will load data from DB using the given id
-            // TODO: trigger a save before preview ?
-
-            // Render form
-            $("#preview_form_modal .modal-content").load(
-                CFG_GLPI.root_doc + "/ajax/form/render_form.php?id=" + id,
-            );
-        });
-
-        // Handle preview successful submit
-        $(document).on('glpi-form-renderer-submit-success', function(e, data) {
-            // Close modal
-            $("#preview_form_modal").modal('hide');
-
-            // Show toast with link to answers set
-            glpi_toast_info(
-                __("Item successfully created: %s").replace("%s", data.link_to_created_item)
-            );
-        });
-
-        // Keep track of input index for sections
-        let section_input_index = {{ section_input_index }};
-
-        // Keep track of last question index for each sections;
-        let next_question_indexes = {};
-        $("[data-section-container]:visible").each(function() { // :visible to filter out templates
-            const section_index = $(this).data("sectionIndex");
-            const questions = $(this).find("[data-question-container]");
-
-            if (questions.length) {
-                const last_index = questions.last().data('questionIndex');
-                next_question_indexes[section_index] = last_index + 1;
-            } else {
-                next_question_indexes[section_index] = 0;
-            }
-        });
-
-        /**
-         * Copy a given question template into the given destination
-         */
-        const copy_model = function(selector, destination, section_index, question_index = null) {
-            const copy = selector.clone();
-
-            // Keep track of editors that need to be initialized
-            const tiny_mce_to_init = [];
-
-            /// Build base input name using question and section indexes
-            const base_input_name = question_index === null ?
-                `_sections[${section_index}]`:
-                `_questions[${section_index}][${question_index}]`;
-
-            // Input must have unique name so we will use the
-            // "_questions[index][input_name] key format
-            copy.find("select, input, textarea").each(function() {
-                const input_name = $(this).attr("name");
-                $(this).attr("name", `${base_input_name}[${input_name}]`);
-
-                // Special actions for tinymce
-                if ($(this).prop("tagName") == "TEXTAREA") {
-                    // Get editor config
-                    const config = window["tiny_editor_config_" + $(this).attr("id")];
-
-                    // Rename id so it can be unique
-                    const uid = uniqid(); // Avoid ID conflicts
-                    $(this).attr("id", `_tinymce_${uid}`);
-
-                    // Push config into init queue
-                    config.selector = "#" + $(this).attr("id"); // Ref to updated id
-                    tiny_mce_to_init.push(config);
-                }
-            });
-
-            // Insert the new question
-            copy.appendTo(destination);
-
-            // Init editor (must be done after copy)
-            tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
-
-            return copy;
-        };
-
-        /**
-         * Update the first section visiblity according to the number of existing sections
-         */
-        const updateFirstSectionVisiblity = function() {
-            if ($("[data-section-container]:visible").length <= 1) {  // :visible to filter out templates
-                $("[data-section-form-container]").addClass("d-none");
-            } else {
-                $("[data-section-form-container]").removeClass("d-none");
-            }
-        };
-
-        /**
-         * Hide the "add section" action until at least one question is added
-         */
-        const updateAddSectionActionVisiblity = function() {
-            if ($("[data-question-container]:visible").length == 0) { // :visible to filter out templates
-                $("#form_add_section").addClass("d-none");
-            } else {
-                $("#form_add_section").removeClass("d-none");
-            }
-        };
-
-        $(document).on("click", "[data-form-add-question-action]", function(e) {
-            // Javascript doesn't like singular backslashes
-            {% set escaped_question_type = default_question_type|replace({"\\": "\\\\"}) %}
-            const target = $("#question_type_model_" + $.escapeSelector("{{ escaped_question_type }}"))
-                .children(); // Skip container, we only want the content
-
-            // Find next question index for this section
-            const section_container = $(e.target).closest("[data-section-container]");
-            const section_index = section_container.data("sectionIndex");
-            const question_index = next_question_indexes[section_index];
-
-            // Insert the new template into the questions area
-            const copy = copy_model(
-                target,
-                section_container.find("[data-questions-container]"),
-                section_index,
-                question_index,
-            );
-
-            // Set question index (needed in case the question type is modified later on and we need to re-render
-            // a part of the question)
-            copy.attr("data-question-index", question_index);
-
-            // Set correct FK for the parent section
-            const section_input = copy.find(`input[name='_questions[${section_index}][${question_index}][forms_sections_id]']`);
-            const section_id = section_container.find(`input[name='_sections[${section_index}][id]']`).val();
-            section_input.val(section_id);
-
-            // Set question as active and increment index
-            setActiveQuestion(copy);
-            next_question_indexes[section_index] = question_index + 1;
-
-            updateAddSectionActionVisiblity();
-        });
-
-        // Handle question deletion
-        $(document).on("click", "[data-delete-question]", function(e) {
-            // Get question container
-            const question_container = $(e.target).closest("[data-question-container]");
-
-            // Remove question
-            question_container.remove();
-
-            updateAddSectionActionVisiblity();
-        });
-
-        // Add mandatory class to mandatory questions
-        $(document).on("change", "input[data-question-mandatory-toggle]", function(e) {
-            // Get question container
-            const question_container = $(e.target).closest("[data-question-container]");
-
-            if ($(this).prop("checked")) {
-                question_container.addClass("mandatory-question");
-            } else {
-                question_container.removeClass("mandatory-question");
-            }
-        });
-
-        // Set custom width for question titles as we need the red asterisk to be put right after it
-        $("[data-question-title]").each(function() {
-            $(this).css("width", getRealInputWidth($(this), "1.2rem"));
-        });
-        $(document).on("input", "[data-question-title]", function() {
-            $(this).css("width", getRealInputWidth($(this), "1.2rem"));
-        });
-
-        // Handle active question
-        $(document).on("click", "[data-question-container]", function() {
-            setActiveQuestion($(this));
-        });
-        $(document).on("click", ".form-details", function() {
-            setActiveQuestion(null);
-        });
-        $(document).on("click", "[data-section-form-container]", function() {
-            setActiveQuestion(null);
-        });
-
-        // Handle type change for a question
-        $(document).on("change", "[data-question-type-selector]", function(e) {
-            const type = $(e.target).val().replaceAll("\\", "\\\\"); // JS doesn't like single backslashes
-            const copy = $("#question_subtypes").find("option[data-parent-type='" + type + "']");
-
-            // Clear the subtype options of the current question type
-            $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").children().remove();
-
-            // Copy the new subtypes into the current question
-            copy_model(
-                copy,
-                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]"),
-                $(e.target).closest("[data-question-container]").data('questionIndex'),
-            );
-
-            // Hide options if only one option is available
-            if (copy.length <= 1) {
-                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").addClass("d-none");
-            } else {
-                // Remove potential d-none
-                $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").removeClass("d-none");
-            }
-
-            // Trigger subtype change
-            $(e.target).closest("[data-question-container]").find("[data-question-subtype-selector]").trigger("change");
-        });
-
-        // Handle subtype change for a question
-        $(document).on("change", "[data-question-subtype-selector]", function(e) {
-            const type = $(e.target).val().replaceAll("\\", "\\\\"); // JS doesn't like single backslashes
-
-            // Clear the specific part of the HTML form of the current question type
-            $(e.target).closest("[data-question-container]").find("[data-question-type-specific]").children().remove();
-
-            // Copy the specific part the new question type's template into the current question
-            copy_model(
-                $("#question_type_model_" + type).find("[data-question-type-specific]").children(),
-                $(e.target).closest("[data-question-container]").find("[data-question-type-specific]"),
-                $(e.target).closest("[data-question-container]").data('questionIndex'),
-            );
-        });
-
-        // Add section action
-        $("#form_add_section").on("click", function() {
-            // Copy the new section template into the sections area
-            const copy = copy_model(
-                $("#empty_section_template").children(),
-                ".sections",
-                section_input_index,
-            );
-
-            // Set section index
-            copy.attr("data-section-index", section_input_index);
-            next_question_indexes[section_input_index] = 0;
-            section_input_index++;
-
-            updateFirstSectionVisiblity();
-        });
-
-        // Handle section deletion
-        $(document).on("click", "[data-delete-section-action]", function(e) {
-            // Get section container
-            const section_container = $(e.target).closest("[data-section-container]");
-
-            // Remove question
-            section_container.remove();
-
-            updateFirstSectionVisiblity();
-        });
-    })();
 </script>

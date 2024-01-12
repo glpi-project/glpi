@@ -3935,10 +3935,8 @@ JS;
                             // we want to keep the logic in common.js with the other form input events.
                             onTinyMCEChange(e);
 
-                            // Special callback for the form editor
-                            if (formEditor_OnTinyMCEChange !== undefined) {
-                                formEditor_OnTinyMCEChange(e);
-                            }
+                            // Propagate event to the document to allow other components to listen to it
+                            $(document).trigger('tinyMCEChange', [e]);
                         });
                         // ctrl + enter submit the parent form
                         editor.addShortcut('ctrl+13', 'submit', function() {

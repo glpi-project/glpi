@@ -172,10 +172,15 @@ $(() => {
             handleRedirect(response);
 
             // Call custom callback
-            if (form.data('ajaxSubmitCallback')) {
-                window[form.data('ajaxSubmitCallback')](response);
+            if (form.data('ajax-submit-callback')) {
+                window[form.data('ajax-submit-callback')](response);
             }
         } catch (error) {
+            // Only handle backend errors
+            if (error.responseJSON === undefined){
+                throw error;
+            }
+
             // Handle backend errors
             const response = error.responseJSON;
 

@@ -70,11 +70,11 @@
 }
 
 // Higlight active question
-.active-question {
+[data-glpi-form-editor-question].active {
     border: 1px solid $primary;
 }
 
 // Hide secondary data on inactive questions
-[data-question-container]:not(.active-question) [data-question-extra-details] {
+[data-glpi-form-editor-question]:not(.active) [data-glpi-form-editor-question-extra-details] {
     display: none !important;
 }

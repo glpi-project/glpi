@@ -50,9 +50,6 @@
     </div>
 
     <div class="modal-body">
-
-
-
         {% for section in form.getSections() %}
             {# Is this the first section of a form ? #}
             {% set is_first_section = loop.index0 == 0 %}
@@ -62,7 +59,10 @@
                 data-glpi-form-renderer-section="{{ loop.index0 }}"
                 class="{{ not is_single_section_form and not is_first_section ? "d-none": "" }}"
             >
-                <h2 class="mb-3">{{ section.fields.name }}</h2>
+                {% if not is_single_section_form %}
+                    {# Sections names are only shown if the form use multiple sections #}
+                    <h2 class="mb-3">{{ section.fields.name }}</h2>
+                {% endif %}
 
                 {% for question in section.getQuestions() %}
                     {# Compute question type  #}

@@ -52,9 +52,10 @@
 
 <div
     class="card mb-3 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
-    data-question-container
+    data-glpi-form-editor-question
+    data-glpi-form-editor-on-click="set-active"
     {% if question_index is not null %}
-        data-question-index="{{ question_index }}"
+        data-glpi-form-editor-question-index="{{ question_index }}"
     {% endif %}
 >
     <div class="card-body">
@@ -66,16 +67,16 @@
                 name="{{ input_prefix is not null ? input_prefix ~ '[name]' : 'name' }}"
                 value="{{ question is not null ? question.fields.name : '' }}"
                 placeholder="{{ __("New question") }}"
-                data-question-title
+                data-glpi-form-editor-dynamic-input
+                data-glpi-form-editor-on-input="compute-dynamic-input"
             />
             <span data-required-mark class="text-danger d-none">*</span>
         </div>
 
         {# Render the specific question type #}
-        <div data-question-type-specific>
-            {# Wrapper div needed as we will run some $.find() queries to try to locate inputs inside
-            [data-question-type-specific].children() and $.find() do not target top level items.
-            A top level input would thus be ignored without this intermdiate wrapper div  #}
+        <div data-glpi-form-editor-question-type-specific>
+            {# Wrapper div needed as we will run some $.find() queries to try to locate inputs inside the parent div and $.find() do not target top level items.
+            A top level input would thus be ignored without this intermediate wrapper div  #}
             <div>
                 {{ question_type.renderAdminstrationTemplate(question, input_prefix)|raw }}
             </div>
@@ -84,9 +85,9 @@
         {# Display common fields #}
         <div
             class="content-editable-tinymce"
-            data-question-description
+            data-glpi-form-editor-question-description
             {# Mark as secondary if empty #}
-            {{ question is null or question.fields.description|length == 0 ? "data-question-extra-details" : "" }}
+            {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
         >
             {{ fields.textareaField(
                 input_prefix is not null ? input_prefix ~ '[description]' : 'description',
@@ -106,7 +107,7 @@
 
         <div
             class="d-flex align-items-center"
-            data-question-extra-details
+            data-glpi-form-editor-question-extra-details
         >
             <select
                 {# Note: _parent_type is not used by the backend as we only save the final type #}
@@ -114,7 +115,8 @@
                 class="form-select form-select-sm me-2"
                 aria-label="{{ __('Question type') }}"
                 style="width: auto;"
-                data-question-type-selector
+                data-glpi-form-editor-on-change="change-question-parent-type"
+                data-glpi-form-editor-question-parent-type-selector
             >
                 {% for parent_question_type_key, parent_question_type_label in question_types.getParentTypes() %}
                     {# TODO: add icon, use select2 ? #}
@@ -134,7 +136,8 @@
                     class="form-select form-select-sm"
                     aria-label="{{ __('Question sub type') }}"
                     style="width: auto;"
-                    data-question-subtype-selector
+                    data-glpi-form-editor-on-change="change-question-type"
+                    data-glpi-form-editor-question-type-selector
                 >
                     {% for possible_question_type in question_types.getChilden(question_type.getParentType()) %}
                         {# TODO: add icon, use select2 ? #}
@@ -149,14 +152,18 @@
             {% endif %}
 
             <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
-                <input type="hidden" value="0" name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}">
+                <input
+                    type="hidden"
+                    value="0"
+                    name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}"
+                >
                 <input
                     class="form-check-input"
                     name="{{ input_prefix is not null ? input_prefix ~ '[is_mandatory]' : 'is_mandatory' }}"
                     type="checkbox"
                     value="1"
+                    data-glpi-form-editor-on-change="toggle-mandatory-question"
                     {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
-                    data-question-mandatory-toggle
                 >
                 <span class="form-check-label">{{ __("Mandatory") }}</span>
             </label>
@@ -164,7 +171,7 @@
             <button
                 class="btn btn-ghost-danger px-2"
                 type="button"
-                data-delete-question
+                data-glpi-form-editor-on-click="delete-question"
             >
                 <i class="ti ti-trash me-2"></i>
                 {{ __("Delete") }}
