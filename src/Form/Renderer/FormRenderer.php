@@ -54,6 +54,14 @@ final class FormRenderer
      */
     public function render(Form $form): string
     {
+        // Note: the "form_renderer_controller" must not be loaded here as this code
+        // may be called multiple times using AJAX requests, thus trying to load the
+        // javascript "GlpiFormRendererController" class multiple times and causing an
+        // error.
+        // Each pages that call this method through AJAX must instead include the
+        // JS controller themselves.
+
+        // Load template
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/form_renderer.html.twig', [
             'form' => $form,
