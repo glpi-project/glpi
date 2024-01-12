@@ -910,19 +910,17 @@ JAVASCRIPT
         global $DB;
 
         $tab = [];
-        if (self::isDropdownTranslationActive()) {
-            $iterator = $DB->request([
-                'SELECT'          => [
-                    'itemtype',
-                    'field'
-                ],
-                'DISTINCT'        => true,
-                'FROM'            => self::getTable(),
-                'WHERE'           => ['language' => $language]
-            ]);
-            foreach ($iterator as $data) {
-                 $tab[$data['itemtype']][$data['field']] = $data['field'];
-            }
+        $iterator = $DB->request([
+            'SELECT'          => [
+                'itemtype',
+                'field'
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => self::getTable(),
+            'WHERE'           => ['language' => $language]
+        ]);
+        foreach ($iterator as $data) {
+                $tab[$data['itemtype']][$data['field']] = $data['field'];
         }
         return $tab;
     }
