@@ -1907,14 +1907,31 @@ class Entity extends CommonTreeDropdown
          && Session::haveAccessToEntity($ID);
         $enable_css_options = [];
         if (($ID > 0) ? 1 : 0) {
-            $enable_css_options[Entity::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
+            $enable_css_options[self::CONFIG_PARENT] = __('Inherits configuration from the parent entity');
         }
         $enable_css_options[0] = __('No');
         $enable_css_options[1] = __('Yes');
 
+        $enable_css_inheritance_label = null;
+        $inherited_css = null;
+        if ($entity->fields['enable_custom_css'] === self::CONFIG_PARENT) {
+            $inherited_strategy = self::getUsedConfig('enable_custom_css', $entity->fields['entities_id']);
+            $inherited_value = $inherited_strategy === 0
+                ? self::getUsedConfig('enable_custom_css', $entity->fields['entities_id'], 'enable_custom_css')
+                : $inherited_strategy;
+            $enable_css_inheritance_label = self::inheritedValue(
+                self::getSpecificValueToDisplay('enable_custom_css', $inherited_value),
+                false,
+                false
+            );
+            $inherited_css = self::getUsedConfig('enable_custom_css', $entity->fields['entities_id'], 'custom_css_code');
+        }
+
         TemplateRenderer::getInstance()->display('pages/admin/entity/custom_ui.html.twig', [
             'item' => $entity,
             'enable_css_options' => $enable_css_options,
+            'enable_css_inheritance_label' => $enable_css_inheritance_label,
+            'inherited_css' => $inherited_css,
             'params' => [
                 'canedit' => $canedit,
                 'candel' => false, // No deleting from the non-main tab
@@ -3212,6 +3229,11 @@ class Entity extends CommonTreeDropdown
                     __('Clear status'),
                 );
                 return $states[$values[$field]];
+            case 'enable_custom_css':
+                if ($values[$field] === self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                return Dropdown::getYesNo($values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

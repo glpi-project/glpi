@@ -37,9 +37,12 @@
 
 {% block form_fields %}
     {% block more_fields %}
-        {{ fields.dropdownArrayField('enable_custom_css', item.fields['enable_custom_css'], enable_css_options, __('Enable CSS customization')) }}
-        <div id="custom_css_container" class="custom_css_container {{ item.fields['enable_custom_css'] == 1 ? '' : 'd-none' }}" style="height: 400px"></div>
-        <div class="alert alert-info {{ item.fields['enable_custom_css'] == 1 ? 'd-none' : '' }}">{{ __('Custom CSS is disabled') }}</div>
+        {% set css_code = inherited_css is not null ? inherited_css : item.fields['custom_css_code'] %}
+        {{ fields.dropdownArrayField('enable_custom_css', item.fields['enable_custom_css'], enable_css_options, __('Enable CSS customization'), {
+            add_field_html: enable_css_inheritance_label
+        }) }}
+        <div id="custom_css_container" class="custom_css_container {{ item.fields['enable_custom_css'] != 0 ? '' : 'd-none' }}" style="height: 400px"></div>
+        <div class="alert alert-info {{ item.fields['enable_custom_css'] == 0 ? '' : 'd-none' }}">{{ __('Custom CSS is disabled') }}</div>
         <script>
             const refreshCustomCSSEditor = () => {
                 if (window.monaco !== undefined) {
@@ -50,8 +53,9 @@
                     })
                 }
                 $(function() {
-                    window.GLPI.Monaco.createEditor('custom_css_container', 'css', `{{ item.fields['custom_css_code']|escape('js') }}`, [], {
+                    window.GLPI.Monaco.createEditor('custom_css_container', 'css', `{{ css_code|escape('js') }}`, [], {
                         _force_default_lang: true,
+                        readOnly: {{ inherited_css is not null ? 1 : 0 }}
                     }).then((editor) => {
                         editor.editor.layout();
                     });
