@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 
@@ -1062,17 +1063,13 @@ class Rule extends CommonDBTM
     public function getTitleAction()
     {
 
-        foreach ($this->getActions() as $key => $val) {
+        foreach ($this->getActions() as $val) {
             if (
                 isset($val['force_actions'])
                 && (in_array('regex_result', $val['force_actions'])
                  || in_array('append_regex_result', $val['force_actions']))
             ) {
-                echo "<table class='tab_cadre_fixe'>";
-                echo "<tr class='tab_bg_2'><td>" .
-                  __('It is possible to affect the result of a regular expression using the string #0') .
-                 "</td></tr>\n";
-                echo "</table><br>";
+                echo "<div class='alert alert-info'>" . __('It is possible to affect the result of a regular expression using the string #0') . "</div>";
                 return;
             }
         }
@@ -1115,94 +1112,108 @@ class Rule extends CommonDBTM
         }
 
         $canedit = $this->canEdit($rules_id);
-        $style   = "class='tab_cadre_fixehov'";
 
         if ($p['readonly']) {
             $canedit = false;
-            $style   = "class='tab_cadrehov'";
         }
         $this->getTitleAction();
 
         if ($canedit) {
-            echo "<div id='viewaction" . $rules_id . "$rand'></div>\n";
+            echo "<div id='viewaction{$rules_id}{$rand}'></div>";
         }
 
+        $max_actions_count = $this->maxActionsCount();
         if (
             $canedit
-            && (($this->maxActionsCount() == 0)
-              || (sizeof($this->actions) < $this->maxActionsCount()))
+            && ($max_actions_count === 0
+              || (count($this->actions) < $max_actions_count))
         ) {
-            echo "<script type='text/javascript' >\n";
-            echo "function viewAddAction" . $rules_id . "$rand() {\n";
-            $params = ['type'                => $this->ruleactionclass,
-                'parenttype'          => $this->getType(),
+            $params = [
+                'type'                => $this->ruleactionclass,
+                'parenttype'          => static::class,
                 $this->rules_id_field => $rules_id,
                 'id'                  => -1
             ];
-            Ajax::updateItemJsCode(
-                "viewaction" . $rules_id . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
+            $js = "function viewAddAction{$rules_id}{$rand}() {";
+            $js .= Ajax::updateItemJsCode(
+                toupdate: "viewaction{$rules_id}{$rand}",
+                url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                parameters: $params,
+                display: false
             );
-            echo "};";
-            echo "</script>\n";
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='javascript:viewAddAction" . $rules_id . "$rand();'>";
-            echo __('Add a new action') . "</a></div>\n";
+            $js .= "};";
+            echo Html::scriptBlock($js);
+            echo "<div class='center mt-1 mb-3'>" .
+               "<a class='btn btn-primary' href='javascript:viewAddAction{$rules_id}{$rand}();'>";
+            echo __('Add a new action') . "</a></div>";
         }
 
-        $nb = count($this->actions);
-
-        echo "<div class='spaced'>";
-        if ($canedit && $nb) {
-            Html::openMassiveActionsForm('mass' . $this->ruleactionclass . $rand);
-            $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $nb),
-                'check_itemtype' => get_class($this),
-                'check_items_id' => $rules_id,
-                'container'      => 'mass' . $this->ruleactionclass . $rand,
-                'extraparams'    => ['rule_class_name'
-                                                                    => $this->getType()
-                ]
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        echo "<table $style>";
-        echo "<tr class='noHover'>";
-        echo "<th colspan='" . ($canedit && $nb ? '4' : '3') . "'>" . _n('Action', 'Actions', Session::getPluralNumber()) . "</th></tr>";
-
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-
-        if ($canedit && $nb) {
-            $header_top    .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass' . $this->ruleactionclass . $rand) . "</th>";
-            $header_bottom .= "<th width='10'>";
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass' . $this->ruleactionclass . $rand) . "</th>";
-        }
-
-        $header_end .= "<th class='center b'>" . _n('Field', 'Fields', Session::getPluralNumber()) . "</th>";
-        $header_end .= "<th class='center b'>" . __('Action type') . "</th>";
-        $header_end .= "<th class='center b'>" . __('Value') . "</th>";
-        $header_end .= "</tr>\n";
-        echo $header_begin . $header_top . $header_end;
-
+        $entries = [];
         foreach ($this->actions as $action) {
-            $this->showMinimalActionForm($action->fields, $canedit, $rand);
+            $field = $this->getActionName($action->fields['field']);
+            $action_type = RuleAction::getActionByID($action->fields['action_type']);
+            $value = isset($action->fields['value'])
+                ? $this->getActionValue($action->fields['field'], $action->fields['action_type'], $action->fields['value'])
+                : '';
+            $entries[] = [
+                'itemtype' => $this->ruleactionclass,
+                'id' => $action->getID(),
+                'field' => $field,
+                'action_type' => $action_type,
+                'value' => $value
+            ];
         }
-        if ($nb) {
-            echo $header_begin . $header_bottom . $header_end;
-        }
-        echo "</table>\n";
 
-        if ($canedit && $nb) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
+        $massiveactionparams = [
+            'num_displayed'  => min($_SESSION['glpilist_limit'], count($entries)),
+            'check_itemtype' => static::class,
+            'check_items_id' => $rules_id,
+            'container'      => 'mass' . $this->ruleactionclass . $rand,
+            'extraparams'    => [
+                'rule_class_name' => static::class
+            ]
+        ];
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'datatable_ruleaction' . $rules_id . $rand,
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'field' => _n('Field', 'Fields', Session::getPluralNumber()),
+                'action_type' => __('Action type'),
+                'value' => __('Value')
+            ],
+            'entries' => $entries,
+            'row_class' => 'cursor-pointer',
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => $massiveactionparams,
+        ]);
+
+        if ($canedit) {
+            $rule_class = static::class;
+            echo Html::scriptBlock(<<<JS
+                $(() => {
+                    $('#datatable_ruleaction{$rules_id}{$rand}').on('click', 'tbody tr', (e) => {
+                        //ignore click in first column (the massive action checkbox)
+                        if ($(e.target).closest('td').is('td:first-child')) {
+                            return;
+                        }
+                        const action_id = $(e.currentTarget).data('id');
+                        if (action_id) {
+                            $('#viewaction{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
+                                type: "{$this->ruleactionclass}",
+                                parenttype: "{$rule_class}",
+                                rules_id: 154,
+                                id: action_id
+                            });
+                        }
+                    });
+                });
+JS
+            );
         }
-        echo "</div>";
     }
 
 
@@ -2134,47 +2145,6 @@ class Rule extends CommonDBTM
         }
         return 0;
     }
-
-
-    /**
-     * Show the minimal form for the action rule
-     *
-     * @param array   $fields  data used to display the action
-     * @param boolean $canedit can edit the actions rule ?
-     * @param integer $rand    random value of the form
-     **/
-    public function showMinimalActionForm($fields, $canedit, $rand)
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditAction" .
-                         $fields[$this->rules_id_field] . $fields["id"] . "$rand();\""
-                        : '');
-        echo "<tr class='tab_bg_1'>";
-        if ($canedit) {
-            echo "<td width='10'>";
-            Html::showMassiveActionCheckBox($this->ruleactionclass, $fields["id"]);
-            echo "\n<script type='text/javascript' >\n";
-            echo "function viewEditAction" . $fields[$this->rules_id_field] . $fields["id"] . "$rand() {\n";
-            $params = ['type'                => $this->ruleactionclass,
-                'parenttype'          => $this->getType(),
-                $this->rules_id_field => $fields[$this->rules_id_field],
-                'id'                  => $fields["id"]
-            ];
-            Ajax::updateItemJsCode(
-                "viewaction" . $fields[$this->rules_id_field] . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "};";
-            echo "</script>\n";
-            echo "</td>";
-        }
-        echo $this->getMinimalActionText($fields, $edit);
-        echo "</tr>\n";
-    }
-
 
     /**
      * Show preview result of a rule
