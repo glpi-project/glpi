@@ -99,7 +99,6 @@ class Rule extends CommonDBTM
     const AND_MATCHING            = "AND";
     const OR_MATCHING             = "OR";
 
-
     public function getCloneRelations(): array
     {
         return [
@@ -108,18 +107,15 @@ class Rule extends CommonDBTM
         ];
     }
 
-
     public static function getTable($classname = null)
     {
         return parent::getTable(__CLASS__);
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Rule', 'Rules', $nb);
     }
-
 
     /**
      *  Get correct Rule object for specific rule
@@ -164,7 +160,7 @@ class Rule extends CommonDBTM
      **/
     public function useConditions()
     {
-        return (count($this->getConditionsArray()) > 0);
+        return (count(static::getConditionsArray()) > 0);
     }
 
     /**
@@ -176,17 +172,13 @@ class Rule extends CommonDBTM
      **/
     public static function dropdownConditions($options = [])
     {
+        $p = array_replace([
+            'name'      => 'condition',
+            'value'     => 0,
+            'display'   => true,
+            'on_change' => ''
+        ], $options);
 
-        $p['name']      = 'condition';
-        $p['value']     = 0;
-        $p['display']   = true;
-        $p['on_change'] = '';
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
         $elements = static::getConditionsArray();
         if (count($elements)) {
             return Dropdown::showFromArray($p['name'], $elements, $p);
@@ -204,14 +196,8 @@ class Rule extends CommonDBTM
      **/
     public static function getConditionName($value)
     {
-
         $cond = static::getConditionsArray();
-
-        if (isset($cond[$value])) {
-            return $cond[$value];
-        }
-
-        return NOT_AVAILABLE;
+        return $cond[$value] ?? NOT_AVAILABLE;
     }
 
     public static function getMenuContent()
@@ -530,36 +516,30 @@ class Rule extends CommonDBTM
         return false;
     }
 
-
     public function getRuleActionClass()
     {
         return $this->ruleactionclass;
     }
-
 
     public function getRuleCriteriaClass()
     {
         return $this->rulecriteriaclass;
     }
 
-
     public function getRuleIdField()
     {
         return $this->rules_id_field;
     }
-
 
     public function isEntityAssign()
     {
         return false;
     }
 
-
     public function post_getEmpty()
     {
         $this->fields['is_active'] = 0;
     }
-
 
     /**
      * Get title used in rule
@@ -570,7 +550,6 @@ class Rule extends CommonDBTM
     {
         return __('Rules management');
     }
-
 
     /**
      * @since 0.84
@@ -590,7 +569,6 @@ class Rule extends CommonDBTM
         return $collection_class;
     }
 
-
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -609,7 +587,6 @@ class Rule extends CommonDBTM
 
         return $actions;
     }
-
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
@@ -650,7 +627,6 @@ class Rule extends CommonDBTM
         }
         return parent::showMassiveActionsSubForm($ma);
     }
-
 
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
@@ -811,7 +787,6 @@ class Rule extends CommonDBTM
         return $tab;
     }
 
-
     /**
      * @param  string $field
      * @param  array $values
@@ -821,7 +796,6 @@ class Rule extends CommonDBTM
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -831,23 +805,15 @@ class Rule extends CommonDBTM
             return $ruleclass->getSpecificValueToDisplay($field, $values, $options);
         }
 
-        switch ($field) {
-            case 'match':
-                switch ($values[$field]) {
-                    case self::AND_MATCHING:
-                        return __('and');
-
-                    case self::OR_MATCHING:
-                        return __('or');
-
-                    default:
-                        return NOT_AVAILABLE;
-                }
-                break;
+        if ($field === 'match') {
+            return match ($values[$field]) {
+                self::AND_MATCHING => __('AND'),
+                self::OR_MATCHING => __('OR'),
+                default => NOT_AVAILABLE
+            };
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
-
 
     /**
      * @param  string $field
@@ -883,7 +849,6 @@ class Rule extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
     /**
      * Show the rule
      *
@@ -898,7 +863,9 @@ class Rule extends CommonDBTM
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        if (!$this->isNewID($ID)) {
+
+        $new_item = static::isNewID($ID);
+        if (!$new_item) {
             $this->check($ID, READ);
         } else {
            // Create item
@@ -909,81 +876,50 @@ class Rule extends CommonDBTM
         $rand = mt_rand();
         $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        echo "<td>" . __('Description') . "</td>";
-        echo "<td>";
-        echo Html::input('description', ['value' => $this->fields['description']]);
-        echo "</td></tr>\n";
+        $plugin = isPluginItemType(static::class);
+        $base_url = $CFG_GLPI["root_doc"] . ($plugin !== false ? Plugin::getWebDir($plugin['plugin'], false) : '');
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Logical operator') . "</td>";
-        echo "<td>";
-        $this->dropdownRulesMatch(['value' => $this->fields["match"]]);
-        echo "</td>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("is_active", $this->fields["is_active"]);
-        echo "</td></tr>\n";
-
-        if ($this->useConditions()) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __('Use rule for') . "</td>";
-            echo "<td>";
-            $this->dropdownConditions(['value' => $this->fields["condition"]]);
-            echo "</td>";
-            echo "<td colspan='2'>";
-            echo "</td></tr>\n";
+        $add_buttons = [];
+        if (!$new_item && $canedit) {
+            $add_buttons = [
+                [
+                    'text' => _x('button', 'Test'),
+                    'type' => 'button',
+                    'onclick' => "$('#ruletestmodal').modal('show');",
+                ]
+            ];
         }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Comments') . "</td>";
-        echo "<td class='middle' colspan='3'>";
-        echo "<textarea class='form-control' rows='3' name='comment' >" . $this->fields["comment"] . "</textarea>";
-
-        if (!$this->isNewID($ID)) {
-            if ($this->fields["date_mod"]) {
-                echo "<br>";
-                printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-            }
-        }
-        if ($canedit) {
-            if (!$this->isNewID($ID)) {
-                echo "<input type='hidden' name='ranking' value='" . $this->fields["ranking"] . "'>";
-            }
-            echo "<input type='hidden' name='sub_type' value='" . get_class($this) . "'>";
-        }
-        echo "</td></tr>\n";
-
-        if ($canedit) {
-            if ($ID > 0) {
-                if ($plugin = isPluginItemType($this->getType())) {
-                    $url = $CFG_GLPI["root_doc"] . "/plugins/" . strtolower($plugin['plugin']);
-                } else {
-                    $url = $CFG_GLPI["root_doc"];
-                }
-                echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-                echo "<a class='btn btn-primary' href='#'
-                     data-bs-toggle='modal' data-bs-target='#ruletest$rand'>" .
-                  _x('button', 'Test') . "</a>";
-                Ajax::createIframeModalWindow(
-                    'ruletest' . $rand,
-                    $url . "/front/rule.test.php?" . "sub_type=" . $this->getType() .
-                                             "&rules_id=" . $this->fields["id"],
-                    ['title' => _x('button', 'Test')]
-                );
-                echo "</td></tr>\n";
-            }
-        }
-
-        $this->showFormButtons($options);
-
-        return true;
+        TemplateRenderer::getInstance()->display('pages/admin/rules/form.html.twig', [
+            'item' => $this,
+            'match_operators' => $this->getRulesMatch(),
+            'conditions' => static::getConditionsArray(),
+            'rand' => $rand,
+            'test_url' => $base_url . "/front/rule.test.php",
+            'params' => [
+                'canedit' => $canedit,
+                'addbuttons' => $add_buttons,
+            ]
+        ]);
     }
 
+    /**
+     * Get all logical operators supported by the rule type for matching criteria
+     * @param string|null $value Value to restrict the result to. If null, all supported operators are returned.
+     * @return array Array of operators with their localized name
+     * @phpstan-return array<string, string>
+     */
+    public function getRulesMatch(?string $value = null): array
+    {
+        $elements = [];
+        if ($value === null || $value === self::AND_MATCHING) {
+            $elements[self::AND_MATCHING] = __('AND');
+        }
+
+        if ($value === null || $value === self::OR_MATCHING) {
+            $elements[self::OR_MATCHING]  = __('OR');
+        }
+        return $elements;
+    }
 
     /**
      * Display a dropdown with all the rule matching
@@ -994,32 +930,18 @@ class Rule extends CommonDBTM
      *
      * @return integer|string
      **/
-    public function dropdownRulesMatch($options = [])
+    protected function dropdownRulesMatch($options = [])
     {
+        $p = array_replace([
+            'name'     => 'match',
+            'value'    => '',
+            'restrict' => $this->restrict_matching,
+            'display'  => true
+        ], $options);
+        $p['restrict'] = is_string($p['restrict']) ? $p['restrict'] : null;
 
-        $p['name']     = 'match';
-        $p['value']    = '';
-        $p['restrict'] = $this->restrict_matching;
-        $p['display']  = true;
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
-
-        $elements = [];
-        if (!$p['restrict'] || ($p['restrict'] == self::AND_MATCHING)) {
-            $elements[self::AND_MATCHING] = __('and');
-        }
-
-        if (!$p['restrict'] || ($p['restrict'] == self::OR_MATCHING)) {
-            $elements[self::OR_MATCHING]  = __('or');
-        }
-
-        return Dropdown::showFromArray($p['name'], $elements, $p);
+        return Dropdown::showFromArray($p['name'], $this->getRulesMatch($p['restrict']), $p);
     }
-
 
     /**
      * Get all criteria for a given rule
@@ -1032,7 +954,7 @@ class Rule extends CommonDBTM
      **/
     public function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0)
     {
-        if ($ID == "") {
+        if (static::isNewID($ID)) {
             return $this->getEmpty();
         }
         if ($this->getFromDB($ID)) {
@@ -1056,13 +978,11 @@ class Rule extends CommonDBTM
         return false;
     }
 
-
     /**
      * display title for action form
      **/
     public function getTitleAction()
     {
-
         foreach ($this->getActions() as $val) {
             if (
                 isset($val['force_actions'])
@@ -1075,7 +995,6 @@ class Rule extends CommonDBTM
         }
     }
 
-
     /**
      * Get maximum number of Actions of the Rule (0 = unlimited)
      *
@@ -1083,11 +1002,8 @@ class Rule extends CommonDBTM
      **/
     public function maxActionsCount()
     {
-        return count(array_filter($this->getAllActions(), function ($action_obj) {
-            return !isset($action_obj['duplicatewith']);
-        }));
+        return count(array_filter($this->getAllActions(), static fn ($action_obj) => !isset($action_obj['duplicatewith'])));
     }
-
 
     /**
      * Display all rules actions
@@ -1205,7 +1121,7 @@ class Rule extends CommonDBTM
                             $('#viewaction{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
                                 type: "{$this->ruleactionclass}",
                                 parenttype: "{$rule_class}",
-                                rules_id: 154,
+                                rules_id: $rules_id,
                                 id: action_id
                             });
                         }
@@ -1216,12 +1132,10 @@ JS
         }
     }
 
-
     public function maybeRecursive()
     {
         return false;
     }
-
 
     /**
      * Display all rules criteria
@@ -1246,95 +1160,93 @@ JS
         }
 
         $canedit = $this->canEdit($rules_id);
-        $style   = "class='tab_cadre_fixehov'";
-
-        if ($p['readonly']) {
-            $canedit = false;
-            $style   = "class='tab_cadrehov'";
-        }
-
         if ($canedit) {
-            echo "<div id='viewcriteria" . $rules_id . "$rand'></div>\n";
-
-            echo "<script type='text/javascript' >\n";
-            echo "function viewAddCriteria" . $rules_id . "$rand() {\n";
-            $params = ['type'                => $this->rulecriteriaclass,
-                'parenttype'          => $this->getType(),
+            echo "<div id='viewcriteria{$rules_id}{$rand}'></div>";
+            $params = [
+                'type'                => $this->rulecriteriaclass,
+                'parenttype'          => static::class,
                 $this->rules_id_field => $rules_id,
                 'id'                  => -1
             ];
-            Ajax::updateItemJsCode(
-                "viewcriteria" . $rules_id . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
+            $js = "function viewAddCriteria{$rules_id}{$rand}() {";
+            $js .= Ajax::updateItemJsCode(
+                toupdate: "viewcriteria{$rules_id}{$rand}",
+                url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
+                parameters: $params,
+                display: false
             );
-            echo "};";
-            echo "</script>\n";
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='javascript:viewAddCriteria" . $rules_id . "$rand();'>";
-            echo __('Add a new criterion') . "</a></div>\n";
+            $js .= "};";
+            echo Html::scriptBlock($js);
+            echo "<div class='center mt-1 mb-3'>" .
+                "<a class='btn btn-primary' href='javascript:viewAddCriteria{$rules_id}{$rand}();'>";
+            echo __('Add a new criterion') . "</a></div>";
         }
 
-        echo "<div class='spaced'>";
-
-        $nb = sizeof($this->criterias);
-
-        if ($canedit && $nb) {
-            Html::openMassiveActionsForm('mass' . $this->rulecriteriaclass . $rand);
-            $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $nb),
-                'check_itemtype' => get_class($this),
-                'check_items_id' => $rules_id,
-                'container'      => 'mass' . $this->rulecriteriaclass . $rand,
-                'extraparams'    => ['rule_class_name'
-                                                                    => $this->getType()
-                ]
+        $entries = [];
+        foreach ($this->criterias as $criteria) {
+            $criterion = $this->getCriteriaName($criteria->fields["criteria"]);
+            $condition = RuleCriteria::getConditionByID($criteria->fields["condition"], get_class($this), $criteria->fields["criteria"]);
+            $pattern   = $this->getCriteriaDisplayPattern($criteria->fields["criteria"], $criteria->fields["condition"], $criteria->fields["pattern"]);
+            $entries[] = [
+                'itemtype' => $this->rulecriteriaclass,
+                'id' => $criteria->getID(),
+                'criteria' => $criterion,
+                'condition' => $condition,
+                'pattern' => $pattern
             ];
-            Html::showMassiveActions($massiveactionparams);
         }
 
-        echo "<table $style>";
-        echo "<tr class='noHover'>" .
-           "<th colspan='" . ($canedit && $nb ? " 4 " : "3") . "'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th>" .
-           "</tr>\n";
+        $massiveactionparams = [
+            'num_displayed'  => min($_SESSION['glpilist_limit'], count($entries)),
+            'check_itemtype' => static::class,
+            'check_items_id' => $rules_id,
+            'container'      => 'mass' . $this->rulecriteriaclass . $rand,
+            'extraparams'    => [
+                'rule_class_name' => static::class
+            ]
+        ];
 
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'datatable_rulecriteria' . $rules_id . $rand,
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'criteria' => _n('Criterion', 'Criteria', 1),
+                'condition' => __('Condition'),
+                'pattern' => __('Reason')
+            ],
+            'entries' => $entries,
+            'row_class' => 'cursor-pointer',
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => $massiveactionparams,
+        ]);
 
-        if ($canedit && $nb) {
-            $header_top    .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox('mass' . $this->rulecriteriaclass . $rand);
-            $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>";
-            $header_bottom .= Html::getCheckAllAsCheckbox('mass' . $this->rulecriteriaclass . $rand);
-            $header_bottom .= "</th>";
+        if ($canedit) {
+            $rule_class = static::class;
+            echo Html::scriptBlock(<<<JS
+                $(() => {
+                    $('#datatable_rulecriteria{$rules_id}{$rand}').on('click', 'tbody tr', (e) => {
+                        //ignore click in first column (the massive action checkbox)
+                        if ($(e.target).closest('td').is('td:first-child')) {
+                            return;
+                        }
+                        const criteria_id = $(e.currentTarget).data('id');
+                        if (criteria_id) {
+                            $('#viewcriteria{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
+                                type: "{$this->rulecriteriaclass}",
+                                parenttype: "{$rule_class}",
+                                rules_id: 154,
+                                id: criteria_id
+                            });
+                        }
+                    });
+                });
+JS
+            );
         }
-        $header_end .= "<th class='center b'>" . _n('Criterion', 'Criteria', 1) . "</th>\n";
-        $header_end .= "<th class='center b'>" . __('Condition') . "</th>\n";
-        $header_end .= "<th class='center b'>" . __('Reason') . "</th>\n";
-        $header_end .= "</tr>\n";
-        echo $header_begin . $header_top . $header_end;
-
-        foreach ($this->criterias as $criterion) {
-            $this->showMinimalCriteriaForm($criterion->fields, $canedit, $rand);
-        }
-
-        if ($nb) {
-            echo $header_begin . $header_bottom . $header_end;
-        }
-        echo "</table>\n";
-
-        if ($canedit && $nb) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-
-        echo "</div>\n";
     }
-
-
 
     /**
      * Display the dropdown of the criteria for the rule
@@ -1380,7 +1292,6 @@ JS
         }
         return Dropdown::showFromArray($p['name'], $items, $p);
     }
-
 
     /**
      * Display the dropdown of the actions for the rule
@@ -1438,7 +1349,6 @@ JS
         return Dropdown::showFromArray($p['name'], $items, $p);
     }
 
-
     /**
      * Get a criteria description by his ID
      *
@@ -1448,14 +1358,9 @@ JS
      **/
     public function getCriteria($ID)
     {
-
         $criteria = $this->getAllCriteria();
-        if (isset($criteria[$ID])) {
-            return $criteria[$ID];
-        }
-        return [];
+        return $criteria[$ID] ?? [];
     }
-
 
     /**
      * Get action description by its ID
@@ -1466,14 +1371,9 @@ JS
      **/
     public function getAction($ID)
     {
-
         $actions = $this->getAllActions();
-        if (isset($actions[$ID])) {
-            return $actions[$ID];
-        }
-        return [];
+        return $actions[$ID] ?? [];
     }
-
 
     /**
      * Get a criteria description by his ID
@@ -1482,17 +1382,11 @@ JS
      *
      * @return string the criteria's description
      **/
-
     public function getCriteriaName($ID)
     {
-
         $criteria = $this->getCriteria($ID);
-        if (isset($criteria['name'])) {
-            return $criteria['name'];
-        }
-        return __('Unavailable');
+        return $criteria['name'] ?? __('Unavailable');
     }
-
 
     /**
      * Get action description by his ID
@@ -1503,14 +1397,9 @@ JS
      **/
     public function getActionName($ID)
     {
-
         $action = $this->getAction($ID);
-        if (isset($action['name'])) {
-            return $action['name'];
-        }
-        return "&nbsp;";
+        return $action['name'] ?? "&nbsp;";
     }
-
 
     /**
      * Process the rule
@@ -1518,14 +1407,13 @@ JS
      * @param array &$input the input data used to check criterias
      * @param array &$output the initial ouput array used to be manipulate by actions
      * @param array &$params parameters for all internal functions
-     * @param array &options array options:
+     * @param array &$options array options:
      *                     - only_criteria : only react on specific criteria
      *
      * @return void
      */
     public function process(&$input, &$output, &$params, &$options = [])
     {
-
         if ($this->validateCriterias($options)) {
             $this->regex_results     = [];
             $this->criterias_results = [];
@@ -1538,7 +1426,7 @@ JS
 
                 $this->updateOnlyCriteria($options, $refoutput, $output);
                 //Hook
-                $hook_params["sub_type"] = $this->getType();
+                $hook_params["sub_type"] = static::class;
                 $hook_params["ruleid"]   = $this->fields["id"];
                 $hook_params["input"]    = $input;
                 $hook_params["output"]   = $output;
@@ -1547,7 +1435,6 @@ JS
             }
         }
     }
-
 
     /**
      * Update Only criteria options if needed
@@ -1561,7 +1448,6 @@ JS
      **/
     public function updateOnlyCriteria(&$options, $refoutput, $newoutput)
     {
-
         if (count($this->actions)) {
             if (
                 isset($options['only_criteria'])
@@ -1597,7 +1483,6 @@ JS
         }
     }
 
-
     /**
      * Are criteria valid to be processed
      *
@@ -1609,7 +1494,6 @@ JS
      **/
     public function validateCriterias($options)
     {
-
         if (count($this->criterias)) {
             if (
                 isset($options['only_criteria'])
@@ -1629,7 +1513,6 @@ JS
         return false;
     }
 
-
     /**
      * Check criteria
      *
@@ -1639,7 +1522,6 @@ JS
      **/
     public function checkCriterias($input)
     {
-
         reset($this->criterias);
 
         if ($this->fields["match"] == self::AND_MATCHING) {
@@ -1678,7 +1560,6 @@ JS
         return false;
     }
 
-
     /**
      * Check criteria
      *
@@ -1689,7 +1570,6 @@ JS
      **/
     public function testCriterias($input, &$check_results)
     {
-
         reset($this->criterias);
 
         foreach ($this->criterias as $criterion) {
@@ -1701,11 +1581,10 @@ JS
         }
     }
 
-
     /**
      * Process a criteria of a rule
      *
-     * @param array &$criteria  criteria to check
+     * @param RuleCriteria &$criteria  criteria to check
      * @param array &$input     the input data used to check criteria
      *
      * @return boolean
@@ -1713,12 +1592,12 @@ JS
     public function checkCriteria(&$criteria, &$input)
     {
         $partial_regex_result = [];
-       // Undefine criteria field : set to blank
+        // Undefine criteria field : set to blank
         if (!isset($input[$criteria->fields["criteria"]])) {
             $input[$criteria->fields["criteria"]] = '';
         }
 
-       //If the value is not an array
+        // If the value is not an array
         if (!is_array($input[$criteria->fields["criteria"]])) {
             $value = $this->getCriteriaValue(
                 $criteria->fields["criteria"],
@@ -1733,8 +1612,8 @@ JS
                 $partial_regex_result
             );
         } else {
-           //If the value is, in fact, an array of values
-           // Negative condition : Need to match all condition (never be)
+            // If the value is, in fact, an array of values
+            // Negative condition : Need to match all condition (never be)
             if (
                 in_array($criteria->fields["condition"], self::getNegativesConditions())
             ) {
@@ -1757,7 +1636,7 @@ JS
                     }
                 }
             } else {
-               // Positive condition : Need to match one
+                // Positive condition : Need to match one
                 $res = false;
                 foreach ($input[$criteria->fields["criteria"]] as $crit) {
                     $value = $this->getCriteriaValue(
@@ -1776,9 +1655,9 @@ JS
             }
         }
 
-       // Found regex on this criteria
+        // Found regex on this criteria
         if (count($partial_regex_result)) {
-           // No regex existing : put found
+            // No regex existing : put found
             if (!count($this->regex_results)) {
                 $this->regex_results = $partial_regex_result;
             } else { // Already existing regex : append found values
@@ -1795,7 +1674,6 @@ JS
         return $res;
     }
 
-
     /**
      * @param array $input
      *
@@ -1805,7 +1683,6 @@ JS
     {
         return true;
     }
-
 
     /**
      * Specific prepare input data for the rule
@@ -1819,7 +1696,6 @@ JS
     {
         return $input;
     }
-
 
     /**
      * Get all data needed to process rules (core + plugins)
@@ -1859,7 +1735,6 @@ JS
         }
         return $input;
     }
-
 
     /**
      * Execute plugins actions if needed.
@@ -1902,7 +1777,6 @@ JS
         }
         return $output;
     }
-
 
     /**
      * Execute the actions as defined in the rule.
@@ -1975,10 +1849,8 @@ JS
         return $output;
     }
 
-
     public function cleanDBonPurge()
     {
-
        // Delete a rule and all associated criteria and actions
         if (!empty($this->ruleactionclass)) {
             $ruleactionclass = $this->ruleactionclass;
@@ -1992,7 +1864,6 @@ JS
             $rc->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
         }
     }
-
 
     /**
      * Show the minimal form for the rule
@@ -2090,22 +1961,21 @@ JS
         echo "</tr>";
     }
 
-
     public function prepareInputForAdd($input)
     {
-       //If no uuid given, generate a new one
+        // If no uuid given, generate a new one
         if (!isset($input['uuid'])) {
             $input["uuid"] = self::getUuid();
         }
 
-        if ($this->getType() == 'Rule' && !isset($input['sub_type'])) {
+        if (static::class === 'Rule' && !isset($input['sub_type'])) {
             trigger_error('Sub type not specified creating a new rule', E_USER_WARNING);
             return false;
         }
 
         if (!isset($input['sub_type'])) {
-            $input['sub_type'] = $this->getType();
-        } else if ($this->getType() != 'Rule' && $input['sub_type'] != $this->getType()) {
+            $input['sub_type'] = static::class;
+        } else if (static::class !== 'Rule' && $input['sub_type'] !== static::class) {
             Toolbox::logDebug(
                 sprintf(
                     'Creating a %s rule with %s subtype.',
@@ -2116,11 +1986,10 @@ JS
         }
 
         // Before adding, add the ranking of the new rule
-        $input["ranking"] = $input['ranking'] ?? $this->getNextRanking($input['sub_type']);
+        $input["ranking"] ??= $this->getNextRanking($input['sub_type']);
 
         return $input;
     }
-
 
     /**
      * Get the next ranking for a specified rule
@@ -2377,7 +2246,7 @@ JS
             || ($condition == self::PATTERN_FIND)
         ) {
             return __('Yes');
-        } elseif (
+        } else if (
             in_array($condition, self::getConditionsWithComplexValues())
         ) {
             $crit = $this->getCriteria($ID);
@@ -2469,7 +2338,6 @@ JS
         return $pattern;
     }
 
-
     /**
      * Used to get specific criteria patterns
      *
@@ -2483,7 +2351,6 @@ JS
     {
         return false;
     }
-
 
     /**
      * Display item used to select a pattern for a criteria
@@ -2649,7 +2516,6 @@ JS
         }
     }
 
-
     /**
      * Return a "display" value associated with a pattern associated to a criteria
      *
@@ -2661,12 +2527,11 @@ JS
      **/
     public function getActionValue($ID, $type, $value)
     {
-
         $action = $this->getAction($ID);
         if (isset($action['type'])) {
             switch ($action['type']) {
                 case "dropdown":
-                    if ($type == 'defaultfromuser' || $type == 'fromuser' || $type == 'fromitem' || $type == 'firstgroupfromuser') {
+                    if (in_array($type, ['defaultfromuser', 'fromuser', 'fromitem', 'firstgroupfromuser'], true)) {
                         return Dropdown::getYesNo($value);
                     }
 
@@ -2677,7 +2542,7 @@ JS
 
                    // $type == assign
                     $name = Dropdown::getDropdownName($action["table"], $value);
-                    return (($name == '&nbsp;') ? NOT_AVAILABLE : $name);
+                    return (($name === '&nbsp;') ? NOT_AVAILABLE : $name);
 
                 case "dropdown_status":
                     if ($this instanceof RuleCommonITILObject) {
@@ -2729,7 +2594,6 @@ JS
         return $value;
     }
 
-
     /**
      * Return a value associated with a pattern associated to a criteria to display it
      *
@@ -2746,47 +2610,26 @@ JS
             self::PATTERN_EXISTS
         ], self::getConditionsWithComplexValues());
 
-        if (
-            !in_array($condition, $conditions)
-        ) {
+        if (!in_array($condition, $conditions)) {
             $crit = $this->getCriteria($ID);
             if (isset($crit['type'])) {
-                switch ($crit['type']) {
-                    case "dropdown":
-                        $tmp = Dropdown::getDropdownName($crit["table"], $value, false, false);
-                      //$tmp = Dropdown::getDropdownName($crit["table"], $value);
-                      // return empty string to be able to check if set
-                        if ($tmp == '&nbsp;') {
-                             return '';
-                        }
-                        return $tmp;
-
-                    case "dropdown_assign":
-                    case "dropdown_users":
-                        return getUserName($value);
-
-                    case "yesonly":
-                    case "yesno":
-                        return Dropdown::getYesNo($value);
-
-                    case "dropdown_impact":
-                        return CommonITILObject::getImpactName($value);
-
-                    case "dropdown_urgency":
-                        return CommonITILObject::getUrgencyName($value);
-
-                    case "dropdown_priority":
-                        return CommonITILObject::getPriorityName($value);
-
-                    case "dropdown_validation_status":
-                        return CommonITILValidation::getStatus($value);
-                }
+                return match ($crit['type']) {
+                    'dropdown' => ($result = Dropdown::getDropdownName($crit["table"], $value, false, false)) === '&nbsp;'
+                        ? ''
+                        : $result,
+                    'dropdown_assign', 'dropdown_users' => getUserName($value),
+                    'yesonly', 'yesno' => Dropdown::getYesNo($value),
+                    'dropdown_impact' => CommonITILObject::getImpactName($value),
+                    'dropdown_urgency' => CommonITILObject::getUrgencyName($value),
+                    'dropdown_priority' => CommonITILObject::getPriorityName($value),
+                    'dropdown_validation_status' => CommonITILValidation::getStatus($value),
+                    default => $value,
+                };
             }
         }
 
         return $value;
     }
-
 
     /**
      * Function used to display type specific criteria during rule's preview
@@ -2796,7 +2639,6 @@ JS
     public function showSpecificCriteriasForPreview($fields)
     {
     }
-
 
     /**
      * Function used to add specific params before rule processing
@@ -2809,7 +2651,6 @@ JS
     {
         return $params;
     }
-
 
     /**
      * Criteria form used to preview rule
@@ -2827,7 +2668,7 @@ JS
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th colspan='3'>" . _n('Criterion', 'Criteria', Session::getPluralNumber()) . "</th></tr>";
 
-            $type_match        = (($this->fields["match"] == self::AND_MATCHING) ? __('and') : __('or'));
+            $type_match        = (($this->fields["match"] == self::AND_MATCHING) ? __('AND') : __('OR'));
             $already_displayed = [];
             $first             = true;
 
@@ -2879,7 +2720,6 @@ JS
         }
     }
 
-
     /**
      * @param array $output
      *
@@ -2892,12 +2732,12 @@ JS
 
         if (isset($PLUGIN_HOOKS['use_rules'])) {
             $params['criterias_results'] = $this->criterias_results;
-            $params['rule_itemtype']     = $this->getType();
+            $params['rule_itemtype']     = static::class;
             foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                if (is_array($val) && in_array($this->getType(), $val)) {
+                if (is_array($val) && in_array(static::class, $val, true)) {
                     $results = Plugin::doOneHook(
                         $plugin,
                         "preProcessRulePreviewResults",
@@ -2916,7 +2756,6 @@ JS
         return $output;
     }
 
-
     /**
      * Dropdown rules for a defined sub_type of rule
      *
@@ -2927,21 +2766,15 @@ JS
      **/
     public static function dropdown($options = [])
     {
-        $p = [
-            'sub_type'     => '',
-            'name'         => 'rules_id',
-            'entity'       => '',
-            'condition'    => 0,
+        $p = array_replace([
+            'sub_type' => '',
+            'name'     => 'rules_id',
+            'entity'   => '',
+            'condition' => 0,
             'hide_if_no_elements' => false,
-        ];
+        ], $options);
 
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
-
-        if ($p['sub_type'] == '') {
+        if ($p['sub_type'] === '') {
             return false;
         }
 
@@ -2956,23 +2789,15 @@ JS
         return Dropdown::show($p['sub_type'], $p);
     }
 
-
     public function getAllCriteria()
     {
-
-        return self::doHookAndMergeResults(
-            "getRuleCriteria",
-            $this->getCriterias(),
-            $this->getType()
-        );
+        return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(), static::class);
     }
-
 
     public function getCriterias()
     {
         return [];
     }
-
 
     /**
      * @since 0.84
@@ -2980,9 +2805,8 @@ JS
      */
     public function getAllActions()
     {
-        return self::doHookAndMergeResults("getRuleActions", $this->getActions(), $this->getType());
+        return self::doHookAndMergeResults("getRuleActions", $this->getActions(), static::class);
     }
-
 
     public function getActions()
     {
@@ -2998,7 +2822,6 @@ JS
         }
         return $actions;
     }
-
 
     /**
      *  Execute a hook if necessary and merge results
@@ -3042,21 +2865,18 @@ JS
         return $toreturn;
     }
 
-
     /**
-     * @param sgtring $sub_type
+     * @param string $sub_type
      *
      * @return array
      **/
     public static function getActionsByType($sub_type)
     {
-
         if ($rule = getItemForItemtype($sub_type)) {
             return $rule->getAllActions();
         }
         return [];
     }
-
 
     /**
      * Return all rules from database
@@ -3131,7 +2951,6 @@ JS
         echo "</table>";
         Html::closeForm();
     }
-
 
     /**
      * @param CommonDBTM $item
@@ -3250,7 +3069,6 @@ JS
         return $ong;
     }
 
-
     /**
      * Add more criteria specific to this type of rule
      *
@@ -3260,7 +3078,6 @@ JS
     {
         return [];
     }
-
 
     /**
      * Add more actions specific to this type of rule
@@ -3274,7 +3091,6 @@ JS
         return $value;
     }
 
-
     /**
      * @param $condition
      * @param $criteria
@@ -3287,7 +3103,6 @@ JS
         return false;
     }
 
-
     /**
      * @param array  $action
      * @param string $value          value to display (default '')
@@ -3299,16 +3114,15 @@ JS
         return false;
     }
 
-
     /**
      * Clean Rule with Action or Criteria linked to an item
      *
-     * @param $item                  Object
-     * @param $field        string   name (default is FK to item)
-     * @param $ruleitem              object (instance of Rules of SlaLevel)
-     * @param $table        string   (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
-     * @param $valfield     string   (value or pattern)
-     * @param $fieldfield   string   (criteria of field)
+     * @param Object $item
+     * @param string $field name (default is FK to item)
+     * @param object $ruleitem (instance of Rules of SlaLevel)
+     * @param string $table (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
+     * @param string $valfield (value or pattern)
+     * @param string $fieldfield (criteria of field)
      **/
     private static function cleanForItemActionOrCriteria(
         $item,
@@ -3363,12 +3177,11 @@ JS
         }
     }
 
-
     /**
      * Clean Rule with Action is assign to an item
      *
-     * @param $item            Object
-     * @param $field  string   name (default is FK to item) (default '')
+     * @param Object $item
+     * @param string $field name (default is FK to item) (default '')
      **/
     public static function cleanForItemAction($item, $field = '')
     {
@@ -3401,16 +3214,14 @@ JS
         );
     }
 
-
     /**
      * Clean Rule with Criteria on an item
      *
-     * @param $item            Object
-     * @param $field  string   name (default is FK to item) (default '')
+     * @param Object $item
+     * @param string $field name (default is FK to item) (default '')
      **/
     public static function cleanForItemCriteria($item, $field = '')
     {
-
         self::cleanForItemActionOrCriteria(
             $item,
             $field,
@@ -3420,7 +3231,6 @@ JS
             'criteria'
         );
     }
-
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -3504,7 +3314,6 @@ JS
         return '';
     }
 
-
     /**
      * @param CommonGLPI $item         CommonGLPI object
      * @param integer    $tabnum       (default 1)
@@ -3549,7 +3358,6 @@ JS
         return true;
     }
 
-
     /**
      * Generate unique id for rule based on server name, glpi directory and basetime
      *
@@ -3559,7 +3367,6 @@ JS
      **/
     public static function getUuid()
     {
-
        //encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
         $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8);
        // encode script current dir, ex : /var/www/glpi_X
@@ -3567,7 +3374,6 @@ JS
 
         return uniqid("$serverSubSha1-$dirSubSha1-", true);
     }
-
 
     /**
      * Display debug information for current object
@@ -3578,7 +3384,6 @@ JS
      **/
     public function showDebug()
     {
-
         echo "<div class='spaced'>";
         printf(__('%1$s: %2$s'), "<b>UUID</b>", $this->fields['uuid']);
         echo "</div>";

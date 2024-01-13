@@ -50,7 +50,7 @@ class RuleCollection extends CommonDBTM
     public $use_output_rule_process_as_next_input = false;
    /// Rule collection can be replay (for dictionary)
     public $can_replay_rules                      = false;
-   /// List of rules of the rule collection
+    /** @var SingletonRuleList $RuleList */
     public $RuleList                              = null;
    /// Menu type
     public $menu_type                             = "rule";

@@ -40,43 +40,61 @@
 {% block form_fields %}
     {% block more_fields %}
         {{ inputs.hidden(rule.getRuleIdField, item.fields[rules_id_field]) }}
-        {% set action_dropdown %}
-            {% do call([rule, 'dropdownActions'], [{
-                value: item.fields['field'],
-                used: used_actions,
-                rand: rand
-            }]) %}
+        {% set criteria_dropdown %}
+            <div class="btn-group">
+                {% do call([rule, 'dropdownCriteria'], [{
+                    value: item.fields['criteria'],
+                    rand: rand
+                }]) %}
+                {% if rule.specific_parameters %}
+                    {% set param_itemtype = get_class(rule) ~ 'Parameter' %}
+                    <button type="button" class="btn btn-ghost-secondary btn-sm" title="{{ __('Add a criterion') }}"
+                            data-bs-toggle="modal" data-bs-target="#addcriterion{{ rand }}">
+                        <i class="ti ti-plus"></i>
+                    </button>
+                    {% do call('Ajax::createIframeModalWindow', [
+                        'addcriterion' ~ rand,
+                        param_itemtype|itemtype_form_path,
+                        {
+                            reloadonclose: true,
+                        }
+                    ]) %}
+                {% endif %}
+            </div>
         {% endset %}
-        {{ fields.htmlField('', action_dropdown, get_class(item)|itemtype_name) }}
+        {% set criteria_dropdown_extra %}
+
+        {% endset %}
+        {{ fields.htmlField('', criteria_dropdown, get_class(item)|itemtype_name, {
+            add_field_html: criteria_dropdown_extra
+        }) }}
         {% do call(['Ajax', 'updateItemOnSelectEvent'], [
-            'dropdown_field' ~ rand,
-            'action_span',
-            config('root_doc') ~ '/ajax/ruleaction.php',
+            'dropdown_criteria' ~ rand,
+            'criteria_span',
+            config('root_doc') ~ '/ajax/rulecriteria.php',
             {
-                field: '__VALUE__',
+                criteria: '__VALUE__',
                 sub_type: get_class(rule),
-                ruleactions_id: item.getID,
-                (rule.getRuleIdField): item.fields[rules_id_field]
+                rand: rand,
             }
         ]) %}
-        <span id="action_span"></span>
-        {% if item.fields['field'] is defined and item.fields['field'] is not empty %}
+        {% if item.fields['criteria'] is defined and item.fields['criteria'] is not empty %}
             <script type="text/javascript">
                 $(() => {
                     {% do call(['Ajax', 'updateItemJsCode'], [
-                        'action_span',
-                        config('root_doc') ~ '/ajax/ruleaction.php',
+                        'criteria_span',
+                        config('root_doc') ~ '/ajax/rulecriteria.php',
                         {
-                            field: item.fields['field'],
-                            action_type: item.fields['action_type'],
-                            value: item.fields['value'],
+                            criteria: item.fields['criteria'],
+                            condition: item.fields['condition'],
+                            pattern: item.fields['pattern'],
                             sub_type: get_class(rule),
-                            ruleactions_id: item.getID,
-                            (rule.getRuleIdField): item.fields[rules_id_field]
+                            rand: rand,
                         }
                     ]) %}
                 });
             </script>
         {% endif %}
+        <span id="criteria_span"></span>
     {% endblock %}
 {% endblock %}

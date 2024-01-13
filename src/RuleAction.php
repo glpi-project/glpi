@@ -729,20 +729,21 @@ class RuleAction extends CommonDBChild
         }
     }
 
-    /** form for rule action
+    /**
+     * Show the form to add or update an action
+     * @param integer $ID ID of the action
+     * @param array $options Extra options
+     * @phpstan-param array{parent: Rule} $options
      *
+     * @return boolean
      * @since 0.85
-     *
-     * @param $ID      integer : Id of the action
-     * @param $options array of possible options:
-     *     - rule Object : the rule
      **/
     public function showForm($ID, array $options = [])
     {
        // Yllen: you always have parent for action
         $rule = $options['parent'];
 
-        if ($ID > 0) {
+        if (!static::isNewID($ID)) {
             $this->check($ID, READ);
         } else {
             // Create item
@@ -751,11 +752,16 @@ class RuleAction extends CommonDBChild
             static::$itemtype = get_class($rule);
             $this->check(-1, CREATE, $options);
         }
+
+        $used = $this->getAlreadyUsedForRuleID($rule->getID(), get_class($rule));
+        if (isset($used[$this->fields['field']]) && !static::isNewID($ID)) {
+            unset($used[$this->fields['field']]);
+        }
         TemplateRenderer::getInstance()->display('pages/admin/rules/action.html.twig', [
             'rule' => $rule,
             'rules_id_field' => static::$items_id,
             'item' => $this,
-            'used_actions' => $this->getAlreadyUsedForRuleID($rule->getID(), $rule->getType()),
+            'used_actions' => $used,
             'rand' => mt_rand()
         ]);
 

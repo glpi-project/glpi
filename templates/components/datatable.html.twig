@@ -44,7 +44,9 @@
 
     <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
-            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+            <div class="mb-2">
+                {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+            </div>
         {% endif %}
         <table id="{{ datatable_id }}" class="table table-hover">
             <thead>
