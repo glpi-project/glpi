@@ -243,10 +243,6 @@
             }
         }
     }
-
-    & ~ .btn.btn-outline-secondary {
-        border: var(--tblr-border-width) solid var(--tblr-border-color);
-    }
 }
 
 // fix z-index issue for select2 dropdown container with a boostrap modal
