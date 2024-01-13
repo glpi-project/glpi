@@ -160,7 +160,7 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        <tr class="{{ row_class|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
                             {% if showmassiveactions %}
                                 <td style="width: 10px">
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"

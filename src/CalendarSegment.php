@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -48,7 +49,6 @@ class CalendarSegment extends CommonDBChild
     public static $itemtype = 'Calendar';
     public static $items_id = 'calendars_id';
 
-
     /**
      * @since 0.84
      **/
@@ -60,12 +60,10 @@ class CalendarSegment extends CommonDBChild
         return $forbidden;
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Time range', 'Time ranges', $nb);
     }
-
 
     public function prepareInputForAdd($input)
     {
@@ -92,14 +90,12 @@ class CalendarSegment extends CommonDBChild
 
     public function post_addItem()
     {
-
-       // Update calendar cache
+        // Update calendar cache
         $cal = new Calendar();
         $cal->updateDurationCache($this->fields['calendars_id']);
 
         parent::post_addItem();
     }
-
 
     public function post_deleteFromDB()
     {
@@ -110,7 +106,6 @@ class CalendarSegment extends CommonDBChild
 
         parent::post_deleteFromDB();
     }
-
 
     /**
      * Get segments of a calendar between 2 date
@@ -144,7 +139,6 @@ class CalendarSegment extends CommonDBChild
             ]
         );
     }
-
 
     /**
      * Get active time between begin and end time in a day
@@ -186,7 +180,6 @@ class CalendarSegment extends CommonDBChild
         }
         return $sum;
     }
-
 
     /**
      * Add a delay of a starting hour in a specific day
@@ -250,19 +243,19 @@ class CalendarSegment extends CommonDBChild
         ]);
 
         foreach ($iterator as $data) {
-            list($hour, $minute, $second) = explode(':', $data['TDIFF']);
+            [$hour, $minute, $second] = explode(':', $data['TDIFF']);
             $tstamp = (int)$hour * HOUR_TIMESTAMP + (int)$minute * MINUTE_TIMESTAMP + (int)$second;
 
             // Delay is completed
             if ($delay <= $tstamp) {
                 if (!$negative_delay) {
                     // Add time
-                    list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['BEGIN']);
+                    [$begin_hour, $begin_minute, $begin_second] = explode(':', $data['BEGIN']);
                     $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
                     $endstamp = $beginstamp + $delay;
                 } else {
                     // Substract time
-                    list($begin_hour, $begin_minute, $begin_second) = explode(':', $data['END']);
+                    [$begin_hour, $begin_minute, $begin_second] = explode(':', $data['END']);
                     $beginstamp = (int)$begin_hour * HOUR_TIMESTAMP + (int)$begin_minute * MINUTE_TIMESTAMP + (int)$begin_second;
                     $endstamp = $beginstamp - $delay;
                 }
@@ -276,7 +269,6 @@ class CalendarSegment extends CommonDBChild
         }
         return false;
     }
-
 
     /**
      * Get first working hour of a day
@@ -303,7 +295,6 @@ class CalendarSegment extends CommonDBChild
         return $result['minb'];
     }
 
-
     /**
      * Get last working hour of a day
      *
@@ -328,7 +319,6 @@ class CalendarSegment extends CommonDBChild
         ])->current();
         return $result['mend'];
     }
-
 
     /**
      * Is the hour passed is a working hour ?
@@ -358,7 +348,6 @@ class CalendarSegment extends CommonDBChild
         return $result['cpt'] > 0;
     }
 
-
     /**
      * Show segments of a calendar
      *
@@ -378,6 +367,7 @@ class CalendarSegment extends CommonDBChild
         $rand    = mt_rand();
 
         $iterator = $DB->request([
+            'SELECT' => ['id', 'day', 'begin', 'end'],
             'FROM'   => 'glpi_calendarsegments',
             'WHERE'  => [
                 'calendars_id' => $ID
@@ -388,93 +378,58 @@ class CalendarSegment extends CommonDBChild
                 'end'
             ]
         ]);
-        $numrows = count($iterator);
-
-        if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='calendarsegment_form$rand' id='calendarsegment_form$rand' method='post'
-                action='";
-            echo Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='7'>" . __('Add a schedule') . "</tr>";
-
-            echo "<tr class='tab_bg_2'><td class='center'>" . _n('Day', 'Days', 1) . "</td><td>";
-            echo "<input type='hidden' name='calendars_id' value='$ID'>";
-            Dropdown::showFromArray('day', Toolbox::getDaysOfWeekArray());
-            echo "</td><td class='center'>" . __('Start') . '</td><td>';
-            Dropdown::showHours("begin", ['value' => date('H') . ":00"]);
-            echo "</td><td class='center'>" . __('End') . '</td><td>';
-            Dropdown::showHours("end", ['value' => (date('H') + 1) . ":00"]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-        }
-
-        echo "<div class='spaced'>";
-        if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr>";
-        if ($canedit && $numrows) {
-            echo "<th width='10'>";
-            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            echo "</th>";
-        }
-        echo "<th>" . _n('Day', 'Days', 1) . "</th>";
-        echo "<th>" . __('Start') . "</th>";
-        echo "<th>" . __('End') . "</th>";
-        echo "</tr>";
 
         $daysofweek = Toolbox::getDaysOfWeekArray();
-
-        if ($numrows) {
-            foreach ($iterator as $data) {
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    echo "</td>";
-                }
-
-                echo "<td>";
-                echo $daysofweek[$data['day']];
-                echo "</td>";
-                echo "<td>" . $data["begin"] . "</td>";
-                echo "<td>" . $data["end"] . "</td>";
-            }
-            echo "</tr>";
+        if ($canedit) {
+            TemplateRenderer::getInstance()->display('pages/setup/calendarsegment.html.twig', [
+                'item' => new self(),
+                'calendars_id' => $ID,
+                'days_of_week' => $daysofweek,
+                'begin' => date('H') . ":00",
+                'end' => ((int) date('H') + 1) . ":00",
+                'params' => [
+                    'canedit' => true,
+                ]
+            ]);
         }
-        echo "</table>";
-        if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
+
+        $entries = [];
+        foreach ($iterator as $data) {
+            $entries[] = [
+                'itemtype' => __CLASS__,
+                'id'    => $data['id'],
+                'day'   => $daysofweek[$data['day']],
+                'begin' => $data['begin'],
+                'end'   => $data['end']
+            ];
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'day' => _n('Day', 'Days', 1),
+                'begin' => __('Start'),
+                'end' => __('End')
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . __CLASS__ . $rand
+            ],
+        ]);
     }
-
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
             if ($item instanceof Calendar) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = countElementsInTable(
-                        $this->getTable(),
-                        ['calendars_id' => $item->getID()]
-                    );
+                    $nb = countElementsInTable(static::getTable(), ['calendars_id' => $item->getID()]);
                 }
                 return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
@@ -482,11 +437,9 @@ class CalendarSegment extends CommonDBChild
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == 'Calendar') {
+        if ($item::class === 'Calendar') {
             self::showForCalendar($item);
         }
         return true;

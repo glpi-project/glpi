@@ -35,8 +35,7 @@
 Override the override of mixins by tabler over bootstrap
 which broke styles of btn-group > .btn-check
 */
-// TODO Can this be removed yet?
-
+// TODO Can this mixin be removed yet?
 @mixin button-check(
     $color,
     $color-hover: color-contrast($color),
@@ -61,5 +60,14 @@ which broke styles of btn-group > .btn-check
 @each $color, $value in $theme-colors {
     .btn-outline-#{$color} {
         @include button-check($value);
+    }
+}
+
+// Make border color of secondary outline buttons match input border
+.btn-group {
+    @each $color, $value in $theme-colors {
+        .btn-outline-secondary {
+            border: var(--tblr-border-width) solid var(--tblr-border-color);
+        }
     }
 }
