@@ -1914,6 +1914,7 @@ class Entity extends CommonTreeDropdown
 
         $enable_css_inheritance_label = null;
         $inherited_css = null;
+        $inherited_value = null;
         if ($entity->fields['enable_custom_css'] === self::CONFIG_PARENT) {
             $inherited_strategy = self::getUsedConfig('enable_custom_css', $entity->fields['entities_id']);
             $inherited_value = $inherited_strategy === 0
@@ -1931,6 +1932,7 @@ class Entity extends CommonTreeDropdown
             'item' => $entity,
             'enable_css_options' => $enable_css_options,
             'enable_css_inheritance_label' => $enable_css_inheritance_label,
+            'enabled_css_inherited_value' => $inherited_value,
             'inherited_css' => $inherited_css,
             'params' => [
                 'canedit' => $canedit,
