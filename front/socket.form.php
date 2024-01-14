@@ -161,7 +161,6 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
     }
 
    // Add a socket from item : format data
-   // see Socket::showNetworkPortForm()
     if (
         isset($_REQUEST['_add_fromitem'])
         && isset($_REQUEST['_from_itemtype'])

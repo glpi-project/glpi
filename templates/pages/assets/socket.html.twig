@@ -36,88 +36,53 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
-   <input type="hidden" name="itemtype" value="{{ params["itemtype"] }}">
-   <input type="hidden" name="items_id" value="{{ params["items_id"] }}">
+    <input type="hidden" name="itemtype" value="{{ parent["itemtype"] }}">
+    <input type="hidden" name="items_id" value="{{ parent["items_id"] }}">
 
-   {{ fields.nullField() }}
-   {% set add_several = params['several'] is defined and params['several'] %}
-
-   {# Do not display position if several mode, value is compute on add #}
-   {% if not add_several %}
-      {{ fields.numberField(
-         'position',
-         item.fields['position'],
-         __('Position'),
-         field_options
-      ) }}
-   {% else %}
     {{ fields.nullField() }}
-   {% endif %}
+    {% set add_several = params['several'] is defined and params['several'] %}
 
-   {% set wiring_side %}
-      {% do call('Glpi\\Socket::dropdownWiringSide', [
-         'wiring_side',
-         {
+    {# Do not display position if several mode, value is compute on add #}
+    {% if not add_several %}
+        {{ fields.numberField('position', item.fields['position'], __('Position'), field_options) }}
+    {% else %}
+        {{ fields.nullField() }}
+    {% endif %}
+
+    {% set wiring_side %}
+    {% do call('Glpi\\Socket::dropdownWiringSide', [
+        'wiring_side',
+        {
             'value': item.fields['wiring_side'],
-         },
-         add_several
-      ]) %}
-   {% endset %}
-   {{ fields.htmlField(
-      'wiring_side',
-      wiring_side,
-      __('Wiring side'),
-   ) }}
+        },
+        add_several
+    ]) %}
+    {% endset %}
+    {{ fields.htmlField('wiring_side', wiring_side, __('Wiring side')) }}
 
-   {% set networkports %}
-      {% do call('Glpi\\Socket::showNetworkPortForm', [
-         item.fields['itemtype'],
-         item.fields['items_id'],
-         item.fields['networkports_id'],
-         params
-      ]) %}
-   {% endset %}
-   {{ fields.htmlField(
-      'networkports_id',
-      networkports,
-      _n('Network port', 'Network ports', get_plural_number()),
-   ) }}
+    {% set networkports %}
+        {% set netport_params = params|merge({
+            'itemtype': parent['itemtype'],
+            'items_id': parent['items_id'],
+            'networkports_id': item.fields['networkports_id'],
+        }) %}
+        {% include 'pages/assets/socket_networkport.html.twig' with netport_params only %}
+    {% endset %}
+    {{ fields.htmlField('networkports_id', networkports, _n('Network port', 'Network ports', get_plural_number())) }}
 
-   {% if add_several %}
-
-      {{ fields.dropdownNumberField(
-         '_from',
-         1,
-         __('From'),
-         {
+    {% if add_several %}
+        {{ fields.dropdownNumberField('_from', 1, __('From'), {
             'min': 1
-         }
-      ) }}
+        }) }}
 
-      {{ fields.dropdownNumberField(
-         '_to',
-         1,
-         __('To'),
-         {
+        {{ fields.dropdownNumberField('_to', 1, __('To'), {
             'min': 1
-         }
-      ) }}
+        }) }}
 
-      {{ fields.textField(
-         '_before',
-         '',
-         __('Prefix'),
-         {}
-      ) }}
+        {{ fields.textField('_before', '', __('Prefix')) }}
 
-      {{ fields.textField(
-         '_after',
-         '',
-         __('Suffix'),
-         {}
-      ) }}
+        {{ fields.textField('_after', '', __('Suffix')) }}
 
-      <input type="hidden" name="execute_multi" value="1">
-   {% endif %}
-
+        <input type="hidden" name="execute_multi" value="1">
+    {% endif %}
 {% endblock %}

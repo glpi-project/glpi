@@ -35,17 +35,14 @@
 
 namespace Glpi;
 
-use Ajax;
 use Cable;
 use CommonDBChild;
 use CommonDBTM;
 use CommonGLPI;
-use Computer;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
-use Html;
 use HTMLTableCell;
 use HTMLTableRow;
 use Location;
@@ -80,18 +77,15 @@ class Socket extends CommonDBChild
         return Session::haveRight(static::$rightname, CREATE);
     }
 
-
     public function canPurgeItem()
     {
         return Session::haveRight(static::$rightname, PURGE);
     }
 
-
     public function isEntityAssign()
     {
         return false;
     }
-
 
     public function defineTabs($options = [])
     {
@@ -103,94 +97,11 @@ class Socket extends CommonDBChild
         return $ong;
     }
 
-
-    /**
-     * NetworkPort Form.
-     *
-     * @return void
-     */
-    public static function showNetworkPortForm($itemtype, $items_id, $networkports_id = 0, $options = [])
-    {
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        //if form is called from an item, retrieve itemtype and items
-        if (isset($options['_add_fromitem'])) {
-            $itemtype = $options['_add_fromitem']["_from_itemtype"];
-            $items_id = $options['_add_fromitem']["_from_items_id"];
-        }
-
-        $rand_itemtype = rand();
-        $rand_items_id = rand();
-
-        echo "<span id='show_itemtype_field' class='input_listener'>";
-        Dropdown::showFromArray('itemtype', self::getSocketLinkTypes(), ['value' => $itemtype,
-            'rand' => $rand_itemtype
-        ]);
-        echo "</span>";
-
-        $params = ['itemtype'   => '__VALUE__',
-            'dom_rand'   => $rand_items_id,
-            'dom_name'   => 'items_id',
-            'action'     => 'get_items_from_itemtype'
-        ];
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_itemtype$rand_itemtype",
-            "show_items_id_field",
-            $CFG_GLPI["root_doc"] . "/ajax/cable.php",
-            $params
-        );
-
-        echo "<span id='show_items_id_field' class='input_listener'>";
-        if (!empty($itemtype)) {
-            $rand_items_id =  $itemtype::dropdown(['name'                  => 'items_id',
-                'value'                 => $items_id,
-                'display_emptychoice'   => true,
-                'display_dc_position'   => in_array($itemtype, $CFG_GLPI['rackable_types']),
-                'rand' => $rand_items_id
-            ]);
-        }
-        echo "</span>";
-
-
-        //Do not display NetworkPort field if several mode
-        if (!isset($options['several'])) {
-            echo "<span id='show_networkport_field'>";
-            NetworkPort::dropdown(['name'                => 'networkports_id',
-                'value'               => $networkports_id,
-                'display_emptychoice' => true,
-                'condition'           => ['items_id' => $items_id,
-                    'itemtype' => $itemtype
-                ],
-                'comments' => false
-            ]);
-            echo "</span>";
-
-           //Listener to update breacrumb / socket
-            echo Html::scriptBlock("
-                //listener to remove socket selector and breadcrumb
-                $(document).on('change', '#dropdown_itemtype" . $rand_itemtype . "', function(e) {
-                    $('#show_front_asset_breadcrumb').empty();
-                    $('#show_front_sockets_field').empty();
-                });
-
-                //listener to refresh socket selector and breadcrumb
-                $(document).on('change', '#dropdown_items_id" . $rand_items_id . "', function(e) {
-                    var items_id = $('#dropdown_items_id" . $rand_items_id . "').find(':selected').val();
-                    var itemtype = $('#dropdown_itemtype" . $rand_itemtype . "').find(':selected').val();
-                    refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
-                    refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
-                });
-            ");
-        }
-    }
-
     /**
      * Print the version form
      *
-     * @param $ID        integer ID of the item
-     * @param $options   array
+     * @param integer $ID ID of the item
+     * @param array $options
      *     - target for the Form
      *     - itemtype type of the item for add process
      *     - items_id ID of the item for add process
@@ -199,30 +110,33 @@ class Socket extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-
         $itemtype = null;
-        if (isset($options['_add_fromitem']) && !empty($options['_add_fromitem'])) {
+        if (!empty($options['_add_fromitem'])) {
             $itemtype = $options['_add_fromitem']['_from_itemtype'];
         } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
-        } else {
-            throw new \RuntimeException('Unable to retrieve itemtype');
         }
 
-        $item = new $itemtype();
-        if ($ID > 0) {
-            $this->check($ID, READ);
-            $item->getFromDB($this->fields['items_id']);
-        } else {
-            $this->check(-1, CREATE, $options);
-            if (isset($options['_add_fromitem'])) {
-                $item->getFromDB($options['_add_fromitem']['_from_items_id']);
+        $items_id = null;
+        if ($itemtype !== null) {
+            if ($ID > 0) {
+                $this->check($ID, READ);
+                $items_id = $this->fields['items_id'];
+            } else {
+                $this->check(-1, CREATE, $options);
+                if (isset($options['_add_fromitem'])) {
+                    $items_id = $options['_add_fromitem']['_from_items_id'];
+                }
             }
         }
 
         TemplateRenderer::getInstance()->display('pages/assets/socket.html.twig', [
             'item'   => $this,
             'params' => $options,
+            'parent' => [
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
+            ]
         ]);
         return true;
     }
@@ -233,7 +147,6 @@ class Socket extends CommonDBChild
         return $input;
     }
 
-
     public function prepareInputForUpdate($input)
     {
         $input = $this->retrievedataFromNetworkPort($input);
@@ -242,14 +155,14 @@ class Socket extends CommonDBChild
 
     public function retrievedataFromNetworkPort($input)
     {
-       //get position from networkport if needed
+        // get position from networkport if needed
         if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0 ) && $input["position"] == 'auto') {
             $networkport = new NetworkPort();
             $networkport->getFromDB($input["networkports_id"]);
             $input['position'] = $networkport->fields['logical_number'];
         }
 
-       //get name from networkport if needed
+        // get name from networkport if needed
         if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0 ) && empty($input["name"])) {
             $networkport = new NetworkPort();
             $networkport->getFromDB($input["networkports_id"]);
@@ -258,7 +171,6 @@ class Socket extends CommonDBChild
 
         return $input;
     }
-
 
     /**
      * Get possible itemtype
@@ -271,7 +183,7 @@ class Socket extends CommonDBChild
         $values = [];
         foreach ($CFG_GLPI["socket_types"] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
-                $values[$itemtype] = $item->getTypeName();
+                $values[$itemtype] = $item::getTypeName();
             }
         }
         return $values;
@@ -290,7 +202,7 @@ class Socket extends CommonDBChild
 
         $sub_query[] = new QuerySubQuery([
             'SELECT' => ['sockets.id AS socket_id'],
-            'FROM'   => Socket::getTable() . ' AS sockets',
+            'FROM'   => self::getTable() . ' AS sockets',
             'LEFT JOIN'   => [
                 Cable::getTable() . ' AS cables' => [
                     'ON'  => [
@@ -310,7 +222,7 @@ class Socket extends CommonDBChild
 
         $sub_query[] = new QuerySubQuery([
             'SELECT' => ['sockets.id AS socket_id'],
-            'FROM'   => Socket::getTable() . ' AS sockets',
+            'FROM'   => self::getTable() . ' AS sockets',
             'LEFT JOIN'   => [
                 Cable::getTable() . ' AS cables' => [
                     'ON'  => [
@@ -339,7 +251,6 @@ class Socket extends CommonDBChild
         return $already_use;
     }
 
-
     /**
      * Dropdown of Wiring Side
      *
@@ -365,7 +276,6 @@ class Socket extends CommonDBChild
         return Dropdown::showFromArray($name, self::getSides($full), $params);
     }
 
-
     /**
      * Get sides
      * @return array Array of types
@@ -384,13 +294,11 @@ class Socket extends CommonDBChild
         return $data;
     }
 
-
     public function post_getEmpty()
     {
         $this->fields['itemtype'] = 'Computer';
         $this->fields['position'] = -1;
     }
-
 
     /**
      * Get wiring side name
@@ -402,16 +310,14 @@ class Socket extends CommonDBChild
     public static function getWiringSideName($value)
     {
         $tab  = static::getSides();
-       // Return $value if not defined
-        return (isset($tab[$value]) ? $tab[$value] : $value);
+        // Return $value if not defined
+        return ($tab[$value] ?? $value);
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Socket', 'Sockets', $nb);
     }
-
 
     public function rawSearchOptions()
     {
@@ -480,7 +386,6 @@ class Socket extends CommonDBChild
         return $tab;
     }
 
-
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -542,7 +447,7 @@ class Socket extends CommonDBChild
      * @param $field
      * @param $name            (default '')
      * @param $values          (default '')
-     * @param $options   array
+     * @param array $options   array
      *
      * @return string
      **/
@@ -574,7 +479,7 @@ class Socket extends CommonDBChild
      *
      * @param $field
      * @param $values
-     * @param $options   array
+     * @param array $options
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -601,11 +506,10 @@ class Socket extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-
     /**
      * check if a socket already exists (before import)
      *
-     * @param $input array of value to import (name, locations_id)
+     * @param array $input Array of values to import (name, locations_id)
      *
      * @return integer the ID of the new (or -1 if not found)
      **/
@@ -617,7 +521,7 @@ class Socket extends CommonDBChild
         if (!empty($input["name"])) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => $this->getTable(),
+                'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'name'         => $input['name'],
                     'locations_id' => $input["locations_id"] ?? 0
@@ -632,7 +536,6 @@ class Socket extends CommonDBChild
         }
         return -1;
     }
-
 
     public function post_addItem()
     {
@@ -656,23 +559,23 @@ class Socket extends CommonDBChild
     {
         /** @var \DBmysql $DB */
         global $DB;
-       //find other socket with same networkport and reset it
+        // find other socket with same networkport and reset it
         if ($this->fields['networkports_id'] > 0) {
-            $iter = $DB->request(['SELECT' => 'id',
-                'FROM'  => getTableForItemType(Socket::getType()),
+            $iter = $DB->request([
+                'SELECT' => 'id',
+                'FROM'  => getTableForItemType(self::getType()),
                 'WHERE' => [
                     'networkports_id' => $this->fields['networkports_id'],
                     ['NOT' => ['id' => $this->fields['id']]]
                 ]
             ]);
 
-            foreach (Socket::getFromIter($iter) as $socket) {
+            foreach (self::getFromIter($iter) as $socket) {
                  $socket->fields['networkports_id'] = 0;
                  $socket->update($socket->fields);
             }
         }
     }
-
 
     public function post_deleteFromDB()
     {
@@ -684,7 +587,6 @@ class Socket extends CommonDBChild
             Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
         }
     }
-
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -719,7 +621,6 @@ class Socket extends CommonDBChild
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
@@ -732,11 +633,10 @@ class Socket extends CommonDBChild
         return true;
     }
 
-
     /**
      * Print the HTML array of the Socket associated to a Location
      *
-     * @param $item Location
+     * @param CommonDBTM $item
      *
      * @return void
      **/
@@ -747,7 +647,6 @@ class Socket extends CommonDBChild
         global $DB;
 
         $canedit = self::canUpdate();
-        $rand = mt_rand();
 
         if (!Session::haveRight(self::$rightname, READ)) {
             return false;
@@ -756,123 +655,68 @@ class Socket extends CommonDBChild
         if ($item->isNewID($item->getID())) {
             return false;
         }
+        $rand = mt_rand();
 
        // Link to open a new socket
         if ($item->getID() && self::canCreate()) {
-            echo "<div class='firstbloc'>";
-            echo "\n<form method='get' action='" . Socket::getFormURL() . "'>\n";
-            echo "<input type='hidden' name='_from_items_id' value='" . $item->getID() . "'>\n";
-            echo "<input type='hidden' name='_from_itemtype' value='" . $item->getType() . "'>\n";
-            echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='tab_bg_2 center'>";
-            echo "<td>\n";
-
-            echo "<button class='btn btn-primary' type='submit' name='_add_fromitem'>";
-            echo "<span>" . __('New socket for this item...') . "</span>";
-            echo "</button>";
-
-            echo "</td>";
-            echo "<td>\n";
-            echo __('Add several sockets');
-            echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
-            echo "</tr></table></div>\n";
-            echo "</form></div>";
+            $twig_params = [
+                'socket_itemtypes' => self::getSocketLinkTypes(),
+                '_add_fromitem'    => [
+                    '_from_itemtype' => $item::class,
+                    '_from_items_id' => $item->getID()
+                ]
+            ];
+            TemplateRenderer::getInstance()->display('pages/assets/socket_short_form.html.twig', $twig_params);
         }
 
         $iterator = $DB->request([
-            'FROM'   => Socket::getTable(),
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype'   => $item->getType(),
                 'items_id'   => $item->getID(),
             ]
         ]);
-        $numrows = count($iterator);
 
-        $massive_action_form_id = 'mass' . str_replace('\\', '', static::class) . $rand;
-        if ($canedit) {
-            Html::openMassiveActionsForm($massive_action_form_id);
-            $massiveactionparams
-            = ['num_displayed'
-                        => min($_SESSION['glpilist_limit'], $numrows),
-                'specific_actions'
-                        => ['update' => _x('button', 'Update'),
-                            'purge'  => _x('button', 'Delete permanently')
-                        ]
-            ];
-
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        echo "<table class='tab_cadre_fixehov'>";
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-
-        if ($canedit) {
-            $header_begin  .= "<th width='10'>";
-            $header_top    .= Html::getCheckAllAsCheckbox($massive_action_form_id);
-            $header_bottom .= Html::getCheckAllAsCheckbox($massive_action_form_id);
-            $header_end    .= "</th>";
-        }
-        $header_end .= "<th>" . __('Name') . "</th>";
-        $header_end .= "<th>" . __('Position') . "</th>";
-        $header_end .= "<th>" . SocketModel::getTypeName(0) . "</th>";
-        $header_end .= "<th>" . __('Wiring side') . "</th>";
-        $header_end .= "<th>" .  _n('Network port', 'Network ports', Session::getPluralNumber()) . "</th>";
-        $header_end .= "<th>" .  Cable::getTypeName(0) . "</th>";
-        $header_end .= "<th>" .  __('Itemtype') . "</th>";
-        $header_end .= "<th>" .  __('Item Name') . "</th>";
-        $header_end .= "</tr>\n";
-        echo $header_begin . $header_top . $header_end;
-
-        Session::initNavigateListItems(
-            "Socket",
-            //TRANS: %1$s is the itemtype name,
-                           //       %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         $item->getTypeName(1),
-                                         $item->getName()
-                                     )
-        );
-
+        $entries = [];
+        $socket = new Socket();
+        $networkport = new NetworkPort();
+        $cable = new Cable();
         foreach ($iterator as $data) {
-            $socket = new Socket();
             $socket->getFromDB($data['id']);
-            Session::addToNavigateListItems(get_class($socket), $socket->fields["id"]);
-            echo "<tr class='tab_bg_1'>";
 
-            if ($canedit) {
-                echo "<td width='10'>";
-                Html::showMassiveActionCheckBox(__CLASS__, $socket->fields["id"]);
-                echo "</td>";
-                echo "<td><a href='" . $socket->getFormURLWithID($socket->fields["id"])
-                                . "&amp;onglet=1'>" . $socket->fields["name"] . "</a></td>";
-            } else {
-                echo "<td>" . $socket->fields["name"] . "</td>";
-            }
-
-            echo "<td>" . $socket->fields["position"] . "</td>";
-            echo "<td>" . Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]) . "</td>";
-            echo "<td>" . self::getWiringSideName($socket->fields["wiring_side"]) . "</td>";
-
-            $networkport = new NetworkPort();
+            $socket_name = $canedit
+                ? sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars($socket->getLinkURL()),
+                    htmlspecialchars($socket->fields['name'])
+                )
+                : htmlspecialchars($socket->fields['name']);
+            $netport_name = '';
             if ($networkport->getFromDB($socket->fields["networkports_id"])) {
-                echo "<td><a href='" . $networkport->getLinkURL() . "'>" . $networkport->fields['name'] . "</a></td>";
-            } else {
-                echo "<td></td>";
+                $netport_name = sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars($networkport->getLinkURL()),
+                    htmlspecialchars($networkport->fields['name'])
+                );
             }
-
-            $cable = new Cable();
-            if (
-                $cable->getFromDBByCrit(['OR' => ['sockets_id_endpoint_a' => $socket->fields["id"],
+            $has_cable = $cable->getFromDBByCrit([
+                'OR' => [
+                    'sockets_id_endpoint_a' => $socket->fields["id"],
                     'sockets_id_endpoint_b' => $socket->fields["id"]
                 ]
-                ])
-            ) {
-                echo "<td><a href='" . $cable->getLinkURL() . "'>" . $cable->getName() . "</a></td>";
+            ]);
+
+            $cable_name = $has_cable
+                ? sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars($cable->getLinkURL()),
+                    htmlspecialchars($cable->getName())
+                )
+                : '';
+            $itemtype = '';
+            $item_id = '';
+            if ($has_cable) {
                 if (
                     $cable->fields['itemtype_endpoint_a'] === $item->getType()
                     && $cable->fields['items_id_endpoint_a'] === $item->getID()
@@ -883,37 +727,71 @@ class Socket extends CommonDBChild
                     $itemtype = $cable->fields['itemtype_endpoint_a'];
                     $item_id = $cable->fields['items_id_endpoint_a'];
                 }
-
-                $endpoint = getItemForItemtype($itemtype);
-                if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
-                    echo "<td>" . $endpoint->getType() . "</td>";
-                    echo "<td><a href='" . $endpoint->getLinkURL() . "'>" . $endpoint->getName() . "</a></td>";
-                } else {
-                    echo "<td></td>";
-                    echo "<td></td>";
-                }
-            } else {
-                // No cable, so empty columns for Cable, Itemtype and Item Name
-                echo "<td></td><td></td><td></td>";
             }
-
-            echo "</tr>\n";
+            $endpoint = getItemForItemtype($itemtype);
+            if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
+                $itemtype_label = $endpoint::getType();
+                $item_label = sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars($endpoint->getLinkURL()),
+                    htmlspecialchars($endpoint->getName())
+                );
+            } else {
+                $itemtype_label = '';
+                $item_label = '';
+            }
+            $entries[] = [
+                'itemtype' => self::class,
+                'id'       => $socket->getID(),
+                'name'     => $socket_name,
+                'position' => $socket->fields["position"],
+                'socketmodels_id' => Dropdown::getDropdownName(SocketModel::getTable(), $socket->fields["socketmodels_id"]),
+                'wiring_side' => self::getWiringSideName($socket->fields["wiring_side"]),
+                'networkports_id' => $netport_name,
+                'cable' => $cable_name,
+                'endpoint_itemtype' => $itemtype_label,
+                'endpoint_itemname' => $item_label,
+            ];
         }
-        echo $header_begin . $header_bottom . $header_end;
-        echo "</table>\n";
 
-        if ($canedit) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'position' => __('Position'),
+                'socketmodels_id' => SocketModel::getTypeName(1),
+                'wiring_side' => __('Wiring side'),
+                'networkports_id' => _n('Network port', 'Network ports', 1),
+                'cable' => Cable::getTypeName(1),
+                'endpoint_itemtype' => __('Itemtype'),
+                'endpoint_itemname' => __('Item Name'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'networkports_id' => 'raw_html',
+                'cable' => 'raw_html',
+                'endpoint_itemname' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'specific_actions' => [
+                    'update' => _x('button', 'Update'),
+                    'purge'  => _x('button', 'Delete permanently')
+                ]
+            ],
+        ]);
     }
-
 
     /**
      * Print the HTML array of the Socket associated to a Location
      *
-     * @param $item Location
+     * @param Location $item
      *
      * @return void
      **/
@@ -923,225 +801,112 @@ class Socket extends CommonDBChild
         global $DB;
 
         $ID       = $item->getField('id');
-        $socket = new self();
         $item->check($ID, READ);
         $canedit  = $item->canEdit($ID);
 
-        if (isset($_GET["start"])) {
-            $start = intval($_GET["start"]);
-        } else {
-            $start = 0;
+        $start       = (int)($_GET["start"] ?? 0);
+        $sort        = $_GET["sort"] ?? '';
+        $order       = strtoupper($_GET["order"] ?? '');
+        if ($sort === '') {
+            $sort = 'name';
         }
-        $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID ]);
+        if ($order === '') {
+            $order = 'ASC';
+        }
+        $rand = mt_rand();
+        $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID]);
+        $socket_form_url = self::getFormURL();
 
         if ($canedit) {
             $socket_itemtypes = array_keys(self::getSocketLinkTypes());
-            echo "<div class='first-bloc'>";
-           // Minimal form for quick input.
-            echo "<form action='" . $socket->getFormURL() . "' method='post'>";
-            echo "<br><table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2 center'>";
-            echo "<td class='b'>" . _n('Network socket', 'Network sockets', 1) . "</td>";
-            echo "<td>" . __('Name') . "</td><td>";
-            echo Html::input(
-                'name',
-                [
-                    'value' => '',
+            $twig_params = [
+                'socket_itemtypes' => $socket_itemtypes,
+                '_add_fromitem'    => [
+                    '_from_itemtype' => Location::class,
+                    '_from_items_id' => $ID
                 ]
-            );
-            echo "</td>";
-            echo "<td>" . SocketModel::getTypeName(1) . "</td><td>";
-            SocketModel::dropdown();
-            echo "</td>";
-            echo "<td>" . __('Wiring side') . "</td><td>";
-            Socket::dropdownWiringSide("wiring_side", []);
-            echo "</td>";
-            echo "<td>" . __('Itemtype') . "</td><td>";
-            Dropdown::showSelectItemFromItemtypes([
-                'itemtypes' => $socket_itemtypes,
-                'default_itemtype' => Computer::getType(),
-                'display_emptychoice' => false,
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<input type='hidden' name='locations_id' value='$ID'>";
-            echo "<input type='submit' name='execute_single' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
-            echo "</td>";
-            echo "</tr>\n";
-            echo "</table>\n";
-            Html::closeForm();
-
-           // Minimal form for massive input.
-            echo "<form action='" . $socket->getFormURL() . "' method='post'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2 center'>";
-            echo "<td class='b'>" . _n('Network socket', 'Network sockets', Session::getPluralNumber()) . "</td>";
-            echo "<td>" . __('Name') . "</td><td>";
-            echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
-            Dropdown::showNumber('_from', ['value' => 0,
-                'min'   => 0,
-                'max'   => 400
-            ]);
-            echo "&nbsp;-->&nbsp;";
-            Dropdown::showNumber('_to', ['value' => 0,
-                'min'   => 0,
-                'max'   => 400
-            ]);
-
-            echo "&nbsp;<input type='text' maxlength='100' size='10' name='_after'><br>";
-            echo "</td>";
-            echo "<td>" . SocketModel::getTypeName(1) . "</td><td>";
-            SocketModel::dropdown();
-            echo "</td>";
-            echo "<td>" . __('Wiring side') . "</td><td>";
-            Socket::dropdownWiringSide("wiring_side", []);
-            echo "</td>";
-            echo "<td>" . __('Itemtype') . "</td><td>";
-            Dropdown::showSelectItemFromItemtypes([
-                'itemtypes' => $socket_itemtypes,
-                'default_itemtype' => Computer::getType(),
-                'display_emptychoice' => false,
-            ]);
-            echo "</td>";
-
-            echo "<td>";
-            echo "<input type='hidden' name='locations_id' value='$ID'>";
-            echo "<input type='submit' name='execute_multi' value=\"" . _sx('button', 'Add') . "\" class='submit'>";
-            echo "</td>";
-            echo "</tr>\n";
-            echo "</table>\n";
-            Html::closeForm();
-            echo "</div>";
-        }
-
-        echo "<div class='spaced'>";
-
-        if ($number < 1) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . self::getTypeName(1) . "</th>";
-            echo "<th>" . __('No item found') . "</th></tr>";
-            echo "</table>\n";
-        } else {
-            Html::printAjaxPager(
-                sprintf(__('Network sockets for %s'), $item->getTreeLink()),
-                $start,
-                $number
-            );
-
-            $rand = mt_rand();
-            $massive_action_form_id = 'mass' . str_replace('\\', '', __CLASS__) . $rand;
-            if ($canedit) {
-                Html::openMassiveActionsForm($massive_action_form_id);
-                $massiveactionparams
-                = ['num_displayed'
-                           => min($_SESSION['glpilist_limit'], $number),
-                    'container'
-                           => $massive_action_form_id,
-                    'specific_actions'
-                           => ['purge' => _x('button', 'Delete permanently')]
-                ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixe'><tr>";
-
-            if ($canedit) {
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox($massive_action_form_id);
-                echo "</th>";
-            }
-
-            echo "<th>" . __('Name') . "</th>"; // Name
-            echo "<th>" . __('Socket Model') . "</th>"; // socket Model
-            echo "<th>" . _n('Asset', 'Assets', Session::getPluralNumber()) . "</th>"; // Asset
-            echo "<th>" . __('NetworkPort') . "</th>"; // NetworkPort
-            echo "<th>" . __('Wiring side') . "</th>"; // Wiring side
-            echo "<th>" . __('Comments') . "</th>"; // Comment
-            echo "</tr>\n";
-
-            $crit = ['locations_id' => $ID,
-                'ORDER'        => 'name',
-                'START'        => $start,
-                'LIMIT'        => $_SESSION['glpilist_limit']
             ];
-
-            Session::initNavigateListItems(
-                'Socket',
-                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item->getTypeName(1),
-                                            $item->getName()
-                                        )
-            );
-
-            foreach ($DB->request('glpi_sockets', $crit) as $data) {
-                Session::addToNavigateListItems('Socket', $data["id"]);
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $data["id"]) . "</td>";
-                }
-                echo "<td><a href='" . $socket->getFormURL();
-                echo '?id=' . $data['id'] . "'>" . $data['name'] . "</a></td>";
-
-                $socketmodel = new SocketModel();
-                $socketmodel->getFromDB($data['socketmodels_id']);
-                echo "<td>" . $socketmodel->getLink() . "</td>";
-
-                $link = '';
-                if (isset($data['itemtype']) && class_exists($data['itemtype'])) {
-                    $itemtype = $data['itemtype'];
-                    $asset     = new $itemtype();
-                    if ($asset->getFromDB($data['items_id'])) {
-                        $link = $asset->getLink();
-                    }
-                }
-                echo "<td>" . $link . "</td>";
-
-                $networkport = new NetworkPort();
-                $networkport->getFromDB($data['networkports_id']);
-                echo "<td>" . $networkport->getLink() . "</td>";
-
-                echo "<td>" . self::getSides()[$data['wiring_side']] . "</td>";
-                echo "<td>" . $data['comment'] . "</td>";
-                echo "</tr>\n";
-            }
-
-            echo "</table>\n";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-            Html::printAjaxPager(
-                sprintf(__('Network sockets for %s'), $item->getTreeLink()),
-                $start,
-                $number
-            );
+            TemplateRenderer::getInstance()->display('pages/assets/socket_short_form.html.twig', $twig_params);
         }
 
-        echo "</div>\n";
-    }
+        $entries = [];
 
-    /**
-     * Handled Multi add item
-     *
-     * @since 0.83 (before addMulti)
-     *
-     * @param $input array of values
-     **/
-    public function executeAddMulti(array $input)
-    {
-        $this->check(-1, CREATE, $input);
-        for ($i = $input["_from"]; $i <= $input["_to"]; $i++) {
-            $input["name"] = $input["_before"] . $i . $input["_after"];
-            $this->add($input);
+        $it = $DB->request([
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'locations_id' => $ID
+            ],
+            'ORDER' => "$sort $order",
+            'START' => $start,
+            'LIMIT' => $_SESSION['glpilist_limit']
+        ]);
+        $socket_form_url = htmlspecialchars(self::getFormURL());
+
+        foreach ($it as $data) {
+            $name = sprintf(
+                '<a href="%s">%s</a>',
+                htmlspecialchars(self::getFormURLWithID($data['id'])),
+                htmlspecialchars($data['name'])
+            );
+
+            $socketmodel = new SocketModel();
+            $socketmodel->getFromDB($data['socketmodels_id']);
+            $link = '';
+            if (isset($data['itemtype']) && class_exists($data['itemtype'])) {
+                $itemtype = $data['itemtype'];
+                $asset = new $itemtype();
+                if ($asset->getFromDB($data['items_id'])) {
+                    $link = $asset->getLink();
+                }
+            }
+            $networkport = new NetworkPort();
+            $networkport->getFromDB($data['networkports_id']);
+
+            $entries[] = [
+                'itemtype' => self::class,
+                'id'       => $data['id'],
+                'name'     => $name,
+                'socketmodels_id' => $socketmodel->getLink(),
+                'asset' => $link,
+                'networkports_id' => $networkport->getLink(),
+                'wiring_side' => self::getWiringSideName($data['wiring_side']),
+                'comment' => $data['comment'],
+            ];
         }
-    }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'sort' => $sort,
+            'order' => $order,
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'socketmodels_id' => SocketModel::getTypeName(1),
+                'asset' => _n('Asset', 'Assets', 1),
+                'networkports_id' => NetworkPort::getTypeName(1),
+                'wiring_side' => __('Wiring side'),
+                'comment' => __('Comments'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'socketmodels_id' => 'raw_html',
+                'asset' => 'raw_html',
+                'networkports_id' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => $number,
+            'filtered_number' => $number,
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], $number),
+                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'specific_actions' => [
+                    'purge' => _x('button', 'Delete permanently')
+                ]
+            ],
+        ]);
+    }
 
     /**
      * @since 0.84
