@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+{% set several = several|default(false) %}
+
+<span id="show_itemtype_field" class="input_listener">
+    {{ fields.dropdownArrayField('itemtype', itemtype, call('Glpi\\Socket::getSocketLinkTypes'), null, {
+        no_label: true,
+        rand: rand,
+        mb: '',
+        field_class: 'col-12'
+    }) }}
+</span>
+{% do call('Ajax::updateItemOnSelectEvent', [
+    'dropdown_itemtype' ~ rand,
+    'show_items_id_field',
+    CFG_GLPI.root_doc ~ '/ajax/cable.php',
+    {
+        itemtype: '__VALUE__',
+        dom_rand: rand,
+        dom_name: 'items_id',
+        action: 'get_items_from_itemtype'
+    }
+]) %}
+<span id="show_items_id_field" class="input_listener">
+    {% if itemtype is not empty %}
+        {{ fields.dropdownField(itemtype, 'items_id', items_id, null, {
+            no_label: true,
+            display_emptychoice: true,
+            display_dc_position: itemtype in config('rackable_types'),
+            rand: rand,
+            mb: '',
+            field_class: 'col-12'
+        }) }}
+    {% endif %}
+</span>
+{% if not several %}
+    <span id="show_networkport_field">
+        {{ fields.dropdownField('NetworkPort', 'networkports_id', networkports_id, null, {
+            no_label: true,
+            condition: {
+                items_id: items_id,
+                itemtype: itemtype
+            },
+            display_emptychoice: true,
+            comments: false,
+            mb: '',
+            field_class: 'col-12'
+        }) }}
+    </span>
+    <script>
+        // listener to remove socket selector and breadcrumb
+        $(document).on('change', '#dropdown_itemtype{{ rand }}', () => {
+            $('#show_front_asset_breadcrumb').empty();
+            $('#show_front_sockets_field').empty();
+        });
+
+        // listener to refresh socket selector and breadcrumb
+        $(document).on('change', '#dropdown_items_id{{ rand }}', () => {
+            const items_id = $('#dropdown_items_id{{ rand }}').find(':selected').val();
+            const itemtype = $('#dropdown_itemtype{{ rand }}').find(':selected').val();
+            refreshAssetBreadcrumb(itemtype, items_id, 'show_asset_breadcrumb');
+            refreshNetworkPortDropdown(itemtype, items_id, 'show_networkport_field');
+        });
+    </script>
+{% endif %}

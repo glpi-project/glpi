@@ -202,6 +202,8 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Glpi\Inventory\Conf::importFile()`
+- `Glpi\Socket::executeAddMulti()`
+- `Glpi\Socket::showNetworkPortForm()`
 - `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
