@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * ITILTemplateHiddenField Class
  *
@@ -147,114 +149,5 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         return [
             175 => 175, // ticket's tasks (template)
         ];
-    }
-
-
-    /**
-     * Print the hidden fields
-     *
-     * @since 0.83
-     *
-     * @param ITILTemplate $tt            ITIL Template
-     * @param integer      $withtemplate  Template or basic item (default 0)
-     *
-     * @return void
-     **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $ID = $tt->fields['id'];
-
-        if (!$tt->getFromDB($ID) || !$tt->can($ID, READ)) {
-            return false;
-        }
-        $canedit = $tt->canEdit($ID);
-        $ttm     = new static();
-        $fields  = $tt->getAllowedFieldsNames(false);
-        $fields  = array_diff_key($fields, self::getExcludedFields());
-        $rand    = mt_rand();
-
-        $iterator = $DB->request([
-            'FROM'   => static::getTable(),
-            'WHERE'  => [static::$items_id => $ID]
-        ]);
-
-        $numrows = count($iterator);
-
-        $hiddenfields = [];
-        $used         = [];
-        foreach ($iterator as $data) {
-            $hiddenfields[$data['id']] = $data;
-            $used[$data['num']]        = $data['num'];
-        }
-
-        if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='changeproblem_form$rand' id='changeproblem_form$rand' method='post'
-                  action='" . $ttm->getFormURL() . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add a hidden field') . "</th></tr>";
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='" . static::$items_id . "' value='$ID'>";
-            Dropdown::showFromArray('num', $fields, ['used' => $used]);
-            echo "</td><td class='center'>";
-            echo "&nbsp;<input type='submit' name='add' value=\"" . _sx('button', 'Add') .
-                        "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
-        }
-
-        echo "<div class='spaced'>";
-        if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass' . $ttm->getType() . $rand);
-            $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . $ttm->getType() . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='2'>";
-        echo static::getTypeName(count($iterator));
-        echo "</th></tr>";
-        if ($numrows) {
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_top    .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('mass' . $ttm->getType() . $rand) . "</th>";
-                $header_bottom .= "<th width='10'>";
-                $header_bottom .= Html::getCheckAllAsCheckbox('mass' . $ttm->getType() . $rand) . "</th>";
-            }
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "</tr>";
-            echo $header_begin . $header_top . $header_end;
-
-            foreach ($hiddenfields as $data) {
-                echo "<tr class='tab_bg_2'>";
-                if ($canedit) {
-                    echo "<td>" . Html::getMassiveActionCheckBox($ttm->getType(), $data["id"]) . "</td>";
-                }
-                echo "<td>" . $fields[$data['num']] . "</td>";
-                echo "</tr>";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-        } else {
-            echo "<tr><th colspan='2'>" . __('No item found') . "</th></tr>";
-        }
-
-        echo "</table>";
-        if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
     }
 }
