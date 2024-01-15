@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class PDU_Rack extends CommonDBRelation
 {
     public static $itemtype_1 = 'Rack';
@@ -324,63 +326,46 @@ class PDU_Rack extends CommonDBRelation
         $canedit = $rack->canEdit($rack->getID());
         $rand    = mt_rand();
         $items   = $DB->request([
+            'SELECT' => ['id', 'pdus_id', 'side', 'position'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'racks_id' => $rack->getID()
             ]
         ]);
 
-        if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No item found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
+        $entries = [];
+        foreach ($items as $row) {
+            if ($pdu->getFromDB($row['pdus_id'])) {
+                $entries[] = [
+                    'itemtype' => self::class,
+                    'id'       => $row['id'],
+                    'item'     => $pdu->getLink(),
+                    'side'     => self::getSideName($row['side']),
+                    'position' => $row['position']
                 ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . _n('Item', 'Items', 1) . "</th>";
-            $header .= "<th>" . __('Side') . "</th>";
-            $header .= "<th>" . __('Position') . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($items as $row) {
-                if ($pdu->getFromDB($row['pdus_id'])) {
-                    echo "<tr lass='tab_bg_1'>";
-                    if ($canedit) {
-                        echo "<td>";
-                        Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                        echo "</td>";
-                    }
-                    echo "<td>" . $pdu->getLink() . "</td>";
-                    echo "<td>" . self::getSideName($row['side']) . "</td>";
-                    echo "<td>{$row['position']}</td>";
-                    echo "</tr>";
-                }
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($items)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
             }
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'item' => _n('Item', 'Items', 1),
+                'side' => __('Side'),
+                'position' => __('Position')
+            ],
+            'formatters' => [
+                'item' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     public static function showStatsForRack(Rack $rack)

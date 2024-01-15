@@ -49,6 +49,7 @@ The present file will list all changes made to the project; according to the
 - Public reminders in central view now include public reminders regardless of who created them.
 - Project description field is now a rich text field.
 - Entity, profile, debug mode flag, and language are restored after ending impersonation.
+- Volumes now show `Used percentage` instead of `Free percentage`.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.

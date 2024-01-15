@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Pdu_Plug extends CommonDBRelation
 {
     public static $itemtype_1 = 'PDU';
@@ -96,25 +98,12 @@ class Pdu_Plug extends CommonDBRelation
         $canedit = $pdu->canEdit($ID);
 
         $items = $DB->request([
+            'SELECT' => ['id', 'plugs_id', 'number_plugs'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'pdus_id' => $pdu->getID()
             ]
         ]);
-        $link = new self();
-
-        Session::initNavigateListItems(
-            self::getType(),
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $pdu->getTypeName(1),
-                $pdu->getName()
-            )
-        );
-
-        $items = iterator_to_array($items);
 
         if ($canedit) {
             $rand = mt_rand();
@@ -145,54 +134,37 @@ class Pdu_Plug extends CommonDBRelation
             Html::closeForm();
         }
 
-        if (!count($items)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No plug found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            if ($canedit) {
-                $massiveactionparams = [
-                    'num_displayed'   => min($_SESSION['glpilist_limit'], count($items)),
-                    'container'       => 'mass' . __CLASS__ . $rand
-                ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-
-            echo "<table class='tab_cadre_fixehov' id='mass" . __CLASS__ . $rand . "'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . __('Name') . "</th>";
-            $header .= "<th>" . __('Number') . "</th>";
-            $header .= "</tr>";
-
-            echo $header;
-            foreach ($items as $row) {
-                $item = new Plug();
-                $item->getFromDB($row['plugs_id']);
-                echo "<tr lass='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $row["id"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $item->getLink() . "</td>";
-                echo "<td>{$row['number_plugs']}</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
-
-            if ($canedit && count($items)) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
-            if ($canedit) {
-                Html::closeForm();
-            }
+        $entries = [];
+        foreach ($items as $row) {
+            $item = new Plug();
+            $item->getFromDB($row['plugs_id']);
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $row['id'],
+                'plugs_id' => $item->getLink(),
+                'number_plugs' => $row['number_plugs']
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'plugs_id' => __('Name'),
+                'number_plugs' => __('Number')
+            ],
+            'formatters' => [
+                'plugs_id' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     public function getForbiddenStandardMassiveAction()
