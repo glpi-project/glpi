@@ -74,6 +74,7 @@ done
 # Flag to indicate wether services containers are usefull
 USE_SERVICES_CONTAINERS=0
 SELECTED_SCOPE="default"
+SELECTED_METHODS="all"
 
 # Extract list of tests suites to run
 SELECTED_TESTS_TO_RUN=()
@@ -195,7 +196,7 @@ export APP_CONTAINER_HOME
 export DB_IMAGE
 export PHP_IMAGE
 export UPDATE_FILES_ACL
-cd $WORKING_DIR # Ensure docker-compose will look for .env in current directory
+
 $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
@@ -208,10 +209,23 @@ run_single_test () {
   local TEST_TO_RUN=$1
   local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
   if [[ $INSTALL_TESTS_RUN == false && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
-    echo -e "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
+    echo "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
     # Run install test suite before any other test suite
     run_single_test "install"
   fi
+
+  local TEST_ARGS=""
+  if ! [[ "$SCOPE" == "" || "$SCOPE" == "default" ]]; then
+    if [[ -f "${APPLICATION_ROOT}/${SCOPE}" ]]; then
+      TEST_ARGS="-f ${SCOPE}"
+    else
+      TEST_ARGS="-d ${SCOPE}"
+    fi
+  fi
+  if ! [[ "$METHODS" = "" || "$METHODS" == "all" ]]; then
+    TEST_ARGS="${TEST_ARGS} -m ${METHODS}"
+  fi
+
   echo -e "\n\e[1;30;43m Running \"$TEST_TO_RUN\" test suite \e[0m"
   case $TEST_TO_RUN in
     "lint")
@@ -252,11 +266,11 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "units")
-         docker-compose exec -T app .github/actions/test_tests-units.sh -s $SELECTED_SCOPE \
+         docker-compose exec -T app .github/actions/test_tests-units.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker-compose exec -T app .github/actions/test_tests-functional.sh -s $SELECTED_SCOPE \
+         docker-compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")
@@ -308,12 +322,14 @@ run_tests () {
 show_info () {
   # If no tests are selected, display a message with information about how to select tests
   if [[ ${#SELECTED_TESTS_TO_RUN[@]} -eq 0 ]]; then
-    echo -e "Selected actions: none"
-    echo -e "No actions selected. You can select actions by using the 'set action' command."
+    echo "Selected actions: none"
+    echo "No actions selected. You can select actions by using the 'set action' command."
   else
-    echo -e "Selected actions: ${SELECTED_TESTS_TO_RUN[@]}"
+    echo "Selected actions: ${SELECTED_TESTS_TO_RUN[@]}"
   fi
-  echo -e "Selected scope: ${SELECTED_SCOPE}\n"
+  echo "Selected scope: ${SELECTED_SCOPE}"
+  echo "Selected methods: ${SELECTED_METHODS}"
+  echo "" #empty line
 }
 
 cleanup_and_exit () {
@@ -334,10 +350,11 @@ if [[ "$INTERACTIVE" = false ]]; then
   # Do not automatically run tests if in interactive mode
   TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
   SCOPE=$SELECTED_SCOPE
+  METHODS=$SELECTED_METHODS
   run_tests
 else
-  echo -e "GLPI Tests (Interactive mode)\n"
-  show_info
+  echo "GLPI Tests (Interactive mode)"
+  echo "" #empty line
 fi
 
 if [[ "$INTERACTIVE" = true ]]; then
@@ -345,8 +362,9 @@ if [[ "$INTERACTIVE" = true ]]; then
   while [[ "$CHOICE" != "exit" ]]; do
     TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
     SCOPE=$SELECTED_SCOPE
+    METHODS=$SELECTED_METHODS
     show_info
-    read -e -p "GLPI Tests > " CHOICE
+    read -e -r -p "GLPI Tests > " CHOICE
     if [[ "$CHOICE" = run* ]]; then
       # If actions were specified after the run choice, use them instead of the ones selected
       if [[ "$CHOICE" != "run" ]]; then
@@ -356,6 +374,14 @@ if [[ "$INTERACTIVE" = true ]]; then
         TESTS_TO_RUN=(${RUN_OPTS[0]})
         if [[ ${#RUN_OPTS[@]} -gt 1 ]]; then
           SCOPE=${RUN_OPTS[1]}
+        else
+          SCOPE="default"
+        fi
+        # The third argument, if it exists, is the methods pattern. If it doesn't exist, the methods pattern is the selected one.
+        if [[ ${#RUN_OPTS[@]} -gt 2 ]]; then
+          METHODS=${RUN_OPTS[2]}
+        else
+          METHODS="all"
         fi
       fi
       run_tests
@@ -365,7 +391,8 @@ Available commands:
   - run [action] [scope]: Run the currently selected actions or run the single specified action with the specified scope (defaults to the selected scope).
   - set action [actions]: Change the currently selected actions.
   - set scope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
-  - info: Display information about the currently selected actions and scope.
+  - set methods [methods]: Change the currently selected methods pattern. This affects which tests methods are run (if supported by the test).
+  - info: Display information about the currently selected actions, scope and methods pattern.
   - exit: Stop the containers and exit.
   - help: See this list of commands.
 EOF
@@ -373,9 +400,11 @@ EOF
       SELECTED_TESTS_TO_RUN=(${CHOICE#set[[:space:]]action })
     elif [[ "$CHOICE" = set[[:space:]]scope* ]]; then
       SELECTED_SCOPE=${CHOICE#set[[:space:]]scope }
-      if [[ ! "$SELECTED_SCOPE" =~ ^tests/ && "$SELECTED_SCOPE" != "default" && "$SELECTED_SCOPE" != "" && "$SELECTED_SCOPE" != *"::"* ]]; then
+      if [[ ! "$SELECTED_SCOPE" =~ ^tests/ && "$SELECTED_SCOPE" != "default" && "$SELECTED_SCOPE" != "" ]]; then
         SELECTED_SCOPE="tests/$SELECTED_SCOPE"
       fi
+    elif [[ "$CHOICE" = set[[:space:]]methods* ]]; then
+      SELECTED_METHODS=${CHOICE#set[[:space:]]methods }
     elif [[ "$CHOICE" = "info" ]]; then
       show_info
     elif [[ "$CHOICE" = "exit" ]]; then
