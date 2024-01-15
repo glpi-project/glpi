@@ -683,6 +683,10 @@ JAVASCRIPT
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (!is_a($itemtype, CommonDropdown::class, true)) {
+            return $value;
+        }
+
         if ($language == '') {
             $language = $_SESSION['glpilanguage'];
         }
