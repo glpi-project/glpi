@@ -306,7 +306,7 @@ class IPAddress extends CommonDBChild
             'order' => $order,
             'columns' => [
                 'ipaddress' => self::getTypeName(1),
-                'item' => __('Item'),
+                'item' => _n('Item', 'Items', 1),
                 'port_id' => NetworkPort::getTypeName(Session::getPluralNumber()),
                 'name_id' => NetworkName::getTypeName(1),
                 'entity' => Entity::getTypeName(1),
