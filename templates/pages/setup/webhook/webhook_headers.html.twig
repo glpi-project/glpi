@@ -81,7 +81,7 @@
               $(``).insertAfter(template.find('input[name="header_value[]"]'));
               template.find('div.header_value').prop('id', header_value_id);
               header_name_field.val(name);
-              const editor_options = window.GLPI.MonacoEditor.singleLineEditorOptions;
+              const editor_options = window.GLPI.Monaco.getSingleLineEditorOptions();
               if (readonly) {
                   header_name_field.prop('readonly', true);
                   // Delete the remove button
@@ -90,7 +90,7 @@
               }
               // insert the template before the add button
               $(template).insertBefore(custom_header_fields_container.find('button[name="add_header"]'));
-              new window.GLPI.MonacoEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
+              window.GLPI.Monaco.createEditor(header_value_id, 'twig', value, {{ response_schema|json_encode|raw }}, editor_options);
           };
           $(() => {
               const known_custom = {{ item.fields['custom_headers']|default([])|json_encode(constant('JSON_FORCE_OBJECT'))|raw }};

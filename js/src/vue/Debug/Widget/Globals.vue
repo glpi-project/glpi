@@ -1,6 +1,5 @@
 <script setup>
     import {onMounted} from "vue";
-    import MonacoEditor from "../../../../modules/Monaco/MonacoEditor.js";
 
     const props = defineProps({
         current_profile: {
@@ -32,16 +31,17 @@
         editor_element.setAttribute('id', editor_element_id);
         editor_element.classList.add('monaco-editor-container');
         container.append(editor_element);
-        const editor = new MonacoEditor(editor_element_id, 'javascript', data_string, [], {
+        window.GLPI.Monaco.createEditor(editor_element_id, 'javascript', data_string, [], {
             readOnly: true,
+        }).then((editor) => {
+            // Fold everything recursively by default except the first level
+            editor.editor.trigger('fold', 'editor.foldAll');
+            editor.editor.trigger('unfold', 'editor.unfold', {
+                levels: 1
+            });
+            editor.editor.layout();
+            monaco_editors.push(editor);
         });
-        // Fold everything recursively by default except the first level
-        editor.editor.trigger('fold', 'editor.foldAll');
-        editor.editor.trigger('unfold', 'editor.unfold', {
-            levels: 1
-        });
-        editor.editor.layout();
-        monaco_editors.push(editor);
     };
 
     const updateEditorLayouts = () => {

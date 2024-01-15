@@ -70,7 +70,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
-- `codemirror` library has been upgraded to version 6.x.
+- `codemirror` library has been replaced by `monaco-editor`.
 - `htmLawed` library has been replaced by `symfony/html-sanitizer`.
 - `monolog/monolog` has been upgraded to version 3.3.
 - `photoswipe` library has been upgraded to version 5.x.

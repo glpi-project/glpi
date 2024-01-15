@@ -608,7 +608,7 @@ $CFG_GLPI['javascript'] = [
         'config' => ['clipboard'],
         'webhook' => ['monaco', 'autocomplete'],
     ],
-    'admin'        => ['clipboard'],
+    'admin'        => ['clipboard', 'monaco'],
     'preference'   => ['clipboard'],
     'self-service' => array_merge(['tinymce'], $reservations_libs),
     'tickets'      => [
