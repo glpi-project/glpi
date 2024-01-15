@@ -53,6 +53,7 @@ TESTS_SUITES=(
   "imap"
   "web"
   "javascript"
+  "e2e"
 )
 
 # Extract named options
@@ -154,6 +155,7 @@ Available tests suites:
  - imap
  - web
  - javascript
+ - e2e
 EOF
 
   exit 0
@@ -293,6 +295,10 @@ run_single_test () {
       ;;
     "javascript")
          docker-compose exec -T app .github/actions/test_javascript.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "e2e")
+         docker-compose exec -T app .github/actions/test_tests-e2e.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac

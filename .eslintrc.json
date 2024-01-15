@@ -106,7 +106,7 @@
             }
         },
         {
-            "files": ["tests/js/**"],
+            "files": ["tests/js/**", "tests/cypress.config.js"],
             "env": {
                 "node": true,
                 "jest": true,
@@ -115,6 +115,14 @@
             "parserOptions": {
                 "sourceType": "module"
             }
+        },
+        {
+            "files": ["tests/cypress/**"],
+            "env": {
+                "node": true,
+                "es2021": true
+            },
+            "extends": ["plugin:cypress/recommended"]
         }
     ]
 }

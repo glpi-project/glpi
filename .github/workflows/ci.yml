@@ -191,3 +191,7 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_javascript.sh
+      - name: "E2E tests"
+        if: env.skip != 'true'
+        run: |
+          docker-compose exec -T app .github/actions/test_tests-e2e.sh
