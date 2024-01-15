@@ -82,7 +82,7 @@
               }
           }
          if (!itemtype || !items_id) {
-            glpi_toast_error(__('Please select an item to add'));
+            glpi_toast_error({{ __('Please select an item to add')|json_encode|raw }});
             return;
          }
          $.ajax({
