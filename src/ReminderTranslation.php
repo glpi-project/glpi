@@ -79,7 +79,7 @@ class ReminderTranslation extends CommonDBChild
     {
 
         if (
-            self::canBeTranslated($item)
+            $item instanceof Reminder
             && Session::getCurrentInterface() != "helpdesk"
         ) {
             $nb = 0;
@@ -104,10 +104,7 @@ class ReminderTranslation extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if (
-            $item->getType() == "Reminder"
-            && self::canBeTranslated($item)
-        ) {
+        if ($item instanceof Reminder) {
             self::showTranslations($item);
         }
         return true;
@@ -316,9 +313,12 @@ class ReminderTranslation extends CommonDBChild
      * @param item the item to check
      *
      * @return true if item can be translated, false otherwise
+     *
+     * @deprecated 10.1.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {
+        Toolbox::deprecated();
 
         return ($item instanceof Reminder);
     }

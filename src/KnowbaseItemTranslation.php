@@ -98,7 +98,7 @@ class KnowbaseItemTranslation extends CommonDBChild
             }
         }
 
-        if (self::canBeTranslated($item)) {
+        if ($item instanceof KnowbaseItem) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
@@ -132,7 +132,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                     $item->showForm($item->getID(), ['parent' => $item]);
                     break;
             }
-        } else if (self::canBeTranslated($item)) {
+        } else if ($item instanceof KnowbaseItem) {
             self::showTranslations($item);
         }
         return true;
@@ -392,9 +392,12 @@ class KnowbaseItemTranslation extends CommonDBChild
      * @param item the item to check
      *
      * @return true if item can be translated, false otherwise
+     *
+     * @deprecated 10.1.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {
+        Toolbox::deprecated();
 
         return $item instanceof KnowbaseItem;
     }

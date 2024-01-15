@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-Config::deleteConfigurationValues('core', [
+/**
+ * @var \Migration $migration
+ */
+
+$migration->removeConfig([
     'translate_dropdowns',
     'translate_kb',
     'translate_reminders',

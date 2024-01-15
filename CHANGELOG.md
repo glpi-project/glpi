@@ -135,6 +135,8 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Document::getImage()`
+- `DropdownTranslation::canBeTranslated()`
+- `DropdownTranslation::isDropdownTranslationActive()`
 - `Glpi\Application\View\Extension::getVerbatimValue()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
@@ -164,6 +166,10 @@ The present file will list all changes made to the project; according to the
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
 - `KnowbaseItem::showManageForm()`
+- `KnowbaseItemTranslation::canBeTranslated()`
+- `KnowbaseItemTranslation::isKbTranslationActive()`
+- `ReminderTranslation::canBeTranslated()`
+- `ReminderTranslation::isReminderTranslationActive()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket::checkParentSon()`

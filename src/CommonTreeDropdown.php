@@ -69,7 +69,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $this->addStandardTab('Log', $ong, $options);
         }
 
-        if (DropdownTranslation::canBeTranslated($this)) {
+        if ($this->maybeTranslated()) {
             $this->addStandardTab('DropdownTranslation', $ong, $options);
         }
 
