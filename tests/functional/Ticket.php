@@ -6422,4 +6422,60 @@ HTML
         $this->boolean(property_exists($ticket, 'plugin_xxx_data'))->isTrue();
         $this->string($ticket->plugin_xxx_data)->isEqualTo('test');
     }
+
+    public function testRestrictedDropdownValues()
+    {
+        $this->login();
+
+        $fn_dropdown_has_id = static function ($dropdown_values, $id) use (&$fn_dropdown_has_id) {
+            foreach ($dropdown_values as $dropdown_value) {
+                if (isset($dropdown_value['children'])) {
+                    if ($fn_dropdown_has_id($dropdown_value['children'], $id)) {
+                        return true;
+                    }
+                } elseif ((int) $dropdown_value['id'] === (int) $id) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        $ticket = new \Ticket();
+        $this->integer($not_my_tickets_id = $ticket->add([
+            'name'      => __FUNCTION__,
+            'content'   => __FUNCTION__,
+            'users_id'  => $_SESSION['glpiID'] + 1, // Not current user
+            '_skip_auto_assign' => true,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]))->isGreaterThan(0);
+
+        $dropdown_params = [
+            'itemtype' => \Ticket::class,
+            'entity_restrict' => -1,
+            'page_limit' => 1000
+        ];
+        $idor = \Session::getNewIDORToken(\Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+        $this->array($values['results'])->size->isGreaterThan(1);
+        $this->boolean($fn_dropdown_has_id($values['results'], $not_my_tickets_id))->isTrue();
+
+        // Remove permission to see all tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $idor = \Session::getNewIDORToken(\Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+        $this->array($values['results'])->size->isGreaterThan(1);
+        $this->boolean($fn_dropdown_has_id($values['results'], $not_my_tickets_id))->isFalse();
+
+        // Add user as requester
+        $ticket_user = new \Ticket_User();
+        $ticket_user->add([
+            'tickets_id' => $not_my_tickets_id,
+            'users_id' => $_SESSION['glpiID'],
+            'type' => CommonITILActor::REQUESTER,
+        ]);
+        $idor = \Session::getNewIDORToken(\Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+        $this->array($values['results'])->size->isGreaterThan(1);
+        $this->boolean($fn_dropdown_has_id($values['results'], $not_my_tickets_id))->isTrue();
+    }
 }

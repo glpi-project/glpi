@@ -421,7 +421,7 @@
          <h2 class="accordion-header" id="linked_tickets-heading" title="{{ 'Ticket_Ticket'|itemtype_name(nb_linked_tickets) }}" data-bs-toggle="tooltip">
             <button class="accordion-button {{ linked_tickets_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_tickets" aria-expanded="true" aria-controls="linked_tickets">
                <i class="ti ti-link me-1"></i>
-               {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+               {% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id'], true) %}
                {% set nb_linked_tickets = linked_tickets|length %}
                {% if item.isNewItem() and params['_link']['tickets_id_2'] > 0 %}
                   {% set nb_linked_tickets = 1 %}
