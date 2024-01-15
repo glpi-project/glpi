@@ -169,7 +169,6 @@ class Appliance_Item_Relation extends CommonDBRelation
         return parent::countForMainItem($item, $extra_types_where);
     }
 
-
     /**
      * return an array of relations for a given Appliance_Item's id
      *
@@ -183,6 +182,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         global $DB;
 
         $iterator = $DB->request([
+            'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 Appliance_Item::getForeignKeyField() => $appliances_items_id
@@ -217,18 +217,17 @@ class Appliance_Item_Relation extends CommonDBRelation
     public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true)
     {
         $relations_str = "";
-        foreach (Appliance_Item_Relation::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
+        foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
             $del = "";
             if ($canedit) {
-                $del = "<i class='delete_relation pointer fas fa-times'
-                       data-relations-id='$rel_id'></i>";
+                $del = "<i class='delete_relation pointer fas fa-times' data-relations-id='$rel_id'></i>";
             }
             $relations_str .= "<li>$link $del</li>";
         }
 
         return "<ul>$relations_str</ul>
-         <span class='pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
-            <i class='fa fa-plus' title='" . __('New relation') . "'></i>
+         <span class='cursor-pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
+            <i class='ti ti-plus' title='" . __('New relation') . "'></i>
             <span class='sr-only'>" . __('New relation') . "</span>
          </span>
       </td>";

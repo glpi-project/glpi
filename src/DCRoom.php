@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * DCRoom Class
  **/
@@ -418,73 +420,46 @@ class DCRoom extends CommonDBTM
             ]
         ]);
 
-        echo "<div class='firstbloc'>";
-        Html::showSimpleForm(
-            self::getFormURL(),
-            '_add_fromitem',
-            __('New room for this datacenter...'),
-            ['datacenters_id' => $datacenter->getID()]
-        );
-        echo "</div>";
-
         if ($canedit) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = [
-                'num_displayed'   => min($_SESSION['glpilist_limit'], count($rooms)),
-                'container'       => 'mass' . __CLASS__ . $rand
+            echo "<div class='mt-1 mb-3 text-center'>";
+            Html::showSimpleForm(
+                self::getFormURL(),
+                '_add_fromitem',
+                __('New room for this datacenter...'),
+                ['datacenters_id' => $datacenter->getID()]
+            );
+            echo "</div>";
+        }
+
+        $dcroom = new self();
+        $entries = [];
+        foreach ($rooms as $room) {
+            $dcroom->getFromResultSet($room);
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $room['id'],
+                'name' => $dcroom->getLink()
             ];
-            Html::showMassiveActions($massiveactionparams);
         }
 
-        Session::initNavigateListItems(
-            self::getType(),
-            //TRANS : %1$s is the itemtype name,
-            //        %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $datacenter->getTypeName(1),
-                $datacenter->getName()
-            )
-        );
-
-        if (!count($rooms)) {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No server room found') . "</th></tr>";
-            echo "</table>";
-        } else {
-            echo "<table class='tab_cadre_fixehov'>";
-            $header = "<tr>";
-            if ($canedit) {
-                $header .= "<th width='10'>";
-                $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header .= "</th>";
-            }
-            $header .= "<th>" . __('Name') . "</th>";
-            $header .= "</tr>";
-
-            $dcroom = new self();
-            echo $header;
-            foreach ($rooms as $room) {
-                $dcroom->getFromResultSet($room);
-                echo "<tr lass='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $room["id"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $dcroom->getLink() . "</td>";
-                echo "</tr>";
-            }
-            echo $header;
-            echo "</table>";
-        }
-
-        if ($canedit && count($rooms)) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-        }
-        if ($canedit) {
-            Html::closeForm();
-        }
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'name' => __('Name'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     /**
