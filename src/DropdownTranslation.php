@@ -74,7 +74,7 @@ class DropdownTranslation extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (self::canBeTranslated($item)) {
+        if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
@@ -93,7 +93,7 @@ class DropdownTranslation extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if (DropdownTranslation::canBeTranslated($item)) {
+        if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
             DropdownTranslation::showTranslations($item);
         }
         return true;
@@ -786,9 +786,12 @@ JAVASCRIPT
      * @param CommonGLPI $item the item to check
      *
      * @return boolean true if item can be translated, false otherwise
+     *
+     * @deprecated 10.1.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {
+        Toolbox::deprecated();
 
         return ($item instanceof CommonDropdown) && $item->maybeTranslated();
     }

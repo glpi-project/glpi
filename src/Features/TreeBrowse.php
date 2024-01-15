@@ -36,6 +36,7 @@
 namespace Glpi\Features;
 
 use CommonDBTM;
+use CommonDropdown;
 use CommonITILObject;
 use CommonTreeDropdown;
 use DropdownTranslation;
@@ -272,7 +273,7 @@ JAVASCRIPT;
         $categories = [];
         $parents = [];
         foreach ($cat_iterator as $category) {
-            if (DropdownTranslation::canBeTranslated($inst)) {
+            if ($category instanceof CommonDropdown && $category->maybeTranslated()) {
                 $tname = DropdownTranslation::getTranslatedValue(
                     $category['id'],
                     $inst->getType()

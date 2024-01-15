@@ -79,11 +79,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function getName($options = [])
     {
-        if (KnowbaseItemTranslation::canBeTranslated($this)) {
-            return KnowbaseItemTranslation::getTranslatedValue($this);
-        }
-
-        return parent::getName();
+        return KnowbaseItemTranslation::getTranslatedValue($this);
     }
 
 
@@ -1217,11 +1213,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $out .= "</th></tr>";
 
         $out .= "<tr><td class='left' colspan='4'><h2>" . __('Subject') . "</h2>";
-        if (KnowbaseItemTranslation::canBeTranslated($this)) {
-            $out .= KnowbaseItemTranslation::getTranslatedValue($this, 'name');
-        } else {
-            $out .= $this->fields["name"];
-        }
+        $out .= KnowbaseItemTranslation::getTranslatedValue($this, 'name');
 
         $out .= "</td></tr>";
         $out .= "<tr><td class='left' colspan='4'><h2>" . __('Content') . "</h2>\n";
@@ -2501,11 +2493,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      */
     public function getAnswer()
     {
-        if (KnowbaseItemTranslation::canBeTranslated($this)) {
-            $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
-        } else {
-            $answer = $this->fields["answer"];
-        }
+        $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
         $answer = RichText::getEnhancedHtml($answer, [
             'text_maxsize' => 0 // Show all text without read more button
         ]);
