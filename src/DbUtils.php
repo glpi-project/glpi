@@ -1213,7 +1213,7 @@ final class DbUtils
         } else {
             // Save the results to the cache for each requested item ID
             $to_cache = [];
-            foreach ($items_id as $id) {
+            foreach ($ids_needed_to_fetch as $id) {
                 if (!isset($ancestors_by_id[$id])) {
                     $ancestors_by_id[$id] = [];
                 }
