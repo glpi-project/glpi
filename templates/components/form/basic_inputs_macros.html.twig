@@ -232,6 +232,10 @@
         {% endif %}
     {% endif %}
 
+    {% set clearable = options.clearable|default('false') %}
+    {% set options = options|merge({
+        clearable: false
+    }) %}
     <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
@@ -245,10 +249,9 @@
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
                 <i class="{{ calendar_icon }}"></i>
             </button>
-            {% if options.maybeempty %}
-                <button type="button" class="btn btn-outline-secondary btn-sm" title="{{ __('Clear') }}">
-                    <i class="ti ti-circle-x-filled" data-clear></i>
-                </button>
+            {% if clearable %}
+                <i class="input-group-text fas fa-times-circle pointer" data-clear
+                    title="{{ __('Clear') }}"></i>
             {% endif %}
         {% endif %}
     </div>
