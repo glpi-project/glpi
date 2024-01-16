@@ -163,6 +163,10 @@ abstract class ITILTemplateField extends CommonDBChild
 
         $used         = [];
         foreach ($iterator as $data) {
+            if (!array_key_exists($data['num'], $fields)) {
+                // Ignore deleted/unavailable fields
+                continue;
+            }
             $interface_label = in_array($data['num'], $simplified_fields, false) ? $both_interfaces_label : __('Standard interface');
             $entry = [
                 'itemtype' => static::class,
