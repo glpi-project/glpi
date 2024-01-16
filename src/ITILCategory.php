@@ -407,6 +407,13 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
+    public function prepareInputForClone($input)
+    {
+        // The code must be unique so we cannot clone it
+        unset($input['code']);
+        return $input;
+    }
+
     /**
      * @since 0.84
      *
