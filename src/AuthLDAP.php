@@ -2867,7 +2867,11 @@ class AuthLDAP extends CommonDBTM
 
         $search_parameters = [];
        //Connect to the directory
-        if (isset(self::$conn_cache[$ldap_server])) {
+        if (
+            isset(self::$conn_cache[$ldap_server])
+            // check that connection is still alive
+            && @ldap_read(self::$conn_cache[$ldap_server], '', '(objectclass=*)', ['dn'], 0, 1) !== false
+        ) {
             $ds = self::$conn_cache[$ldap_server];
         } else {
             $ds = $config_ldap->connect();
