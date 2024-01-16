@@ -35,7 +35,6 @@
 
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
-use Glpi\Features\Clonable;
 
 /**
  * Base template class
@@ -44,7 +43,6 @@ use Glpi\Features\Clonable;
  */
 abstract class AbstractITILChildTemplate extends CommonDropdown
 {
-    use Clonable;
 
     public function showForm($ID, array $options = [])
     {

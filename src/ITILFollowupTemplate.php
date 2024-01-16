@@ -33,13 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Template for followups
  * @since 9.5
  **/
 class ITILFollowupTemplate extends AbstractITILChildTemplate
 {
-   // From CommonDBTM
+    use Clonable;
+
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 

@@ -33,12 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * SolutionTemplate Class
  **/
 class SolutionTemplate extends AbstractITILChildTemplate
 {
-   // From CommonDBTM
+    use Clonable;
+
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'solutiontemplate';

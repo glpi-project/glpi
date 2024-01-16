@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * ValidationTemplate Class
  **/
 class ITILValidationTemplate extends AbstractITILChildTemplate
 {
+    use Clonable;
+
     // From CommonDBTM
     public $dohistory = true;
 

@@ -33,13 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Template for task
  * @since 9.1
  **/
 class TaskTemplate extends AbstractITILChildTemplate
 {
-   // From CommonDBTM
+    use Clonable;
+
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
