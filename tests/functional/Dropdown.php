@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Generator;
+use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Session;
 use State;
@@ -1887,7 +1888,7 @@ class Dropdown extends DbTestCase
     {
         $this->login();
 
-        /** @var \CommonDropdown $item */
+        /** @var \CommonDropdown&Clonable $item */
         $item = new $dropdown_class();
 
         $extra_fields = $item->getAdditionalFields();
@@ -1919,7 +1920,8 @@ class Dropdown extends DbTestCase
             $input['itemtype'] = 'Computer';
             $input['items_id'] = 1;
         }
-        $this->integer($item->add($input))->isGreaterThan(0);
+        $this->integer($original_items_id = $item->add($input))->isGreaterThan(0);
+        $this->integer($item->clone())->isNotEqualTo($original_items_id);
         foreach ($input as $field => $value) {
             $this->variable($item->fields[$field])->isEqualTo($value);
         }
