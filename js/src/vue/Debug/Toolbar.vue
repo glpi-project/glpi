@@ -224,7 +224,7 @@
                 ajax_request.status_type = xhr.status >= 200 && xhr.status < 300 ? 'success' : 'danger';
 
                 // Ask the server for the debug information it saved for this request
-                requestAjaxDebugData(ajax_id);
+                queueAjaxDebugDataRequest(ajax_id);
             }
         }
         refreshWidgetButtons();
@@ -321,38 +321,65 @@
         return ajax_requests.value.find((request) => request.id === request_id).profile;
     }
 
-    function requestAjaxDebugData(ajax_id, reload_widget = false) {
-        const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
+    const debug_data_request_queue = [];
+
+    function queueAjaxDebugDataRequest(ajax_id) {
+        if (debug_data_request_queue.indexOf(ajax_id) === -1) {
+            debug_data_request_queue.push(ajax_id);
+        }
+    }
+
+    window.setInterval(() => {
+        if (debug_data_request_queue.length === 0) {
+            return;
+        }
+        const ajax_ids = debug_data_request_queue.splice(0, debug_data_request_queue.length);
+        requestAjaxDebugData(ajax_ids);
+    }, 1000);
+
+    function requestAjaxDebugData(ajax_ids, reload_widget = false) {
+        if (!Array.isArray(ajax_ids)) {
+            ajax_ids = [ajax_ids];
+        }
+        const content_area = $('#debug-toolbar-expanded-content');
         $.ajax({
             url: CFG_GLPI.root_doc + '/ajax/debug.php',
             data: {
-                'ajax_id': ajax_id,
+                'ajax_ids': ajax_ids,
             }
         }).done((data) => {
-            ajax_request.profile = data;
+            if (typeof data !== 'object') {
+                return;
+            }
+            $.each(data, (ajax_id, request_data) => {
+                const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
+                if (ajax_request === undefined) {
+                    return;
+                }
+                ajax_request.profile = request_data;
 
-            $.each(ajax_request.profile.sql.queries, (i, query) => {
-                cleanSQLQuery(query.query).then((clean_query) => {
-                    ajax_request.profile.sql.queries[i].query = clean_query;
+                $.each(ajax_request.profile.sql.queries, (i, query) => {
+                    cleanSQLQuery(query.query).then((clean_query) => {
+                        ajax_request.profile.sql.queries[i].query = clean_query;
+                    });
                 });
+
+                if (content_area.data('active-widget') !== undefined) {
+                    switchWidget(content_area.data('active-widget'), true);
+                }
+                // Move server global to the profile
+                if (ajax_request.server_global !== undefined) {
+                    ajax_request.profile.globals['server'] = ajax_request.server_global;
+                }
+                // Move the data to either the get or post global depending on the request type
+                if (ajax_request.type === 'POST') {
+                    ajax_request.profile.globals['post'] = ajax_request.data;
+                } else {
+                    ajax_request.profile.globals['get'] = ajax_request.data;
+                }
             });
 
-            const content_area = $('#debug-toolbar-expanded-content');
-            if (content_area.data('active-widget') !== undefined) {
-                switchWidget(content_area.data('active-widget'), true);
-            }
-            // Move server global to the profile
-            if (ajax_request.server_global !== undefined) {
-                ajax_request.profile.globals['server'] = ajax_request.server_global;
-            }
-            // Move the data to either the get or post global depending on the request type
-            if (ajax_request.type === 'POST') {
-                ajax_request.profile.globals['post'] = ajax_request.data;
-            } else {
-                ajax_request.profile.globals['get'] = ajax_request.data;
-            }
             refreshWidgetButtons();
-
             if (reload_widget) {
                 // reload active widget
                 switchWidget(content_area.data('active-widget'), true);

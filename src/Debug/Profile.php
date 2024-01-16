@@ -78,24 +78,31 @@ final class Profile
         return self::$current;
     }
 
-    public static function pull(string $id): ?self
+    /**
+     * @param string[] $ids
+     * @return self[]
+     */
+    public static function pull(array $ids): array
     {
-        if (!isset($_SESSION['debug_profiles'][$id])) {
-            return null;
+        $profiles = [];
+        foreach ($ids as $id) {
+            if (!isset($_SESSION['debug_profiles'][$id])) {
+                continue;
+            }
+            try {
+                $profile_data = json_decode(gzdecode($_SESSION['debug_profiles'][$id]), true, 512, JSON_THROW_ON_ERROR);
+                $profile = new self($profile_data['id'], $profile_data['parent_id']);
+                $profile->is_readonly = true;
+                $profile->debug_info = $profile_data;
+
+                unset($_SESSION['debug_profiles'][$id]);
+
+                $profiles[] = $profile;
+            } catch (\Throwable $e) {
+                // Ignore
+            }
         }
-
-        try {
-            $profile_data = json_decode(gzdecode($_SESSION['debug_profiles'][$id]), true, 512, JSON_THROW_ON_ERROR);
-            $profile = new self($profile_data['id'], $profile_data['parent_id']);
-            $profile->is_readonly = true;
-            $profile->debug_info = $profile_data;
-
-            unset($_SESSION['debug_profiles'][$id]);
-
-            return $profile;
-        } catch (\Throwable $e) {
-            return null;
-        }
+        return $profiles;
     }
 
     public function getID(): string
