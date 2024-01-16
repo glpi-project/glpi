@@ -64,11 +64,8 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
         if (isset($_POST['condition'])) {
             $condparam['value'] = $_POST['condition'];
         }
-        echo "<table class='w-100'><tr><td style='width: 30%'>";
         $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $condparam);
-        echo "</td><td>";
-        echo "<span id='condition_span$randcrit'>\n";
-        echo "</span>\n";
+        echo "<span id='condition_span$randcrit' class='d-inline-block'></span>";
 
         $paramscriteria = ['condition' => '__VALUE__',
             'criteria'  => $_POST["criteria"],
@@ -92,6 +89,5 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
             $paramscriteria,
             "dropdown_condition$randcrit"
         );
-        echo "</td></tr></table>";
     }
 }

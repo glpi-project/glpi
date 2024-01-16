@@ -41,13 +41,18 @@
     {% block more_fields %}
         {{ inputs.hidden(rule.getRuleIdField, item.fields[rules_id_field]) }}
         {% set action_dropdown %}
-            {% do call([rule, 'dropdownActions'], [{
-                value: item.fields['field'],
-                used: used_actions,
-                rand: rand
-            }]) %}
+            <div class="d-flex">
+                {% do call([rule, 'dropdownActions'], [{
+                    value: item.fields['field'],
+                    used: used_actions,
+                    rand: rand
+                }]) %}
+                <span id="action_span"></span>
+            </div>
         {% endset %}
-        {{ fields.htmlField('', action_dropdown, get_class(item)|itemtype_name) }}
+        {{ fields.htmlField('', action_dropdown, get_class(item)|itemtype_name, {
+            full_width: true,
+        }) }}
         {% do call(['Ajax', 'updateItemOnSelectEvent'], [
             'dropdown_field' ~ rand,
             'action_span',
@@ -59,7 +64,6 @@
                 (rule.getRuleIdField): item.fields[rules_id_field]
             }
         ]) %}
-        <span id="action_span"></span>
         {% if item.fields['field'] is defined and item.fields['field'] is not empty %}
             <script type="text/javascript">
                 $(() => {

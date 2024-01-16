@@ -41,32 +41,32 @@
     {% block more_fields %}
         {{ inputs.hidden(rule.getRuleIdField, item.fields[rules_id_field]) }}
         {% set criteria_dropdown %}
-            <div class="btn-group">
-                {% do call([rule, 'dropdownCriteria'], [{
-                    value: item.fields['criteria'],
-                    rand: rand
-                }]) %}
-                {% if rule.specific_parameters %}
-                    {% set param_itemtype = get_class(rule) ~ 'Parameter' %}
-                    <button type="button" class="btn btn-ghost-secondary btn-sm" title="{{ __('Add a criterion') }}"
-                            data-bs-toggle="modal" data-bs-target="#addcriterion{{ rand }}">
-                        <i class="ti ti-plus"></i>
-                    </button>
-                    {% do call('Ajax::createIframeModalWindow', [
-                        'addcriterion' ~ rand,
-                        param_itemtype|itemtype_form_path,
-                        {
-                            reloadonclose: true,
-                        }
-                    ]) %}
-                {% endif %}
+            <div class="d-flex">
+                <div class="btn-group">
+                    {% do call([rule, 'dropdownCriteria'], [{
+                        value: item.fields['criteria'],
+                        rand: rand
+                    }]) %}
+                    {% if rule.specific_parameters %}
+                        {% set param_itemtype = get_class(rule) ~ 'Parameter' %}
+                        <button type="button" class="btn btn-ghost-secondary btn-sm" title="{{ __('Add a criterion') }}"
+                                data-bs-toggle="modal" data-bs-target="#addcriterion{{ rand }}">
+                            <i class="ti ti-plus"></i>
+                        </button>
+                        {% do call('Ajax::createIframeModalWindow', [
+                            'addcriterion' ~ rand,
+                            param_itemtype|itemtype_form_path,
+                            {
+                                reloadonclose: true,
+                            }
+                        ]) %}
+                    {% endif %}
+                </div>
+                <span id="criteria_span"></span>
             </div>
         {% endset %}
-        {% set criteria_dropdown_extra %}
-
-        {% endset %}
         {{ fields.htmlField('', criteria_dropdown, get_class(item)|itemtype_name, {
-            add_field_html: criteria_dropdown_extra
+            full_width: true
         }) }}
         {% do call(['Ajax', 'updateItemOnSelectEvent'], [
             'dropdown_criteria' ~ rand,
@@ -95,6 +95,5 @@
                 });
             </script>
         {% endif %}
-        <span id="criteria_span"></span>
     {% endblock %}
 {% endblock %}
