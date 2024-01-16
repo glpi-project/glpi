@@ -121,4 +121,9 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
     {
         return "fas fa-layer-group";
     }
+
+    public function getCloneRelations(): array
+    {
+        return [];
+    }
 }

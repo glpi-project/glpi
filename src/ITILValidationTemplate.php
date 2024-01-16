@@ -168,4 +168,9 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     {
         $this->postTargets();
     }
+
+    public function getCloneRelations(): array
+    {
+        return [];
+    }
 }

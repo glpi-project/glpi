@@ -43,7 +43,6 @@ use Glpi\ContentTemplates\TemplateManager;
  */
 abstract class AbstractITILChildTemplate extends CommonDropdown
 {
-
     public function showForm($ID, array $options = [])
     {
         if (!parent::showForm($ID, $options)) {
@@ -149,10 +148,5 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         }
 
         return $html;
-    }
-
-    public function getCloneRelations(): array
-    {
-        return [];
     }
 }
