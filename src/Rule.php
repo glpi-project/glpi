@@ -1237,7 +1237,7 @@ JS
                             $('#viewcriteria{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
                                 type: "{$this->rulecriteriaclass}",
                                 parenttype: "{$rule_class}",
-                                rules_id: 154,
+                                rules_id: $rules_id,
                                 id: criteria_id
                             });
                         }
