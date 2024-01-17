@@ -234,6 +234,7 @@ class RuleRightCollection extends RuleCollection
             'TYPE'       => $params_lower["type"] ?? "",
             'LOGIN'      => $params_lower["login"] ?? "",
             'MAIL_EMAIL' => $params_lower["email"] ?? $params_lower["mail_email"] ?? "",
+            '_groups_id' => !empty($params_lower['_groups_id']) ? $params_lower['_groups_id'] : $groups,
         ]);
 
         // IMAP/POP login method
