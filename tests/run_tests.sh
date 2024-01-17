@@ -364,57 +364,55 @@ if [[ "$INTERACTIVE" = true ]]; then
     SCOPE=$SELECTED_SCOPE
     METHODS=$SELECTED_METHODS
     show_info
-    while read -r -e -d $'\n' -p 'GLPI Tests > ' CHOICE; do
-      history -s "$CHOICE"
-      if [[ "$CHOICE" = run* ]]; then
-        # If actions were specified after the run choice, use them instead of the ones selected
-        if [[ "$CHOICE" != "run" ]]; then
-          RUN_OPTS=(${CHOICE#run })
-          # TESTS_TO_RUN is the first argument. It should be a single word without spaces.
-          # The second argument, if it exists, is the scope. If it doesn't exist, the scope is the selected one.
-          TESTS_TO_RUN=(${RUN_OPTS[0]})
-          if [[ ${#RUN_OPTS[@]} -gt 1 ]]; then
-            SCOPE=${RUN_OPTS[1]}
-          else
-            SCOPE="default"
-          fi
-          # The third argument, if it exists, is the methods pattern. If it doesn't exist, the methods pattern is the selected one.
-          if [[ ${#RUN_OPTS[@]} -gt 2 ]]; then
-            METHODS=${RUN_OPTS[2]}
-          else
-            METHODS="all"
-          fi
+    read -e -r -p "GLPI Tests > " CHOICE
+    if [[ "$CHOICE" = run* ]]; then
+      # If actions were specified after the run choice, use them instead of the ones selected
+      if [[ "$CHOICE" != "run" ]]; then
+        RUN_OPTS=(${CHOICE#run })
+        # TESTS_TO_RUN is the first argument. It should be a single word without spaces.
+        # The second argument, if it exists, is the scope. If it doesn't exist, the scope is the selected one.
+        TESTS_TO_RUN=(${RUN_OPTS[0]})
+        if [[ ${#RUN_OPTS[@]} -gt 1 ]]; then
+          SCOPE=${RUN_OPTS[1]}
+        else
+          SCOPE="default"
         fi
-        run_tests
-      elif [[ "$CHOICE" = "help" ]]; then
-        cat << EOF
-  Available commands:
-    - run [action] [scope]: Run the currently selected actions or run the single specified action with the specified scope (defaults to the selected scope).
-    - set action [actions]: Change the currently selected actions.
-    - set scope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
-    - set methods [methods]: Change the currently selected methods pattern. This affects which tests methods are run (if supported by the test).
-    - info: Display information about the currently selected actions, scope and methods pattern.
-    - exit: Stop the containers and exit.
-    - help: See this list of commands.
-EOF
-      elif [[ "$CHOICE" = set[[:space:]]action* ]]; then
-        SELECTED_TESTS_TO_RUN=(${CHOICE#set[[:space:]]action })
-      elif [[ "$CHOICE" = set[[:space:]]scope* ]]; then
-        SELECTED_SCOPE=${CHOICE#set[[:space:]]scope }
-        if [[ ! "$SELECTED_SCOPE" =~ ^tests/ && "$SELECTED_SCOPE" != "default" && "$SELECTED_SCOPE" != "" ]]; then
-          SELECTED_SCOPE="tests/$SELECTED_SCOPE"
+        # The third argument, if it exists, is the methods pattern. If it doesn't exist, the methods pattern is the selected one.
+        if [[ ${#RUN_OPTS[@]} -gt 2 ]]; then
+          METHODS=${RUN_OPTS[2]}
+        else
+          METHODS="all"
         fi
-      elif [[ "$CHOICE" = set[[:space:]]methods* ]]; then
-        SELECTED_METHODS=${CHOICE#set[[:space:]]methods }
-      elif [[ "$CHOICE" = "info" ]]; then
-        show_info
-      elif [[ "$CHOICE" = "exit" ]]; then
-        cleanup_and_exit
-      else
-        echo -e "\e[1;39;41m Invalid command \e[0m"
       fi
-      CHOICE=""
-    done
+      run_tests
+    elif [[ "$CHOICE" = "help" ]]; then
+      cat << EOF
+Available commands:
+  - run [action] [scope]: Run the currently selected actions or run the single specified action with the specified scope (defaults to the selected scope).
+  - set action [actions]: Change the currently selected actions.
+  - set scope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
+  - set methods [methods]: Change the currently selected methods pattern. This affects which tests methods are run (if supported by the test).
+  - info: Display information about the currently selected actions, scope and methods pattern.
+  - exit: Stop the containers and exit.
+  - help: See this list of commands.
+EOF
+    elif [[ "$CHOICE" = set[[:space:]]action* ]]; then
+      SELECTED_TESTS_TO_RUN=(${CHOICE#set[[:space:]]action })
+    elif [[ "$CHOICE" = set[[:space:]]scope* ]]; then
+      SELECTED_SCOPE=${CHOICE#set[[:space:]]scope }
+      if [[ ! "$SELECTED_SCOPE" =~ ^tests/ && "$SELECTED_SCOPE" != "default" && "$SELECTED_SCOPE" != "" ]]; then
+        SELECTED_SCOPE="tests/$SELECTED_SCOPE"
+      fi
+    elif [[ "$CHOICE" = set[[:space:]]methods* ]]; then
+      SELECTED_METHODS=${CHOICE#set[[:space:]]methods }
+    elif [[ "$CHOICE" = "info" ]]; then
+      show_info
+    elif [[ "$CHOICE" = "exit" ]]; then
+      cleanup_and_exit
+    else
+      echo -e "\e[1;39;41m Invalid command \e[0m"
+    fi
+    CHOICE=""
   done
 fi
 
