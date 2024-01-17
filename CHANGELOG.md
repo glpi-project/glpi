@@ -111,6 +111,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILActor::getActors()` signature changed. The `$items_id` parameter must strictly be an integer.
 - The `date_mod` property for historical entries returned by `Log::getHistoryData` is no longer formatted based on the user's preferences.
 - `Rule::dropdownRulesMatch()` has been made protected.
+- `ITILTemplateField::showForITILTemplate()` method is no longer abstract.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
