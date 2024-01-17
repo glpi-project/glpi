@@ -52,7 +52,7 @@ class Item_DeviceSimcard extends Item_Devices
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Simcard', 'Simcards', $nb);
+        return _n('Simcard: Item', 'Simcards: Items', $nb);
     }
 
     public static function getSpecificities($specif = '')
