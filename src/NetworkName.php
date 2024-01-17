@@ -976,8 +976,8 @@ class NetworkName extends FQDNLabel
     {
         $rights = parent::getRights($interface);
         // Rename READ and UPDATE right labels to match other assets
-        $rights['READ'] = __('View all');
-        $rights['UPDATE'] = __('Update all');
+        $rights[READ] = __('View all');
+        $rights[UPDATE] = __('Update all');
         return $rights;
     }
 }
