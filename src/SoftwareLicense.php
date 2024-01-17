@@ -1209,10 +1209,12 @@ class SoftwareLicense extends CommonTreeDropdown
     public function showDebug()
     {
 
-        $license = ['softname' => '',
-            'name'     => '',
-            'serial'   => '',
-            'expire'   => ''
+        $license = [
+            'softname'      => '',
+            'name'          => '',
+            'serial'        => '',
+            'expire'        => '',
+            'entities_id'   => '',
         ];
 
         $options['entities_id'] = $this->getEntityID();
