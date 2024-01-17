@@ -31,6 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set datatable_id = datatable_id|default('datatable' ~ random()) %}
 {% if total_number < 1 %}
    <div class="alert alert-info">
       {{ __('No data') }}
@@ -43,9 +44,11 @@
 
     <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
-            {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+            <div class="mb-2">
+                {% do call('Html::showMassiveActions', [massiveactionparams]) %}
+            </div>
         {% endif %}
-        <table class="table table-hover">
+        <table id="{{ datatable_id }}" class="table table-hover">
             <thead>
                 <tr>
                     {% if showmassiveactions %}
@@ -146,7 +149,7 @@
             </thead>
             <tbody>
                 {% for entry in entries %}
-                    <tr>
+                    <tr class="{{ row_class|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
                         {% if showmassiveactions %}
                             <td width='10'>
                                 <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
