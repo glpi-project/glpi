@@ -243,60 +243,76 @@ class RuleRightCollection extends RuleCollection
 
         //LDAP type method
         // Get all the field to retrieve to be able to process rule matching
-        if ($rule_parameters["TYPE"] == Auth::LDAP) {
-           //Get all the data we need from ldap to process the rules
-            $rule_fields = $this->getFieldsToLookFor();
-            $sz = @ldap_read(
-                $params_lower["connection"],
-                $params_lower["userdn"],
-                "objectClass=*",
-                $rule_fields
-            );
-            if ($sz === false) {
-                // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
-                if (ldap_errno($params_lower["connection"]) !== 32) {
-                    trigger_error(
-                        AuthLDAP::buildError(
-                            $params_lower["connection"],
-                            sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["userdn"], 'objectClass=*')
-                        ),
-                        E_USER_WARNING
-                    );
-                }
-                return $rule_parameters;
+        if (isset($params_lower['dn']) && (!isset($params_lower['ldap_server']) || $params_lower['ldap_server'] === '0')) {
+            $user = new User();
+            $user->getFromDBbyDn($params_lower["dn"]);
+            $params_lower["ldap_server"] = $user->fields['auths_id'];
+        }
+        if ($rule_parameters["TYPE"] == Auth::LDAP && isset($params_lower['dn']) && (isset($params_lower["ldap_server"]) || isset($params_lower["connection"]))) {
+            $auth = new AuthLDAP();
+            $ldap = false;
+            if (isset($params_lower['connection']) && is_resource($params_lower['connection'])) {
+                // Maybe needed for BC, but I doubt this param set at all in recent versions.
+                $ldap = $params_lower['connection'];
+            } else if ($auth->getFromDB($params_lower["ldap_server"])) {
+                $ldap = $auth->connect();
             }
 
-            $rule_input = AuthLDAP::get_entries_clean($params_lower["connection"], $sz);
+            if ($ldap !== false) {
+                //Get all the data we need from ldap to process the rules
+                $rule_fields = $this->getFieldsToLookFor();
+                $sz = @ldap_read(
+                    $ldap,
+                    $params_lower["dn"],
+                    "objectClass=*",
+                    $rule_fields
+                );
+                if ($sz === false) {
+                    // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
+                    if (ldap_errno($ldap) !== 32) {
+                        trigger_error(
+                            AuthLDAP::buildError(
+                                $ldap,
+                                sprintf('Unable to get LDAP user having DN `%s` with filter `%s`', $params_lower["dn"], 'objectClass=*')
+                            ),
+                            E_USER_WARNING
+                        );
+                    }
+                    return $rule_parameters;
+                }
 
-            if (count($rule_input)) {
-                $rule_input = $rule_input[0];
-                //Get all the ldap fields
-                $fields = $this->getFieldsForQuery();
-                foreach ($fields as $field) {
-                    switch (Toolbox::strtoupper($field)) {
-                        case "LDAP_SERVER":
-                            $rule_parameters["LDAP_SERVER"] = $params_lower["ldap_server"];
-                            break;
+                $rule_input = AuthLDAP::get_entries_clean($ldap, $sz);
 
-                        default: // ldap criteria (added by user)
-                            if (isset($rule_input[$field])) {
-                                if (!is_array($rule_input[$field])) {
-                                     $rule_parameters[$field] = $rule_input[$field];
-                                } else {
-                                    if (count($rule_input[$field])) {
-                                        foreach ($rule_input[$field] as $key => $val) {
-                                            if ($key !== 'count') {
-                                                $rule_parameters[$field][] = $val;
+                if (count($rule_input)) {
+                    $rule_input = $rule_input[0];
+                    //Get all the ldap fields
+                    $fields = $this->getFieldsForQuery();
+                    foreach ($fields as $field) {
+                        switch (Toolbox::strtoupper($field)) {
+                            case "LDAP_SERVER":
+                                $rule_parameters["LDAP_SERVER"] = $params_lower["ldap_server"];
+                                break;
+
+                            default: // ldap criteria (added by user)
+                                if (isset($rule_input[$field])) {
+                                    if (!is_array($rule_input[$field])) {
+                                        $rule_parameters[$field] = $rule_input[$field];
+                                    } else {
+                                        if (count($rule_input[$field])) {
+                                            foreach ($rule_input[$field] as $key => $val) {
+                                                if ($key !== 'count') {
+                                                    $rule_parameters[$field][] = $val;
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
+                        }
                     }
+                    return $rule_parameters;
                 }
-                return $rule_parameters;
+                return $rule_input;
             }
-            return $rule_input;
         }
 
         return $rule_parameters;
