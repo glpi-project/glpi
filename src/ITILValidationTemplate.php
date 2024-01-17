@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * ValidationTemplate Class
  **/
 class ITILValidationTemplate extends AbstractITILChildTemplate
 {
+    use Clonable;
+
     // From CommonDBTM
     public $dohistory = true;
 
@@ -163,5 +167,10 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     public function post_updateItem($history = 1)
     {
         $this->postTargets();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

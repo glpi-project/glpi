@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Generator;
+use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Session;
 use State;
@@ -1864,6 +1865,65 @@ class Dropdown extends DbTestCase
             $this->variable($dropdown_entry['id'])->isEqualTo($numeric_text_value);
 
             $this->variable($dropdown_entry['id'])->isEqualTo($expected[$key]);
+        }
+    }
+
+    protected function cloneProvider()
+    {
+        $this->login();
+        $dropdowns = \Dropdown::getStandardDropdownItemTypes();
+        foreach ($dropdowns as $items) {
+            foreach ($items as $item => $n) {
+                if (is_subclass_of($item, \CommonDropdown::class) && \Toolbox::hasTrait($item, \Glpi\Features\Clonable::class)) {
+                    yield [$item];
+                }
+            }
+        }
+    }
+
+    /**
+     * @dataProvider cloneProvider
+     */
+    public function testClone($dropdown_class)
+    {
+        $this->login();
+
+        /** @var \CommonDropdown&Clonable $item */
+        $item = new $dropdown_class();
+
+        $extra_fields = $item->getAdditionalFields();
+        $input = [
+            'name' => __FUNCTION__
+        ];
+        $parent_id = null;
+        foreach ($extra_fields as $field) {
+            if (!isset($field['type'])) {
+                continue;
+            }
+            if ($field['type'] === 'parent' && $parent_id === null) {
+                $this->integer($parent_id = $item->add([
+                    'name' => __FUNCTION__ . '_parent'
+                ]))->isGreaterThan(0);
+            }
+            $value = match ($field['type']) {
+                'text' => $field['name'],
+                'bool' => 1,
+                'tinymce' => '<p>' . $field['name'] . '</p>',
+                'parent' => $parent_id,
+                default => null
+            };
+            if ($value !== null && isset($field['name']) && is_string($field['name'])) {
+                $input[$field['name']] = $value;
+            }
+        }
+        if ($dropdown_class === \NetworkName::class) {
+            $input['itemtype'] = 'Computer';
+            $input['items_id'] = 1;
+        }
+        $this->integer($original_items_id = $item->add($input))->isGreaterThan(0);
+        $this->integer($item->clone())->isNotEqualTo($original_items_id);
+        foreach ($input as $field => $value) {
+            $this->variable($item->fields[$field])->isEqualTo($value);
         }
     }
 }

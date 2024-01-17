@@ -35,12 +35,14 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Features\Clonable;
 use Glpi\Socket;
 
 /// Location class
 class Location extends CommonTreeDropdown
 {
     use MapGeolocation;
+    use Clonable;
 
    // From CommonDBTM
     public $dohistory          = true;
@@ -608,5 +610,10 @@ class Location extends CommonTreeDropdown
             $input['altitude'] = $parent->fields['altitude'];
         }
         return $input;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

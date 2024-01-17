@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * ITILCategory class
  **/
 class ITILCategory extends CommonTreeDropdown
 {
+    use Clonable;
+
    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
@@ -403,6 +407,13 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
+    public function prepareInputForClone($input)
+    {
+        // The code must be unique so we cannot clone it
+        unset($input['code']);
+        return $input;
+    }
+
     /**
      * @since 0.84
      *
@@ -526,5 +537,10 @@ class ITILCategory extends CommonTreeDropdown
         }
 
         echo "</table></div>";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }
