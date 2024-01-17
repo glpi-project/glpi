@@ -1004,17 +1004,6 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Is translation enabled for this itemtype
-     *
-     * @return true if translation is available, false otherwise
-     **/
-    public function maybeTranslated()
-    {
-        return false;
-    }
-
-
-    /**
      * Clean translations associated to a dropdown
      *
      * @since 0.85
@@ -1025,7 +1014,7 @@ class CommonDBTM extends CommonGLPI
     {
 
        //Do not try to clean is dropdown translation is globally off
-        if ($this->maybeTranslated()) {
+        if ($this instanceof CommonDropdown && $this->maybeTranslated()) {
             $translation = new DropdownTranslation();
             $translation->deleteByCriteria(['itemtype' => get_class($this),
                 'items_id' => $this->getID()

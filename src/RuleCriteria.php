@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/// Criteria Rule class
+use Glpi\Application\View\TemplateRenderer;
+
+/**
+ * Criteria Rule class
+ */
 class RuleCriteria extends CommonDBChild
 {
    // From CommonDBChild
@@ -672,85 +676,39 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-    /** form for rule criteria
+    /**
+     * Show the form to add or update a criterion
      *
-     * @since 0.85
-     *
-     * @param integer $ID      Id of the criteria
-     * @param array   $options possible options:
-     *     - rule Object : the rule
+     * @param integer $ID ID of the criteria
+     * @param array $options Extra options
+     * @phpstan-param array{parent: Rule} $options
      *
      * @return boolean
-     **/
+     * @since 0.85
+     */
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-       // Yllen: you always have parent for criteria
+        // Yllen: you always have parent for criteria
         $rule = $options['parent'];
 
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options[static::$items_id] = $rule->getField('id');
 
-           //force itemtype of parent
+            //force itemtype of parent
             static::$itemtype = get_class($rule);
 
             $this->check(-1, CREATE, $options);
         }
-        $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='center'>" . _n('Criterion', 'Criteria', 1) . "</td><td colspan='3'>";
-        echo "<input type='hidden' name='" . $rule->getRuleIdField() . "' value='" .
-             $this->fields[$rule->getRuleIdField()] . "'>";
-
-        $rand   = $rule->dropdownCriteria(['value' => $this->fields['criteria']]);
-        $params = ['criteria' => '__VALUE__',
-            'rand'     => $rand,
-            'sub_type' => $rule->getType()
-        ];
-
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_criteria$rand",
-            "criteria_span",
-            $CFG_GLPI["root_doc"] . "/ajax/rulecriteria.php",
-            $params
-        );
-
-        if (isset($this->fields['criteria']) && !empty($this->fields['criteria'])) {
-            $params['criteria']  = $this->fields['criteria'];
-            $params['condition'] = $this->fields['condition'];
-            $params['pattern']   = $this->fields['pattern'];
-            echo "<script type='text/javascript' >\n";
-            echo "$(function() {";
-            Ajax::updateItemJsCode(
-                "criteria_span",
-                $CFG_GLPI["root_doc"] . "/ajax/rulecriteria.php",
-                $params
-            );
-            echo '});</script>';
-        }
-
-        if ($rule->specific_parameters) {
-            $itemtype = get_class($rule) . 'Parameter';
-            echo "<span title=\"" . __s('Add a criterion') . "\" class='fa fa-plus pointer' " .
-                  " data-bs-toggle='modal' data-bs-target='#addcriterion$rand'>" .
-                  "<span class='sr-only'>" . __s('Add a criterion') . "</span></span>";
-            Ajax::createIframeModalWindow(
-                'addcriterion' . $rand,
-                $itemtype::getFormURL(),
-                ['reloadonclose' => true]
-            );
-        }
-
-        echo "</td></tr>";
-        echo "<tr><td colspan='4'><span id='criteria_span'>\n";
-        echo "</span></td></tr>\n";
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/admin/rules/criteria.html.twig', [
+            'rule' => $rule,
+            'rules_id_field' => static::$items_id,
+            'item' => $this,
+            'rand' => mt_rand()
+        ]);
 
         return true;
     }

@@ -215,7 +215,7 @@ abstract class CommonDropdown extends CommonDBTM
             $this->addStandardTab('Log', $ong, $options);
         }
 
-        if (DropdownTranslation::canBeTranslated($this)) {
+        if ($this->maybeTranslated()) {
             $this->addStandardTab('DropdownTranslation', $ong, $options);
         }
 

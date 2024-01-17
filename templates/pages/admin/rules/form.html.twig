@@ -1,0 +1,65 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set no_header = true %}
+{% extends 'generic_show_form.html.twig' %}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {% block more_fields %}
+        {% if not item.isNewItem %}
+            {{ inputs.hidden('ranking', item.fields['ranking']) }}
+        {% endif %}
+        {{ inputs.hidden('sub_type', get_class(item)) }}
+        {{ fields.textField('name', item.fields['name'], __('Name')) }}
+        {{ fields.textField('description', item.fields['description'], __('Description')) }}
+        {{ fields.dropdownArrayField('match', item.fields['match'], match_operators, __('Logical operator')) }}
+        {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+        {% if conditions|length > 0 %}
+            {{ fields.dropdownArrayField('condition', item.fields['condition'], conditions, __('Use rule for')) }}
+        {% endif %}
+        {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
+
+        {% if not item.isNewItem and params['canedit'] %}
+            {% do call('Ajax::createIframeModalWindow', [
+                'ruletestmodal',
+                test_url ~ '?sub_type=' ~ item.fields['sub_type'] ~ '&rules_id=' ~ item.getID,
+                {
+                    title: _x('button', 'Test'),
+                }
+            ]) %}
+        {% endif %}
+    {% endblock %}
+{% endblock %}

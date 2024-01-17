@@ -56,15 +56,7 @@ export default class MonacoEditor {
         // Stupid workaround to allow multiple Monaco editors to be created for the same language but with different completions
         // since it registers completions by langauge in a global variable rather than allowing it to be instance-specific
         const existing_lang = window.monaco.languages.getLanguages().find((lang) => lang.id === language);
-        const new_lang_id = 'glpi_' + language + '_' + Math.random().toString(36).substring(2, 15);
-
-        // register new language based on existing one's tokenizer
-        window.monaco.languages.register({
-            id: new_lang_id,
-            extensions: existing_lang.extensions,
-            aliases: existing_lang.aliases,
-            mimetypes: existing_lang.mimetypes
-        });
+        const new_lang_id = options['_force_default_lang'] ? language : 'glpi_' + language + '_' + Math.random().toString(36).substring(2, 15);
 
         // Can't just specify the loader when registering the language apparently...
         async function registerNewLangLoaderData() {
@@ -72,7 +64,16 @@ export default class MonacoEditor {
             window.monaco.languages.setMonarchTokensProvider(new_lang_id, loader.language);
             window.monaco.languages.setLanguageConfiguration(new_lang_id, loader.conf);
         }
-        registerNewLangLoaderData();
+        if (!options['_force_default_lang']) {
+            // register new language based on existing one's tokenizer
+            window.monaco.languages.register({
+                id: new_lang_id,
+                extensions: existing_lang.extensions,
+                aliases: existing_lang.aliases,
+                mimetypes: existing_lang.mimetypes
+            });
+            registerNewLangLoaderData();
+        }
 
         window.monaco.languages.registerCompletionItemProvider(new_lang_id, {
             triggerCharacters: trigger_characters[language] ?? [],
@@ -139,6 +140,8 @@ export default class MonacoEditor {
             }
         });
         const dark_theme = $('html').attr('data-glpi-theme-dark') === '1';
+        delete options._force_default_lang;
+
         this.editor = window.monaco.editor.create(el, Object.assign({
             value: value,
             language: new_lang_id,
@@ -163,11 +166,39 @@ export default class MonacoEditor {
             });
         }
     }
+}
 
+window.GLPI.Monaco = {
+    createEditor: async (element_id, language, value = '', completions = [], options = {}) => {
+        return import('../../../public/lib/monaco.js').then(() => {
+            return new MonacoEditor(element_id, language, value, completions, options);
+        });
+    },
     /**
-     * Get a set of options for Monaco editor that are suitable for a single line editor (similar to a text input but with syntax highlighting and suggestions)
+     * Apply syntax hightlighting styles to the given text
+     * @param {string} text The text to colorize
+     * @param {string} language The language to use for colorizing
+     * @return {Promise<string>}
      */
-    static get singleLineEditorOptions() {
+    colorizeText: async (text, language) => {
+        return import('../../../public/lib/monaco.js').then(() => {
+            return window.monaco.editor.colorize(text, language);
+        });
+    },
+    /**
+     * Apply syntax hightlighting styles to the given element
+     * @param {HTMLElement} element The element to colorize
+     * @param {string} language The language to use for colorizing
+     * @return {Promise<void>}
+     */
+    colorizeElement: async (element, language) => {
+        return import('../../../public/lib/monaco.js').then(() => {
+            return window.monaco.editor.colorizeElement(element, {
+                language: language
+            });
+        });
+    },
+    getSingleLineEditorOptions: () => {
         const font_size = $(document.body).css('font-size').replace('px', '');
         return {
             _single_line_editor: true, // Used by us only. The constructor will see this and do extra stuff.
@@ -210,29 +241,5 @@ export default class MonacoEditor {
             wordBasedSuggestions: false,
             wordWrap: "off",
         };
-    }
-
-    /**
-     * Apply syntax hightlighting styles to the given text
-     * @param {string} text The text to colorize
-     * @param {string} language The language to use for colorizing
-     * @return {Promise<string>}
-     */
-    static colorizeText(text, language) {
-        return window.monaco.editor.colorize(text, language);
-    }
-
-    /**
-     * Apply syntax hightlighting styles to the given element
-     * @param {HTMLElement} element The element to colorize
-     * @param {string} language The language to use for colorizing
-     * @return {Promise<void>}
-     */
-    static colorizeElement(element, language) {
-        return window.monaco.editor.colorizeElement(element, {
-            language: language
-        });
-    }
-}
-
-window.GLPI.MonacoEditor = MonacoEditor;
+    },
+};

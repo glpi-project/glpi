@@ -70,7 +70,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `chartist` library has been replaced by `echarts`.
-- `codemirror` library has been upgraded to version 6.x.
+- `codemirror` library has been replaced by `monaco-editor`.
 - `htmLawed` library has been replaced by `symfony/html-sanitizer`.
 - `monolog/monolog` has been upgraded to version 3.3.
 - `photoswipe` library has been upgraded to version 5.x.
@@ -110,6 +110,7 @@ The present file will list all changes made to the project; according to the
 - `kanban:filter` JS event now includes the columns in the event data. Filtering must set the `_filtered_out` property of cards to hide them instead of changing the elements in the DOM.
 - `CommonITILActor::getActors()` signature changed. The `$items_id` parameter must strictly be an integer.
 - The `date_mod` property for historical entries returned by `Log::getHistoryData` is no longer formatted based on the user's preferences.
+- `Rule::dropdownRulesMatch()` has been made protected.
 - `ITILTemplateField::showForITILTemplate()` method is no longer abstract.
 
 #### Deprecated
@@ -136,6 +137,8 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Document::getImage()`
+- `DropdownTranslation::canBeTranslated()`
+- `DropdownTranslation::isDropdownTranslationActive()`
 - `Glpi\Application\View\Extension::getVerbatimValue()`
 - `Glpi\Event::showList()`
 - `Glpi\Features\DCBreadcrumb::getDcBreadcrumb()`
@@ -165,6 +168,10 @@ The present file will list all changes made to the project; according to the
 - `Knowbase::showBrowseView()`
 - `Knowbase::showManageView()`
 - `KnowbaseItem::showManageForm()`
+- `KnowbaseItemTranslation::canBeTranslated()`
+- `KnowbaseItemTranslation::isKbTranslationActive()`
+- `ReminderTranslation::canBeTranslated()`
+- `ReminderTranslation::isReminderTranslationActive()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket` `add` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
 - `Ticket_Ticket::checkParentSon()`

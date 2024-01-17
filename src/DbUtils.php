@@ -1047,9 +1047,11 @@ final class DbUtils
      * Get the ancestors of an item in a tree dropdown
      *
      * @param string       $table    Table name
-     * @param array|string $items_id The IDs of the items
+     * @param array|string|int $items_id The IDs of the items. If an array is passed, the result will be the union of the ancestors of each item.
+     * @phpstan-param non-empty-array<int>|int|numeric-string $items_id
      *
-     * @return array of IDs of the ancestors
+     * @return array Array of IDs of the ancestors. The keys and values should be identical. The result *may* include the IDs passed in the $items_id parameter.
+     * @todo Should this function really allow returning the requested ID in the result? Especially if only a single ID is requested?
      */
     public function getAncestorsOf($table, $items_id)
     {
@@ -1062,33 +1064,76 @@ final class DbUtils
         if ($items_id === null) {
             return [];
         }
-        $ckey = 'ancestors_cache_';
+
+        // We don't want to cache results for multiple items together. Default the cache key to null.
+        $ckey = null;
         if (is_array($items_id)) {
-            $ckey .= $table . '_' . md5(implode('|', $items_id));
-        } else {
-            $ckey .= $table . '_' . $items_id;
+            if (count($items_id) === 0) {
+                return [];
+            }
+            if (count($items_id) === 1) {
+                // An array with a single item can be destructured and is acceptable to use the cache directly
+                $items_id = (int) reset($items_id);
+            }
         }
 
-        $ancestors = $GLPI_CACHE->get($ckey);
-        if ($ancestors !== null) {
-            return $ancestors;
+        $lowest_valid_id = $table === 'glpi_entities' ? 0 : 1;
+        if (!is_array($items_id)) {
+            if ($items_id <= $lowest_valid_id) {
+                // Impossible for there to be any valid ancestors, so we already know the result
+                return [$items_id => $items_id];
+            }
+            // A single item can use the cache directly
+            $ckey = "ancestors_cache_{$table}_{$items_id}";
         }
 
-        $ancestors = [];
-
-       // IDs to be present in the final array
-        $parentIDfield = $this->getForeignKeyFieldForTable($table);
-        $use_cache     = $DB->fieldExists($table, "ancestors_cache");
+        /**
+         * @var array<int, int> $ancestors_by_id Temporary array to store ancestors by the IDs passed in the $items_id parameter.
+         */
+        $ancestors_by_id = [];
 
         if (!is_array($items_id)) {
-            $items_id = (array)$items_id;
+            $items_id = (array) $items_id;
         }
+        $ids_needed_to_fetch = array_map(static function ($id) {
+            return (int) $id;
+        }, $items_id);
+
+        if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
+            // If we only need to get ancestors for a single item, we can use the cached values if they exist
+            return $ancestors;
+        } else if ($ckey === null) {
+            // For multiple IDs, we need to check the cache for each ID
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static function ($id) use ($table) {
+                return "ancestors_cache_{$table}_{$id}";
+            }, $ids_needed_to_fetch));
+            foreach ($ids_needed_to_fetch as $id) {
+                if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
+                    $ancestors_by_id[$id] = $ancestors;
+                    unset($ids_needed_to_fetch[$id]);
+                }
+            }
+            // If we got everything from the cache, we can return the results now
+            if (count($ids_needed_to_fetch) === 0) {
+                $ancestors = [];
+                foreach ($ancestors_by_id as $ancestors_for_id) {
+                    foreach ($ancestors_for_id as $ai => $ancestor_id) {
+                        $ancestors[$ai] = $ancestor_id;
+                    }
+                }
+                return $ancestors;
+            }
+        }
+
+        // IDs to be present in the final array
+        $parentIDfield = $this->getForeignKeyFieldForTable($table);
+        $use_cache     = $DB->fieldExists($table, "ancestors_cache");
 
         if ($use_cache) {
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ancestors_cache', $parentIDfield],
                 'FROM'   => $table,
-                'WHERE'  => ['id' => $items_id]
+                'WHERE'  => ['id' => $ids_needed_to_fetch]
             ]);
 
             foreach ($iterator as $row) {
@@ -1096,25 +1141,22 @@ final class DbUtils
                     $rancestors = $row['ancestors_cache'];
                     $parent     = $row[$parentIDfield];
 
-                  // Return datas from cache in DB
+                    // Return datas from cache in DB
                     if (!empty($rancestors)) {
-                        $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors));
+                        $ancestors_by_id[(int) $row['id']] = $this->importArrayFromDB($rancestors);
                     } else {
                         $loc_id_found = [];
-                     // Recursive solution for table with-cache
+                        // Recursive solution for table with-cache
                         if ($parent > 0) {
-                              $loc_id_found = $this->getAncestorsOf($table, $parent);
+                            $loc_id_found = $this->getAncestorsOf($table, $parent);
                         }
 
-                     // ID=0 only exists for Entities
-                        if (
-                            ($parent > 0)
-                            || ($table == 'glpi_entities')
-                        ) {
+                        // ID=0 only exists for Entities
+                        if ($parent >= $lowest_valid_id) {
                             $loc_id_found[$parent] = $parent;
                         }
 
-                     // Store cache datas in DB
+                        // Store cache datas in DB
                         $DB->update(
                             $table,
                             [
@@ -1125,14 +1167,14 @@ final class DbUtils
                             ]
                         );
 
-                        $ancestors = array_replace($ancestors, $loc_id_found);
+                        $ancestors_by_id[(int) $row['id']] = $loc_id_found;
                     }
                 }
             }
         } else {
-           // Get the ancestors
-           // iterative solution for table without cache
-            foreach ($items_id as $id) {
+            // Get the ancestors
+            // iterative solution for table without cache
+            foreach ($ids_needed_to_fetch as $id) {
                 $IDf = $id;
                 while ($IDf > 0) {
                     // Get next elements
@@ -1144,16 +1186,16 @@ final class DbUtils
 
                     if (count($iterator) > 0) {
                         $result = $iterator->current();
-                        $IDf = $result[$parentIDfield];
+                        $IDf = (int) $result[$parentIDfield];
                     } else {
                         $IDf = 0;
                     }
 
-                    if (
-                        !isset($ancestors[$IDf])
-                         && (($IDf > 0) || ($table == 'glpi_entities'))
-                    ) {
-                        $ancestors[$IDf] = $IDf;
+                    if (!isset($ancestors_by_id[$id][$IDf]) && $IDf >= $lowest_valid_id) {
+                        if (!isset($ancestors_by_id[$id])) {
+                            $ancestors_by_id[$id] = [];
+                        }
+                        $ancestors_by_id[$id][$IDf] = $IDf;
                     } else {
                         $IDf = 0;
                     }
@@ -1161,7 +1203,32 @@ final class DbUtils
             }
         }
 
-        $GLPI_CACHE->set($ckey, $ancestors);
+        if ($ckey !== null) {
+            // Save the results to the cache for the single requested item ID
+            $to_get = array_values($items_id)[0];
+            if (!isset($ancestors_by_id[$to_get])) {
+                $ancestors_by_id[$to_get] = [];
+            }
+            $GLPI_CACHE->set($ckey, $ancestors_by_id[$to_get]);
+        } else {
+            // Save the results to the cache for each requested item ID
+            $to_cache = [];
+            foreach ($ids_needed_to_fetch as $id) {
+                if (!isset($ancestors_by_id[$id])) {
+                    $ancestors_by_id[$id] = [];
+                }
+                $to_cache["ancestors_cache_{$table}_{$id}"] = $ancestors_by_id[$id];
+            }
+            $GLPI_CACHE->setMultiple($to_cache);
+        }
+
+        // Combine the results for all requested item IDs
+        $ancestors = [];
+        foreach ($ancestors_by_id as $id => $ancestors_for_id) {
+            foreach ($ancestors_for_id as $ai => $ancestor_id) {
+                $ancestors[$ai] = $ancestor_id;
+            }
+        }
 
         return $ancestors;
     }
