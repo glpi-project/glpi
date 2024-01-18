@@ -188,7 +188,11 @@ class PrinterLog extends CommonDBChild
                 }
             }
         }
-
+		foreach ($series as $key => $value) {
+			if (array_sum($value['data']) == 0) {
+				unset($series[$key]);
+			}
+		}
         $bar_conf = [
             'data'  => [
                 'labels' => $labels,
