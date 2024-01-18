@@ -1147,7 +1147,12 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
-       //on demand JS
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['css_files'][] = ['path' => 'public/lib/codemirror.css'];
+            Html::requireJs('codemirror');
+        }
+
+        //on demand JS.
         if ($sector != 'none' || $item != 'none' || $option != '') {
             $jslibs = [];
             if (isset($CFG_GLPI['javascript'][$sector])) {
@@ -1236,7 +1241,10 @@ HTML;
                 Html::requireJs('charts');
             }
 
-            if (in_array('codemirror', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            if (
+                in_array('codemirror', $jslibs)
+                && $_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE // codemirror is already loaded when debug mode is active
+            ) {
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/codemirror.css'];
                 Html::requireJs('codemirror');
             }
