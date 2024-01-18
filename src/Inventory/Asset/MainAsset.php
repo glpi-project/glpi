@@ -574,6 +574,9 @@ abstract class MainAsset extends InventoryAsset
                 }
             }
 
+            // store rule input
+            $this->rulematchedlog_input = $input;
+
             //call rules on current collected data to find item
             //a callback on rulepassed() will be done if one is found.
             $rule = new RuleImportAssetCollection();
@@ -922,7 +925,8 @@ abstract class MainAsset extends InventoryAsset
             'items_id'  => $items_id,
             'itemtype'  => $itemtype,
             'agents_id' => $this->agent->fields['id'],
-            'method'    => $this->request_query ?? Request::INVENT_QUERY
+            'method'    => $this->request_query ?? Request::INVENT_QUERY,
+            'input'     => json_encode($this->rulematchedlog_input),
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);

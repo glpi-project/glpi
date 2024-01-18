@@ -67,6 +67,8 @@ abstract class InventoryAsset
     protected $ruleentity_data = [];
     /** @var array */
     protected $rulelocation_data = [];
+    /** @var array */
+    protected array $rulematchedlog_input = [];
     /** @var boolean */
     protected $links_handled = false;
     /** @var boolean */
