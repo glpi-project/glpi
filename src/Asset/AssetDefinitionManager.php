@@ -134,6 +134,9 @@ final class AssetDefinitionManager
      */
     private function boostrapConcreteClass(AssetDefinition $definition): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $capacities = $this->getAvailableCapacities();
 
         $concrete_class_name = $definition->getConcreteClassName();
