@@ -36,6 +36,8 @@
 // Generic test classe, to be extended for CommonDBTM Object
 
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity\AbstractCapacity;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -361,5 +363,85 @@ class DbTestCase extends \GLPITestCase
                 ],
             ]
         );
+    }
+
+    /**
+     * Helper method to enable a capacity on the given asset definition
+     *
+     * @param AssetDefinition $definition Asset definition
+     * @param string          $capacity   Capacity to enable
+     *
+     * @return AssetDefinition Updated asset definition
+     */
+    protected function enableCapacity(
+        AssetDefinition $definition,
+        string $capacity
+    ): AssetDefinition {
+        // Add new capacity
+        $capacities = json_decode($definition->fields['capacities']);
+        $capacities[] = $capacity;
+
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['capacities' => $capacities],
+            // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities']
+        );
+
+        // Reload asset definition
+        $definition->getFromDB(
+            $definition->getID()
+        );
+
+        // Force boostrap to trigger methods such as "onClassBootstrap"
+        $manager = AssetDefinitionManager::getInstance();
+        $this->callPrivateMethod(
+            $manager,
+            'boostrapConcreteClass',
+            $definition
+        );
+
+        return $definition;
+    }
+
+    /**
+     * Helper method to disable a capacity on the given asset definition
+     *
+     * @param AssetDefinition $definition Asset definition
+     * @param string          $capacity   Capacity to disable
+     *
+     * @return AssetDefinition Updated asset definition
+     */
+    protected function disableCapacity(
+        AssetDefinition $definition,
+        string $capacity
+    ): AssetDefinition {
+        // Remove capacity
+        $capacities = json_decode($definition->fields['capacities']);
+        $capacities = array_diff($capacities, [$capacity]);
+
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            ['capacities' => $capacities],
+            // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities']
+        );
+
+        // Reload asset definition
+        $definition->getFromDB(
+            $definition->getID()
+        );
+
+        // Force boostrap to trigger methods such as "onClassBootstrap"
+        $manager = AssetDefinitionManager::getInstance();
+        $this->callPrivateMethod(
+            $manager,
+            'boostrapConcreteClass',
+            $definition
+        );
+
+        return $definition;
     }
 }
