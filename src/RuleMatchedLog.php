@@ -232,15 +232,13 @@ class RuleMatchedLog extends CommonDBTM
         $rows = [];
         foreach ($DB->request($params) as $data) {
             $row = [
-                'date'          => $data['date'],
-                'rules_id'      => $data['rules_id'],
-                'itemtype'      => Agent::class,
-                'items_id'      => $data['agents_id'],
-                'modulename'    => Request::getModuleName($data['method']),
+                'date'       => $data['date'],
+                'rules_id'   => $data['rules_id'],
+                'itemtype'   => Agent::class,
+                'items_id'   => $data['agents_id'],
+                'modulename' => Request::getModuleName($data['method']),
+                'input'      => json_decode($data['input'] ?? '[]', true),
             ];
-            if (isset($data['criteria'])) {
-                $row['criteria'] = json_decode($data['criteria'], true);
-            }
             $rows[] = $row;
         }
 
@@ -297,15 +295,13 @@ class RuleMatchedLog extends CommonDBTM
         $rows = [];
         foreach ($DB->request($params) as $data) {
             $row = [
-                'date'          => $data['date'],
-                'rules_id'      => $data['rules_id'],
-                'itemtype'      => $data['itemtype'],
-                'items_id'      => $data['items_id'],
-                'modulename'    => Request::getModuleName($data['method']),
+                'date'       => $data['date'],
+                'rules_id'   => $data['rules_id'],
+                'itemtype'   => $data['itemtype'],
+                'items_id'   => $data['items_id'],
+                'modulename' => Request::getModuleName($data['method']),
+                'input'      => json_decode($data['input'] ?? '[]', true),
             ];
-            if (isset($data['criteria'])) {
-                $row['criteria'] = json_decode($data['criteria'], true);
-            }
             $rows[] = $row;
         }
         TemplateRenderer::getInstance()->display('components/form/rulematchedlogs.html.twig', [

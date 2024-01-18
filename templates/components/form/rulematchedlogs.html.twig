@@ -42,7 +42,7 @@
             <th>{{ __('Rule name') }}</th>
             <th>{{ typename }}</th>
             <th>{{ __('Module') }}</th>
-            <th style="width: 30%">{{ __('Criteria') }}</th>
+            <th style="width: 30%">{{ __('Input') }}</th>
         </tr>
         {% for data in rows %}
             <tr>
@@ -52,24 +52,24 @@
                     {{ get_item_link(data['itemtype'], data['items_id']) }}</td>
                 <td>{{ data['modulename'] }}</td>
                 <td>
-                    {% if data['criteria'] is not empty %}
+                    {% if data['input'] is iterable and data['input'] is not empty %}
                         {% set rand = random() %}
-                        <div class="accordion" id="criteriaAccordion{{ rand }}">
+                        <div class="accordion" id="inputAccordion{{ rand }}">
                             <div class="" id="item{{ rand }}">
                                 <a data-bs-toggle="collapse" href="#collapse{{ rand }}">{{ __("See Criteria") }}</a>
                             </div>
-                            <div id="collapse{{ rand }}" class="accordion-collapse collapse" data-bs-parent="#criteriaAccordion{{ rand }}">
+                            <div id="collapse{{ rand }}" class="accordion-collapse collapse" data-bs-parent="#inputAccordion{{ rand }}">
                                 <div class="nested list-group list-group-flush card">
                                     <div class="list-group-item ">
-                                        {% for criterion, value in data['criteria'] %}
+                                        {% for name, value in data['input'] %}
                                             {% if value is iterable %}
-                                                <b>{{ criterion }}</b> :
+                                                <b>{{ name }}</b> :
                                                 {% for subvalue in value %}
                                                     <br>&emsp;&bull;{{ subvalue }}
                                                 {% endfor %}
                                                 <br>
                                             {% else %}
-                                                <b>{{ criterion }}</b> : {{ value }}<br>
+                                                <b>{{ name }}</b> : {{ value }}<br>
                                             {% endif %}
                                         {% endfor %}
                                     </div>
@@ -77,7 +77,7 @@
                             </div>
                         </div>
                     {% else %}
-                        {{ __('No criteria') }}
+                        {{ __('No input') }}
                     {% endif %}
                 </td>
             </tr>

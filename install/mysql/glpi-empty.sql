@@ -9029,7 +9029,7 @@ CREATE TABLE `glpi_rulematchedlogs` (
   `rules_id` int unsigned DEFAULT NULL,
   `agents_id` int unsigned NOT NULL DEFAULT '0',
   `method` varchar(255) DEFAULT NULL,
-  `criteria` text,
+  `input` text,
   PRIMARY KEY (`id`),
   KEY `agents_id` (`agents_id`),
   KEY `item` (`itemtype`,`items_id`),

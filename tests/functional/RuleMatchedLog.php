@@ -118,9 +118,9 @@ class RuleMatchedLog extends DbTestCase
                 'itemtype' => Printer::class,
             ]
         ))->isTrue();
-        $criteria = $rulematchedlog->fields['criteria'];
-        $this->string($criteria)->isNotEmpty();
-        $this->string($criteria)->isEqualTo('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}');
+        $input = $rulematchedlog->fields['input'];
+        $this->string($input)->isNotEmpty();
+        $this->string($input)->isEqualTo('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_add . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw","name":"Imprimante HP LaserJet Pro MFP M428fdw","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}');
 
         // Update test
         $xmlupdate = '<?xml version="1.0" encoding="UTF-8" ?>
@@ -171,8 +171,8 @@ class RuleMatchedLog extends DbTestCase
             1
         );
         $update_result = reset($result);
-        $criteria = $update_result['criteria'];
-        $this->string($criteria)->isNotEmpty();
-        $this->string($criteria)->isEqualTo('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_update . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw V2","name":"Imprimante HP LaserJet Pro MFP M428fdw V2","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw V2","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw V2","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}');
+        $input = $update_result['input'];
+        $this->string($input)->isNotEmpty();
+        $this->string($input)->isEqualTo('{"_auto":1,"deviceid":"bar","autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"' . $date_update . '","manufacturer":"HP","memory":64,"model":"LaserJet Pro MFP M428fdw V2","name":"Imprimante HP LaserJet Pro MFP M428fdw V2","serial":"ABC123456","type":"Printer","uptime":"7 days, 12:34:56.78","ip":["192.168.1.100"],"mac":"01:23:45:67:89:ab","description":"Imprimante HP LaserJet Pro MFP M428fdw V2","sysdescr":"Imprimante HP LaserJet Pro MFP M428fdw V2","printertypes_id":"Printer","manufacturers_id":"HP","have_ethernet":1,"memory_size":128,"itemtype":"Printer","entities_id":"0"}');
     }
 }

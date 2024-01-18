@@ -38,4 +38,4 @@
  * @var Migration $migration
  */
 
- $migration->addField('glpi_rulematchedlogs', 'criteria', "text");
+ $migration->addField('glpi_rulematchedlogs', 'input', 'text');
