@@ -40,7 +40,7 @@ class Screenhot {
 
     /**
      * Listen on the file upload element to handle removal of previews when the file is removed.
-     * @param {HTMLElement} fileupload_element
+     * @param {HTMLElement} fileupload_element The file upload element to listen on.
      * */
     listenOnFileUpload(fileupload_element) {
         // Need to use a mutation observer as click handlers added after the upload is done are not triggered
@@ -74,6 +74,11 @@ class Screenhot {
         observer.observe(fileupload_element, {childList: true, subtree: true});
     }
 
+    /**
+     * Check if the browser supports and will allow the required APIs to be used.
+     * This includes a secure context check and a check that the user agent is not a mobile device.
+     * @return {boolean}
+     */
     isSupported() {
         // if not secure context, we can't use the screen capture API
         if (!window.isSecureContext) {
@@ -141,6 +146,11 @@ class Screenhot {
         });
     }
 
+    /**
+     * Return a bitrate value based on the track's resolution and framerate, and a hard-coded motion factor.
+     * @param {MediaStreamTrack} track The track
+     * @return {number} Bitrate
+     */
     getPreferredBitrate(track) {
         // Reference Bitrates based on YouTube recommendations
         // 360@30 - 1 Mbps   | 360@60 - 1.5 Mbps | Pixel Count - 230400
@@ -158,8 +168,8 @@ class Screenhot {
 
     /**
      * Get a codec supported by the browser for the requested format.
-     * @param requested_format
-     * @return {string}
+     * @param requested_format Requested mime type
+     * @return {string} Codec
      */
     getRecordingCodec(requested_format) {
         const codecs = ['vp9', 'vp8'];
@@ -183,6 +193,13 @@ class Screenhot {
         });
     }
 
+    /**
+     * Add a preview image item to the preview container.
+     * @param preview_container The preview container element
+     * @param canvas The canvas element with the preview data
+     * @param height The height of the preview item
+     * @param filename The filename of the preview item
+     */
     appendPreviewImg(preview_container, canvas, height, filename) {
         const preview_item = $(`
             <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${filename}" style="height: ${height}">
@@ -206,6 +223,13 @@ class Screenhot {
         });
     }
 
+    /**
+     * Add a preview video item to the preview container.
+     * @param preview_container The preview container element
+     * @param blob The blob with the video data
+     * @param height The height of the preview item
+     * @param filename The filename of the preview item
+     */
     appendPreviewVideo(preview_container, blob, height, filename) {
         const preview_item = $(`
             <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${filename}" style="height: ${height}">
