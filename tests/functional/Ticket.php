@@ -58,7 +58,7 @@ use User;
 
 class Ticket extends DbTestCase
 {
-    protected function actorsProvider(): iterable
+    protected function addActorsProvider(): iterable
     {
         $default_use_notifications = 1;
 
@@ -519,7 +519,7 @@ class Ticket extends DbTestCase
     }
 
     /**
-     * @dataProvider actorsProvider
+     * @dataProvider addActorsProvider
      */
     public function testCreateTicketWithActors(array $actors_input, array $expected_actors): void
     {
@@ -538,11 +538,280 @@ class Ticket extends DbTestCase
         $this->checkActors($ticket, $expected_actors);
     }
 
-    /**
-     * @dataProvider actorsProvider
-     */
-    public function testUpdateTicketWithActors(array $actors_input, array $expected_actors): void
+
+    protected function updateActorsProvider(): iterable
     {
+        foreach ($this->addActorsProvider() as $params) {
+            yield [
+                'add_actors_input'       => [],
+                'add_expected_actors'    => [],
+                'update_actors_input'    => $params['actors_input'],
+                'update_expected_actors' => $params['expected_actors'],
+            ];
+
+            // Update without an actor input should not change actors
+            yield [
+                'add_actors_input'       => $params['actors_input'],
+                'add_expected_actors'    => $params['expected_actors'],
+                'update_actors_input'    => [],
+                'update_expected_actors' => $params['expected_actors'],
+            ];
+        }
+
+        $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
+
+        $actor_types = ['requester', 'assign', 'observer'];
+        foreach ($actor_types as $actor_type) {
+            $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
+
+            // single email actor updated
+            yield [
+                'add_actors_input'       => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern1@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'add_expected_actors'    => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern1@localhost.local',
+                    ],
+                ],
+                'update_actors_input'    => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 0,
+                                'alternative_email' => 'extern1@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'update_expected_actors' => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 0,
+                        'alternative_email' => 'extern1@localhost.local',
+                    ],
+                ],
+            ];
+
+            // single email actor replaced
+            yield [
+                'add_actors_input'       => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern1@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'add_expected_actors'    => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern1@localhost.local',
+                    ],
+                ],
+                'update_actors_input'    => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 0,
+                                'alternative_email' => 'extern2@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'update_expected_actors' => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 0,
+                        'alternative_email' => 'extern2@localhost.local',
+                    ],
+                ],
+            ];
+
+            // single email actor removed
+            yield [
+                'add_actors_input'       => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern1@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'add_expected_actors'    => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern1@localhost.local',
+                    ],
+                ],
+                'update_actors_input'    => [
+                    '_actors' => [
+                        $actor_type => [
+                        ],
+                    ],
+                ],
+                'update_expected_actors' => [],
+            ];
+
+            // add multiple actors, including multiple email actors, add an update for one of them (in mixed order)
+            // to validate that the expected email actor is updated
+            // also remove an email actor
+            yield [
+                'add_actors_input'       => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern1@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $postonly_user_id,
+                                'use_notification'  => 1,
+                                'alternative_email' => '',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern2@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern3@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'add_expected_actors'    => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern1@localhost.local',
+                    ],
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => $postonly_user_id,
+                        'use_notification'  => 1,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern2@localhost.local',
+                    ],
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern3@localhost.local',
+                    ],
+                ],
+                'update_actors_input'    => [
+                    '_actors' => [
+                        $actor_type => [
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => $postonly_user_id,
+                                'use_notification'  => 1,
+                                'alternative_email' => '',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 0,
+                                'alternative_email' => 'extern2@localhost.local',
+                            ],
+                            [
+                                'itemtype'          => User::class,
+                                'items_id'          => 0,
+                                'use_notification'  => 1,
+                                'alternative_email' => 'extern1@localhost.local',
+                            ],
+                        ],
+                    ],
+                ],
+                'update_expected_actors' => [
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 1,
+                        'alternative_email' => 'extern1@localhost.local',
+                    ],
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => $postonly_user_id,
+                        'use_notification'  => 1,
+                        'alternative_email' => '',
+                    ],
+                    [
+                        'type'              => $actor_type_value,
+                        'itemtype'          => User::class,
+                        'items_id'          => 0,
+                        'use_notification'  => 0,
+                        'alternative_email' => 'extern2@localhost.local',
+                    ],
+                ],
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider updateActorsProvider
+     */
+    public function testUpdateTicketWithActors(
+        array $add_actors_input,
+        array $add_expected_actors,
+        array $update_actors_input,
+        array $update_expected_actors
+    ): void {
         $this->login();
 
         $ticket = new \Ticket();
@@ -551,460 +820,15 @@ class Ticket extends DbTestCase
                 'name'        => 'ticket title',
                 'content'     => 'a description',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            ]
+            ] + $add_actors_input
         );
         $this->integer($ticket_id)->isGreaterThan(0);
 
-        $this->boolean($ticket->update(['id' => $ticket_id] + $actors_input))->isTrue();
+        $this->checkActors($ticket, $add_expected_actors);
 
-        $this->checkActors($ticket, $expected_actors);
-    }
+        $this->boolean($ticket->update(['id' => $ticket_id] + $update_actors_input))->isTrue();
 
-    /**
-     * Test that ticket anonymous users notifications are successfully updated.
-     *
-     * This method tests the functionality of updating ticket notifications for anonymous users.
-     * It creates a ticket with different actors (requester, observer, assign) and enables notifications.
-     * It then adds a follow-up to the ticket to trigger notifications and checks the notification queue.
-     * It updates the anonymous users to disable their notifications and checks the notification queue again.
-     * It then adds a second anonymous requester to the ticket and checks the notification queue again.
-     *
-     * @return void
-     */
-    public function testUpdateActorsNotification(): void
-    {
-        /** @var \DBmysql $DB */
-        global $DB, $CFG_GLPI;
-
-        $this->login();
-
-        $user_db_id = getItemByTypeName(User::class, TU_USER, true);
-        $this->integer($user_db_id)->isGreaterThan(0);
-
-        $user_db_email = \UserEmail::getDefaultForUser($user_db_id);
-        $this->string($user_db_email)->isNotEmpty();
-
-        // Create ticket
-        $ticket_id = $this->createItem(
-            \Ticket::class,
-            [
-                'name'        => 'ticket title',
-                'content'     => 'a description',
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_users_id_requester' => 0,
-                '_users_id_requester_notif' => [
-                    'use_notification' => 1,
-                    'alternative_email' => 'test@user.com'
-                ],
-                '_users_id_observer' => 0,
-                '_users_id_observer_notif' => [
-                    'use_notification' => 1,
-                    'alternative_email' => 'test2@user.com'
-                ],
-                '_users_id_assign' => $user_db_id,
-                '_users_id_assign_notif' => [
-                    'use_notification' => 1,
-                    'alternative_email' => ''
-                ]
-            ]
-        )->fields['id'];
-
-        $this->checkActors(
-            \Ticket::getById($ticket_id),
-            [
-                [
-                    'type'              => CommonITILActor::REQUESTER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 1,
-                    'alternative_email' => 'test@user.com'
-                ],
-                [
-                    'type'              => CommonITILActor::OBSERVER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 1,
-                    'alternative_email' => 'test2@user.com'
-                ],
-                [
-                    'type'              => CommonITILActor::ASSIGN,
-                    'itemtype'          => User::class,
-                    'items_id'          => $user_db_id,
-                    'use_notification'  => 1,
-                    'alternative_email' => ''
-                ]
-            ]
-        );
-
-        // Enable notifications
-        $CFG_GLPI['use_notifications'] = 1;
-        $CFG_GLPI['notifications_mailing'] = 1;
-
-        $this->integer($CFG_GLPI['use_notifications'])->isEqualTo(1);
-        $this->integer($CFG_GLPI['notifications_mailing'])->isEqualTo(1);
-
-        // Get notification id
-        $this->integer(
-            $notif_id = getItemByTypeName(\Notification::class, 'Add Followup', true)
-        )->isGreaterThan(0);
-
-        // Set notifications targets
-        $notification_settings = [
-            'notifications_id' => $notif_id,
-            'itemtype' => \Ticket::class,
-            '_targets' => [
-                '1_3',      //Requester
-                '1_21',     //Observer
-                '1_2'       //Assign
-            ],
-        ];
-
-        $notif_targets = new \NotificationTarget();
-        $notif_targets->updateTargets($notification_settings);
-
-        $targets = getAllDataFromTable(
-            $notif_targets::getTable(),
-            [
-                'SELECT' => [
-                    'id',
-                    'items_id',
-                ],
-                'WHERE' => [
-                    'notifications_id' => $notif_id
-                ],
-                'ORDER' => 'items_id ASC'
-            ]
-        );
-
-        $targets = array_values($targets);
-
-        // Check that notification targets are correctly set
-        $this->array($targets)->hasSize(3);
-        $this->integer($targets[0]['items_id'])->isEqualTo(2);
-        $this->integer($targets[1]['items_id'])->isEqualTo(3);
-        $this->integer($targets[2]['items_id'])->isEqualTo(21);
-
-        // Check that notification queue is empty
-        $notif_queue = new \QueuedNotification();
-        $this->array(getAllDataFromTable($notif_queue->getTable()))->hasSize(0);
-
-
-        // Add ticket followup to trigger notification
-        $this->createItem(
-            \ITILFollowup::class,
-            [
-                'itemtype' => 'Ticket',
-                'items_id' => $ticket_id,
-                'content'    => 'test',
-                'users_id'   => $user_db_id,
-            ]
-        );
-
-        /**
-         * Check that notification queue contain 3 pending notifications
-         * 1 for each actor (requester, observer and assign)
-         */
-         $this->array(getAllDataFromTable($notif_queue->getTable()))->hasSize(3);
-
-        // Check if notification queue contain the correct notifications
-        $expected = $this->getActiveActorsEmail($ticket_id);
-        sort($expected);
-
-        $actual = array_values(
-            array_map(function ($item) {
-                return [
-                    'email' => $item['recipient']
-                ];
-            }, getAllDataFromTable(
-                $notif_queue->getTable(),
-                [
-                    'SELECT' => [
-                        'id',
-                        'recipient'
-                    ],
-                ]
-            ))
-        );
-        sort($actual);
-
-        $this->array($actual)->isEqualTo($expected);
-
-        $this->emptyNotificationQueue($notif_queue);
-
-        /** Update observer anonymous actors to disable his notifications
-         *  Keep notifications enabled for the other actors
-         * */
-         $actors = $this->getTicketActors($ticket_id);
-         $actors['observer'][0]['use_notification'] = 0;
-
-        // Update actors
-        $this->updateItem(
-            \Ticket::class,
-            $ticket_id,
-            [
-                '_actors' => $actors
-            ]
-        );
-
-        $this->checkActors(
-            \Ticket::getById($ticket_id),
-            [
-                [
-                    'type'              => CommonITILActor::REQUESTER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 1,
-                    'alternative_email' => 'test@user.com'
-                ],
-                [
-                    'type'              => CommonITILActor::OBSERVER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 0,
-                    'alternative_email' => 'test2@user.com'
-                ],
-                [
-                    'type'              => CommonITILActor::ASSIGN,
-                    'itemtype'          => User::class,
-                    'items_id'          => $user_db_id,
-                    'use_notification'  => 1,
-                    'alternative_email' => ''
-                ]
-            ]
-        );
-
-        // Add ticket followup to trigger notification
-        $this->createItem(
-            \ITILFollowup::class,
-            [
-                'itemtype' => 'Ticket',
-                'items_id' => $ticket_id,
-                'content'    => 'test',
-                'users_id'   => $user_db_id,
-            ]
-        );
-
-        /**
-         * Check that notification queue contain 4 pending notifications
-         * 2 for the new followup where notifications are enabled only for the assign and requester actors
-         */
-         $this->array(getAllDataFromTable($notif_queue->getTable()))->hasSize(2);
-
-        // Check if notification queue contain the correct notifications
-        $expected = $this->getActiveActorsEmail($ticket_id);
-        sort($expected);
-
-        $actual = array_values(
-            array_map(function ($item) {
-                return [
-                    'email' => $item['recipient']
-                ];
-            }, getAllDataFromTable(
-                $notif_queue->getTable(),
-                [
-                    'SELECT' => [
-                        'id',
-                        'recipient'
-                    ],
-                ]
-            ))
-        );
-        sort($actual);
-
-        $this->array($actual)->isEqualTo($expected);
-
-        $actors = $this->getTicketActors($ticket_id);
-
-        // Disable notifications for database user
-        $actors['assign'][0]['use_notification'] = 0;
-        // Disable notifications for the first requester
-        $actors['requester'][0]['use_notification'] = 0;
-
-        // Add a new anonymous requester
-        array_push($actors['requester'], [
-            'itemtype' => \User::class,
-            'items_id' => 0,
-            'use_notification' => 1,
-            'alternative_email' => 'test3@user.com',
-        ]);
-
-        // Check that there is 2 ticket requesters
-        $this->array($actors['requester'])->hasSize(2);
-
-        // Update actors
-        $this->updateItem(
-            \Ticket::class,
-            $ticket_id,
-            [
-                '_actors' => $actors
-            ]
-        );
-
-        $this->checkActors(
-            \Ticket::getById($ticket_id),
-            [
-                [
-                    'type'              => CommonITILActor::REQUESTER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 0,
-                    'alternative_email' => 'test@user.com'
-                ],
-                [
-                    'type'              => CommonITILActor::OBSERVER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 0,
-                    'alternative_email' => 'test2@user.com'
-                ],
-                [
-                    'type'              => CommonITILActor::ASSIGN,
-                    'itemtype'          => User::class,
-                    'items_id'          => $user_db_id,
-                    'use_notification'  => 0,
-                    'alternative_email' => ''
-                ],
-                [
-                    'type'              => CommonITILActor::REQUESTER,
-                    'itemtype'          => User::class,
-                    'items_id'          => 0,
-                    'use_notification'  => 1,
-                    'alternative_email' => 'test3@user.com'
-                ]
-            ]
-        );
-
-        $this->emptyNotificationQueue($notif_queue);
-
-        // Add ticket followup to trigger notification
-        $this->createItem(
-            \ITILFollowup::class,
-            [
-                'itemtype' => 'Ticket',
-                'items_id' => $ticket_id,
-                'content'    => 'test',
-                'users_id'   => $user_db_id,
-            ]
-        );
-
-        /**
-         * Check that notification queue contain 1 pending notifications
-         * 1 for the new requester (others have their notifications disabled)
-         */
-        $this->array(getAllDataFromTable($notif_queue->getTable()))->hasSize(1);
-
-        // Check if notification queue contain the correct notifications
-        $expected = $this->getActiveActorsEmail($ticket_id);
-        sort($expected);
-
-        $actual = array_values(
-            array_map(function ($item) {
-                return [
-                    'email' => $item['recipient']
-                ];
-            }, getAllDataFromTable(
-                $notif_queue->getTable(),
-                [
-                    'SELECT' => [
-                        'id',
-                        'recipient'
-                    ],
-                ]
-            ))
-        );
-        sort($actual);
-
-        $this->array($actual)->isEqualTo($expected);
-
-        $this->emptyNotificationQueue($notif_queue);
-    }
-
-    private function getActiveActorsEmail($ticket_id)
-    {
-        $actors = getAllDataFromTable(
-            \Ticket_User::getTable(),
-            [
-                'SELECT' => [
-                    'id',
-                    'users_id',
-                    'alternative_email'
-                ],
-                'WHERE' => [
-                    'tickets_id' => $ticket_id,
-                    'use_notification' => 1
-                ],
-            ]
-        );
-
-        return array_values(
-            array_map(function ($item) {
-                if (!empty($item['alternative_email'])) {
-                    return [
-                        'email' => $item['alternative_email']
-                    ];
-                } else {
-                    $user = new \User();
-                    $user->getFromDB($item['users_id']);
-                    return [
-                        'email' => $user->getDefaultEmail()
-                    ];
-                }
-            }, $actors)
-        );
-    }
-
-    private function emptyNotificationQueue(\QueuedNotification $notification_queue)
-    {
-        $always_true = [
-            new \QueryExpression('1 = 1')
-        ];
-        $this->boolean($notification_queue->deleteByCriteria($always_true, 1))->isTrue();
-        $this->array(getAllDataFromTable($notification_queue->getTable()))->hasSize(0);
-    }
-
-    private function getTicketActors($ticket_id)
-    {
-        $ticket_actors = getAllDataFromTable(
-            \Ticket_User::getTable(),
-            [
-                'SELECT' => ['*'],
-                'WHERE' => [
-                    'tickets_id' => $ticket_id
-                ]
-            ]
-        );
-
-        $actors = ['requester' => [], 'observer' => [], 'assign' => []];
-
-        foreach ($ticket_actors as $ticket_actor) {
-            $actor = [
-                'itemtype' => \User::class,
-                'items_id' => $ticket_actor['users_id'],
-                'use_notification' => $ticket_actor['use_notification'],
-            ];
-
-            if (!empty($ticket_actor['alternative_email'])) {
-                $actor['alternative_email'] = $ticket_actor['alternative_email'];
-            } else {
-                $user = new \User();
-                $user->getFromDB($ticket_actor['users_id']);
-                $actor['default_email'] = $user->getDefaultEmail();
-            }
-
-            switch ($ticket_actor['type']) {
-                case CommonITILActor::REQUESTER:
-                    $actors['requester'][] = $actor;
-                    break;
-                case CommonITILActor::OBSERVER:
-                    $actors['observer'][] = $actor;
-                    break;
-                case CommonITILActor::ASSIGN:
-                    $actors['assign'][] = $actor;
-                    break;
-            }
-        }
-
-        return $actors;
+        $this->checkActors($ticket, $update_expected_actors);
     }
 
     /**
