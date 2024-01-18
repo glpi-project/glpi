@@ -49,7 +49,6 @@ class DocumentExtension extends AbstractExtension
         return [
             new TwigFilter('document_icon', [$this, 'getDocumentIcon']),
             new TwigFilter('document_size', [$this, 'getDocumentSize']),
-            new TwigFilter('is_valid_doc', [\Document::class, 'isValidDoc'])
         ];
     }
 

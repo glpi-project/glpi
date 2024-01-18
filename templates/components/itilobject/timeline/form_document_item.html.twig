@@ -104,13 +104,13 @@
 
                 <label id="upload_source_label" class="form-label">{{ __("Upload from") }}</label>
                 <div class="d-inline" role="group" aria-labelledby="upload_source_label">
-                    {% if '.png'|is_valid_doc is not empty %}
+                    {% if call('Document::isValidDoc', ['.png']) is not empty %}
                         <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenshot">
                             <i class="ti ti-photo"></i>
                             <span>{{ __('Screenshot') }}</span>
                         </button>
                     {% endif %}
-                    {% if '.webm'|is_valid_doc is not empty %}
+                    {% if call('Document::isValidDoc', ['.webm']) is not empty %}
                         <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenrecording">
                             <i class="ti ti-camera"></i>
                             <span>{{ __('Screen recording') }}</span>
