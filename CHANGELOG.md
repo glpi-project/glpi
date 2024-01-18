@@ -219,6 +219,8 @@ The present file will list all changes made to the project; according to the
 - `RuleCollection::showTestResults()`
 - `RuleImportComputer` class.
 - `RuleImportComputerCollection` class.
+- `RuleMatchedLog::showFormAgent()`.
+- `RuleMatchedLog::showItemForm()`.
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`
