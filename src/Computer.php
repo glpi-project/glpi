@@ -602,6 +602,29 @@ class Computer extends CommonDBTM
             'massiveaction'      => false
         ];
 
+        $tab[] = [
+            'id'                 => '82',
+            'table'              => 'glpi_dcrooms',
+            'field'              => 'name',
+            'datatype'           => 'dropdown',
+            'name'               => __('Data Center Room'),
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_racks',
+                    'linkfield'          => 'racks_id',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => 'glpi_items_racks',
+                            'joinparams'         => [
+                                'jointype'           => 'itemtype_item'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
