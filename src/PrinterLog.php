@@ -181,7 +181,7 @@ class PrinterLog extends CommonDBChild
             unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
             // Keep values if at least 1 label is greater than 0
-            $valuesum = array_sum($metrics)
+            $valuesum = array_sum($metrics);
             foreach ($metrics as $key => $value) {
                 $label = $this->getLabelFor($key);
                 if ($label && $valuesum > 0) {
