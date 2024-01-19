@@ -340,7 +340,7 @@ class DCRoom extends CommonDBTM
         ];
 
         $tab[] = [
-            'id'                 => '1500',
+            'id'                 => '1450',
             'table'              => 'glpi_dcrooms',
             'field'              => 'name',
             'datatype'           => 'itemlink',
