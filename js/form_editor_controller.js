@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global tinymce_editor_configs */
+
 /**
  * Client code to handle users actions on the form_editor template
  */
@@ -96,6 +98,11 @@ class GlpiFormEditorController
             .each((index, input) => {
                 this.#computeDynamicInputSize($(input));
             });
+
+        // Enable sortable
+        this.#enableSortable(
+            $(this.#target).find("[data-glpi-form-editor-sections]")
+        );
     }
 
     /**
@@ -350,6 +357,9 @@ class GlpiFormEditorController
         // Update UX
         this.#setActiveItem(new_question);
         this.#updateAddSectionActionVisiblity();
+
+        // Update ranks
+        this.#computeRanks();
     }
 
     /**
@@ -386,6 +396,12 @@ class GlpiFormEditorController
 
         // Update UX
         this.#updateSectionsDetailsVisiblity();
+
+        // Make the new section sortable
+        this.#enableSortable(copy);
+
+        // Update ranks
+        this.#computeRanks();
     }
 
     /**
@@ -396,6 +412,9 @@ class GlpiFormEditorController
         // Remove question and update UX
         section.remove();
         this.#updateSectionsDetailsVisiblity();
+
+        // Update ranks
+        this.#computeRanks();
     }
 
     /**
@@ -406,6 +425,9 @@ class GlpiFormEditorController
         // Remove question and update UX
         question.remove();
         this.#updateAddSectionActionVisiblity();
+
+        // Update ranks
+        this.#computeRanks();
     }
 
     /**
@@ -603,18 +625,23 @@ class GlpiFormEditorController
             // Special action for tinymce
             if ($(this).prop("tagName") == "TEXTAREA") {
                 // Get editor config for this field
-                const id = $(this).attr("id");
-                const config = window[`tiny_editor_config_${id}`];
+                let id = $(this).attr("id");
+                const config = window.tinymce_editor_configs[id];
 
                 // Rename id to ensure it is unique
                 const uid = uniqid();
                 $(this).attr("id", `_tinymce_${uid}`);
+                id = $(this).attr("id"); // Reload ID
 
                 // Push config into init queue, needed because we can't init
                 // the rich text editor until the template is inserted into
                 // its final DOM destination
-                config.selector = "#" + $(this).attr("id");
+                config.selector = "#" + id;
                 tiny_mce_to_init.push(config);
+
+                // Store config with udpated ID in case we need to re render
+                // this question
+                window.tinymce_editor_configs[id] = config;
             }
         });
 
@@ -779,5 +806,70 @@ class GlpiFormEditorController
                 .find("[data-glpi-form-editor-section-form-container]")
                 .removeClass("d-none");
         }
+    }
+
+    /**
+     * Enable sortable on the questions of each section.
+     *
+     * @param {jQuery} sections jQuery collection of one or more sections
+     */
+    #enableSortable(sections) {
+        // Sortable instance must be unique for each section
+        sections
+            .each((index, section) => {
+                const questions_container = $(section)
+                    .find("[data-glpi-form-editor-section-questions]");
+
+                sortable(questions_container, {
+                    // Drag and drop handle selector
+                    handle: '[data-glpi-form-editor-question-handle]',
+
+                    // Accept from others sections
+                    acceptFrom: '[data-glpi-form-editor-section-questions]',
+
+                    // Placeholder class
+                    placeholderClass: 'glpi-form-editor-drag-question-placeholder mb-3',
+                });
+            });
+
+
+        sections
+            .find("[data-glpi-form-editor-section-questions]")
+            .on('sortupdate', (e) => {
+                // TinyMCE does no like being moved around and must be
+                // reinitialized by destroying the editor instance and
+                // recreating it
+                $(e.detail.item).find("textarea").each((index, textarea) => {
+                    const id = $(textarea).prop("id");
+                    const editor = tinymce.get(id);
+                    editor.destroy();
+                    tinymce.init(window.tinymce_editor_configs[id])
+                });
+
+                // Update ranks
+                this.#computeRanks();
+            });
+    }
+
+    /**
+     * Compute ranks for each sections and questions.
+     * The value is set in the "rank" input of each section/question.
+     */
+    #computeRanks() {
+        // Compute ranks for each sections and questions
+        $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .each((index, section) => {
+                // Update rank input base on section index
+                this.#setSectionInput($(section), "rank", index);
+
+                // Update rank of each questions of this section
+                $(section)
+                    .find("[data-glpi-form-editor-question]")
+                    .each((index, question) => {
+                        // Update rank input base on question index
+                        this.#setQuestionInput($(question), "rank", index);
+                    });
+            });
     }
 }

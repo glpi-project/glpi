@@ -59,6 +59,13 @@
     {% endif %}
 >
     <div class="card-body">
+        <div class="d-flex">
+            <i
+                class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
+                data-glpi-form-editor-question-handle
+                draggable="true"
+            ></i>
+        </div>
         {# Display question's title #}
         <div class="d-flex">
             <input
@@ -189,5 +196,10 @@
         type="hidden"
         name="{{ input_prefix is not null ? input_prefix ~ '[forms_sections_id]' : 'forms_sections_id' }}"
         value="{{ section is not null ? section.fields.id : 0 }}"
+    />
+    <input
+        type="hidden"
+        name="{{ input_prefix is not null ? input_prefix ~ '[rank]' : 'rank' }}"
+        value="{{ section is not null ? section.fields.rank : 0 }}"
     />
 </div>

@@ -194,9 +194,10 @@ class Form extends CommonDBTM
             $this->sections = [];
 
             // Read from database
-            $sections_data = (new Section())->find([
-                self::getForeignKeyField() => $this->fields['id']
-            ]);
+            $sections_data = (new Section())->find(
+                [self::getForeignKeyField() => $this->fields['id']],
+                'rank ASC',
+            );
 
             foreach ($sections_data as $row) {
                 $section = new Section();
@@ -246,7 +247,7 @@ class Form extends CommonDBTM
         $section->add([
             'forms_forms_id' => $this->fields['id'],
             'name'           => __("First section"),
-            'rank'           => 1,
+            'rank'           => 0,
         ]);
     }
 

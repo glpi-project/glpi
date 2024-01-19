@@ -37,6 +37,11 @@
 
 var timeoutglobalvar;
 
+// Store configuration of tinymce editors
+// This is needed if an editor need to be destroyed and recreated as tinymce
+// api does not provide any method to get the current configuration
+var tinymce_editor_configs = {};
+
 /**
  * modifier la propriete display d'un element
  *

@@ -3811,13 +3811,7 @@ JS;
         // Compute init option as "string boolean" so it can be inserted directly into the js output
         $init = $init ? 'true' : 'false';
 
-        // Id may be using array notation (field[key1][key2]) which whould not
-        // be supported in a js var name. Replace it with underscores.
-        $safe_id = str_replace(["[", "]"], "_", $id);
-
         $js = <<<JS
-            // Store config in global var so the editor can be reinitialized from the client side if needed
-            var tiny_editor_config_{$safe_id} = {};
 
             // init tinymce
             $(function() {
@@ -3825,7 +3819,8 @@ JS;
                 var is_dark = html_el.attr('data-glpi-theme-dark') === "1" || html_el.css('--is-dark').trim() === 'true';
                 var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
-                tiny_editor_config_{$safe_id} = Object.assign({
+                // Store config in global var so the editor can be reinitialized from the client side if needed
+                tinymce_editor_configs['{$id}'] = Object.assign({
                     link_default_target: '_blank',
                     branding: false,
                     selector: '#' + $.escapeSelector('{$id}'),
@@ -3948,7 +3943,7 @@ JS;
 
                 // Init tinymce
                 if ({$init}) {
-                    tinyMCE.init(tiny_editor_config_{$safe_id});
+                    tinyMCE.init(tinymce_editor_configs['{$id}']);
                 }
             });
 JS;
