@@ -103,3 +103,25 @@
     opacity: 0;
     visibility: hidden;
 }
+
+.glpi-form-editor-drag-question-placeholder {
+    border: 2px dashed var(--tblr-primary);
+    background: rgba(var(--tblr-primary), 0.1);
+    opacity: 0.5;
+    height: 70px !important;
+}
+
+// Hide handle until question is hovered
+.glpi-form-editor-question-handle {
+    opacity: 0;
+}
+
+[data-glpi-form-editor-question] {
+    &:hover {
+        .glpi-form-editor-question-handle {
+            opacity: 0.7;
+        }
+    }
+}
+
+
