@@ -710,9 +710,11 @@ CREATE TABLE `glpi_changes_groups` (
   `changes_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
+  `use_notification` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
-  KEY `group` (`groups_id`,`type`)
+  KEY `group` (`groups_id`,`type`),
+  KEY `use_notification` (`use_notification`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3088,9 +3090,11 @@ CREATE TABLE `glpi_groups_problems` (
   `problems_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
+  `use_notification` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`problems_id`,`type`,`groups_id`),
-  KEY `group` (`groups_id`,`type`)
+  KEY `group` (`groups_id`,`type`),
+  KEY `use_notification` (`use_notification`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -3138,9 +3142,11 @@ CREATE TABLE `glpi_groups_tickets` (
   `tickets_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '1',
+  `use_notification` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`tickets_id`,`type`,`groups_id`),
-  KEY `group` (`groups_id`,`type`)
+  KEY `group` (`groups_id`,`type`),
+  KEY `use_notification` (`use_notification`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

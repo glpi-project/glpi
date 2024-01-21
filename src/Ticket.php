@@ -3737,17 +3737,20 @@ JAVASCRIPT;
             '_users_id_requester_notif' => ['use_notification'  => [(string) ($default_use_notif & $requester_notification_enable)],
                 'alternative_email' => ['']
             ],
-            '_groups_id_requester'      => 0,
+            '_groups_id_requester'       => 0,
+            '_groups_id_requester_notif' => ['use_notification'  => [$default_use_notif]],
             '_users_id_assign'          =>  $users_id_assign,
             '_users_id_assign_notif'    => ['use_notification'  => [(string) ($default_use_notif & $assignee_notification_enable)],
                 'alternative_email' => ['']
             ],
             '_groups_id_assign'         => 0,
+            '_groups_id_assign_notif'   => ['use_notification'  => [$default_use_notif]],
             '_users_id_observer'        => 0,
             '_users_id_observer_notif'  => ['use_notification'  => [$default_use_notif],
                 'alternative_email' => ['']
             ],
             '_groups_id_observer'       => 0,
+            '_groups_id_observer_notif' => ['use_notification'  => [$default_use_notif]],
             '_link'                     => [
                 'itemtype_1' => Ticket::class,
                 'items_id_1' => 0,

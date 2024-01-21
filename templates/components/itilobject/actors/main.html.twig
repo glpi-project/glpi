@@ -164,9 +164,11 @@
             <label for="alternative_email" class="form-label">{{ __('Email address') }}</label>
             <div class="form-check form-switch">
                <input class="form-check-input" type="checkbox" id="use_notification" name="_notifications_use_notification" />
-               <label class="form-check-label" for="use_notification">{{ __('Email followup') }}</label>
+               <label class="form-check-label" for="use_notification">{{ __('Email followup') }} {{ itemtype }} </label>
             </div>
-            <div id="alert_notification_disable" class='alert alert-info d-flex align-items-center mb-4 d-none' role='alert'>
+			{% if itemtype != "Group" %}
+               <input type="email" class="form-control" id="alternative_email" name="_notifications_alternative_email" />
+            {% endif %}            <div id="alert_notification_disable" class='alert alert-info d-flex align-items-center mb-4 d-none' role='alert'>
                <i class='fas fa-info-circle fa-xl'></i>
                <span class='ms-2'>
                   {{ __('Notifications are disabled because:') }}
@@ -218,6 +220,7 @@
                use_notification: {{ actor['use_notification'] ? "1" : "0" }},
                alternative_email: "{{ actor['alternative_email'] ?? '' }}",
                default_email: "{{ actor['default_email'] ?? '' }}",
+               is_notify: "{{ actor['is_notify'] ?? '0' }}",
             },
             {% endfor %}
          ],
@@ -229,22 +232,35 @@
       event.stopPropagation();
 
       var element = $(event.target).closest('.actor_entry');
-      var itemtype  = element.data('itemtype');
-      var items_id  = element.data('items-id');
+      var itemtype = element.data('itemtype');
+      var items_id = element.data('items-id');
       var actortype = element.data('actortype');
-      var text      = element.data('text');
+      var text = element.data('text');
 
       var actorIndex = actors[actortype].findIndex(element => (element.itemtype == itemtype && element.items_id == items_id));
-      var actor      = actors[actortype][actorIndex];
+      var actor = actors[actortype][actorIndex];
 
       var modal = $('#editActorNotifySettings');
       modal.find("input[name=_notifications_actortype]").val(actortype);
       modal.find("input[name=_notifications_actorindex]").val(actorIndex);
       modal.find("input[name=_notifications_actorname]").removeAttr('readonly').val(text).attr('readonly', 'true');
       modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.use_notification));
-      modal.find("input[name=_notifications_alternative_email]").attr('placeholder', actor.default_email);
-      modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
+      modal.find("input[name=_notifications_use_notification]").removeAttr('disabled');
+      modal.find("input[name=_notifications_use_notification]").parent().find("label").text('Email Followup');
       modal.find("#alert_notification_disable").toggleClass('d-none', parseInt(actor.use_notification) == true);
+
+      if (itemtype == 'Group') {
+         modal.find("input[name=_notifications_alternative_email]").hide();
+         if (actor.is_notify == "0") {
+            modal.find("input[name=_notifications_use_notification]").prop('checked', parseInt(actor.is_notify));
+            modal.find("input[name=_notifications_use_notification]").attr('disabled', 'Disabled');
+            modal.find("input[name=_notifications_use_notification]").parent().find("label").text('Email Followup (from group settings)');
+         }
+      } else {
+         modal.find("input[name=_notifications_alternative_email]").attr('placeholder', actor.default_email);
+         modal.find("input[name=_notifications_alternative_email]").val(actor.alternative_email);
+         modal.find("input[name=_notifications_alternative_email]").show();
+      }
 
       editActorNotifySettings_modal.show();
    }
@@ -275,7 +291,6 @@
       var actor = actors[actortype][actorIndex];
       actor.use_notification = use_notif;
       actor.alternative_email = alt_email;
-
       // update notif setting icon for actor
       var fa_class = "far";
       if (use_notif) {

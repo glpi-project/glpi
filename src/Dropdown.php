@@ -3124,13 +3124,24 @@ JAVASCRIPT;
                             }
                             $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                         }
-                        $datastoadd[] = [
-                            'id' => $ID,
-                            'text' => $outputval,
-                            'level' => (int)$level,
-                            'title' => $title,
-                            'selection_text' => $selection_text
-                        ];
+                        if ($item->getType() == 'Group') {
+                            $datastoadd[] = [
+                                'id' => $ID,
+                                'text' => $outputval,
+                                'level' => (int)$level,
+                                'title' => $title,
+                                'selection_text' => $selection_text,
+                                'is_notify' => $data['is_notify']
+                            ];
+                        } else {
+                            $datastoadd[] = [
+                                'id' => $ID,
+                                'text' => $outputval,
+                                'level' => (int)$level,
+                                'title' => $title,
+                                'selection_text' => $selection_text
+                            ];
+                        }
                         $count++;
                     }
                     $firstitem = false;
@@ -4211,6 +4222,7 @@ JAVASCRIPT;
                         $children['items_id'] = $children['id'];
                         $children['id']       = "Group_" . $children['id'];
                         $children['itemtype'] = "Group";
+                        $children['use_notification'] = $children['is_notify'];
                     }
                 }
 
