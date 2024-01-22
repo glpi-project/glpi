@@ -190,7 +190,7 @@ class PrinterLog extends CommonDBChild
                 }
             }
         }
-        // If the metric has a value of 0 for all dates, remove it from the data set 
+        // If the metric has a value of 0 for all dates, remove it from the data set
         foreach ($series as $key => $value) {
             if (array_sum($value['data']) == 0) {
                 unset($series[$key]);
