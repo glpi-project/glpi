@@ -140,7 +140,7 @@ class Discover_User extends CommonDBTM
     {
         $discoverConfig = [];
 
-        require GLPI_ROOT . '/vendor/glpi-project/lessons/config.php';
+        $discoverConfig = require GLPI_ROOT . '/vendor/glpi-project/lessons/config.php';
 
         array_walk_recursive($discoverConfig, function (&$value, $key) {
             if ($key === 'content' && str_starts_with($value, 'file://')) {
