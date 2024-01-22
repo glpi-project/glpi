@@ -297,6 +297,23 @@ class ReservationItem extends CommonDBChild
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        return [
+            [
+                'id'                 => '81',
+                'table'              => 'glpi_reservationitems',
+                'name'               => __('Reservable'),
+                'field'              => 'is_active',
+                'joinparams'         => [
+                    'jointype' => 'itemtype_item'
+                ],
+                'datatype'           => 'bool',
+                'massiveaction'      => false
+            ]
+        ];
+    }
+
 
     /**
      * @param $item   CommonDBTM object
@@ -371,7 +388,7 @@ class ReservationItem extends CommonDBChild
                 'add',
                 "<i class='fas fa-check'></i>&nbsp;" . __('Authorize reservations'),
                 ['items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                     'entities_id'  => $item->getEntityID(),
                     'is_recursive' => $item->isRecursive(),
                 ]

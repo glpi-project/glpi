@@ -590,18 +590,6 @@ class Computer extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
-        $tab[] = [
-            'id'                 => '81',
-            'table'              => 'glpi_reservationitems',
-            'name'               => __('Reservable'),
-            'field'              => 'is_active',
-            'joinparams'         => [
-                'jointype' => 'itemtype_item'
-            ],
-            'datatype'           => 'bool',
-            'massiveaction'      => false
-        ];
-
        // add operating system search options
         $tab = array_merge($tab, Item_OperatingSystem::rawSearchOptionsToAdd(get_class($this)));
 
