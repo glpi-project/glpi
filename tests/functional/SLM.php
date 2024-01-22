@@ -1573,7 +1573,7 @@ class SLM extends DbTestCase
 
     /**
      * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar
-     * 
+     *
      * @return void
      */
     public function testLaChangeCalendar(): void
