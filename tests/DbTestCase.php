@@ -387,6 +387,11 @@ class DbTestCase extends \GLPITestCase
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
+
+        // Reload definition after update
+        $definition->getFromDB($definition->getID());
+
+        // Ensure capacity was added
         $this->array(
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         )->contains($capacity);
@@ -418,6 +423,10 @@ class DbTestCase extends \GLPITestCase
         $capacities = json_decode($definition->fields['capacities']);
         $capacities = array_diff($capacities, [$capacity]);
 
+        // Reorder keys to ensure json_decode will return an array instead of an
+        // object
+        $capacities = array_values($capacities);
+
         $this->updateItem(
             AssetDefinition::class,
             $definition->getID(),
@@ -425,6 +434,11 @@ class DbTestCase extends \GLPITestCase
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
+
+        // Reload definition after update
+        $definition->getFromDB($definition->getID());
+
+        // Ensure capacity was deleted
         $this->array(
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         )->notContains($capacity);
