@@ -32,7 +32,7 @@
  #}
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
-{% if total_number < 1 %}
+{% if total_number < 1 and filters|length == 0 %}
    <div class="alert alert-info">
       {{ __('No data') }}
    </div>
@@ -41,6 +41,7 @@
         'count': filtered_number,
         'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
     }) }}
+    {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + (nofilter ? 0 : 1) %}
 
     <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
@@ -50,6 +51,13 @@
         {% endif %}
         <table id="{{ datatable_id }}" class="table table-hover">
             <thead>
+                {% if super_header is defined and super_header is not empty %}
+                    <tr>
+                        <th colspan="{{ total_cols }}">
+                            {{ super_header }}
+                        </th>
+                    </tr>
+                {% endif %}
                 <tr>
                     {% if showmassiveactions %}
                         <th style="width: 30px;">
@@ -137,6 +145,8 @@
                                         name="filters[{{ colkey }}]"
                                         value="{{ filters[colkey] ?? 0 }}"
                                         min="0" max="100" step="1">
+                                {% elseif formatter == 'avatar' %}
+                                    {# Cannot be filtered #}
                                 {% else %}
                                     <input type="text" class="form-control"
                                         name="filters[{{ colkey }}]"
@@ -148,53 +158,79 @@
                 {% endif %}
             </thead>
             <tbody>
-                {% for entry in entries %}
-                    <tr class="{{ row_class|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
-                        {% if showmassiveactions %}
-                            <td width='10'>
-                                <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                    value="1" aria-label=""
-                                    name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
-                            </td>
-                        {% endif %}
-                        {% for colkey, colum in columns %}
-                            <td>
-                                {% if colkey in entry|keys %}
+                {% if entries|length > 0 %}
+                    {% for entry in entries %}
+                        <tr class="{{ row_class|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
+                            {% if showmassiveactions %}
+                                <td style="width: 10px">
+                                    <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                        value="1" aria-label=""
+                                        name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                </td>
+                            {% endif %}
+                            {% for colkey, colum in columns %}
+                                <td>
+                                    {% if colkey in entry|keys %}
 
-                                    {% set formatter = formatters[colkey] %}
+                                        {% set formatter = formatters[colkey] %}
 
-                                    {% if formatter == "maintext" %}
-                                        <span class="d-inline-block bg-blue-lt p-1 text-truncate"
-                                            title="{{ entry[colkey] }}"
-                                            data-bs-toggle="tooltip"
-                                            style="max-width: 250px;">
+                                        {% if formatter == "maintext" %}
+                                            <span class="d-inline-block bg-blue-lt p-1 text-truncate"
+                                                title="{{ entry[colkey] }}"
+                                                data-bs-toggle="tooltip"
+                                                style="max-width: 250px;">
+                                                {{ entry[colkey] }}
+                                            </span>
+                                        {% elseif formatter == "longtext" %}
+                                            <span class="d-inline-block text-truncate"
+                                                title="{{ entry[colkey] }}"
+                                                data-bs-toggle="tooltip"
+                                                style="max-width: 250px;">
+                                                {{ entry[colkey] }}
+                                            </span>
+                                        {% elseif formatter starts with "progress" %}
+                                            {{ call("Html::progress", [100, entry[colkey]])|raw }}
+                                        {% elseif formatter == "date" %}
+                                            {{ call("Html::convDate", [entry[colkey]])|raw }}
+                                        {% elseif formatter == "datetime" %}
+                                            {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                        {% elseif formatter == "bytesize" %}
+                                            {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
+                                        {% elseif formatter == "raw_html" %}
+                                            {{ entry[colkey]|raw }}
+                                        {% elseif formatter == 'avatar' %}
+                                            {#  Note: Does not support anonymization currently #}
+                                            {% set entry_data = entry[colkey] %}
+                                            {% set avatar_size = entry_data['avatar_size'] ?? 'avatar-md' %}
+                                            {% set img = entry_data['picture'] %}
+                                            {% set initials = entry_data['initials'] %}
+                                            {% set bg_color = img is not empty ? 'inherit' : entry_data['initials_bg'] %}
+                                            <span class="avatar {{ avatar_size }} rounded"
+                                                  style="{% if img is not null %} background-image: url({{ img }}); {% endif %} background-color: {{ bg_color }}">
+                                                   {% if img is empty %}
+                                                       {{ initials }}
+                                                   {% endif %}
+                                                </span>
+                                        {% else %}
                                             {{ entry[colkey] }}
-                                        </span>
-                                    {% elseif formatter == "longtext" %}
-                                        <span class="d-inline-block text-truncate"
-                                            title="{{ entry[colkey] }}"
-                                            data-bs-toggle="tooltip"
-                                            style="max-width: 250px;">
-                                            {{ entry[colkey] }}
-                                        </span>
-                                    {% elseif formatter starts with "progress" %}
-                                        {{ call("Html::progress", [100, entry[colkey]])|raw }}
-                                    {% elseif formatter == "date" %}
-                                        {{ call("Html::convDate", [entry[colkey]])|raw }}
-                                    {% elseif formatter == "datetime" %}
-                                        {{ call("Html::convDateTime", [entry[colkey]])|raw }}
-                                    {% elseif formatter == "bytesize" %}
-                                        {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
-                                    {% elseif formatter == "raw_html" %}
-                                        {{ entry[colkey]|raw }}
-                                    {% else %}
-                                        {{ entry[colkey] }}
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
-                            </td>
-                        {% endfor %}
+                                </td>
+                            {% endfor %}
+                            {% if not nofilter %}
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="{{ total_cols }}">
+                            <div class="alert alert-info">
+                                {{ __('No data') }}
+                            </div>
+                        </td>
                     </tr>
-                {% endfor %}
+                {% endif %}
             </tbody>
         </table>
     </div>

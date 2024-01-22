@@ -6898,9 +6898,18 @@ JAVASCRIPT;
             return mb_strtoupper(mb_substr($anon, 0, 2));
         }
 
-        $initials = mb_substr($this->fields['firstname'] ?? '', 0, 1) . mb_substr($this->fields['realname'] ?? '', 0, 1);
+        return self::getInitialsForUserName(
+            $this->fields['name'],
+            $this->fields['firstname'],
+            $this->fields['realname']
+        );
+    }
+
+    public static function getInitialsForUserName($name, $firstname, $realname): string
+    {
+        $initials = mb_substr($firstname ?? '', 0, 1) . mb_substr($realname ?? '', 0, 1);
         if (empty($initials)) {
-            $initials = mb_substr($this->fields['name'] ?? '', 0, 2);
+            $initials = mb_substr($name ?? '', 0, 2);
         }
         return mb_strtoupper($initials);
     }
