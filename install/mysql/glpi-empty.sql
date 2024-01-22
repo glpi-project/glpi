@@ -9379,7 +9379,6 @@ CREATE TABLE `glpi_databaseinstances` (
   `version` varchar(255) NOT NULL DEFAULT '',
   `port` varchar(10) NOT NULL DEFAULT '',
   `path` varchar(255) NOT NULL DEFAULT '',
-  `size` int NOT NULL DEFAULT '0',
   `databaseinstancetypes_id` int unsigned NOT NULL DEFAULT '0',
   `databaseinstancecategories_id` int unsigned NOT NULL DEFAULT '0',
   `locations_id` int unsigned NOT NULL DEFAULT '0',

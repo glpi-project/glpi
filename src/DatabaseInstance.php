@@ -317,11 +317,6 @@ class DatabaseInstance extends CommonDBTM
         if (isset($input['date_lastbackup']) && empty($input['date_lastbackup'])) {
             unset($input['date_lastbackup']);
         }
-
-        if (isset($input['size']) && empty($input['size'])) {
-            unset($input['size']);
-        }
-
         return $input;
     }
 
