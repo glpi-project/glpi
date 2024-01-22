@@ -37,7 +37,6 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Asset\Capacity\AbstractCapacity;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -388,7 +387,9 @@ class DbTestCase extends \GLPITestCase
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->contains($capacity);
+        $this->array(
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        )->contains($capacity);
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();
@@ -424,7 +425,9 @@ class DbTestCase extends \GLPITestCase
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->notContains($capacity);
+        $this->array(
+            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+        )->notContains($capacity);
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();

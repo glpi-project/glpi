@@ -37,10 +37,8 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use DbTestCase;
 use DisplayPreference;
-use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Item_OperatingSystem;
-use Profile;
 use Log;
 
 class HasOperatingSystemCapacity extends DbTestCase
@@ -224,7 +222,10 @@ class HasOperatingSystemCapacity extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [
+                $this->getTargetCapacity(),
+                HasHistoryCapacity::class
+            ]
         );
         $class = $definition->getConcreteClassName();
 
