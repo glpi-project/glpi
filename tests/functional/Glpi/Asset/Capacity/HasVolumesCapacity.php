@@ -46,13 +46,21 @@ class HasVolumesCapacity extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
+        $superadmin_p_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+        $profiles_matrix = [
+            $superadmin_p_id => [
+                READ   => 1, // Need the READ right to be able to see the `Item_Disk$1` tab
+            ],
+        ];
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasVolumesCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
-            ]
+            ],
+            profiles: $profiles_matrix
         );
         $classname_1  = $definition_1->getConcreteClassName();
         $definition_2 = $this->initAssetDefinition(
@@ -65,7 +73,8 @@ class HasVolumesCapacity extends DbTestCase
             capacities: [
                 \Glpi\Asset\Capacity\HasVolumesCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-            ]
+            ],
+            profiles: $profiles_matrix
         );
         $classname_3  = $definition_3->getConcreteClassName();
 
@@ -91,8 +100,7 @@ class HasVolumesCapacity extends DbTestCase
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
             $this->login(); // must be logged in to get tabs list
             if ($has_capacity) {
-                //FIXME!
-                //$this->array($item->defineAllTabs())->hasKey('Item_Disk$1');
+                $this->array($item->defineAllTabs())->hasKey('Item_Disk$1');
             } else {
                 $this->array($item->defineAllTabs())->notHasKey('Item_Disk$1');
             }
