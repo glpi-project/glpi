@@ -36,42 +36,45 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
-use Item_Disk;
+use Link;
+use ManualLink;
 use Session;
 
-class HasVolumesCapacity extends AbstractCapacity
+class HasLinksCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return Item_Disk::getTypeName(Session::getPluralNumber());
-    }
-
-    public function getSearchOptions(string $classname): array
-    {
-        return Item_Disk::rawSearchOptionsToAdd($classname::getType());
+        return sprintf('%s / %s', ManualLink::getTypeName(Session::getPluralNumber()), Link::getTypeName(Session::getPluralNumber()));
     }
 
     public function onClassBootstrap(string $classname): void
     {
-        $this->registerToTypeConfig('disk_types', $classname);
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        CommonGLPI::registerStandardTab($classname, Item_Disk::class, 55);
+        $CFG_GLPI['link_types'][] = $classname;
+
+        CommonGLPI::registerStandardTab($classname, ManualLink::class, 100);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
-        // Unregister from operating system types
-        $this->unregisterFromTypeConfig('disk_types', $classname);
+        // Delete related links
+        $manual_link = new ManualLink();
+        $manual_link->deleteByCriteria([
+            'itemtype' => $classname,
+        ], true, false);
 
-        //Delete related disks
-        $disks = new Item_Disk();
-        $disks->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
+        $link_itemtype = new \Link_Itemtype();
+        $link_itemtype->deleteByCriteria([
+            'itemtype' => $classname,
+        ], true, false);
 
-        // Clean history related to disks
-        $this->deleteRelationLogs($classname, Item_Disk::class);
+        // Clean history related to links
+        $this->deleteRelationLogs($classname, ManualLink::class);
 
         // Clean display preferences
-        $disks_search_options = Item_Disk::rawSearchOptionsToAdd($classname);
-        $this->deleteDisplayPreferences($classname, $disks_search_options);
+        $this->deleteDisplayPreferences($classname, ManualLink::rawSearchOptionsToAdd($classname));
+        $this->deleteDisplayPreferences($classname, Link::rawSearchOptionsToAdd($classname));
     }
 }

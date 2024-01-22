@@ -36,8 +36,9 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\URL;
 
-/** Link Class
- **/
+/**
+ * External link class
+ */
 class Link extends CommonDBTM
 {
    // From CommonDBTM
