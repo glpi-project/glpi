@@ -1762,7 +1762,7 @@ class SLM extends DbTestCase
                 'entities_id'         => $entity,
                 'is_recursive'        => true,
                 'type'                => $la_type,
-                'number_time'         => 4,
+                'number_time'         => 6,
                 'calendars_id'        => $calendar2->getID(),
                 'definition_time'     => 'hour',
                 'end_of_working_day'  => false,
@@ -1809,8 +1809,8 @@ class SLM extends DbTestCase
             $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 2 level", true);
             $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
 
-            // Check that the target date is correct (+ 4 hours)
-            $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:10:00');
+            // Check that the target date is correct (+ 6 hours)
+            $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-17 08:10:00');
         }
 
         // Check that all escalations levels are sets
@@ -1826,6 +1826,6 @@ class SLM extends DbTestCase
         // Check that they match the expected date (- 1 hour)1
         $this->array(
             array_unique(array_column($sa_levels_ticket, 'date'))
-        )->isEqualTo(['2034-08-16 16:10:00']);
+        )->isEqualTo(['2034-08-16 18:10:00']);
     }
 }
