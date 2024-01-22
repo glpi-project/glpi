@@ -50,6 +50,7 @@ The present file will list all changes made to the project; according to the
 - Project description field is now a rich text field.
 - Entity, profile, debug mode flag, and language are restored after ending impersonation.
 - Volumes now show `Used percentage` instead of `Free percentage`.
+- Budget "Main" tab now shows negative values for "Total remaining in the budget" in parentheses instead of with a negative sign to align with typical accounting practices.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
