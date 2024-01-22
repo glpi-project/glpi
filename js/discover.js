@@ -1,3 +1,5 @@
+/* global introJs */
+
 function launchIntro(endpoint, lessonId, steps, endingSteps = [], isEndingLesson = false) {
     var intro = introJs();
     intro.setOptions({
@@ -50,26 +52,26 @@ function launchIntro(endpoint, lessonId, steps, endingSteps = [], isEndingLesson
                         return new Promise(function (resolve) {
                             // Note the setTimeout with no second argument (milliseconds) allows you to queue the function
                             -                           // on event loop and run it after all events were processed (including the click closing the dropdown)
-                                setTimeout(function () {
-                                    // Show dropdown
-                                    $(dropdown).dropdown('show');
+                            setTimeout(function () {
+                                // Show dropdown
+                                $(dropdown).dropdown('show');
 
-                                    // Block the dropdown from closing while step is running
-                                    $(dropdown).on('hide.bs.dropdown', function (e) {
-                                        if (step === steps[intro._currentStep]) {
-                                            e.preventDefault();
-                                        }
-                                    });
-
-                                    // Refresh intro when dropdown animation ends
-                                    if ($(dropdown).find('.dropdown-menu').hasClass('animate__animated')) {
-                                        $(dropdown).find('.dropdown-menu').on('animationend', function () {
-                                            resolve();
-                                        });
-                                    } else {
-                                        resolve();
+                                // Block the dropdown from closing while step is running
+                                $(dropdown).on('hide.bs.dropdown', function (e) {
+                                    if (step === steps[intro._currentStep]) {
+                                        e.preventDefault();
                                     }
                                 });
+
+                                // Refresh intro when dropdown animation ends
+                                if ($(dropdown).find('.dropdown-menu').hasClass('animate__animated')) {
+                                    $(dropdown).find('.dropdown-menu').on('animationend', function () {
+                                        resolve();
+                                    });
+                                } else {
+                                    resolve();
+                                }
+                            });
                         });
                 }
             }
