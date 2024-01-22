@@ -31,27 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-body.api-documentation {
-    > .container {
-        .sidebar {
-            background: inherit;
-            color: inherit;
-            width: 200px;
-            position: fixed;
-            top: 70px;
-            left: 10px;
-            bottom: 0;
-            overflow: auto;
-        }
-
-        .main-content {
-            margin-left: 210px;
-        }
-    }
-}
-
 .documentation {
-    background-color: white;
+    background-color: var(--tblr-bg-surface);
     max-width: 700px;
     margin: 0 auto;
     padding: 10px 20px;
@@ -59,18 +40,21 @@ body.api-documentation {
     .table-of-contents {
         margin: 0;
         padding: 0;
+        background-color: var(--glpi-mainmenu-bg);
+        color: var(--glpi-mainmenu-fg);
+        font-size: var(--tblr-dropdown-font-size);
 
         li {
             margin: 0;
             list-style: none;
-            padding: 5px 0 5px 5px;
+            padding: 2px 0 2px 5px;
             border: none;
 
             a {
                 font-size: 1.25rem;
                 font-weight: 600;
-                color: #940000;
-                border-bottom: 1px solid #a87a7a;
+                color: inherit;
+                border-bottom: 1px solid var(--tblr-border-color);
             }
 
             ul {
@@ -78,18 +62,14 @@ body.api-documentation {
                     list-style: disc;
 
                     a {
-                       font-weight: normal;
-                       font-size: 1rem;
-                       color: #3a5693;
-                       border-bottom: none;
+                        font-weight: normal;
+                        font-size: 1rem;
+                        border-bottom: none;
+                        color: inherit;
                    }
                 }
             }
         }
-    }
-
-    h1 {
-        color: #300000;
     }
 
     > ul:nth-child(2) {
@@ -102,9 +82,8 @@ body.api-documentation {
     }
 
     h2 {
-        color: #940000;
         margin-top: 70px;
-        border-bottom: 1px solid #a87a7a;
+        border-bottom: 1px solid var(--tblr-border-color);
     }
 
     li {
@@ -113,7 +92,7 @@ body.api-documentation {
     }
 
     > ul > li > ul > li {
-        border-left: 1px solid grey;
+        border-left: 1px solid var(--tblr-border-color);
 
         > ul > li {
             list-style-type: disc;
@@ -122,7 +101,7 @@ body.api-documentation {
     }
 
     pre {
-        border: 1px solid #ccc;
+        border: 1px solid var(--tblr-border-color);
         border-radius: 4px;
         font-size: 13px;
     }
@@ -163,10 +142,13 @@ body.api-documentation {
 @include media-breakpoint-up(sm) {
     .documentation .table-of-contents {
         position: fixed;
-        top: 40px;
-        left: 15px;
+        top: 0;
+        left: 0;
+        padding-top: 40px;
+        padding-left: 15px;
+        padding-right: 15px;
         margin-top: 0;
-        width: 200px;
+        width: 15rem;
         bottom: 0;
         overflow: auto;
     }

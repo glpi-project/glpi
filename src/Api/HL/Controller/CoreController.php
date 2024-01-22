@@ -243,31 +243,12 @@ HTML;
             $html_docs
         );
 
-        $twig_params = [
-            'title' => __('API Getting Started'),
-            'css_files' => [],
-        ];
-        $theme = ThemeManager::getInstance()->getCurrentTheme();
-        $twig_params['css_files'][] = ['path' => $theme->getPath()];
-        $twig_params['theme'] = $theme;
+        $content = \Html::includeHeader(
+            title: __('API Getting Started'),
+            display: false,
+        );
 
-        $content = TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $twig_params);
         $content .= '<body class="documentation-page"><div id="page"><div class="documentation documentation-large">';
-        // If not logged in, inject some basic CSS in case the browser says they prefer a dark color scheme
-        if (!Session::getLoginUserID()) {
-            $content .= <<<HTML
-                <style>
-                    @media (prefers-color-scheme: dark) {
-                        body {
-                            --tblr-body-bg: #000000;
-                            --tblr-body-color: #ffffff;
-                            --tblr-code-bg: #404040;
-                            --tblr-code-color: #ffffff;
-                        }
-                    }
-                </style>
-HTML;
-        }
         $content .= $html_docs;
         $content .= '</div></div></body>';
 
