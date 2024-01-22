@@ -1054,8 +1054,11 @@ HTML;
      * @param string $item    item corresponding to the page displayed
      * @param string $option  option corresponding to the page displayed
      * @param bool   $add_id  add current item id to the title ?
+     * @param bool   $allow_insecured_iframe  allow insecured iframe (default false)
+     * @param bool   $display display the header (default true)
      *
-     * @return void
+     * @return string|void Generated HTML if `display` param is false, void otherwise.
+     * @phpstan-return $display ? void : string
      */
     public static function includeHeader(
         $title = '',
@@ -1063,7 +1066,8 @@ HTML;
         $item = 'none',
         $option = '',
         bool $add_id = true,
-        bool $allow_insecured_iframe = false
+        bool $allow_insecured_iframe = false,
+        bool $display = true
     ) {
         /**
          * @var array $CFG_GLPI
@@ -1288,7 +1292,11 @@ HTML;
             $tpl_vars['glpi_request_id'] = \Glpi\Debug\Profile::getCurrent()->getID();
         }
 
-        TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
+        if ($display) {
+            TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
+        } else {
+            return TemplateRenderer::getInstance()->render('layout/parts/head.html.twig', $tpl_vars);
+        }
 
         self::glpi_flush();
     }
