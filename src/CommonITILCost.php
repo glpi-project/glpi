@@ -509,7 +509,7 @@ abstract class CommonITILCost extends CommonDBChild
                 'id'        => $ID,
                 'rand'      => $rand,
                 'type'      => static::getType(),
-                'parenttype'=> static::$itemtype,
+                'parenttype' => static::$itemtype,
                 'items_id'  => static::$items_id,
                 'add_new_label' => __('Add a new cost'),
             ];
@@ -539,7 +539,6 @@ abstract class CommonITILCost extends CommonDBChild
                     </div>
                 {% endif %}
 TWIG, $twig_params);
-
         }
 
         $total          = 0;
@@ -560,44 +559,44 @@ TWIG, $twig_params);
         $ticket_links = [];
         $budget_links = [];
         foreach ($iterator as $data) {
-             $name = (empty($data['name']) ? sprintf(__('%1$s (%2$s)'), $data['name'], $data['id']) : $data['name']);
+            $name = (empty($data['name']) ? sprintf(__('%1$s (%2$s)'), $data['name'], $data['id']) : $data['name']);
 
-             $total_time += $data['actiontime'];
-             $total_costtime += ($data['actiontime'] * $data['cost_time'] / HOUR_TIMESTAMP);
-             $total_fixed += $data['cost_fixed'];
-             $total_material += $data['cost_material'];
-             $cost            = self::computeTotalCost(
-                 $data['actiontime'],
-                 $data['cost_time'],
-                 $data['cost_fixed'],
-                 $data['cost_material']
-             );
-             $total += (float) $cost;
-             if (!array_key_exists($data['budgets_id'], $budget_links)) {
-                 $budget->getFromDB($data['budgets_id']);
-                 $budget_links[$data['budgets_id']] = $budget->getLink();
-             }
-             $entry = [
-                 'itemtype' => static::getType(),
-                 'id'       => $data['id'],
-                 'name'     => sprintf(__('%1$s %2$s'), $name, Html::showToolTip($data['comment'], ['display' => false])),
-                 'begin_date' => $data['begin_date'],
-                 'end_date' => $data['end_date'],
-                 'budget' => $budget_links[$data['budgets_id']],
-                 'actiontime' => CommonITILObject::getActionTime($data['actiontime']),
-                 'cost_time' => $data['cost_time'],
-                 'cost_fixed' => $data['cost_fixed'],
-                 'cost_material' => $data['cost_material'],
-                 'totalcost' => $cost,
-             ];
-             if ($forproject) {
-                 if (!array_key_exists($data[static::$items_id], $ticket_links)) {
-                     $ticket->getFromDB($data[static::$items_id]);
-                     $ticket_links[$data[static::$items_id]] = $ticket->getLink();
-                 }
-                 $entry['ticket'] = $ticket_links[$data[static::$items_id]];
-             }
-             $entries[] = $entry;
+            $total_time += $data['actiontime'];
+            $total_costtime += ($data['actiontime'] * $data['cost_time'] / HOUR_TIMESTAMP);
+            $total_fixed += $data['cost_fixed'];
+            $total_material += $data['cost_material'];
+            $cost = self::computeTotalCost(
+                $data['actiontime'],
+                $data['cost_time'],
+                $data['cost_fixed'],
+                $data['cost_material']
+            );
+            $total += (float) $cost;
+            if (!array_key_exists($data['budgets_id'], $budget_links)) {
+                $budget->getFromDB($data['budgets_id']);
+                $budget_links[$data['budgets_id']] = $budget->getLink();
+            }
+            $entry = [
+                'itemtype' => static::getType(),
+                'id'       => $data['id'],
+                'name'     => sprintf(__('%1$s %2$s'), $name, Html::showToolTip($data['comment'], ['display' => false])),
+                'begin_date' => $data['begin_date'],
+                'end_date' => $data['end_date'],
+                'budget' => $budget_links[$data['budgets_id']],
+                'actiontime' => CommonITILObject::getActionTime($data['actiontime']),
+                'cost_time' => $data['cost_time'],
+                'cost_fixed' => $data['cost_fixed'],
+                'cost_material' => $data['cost_material'],
+                'totalcost' => $cost,
+            ];
+            if ($forproject) {
+                if (!array_key_exists($data[static::$items_id], $ticket_links)) {
+                    $ticket->getFromDB($data[static::$items_id]);
+                    $ticket_links[$data[static::$items_id]] = $ticket->getLink();
+                }
+                $entry['ticket'] = $ticket_links[$data[static::$items_id]];
+            }
+            $entries[] = $entry;
         }
 
         $columns = [
@@ -678,7 +677,6 @@ TWIG, $twig_params);
                     });
                 });
 JS);
-
         }
         return $total;
     }
@@ -752,11 +750,9 @@ JS);
      *
      * @return string total cost formatted string
      **/
-    public static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material, $edit = true) {
-
-        return Html::formatNumber(
-            ($actiontime * $cost_time / HOUR_TIMESTAMP) + $cost_fixed + $cost_material,
-            $edit
-        );
+    public static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material, $edit = true)
+    {
+        $cost = ($actiontime * $cost_time / HOUR_TIMESTAMP) + $cost_fixed + $cost_material;
+        return Html::formatNumber($cost, $edit);
     }
 }
