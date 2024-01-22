@@ -88,12 +88,8 @@ class HasVolumesCapacity extends DbTestCase
             // Check that the class is globally registered
             if ($has_capacity) {
                 $this->array($CFG_GLPI['disk_types'])->contains($classname);
-                $this->boolean(\Item_Disk::canApplyOn($classname))->isTrue();
-                $this->array(\Item_Disk::getItemtypesThatCanHave())->contains($classname);
             } else {
                 $this->array($CFG_GLPI['disk_types'])->notContains($classname);
-                $this->boolean(\Item_Disk::canApplyOn($classname))->isFalse();
-                $this->array(\Item_Disk::getItemtypesThatCanHave())->notContains($classname);
             }
 
             // Check that the corresponding tab is present on items

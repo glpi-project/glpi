@@ -62,43 +62,6 @@ class Item_Disk extends CommonDBChild
         return 'far fa-hdd';
     }
 
-    /**
-     * Check if given object can have volume
-     *
-     * @since 10.1.0
-     *
-     * @param string|object $item  an object or a string
-     *
-     * @return boolean
-     *
-     **/
-    public static function canApplyOn($item): bool
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if ($item instanceof CommonGLPI) {
-            $item = $item->getType();
-        }
-
-        return in_array($item, $CFG_GLPI['disk_types']);
-    }
-
-    /**
-     * Get all the types that can have volumes
-     *
-     * @since 10.1.0
-     *
-     * @return array itemtypes names
-     **/
-    public static function getItemtypesThatCanHave()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        return $CFG_GLPI['disk_types'];
-    }
-
     public function post_getEmpty()
     {
         $this->fields["totalsize"] = '0';
