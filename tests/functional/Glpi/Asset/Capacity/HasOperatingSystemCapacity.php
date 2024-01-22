@@ -43,7 +43,6 @@ use Log;
 
 class HasOperatingSystemCapacity extends DbTestCase
 {
-
     /**
      * Get the tested capacity class.
      *
