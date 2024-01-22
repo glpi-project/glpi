@@ -157,7 +157,6 @@ class Profile_User extends CommonDBRelation
         $total_num = self::countForItem($user);
 
         $entries = [];
-        $entity_form_url = Toolbox::getItemTypeFormURL('Entity');
         foreach ($iterator as $data) {
             $entry = [
                 'itemtype' => __CLASS__,
@@ -168,15 +167,22 @@ class Profile_User extends CommonDBRelation
                 $link = sprintf(__('%1$s (%2$s)'), $link, $data["entities_id"]);
             }
             if ($canshowentity) {
-                $link = "<a href='" . $entity_form_url . "?id=" . $data["entities_id"] . "'>" . $link . "</a>";
+                $link = sprintf(
+                    '<a href="%s">%s</a>', 
+                    htmlspecialchars(Entity::getFormURLWithID($data["entities_id"])),
+                    htmlspecialchars($link)
+                );
             }
             $entry['entity'] = $link;
 
             if (Profile::canView()) {
-                $form_url = Toolbox::getItemTypeFormURL('Profile');
-                $profile_name = "<a href='{$form_url}?id={$data['id']}'>" . Html::entities_deep($data['name']) . "</a>";
+                $profile_name = sprintf(
+                    '<a href="%s">%s</a>', 
+                    htmlspecialchars(Profile::getFormURLWithID($data['id'])),
+                    htmlspecialchars($data['name'])
+                
             } else {
-                $profile_name = Html::entities_deep($data['name']);
+                $profile_name = htmlspecialchars($data['name']);
             }
 
             if ($data['is_dynamic'] || $data['is_recursive']) {
