@@ -43,43 +43,8 @@ use Item_OperatingSystem;
 use Profile;
 use Log;
 
-/**
- * Tests case for the "HasOperatingSystemCapacity" class, which handle the
- * operating system capacity for assets composition.
- *
- * It should validate the following actions are executed when this
- * capacity is enabled for an asset:
- * - The asset is registered in $CFG_GLPI["operatingsystem_types"].
- * - The "Item_OperatingSystem system" tab is added to the asset
- * - The "Item_OperatingSystem" search options are added to the asset.
- *
- * It should validate the following actions are executed when this
- * capacity is disabled for an asset:
- * - The asset is unregistered from $CFG_GLPI["operatingsystem_types"].
- * - All "Item_OperatingSystem" items linked to the asset are deleted.
- * - All references to "Item_OperatingSystem" and "OperatingSystem" in the
- * asset history are deleted.
- * - All display preferences related to "Item_OperatingSystem" for the asset
- * are deleted.
- */
 class HasOperatingSystemCapacity extends DbTestCase
 {
-    // #Override
-    protected function initAssetDefinition(
-        ?string $system_name = null,
-        array $capacities = [],
-        array $profiles = [],
-    ): AssetDefinition {
-        return parent::initAssetDefinition(
-            $system_name,
-            array_merge(
-                // Always enable history capacity because some feature of this
-                // capacity depends on it
-                [HasHistoryCapacity::class],
-                $capacities
-            ),
-        );
-    }
 
     /**
      * Get the tested capacity class.

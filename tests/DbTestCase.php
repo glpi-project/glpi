@@ -388,11 +388,7 @@ class DbTestCase extends \GLPITestCase
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
-
-        // Reload asset definition
-        $definition->getFromDB(
-            $definition->getID()
-        );
+        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->contains($capacity);
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();
@@ -428,11 +424,7 @@ class DbTestCase extends \GLPITestCase
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
-
-        // Reload asset definition
-        $definition->getFromDB(
-            $definition->getID()
-        );
+        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->notContains($capacity);
 
         // Force boostrap to trigger methods such as "onClassBootstrap"
         $manager = AssetDefinitionManager::getInstance();

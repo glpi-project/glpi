@@ -39,22 +39,6 @@ use CommonGLPI;
 use Item_OperatingSystem;
 use OperatingSystem;
 
-/**
- * Operating system capacity for assets composition.
- *
- * When enabled:
- * - Register the asset in $CFG_GLPI["operatingsystem_types"].
- * - The "Item_OperatingSystem system" tab will be added to the asset.
- * - The "Item_OperatingSystem" search options will be added to the asset.
- *
- * When disabled:
- * - Unregister the asset in $CFG_GLPI["operatingsystem_types"].
- * - All "Item_OperatingSystem" items linked to the asset will be deleted.
- * - All references to "Item_OperatingSystem" and "OperatingSystem" in the asset
- * history will be deleted.
- * - All display preferences related to "Item_OperatingSystem" for the asset
- * will be deleted.
- */
 class HasOperatingSystemCapacity extends AbstractCapacity
 {
     // #Override
