@@ -112,10 +112,6 @@ final class AssetDefinitionManager
      */
     public function boostrapAssets(): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-
         foreach ($this->getDefinitions() as $definition) {
             if (!$definition->isActive()) {
                 continue;

@@ -134,6 +134,9 @@ class HasInfocomCapacity extends DbTestCase
 
     public function testCapacityDeactivation(): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
@@ -221,23 +224,27 @@ class HasInfocomCapacity extends DbTestCase
             'itemtype' => $classname_2,
         ];
 
-        // Ensure relation, display preferences and logs exists
+        // Ensure relation, display preferences and logs exists, and class is registered to global config
         $this->object(Infocom::getById($infocom_1->getID()))->isInstanceOf(Infocom::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(4); // creation + 3 infocom fields
         $this->object(Infocom::getById($infocom_2->getID()))->isInstanceOf(Infocom::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3); // creation + 2 infocom fields
+        $this->array($CFG_GLPI['infocom_types'])->contains($classname_1);
+        $this->array($CFG_GLPI['infocom_types'])->contains($classname_2);
 
-        // Disable capacity and check that relations have been cleaned
+        // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
         $this->boolean(Infocom::getById($infocom_1->getID()))->isFalse();
         $this->boolean(DisplayPreference::getById($displaypref_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
+        $this->array($CFG_GLPI['infocom_types'])->notContains($classname_1);
 
-        // Ensure relations and logs are preserved for other definition
+        // Ensure relations, logs and global registration are preserved for other definition
         $this->object(Infocom::getById($infocom_2->getID()))->isInstanceOf(Infocom::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3);
+        $this->array($CFG_GLPI['infocom_types'])->contains($classname_2);
     }
 }

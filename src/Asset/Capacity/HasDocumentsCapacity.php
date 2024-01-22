@@ -49,16 +49,16 @@ class HasDocumentsCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $CFG_GLPI['document_types'][] = $classname;
+        $this->registerToTypeConfig('document_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Document_Item::class, 55);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
+        // Unregister from document types
+        $this->unregisterFromTypeConfig('document_types', $classname);
+
         // Delete relations to documents
         $document_item = new Document_Item();
         $document_item->deleteByCriteria(['itemtype' => $classname], force: true, history: false);

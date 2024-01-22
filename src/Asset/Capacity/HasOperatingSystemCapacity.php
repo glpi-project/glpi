@@ -50,11 +50,7 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     // #Override
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        // Allow our item to be linked to an operating system
-        $CFG_GLPI['operatingsystem_types'][] = $classname;
+        $this->registerToTypeConfig('operatingsystem_types', $classname);
 
         // Register the operating system tab into our item
         CommonGLPI::registerStandardTab(
@@ -73,14 +69,8 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     // #Override
     public function onCapacityDisabled(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         // Unregister from operating system types
-        $CFG_GLPI['operatingsystem_types'] = array_diff(
-            $CFG_GLPI['operatingsystem_types'],
-            [$classname]
-        );
+        $this->unregisterFromTypeConfig('operatingsystem_types', $classname);
 
         // Delete related operating system data
         $item_os = new Item_OperatingSystem();

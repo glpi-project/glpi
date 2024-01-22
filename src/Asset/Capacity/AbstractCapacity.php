@@ -38,8 +38,6 @@ namespace Glpi\Asset\Capacity;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Log;
-use Profile;
-use ProfileRight;
 
 /**
  * Abstract capacity that provides, among others, an empty implementation
@@ -221,5 +219,42 @@ abstract class AbstractCapacity implements CapacityInterface
         }
 
         return $ids;
+    }
+
+    /**
+     * Register the given itemtype to a type configuration.
+     *
+     * @param string $config_name
+     * @param string $itemtype
+     * @return void
+     */
+    protected function registerToTypeConfig(string $config_name, string $itemtype): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!in_array($itemtype, $CFG_GLPI[$config_name])) {
+            $CFG_GLPI[$config_name][] = $itemtype;
+        }
+    }
+
+    /**
+     * Unregister the given itemtype from a type configuration.
+     *
+     * @param string $config_name
+     * @param string $itemtype
+     * @return void
+     */
+    protected function unregisterFromTypeConfig(string $config_name, string $itemtype): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $CFG_GLPI[$config_name] = array_values(
+            array_diff(
+                $CFG_GLPI[$config_name],
+                [$itemtype]
+            )
+        );
     }
 }
