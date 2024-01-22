@@ -54,18 +54,28 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
 
 if (empty($_GET["type"])) {
     $_GET["type"] = "user";
+} else {
+    $_GET["type"] = (string)$_GET["type"];
 }
 
 if (empty($_GET["showgraph"])) {
     $_GET["showgraph"] = 0;
+} else {
+    $_GET["showgraph"] = (int)$_GET["showgraph"];
 }
 
 if (empty($_GET["value2"])) {
     $_GET["value2"] = 0;
 }
 
+//sanitize dates
+foreach (['date1', 'date2'] as $key) {
+    if (array_key_exists($key, $_GET) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_GET[$key]) !== 1) {
+        unset($_GET[$key]);
+    }
+}
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-    $year              = date("Y") - 1;
+    $year          = date("Y") - 1;
     $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
     $_GET["date2"] = date("Y-m-d");
 }
@@ -82,6 +92,8 @@ if (
 
 if (!isset($_GET["start"])) {
     $_GET["start"] = 0;
+} else {
+    $_GET["start"] = (int)$_GET["start"];
 }
 
 $stat = new Stat();
@@ -135,7 +147,7 @@ foreach ($items as $label => $tab) {
 
 echo "<div class='center'><form method='get' name='form' action='stat.tracking.php'>";
 // Keep it first param
-echo "<input type='hidden' name='itemtype' value=\"" . $_GET["itemtype"] . "\">";
+echo "<input type='hidden' name='itemtype' value=\"" . htmlspecialchars($_GET["itemtype"]) . "\">";
 
 echo "<table class='tab_cadre_fixe'>";
 echo "<tr class='tab_bg_2'><td rowspan='2' class='center' width='30%'>";

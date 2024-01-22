@@ -2154,7 +2154,7 @@ class Stat extends CommonGLPI
     {
         $out = "<form method='get' name='form' action='stat.global.php'><div class='center'>";
        // Keep it at first parameter
-        $out .= "<input type='hidden' name='itemtype' value='$itemtype'>";
+        $out .= "<input type='hidden' name='itemtype' value=\"" . htmlspecialchars($itemtype) . "\">";
 
         $out .= "<table class='tab_cadre'>";
         $out .= "<tr class='tab_bg_2'><td class='right'>" . __('Start date') . "</td><td>";
