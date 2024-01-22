@@ -35,6 +35,7 @@
 
 namespace Glpi\Application;
 
+use GLPI;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,8 +65,8 @@ class ErrorHandler
         E_USER_NOTICE       => LogLevel::NOTICE,
         E_STRICT            => LogLevel::NOTICE,
         E_RECOVERABLE_ERROR => LogLevel::ERROR,
-        E_DEPRECATED        => LogLevel::NOTICE,
-        E_USER_DEPRECATED   => LogLevel::NOTICE,
+        E_DEPRECATED        => LogLevel::INFO,
+        E_USER_DEPRECATED   => LogLevel::INFO,
     ];
 
     /**
@@ -228,6 +229,13 @@ class ErrorHandler
         set_exception_handler([$this, 'handleException']);
         register_shutdown_function([$this, 'handleFatalError']);
         $this->reserved_memory = str_repeat('x', 50 * 1024); // reserve 50 kB of memory space
+
+        // Force reporting of all errors, to ensure that all log levels that are supposed to be
+        // pushed in logs according to `GLPI_LOG_LVL`/`GLPI_ENVIRONMENT_TYPE` are actually reported.
+        error_reporting(E_ALL);
+
+        // Disable native error displaying as it will be handled by `self::outputDebugMessage()`.
+        ini_set('display_errors', 'Off');
     }
 
     /**
@@ -506,10 +514,20 @@ class ErrorHandler
             return;
         }
 
-        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
+        if (
+            in_array(GLPI_ENVIRONMENT_TYPE, [GLPI::ENV_STAGING, GLPI::ENV_PRODUCTION])
+            && in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO])
+        ) {
+            // On staging/production environment, do not output debug/info messages.
+            // These messages are not supposed to be intended for end users.
+            return;
+        }
+
+        $is_dev_env         = GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT;
+        $is_debug_mode      = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == \Session::DEBUG_MODE;
         $is_console_context = $this->output_handler instanceof OutputInterface;
 
-        if ((!$force && !$is_debug_mode && !$is_console_context) || isAPI()) {
+        if (!$force && !$is_dev_env && !$is_debug_mode && !$is_console_context) {
             return;
         }
 

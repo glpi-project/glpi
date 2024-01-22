@@ -56,6 +56,9 @@ $GLPI = new GLPI();
 $GLPI->initLogger();
 $GLPI->initErrorHandler();
 
+// Ensure errors will not break API output.
+ErrorHandler::getInstance()->disableOutput();
+
 //init cache
 $cache_manager = new CacheManager();
 $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
