@@ -40,11 +40,11 @@ use Glpi\Application\View\TemplateRenderer;
  */
 
 
-class ComputerAntivirus extends CommonDBChild
+class Item_Antivirus extends CommonDBChild
 {
    // From CommonDBChild
-    public static $itemtype = 'Computer';
-    public static $items_id = 'computers_id';
+    public static $itemtype = 'itemtype';
+    public static $items_id = 'items_id';
     public $dohistory       = true;
 
 
@@ -59,15 +59,12 @@ class ComputerAntivirus extends CommonDBChild
     {
 
        // can exists for template
-        if (
-            $item instanceof Computer
-            && Computer::canView()
-        ) {
+        if ($item::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(
-                    'glpi_computerantiviruses',
-                    ["computers_id" => $item->getID(), 'is_deleted' => 0 ]
+                    self::getTable(),
+                    ['itemtype' => $item->getType(), 'items_id' => $item->getID(), 'is_deleted' => 0 ]
                 );
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
@@ -79,7 +76,7 @@ class ComputerAntivirus extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        self::showForComputer($item, $withtemplate);
+        self::showForItem($item, $withtemplate);
         return true;
     }
 
@@ -148,7 +145,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => '167',
-            'table'              => 'glpi_computerantiviruses',
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'forcegroupby'       => true,
@@ -156,14 +153,14 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ],
             'searchtype'         => ['contains'],
         ];
 
         $tab[] = [
             'id'                 => '168',
-            'table'              => 'glpi_computerantiviruses',
+            'table'              => static::getTable(),
             'field'              => 'antivirus_version',
             'name'               => _n('Version', 'Versions', 1),
             'forcegroupby'       => true,
@@ -171,19 +168,19 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
         $tab[] = [
             'id'                 => '169',
-            'table'              => 'glpi_computerantiviruses',
+            'table'              => static::getTable(),
             'field'              => 'is_active',
             'linkfield'          => '',
             'name'               => __('Active'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
@@ -193,13 +190,13 @@ class ComputerAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => '170',
-            'table'              => 'glpi_computerantiviruses',
+            'table'              => static::getTable(),
             'field'              => 'is_uptodate',
             'linkfield'          => '',
             'name'               => __('Is up to date'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
@@ -209,7 +206,7 @@ class ComputerAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => '171',
-            'table'              => 'glpi_computerantiviruses',
+            'table'              => static::getTable(),
             'field'              => 'signature_version',
             'name'               => __('Signature database version'),
             'forcegroupby'       => true,
@@ -217,13 +214,13 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
         $tab[] = [
             'id'                 => '172',
-            'table'              => 'glpi_computerantiviruses',
+            'table'              => static::getTable(),
             'field'              => 'date_expiration',
             'name'               => __('Expiration date'),
             'forcegroupby'       => true,
@@ -231,7 +228,7 @@ class ComputerAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'date',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
@@ -248,25 +245,27 @@ class ComputerAntivirus extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
+        /** @var CommonDBTM $itemtype */
+        $itemtype = $this->fields['itemtype'];
 
-        if (!Session::haveRight("computer", READ)) {
+        if (!Session::haveRight($itemtype::$rightname, READ)) {
             return false;
         }
 
-        $comp = new Computer();
+        $asset = new $itemtype();
         if ($ID > 0) {
             $this->check($ID, READ);
-            $comp->getFromDB($this->fields['computers_id']);
+            $asset->getFromDB($this->fields['items_id']);
         } else {
             $this->check(-1, CREATE, $options);
-            $comp->getFromDB($options['computers_id']);
+            $asset->getFromDB($options['items_id']);
         }
 
-        $options['canedit'] = Session::haveRight("computer", UPDATE);
+        $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
         $this->initForm($ID, $options);
-        TemplateRenderer::getInstance()->display('components/form/computerantivirus.html.twig', [
+        TemplateRenderer::getInstance()->display('components/form/item_antivirus.html.twig', [
             'item'                      => $this,
-            'computer'                => $comp,
+            'asset'                => $asset,
             'params'                    => $options,
         ]);
 
@@ -275,34 +274,35 @@ class ComputerAntivirus extends CommonDBChild
 
 
     /**
-     * Print the computers antiviruses
+     * Print the items antiviruses
      *
-     * @param Computer $comp          Computer object
-     * @param integer  $withtemplate  Template or basic item (default 0)
+     * @param CommonDBTM $asset         Asset
+     * @param integer    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
-    public static function showForComputer(Computer $comp, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $asset, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $ID = $comp->fields['id'];
+        $ID = $asset->fields['id'];
+        $itemtype = $asset->getType();
 
         if (
-            !$comp->getFromDB($ID)
-            || !$comp->can($ID, READ)
+            !$asset->getFromDB($ID)
+            || !$asset->can($ID, READ)
         ) {
             return;
         }
-        $canedit = $comp->canEdit($ID);
+        $canedit = $asset->canEdit($ID);
 
         if (
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
             echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='" . ComputerAntivirus::getFormURL() . "?computers_id=$ID&amp;withtemplate=" .
+               "<a class='btn btn-primary' href='" . Item_Antivirus::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID&amp;withtemplate=" .
                   $withtemplate . "'>";
             echo __('Add an antivirus');
             echo "</a></div>\n";
@@ -312,9 +312,10 @@ class ComputerAntivirus extends CommonDBChild
 
         $result = $DB->request(
             [
-                'FROM'  => ComputerAntivirus::getTable(),
+                'FROM'  => Item_Antivirus::getTable(),
                 'WHERE' => [
-                    'computers_id' => $ID,
+                    'itemtype' => $itemtype,
+                    'items_id' => $ID,
                     'is_deleted'   => 0,
                 ],
             ]
@@ -343,8 +344,8 @@ class ComputerAntivirus extends CommonDBChild
                            //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(
                                             __('%1$s = %2$s'),
-                                            Computer::getTypeName(1),
-                                            $comp->getName()
+                                            $asset->getTypeName(1),
+                                            $asset->getName()
                                         )
             );
 

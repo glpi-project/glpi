@@ -464,8 +464,8 @@ class Computer extends DbTestCase
         )->isGreaterThan(0);
 
         //add antivirus
-        $antivirus = new \ComputerAntivirus();
-        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'computers_id' => $id]);
+        $antivirus = new \Item_Antivirus();
+        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'itemtype' => 'Computer', 'items_id' => $id]);
         $this->integer($antivirus_id)->isGreaterThan(0);
 
        //clone!
@@ -520,7 +520,7 @@ class Computer extends DbTestCase
         }
 
         //check antivirus
-        $this->boolean($antivirus->getFromDBByCrit(['computers_id' => $clonedComputer->fields['id']]))->isTrue();
+        $this->boolean($antivirus->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $clonedComputer->fields['id']]))->isTrue();
 
        //check processor has been cloned
         $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();

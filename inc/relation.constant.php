@@ -234,7 +234,6 @@ $RELATION = [
     ],
 
     'glpi_computers' => [
-        '_glpi_computerantiviruses'       => 'computers_id',
         '_glpi_computers_items'           => 'computers_id',
         '_glpi_computervirtualmachines'   => 'computers_id',
         'glpi_networknames'               => [['items_id', 'itemtype']], // FIXME Find a list that can be used to declare this polymorphic relation
@@ -933,7 +932,7 @@ $RELATION = [
         'glpi_assets_assets'       => 'manufacturers_id',
         'glpi_cartridgeitems'      => 'manufacturers_id',
         'glpi_certificates'        => 'manufacturers_id',
-        'glpi_computerantiviruses' => 'manufacturers_id',
+        'glpi_items_antiviruses'    => 'manufacturers_id',
         'glpi_computers'           => 'manufacturers_id',
         'glpi_consumableitems'     => 'manufacturers_id',
         'glpi_databaseinstances'   => 'manufacturers_id',
