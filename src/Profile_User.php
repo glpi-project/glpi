@@ -180,7 +180,7 @@ class Profile_User extends CommonDBRelation
                     '<a href="%s">%s</a>', 
                     htmlspecialchars(Profile::getFormURLWithID($data['id'])),
                     htmlspecialchars($data['name'])
-                
+                );
             } else {
                 $profile_name = htmlspecialchars($data['name']);
             }
