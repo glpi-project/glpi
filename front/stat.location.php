@@ -165,8 +165,15 @@ Html::printPager(
     $_GET['start'],
     count($val),
     $CFG_GLPI['root_doc'] . '/front/stat.location.php',
-    "date1=" . $_GET["date1"] . "&amp;date2=" . $_GET["date2"] .
-                     "&amp;itemtype=" . $_GET['itemtype'] . "&amp;dropdown=" . $_GET["dropdown"],
+    Toolbox::append_params(
+        [
+            'date1'    => $_GET['date1'],
+            'date2'    => $_GET['date2'],
+            'itemtype' => $_GET['itemtype'],
+            'dropdown' => $_GET['dropdown'],
+        ],
+        '&amp;'
+    ),
     'Stat',
     $params
 );

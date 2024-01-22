@@ -178,9 +178,17 @@ Html::printPager(
     $_GET['start'],
     count($val),
     $CFG_GLPI['root_doc'] . '/front/stat.tracking.php',
-    "date1=" . $_GET["date1"] . "&amp;date2=" . $_GET["date2"] . "&amp;type=" . $_GET["type"] .
-                    "&amp;showgraph=" . $_GET["showgraph"] . "&amp;itemtype=" . $_GET["itemtype"] .
-                    "&amp;value2=" . $_GET['value2'],
+    Toolbox::append_params(
+        [
+            'date1'     => $_GET['date1'],
+            'date2'     => $_GET['date2'],
+            'type'      => $_GET['type'],
+            'showgraph' => $_GET['showgraph'],
+            'itemtype'  => $_GET['itemtype'],
+            'value2'    => $_GET['value2'],
+        ],
+        '&amp;'
+    ),
     'Stat',
     $params
 );
