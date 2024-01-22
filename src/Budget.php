@@ -349,6 +349,7 @@ class Budget extends CommonDropdown
 
         foreach ($other_cost_tables as $itemtype => $cost_table) {
             $item_table = $itemtype::getTable();
+            $item = new $itemtype();
             $criteria = [
                 'SELECT' => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
