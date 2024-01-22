@@ -420,6 +420,14 @@ final class AssetDefinition extends CommonDBTM
         $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
     }
 
+    public function cleanRelationData()
+    {
+        $asset_classname = $this->getConcreteClassName();
+        /** @var Asset $asset */
+        $asset = new $asset_classname();
+        $asset->deleteByCriteria(['assets_assetdefinitions_id' => $this->getID()], force: true, history: false);
+    }
+
     /**
      * Synchronize `profiles` field with `ProfileRights` entries.
      *
