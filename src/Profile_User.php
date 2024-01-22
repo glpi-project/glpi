@@ -168,7 +168,7 @@ class Profile_User extends CommonDBRelation
             }
             if ($canshowentity) {
                 $link = sprintf(
-                    '<a href="%s">%s</a>', 
+                    '<a href="%s">%s</a>',
                     htmlspecialchars(Entity::getFormURLWithID($data["entities_id"])),
                     htmlspecialchars($link)
                 );
@@ -177,7 +177,7 @@ class Profile_User extends CommonDBRelation
 
             if (Profile::canView()) {
                 $profile_name = sprintf(
-                    '<a href="%s">%s</a>', 
+                    '<a href="%s">%s</a>',
                     htmlspecialchars(Profile::getFormURLWithID($data['id'])),
                     htmlspecialchars($data['name'])
                 );
@@ -255,7 +255,8 @@ class Profile_User extends CommonDBRelation
         if ($canedit) {
             TemplateRenderer::getInstance()->display('pages/admin/add_profile_authorization.html.twig', [
                 'source_itemtype' => Entity::class,
-                'source_items_id' => $ID
+                'source_items_id' => $ID,
+                'used_users'      => [],
             ]);
         }
 
@@ -584,7 +585,7 @@ TWIG, $avatar_params) . $username;
             TemplateRenderer::getInstance()->display('pages/admin/add_profile_authorization.html.twig', [
                 'source_itemtype' => Profile::class,
                 'source_items_id' => $ID,
-                'used_users'     => $used_users,
+                'used_users'      => $used_users,
             ]);
         }
 
