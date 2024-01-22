@@ -329,6 +329,42 @@ class DCRoom extends CommonDBTM
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        // separator
+        $tab[] = [
+            'id'   => 'dcroom',
+            'name' => self::getTypeName(1),
+        ];
+
+        $tab[] = [
+            'id'                 => '1450',
+            'table'              => 'glpi_dcrooms',
+            'field'              => 'name',
+            'datatype'           => 'itemlink',
+            'name'               => DCRoom::getTypeName(1),
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_racks',
+                    'linkfield'          => 'racks_id',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => 'glpi_items_racks',
+                            'joinparams'         => [
+                                'jointype'           => 'itemtype_item'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        return $tab;
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
