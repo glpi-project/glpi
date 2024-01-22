@@ -36,8 +36,6 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
-use Document;
-use Document_Item;
 use Item_Disk;
 use Session;
 
