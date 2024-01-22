@@ -395,6 +395,8 @@
             showInput: true,
             preferredFormat: "hex",
             type: "text",
+            cancelText: "{{ __('Cancel') }}",
+            chooseText: "{{ __('Validate') }}",
             change: function(color) {
                 if (color !== null && color.getAlpha() !== 1) {
                     let hex = color.toHexString();
