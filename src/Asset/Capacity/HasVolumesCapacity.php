@@ -53,16 +53,16 @@ class HasVolumesCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $CFG_GLPI['disk_types'][] = $classname;
+        $this->registerToTypeConfig('disk_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Item_Disk::class, 55);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
+        // Unregister from operating system types
+        $this->unregisterFromTypeConfig('disk_types', $classname);
+
         //Delete related disks
         $disks = new Item_Disk();
         $disks->deleteByCriteria(['itemtype' => $classname], force: true, history: false);

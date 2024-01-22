@@ -47,16 +47,16 @@ class HasInfocomCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $CFG_GLPI['infocom_types'][] = $classname;
+        $this->registerToTypeConfig('infocom_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, Infocom::class, 50);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
+        // Unregister from infocom types
+        $this->unregisterFromTypeConfig('infocom_types', $classname);
+
         // Delete related infocom data
         $infocom = new Infocom();
         $infocom->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
