@@ -68,6 +68,7 @@ final class Discover extends CommonGLPI
             echo Html::css('public/lib/introjs.css');
             echo Html::scss('css/standalone/introjs.scss');
             echo Html::script('public/lib/introjs.js');
+            echo Html::script('js/discover.js');
 
             TemplateRenderer::getInstance()->display('discover/lessons.js.twig', [
                 'lesson' => $lesson,
