@@ -33,15 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * @var \Migration $migration
- */
+use Glpi\Asset\AssetDefinition;
 
-$dc_model_dropdowns = [
-    'EnclosureModel', 'PeripheralModel', 'PDUModel', 'NetworkEquipmentModel', 'MonitorModel', 'ComputerModel',
-    'PassiveDCEquipmentModel'
-];
+include('../../inc/includes.php');
 
-foreach ($dc_model_dropdowns as $model_dropdown) {
-    $migration->changeSearchOption($model_dropdown, 130, 3);
-}
+$definition = new AssetDefinition();
+$classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
+    ? $definition->getConcreteClassName()
+    : null;
+$classname .= 'Model';
+
+$dropdown = new $classname();
+include(GLPI_ROOT . "/front/dropdown.common.php");

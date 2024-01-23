@@ -166,19 +166,25 @@ final class AssetDefinitionManager
      */
     public function autoloadAssetClass(string $classname): void
     {
-        $asset_class_pattern = '/^Glpi\\\CustomAsset\\\([A-Za-z]+)$/';
-        if (preg_match($asset_class_pattern, $classname) !== 1) {
-            return;
+        $patterns = [
+            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Model$/' => 'loadConcreteModelClass',
+            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Type$/' => 'loadConcreteTypeClass',
+            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)$/' => 'loadConcreteClass',
+        ];
+
+        foreach ($patterns as $pattern => $load_function) {
+            if (preg_match($pattern, $classname) === 1) {
+                $system_name = preg_replace($pattern, '$1', $classname);
+                $definition  = $this->getDefinition($system_name);
+
+                if ($definition === null) {
+                    return;
+                }
+
+                $this->$load_function($definition);
+                break;
+            }
         }
-
-        $system_name = preg_replace($asset_class_pattern, '$1', $classname);
-        $definition  = $this->getDefinition($system_name);
-
-        if ($definition === null) {
-            return;
-        }
-
-        $this->loadConcreteClass($definition);
     }
 
     /**
@@ -284,6 +290,60 @@ PHP
         // It permits to directly store a pointer to the definition on the object without having
         // to make the property publicly writable.
         $reflected_class = new ReflectionClass($definition->getConcreteClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    /**
+     * Load asset model concrete class.
+     *
+     * @param AssetDefinition $definition
+     * @return void
+     */
+    private function loadConcreteModelClass(AssetDefinition $definition): void
+    {
+        $rightname = $definition->getAssetRightname();
+
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetModel;
+use Glpi\\Asset\\AssetDefinition;
+
+final class {$definition->getConcreteClassName(false)}Model extends AssetModel {
+    protected static AssetDefinition \$definition;
+    public static \$rightname = '{$rightname}';
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getConcreteClassName() . 'Model');
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    /**
+     * Load asset type concrete class.
+     *
+     * @param AssetDefinition $definition
+     * @return void
+     */
+    private function loadConcreteTypeClass(AssetDefinition $definition): void
+    {
+        $rightname = $definition->getAssetRightname();
+
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetType;
+use Glpi\\Asset\\AssetDefinition;
+
+final class {$definition->getConcreteClassName(false)}Type extends AssetType {
+    protected static AssetDefinition \$definition;
+    public static \$rightname = '{$rightname}';
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getConcreteClassName() . 'Type');
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

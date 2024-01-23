@@ -34,14 +34,25 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var array $CFG_GLPI
  */
 
-$dc_model_dropdowns = [
-    'EnclosureModel', 'PeripheralModel', 'PDUModel', 'NetworkEquipmentModel', 'MonitorModel', 'ComputerModel',
-    'PassiveDCEquipmentModel'
-];
+use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetType;
 
-foreach ($dc_model_dropdowns as $model_dropdown) {
-    $migration->changeSearchOption($model_dropdown, 130, 3);
+include('../../inc/includes.php');
+
+if (array_key_exists('id', $_REQUEST)) {
+    $asset_type = AssetType::getById($_REQUEST['id']);
+} else {
+    $definition = new AssetDefinition();
+    $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
+        ? $definition->getConcreteClassName()
+        : null;
+    $classname .= 'Type';
+    $asset_type = $classname !== null && class_exists($classname)
+        ? new $classname()
+        : null;
 }
+$dropdown = $asset_type;
+include(GLPI_ROOT . "/front/dropdown.common.form.php");
