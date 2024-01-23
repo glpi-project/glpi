@@ -224,6 +224,10 @@ class GlpiFormEditorController
      *  - "change-question-parent-type": change the parent type of the target
      *  question
      *  - "change-question-type": change the parent type of the target question
+     *  - "build-move-section-modal-content": build the "move section modal"
+     *  content
+     * - "reorder-sections": reorder the sections based on the "move section
+     * modal" content
      *
      * @param {string} action Action to perform
      * @param {jQuery} target Element that triggered the action
@@ -295,6 +299,16 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // Build the "move section modal" content
+            case "build-move-section-modal-content":
+                this.#buildMoveSectionModalContent();
+                break;
+
+            // Reorder the sections based on the "move section modal" content
+            case "reorder-sections":
+                this.#reorderSections();
+                break;
+
             // Unknown action
             default:
                 console.error(`Unknown action: ${action}`);
@@ -315,7 +329,10 @@ class GlpiFormEditorController
      #setActiveItem(item_container) {
         // Remove current active item
         $(this.#target)
-            .find("[data-glpi-form-editor-question]")
+            .find("\
+                [data-glpi-form-editor-question], \
+                [data-glpi-form-editor-section-form-container] \
+            ")
             .removeClass("active");
 
         // Set new active item if specified
@@ -515,6 +532,96 @@ class GlpiFormEditorController
             section.data("glpi-form-editor-section-index"),
             question.data("glpi-form-editor-question-index"),
         );
+    }
+
+    /**
+     * Build the "move section modal" content.
+     */
+    #buildMoveSectionModalContent() {
+        // Clear modal content
+        const modal_content = $(this.#target)
+            .find("[data-form-editor-move-section-modal-items]");
+
+        modal_content.children().remove();
+
+        // Find all sections and insert them into the modal
+        $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .each((index, section) => {
+                const name = this.#getSectionInput($(section), "name");
+                const sindex = $(section).data("glpi-form-editor-section-index");
+
+                // Copy template
+                const copy = $("[data-form-editor-move-section-modal-item-template]")
+                    .clone();
+
+                // Set section index
+                copy
+                    .find("[data-form-editor-move-section-modal-item-section-index]")
+                    .attr(
+                        "data-form-editor-move-section-modal-item-section-index",
+                        sindex
+                    );
+
+                // Set section name
+                copy
+                    .find("[data-form-editor-move-section-modal-item-section-name]")
+                    .html(name);
+
+                // Remove template tag
+                copy.removeAttr("data-form-editor-move-section-modal-item-template");
+
+                modal_content.append(copy);
+            });
+
+        sortable($("[data-form-editor-move-section-modal-items]"), {
+            // Drag and drop handle selector
+            handle: '[data-glpi-form-editor-section-handle]',
+
+            // Placeholder class
+            placeholderClass: 'glpi-form-editor-drag-section-placeholder',
+        });
+    }
+
+    /**
+     * Reorder the sections based on the "move section modal" content.
+     */
+    #reorderSections() {
+        const modal_content = $(this.#target)
+            .find("[data-form-editor-move-section-modal-items]")
+            .children()
+            .each((index, item) => {
+                // Find section index
+                const sindex = $(item)
+                    .find("[data-form-editor-move-section-modal-item-section-index]")
+                    .data("form-editor-move-section-modal-item-section-index");
+
+                // Find section by index
+                const section = $(this.#target)
+                    .find(`[data-glpi-form-editor-section-index=${sindex}]`);
+
+                // Move section at the end of the form
+                // This will naturally sort all sections as there are moved one
+                // by one at the end
+                section
+                    .remove()
+                    .appendTo(
+                        $(this.#target).find("[data-glpi-form-editor-sections]")
+                    );
+            })
+
+        // Reinit tiynmce on all inputs
+        $(this.#target)
+            .find("textarea")
+            .each((index, textarea) => {
+                const id = $(textarea).prop("id");
+                const editor = tinymce.get(id);
+                editor.destroy();
+                tinymce.init(window.tinymce_editor_configs[id])
+            });
+
+        // Update ranks
+        this.#computeRanks();
     }
 
     /**

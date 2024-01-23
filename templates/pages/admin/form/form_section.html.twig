@@ -74,11 +74,39 @@
                     placeholder="{{ __("New section") }}"
                 >
 
-                {# TODO, use a dot menu instead with multiple options and a delete confirmation #}
-                <i
-                    class="ti ti-trash ms-2 text-danger cursor-pointer"
-                    data-glpi-form-editor-on-click="delete-section"
-                ></i>
+                {# Extra actions #}
+                <div class="dropdown ms-auto cursor-pointer">
+                    <i
+                        class="ti ti-dots-vertical show"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        <li>
+                            <a
+                                href="#"
+                                class="dropdown-item"
+                                data-bs-toggle="modal"
+                                data-bs-target="[data-glpi-form-editor-move-section-modal]"
+                                data-glpi-form-editor-on-click="build-move-section-modal-content"
+                            >
+                                <i class="ti ti-arrows-move-vertical me-2"></i>
+                                <span>{{ __("Move section") }}</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="#"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="delete-section"
+                            >
+                                <i class="ti ti-trash me-2"></i>
+                                <span>{{ __("Delete section") }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             {# Section's description #}
