@@ -49,16 +49,16 @@ class HasLinksCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $CFG_GLPI['link_types'][] = $classname;
+        $this->registerToTypeConfig('link_types', $classname);
 
         CommonGLPI::registerStandardTab($classname, ManualLink::class, 100);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
+        // Unregister from link types
+        $this->unregisterFromTypeConfig('link_types', $classname);
+
         // Delete related links
         $manual_link = new ManualLink();
         $manual_link->deleteByCriteria([

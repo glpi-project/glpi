@@ -48,19 +48,11 @@ class HasLinksCapacity extends DbTestCase
 
         $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
 
-        $superadmin_p_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
-        $profiles_matrix = [
-            $superadmin_p_id => [
-                READ   => 1, // Need the READ right to be able to see the `Item_Disk$1` tab
-            ],
-        ];
-
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasLinksCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
-            ],
-            profiles: $profiles_matrix
+            ]
         );
         $classname_1  = $definition_1->getConcreteClassName();
         $definition_2 = $this->initAssetDefinition(
@@ -73,8 +65,7 @@ class HasLinksCapacity extends DbTestCase
             capacities: [
                 \Glpi\Asset\Capacity\HasLinksCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-            ],
-            profiles: $profiles_matrix
+            ]
         );
         $classname_3  = $definition_3->getConcreteClassName();
 
@@ -113,6 +104,9 @@ class HasLinksCapacity extends DbTestCase
 
     public function testCapacityDeactivation(): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
@@ -133,14 +127,14 @@ class HasLinksCapacity extends DbTestCase
         $item_1          = $this->createItem(
             $classname_1,
             [
-                'name' => __FUNCTION__,
+                'name'        => __FUNCTION__,
                 'entities_id' => $root_entity_id,
             ]
         );
         $item_2          = $this->createItem(
             $classname_2,
             [
-                'name' => __FUNCTION__,
+                'name'        => __FUNCTION__,
                 'entities_id' => $root_entity_id,
             ]
         );
@@ -148,26 +142,26 @@ class HasLinksCapacity extends DbTestCase
         $manual_link = $this->createItem(
             \ManualLink::class,
             [
-                'name'         => 'manual link',
-                'itemtype'     => $item_1::class,
-                'items_id'     => $item_1->getID(),
-                'url'          => 'https://glpi-project.org'
+                'name'     => 'manual link',
+                'itemtype' => $item_1::class,
+                'items_id' => $item_1->getID(),
+                'url'      => 'https://glpi-project.org'
             ]
         );
         $manual_link_2 = $this->createItem(
             \ManualLink::class,
             [
-                'name'         => 'manual link',
-                'itemtype'     => $item_2::class,
-                'items_id'     => $item_2->getID(),
-                'url'          => 'https://glpi-project.org'
+                'name'     => 'manual link',
+                'itemtype' => $item_2::class,
+                'items_id' => $item_2->getID(),
+                'url'      => 'https://glpi-project.org'
             ]
         );
         $external_link = $this->createItem(
             \Link::class,
             [
-                'name'         => 'external link',
-                'link'          => 'https://glpi-project.org'
+                'name' => 'external link',
+                'link' => 'https://glpi-project.org'
             ]
         );
         $link_itemtype = $this->createItem(\Link_Itemtype::class, [
@@ -196,30 +190,34 @@ class HasLinksCapacity extends DbTestCase
         );
 
         $item_1_logs_criteria = [
-            'itemtype'      => $classname_1,
+            'itemtype' => $classname_1,
         ];
         $item_2_logs_criteria = [
-            'itemtype'      => $classname_2,
+            'itemtype' => $classname_2,
         ];
 
-        // Ensure relation, display preferences and logs exists
+        // Ensure relation, display preferences and logs exists, and class is registered to global config
         $this->object(\ManualLink::getById($manual_link->getID()))->isInstanceOf(\ManualLink::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2);
         $this->object(\Link_Itemtype::getById($link_itemtype->getID()))->isInstanceOf(\Link_Itemtype::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
+        $this->array($CFG_GLPI['link_types'])->contains($classname_1);
+        $this->array($CFG_GLPI['link_types'])->contains($classname_2);
 
-        // Disable capacity and check that relations have been cleaned
+        // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
         $this->boolean(\ManualLink::getById($manual_link->getID()))->isFalse();
         $this->boolean(DisplayPreference::getById($displaypref_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
+        $this->array($CFG_GLPI['link_types'])->notContains($classname_1);
 
-        // Ensure relations and logs are preserved for other definition
+        // Ensure relations, logs and global registration are preserved for other definition
         $this->object(\ManualLink::getById($manual_link_2->getID()))->isInstanceOf(\ManualLink::class);
         $this->object(\Link_Itemtype::getById($link_itemtype_2->getID()))->isInstanceOf(\Link_Itemtype::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
+        $this->array($CFG_GLPI['link_types'])->contains($classname_2);
     }
 }
