@@ -60,7 +60,7 @@ class HasVolumesCapacity extends AbstractCapacity
 
     public function onCapacityDisabled(string $classname): void
     {
-        // Unregister from operating system types
+        // Unregister from disk types
         $this->unregisterFromTypeConfig('disk_types', $classname);
 
         //Delete related disks

@@ -36,13 +36,11 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
-use Glpi\Asset\Asset;
-use Log;
 use Reservation;
 use ReservationItem;
 use Session;
 
-class HasReservableCapacity extends AbstractCapacity
+class IsReservableCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
@@ -51,15 +49,16 @@ class HasReservableCapacity extends AbstractCapacity
 
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        $this->registerToTypeConfig('reservation_types', $classname);
 
-        $CFG_GLPI['reservation_types'][] = $classname;
         CommonGLPI::registerStandardTab($classname, Reservation::class, 85);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
+        // Unregister from reservable types
+        $this->unregisterFromTypeConfig('reservation_types', $classname);
+
         // Delete related reservations
         $reservation_item = new ReservationItem();
         $reservation_item->deleteByCriteria([
