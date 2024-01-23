@@ -343,6 +343,11 @@ final class SearchOption implements \ArrayAccess
                 $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
             }
 
+            if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
+                $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(\Session::getPluralNumber());
+                $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
+            }
+
             if ($withplugins) {
                 // Search options added by plugins
                 $plugsearch = \Plugin::getAddSearchOptions($itemtype);

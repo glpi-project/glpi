@@ -36,42 +36,39 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
-use Item_Disk;
+use Reservation;
+use ReservationItem;
 use Session;
 
-class HasVolumesCapacity extends AbstractCapacity
+class IsReservableCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return Item_Disk::getTypeName(Session::getPluralNumber());
-    }
-
-    public function getSearchOptions(string $classname): array
-    {
-        return Item_Disk::rawSearchOptionsToAdd($classname::getType());
+        return \Reservation::getTypeName(Session::getPluralNumber());
     }
 
     public function onClassBootstrap(string $classname): void
     {
-        $this->registerToTypeConfig('disk_types', $classname);
+        $this->registerToTypeConfig('reservation_types', $classname);
 
-        CommonGLPI::registerStandardTab($classname, Item_Disk::class, 55);
+        CommonGLPI::registerStandardTab($classname, Reservation::class, 85);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
-        // Unregister from disk types
-        $this->unregisterFromTypeConfig('disk_types', $classname);
+        // Unregister from reservable types
+        $this->unregisterFromTypeConfig('reservation_types', $classname);
 
-        //Delete related disks
-        $disks = new Item_Disk();
-        $disks->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
+        // Delete related reservations
+        $reservation_item = new ReservationItem();
+        $reservation_item->deleteByCriteria([
+            'itemtype' => $classname,
+        ], true, false);
 
-        // Clean history related to disks
-        $this->deleteRelationLogs($classname, Item_Disk::class);
+        // Clean history related to links
+        $this->deleteRelationLogs($classname, ReservationItem::class);
 
         // Clean display preferences
-        $disks_search_options = Item_Disk::rawSearchOptionsToAdd($classname);
-        $this->deleteDisplayPreferences($classname, $disks_search_options);
+        $this->deleteDisplayPreferences($classname, ReservationItem::rawSearchOptionsToAdd($classname));
     }
 }
