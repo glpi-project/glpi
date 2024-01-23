@@ -284,4 +284,25 @@ class AssetDefinition extends DbTestCase
         $this->boolean($updated)->isFalse();
         $this->hasSessionMessages(ERROR, ['The system name cannot be changed.']);
     }
+
+    public function testDelete()
+    {
+        /** @var \Glpi\Asset\AssetDefinition $definition */
+        $definition = $this->initAssetDefinition('test');
+        \Glpi\Asset\AssetDefinitionManager::getInstance()->boostrapAssets();
+
+        $this->createItem(
+            $definition->getConcreteClassName(),
+            [
+                'name' => 'test',
+            ]
+        );
+
+        $this->boolean($definition->delete([
+            'id' => $definition->getID(),
+        ]))->isTrue();
+        $this->array(getAllDataFromTable('glpi_assets_assets', [
+            'assets_assetdefinitions_id' => $definition->getID(),
+        ]))->size->isEqualTo(0);
+    }
 }
