@@ -92,6 +92,19 @@
                             <a
                                 href="#"
                                 class="dropdown-item"
+                                data-bs-toggle="modal"
+                                data-bs-target="[data-glpi-form-editor-move-section-modal]"
+                                data-glpi-form-editor-on-click="build-move-section-modal-content"
+                            >
+                                <i class="ti ti-arrows-move-vertical me-2"></i>
+                                <span>{{ __("Move section") }}</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="#"
+                                class="dropdown-item"
                                 data-glpi-form-editor-on-click="delete-section"
                             >
                                 <i class="ti ti-trash me-2"></i>
@@ -134,6 +147,11 @@
                 type="hidden"
                 name="forms_forms_id"
                 value="{{ form.fields.id }}"
+            />
+            <input
+                type="hidden"
+                name="rank"
+                value="{{ section is not null ? section.fields.rank : 0 }}"
             />
         </div>
     </div>

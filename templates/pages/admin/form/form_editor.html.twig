@@ -284,6 +284,9 @@
     {# TODO: add bootstrap tooltips on each buttons #}
 
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+    {# Move section modal #}
+    {{ include('pages/admin/form/move_section_modal.html.twig') }}
 </form>
 
 {% if item.canUpdate() %}

@@ -111,6 +111,13 @@
     height: 70px !important;
 }
 
+.glpi-form-editor-drag-section-placeholder {
+    border: 2px dashed var(--tblr-primary);
+    background: rgba(var(--tblr-primary), 0.1);
+    opacity: 0.5;
+    height: 60px !important;
+}
+
 // Hide handle until question is hovered
 .glpi-form-editor-question-handle {
     opacity: 0;
