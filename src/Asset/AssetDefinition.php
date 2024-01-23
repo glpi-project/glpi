@@ -420,7 +420,7 @@ final class AssetDefinition extends CommonDBTM
         $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
     }
 
-    public function cleanRelationData()
+    public function cleanDBonPurge()
     {
         $asset_classname = $this->getConcreteClassName();
         /** @var Asset $asset */
