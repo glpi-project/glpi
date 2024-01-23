@@ -288,7 +288,7 @@ class AssetDefinition extends DbTestCase
     public function testDelete()
     {
         /** @var \Glpi\Asset\AssetDefinition $definition */
-        $definition = $this->initAssetDefinition('test');;
+        $definition = $this->initAssetDefinition('test');
         \Glpi\Asset\AssetDefinitionManager::getInstance()->boostrapAssets();
 
         $this->createItem(
