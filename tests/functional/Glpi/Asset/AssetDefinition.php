@@ -292,7 +292,7 @@ class AssetDefinition extends DbTestCase
         \Glpi\Asset\AssetDefinitionManager::getInstance()->boostrapAssets();
 
         $this->createItem(
-            $definition->getConcreteClassName(),
+            $definition->getAssetClassName(),
             [
                 'name' => 'test',
             ]

@@ -135,7 +135,7 @@ final class AssetDefinitionManager
 
         $capacities = $this->getAvailableCapacities();
 
-        $concrete_class_name = $definition->getConcreteClassName();
+        $concrete_class_name = $definition->getAssetClassName();
 
         // Register asset into configuration entries related to the capacities that cannot be disabled
         $config_keys = [
@@ -201,7 +201,7 @@ final class AssetDefinitionManager
             if (!$definition->isActive()) {
                 continue;
             }
-            $classes[] = $definition->getConcreteClassName($with_namespace);
+            $classes[] = $definition->getAssetClassName($with_namespace);
         }
 
         return $classes;
@@ -279,7 +279,7 @@ namespace Glpi\\CustomAsset;
 use Glpi\\Asset\\Asset;
 use Glpi\\Asset\\AssetDefinition;
 
-final class {$definition->getConcreteClassName(false)} extends Asset {
+final class {$definition->getAssetClassName(false)} extends Asset {
     protected static AssetDefinition \$definition;
     public static \$rightname = '{$rightname}';
 }
@@ -289,7 +289,7 @@ PHP
         // Set the definition of the concrete class using reflection API.
         // It permits to directly store a pointer to the definition on the object without having
         // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getConcreteClassName());
+        $reflected_class = new ReflectionClass($definition->getAssetClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
@@ -309,14 +309,14 @@ namespace Glpi\\CustomAsset;
 use Glpi\\Asset\\AssetModel;
 use Glpi\\Asset\\AssetDefinition;
 
-final class {$definition->getConcreteClassName(false)}Model extends AssetModel {
+final class {$definition->getAssetModelClassName(false)} extends AssetModel {
     protected static AssetDefinition \$definition;
     public static \$rightname = '{$rightname}';
 }
 PHP
         );
 
-        $reflected_class = new ReflectionClass($definition->getConcreteClassName() . 'Model');
+        $reflected_class = new ReflectionClass($definition->getAssetModelClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 
@@ -336,14 +336,14 @@ namespace Glpi\\CustomAsset;
 use Glpi\\Asset\\AssetType;
 use Glpi\\Asset\\AssetDefinition;
 
-final class {$definition->getConcreteClassName(false)}Type extends AssetType {
+final class {$definition->getAssetTypeClassName(false)} extends AssetType {
     protected static AssetDefinition \$definition;
     public static \$rightname = '{$rightname}';
 }
 PHP
         );
 
-        $reflected_class = new ReflectionClass($definition->getConcreteClassName() . 'Type');
+        $reflected_class = new ReflectionClass($definition->getAssetTypeClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }

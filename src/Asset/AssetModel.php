@@ -77,12 +77,12 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getConcreteClassName(false);
+        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getConcreteClassName(false);
+        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getById(?int $id)
@@ -111,7 +111,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
         }
 
         // Instanciate concrete class
-        $asset_model_class = $definition->getConcreteClassName(true) . 'Model';
+        $asset_model_class = $definition->getAssetModelClassName(true);
         $asset_model = new $asset_model_class();
         if (!$asset_model->getFromDB($id)) {
             return false;

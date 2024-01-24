@@ -39,6 +39,7 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetType;
+use Glpi\Http\Response;
 
 include('../../inc/includes.php');
 
@@ -47,12 +48,16 @@ if (array_key_exists('id', $_REQUEST)) {
 } else {
     $definition = new AssetDefinition();
     $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-        ? $definition->getConcreteClassName()
+        ? $definition->getAssetTypeClassName()
         : null;
-    $classname .= 'Type';
     $asset_type = $classname !== null && class_exists($classname)
         ? new $classname()
         : null;
 }
+
+if ($asset_type === null) {
+    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+}
+
 $dropdown = $asset_type;
 include(GLPI_ROOT . "/front/dropdown.common.form.php");

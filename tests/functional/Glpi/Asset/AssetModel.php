@@ -42,10 +42,10 @@ class AssetModel extends DbTestCase
     protected function getByIdProvider(): iterable
     {
         $foo_definition = $this->initAssetDefinition();
-        $foo_classname = $foo_definition->getConcreteClassName() . 'Model';
+        $foo_classname = $foo_definition->getAssetModelClassName();
 
         $bar_definition = $this->initAssetDefinition();
-        $bar_classname = $bar_definition->getConcreteClassName() . 'Model';
+        $bar_classname = $bar_definition->getAssetModelClassName();
 
         // Loop to ensure that switching between definition does not cause any issue
         for ($i = 0; $i < 2; $i++) {
@@ -89,7 +89,7 @@ class AssetModel extends DbTestCase
     public function testPrepareInputDefinition(): void
     {
         $definition = $this->initAssetDefinition();
-        $classname = $definition->getConcreteClassName() . 'Model';
+        $classname = $definition->getAssetModelClassName();
         $asset_model = new $classname();
 
         foreach (['prepareInputForAdd','prepareInputForUpdate'] as $method) {
@@ -109,9 +109,9 @@ class AssetModel extends DbTestCase
     public function testUpdateWithWrongDefinition(): void
     {
         $definition_1 = $this->initAssetDefinition();
-        $classname_1  = $definition_1->getConcreteClassName() . 'Model';
+        $classname_1  = $definition_1->getAssetModelClassName();
         $definition_2 = $this->initAssetDefinition();
-        $classname_2  = $definition_2->getConcreteClassName() . 'Model';
+        $classname_2  = $definition_2->getAssetModelClassName();
 
         $asset_model = $this->createItem($classname_1, ['name' => 'new asset model']);
 

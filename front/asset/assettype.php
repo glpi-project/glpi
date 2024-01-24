@@ -34,14 +34,18 @@
  */
 
 use Glpi\Asset\AssetDefinition;
+use Glpi\Http\Response;
 
 include('../../inc/includes.php');
 
 $definition = new AssetDefinition();
 $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getConcreteClassName()
+    ? $definition->getAssetTypeClassName()
     : null;
-$classname .= 'Type';
+
+if ($classname === null || !class_exists($classname)) {
+    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+}
 
 $dropdown = new $classname();
 include(GLPI_ROOT . "/front/dropdown.common.php");

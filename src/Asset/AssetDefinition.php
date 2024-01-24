@@ -379,7 +379,7 @@ final class AssetDefinition extends CommonDBTM
                     // can be null if provided by a plugin that is no longer active
                     continue;
                 }
-                $capacity->onCapacityDisabled($this->getConcreteClassName());
+                $capacity->onCapacityDisabled($this->getAssetClassName());
                 array_push($rights_to_remove, ...$capacity->getSpecificRights());
             }
 
@@ -422,7 +422,7 @@ final class AssetDefinition extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-        $asset_classname = $this->getConcreteClassName();
+        $asset_classname = $this->getAssetClassName();
         /** @var Asset $asset */
         $asset = new $asset_classname();
         $asset->deleteByCriteria(['assets_assetdefinitions_id' => $this->getID()], force: true, history: false);
@@ -625,7 +625,7 @@ final class AssetDefinition extends CommonDBTM
      * @param bool $with_namespace
      * @return string
      */
-    public function getConcreteClassName(bool $with_namespace = true): string
+    public function getAssetClassName(bool $with_namespace = true): string
     {
         $classname = $this->fields['system_name'];
 
@@ -634,6 +634,28 @@ final class AssetDefinition extends CommonDBTM
         }
 
         return $classname;
+    }
+
+    /**
+     * Get the definition's concrete asset model class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     */
+    public function getAssetModelClassName(bool $with_namespace = true): string
+    {
+        return $this->getAssetClassName($with_namespace) . 'Model';
+    }
+
+    /**
+     * Get the definition's concrete asset type class name.
+     *
+     * @param bool $with_namespace
+     * @return string
+     */
+    public function getAssetTypeClassName(bool $with_namespace = true): string
+    {
+        return $this->getAssetClassName($with_namespace) . 'Type';
     }
 
     /**
@@ -681,7 +703,7 @@ final class AssetDefinition extends CommonDBTM
      */
     private function getPossibleAssetRights(): array
     {
-        $class = $this->getConcreteClassName();
+        $class = $this->getAssetClassName();
         $object = new $class();
         return $object->getRights();
     }

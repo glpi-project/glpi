@@ -78,12 +78,12 @@ abstract class AssetType extends CommonType
 
     public static function getSearchURL($full = true)
     {
-        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getConcreteClassName(false);
+        return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getFormURL($full = true)
     {
-        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getConcreteClassName(false);
+        return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getById(?int $id)
@@ -112,7 +112,7 @@ abstract class AssetType extends CommonType
         }
 
         // Instanciate concrete class
-        $asset_type_class = $definition->getConcreteClassName(true) . 'Type';
+        $asset_type_class = $definition->getAssetTypeClassName(true);
         $asset_type = new $asset_type_class();
         if (!$asset_type->getFromDB($id)) {
             return false;
