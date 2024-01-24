@@ -145,24 +145,30 @@ abstract class Asset extends CommonDBTM
         $search_options = array_merge($search_options, Location::rawSearchOptionsToAdd());
 
         /** @var AssetModel $asset_model_class */
-        $asset_model_class = static::class . 'Model';
+        $asset_model_class = $this->getDefinition()->getAssetModelClassName();
         /** @var AssetType $asset_type_class */
-        $asset_type_class = static::class . 'Type';
+        $asset_type_class = $this->getDefinition()->getAssetTypeClassName();
 
         $search_options[] = [
-            'id' => '4',
-            'table' => $asset_type_class::getTable(),
-            'field' => 'name',
-            'name' => $asset_type_class::getTypeName(1),
-            'datatype' => 'dropdown',
+            'id'        => '4',
+            'table'     => $asset_type_class::getTable(),
+            'field'     => 'name',
+            'name'      => $asset_type_class::getTypeName(1),
+            'datatype'  => 'dropdown',
+            // Search class could not be able to retrieve the concrete type class when using `getItemTypeForTable()`
+            // so we have to define an `itemtype` here.
+            'itemtype'  => $asset_type_class,
         ];
 
         $search_options[] = [
-            'id' => '40',
-            'table' => $asset_model_class::getTable(),
-            'field' => 'name',
-            'name' => $asset_model_class::getTypeName(1),
-            'datatype' => 'dropdown',
+            'id'        => '40',
+            'table'     => $asset_model_class::getTable(),
+            'field'     => 'name',
+            'name'      => $asset_model_class::getTypeName(1),
+            'datatype'  => 'dropdown',
+            // Search class could not be able to retrieve the concrete model class when using `getItemTypeForTable()`
+            // so we have to define an `itemtype` here.
+            'itemtype'  => $asset_model_class,
         ];
 
         $search_options[] = [
