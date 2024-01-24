@@ -35,6 +35,10 @@
 
 namespace Glpi\Search;
 
+use Change;
+use Problem;
+use Ticket;
+
 /**
  * Object representing a search option.
  *
@@ -259,39 +263,9 @@ final class SearchOption implements \ArrayAccess
             ) {
                 $search[$itemtype]['tracking']          = __('Assistance');
 
-                $search[$itemtype][60]['table']         = 'glpi_tickets';
-                $search[$itemtype][60]['field']         = 'id';
-                $search[$itemtype][60]['datatype']      = 'count';
-                $search[$itemtype][60]['name']          = _x('quantity', 'Number of tickets');
-                $search[$itemtype][60]['forcegroupby']  = true;
-                $search[$itemtype][60]['usehaving']     = true;
-                $search[$itemtype][60]['massiveaction'] = false;
-                $search[$itemtype][60]['joinparams']    = [
-                    'beforejoin' => [
-                        'table' => 'glpi_items_tickets',
-                        'joinparams' => [
-                            'jointype' => 'itemtype_item'
-                        ]
-                    ],
-                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
-                ];
-
-                $search[$itemtype][140]['table']         = 'glpi_problems';
-                $search[$itemtype][140]['field']         = 'id';
-                $search[$itemtype][140]['datatype']      = 'count';
-                $search[$itemtype][140]['name']          = _x('quantity', 'Number of problems');
-                $search[$itemtype][140]['forcegroupby']  = true;
-                $search[$itemtype][140]['usehaving']     = true;
-                $search[$itemtype][140]['massiveaction'] = false;
-                $search[$itemtype][140]['joinparams']    = [
-                    'beforejoin' => [
-                        'table' => 'glpi_items_problems',
-                        'joinparams' => [
-                            'jointype' => 'itemtype_item'
-                        ]
-                    ],
-                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
-                ];
+                $fn_append_options(Problem::getSearchOptionsToAdd($itemtype));
+                $fn_append_options(Ticket::getSearchOptionsToAdd($itemtype));
+                $fn_append_options(Change::getSearchOptionsToAdd($itemtype));
             }
 
             if (

@@ -3141,7 +3141,10 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight('problem', READ)) {
-            $tab = array_merge($tab, Problem::rawSearchOptionsToAdd());
+            $tab = array_merge(
+                $tab,
+                Problem::rawSearchOptionsToAdd(self::class)
+            );
         }
 
         $tab[] = [
@@ -6428,5 +6431,36 @@ JAVASCRIPT;
                 $this->olaAffect($slmType, $input, $manual_olas_id);
             }
         }
+    }
+
+    public static function rawSearchOptionsToAdd($itemtype)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $options = [];
+
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $options[] = [
+                'id'            => 60,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of tickets'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
+        return $options;
     }
 }

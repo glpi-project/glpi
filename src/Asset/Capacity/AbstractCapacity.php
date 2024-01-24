@@ -49,10 +49,20 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Constructor.
      *
-     * Declared as final to ensure that constructor can be call without having to pass any parameter.
+     * Declared as final to ensure that constructor can be called without having to pass any parameter.
      */
     final public function __construct()
     {
+    }
+
+    public function getHelpText(): string
+    {
+        return '';
+    }
+
+    public function getConfigurationMessages(string $classname): array
+    {
+        return [];
     }
 
     public function getSearchOptions(string $classname): array
@@ -227,5 +237,17 @@ abstract class AbstractCapacity implements CapacityInterface
                 [$itemtype]
             )
         );
+    }
+
+    /**
+     * Escape and encode an itemtype for use in a SQL "LIKE" query.
+     *
+     * @param string $classname
+     *
+     * @return string
+     */
+    protected function escapeAndEncodeClassName(string $classname): string
+    {
+        return str_replace('\\', '\\\\', json_encode($classname));
     }
 }
