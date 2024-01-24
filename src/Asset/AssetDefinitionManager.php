@@ -301,8 +301,6 @@ PHP
      */
     private function loadConcreteModelClass(AssetDefinition $definition): void
     {
-        $rightname = $definition->getAssetRightname();
-
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
@@ -311,7 +309,6 @@ use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetModelClassName(false)} extends AssetModel {
     protected static AssetDefinition \$definition;
-    public static \$rightname = '{$rightname}';
 }
 PHP
         );
@@ -328,8 +325,6 @@ PHP
      */
     private function loadConcreteTypeClass(AssetDefinition $definition): void
     {
-        $rightname = $definition->getAssetRightname();
-
         eval(<<<PHP
 namespace Glpi\\CustomAsset;
 
@@ -338,7 +333,6 @@ use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetTypeClassName(false)} extends AssetType {
     protected static AssetDefinition \$definition;
-    public static \$rightname = '{$rightname}';
 }
 PHP
         );
