@@ -610,7 +610,7 @@ class Lockedfield extends DbTestCase
         $cos = new \Item_OperatingSystem();
         $aos = new \OperatingSystemArchitecture();
         $manufacturer = new \Manufacturer();
-        $iav = new \Item_Antivirus();
+        $iav = new \ItemAntivirus();
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>

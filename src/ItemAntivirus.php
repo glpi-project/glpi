@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 
 
-class Item_Antivirus extends CommonDBChild
+class ItemAntivirus extends CommonDBChild
 {
    // From CommonDBChild
     public static $itemtype = 'itemtype';
@@ -302,7 +302,7 @@ class Item_Antivirus extends CommonDBChild
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
             echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='" . Item_Antivirus::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID&amp;withtemplate=" .
+               "<a class='btn btn-primary' href='" . ItemAntivirus::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID&amp;withtemplate=" .
                   $withtemplate . "'>";
             echo __('Add an antivirus');
             echo "</a></div>\n";
@@ -312,7 +312,7 @@ class Item_Antivirus extends CommonDBChild
 
         $result = $DB->request(
             [
-                'FROM'  => Item_Antivirus::getTable(),
+                'FROM'  => ItemAntivirus::getTable(),
                 'WHERE' => [
                     'itemtype' => $itemtype,
                     'items_id' => $ID,

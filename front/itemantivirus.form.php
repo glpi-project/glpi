@@ -49,7 +49,7 @@ if (!isset($_GET["items_id"])) {
     $_GET["items_id"] = "";
 }
 
-$antivirus = new Item_Antivirus();
+$antivirus = new ItemAntivirus();
 if (isset($_POST["add"])) {
     $antivirus->check(-1, CREATE, $_POST);
 
@@ -101,7 +101,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     $menus = ["assets", "computer"];
-    Item_Antivirus::displayFullPageForItem($_GET["id"], $menus, [
+    ItemAntivirus::displayFullPageForItem($_GET["id"], $menus, [
         'itemtype' => $_GET["itemtype"],
         'items_id' => $_GET["items_id"]
     ]);

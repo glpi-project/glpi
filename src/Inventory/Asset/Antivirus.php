@@ -35,7 +35,7 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Item_Antivirus;
+use ItemAntivirus;
 use Glpi\Inventory\Conf;
 
 class Antivirus extends InventoryAsset
@@ -98,7 +98,7 @@ class Antivirus extends InventoryAsset
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'name', 'antivirus_version', 'is_dynamic'],
-            'FROM'   => Item_Antivirus::getTable(),
+            'FROM'   => ItemAntivirus::getTable(),
             'WHERE'  => [
                 'itemtype' => $this->item->getType(),
                 'items_id' => $this->item->fields['id']
@@ -119,7 +119,7 @@ class Antivirus extends InventoryAsset
     {
         $db_antivirus = $this->getExisting();
         $value = $this->data;
-        $itemAntivirus = new Item_Antivirus();
+        $itemAntivirus = new ItemAntivirus();
 
        //check for existing
         foreach ($value as $k => $val) {
@@ -166,6 +166,6 @@ class Antivirus extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \Item_Antivirus::class;
+        return \ItemAntivirus::class;
     }
 }

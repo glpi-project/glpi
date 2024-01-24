@@ -77,7 +77,7 @@ class Computer extends CommonDBTM
             Notepad::class,
             KnowbaseItem_Item::class,
             Item_RemoteManagement::class,
-            Item_Antivirus::class
+            ItemAntivirus::class
         ];
     }
 
@@ -120,7 +120,7 @@ class Computer extends CommonDBTM
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('ComputerVirtualMachine', $ong, $options)
-         ->addStandardTab('Item_Antivirus', $ong, $options)
+         ->addStandardTab('ItemAntivirus', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
@@ -324,7 +324,7 @@ class Computer extends CommonDBTM
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Computer_Item::class,
-                Item_Antivirus::class,
+                ItemAntivirus::class,
                 ComputerVirtualMachine::class,
                 Item_Environment::class,
                 Item_Process::class,
@@ -601,7 +601,7 @@ class Computer extends CommonDBTM
 
         $tab = array_merge($tab, ComputerVirtualMachine::rawSearchOptionsToAdd(get_class($this)));
 
-        $tab = array_merge($tab, Item_Antivirus::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, ItemAntivirus::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Monitor::rawSearchOptionsToAdd());
 

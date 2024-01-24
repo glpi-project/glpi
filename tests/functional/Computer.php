@@ -464,7 +464,7 @@ class Computer extends DbTestCase
         )->isGreaterThan(0);
 
         //add antivirus
-        $antivirus = new \Item_Antivirus();
+        $antivirus = new \ItemAntivirus();
         $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'itemtype' => 'Computer', 'items_id' => $id]);
         $this->integer($antivirus_id)->isGreaterThan(0);
 

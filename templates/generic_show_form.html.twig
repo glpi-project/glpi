@@ -354,7 +354,7 @@
                               'checkIsExpired': false,
                               'expiration_class' : params.expiration_class
                            }|merge(field_options)) }}
-                        {% elseif item_type == 'Item_Antivirus' %}
+                        {% elseif item_type == 'ItemAntivirus' %}
                            {{ fields.dateField('date_expiration', item.fields['date_expiration'], __('Expiration date'), {
                               'helper': __('Empty for infinite'),
                               'checkIsExpired': true,

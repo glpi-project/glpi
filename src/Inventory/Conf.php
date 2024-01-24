@@ -464,7 +464,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='import_antivirus'>";
-            echo \Item_Antivirus::createTabEntry(\Item_Antivirus::getTypeName(Session::getPluralNumber()), 0, \Item_Antivirus::getType());
+            echo \ItemAntivirus::createTabEntry(\ItemAntivirus::getTypeName(Session::getPluralNumber()), 0, \ItemAntivirus::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";

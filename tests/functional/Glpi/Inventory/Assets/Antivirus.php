@@ -135,7 +135,7 @@ class Antivirus extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
        //first, check there are no AV linked to this computer
-        $avc = new \Item_Antivirus();
+        $avc = new \ItemAntivirus();
         $this->boolean($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isFalse('An antivirus is already linked to computer!');
 
@@ -173,7 +173,7 @@ class Antivirus extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
        //first, check there are no AV linked to this computer
-        $avc = new \Item_Antivirus();
+        $avc = new \ItemAntivirus();
         $this->boolean($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isTrue('No antivirus linked to computer!');
 
@@ -204,7 +204,7 @@ class Antivirus extends AbstractInventoryAsset
     public function testInventoryUpdate()
     {
         $computer = new \Computer();
-        $antivirus = new \Item_Antivirus();
+        $antivirus = new \ItemAntivirus();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
