@@ -50,11 +50,8 @@ class HasContractsCapacity extends AbstractCapacity
     // #Override
     public function onClassBootstrap(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         // Allow our item to be linked to contracts
-        $CFG_GLPI['contract_types'][] = $classname;
+        $this->registerToTypeConfig('contract_types', $classname);
 
         // Register the contracts tab into our item
         CommonGLPI::registerStandardTab(
@@ -67,14 +64,8 @@ class HasContractsCapacity extends AbstractCapacity
     // #Override
     public function onCapacityDisabled(string $classname): void
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         // Unregister from contracts types
-        $CFG_GLPI['contract_types'] = array_diff(
-            $CFG_GLPI['contract_types'],
-            [$classname]
-        );
+        $this->unregisterFromTypeConfig('contract_types', $classname);
 
         // Delete related contract data
         $item_os = new Contract_Item();
