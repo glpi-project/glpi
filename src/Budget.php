@@ -291,7 +291,7 @@ class Budget extends CommonDropdown
         foreach ($iterator as $row) {
             $itemtypes[] = $row['itemtype'];
         }
-        $itemtypes = array_filter($itemtypes, static fn($itemtype) => $itemtype::canView());
+        $itemtypes = array_filter($itemtypes, static fn($itemtype) => is_a($itemtype, CommonDBTM::class, true) && $itemtype::canView());
         $infocom_itemtypes = [];
         $other_cost_tables = [
             'Contract' => ContractCost::getTable(),
