@@ -9765,6 +9765,8 @@ DROP TABLE IF EXISTS `glpi_assets_assets`;
 CREATE TABLE `glpi_assets_assets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `assets_assetdefinitions_id` int unsigned NOT NULL,
+  `assets_assetmodels_id` int unsigned NOT NULL DEFAULT '0',
+  `assets_assettypes_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `serial` varchar(255) DEFAULT NULL,
@@ -9785,6 +9787,8 @@ CREATE TABLE `glpi_assets_assets` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
+  KEY `assets_assetmodels_id` (`assets_assetmodels_id`),
+  KEY `assets_assettypes_id` (`assets_assettypes_id`),
   KEY `name` (`name`),
   KEY `users_id` (`users_id`),
   KEY `groups_id` (`groups_id`),

@@ -74,6 +74,8 @@ if (!$DB->tableExists('glpi_assets_assets')) {
         CREATE TABLE `glpi_assets_assets` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `assets_assetdefinitions_id` int {$default_key_sign} NOT NULL,
+            `assets_assetmodels_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `assets_assettypes_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `name` varchar(255) DEFAULT NULL,
             `comment` text,
             `serial` varchar(255) DEFAULT NULL,
@@ -94,6 +96,8 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
             KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
+            KEY `assets_assetmodels_id` (`assets_assetmodels_id`),
+            KEY `assets_assettypes_id` (`assets_assettypes_id`),
             KEY `name` (`name`),
             KEY `users_id` (`users_id`),
             KEY `groups_id` (`groups_id`),
@@ -110,6 +114,11 @@ if (!$DB->tableExists('glpi_assets_assets')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQueryOrDie($query);
+} else {
+    $migration->addField('glpi_assets_assets', 'assets_assetmodels_id', 'fkey');
+    $migration->addKey('glpi_assets_assets', 'assets_assetmodels_id');
+    $migration->addField('glpi_assets_assets', 'assets_assettypes_id', 'fkey');
+    $migration->addKey('glpi_assets_assets', 'assets_assettypes_id');
 }
 
 if (!$DB->tableExists('glpi_assets_assetmodels')) {
