@@ -234,6 +234,56 @@ class AssetDefinition extends DbTestCase
             }
         }
 
+        // System name must not end with `Model` suffix
+        yield [
+            'input'    => [
+                'system_name' => 'TestAssetModel',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "System name".',
+                ],
+            ],
+        ];
+        // but system name can contains `Model`
+        yield [
+            'input'    => [
+                'system_name' => 'TestAssetModeling',
+            ],
+            'output'   => [
+                'system_name' => 'TestAssetModeling',
+                'capacities'  => '[]',
+                'profiles'    => '[]',
+            ],
+            'messages' => [],
+        ];
+
+        // System name must not end with `Type` suffix
+        yield [
+            'input'    => [
+                'system_name' => 'TestAssetType',
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "System name".',
+                ],
+            ],
+        ];
+        // but system name can contains `Type`
+        yield [
+            'input'    => [
+                'system_name' => 'TestAssetTyped',
+            ],
+            'output'   => [
+                'system_name' => 'TestAssetTyped',
+                'capacities'  => '[]',
+                'profiles'    => '[]',
+            ],
+            'messages' => [],
+        ];
+
         foreach ($this->updateInputProvider() as $data) {
             if (!array_key_exists('system_name', $data['input'])) {
                 // `system_name` is mandatory on add

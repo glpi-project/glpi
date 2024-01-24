@@ -50,8 +50,8 @@
             __('System name'),
             {
                 'required': true,
-                'pattern': '[A-Za-z]+',
-                'helper': __('The system name corresponds to the customizable part of the asset class which will correspond to the current definition. For example, assets linked to the system name "%s" will have the class "%s".')|format('Laptop', 'Glpi\\CustomAsset\\Laptop') ~ ' ' ~ __('The value must contains only letters.')
+                'pattern': '^[A-Za-z]+(?<!Model|Type)$',
+                'helper': __('The system name corresponds to the customizable part of the asset class which will correspond to the current definition. For example, assets linked to the system name "%s" will have the class "%s".')|format('Laptop', 'Glpi\\CustomAsset\\Laptop') ~ ' ' ~ __('The value must contains only letters and must not end by "Model" or "Type".')
             }
         ) }}
     {% else %}
