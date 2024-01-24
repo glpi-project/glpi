@@ -38,12 +38,18 @@ namespace Glpi\Asset\Capacity;
 use Certificate;
 use Certificate_Item;
 use CommonGLPI;
+use Session;
 
 class HasCertificatesCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return Certificate::getTypeName();
+        return Certificate::getTypeName(Session::getPluralNumber());
+    }
+
+    public function getSearchOptions(string $classname): array
+    {
+        return Certificate::rawSearchOptionsToAdd($classname);
     }
 
     public function onClassBootstrap(string $classname): void
@@ -53,26 +59,29 @@ class HasCertificatesCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab(
             $classname,
             Certificate_Item::class,
-            PHP_INT_MAX
+            60
         );
     }
 
     public function onCapacityDisabled(string $classname): void
     {
-        // Unregister from certificate types
-        $this->unregisterFromTypeConfig('certificate_types', $classname);
+        // Unregister from document types
+        $this->unregisterFromTypeConfig('document_types', $classname);
 
-        // Delete related certificate data
-        $certificate = new Certificate_Item();
-        $certificate->deleteByCriteria([
-            'itemtype' => $classname,
-        ]);
+        // Delete relations to certificates
+        $certificate_item = new Certificate_Item();
+        $certificate_item->deleteByCriteria(
+            [
+                'itemtype' => $classname
+            ],
+            force: true,
+            history: false
+        );
 
         // Clean history related to certificates
         $this->deleteRelationLogs($classname, Certificate::class);
 
         // Clean display preferences
-        $certificate_search_options = Certificate::rawSearchOptionsToAdd($classname);
-        $this->deleteDisplayPreferences($classname, $certificate_search_options);
+        $this->deleteDisplayPreferences($classname, Certificate::rawSearchOptionsToAdd($classname));
     }
 }

@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Certificate;
 use Certificate_Item;
 use DbTestCase;
 use DisplayPreference;
@@ -67,14 +68,14 @@ class HasCertificatesCapacity extends DbTestCase
         $classname_1  = $definition_1->getConcreteClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
+                \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
             ]
         );
         $classname_2  = $definition_2->getConcreteClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
+                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ],
             profiles: $profiles_matrix
         );
@@ -100,20 +101,35 @@ class HasCertificatesCapacity extends DbTestCase
 
     public function testCapacityDeactivation(): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        // Capacity needs specific rights
+        $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+        $profiles_matrix = [
+            $superadmin_p_id => [
+                READ   => 1,
+                UPDATE => 1,
+                CREATE => 1,
+            ],
+        ];
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
-            ]
+                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+            ],
+            profiles: $profiles_matrix
         );
         $classname_1  = $definition_1->getConcreteClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
-            ]
+                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+            ],
+            profiles: $profiles_matrix
         );
         $classname_2  = $definition_2->getConcreteClassName();
 
@@ -131,19 +147,27 @@ class HasCertificatesCapacity extends DbTestCase
                 'entities_id' => $root_entity_id,
             ]
         );
-
-        $certificate_1 = $this->createItem(
-            Certificate_Item::class,
+        $certificate    = $this->createItem(
+            Certificate::class,
             [
-                'itemtype' => $item_1->getType(),
-                'items_id' => $item_1->getID(),
+                'name' => __FUNCTION__,
+                'entities_id' => $root_entity_id,
             ]
         );
-        $certificate_2 = $this->createItem(
+        $certificate_item_1 = $this->createItem(
             Certificate_Item::class,
             [
-                'itemtype' => $item_2->getType(),
-                'items_id' => $item_2->getID(),
+                'certificates_id' => $certificate->getID(),
+                'itemtype'     => $item_1->getType(),
+                'items_id'     => $item_1->getID(),
+            ]
+        );
+        $certificate_item_2 = $this->createItem(
+            Certificate_Item::class,
+            [
+                'certificates_id' => $certificate->getID(),
+                'itemtype'     => $item_2->getType(),
+                'items_id'     => $item_2->getID(),
             ]
         );
         $displaypref_1   = $this->createItem(
@@ -162,29 +186,29 @@ class HasCertificatesCapacity extends DbTestCase
         );
 
         $item_1_logs_criteria = [
-            'itemtype' => $classname_1,
+            'itemtype'      => Certificate::class,
+            'itemtype_link' => $classname_1,
         ];
         $item_2_logs_criteria = [
-            'itemtype' => $classname_2,
+            'itemtype'      => Certificate::class,
+            'itemtype_link' => $classname_2,
         ];
 
-        // Ensure infocom relation, display preferences and logs exists
-        $this->object(Certificate_Item::getById($certificate_1->getID()))->isInstanceOf(Certificate_Item::class);
+        // Ensure relation, display preferences and logs exists, and class is registered to global config
+        $this->object(Certificate_Item::getById($certificate_item_1->getID()))->isInstanceOf(Certificate_Item::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(1);
-        $this->object(Certificate_Item::getById($certificate_2->getID()))->isInstanceOf(Certificate_Item::class);
+        $this->object(Certificate_Item::getById($certificate_item_2->getID()))->isInstanceOf(Certificate_Item::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
 
-        // Disable capacity and check that certificates relations have been cleaned
+        // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(Certificate_Item::getById($certificate_1->getID()))->isFalse();
-        \Toolbox::logDebug(DisplayPreference::getById($displaypref_1->getID()));
-        $this->boolean(DisplayPreference::getById($displaypref_1->getID()))->isFalse();
+        $this->boolean(Certificate_Item::getById($certificate_item_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
 
-        // Ensure infocom relations and logs are preserved for other definition
-        $this->object(Certificate_Item::getById($certificate_2->getID()))->isInstanceOf(Certificate_Item::class);
+        // Ensure relations, logs and global registration are preserved for other definition
+        $this->object(Certificate_Item::getById($certificate_item_2->getID()))->isInstanceOf(Certificate_Item::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
     }
