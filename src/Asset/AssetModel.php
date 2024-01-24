@@ -139,12 +139,14 @@ abstract class AssetModel extends \CommonDCModelDropdown
 
     public function prepareInputForAdd($input)
     {
-        return $this->prepareDefinitionInput($input);
+        $input = $this->prepareDefinitionInput($input);
+        return parent::prepareInputForAdd($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        return $this->prepareDefinitionInput($input);
+        $input = $this->prepareDefinitionInput($input);
+        return parent::prepareInputForUpdate($input);
     }
 
     /**
