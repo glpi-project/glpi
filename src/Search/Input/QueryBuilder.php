@@ -480,9 +480,6 @@ final class QueryBuilder implements SearchInputInterface
      */
     public static function displayMetaCriteria($request = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (
             !isset($request["itemtype"])
             || !isset($request["num"])
@@ -518,7 +515,7 @@ final class QueryBuilder implements SearchInputInterface
         $linked =  SearchEngine::getMetaItemtypeAvailable($itemtype);
         $rand   = mt_rand();
 
-        $rowid  = 'metasearchrow' . $request['itemtype'] . $rand;
+        $rowid  = 'metasearchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $rand;
         TemplateRenderer::getInstance()->display('components/search/query_builder/metacriteria.html.twig', [
             'row_id'       => $rowid,
             'metacriteria' => $metacriteria,
@@ -613,7 +610,7 @@ final class QueryBuilder implements SearchInputInterface
         $num         = (int) $request['num'];
         $p           = $request['p'];
         $randrow     = mt_rand();
-        $rowid       = 'searchrow' . $request['itemtype'] . $randrow;
+        $rowid       = 'searchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit']) : '';
         $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
 

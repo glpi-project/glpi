@@ -33,6 +33,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
 <div class="list-group-item border-0 metacriteria p-2" id="{{ row_id }}">
    <div class="row g-1">
       <div class="col-auto">
@@ -68,7 +69,7 @@
       <input type="hidden" name="criteria{{ prefix ~ "[" ~ num ~ "][meta]" }}" value="true">
       {% set clean_id_prefix = call('Html::cleanId', [prefix]) %}
       {% set field_id = "dropdown_criteria" ~ clean_id_prefix ~ "[" ~ num ~ "][itemtype]" ~ rand %}
-      {% set span_id = "show_" ~ itemtype ~ "_" ~ clean_id_prefix ~ num ~ "_" ~ rand %}
+      {% set span_id = "show_" ~ normalized_itemtype ~ "_" ~ clean_id_prefix ~ num ~ "_" ~ rand %}
       {% set params = {
          action: 'display_criteria',
          itemtype: '__VALUE__',
