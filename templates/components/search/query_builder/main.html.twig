@@ -123,7 +123,7 @@
                 {% if p['showreset'] %}
                 <a class="btn btn-sm btn-icon px-2 search-reset"
                    data-bs-toggle="tooltip" data-bs-placement="bottom"
-                   href="{{ p['target'] ~ ('?' in p['target'] ? '&amp;' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
+                   href="{{ p['target'] ~ ('?' in p['target'] ? '&' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
                     <i class="ti ti-square-x"></i>
                 </a>
                 {% elseif p['forcereset'] %}
