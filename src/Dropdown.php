@@ -487,13 +487,13 @@ class Dropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        $item = getItemForItemtype(getItemTypeForTable($table));
+        $itemtype = getItemTypeForTable($table);
 
-        if (!is_object($item)) {
+        if (!is_a($itemtype, CommonDropdown::class, true)) {
             return $default;
         }
 
-        if ($item instanceof CommonTreeDropdown) {
+        if (is_a($itemtype, CommonTreeDropdown::class, true)) {
             return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip, $default);
         }
 
@@ -565,7 +565,7 @@ class Dropdown
                 if ($translate && !empty($data['transname'])) {
                     $name = $data['transname'];
                 } else {
-                    $name = $data[$item->getNameField()];
+                    $name = $data[$itemtype::getNameField()];
                 }
                 if (isset($data["comment"])) {
                     if ($translate && !empty($data['transcomment'])) {

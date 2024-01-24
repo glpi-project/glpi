@@ -5172,7 +5172,7 @@ class CommonDBTM extends CommonGLPI
                     if (!isset($options['entity'])) {
                         $options['entity'] = $_SESSION['glpiactiveentities'];
                     }
-                    $itemtype = getItemTypeForTable($searchoptions['table']);
+                    $itemtype = $searchoptions['itemtype'] ?? getItemTypeForTable($searchoptions['table']);
 
                     return $itemtype::dropdown($options);
 
