@@ -496,7 +496,6 @@ class Budget extends CommonDropdown
             ],
             'formatters' => [
                 'name' => 'raw_html',
-                'value' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => $total_count,
