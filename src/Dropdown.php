@@ -1100,19 +1100,6 @@ JAVASCRIPT;
     {
         static $optgroup = null;
 
-        $custom_asset_models = [];
-        $custom_asset_classes = AssetDefinitionManager::getInstance()->getConcreteClassesNames();
-        foreach ($custom_asset_classes as $custom_asset_class) {
-            $model_class = $custom_asset_class . 'Model';
-            $custom_asset_models[$model_class] = null;
-        }
-
-        $custom_asset_types = [];
-        foreach ($custom_asset_classes as $custom_asset_class) {
-            $type_class = $custom_asset_class . 'Type';
-            $custom_asset_types[$type_class] = null;
-        }
-
         if (is_null($optgroup)) {
             $optgroup = [
                 __('Common') => [
@@ -1171,7 +1158,7 @@ JAVASCRIPT;
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null
-                ] + $custom_asset_types,
+                ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetTypesClassesNames(), null),
 
                 _n('Model', 'Models', Session::getPluralNumber()) => [
                     'ComputerModel' => null,
@@ -1201,7 +1188,7 @@ JAVASCRIPT;
                     'EnclosureModel' => null,
                     'PDUModel' => null,
                     'PassiveDCEquipmentModel' => null,
-                ] + $custom_asset_models,
+                ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetModelsClassesNames(), null),
 
                 _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                     'VirtualMachineType' => null,

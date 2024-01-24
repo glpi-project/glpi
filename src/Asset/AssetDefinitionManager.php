@@ -193,7 +193,7 @@ final class AssetDefinitionManager
      * @param bool $with_namespace
      * @return array
      */
-    public function getConcreteClassesNames(bool $with_namespace = true): array
+    public function getAssetClassesNames(bool $with_namespace = true): array
     {
         $classes = [];
 
@@ -202,6 +202,46 @@ final class AssetDefinitionManager
                 continue;
             }
             $classes[] = $definition->getAssetClassName($with_namespace);
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get the classes names of all assets models concrete classes.
+     *
+     * @param bool $with_namespace
+     * @return array
+     */
+    public function getAssetModelsClassesNames(bool $with_namespace = true): array
+    {
+        $classes = [];
+
+        foreach ($this->getDefinitions() as $definition) {
+            if (!$definition->isActive()) {
+                continue;
+            }
+            $classes[] = $definition->getAssetModelClassName($with_namespace);
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get the classes names of all assets types concrete classes.
+     *
+     * @param bool $with_namespace
+     * @return array
+     */
+    public function getAssetTypesClassesNames(bool $with_namespace = true): array
+    {
+        $classes = [];
+
+        foreach ($this->getDefinitions() as $definition) {
+            if (!$definition->isActive()) {
+                continue;
+            }
+            $classes[] = $definition->getAssetTypeClassName($with_namespace);
         }
 
         return $classes;
