@@ -349,6 +349,11 @@ use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetModelClassName(false)} extends AssetModel {
     protected static AssetDefinition \$definition;
+
+    public static function getForeignKeyField(): string
+    {
+        return 'assets_assetmodels_id';
+    }
 }
 PHP
         );
@@ -373,6 +378,11 @@ use Glpi\\Asset\\AssetDefinition;
 
 final class {$definition->getAssetTypeClassName(false)} extends AssetType {
     protected static AssetDefinition \$definition;
+
+    public static function getForeignKeyField(): string
+    {
+        return 'assets_assettypes_id';
+    }
 }
 PHP
         );
