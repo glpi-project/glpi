@@ -93,7 +93,6 @@ class HasDomainsCapacity extends DbTestCase
             } else {
                 $this->array($item->defineAllTabs())->notHasKey('Domain_Item$1');
             }
-
         }
     }
 
