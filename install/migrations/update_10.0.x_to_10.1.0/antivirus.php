@@ -42,24 +42,24 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$migration->renameTable('glpi_computerantiviruses', 'glpi_items_antiviruses');
+$migration->renameTable('glpi_computerantiviruses', 'glpi_itemantiviruses');
 
-if (!$DB->fieldExists('glpi_items_antiviruses', 'itemtype')) {
+if (!$DB->fieldExists('glpi_itemantiviruses', 'itemtype')) {
     $migration->addField(
-        'glpi_items_antiviruses',
+        'glpi_itemantiviruses',
         'itemtype',
         'string',
         [
             'after' => 'id'
         ]
     );
-    $migration->migrationOneTable('glpi_items_antiviruses');
+    $migration->migrationOneTable('glpi_itemantiviruses');
 }
 
-if (!$DB->fieldExists('glpi_items_antiviruses', 'items_id')) {
-    $migration->dropKey('glpi_items_antiviruses', 'computers_id');
+if (!$DB->fieldExists('glpi_itemantiviruses', 'items_id')) {
+    $migration->dropKey('glpi_itemantiviruses', 'computers_id');
     $migration->changeField(
-        'glpi_items_antiviruses',
+        'glpi_itemantiviruses',
         'computers_id',
         'items_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
@@ -67,7 +67,7 @@ if (!$DB->fieldExists('glpi_items_antiviruses', 'items_id')) {
             'after' => 'itemtype'
         ]
     );
-    $migration->migrationOneTable('glpi_items_antiviruses');
+    $migration->migrationOneTable('glpi_itemantiviruses');
 }
 
-$migration->addKey('glpi_items_antiviruses', ['itemtype', 'items_id'], 'item');
+$migration->addKey('glpi_itemantiviruses', ['itemtype', 'items_id'], 'item');

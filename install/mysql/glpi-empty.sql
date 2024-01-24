@@ -866,10 +866,10 @@ CREATE TABLE `glpi_changevalidations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_items_antiviruses
+### Dump table glpi_itemantiviruses
 
-DROP TABLE IF EXISTS `glpi_items_antiviruses`;
-CREATE TABLE `glpi_items_antiviruses` (
+DROP TABLE IF EXISTS `glpi_itemantiviruses`;
+CREATE TABLE `glpi_itemantiviruses` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `itemtype` varchar(255) DEFAULT NULL,
   `items_id` int unsigned NOT NULL DEFAULT '0',
