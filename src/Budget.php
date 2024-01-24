@@ -395,6 +395,10 @@ class Budget extends CommonDropdown
             };
             $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : '0 AS is_deleted';
 
+            if ($item->maybeTemplate()) {
+                $criteria['WHERE'][$item_table . '.is_template'] = 0;
+            }
+
             $queries[] = new \Glpi\DBAL\QuerySubQuery($criteria);
         }
 
