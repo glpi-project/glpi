@@ -35,9 +35,7 @@
 
 namespace Glpi\Asset;
 
-use CommonDropdown;
 use CommonType;
-use Glpi\Application\View\TemplateRenderer;
 use Toolbox;
 
 abstract class AssetType extends CommonType
@@ -92,7 +90,7 @@ abstract class AssetType extends CommonType
             return false;
         }
 
-        // Load the asset definition corresponding to given asset ID
+        // Load the asset definition corresponding to given asset type ID
         $definition_request = [
             'INNER JOIN' => [
                 self::getTable()  => [

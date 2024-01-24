@@ -36,7 +36,6 @@
 namespace Glpi\Asset;
 
 use CommonDropdown;
-use Glpi\Application\View\TemplateRenderer;
 use Toolbox;
 
 abstract class AssetModel extends \CommonDCModelDropdown
@@ -91,7 +90,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
             return false;
         }
 
-        // Load the asset definition corresponding to given asset ID
+        // Load the asset definition corresponding to given asset model ID
         $definition_request = [
             'INNER JOIN' => [
                 self::getTable()  => [
