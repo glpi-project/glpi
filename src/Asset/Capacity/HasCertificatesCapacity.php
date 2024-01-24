@@ -66,7 +66,7 @@ class HasCertificatesCapacity extends AbstractCapacity
     public function onCapacityDisabled(string $classname): void
     {
         // Unregister from document types
-        $this->unregisterFromTypeConfig('document_types', $classname);
+        $this->unregisterFromTypeConfig('certificate_types', $classname);
 
         // Delete relations to certificates
         $certificate_item = new Certificate_Item();
