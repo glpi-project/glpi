@@ -422,10 +422,18 @@ final class AssetDefinition extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-        $asset_classname = $this->getAssetClassName();
-        /** @var Asset $asset */
-        $asset = new $asset_classname();
-        $asset->deleteByCriteria(['assets_assetdefinitions_id' => $this->getID()], force: true, history: false);
+        $related_classes = [
+            $this->getAssetClassName(),
+            $this->getAssetModelClassName(),
+            $this->getAssetTypeClassName(),
+        ];
+        foreach ($related_classes as $classname) {
+            (new $classname())->deleteByCriteria(
+                ['assets_assetdefinitions_id' => $this->getID()],
+                force: true,
+                history: false
+            );
+        }
     }
 
     /**
