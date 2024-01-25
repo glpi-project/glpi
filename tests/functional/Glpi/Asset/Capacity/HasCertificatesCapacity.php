@@ -65,13 +65,13 @@ class HasCertificatesCapacity extends DbTestCase
             ],
             profiles: $profiles_matrix
         );
-        $classname_1  = $definition_1->getConcreteClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
+                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getConcreteClassName();
+        $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
@@ -79,7 +79,7 @@ class HasCertificatesCapacity extends DbTestCase
             ],
             profiles: $profiles_matrix
         );
-        $classname_3  = $definition_3->getConcreteClassName();
+        $classname_3  = $definition_3->getAssetClassName();
 
         $has_certificates_mapping = [
             $classname_1 => true,
@@ -88,6 +88,16 @@ class HasCertificatesCapacity extends DbTestCase
         ];
 
         foreach ($has_certificates_mapping as $classname => $has_certificates) {
+            // Check that the class is globally registered
+            $this->login(); // must be logged in to have class in Certificate::getTypes()
+            if ($has_certificates) {
+                $this->array($CFG_GLPI['certificate_types'])->contains($classname);
+                $this->array(Certificate::getTypes())->contains($classname);
+            } else {
+                $this->array($CFG_GLPI['certificate_types'])->notContains($classname);
+                $this->array(Certificate::getTypes())->notContains($classname);
+            }
+
             // Check that the corresponding tab is present on items
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
             $this->login(); // must be logged in to get tabs list
@@ -95,6 +105,22 @@ class HasCertificatesCapacity extends DbTestCase
                 $this->array($item->defineAllTabs())->hasKey('Certificate_Item$1');
             } else {
                 $this->array($item->defineAllTabs())->notHasKey('Certificate_Item$1');
+            }
+
+            // Check that the releated search options are available
+            $so_keys = [
+                1300, // Name
+                1301, // Serial number
+                1302, // Inventory number
+                1304, // Certificate type
+                1305, // Comments
+                1306, // Expiration
+            ];
+            $this->login(); // must be logged in to get search options
+            if ($has_certificates) {
+                $this->array($item->getOptions())->hasKeys($so_keys);
+            } else {
+                $this->array($item->getOptions())->notHasKeys($so_keys);
             }
         }
     }
@@ -123,7 +149,7 @@ class HasCertificatesCapacity extends DbTestCase
             ],
             profiles: $profiles_matrix
         );
-        $classname_1  = $definition_1->getConcreteClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasCertificatesCapacity::class,
@@ -131,7 +157,7 @@ class HasCertificatesCapacity extends DbTestCase
             ],
             profiles: $profiles_matrix
         );
-        $classname_2  = $definition_2->getConcreteClassName();
+        $classname_2  = $definition_2->getAssetClassName();
 
         $item_1          = $this->createItem(
             $classname_1,
@@ -201,15 +227,19 @@ class HasCertificatesCapacity extends DbTestCase
         $this->object(Certificate_Item::getById($certificate_item_2->getID()))->isInstanceOf(Certificate_Item::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
+        $this->array($CFG_GLPI['certificate_types'])->contains($classname_1);
+        $this->array($CFG_GLPI['certificate_types'])->contains($classname_2);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
         $this->boolean(Certificate_Item::getById($certificate_item_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
+        $this->array($CFG_GLPI['certificate_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
         $this->object(Certificate_Item::getById($certificate_item_2->getID()))->isInstanceOf(Certificate_Item::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
+        $this->array($CFG_GLPI['certificate_types'])->contains($classname_2);
     }
 }
