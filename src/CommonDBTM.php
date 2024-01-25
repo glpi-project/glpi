@@ -478,7 +478,6 @@ class CommonDBTM extends CommonGLPI
         $this->initForm($ID, $options);
         $new_item = static::isNewID($ID);
         $in_modal = (bool) ($_GET['_in_modal'] ?? false);
-        Html::requireJs('clipboard');
         TemplateRenderer::getInstance()->display('generic_show_form.html.twig', [
             'item'   => $this,
             'params' => $options,
