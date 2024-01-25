@@ -100,7 +100,12 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    $menus = ["assets", "computer"];
+    if ($antivirus->getFromDB($_GET['id'])) {
+        $menus = ['assets', $antivirus->fields['itemtype']];
+    } else {
+        $menus = ['assets', $_GET['itemtype']];
+    }
+
     ItemAntivirus::displayFullPageForItem($_GET["id"], $menus, [
         'itemtype' => $_GET["itemtype"],
         'items_id' => $_GET["items_id"]
