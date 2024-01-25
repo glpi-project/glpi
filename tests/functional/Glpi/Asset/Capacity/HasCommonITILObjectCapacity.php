@@ -76,7 +76,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
 
         // Create custom asset definition
         $definition = $this->initAssetDefinition();
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // The capacity is not yet enabled, the itemtype should not be
         // registered in $CFG_GLPI["ticket_types"]
@@ -126,7 +126,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
 
         // Create custom asset definition
         $definition = $this->initAssetDefinition();
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // Create our test subject
         $subject = $this->createItem($class, [
@@ -168,7 +168,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [$this->getTargetCapacity()]
         );
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // Allow this asset on the super admin profile
         $profile = getItemByTypeName(Profile::class, "Super-Admin");
@@ -222,7 +222,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [$this->getTargetCapacity()]
         );
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // Create our test subject
         $subject = $this->createItem($class, [
@@ -276,7 +276,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
                 HasHistoryCapacity::class
             ]
         );
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // Create our test subject
         $subject = $this->createItem($class, [
@@ -353,7 +353,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [$this->getTargetCapacity()]
         );
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // Create our test subject and enable the capacity
         $subject = $this->createItem($class, [
@@ -410,7 +410,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
         $definition = $this->initAssetDefinition(
             capacities: [$this->getTargetCapacity()]
         );
-        $class = $definition->getConcreteClassName();
+        $class = $definition->getAssetClassName();
 
         // No profiles allowed
         yield [
