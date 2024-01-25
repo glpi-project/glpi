@@ -695,6 +695,10 @@ class CommonGLPI implements CommonGLPIInterface
 
                 $options['withtemplate'] = $withtemplate;
 
+                if ($item instanceof CommonDBTM) {
+                    $options['nameField'] = $item->getNameField();
+                }
+
                 if ($tabnum == 'main') {
                     /** @var CommonDBTM $item */
                     Plugin::doHook(Hooks::PRE_SHOW_ITEM, ['item' => $item, 'options' => &$options]);

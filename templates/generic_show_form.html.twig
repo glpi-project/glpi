@@ -683,6 +683,21 @@
       {% endif %}
    </div> {# .card-body #}
 
+   {% if params['nameField'] is defined %}
+      <script>
+         $("input[name='{{ params['nameField'] }}']").on('paste', function(e) {
+            e.preventDefault();
+
+            var actual = $(this).val();
+            var text = e.originalEvent.clipboardData.getData('text/plain');
+
+            text = actual + $.trim(text);
+
+            $(this).val(text);
+         });
+      </script>
+   {% endif %}
+
    {% if item_type == 'Contract' %}
       {{ include('components/form/support_hours.html.twig') }}
    {% endif %}
