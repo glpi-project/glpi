@@ -68,8 +68,8 @@ class HasContractsCapacity extends AbstractCapacity
         $this->unregisterFromTypeConfig('contract_types', $classname);
 
         // Delete related contract data
-        $item_os = new Contract_Item();
-        $item_os->deleteByCriteria(
+        $contract_item = new Contract_Item();
+        $contract_item->deleteByCriteria(
             crit   : ['itemtype' => $classname],
             force  : true,
             history: false
