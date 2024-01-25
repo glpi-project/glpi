@@ -40,7 +40,9 @@
 
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$migration->renameTable('glpi_computerantiviruses', 'glpi_itemantiviruses');
+if ($DB->tableExists('glpi_computerantiviruses')) {
+    $migration->renameTable('glpi_computerantiviruses', 'glpi_itemantiviruses');
+}
 
 if (!$DB->fieldExists('glpi_itemantiviruses', 'itemtype')) {
     $migration->addField(
