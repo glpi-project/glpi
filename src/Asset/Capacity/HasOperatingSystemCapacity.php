@@ -81,10 +81,8 @@ class HasOperatingSystemCapacity extends AbstractCapacity
         );
 
         // Clean history related to operating systems
-        $this->deleteFieldsLogsByItemtypeLink($classname, [
-            OperatingSystem::getType(),
-            Item_OperatingSystem::getType(),
-        ]);
+        $this->deleteRelationLogs($classname, OperatingSystem::getType());
+        $this->deleteRelationLogs($classname, Item_OperatingSystem::getType());
 
         // Clean display preferences
         $this->deleteDisplayPreferences(

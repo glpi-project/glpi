@@ -82,21 +82,35 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param string $source_itemtype
      * @param string $linked_itemtype
+     * @param bool $both_sides = true
+     *
      * @return void
      */
-    protected function deleteRelationLogs(string $source_itemtype, string $linked_itemtype): void
-    {
+    protected function deleteRelationLogs(
+        string $source_itemtype,
+        string $linked_itemtype,
+        bool $both_sides = true
+    ): void {
         /** @var \DBmysql $DB */
         global $DB;
+
+        $criteria = [
+            ['itemtype' => $source_itemtype, 'itemtype_link' => $linked_itemtype],
+            // Some itemtypes are postfixed with #{fieldname}
+            ['itemtype' => $source_itemtype, 'itemtype_link' => ['LIKE', $linked_itemtype . "#%"]],
+        ];
+
+        if ($both_sides) {
+            $criteria[] = ['itemtype' => $linked_itemtype, 'itemtype_link' => $source_itemtype];
+            // Some itemtypes are postfixed with #{fieldname}
+            $criteria[] = ['itemtype' => $linked_itemtype, 'itemtype_link' => ['LIKE', $source_itemtype . "#%"]];
+        }
 
         // Do not use `CommonDBTM::deleteByCriteria()` to prevent performances issues
         $DB->delete(
             Log::getTable(),
             [
-                'OR' => [
-                    ['itemtype' => $source_itemtype, 'itemtype_link' => $linked_itemtype],
-                    ['itemtype' => $linked_itemtype, 'itemtype_link' => $source_itemtype],
-                ],
+                'OR' => $criteria,
             ]
         );
     }
@@ -124,49 +138,6 @@ abstract class AbstractCapacity implements CapacityInterface
             [
                 'itemtype'          => $itemtype,
                 'id_search_option'  => $ids,
-            ]
-        );
-    }
-
-    /**
-     * Delete logs related to given itemtypes (identified by the "itemtype_link"
-     * field in the logs table).
-     *
-     * If possible, you should use the deleteFieldsLogs() method instead.
-     * However, the searchoptions id are sometimes not set correctly in the
-     * database for some itemtypes (e.g. OperatingSystem and
-     * Item_OperatingSystem), which require us to use this method to properly
-     * delete logs.
-     *
-     * TODO: investigate the missing searchoptions id issue to see if it can
-     * be prevented (in this case, this method should be deleted once its fixed)
-     *
-     * @param string $itemtype The itemtype to delete logs for
-     * @param array $itemtypes The target linked itemtypes
-     *
-     * @return void
-     */
-    protected function deleteFieldsLogsByItemtypeLink(
-        string $itemtype,
-        array $linked_itemtypes
-    ): void {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $link_criteria = [];
-        foreach ($linked_itemtypes as $link) {
-            // Search for "itemtype" and "itemtype#%"
-            $link_criteria[] = ['itemtype_link' => $link];
-            $link_criteria[] = ['itemtype_link' => ['LIKE', $link . "#%"]];
-        }
-
-        // Do not use `CommonDBTM::deleteByCriteria()` to prevent performances
-        // issues
-        $DB->delete(
-            Log::getTable(),
-            [
-                'itemtype' => $itemtype,
-                'OR'       => $link_criteria,
             ]
         );
     }
