@@ -272,9 +272,9 @@ class ItemAntivirus extends CommonDBChild
         $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/item_antivirus.html.twig', [
-            'item'                      => $this,
-            'asset'                => $asset,
-            'params'                    => $options,
+            'item'   => $this,
+            'asset'  => $asset,
+            'params' => $options,
         ]);
 
         return true;
@@ -289,7 +289,7 @@ class ItemAntivirus extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $asset, $withtemplate = 0)
+    private static function showForItem(CommonDBTM $asset, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;
