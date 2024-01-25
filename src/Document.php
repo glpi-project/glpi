@@ -1893,7 +1893,7 @@ class Document extends CommonDBTM
 
         switch ($name) {
             case 'cleanorphans':
-                return ['description' => __('Clean orphaned documents')];
+                return ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')];
         }
         return [];
     }
