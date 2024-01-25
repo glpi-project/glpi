@@ -65,27 +65,12 @@ $(function () {
      * if the input get a paste event, the text is trimmed before being pasted
      */
     $(document).on("paste", "input[type='text']", function (event) {
-        // Cancel the default action
-        event.preventDefault();
-
-        // Get the text from the clipboard
-        var text = event.originalEvent.clipboardData.getData('text/plain');
-
-        // Get the actual text in the input
-        var actual = $(this).val();
-
-        /**
-         * if actual value is empty, trim the text
-         * else add the text to the actual value
-         */
-        if (actual === '') {
-            text = text.trim();
-        } else {
-            text = actual + text;
+        if ($(this).val() === '') {
+            event.preventDefault();
+            var pastedData = event.originalEvent.clipboardData || window.clipboardData;
+            var pastedText = pastedData.getData('text');
+            $(this).val(pastedText.trim());
         }
-
-        // Paste the text in the input
-        $(this).val(text);
     });
 });
 
