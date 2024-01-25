@@ -76,12 +76,8 @@ class HasContractsCapacity extends AbstractCapacity
         );
 
         // Clean history related to contracts (both sides of the relation)
-        $this->deleteFieldsLogsByItemtypeLink($classname, [
-            Contract::getType(),
-        ]);
-        $this->deleteFieldsLogsByItemtypeLink(Contract::getType(), [
-            $classname,
-        ]);
+        $this->deleteRelationLogs($classname, Contract::getType());
+        $this->deleteRelationLogs(Contract::getType(), $classname);
 
         // Clean display preferences
         $this->deleteDisplayPreferences(
