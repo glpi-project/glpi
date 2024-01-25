@@ -320,7 +320,7 @@ final class DbUtils
                     // NOT Glpi\Namespace1\Namespace2\Item\Filter
                     // To avoid this, we can revert the last '_' and check if the itemtype exists
                     $check_alternative = $is_plugin
-                        ? substr_count($table, '_') > 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
+                        ? substr_count($table, '_') >= 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
                         : substr_count($table, '_') > 0 // for GLPI classes, always keep the first namespace level (Glpi\\)
                     ;
                     if ($check_alternative) {
