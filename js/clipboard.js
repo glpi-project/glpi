@@ -74,8 +74,15 @@ $(function () {
         // Get the actual text in the input
         var actual = $(this).val();
 
-        // Trim the text
-        text = actual + text.trim();
+        /**
+         * if actual value is empty, trim the text
+         * else add the text to the actual value
+         */
+        if (actual === '') {
+            text = text.trim();
+        } else {
+            text = actual + text;
+        }
 
         // Paste the text in the input
         $(this).val(text);
