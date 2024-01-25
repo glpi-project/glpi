@@ -489,7 +489,7 @@ class Dropdown
 
         $itemtype = getItemTypeForTable($table);
 
-        if (!is_a($itemtype, CommonDropdown::class, true)) {
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
             return $default;
         }
 
