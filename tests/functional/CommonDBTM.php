@@ -960,7 +960,6 @@ class CommonDBTM extends DbTestCase
             ->exists();
     }
 
-
     public function testTimezones()
     {
         global $DB;
