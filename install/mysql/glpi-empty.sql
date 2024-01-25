@@ -866,12 +866,13 @@ CREATE TABLE `glpi_changevalidations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_computerantiviruses
+### Dump table glpi_itemantiviruses
 
-DROP TABLE IF EXISTS `glpi_computerantiviruses`;
-CREATE TABLE `glpi_computerantiviruses` (
+DROP TABLE IF EXISTS `glpi_itemantiviruses`;
+CREATE TABLE `glpi_itemantiviruses` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `computers_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `manufacturers_id` int unsigned NOT NULL DEFAULT '0',
   `antivirus_version` varchar(255) DEFAULT NULL,
@@ -891,11 +892,11 @@ CREATE TABLE `glpi_computerantiviruses` (
   KEY `is_uptodate` (`is_uptodate`),
   KEY `is_dynamic` (`is_dynamic`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `computers_id` (`computers_id`),
   KEY `date_expiration` (`date_expiration`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `manufacturers_id` (`manufacturers_id`)
+  KEY `manufacturers_id` (`manufacturers_id`),
+  KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

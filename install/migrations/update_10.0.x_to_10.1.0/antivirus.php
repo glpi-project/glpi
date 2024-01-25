@@ -34,39 +34,39 @@
  */
 
 /**
- * Manage ComputerAntivirus.
- * @deprecated 10.1.0 Use ItemAntivirus
+ * @var \Migration $migration
+ * @var \DBmysql $DB
  */
-class ComputerAntivirus extends ItemAntivirus
-{
-    public static function getTable($classname = null)
-    {
-        return ItemAntivirus::getTable();
-    }
 
-    public function prepareInputForAdd($input)
-    {
-        //add missing itemtype, rename computers_id to items_id
-        $input['itemtype'] = 'Computer';
-        if (isset($input['computers_id'])) {
-            $input['itemps_id'] = $input['computers_id'];
-            unset($input['computers_id']);
-        }
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        return parent::prepareInputForAdd($input);
-    }
+$migration->renameTable('glpi_computerantiviruses', 'glpi_itemantiviruses');
 
-    public function prepareInputForUpdate($input)
-    {
-        //add missing itemtype, rename computers_id to items_id
-        if (!isset($input['itemtype'])) {
-            $input['itemtype'] = 'Computer';
-        }
-        if (isset($input['computers_id'])) {
-            $input['itemps_id'] = $input['computers_id'];
-            unset($input['computers_id']);
-        }
-
-        return parent::prepareInputForUpdate($input);
-    }
+if (!$DB->fieldExists('glpi_itemantiviruses', 'itemtype')) {
+    $migration->addField(
+        'glpi_itemantiviruses',
+        'itemtype',
+        'string',
+        [
+            'after'  => 'id',
+            'update' => $DB->quoteValue('Computer'), // Defines value for all existing elements
+        ]
+    );
+    $migration->migrationOneTable('glpi_itemantiviruses');
 }
+
+if (!$DB->fieldExists('glpi_itemantiviruses', 'items_id')) {
+    $migration->dropKey('glpi_itemantiviruses', 'computers_id');
+    $migration->changeField(
+        'glpi_itemantiviruses',
+        'computers_id',
+        'items_id',
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
+        [
+            'after' => 'itemtype'
+        ]
+    );
+    $migration->migrationOneTable('glpi_itemantiviruses');
+}
+
+$migration->addKey('glpi_itemantiviruses', ['itemtype', 'items_id'], 'item');

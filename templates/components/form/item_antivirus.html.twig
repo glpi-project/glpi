@@ -39,12 +39,13 @@
 
 {% block more_fields %}
 
-    <input type="hidden" name="computers_id" value="{{ item.fields['computers_id'] }}">
+   <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
+   <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
 
    {{ fields.htmlField(
-      'computers_id',
-      computer.getLink(),
-      computer.getTypeName(1),
+      'items_id',
+      asset.getLink(),
+      asset.getTypeName(1),
       field_options|merge(params)
    ) }}
 

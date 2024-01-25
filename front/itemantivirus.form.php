@@ -42,18 +42,21 @@ Session::checkCentralAccess();
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
-if (!isset($_GET["computers_id"])) {
-    $_GET["computers_id"] = "";
+if (!isset($_GET["itemtype"])) {
+    $_GET["itemtype"] = "";
+}
+if (!isset($_GET["items_id"])) {
+    $_GET["items_id"] = "";
 }
 
-$antivirus = new ComputerAntivirus();
+$antivirus = new ItemAntivirus();
 if (isset($_POST["add"])) {
     $antivirus->check(-1, CREATE, $_POST);
 
     if ($antivirus->add($_POST)) {
         Event::log(
-            $_POST['computers_id'],
-            "computers",
+            $_POST['items_id'],
+            $_POST['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
@@ -69,25 +72,26 @@ if (isset($_POST["add"])) {
 
     if ($antivirus->delete($_POST, 1)) {
         Event::log(
-            $antivirus->fields['computers_id'],
-            "computers",
+            $antivirus->fields['items_id'],
+            $antivirus->fields['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
             sprintf(__('%s purges an antivirus'), $_SESSION["glpiname"])
         );
     }
-    $computer = new Computer();
-    $computer->getFromDB($antivirus->fields['computers_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $antivirus->fields['computers_id'] .
-                  ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
+    $itemtype = $antivirus->field['itemtype'];
+    $item = new $itemtype();
+    $item->getFromDB($antivirus->fields['items_id']);
+    Html::redirect(Toolbox::getItemTypeFormURL($antivirus->field['itemtype']) . '?id=' . $antivirus->fields['items_id'] .
+                  ($item->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["update"])) {
     $antivirus->check($_POST["id"], UPDATE);
 
     if ($antivirus->update($_POST)) {
         Event::log(
-            $antivirus->fields['computers_id'],
-            "computers",
+            $antivirus->fields['items_id'],
+            $antivirus->fields['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
@@ -96,8 +100,14 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    $menus = ["assets", "computer"];
-    ComputerAntivirus::displayFullPageForItem($_GET["id"], $menus, [
-        'computers_id' => $_GET["computers_id"]
+    if ($antivirus->getFromDB($_GET['id'])) {
+        $menus = ['assets', $antivirus->fields['itemtype']];
+    } else {
+        $menus = ['assets', $_GET['itemtype']];
+    }
+
+    ItemAntivirus::displayFullPageForItem($_GET["id"], $menus, [
+        'itemtype' => $_GET["itemtype"],
+        'items_id' => $_GET["items_id"]
     ]);
 }

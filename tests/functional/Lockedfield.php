@@ -610,7 +610,7 @@ class Lockedfield extends DbTestCase
         $cos = new \Item_OperatingSystem();
         $aos = new \OperatingSystemArchitecture();
         $manufacturer = new \Manufacturer();
-        $iav = new \ComputerAntivirus();
+        $iav = new \ItemAntivirus();
 
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -678,7 +678,7 @@ class Lockedfield extends DbTestCase
         $this->integer($cos->fields['operatingsystemarchitectures_id'])->isIdenticalTo($archs_id);
 
         //check antivirus manufacturer
-        $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($iav->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
         $this->boolean($manufacturer->getFromDBByCrit(['name' => 'Microsoft Corporation']))->isTrue();
         $manufacturers_id = $manufacturer->fields['id'];
         $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($manufacturers_id);
@@ -725,7 +725,7 @@ class Lockedfield extends DbTestCase
         $this->array($lockedfield->getLockedValues($cos->getType(), $cos->fields['id']))->isIdenticalTo(['operatingsystemarchitectures_id' => 'x86_64']);
 
         //make sure manufacturer is still the correct one
-        $this->boolean($iav->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($iav->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
         $this->integer($iav->fields['manufacturers_id'])->isIdenticalTo($newmanufacturers_id);
 
         $this->array($lockedfield->getLockedValues($iav->getType(), $iav->fields['id']))->isIdenticalTo(['manufacturers_id' => 'Microsoft Corporation']);

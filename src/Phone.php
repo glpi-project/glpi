@@ -70,7 +70,8 @@ class Phone extends CommonDBTM
             NetworkPort::class,
             Computer_Item::class,
             KnowbaseItem_Item::class,
-            Item_RemoteManagement::class
+            Item_RemoteManagement::class,
+            ItemAntivirus::class,
         ];
     }
 
@@ -112,6 +113,7 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('ItemAntivirus', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
         $this->addStandardTab('Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
@@ -471,6 +473,8 @@ class Phone extends CommonDBTM
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, ItemAntivirus::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
 
