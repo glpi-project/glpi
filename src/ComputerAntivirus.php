@@ -37,7 +37,7 @@
  * Manage ComputerAntivirus.
  * @deprecated 10.1.0 Use ItemAntivirus
  */
-class Netpoint extends ItemAntivirus
+class ComputerAntivirus extends ItemAntivirus
 {
     public static function getTable($classname = null)
     {

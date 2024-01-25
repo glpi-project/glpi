@@ -50,7 +50,6 @@ The present file will list all changes made to the project; according to the
 - Project description field is now a rich text field.
 - Entity, profile, debug mode flag, and language are restored after ending impersonation.
 - Volumes now show `Used percentage` instead of `Free percentage`.
-- `ComputerAntivirus` is not known as `ItemAntivirus`
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -133,6 +132,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILObject::isValidator()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
+- `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
 - `Config::validatePassword()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`

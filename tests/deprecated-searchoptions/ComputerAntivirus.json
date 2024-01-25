@@ -1,0 +1,49 @@
+{
+    "common": {
+        "name": "Characteristics"
+    },
+    "1": {
+        "name": "Name",
+        "table": "glpi_computerantiviruses",
+        "field": "name",
+        "datatype": "itemlink",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "equals",
+            "notequals",
+            "empty"
+        ],
+        "uid": "ComputerAntivirus.name"
+    },
+    "2": {
+        "name": "Version",
+        "table": "glpi_computerantiviruses",
+        "field": "antivirus_version",
+        "datatype": "string",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "ComputerAntivirus.antivirus_version"
+    },
+    "3": {
+        "name": "Signature database version",
+        "table": "glpi_computerantiviruses",
+        "field": "signature_version",
+        "datatype": "string",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "ComputerAntivirus.signature_version"
+    }
+}

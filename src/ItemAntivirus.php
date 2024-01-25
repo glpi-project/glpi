@@ -36,10 +36,8 @@
 use Glpi\Application\View\TemplateRenderer;
 
 /**
- * @since 9.1
+ * @since 10.1
  */
-
-
 class ItemAntivirus extends CommonDBChild
 {
    // From CommonDBChild
@@ -127,6 +125,16 @@ class ItemAntivirus extends CommonDBChild
             'name'               => __('Signature database version'),
             'datatype'           => 'string',
             'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => '4',
+            'table'              => $this->getTable(),
+            'field'              => 'itemtype',
+            'name'               => _n('Type', 'Types', 1),
+            'datatype'           => 'itemtypename',
+            'itemtype_list'      => 'av_types',
+            'massiveaction'      => false
         ];
 
         return $tab;
