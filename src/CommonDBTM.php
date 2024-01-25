@@ -2024,9 +2024,9 @@ class CommonDBTM extends CommonGLPI
      */
     public function pre_addInDB()
     {
-        if (isset($this->input['name'])) {
+        if (isset($this->input[static::getNameField()])) {
             // Remove spaces at the beginning and the end of the name
-            $this->input['name'] = trim($this->input['name']);
+            $this->input[static::getNameField()] = trim($this->input[static::getNameField()]);
         }
     }
 
@@ -2038,9 +2038,9 @@ class CommonDBTM extends CommonGLPI
      **/
     public function pre_updateInDB()
     {
-        if (isset($this->fields['name'])) {
+        if (isset($this->fields[static::getNameField()])) {
             // Remove spaces at the beginning and the end of the name
-            $this->fields['name'] = trim($this->fields['name']);
+            $this->fields[static::getNameField()] = trim($this->fields[static::getNameField()]);
         }
     }
 
