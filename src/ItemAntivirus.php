@@ -133,7 +133,7 @@ class ItemAntivirus extends CommonDBChild
             'field'              => 'itemtype',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
-            'itemtype_list'      => 'av_types',
+            'itemtype_list'      => 'itemantivirus_types',
             'massiveaction'      => false
         ];
 

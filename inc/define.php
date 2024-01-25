@@ -680,4 +680,4 @@ $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
     Database::getType()           => "pics/impact/database.png",
 ];
 
-$CFG_GLPI['av_types'] = ['Computer', 'Phone'];
+$CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];

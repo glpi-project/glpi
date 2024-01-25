@@ -45,7 +45,7 @@ class Antivirus extends InventoryAsset
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!in_array($this->item->getType(), $CFG_GLPI['av_types'])) {
+        if (!in_array($this->item->getType(), $CFG_GLPI['itemantivirus_types'])) {
             throw new \RuntimeException('Antivirus are not handled for ' . $this->item->getType());
         }
         $mapping = [
