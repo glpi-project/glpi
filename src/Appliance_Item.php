@@ -174,21 +174,6 @@ class Appliance_Item extends CommonDBRelation
             echo "</div>";
         }
 
-        echo "<table class='tab_cadre_fixehov'>";
-        $header = "<tr>";
-        if ($canedit) {
-            $header .= "<th width='10'>";
-            $header .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header .= "</th>";
-        }
-        $header .= "<th>" . __('Itemtype') . "</th>";
-        $header .= "<th>" . _n('Item', 'Items', 1) . "</th>";
-        $header .= "<th>" . __("Serial") . "</th>";
-        $header .= "<th>" . __("Inventory number") . "</th>";
-        $header .= "<th>" . Appliance_Item_Relation::getTypeName(Session::getPluralNumber()) . "</th>";
-        $header .= "</tr>";
-        echo $header;
-
         $entries = [];
         foreach ($items as $row) {
             $item = new $row['itemtype']();
