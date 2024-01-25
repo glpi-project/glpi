@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1603,7 +1603,7 @@ class Inventory extends InventoryTestCase
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
         ]);
-        $this->integer(count($logs))->isIdenticalTo(1); //FIXME: should be 0
+        $this->integer(count($logs))->isIdenticalTo(0);
 
         //real computer update
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_3_updated.json'));
@@ -1781,18 +1781,12 @@ class Inventory extends InventoryTestCase
             'FROM' => \Log::getTable(),
             'LIMIT' => countElementsInTable(\Log::getTable()),
             'OFFSET' => $nblogsnow,
-            'WHERE' => [
-                'NOT' => [ //prevent logs check on Agent last contact
-                    'itemtype' => \Agent::getType(),
-                    'id_search_option' => 4
-                ]
-            ]
         ]);
 
-        $this->integer(count($logs))->isIdenticalTo(4411);
+        $this->integer(count($logs))->isIdenticalTo(4412);
 
         $expected_types_count = [
-            0 => 2, //Agent version, disks usage
+            0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
@@ -4050,6 +4044,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             $rule->getFromDBByCrit(['name' => 'Computer import denied'])
         )->isTrue();
         $rules_id_refuse = $rule->fields['id'];
+        // update action to refused import with no log
+        $action = new \RuleAction();
+        $action->getFromDBByCrit([
+            "rules_id" => $rules_id_refuse,
+        ]);
+        $action->fields['field'] = '_inventory';
+        $action->fields['value'] = 2;
+        $action->update($action->fields);
+
 
         $this->boolean(
             $rule->getFromDBByCrit(['name' => 'Computer import (by name)'])
@@ -4907,6 +4910,45 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->array(array_pop($databases))
             ->string['name']->isIdenticalTo('glpi')
             ->integer['size']->isIdenticalTo(55000);
+
+        //test sql syntax error
+        $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2_partial_dbs.json'));
+        $mysql = $json->content->databases_services[0];
+        //update version
+        $mysql->name = "Maria'DB";
+        $dbs = $mysql->databases;
+
+        $db_glpi = &$dbs[0];
+        $db_glpi->size = 55000;
+        $db_glpi->last_backup_date = '2021-06-25 08:52:44';
+
+        $db_new = &$dbs[1];
+        $db_new->name = 'new_database';
+        $db_new->size = 2048;
+
+        $services = [$mysql];
+        $json->content->databases_services = $services;
+
+        $this->doInventory($json);
+
+        //check created databases & instances
+        $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 0]))->isIdenticalTo(1);
+        $this->integer(countElementsInTable(\DatabaseInstance::getTable(), ['is_deleted' => 1]))->isIdenticalTo(2);
+
+        //ensure database version has been updated
+        $database = new \DatabaseInstance();
+        $this->boolean($database->getFromDBByCrit(['name' => 'MariaDB']))->isTrue();
+        $this->string($database->fields['version'])->isIdenticalTo('Ver 15.1 Distrib 10.5.10-MariaDB-modified');
+
+        //- ensure existing instances has been updated
+        $databases = $database->getDatabases();
+        $this->array($databases)->hasSize(2);
+        $this->array(array_pop($databases))
+            ->string['name']->isIdenticalTo('new_database')
+            ->integer['size']->isIdenticalTo(2048);
+        $this->array(array_pop($databases))
+            ->string['name']->isIdenticalTo('glpi')
+            ->integer['size']->isIdenticalTo(55000);
     }
 
 
@@ -5079,7 +5121,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $iterator = $DB->request($criteria);
         $this->integer(count($iterator))->isIdenticalTo(1);
-        $this->string($iterator->current()['name'])->isIdenticalTo('Global import (by serial)');
+        $this->string($iterator->current()['name'])->isIdenticalTo('Phone import (by serial + uuid)');
         $this->string($iterator->current()['method'])->isIdenticalTo(\Glpi\Inventory\Request::INVENT_QUERY);
 
         //get phone models, manufacturer, ...

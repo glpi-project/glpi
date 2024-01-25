@@ -10,7 +10,7 @@ jobs:
       issues: write  # for actions/stale to close stale issues
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/stale@v8
+      - uses: actions/stale@v9
         with:
           stale-issue-message: >-
             There has been no activity on this issue for some time and therefore it is considered stale

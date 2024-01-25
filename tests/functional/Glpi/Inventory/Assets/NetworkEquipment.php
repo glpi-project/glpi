@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -2723,7 +2723,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->integer($networkPort->logical_number)->isEqualTo(1047);
     }
 
-    public function testUnmanagedNotDuplicatedAtEachInventory()
+    public function testUnmanagedNotDuplicatedAtEachInventoryWithLogicalNumber()
     {
         $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
       <REQUEST>
@@ -2795,6 +2795,84 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $unmanaged = new \Unmanaged();
         $this->boolean($unmanaged->getFromDBByCrit(['name' => 'SW_BATA-RdJ-vdi-1']))->isTrue();
+    }
+
+
+    public function testUnmanagedNotDuplicatedAtEachInventoryWithIfDescr()
+    {
+        $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
+      <REQUEST>
+        <CONTENT>
+          <DEVICE>
+            <COMPONENTS>
+              <COMPONENT>
+                <CONTAINEDININDEX>0</CONTAINEDININDEX>
+                <INDEX>-1</INDEX>
+                <NAME>Force10 S-series Stack</NAME>
+                <TYPE>stack</TYPE>
+              </COMPONENT>
+            </COMPONENTS>
+            <INFO>
+              <MAC>00:01:e8:d7:c9:1d</MAC>
+              <NAME>sw-s50</NAME>
+              <SERIAL>DL253300100</SERIAL>
+              <TYPE>NETWORKING</TYPE>
+            </INFO>
+            <PORTS>
+            <PORT>
+            <CONNECTIONS>
+              <CDP>1</CDP>
+              <CONNECTION>
+                <IFDESCR>GigabitEthernet0</IFDESCR>
+                <IP>10.2.32.239</IP>
+                <MODEL>cisco AIR-AP2802E-E-K9</MODEL>
+                <SYSDESCR>Cisco AP Software, ap3g3-k9w8 Version: 17.6.5.22
+  Technical Support: http://www.cisco.com/techsupport
+  Copyright (c) 2014-2015 by Cisco Systems, Inc.</SYSDESCR>
+                <SYSNAME>FR-LUC-GCL-WAP-INTRA-239</SYSNAME>
+              </CONNECTION>
+            </CONNECTIONS>
+            <IFALIAS>// Trunk to FR-LUC-GCL-WAP-INTRA-239 //</IFALIAS>
+            <IFDESCR>GigabitEthernet1/0/20</IFDESCR>
+            <IFINERRORS>0</IFINERRORS>
+            <IFINOCTETS>2628580054</IFINOCTETS>
+            <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+            <IFLASTCHANGE>245 days, 07:42:45.29</IFLASTCHANGE>
+            <IFMTU>1500</IFMTU>
+            <IFNAME>Gi1/0/20</IFNAME>
+            <IFNUMBER>28</IFNUMBER>
+            <IFOUTERRORS>0</IFOUTERRORS>
+            <IFOUTOCTETS>2281895971</IFOUTOCTETS>
+            <IFPORTDUPLEX>3</IFPORTDUPLEX>
+            <IFSPEED>1000000000</IFSPEED>
+            <IFSTATUS>1</IFSTATUS>
+            <IFTYPE>6</IFTYPE>
+            <MAC>c4:4d:84:13:5a:94</MAC>
+            <TRUNK>1</TRUNK>
+          </PORT>
+            </PORTS>
+          </DEVICE>
+          <MODULEVERSION>4.1</MODULEVERSION>
+          <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+      </REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $network_device_id = $inventory->getItem()->fields['id'];
+        $this->integer($network_device_id)->isGreaterThan(0);
+
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDBByCrit(['name' => 'FR-LUC-GCL-WAP-INTRA-239']))->isTrue();
+
+        //redo inventory and check if we still have a single Unmanaged
+        $inventory = $this->doInventory($xml_source, true);
+
+        $unmanaged = new \Unmanaged();
+        $this->boolean($unmanaged->getFromDBByCrit(['name' => 'FR-LUC-GCL-WAP-INTRA-239']))->isTrue();
     }
 
 

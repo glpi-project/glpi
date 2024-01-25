@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -130,7 +130,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
      * @param $offset    offset used to begin (default 0)
      * @param $maxtime   maximum time of process (reload at the end) (default 0)
      *
-     * @return -1 on completion else current offset
+     * @return int|boolean current offset or -1 on completion or false on failure
      **/
     public function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0)
     {

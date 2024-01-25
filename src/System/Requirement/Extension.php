@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,10 +54,13 @@ class Extension extends AbstractRequirement
      */
     public function __construct(string $name, bool $optional = false, ?string $description = null)
     {
-        $this->title = sprintf(__('%s extension'), $name);
+        parent::__construct(
+            sprintf(__('%s extension'), $name),
+            $description,
+            $optional
+        );
+
         $this->name = $name;
-        $this->optional = $optional;
-        $this->description = $description;
     }
 
     protected function check()

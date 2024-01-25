@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -682,8 +682,8 @@ class Socket extends CommonDBChild
         global $CFG_GLPI;
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Location':
+            switch (get_class($item)) {
+                case Location::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  countElementsInTable(
                             $this->getTable(),
@@ -692,6 +692,7 @@ class Socket extends CommonDBChild
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
                 default:
+                    /** @var CommonDBTM $item */
                     if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb =  countElementsInTable(

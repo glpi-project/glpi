@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -589,28 +589,23 @@ JAVASCRIPT;
        //get all used items
         $used = $used_reserved = [];
         $iterator = $DB->request([
-            'FROM' => $this->getTable()
+            'SELECT' => ['itemtype', 'items_id', 'is_reserved'],
+            'FROM' => static::getTable()
         ]);
         foreach ($iterator as $row) {
+            if ($row['is_reserved']) {
+                $used_reserved[$row['itemtype']][] = $row['items_id'];
+            }
             $used[$row['itemtype']][] = $row['items_id'];
         }
-       // find used pdu (not racked)
-        foreach (PDU_Rack::getUsed() as $used_pdu) {
+        // find used pdu (not racked)
+        foreach (PDU_Rack::getUsed(['pdus_id']) as $used_pdu) {
             $used['PDU'][] = $used_pdu['pdus_id'];
-        }
-       // get all reserved items
-        $iterator = $DB->request([
-            'FROM'  => $this->getTable(),
-            'WHERE' => [
-                'is_reserved' => true
-            ]
-        ]);
-        foreach ($iterator as $row) {
-            $used_reserved[$row['itemtype']][] = $row['items_id'];
         }
 
        //items part of an enclosure should not be listed
         $iterator = $DB->request([
+            'SELECT' => ['itemtype', 'items_id'],
             'FROM'   => Item_Enclosure::getTable()
         ]);
         foreach ($iterator as $row) {
@@ -899,7 +894,7 @@ JAVASCRIPT;
          </div>";
         }
 
-        return false;
+        return '';
     }
 
 
@@ -946,7 +941,7 @@ JAVASCRIPT;
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {

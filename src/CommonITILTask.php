@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -91,7 +91,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @since 0.84
      *
-     * @return object of the concerned item or false on error
+     * @return false|CommonDBTM object of the concerned item or false on error
      **/
     public function getItem()
     {
@@ -1110,8 +1110,17 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (!$item = getItemForItemtype($itemtype)) {
             return;
         }
+
+        if (!$item instanceof CommonITILTask) {
+            return;
+        }
+
         $parentitemtype = $item->getItilObjectItemType();
         if (!$parentitem = getItemForItemtype($parentitemtype)) {
+            return;
+        }
+
+        if (!$parentitem instanceof CommonITILObject) {
             return;
         }
 
@@ -1385,6 +1394,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $parenttype = str_replace('Task', '', $itemtype);
         if ($parent = getItemForItemtype($parenttype)) {
+            if (!$parent instanceof CommonITILObject) {
+                return;
+            }
             $parenttype_fk = $parent->getForeignKeyField();
         } else {
             return;

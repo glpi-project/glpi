@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -881,10 +881,10 @@ class Reminder extends CommonDBVisible implements
     /**
      * Show list for central view
      *
-     * @param $personal boolean  : display reminders created by me ?
-     * @param $personal $display : if false return html
+     * @param boolean $personal display reminders created by me?
+     * @param boolean $display if false return html
      *
-     * @return void|string
+     * @return false|void|string
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {

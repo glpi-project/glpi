@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -82,7 +82,7 @@ class Dropdown
      *    - readonly             : boolean / return self::getDropdownValue if true (default false)
      *    - parent_id_field      : field used to compute parent id (to filter available values inside the dropdown tree)
      *
-     * @return boolean : false if error and random id if OK
+     * @return string|false|integer
      *
      * @since 9.5.0 Usage of string in condition option is removed
      **/
@@ -1883,6 +1883,8 @@ JAVASCRIPT;
      *    - inhours         : only show timestamp in hours not in days
      *    - display         : boolean / display or return string
      *    - width           : string / display width of the item
+     *    - allow_max_change: boolean / allow to change max value according to max($params['value'], $params['max']) (default true).
+     *                        If false and the value is greater than the max, the value will be adjusted based on the step and then added to the dropdown as an extra option.
      **/
     public static function showTimeStamp($myname, $options = [])
     {
@@ -1902,6 +1904,8 @@ JAVASCRIPT;
         $params['display_emptychoice'] = true;
         $params['width']               = '';
         $params['class']               = 'form-select';
+        $params['allow_max_change']    = true;
+        $params['disabled']            = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1916,7 +1920,9 @@ JAVASCRIPT;
             $params['min'] = $params['step'];
         }
 
-        $params['max'] = max($params['value'], $params['max']);
+        if ($params['allow_max_change']) {
+            $params['max'] = max($params['value'], $params['max']);
+        }
 
        // Floor with MINUTE_TIMESTAMP for rounded purpose
         if (empty($params['value'])) {
@@ -1930,6 +1936,10 @@ JAVASCRIPT;
         } else if (!in_array($params['value'], $params['toadd'])) {
            // Round to a valid step except if value is already valid (defined in values to add)
             $params['value'] = floor(($params['value']) / $params['step']) * $params['step'];
+        }
+
+        if (!$params['allow_max_change'] && $params['value'] > $params['max']) {
+            $params['toadd'][] = $params['value'];
         }
 
         // Generate array keys
@@ -2005,6 +2015,7 @@ JAVASCRIPT;
             'rand'                => $params['rand'],
             'emptylabel'          => $params['emptylabel'],
             'class'               => $params['class'],
+            'disabled'            => $params['disabled'],
         ]);
     }
 
@@ -2461,7 +2472,7 @@ JAVASCRIPT;
      * @param string  $comment
      * @param boolean $add              if true, add it if not found. if false, just check if exists
      *
-     * @return integer : dropdown id.
+     * @return false|integer : dropdown id.
      **/
     public static function importExternal(
         $itemtype,
@@ -3271,6 +3282,24 @@ JAVASCRIPT;
                        /*if (isset($visibility['WHERE'])) {
                          $where = $visibility['WHERE'];
                        }*/
+                    }
+                    break;
+
+                case Ticket::class:
+                    $criteria = [
+                        'SELECT' => array_merge(["$table.*"], $addselect),
+                        'FROM'   => $table,
+                    ];
+                    if (count($ljoin)) {
+                        $criteria['LEFT JOIN'] = $ljoin;
+                    }
+                    if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+                        $unused_ref = [];
+                        $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
+                        if (!empty($joins_str)) {
+                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        }
+                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
                     }
                     break;
 

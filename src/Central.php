@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -88,7 +88,7 @@ class Central extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             switch ($tabnum) {
                 case 0:
                     $item->showGlobalDashboard();
@@ -152,7 +152,7 @@ class Central extends CommonGLPI
         if (Contract::canView()) {
             $grid_items[] = Contract::showCentral(false);
         }
-        if (Session::haveRight("logs", READ)) {
+        if (Session::haveRight(Log::$rightname, READ)) {
            //Show last add events
             $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
         }
@@ -457,11 +457,8 @@ class Central extends CommonGLPI
 
         $user = new User();
         $user->getFromDB(Session::getLoginUserID());
-        if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-            $expiration_msg = sprintf(
-                __('Your password will expire on %s.'),
-                Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
-            );
+        $expiration_msg = $user->getPasswordExpirationMessage();
+        if ($expiration_msg !== null) {
             $messages['warnings'][] = $expiration_msg
              . ' '
              . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'

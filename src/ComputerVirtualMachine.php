@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,7 +69,7 @@ class ComputerVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && ($item->getType() == 'Computer')
+            && $item instanceof Computer
             && Computer::canView()
         ) {
             $nb = 0;

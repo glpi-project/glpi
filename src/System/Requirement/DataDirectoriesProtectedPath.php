@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -71,10 +71,12 @@ final class DataDirectoriesProtectedPath extends AbstractRequirement
         string $var_root_constant = 'GLPI_VAR_DIR',
         string $glpi_root_directory = GLPI_ROOT
     ) {
-        $this->title = __('Safe path for data directories');
-        $this->description = __('GLPI data directories should be placed outside web root directory. It can be achieved by redefining corresponding constants. See installation documentation for more details.');
-        $this->optional = true;
-        $this->recommended_for_security = true;
+        parent::__construct(
+            __('Safe path for data directories'),
+            __('GLPI data directories should be placed outside web root directory. It can be achieved by redefining corresponding constants. See installation documentation for more details.'),
+            true,
+            true
+        );
 
         $this->directories_constants = $directories_constants;
         $this->var_root_constant     = $var_root_constant;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,8 +42,13 @@ class SeLinux extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('SELinux configuration');
-        $this->optional = true;
+        parent::__construct(
+            __('SELinux configuration'),
+            null,
+            true,
+            false,
+            null, // $out_of_context will be computed on check
+        );
     }
 
     protected function check()

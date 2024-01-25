@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -380,9 +380,9 @@ class Session
      * Change active entity to the $ID one. Update glpiactiveentities session variable.
      * Reload groups related to this entity.
      *
-     * @param integer|'All' $ID           ID of the new active entity ("all"=>load all possible entities)
-     *                                    (default 'all')
-     * @param boolean       $is_recursive Also display sub entities of the active entity? (false by default)
+     * @param integer|string $ID           ID of the new active entity ("all"=>load all possible entities)
+     *                                     (default 'all')
+     * @param boolean         $is_recursive Also display sub entities of the active entity? (false by default)
      *
      * @return boolean true on success, false on failure
      **/
@@ -390,9 +390,10 @@ class Session
     {
 
         $newentities = [];
+        $ancestors = [];
+
         if (isset($_SESSION['glpiactiveprofile'])) {
             if ($ID === "all") {
-                $ancestors = [];
                 foreach ($_SESSION['glpiactiveprofile']['entities'] as $val) {
                     $ancestors               = array_unique(array_merge(
                         getAncestorsOf(
@@ -1215,11 +1216,11 @@ class Session
      * Check if you could access (read) to the entity of id = $ID
      *
      * @param integer $ID           ID of the entity
-     * @param boolean $is_recursive if recursive item (default 0)
+     * @param boolean $is_recursive if recursive item (default false)
      *
      * @return boolean
      **/
-    public static function haveAccessToEntity($ID, $is_recursive = 0)
+    public static function haveAccessToEntity($ID, $is_recursive = false)
     {
 
        // Quick response when passing wrong ID : default value of getEntityID is -1
@@ -1245,14 +1246,14 @@ class Session
 
 
     /**
-     * Check if you could access to one entity of an list
+     * Check if you could access to one entity of a list
      *
      * @param array   $tab          list ID of entities
-     * @param boolean $is_recursive if recursive item (default 0)
+     * @param boolean $is_recursive if recursive item (default false)
      *
      * @return boolean
      **/
-    public static function haveAccessToOneOfEntities($tab, $is_recursive = 0)
+    public static function haveAccessToOneOfEntities($tab, $is_recursive = false)
     {
 
         if (is_array($tab) && count($tab)) {
@@ -1620,7 +1621,7 @@ class Session
         ) {
             $requested_url = (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';
-            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url");
+            Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");
             // Output JSON if requested by client
             if (strpos($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') !== false) {
                 http_response_code(403);
@@ -1952,9 +1953,12 @@ class Session
     /**
      * Start session for a given user
      *
-     * @param int $users_id ID of the user
+     * @param string    $token
+     * @param string    $token_type
+     * @param int|null  $entities_id
+     * @param bool|null $is_recursive
      *
-     * @return User|bool
+     * @return User|false
      */
     public static function authWithToken(
         string $token,

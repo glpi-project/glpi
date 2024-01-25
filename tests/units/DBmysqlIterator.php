@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,6 +43,7 @@ use QueryExpression;
 
 class DBmysqlIterator extends DbTestCase
 {
+    /** @var \DBmysqlIterator */
     private $it;
 
     public function beforeTestMethod($method)
@@ -1441,5 +1442,14 @@ SQL
         ];
 
         return new \QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+    }
+
+    public function testRawFKeyCondition()
+    {
+        $this->string(
+            $this->it->analyseCrit([
+                'ON' => new QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+            ])
+        )->isEqualTo("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)");
     }
 }

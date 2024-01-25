@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -445,8 +445,8 @@ class Ticket extends CommonITILObject
                 $data["slalevels_id_ttr"] = SlaLevel::getFirstSlaLevel($slas_id);
             }
            // Compute time_to_resolve
-            $data[$dateField]             = $sla->computeDate($date);
-            $data['sla_waiting_duration'] = 0;
+            $data['sla_waiting_duration'] = $this->fields['sla_waiting_duration'] ?? 0;
+            $data[$dateField]             = $sla->computeDate($date, $data['sla_waiting_duration']);
         } else {
             $data["slalevels_id_ttr"]     = 0;
             $data[$slaField]              = 0;
@@ -489,9 +489,9 @@ class Ticket extends CommonITILObject
             } elseif ($ola->fields['type'] == SLM::TTO) {
                 $data['ola_tto_begin_date'] = $date;
             }
-           // Compute time_to_resolve
-            $data[$dateField]             = $ola->computeDate($date);
-            $data['ola_waiting_duration'] = 0;
+           // Compute time_to_own
+            $data['ola_waiting_duration'] = $this->fields['ola_waiting_duration'] ?? 0;
+            $data[$dateField]             = $ola->computeDate($date, $data['ola_waiting_duration']);
         } else {
             $data["olalevels_id_ttr"]     = 0;
             $data[$olaField]              = 0;
@@ -747,13 +747,13 @@ class Ticket extends CommonITILObject
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (static::canView()) {
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
-                switch ($item->getType()) {
-                    case 'User':
+                switch (get_class($item)) {
+                    case User::class:
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
@@ -766,7 +766,7 @@ class Ticket extends CommonITILObject
                          $title = __('Created tickets');
                         break;
 
-                    case 'Supplier':
+                    case Supplier::class:
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
@@ -777,7 +777,7 @@ class Ticket extends CommonITILObject
                         );
                         break;
 
-                    case 'SLA':
+                    case SLA::class:
                         $nb = countElementsInTable(
                             'glpi_tickets',
                             [
@@ -789,7 +789,8 @@ class Ticket extends CommonITILObject
                             ]
                         );
                         break;
-                    case 'OLA':
+
+                    case OLA::class:
                         $nb = countElementsInTable(
                             'glpi_tickets',
                             [
@@ -802,17 +803,17 @@ class Ticket extends CommonITILObject
                         );
                         break;
 
-                    case 'Group':
-                          $nb = countElementsInTable(
-                              ['glpi_tickets', 'glpi_groups_tickets'],
-                              [
-                                  'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
-                                  'glpi_groups_tickets.groups_id'  => $item->getID(),
-                                  'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
-                                  'glpi_tickets.is_deleted'        => 0
-                              ] + getEntitiesRestrictCriteria(self::getTable())
-                          );
-                         $title = __('Created tickets');
+                    case Group::class:
+                        $nb = countElementsInTable(
+                            ['glpi_tickets', 'glpi_groups_tickets'],
+                            [
+                                'glpi_groups_tickets.tickets_id' => new \QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_groups_tickets.groups_id'  => $item->getID(),
+                                'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
+                                'glpi_tickets.is_deleted'        => 0
+                            ] + getEntitiesRestrictCriteria(self::getTable())
+                        );
+                        $title = __('Created tickets');
                         break;
 
                     default:
@@ -870,26 +871,22 @@ class Ticket extends CommonITILObject
             }
         }
 
-       // Not check self::READALL for Ticket itself
-        switch ($item->getType()) {
-            case __CLASS__:
-                $ong    = [];
+        // Not check self::READALL for Ticket itself
+        if ($item instanceof self) {
+            $ong    = [];
 
-               // enquete si statut clos
-                $satisfaction = new TicketSatisfaction();
-                if (
-                    $satisfaction->getFromDB($item->getID())
-                    && $item->fields['status'] == self::CLOSED
-                ) {
-                    $ong[3] = __('Satisfaction');
-                }
-                if ($item->canView()) {
-                    $ong[4] = __('Statistics');
-                }
-                return $ong;
-
-           //   default :
-           //      return _n('Ticket','Tickets', Session::getPluralNumber());
+            // enquete si statut clos
+            $satisfaction = new TicketSatisfaction();
+            if (
+                $satisfaction->getFromDB($item->getID())
+                && $item->fields['status'] == self::CLOSED
+            ) {
+                $ong[3] = __('Satisfaction');
+            }
+            if ($item->canView()) {
+                $ong[4] = __('Statistics');
+            }
+            return $ong;
         }
 
         return '';
@@ -899,8 +896,8 @@ class Ticket extends CommonITILObject
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case __CLASS__:
+        switch (get_class($item)) {
+            case self::class:
                 switch ($tabnum) {
                     case 3:
                         $satisfaction = new TicketSatisfaction();
@@ -929,9 +926,9 @@ class Ticket extends CommonITILObject
                 }
                 break;
 
-            case 'Group':
-            case 'SLA':
-            case 'OLA':
+            case Group::class:
+            case SLA::class:
+            case OLA::class:
             default:
                 self::showListForItem($item, $withtemplate);
         }
@@ -2462,7 +2459,7 @@ class Ticket extends CommonITILObject
      *
      * @param $type itemtype of object to add
      *
-     * @return rights
+     * @return boolean
      **/
     public function canAddItem($type)
     {
@@ -2698,7 +2695,7 @@ class Ticket extends CommonITILObject
                 $rand = mt_rand();
                 $mergeparam = [
                     'name'         => "_mergeticket",
-                    'used'         => $ma->items['Ticket'],
+                    'used'         => $ma->getItems()['Ticket'],
                     'displaywith'  => ['id'],
                     'rand'         => $rand
                 ];
@@ -4403,23 +4400,27 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
         $can_requester = $this->canRequesterUpdateItem();
-        $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
 
+        $item_ticket = null;
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
+            $canpriority = false;
+        } else {
+            $item_ticket = new Item_Ticket();
+            $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         }
 
         $sla = new SLA();
         $ola = new OLA();
-        $item_ticket = null;
 
-        $options['_canupdate'] = Session::haveRight('ticket', CREATE);
-        if ($options['_canupdate']) {
-            $item_ticket = new Item_Ticket();
+        if ($this->isNewItem()) {
+            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+        } else {
+            $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
@@ -4967,15 +4968,26 @@ JAVASCRIPT;
                         $options['criteria'][2]['link']       = 'AND';
 
                         if (Session::haveRight('ticket', Ticket::SURVEY)) {
-                            $options['criteria'][3]['field']      = 22; // author
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value']      = Session::getLoginUserID();
-                            $options['criteria'][3]['link']       = 'AND';
+                            $options['criteria'][3]['link']     = 'AND';
+                            $options['criteria'][3]['criteria'] = [
+                                [
+                                    'link'        => 'AND',
+                                    'field'       => 22, // author
+                                    'searchtype'  => 'equals',
+                                    'value'       => Session::getLoginUserID(),
+                                ],
+                                [
+                                    'link'        => 'OR',
+                                    'field'       => 4, // requester
+                                    'searchtype'  => 'equals',
+                                    'value'       => Session::getLoginUserID(),
+                                ]
+                            ];
                         } else {
-                            $options['criteria'][3]['field']      = 4; // requester
-                            $options['criteria'][3]['searchtype'] = 'equals';
-                            $options['criteria'][3]['value']      = Session::getLoginUserID();
-                            $options['criteria'][3]['link']       = 'AND';
+                            $options['criteria'][3]['field']        = 4; // requester
+                            $options['criteria'][3]['searchtype']   = 'equals';
+                            $options['criteria'][3]['value']        = Session::getLoginUserID();
+                            $options['criteria'][3]['link']         = 'AND';
                         }
                         $forcetab                 = 'Ticket$3';
 
@@ -5380,8 +5392,8 @@ JAVASCRIPT;
             'reset'    => 'reset',
         ];
 
-        switch ($item->getType()) {
-            case 'User':
+        switch (get_class($item)) {
+            case User::class:
                 $restrict['glpi_tickets_users.users_id'] = $item->getID();
                 $restrict['glpi_tickets_users.type'] = CommonITILActor::REQUESTER;
 
@@ -5391,7 +5403,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'SLA':
+            case SLA::class:
                 $restrict[] = [
                     'OR' => [
                         'slas_id_tto'  => $item->getID(),
@@ -5406,7 +5418,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'OLA':
+            case OLA::class:
                 $restrict[] = [
                     'OR' => [
                         'olas_id_tto'  => $item->getID(),
@@ -5421,7 +5433,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Supplier':
+            case Supplier::class:
                 $restrict['glpi_suppliers_tickets.suppliers_id'] = $item->getID();
                 $restrict['glpi_suppliers_tickets.type'] = CommonITILActor::ASSIGN;
 
@@ -5431,7 +5443,7 @@ JAVASCRIPT;
                 $options['criteria'][0]['link']       = 'AND';
                 break;
 
-            case 'Group':
+            case Group::class:
                // Mini search engine
                 if ($item->haveChildren()) {
                     $tree = Session::getSavedOption(__CLASS__, 'tree', 0);

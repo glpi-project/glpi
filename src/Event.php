@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,15 +51,12 @@ use Toolbox;
  **/
 class Event extends CommonDBTM
 {
-    public static $rightname = 'logs';
-
-
+    public static $rightname = 'system_logs';
 
     public static function getTypeName($nb = 0)
     {
         return _n('Log', 'Logs', $nb);
     }
-
 
     public function prepareInputForAdd($input)
     {
@@ -90,7 +87,6 @@ class Event extends CommonDBTM
         }
     }
 
-
     /**
      * Log an event.
      *
@@ -119,7 +115,6 @@ class Event extends CommonDBTM
         return $tmp->add($input);
     }
 
-
     /**
      * Clean old event - Call by cron
      *
@@ -142,7 +137,6 @@ class Event extends CommonDBTM
         );
         return $DB->affectedRows();
     }
-
 
     /**
      * Return arrays for function showEvent et lastEvent
@@ -183,7 +177,6 @@ class Event extends CommonDBTM
 
         return [$logItemtype, $logService];
     }
-
 
     /**
      * @param $type
@@ -238,7 +231,6 @@ class Event extends CommonDBTM
             }
         }
     }
-
 
     /**
      * Print a nice tab for last event from inventory section
@@ -364,7 +356,6 @@ class Event extends CommonDBTM
         }
     }
 
-
     /**
      * Print a nice tab for last event
      *
@@ -443,9 +434,13 @@ class Event extends CommonDBTM
         ]);
     }
 
-
     public static function getIcon()
     {
         return "ti ti-news";
+    }
+
+    public function getRights($interface = 'central'): array
+    {
+        return [ READ => __('Read')];
     }
 }

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -143,6 +143,10 @@ var glpi_html_dialog = function({
     myModalEl.addEventListener('hidden.bs.modal', function(event) {
         // call close event
         close(event);
+
+        if ($('div.modal.show').length === 0) {
+            $('div.modal-backdrop').remove();
+        }
 
         // remove html on modal close
         $('#'+id).remove();

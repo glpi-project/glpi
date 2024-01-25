@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -285,11 +285,11 @@ class SlaLevel extends LevelAgreementLevel
     /**
      * Get first level for a SLA
      *
-     * @param $slas_id   integer  id of the SLA
+     * @param integer $slas_id id of the SLA
      *
      * @since 9.1 (before getFirst SlaLevel)
      *
-     * @return id of the sla level : 0 if not exists
+     * @return integer id of the sla level : 0 if not exists
      **/
     public static function getFirstSlaLevel($slas_id)
     {
@@ -317,10 +317,10 @@ class SlaLevel extends LevelAgreementLevel
     /**
      * Get next level for a SLA
      *
-     * @param $slas_id         integer id of the SLA
-     * @param $slalevels_id    integer id of the current SLA level
+     * @param integer $slas_id      id of the SLA
+     * @param integer $slalevels_id id of the current SLA level
      *
-     * @return id of the sla level : 0 if not exists
+     * @return integer id of the sla level : 0 if not exists
      **/
     public static function getNextSlaLevel($slas_id, $slalevels_id)
     {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -126,6 +126,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         CommonDBTM $item,
         array $ids
     ) {
+        /** @var SavedSearch $item */
         $input = $ma->getInput();
         switch ($ma->getAction()) {
             case 'unset_default':
@@ -506,12 +507,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
 
     /**
-     * Prepare query to store depending of the type
+     * Prepare query to store depending on the type
      *
      * @param integer $type      Saved search type (self::SEARCH, self::URI or self::ALERT)
      * @param array   $query_tab Parameters
      *
-     * @return clean query array
+     * @return array clean query array
      **/
     protected function prepareQueryToStore($type, $query_tab)
     {
@@ -860,29 +861,36 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
         $iterator = $DB->request($criteria);
         foreach ($iterator as $data) {
+            $error = false;
+
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $this->fields = $data;
                 $count = null;
+                $search_data = null;
                 try {
                     $search_data = $this->execute(false, $enable_partial_warnings);
-                } catch (\RuntimeException $e) {
+                } catch (\Throwable $e) {
                     ErrorHandler::getInstance()->handleException($e);
-                    $search_data = false;
+                    $error = true;
                 }
-                if (isset($search_data['data']['totalcount'])) {
+
+                if ($error) {
+                    $info_message = __s('A fatal error occurred while executing this saved search. It is not able to be used.');
+                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message'></span>";
+                } elseif (isset($search_data['data']['totalcount'])) {
                     $count = $search_data['data']['totalcount'];
                 } else {
                     $info_message = ($this->fields['do_count'] == self::COUNT_NO)
                                 ? __s('Count for this saved search has been disabled.')
                                 : __s('Counting this saved search would take too long, it has been skipped.');
-                    if ($count === null) {
-                       //no count, just inform the user
-                        $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
-                    }
+                    // no count, just inform the user
+                    $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
                 }
 
                 $data['count'] = $count;
             }
+
+            $data['_error'] = $error;
 
             $searches[$data['id']] = $data;
         }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -182,93 +182,91 @@ class Reservation extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public static function handleAddForm(array $input)
+    public static function handleAddForm(array $input): void
     {
+        if (empty($input['users_id'])) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
         if (
-            !isset($input['resa']["begin"])
-            || !isset($input['resa']["end"])
-            || !isset($input['items'])
-            || !is_array($input['items'])
-            || count($input['items']) === 0
-            || !isset($input['users_id'])
+            !Session::haveRight("reservation", UPDATE)
+            && Session::getLoginUserID() !== $input['users_id']
         ) {
             return;
         }
 
-        $rr = new self();
-        $dates_to_add = [];
-
-        if (isset($input['resa']["end"])) {
-            $dates_to_add[$input['resa']["begin"]] = $input['resa']["end"];
-
-            if (
-                isset($input['periodicity'])
-                && isset($input['periodicity']['type'])
-                && !empty($input['periodicity']['type'])
-            ) {
-                $dates_to_add += Reservation::computePeriodicities(
-                    $input['resa']["begin"],
-                    $input['resa']["end"],
-                    $input['periodicity']
-                );
-            }
+        Toolbox::manageBeginAndEndPlanDates($input['resa']);
+        if (!isset($input['resa']["begin"]) || !isset($input['resa']["end"])) {
+            return;
         }
 
-        if (isset($input['items']) && count($input['items']) && isset($input['users_id'])) {
-            ksort($dates_to_add);
-            foreach ($input['items'] as $reservationitems_id) {
-                $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : 0;
+        if (!isset($input['items']) || !is_array($input['items']) || count($input['items']) === 0) {
+            Session::addMessageAfterRedirect(
+                __('No selected items'),
+                false,
+                ERROR
+            );
+        }
 
-                foreach ($dates_to_add as $begin => $end) {
-                    $recu_res = [
-                        'begin' => $begin,
-                        'end' => $end,
-                        'reservationitems_id' => $reservationitems_id,
-                        'comment' => $input['comment'],
-                        'users_id' => (int)$input['users_id'],
-                        'group' => $group,
-                    ];
+        $dates_to_add = [];
+        $dates_to_add[$input['resa']["begin"]] = $input['resa']["end"];
+        if (
+            isset($input['periodicity'])
+            && isset($input['periodicity']['type'])
+            && !empty($input['periodicity']['type'])
+        ) {
+            $dates_to_add += Reservation::computePeriodicities(
+                $input['resa']["begin"],
+                $input['resa']["end"],
+                $input['periodicity']
+            );
+        }
+        ksort($dates_to_add);
 
-                    if (
-                        (Session::haveRight("reservation", UPDATE) || (Session::getLoginUserID() === $recu_res["users_id"]))
-                        && count($rr->find([$recu_res])) == 0
-                    ) {
-                        if ($newID = $rr->add($recu_res)) {
-                            self::logAndRedirect($newID, $reservationitems_id, $recu_res);
-                        }
-                    }
+        foreach ($input['items'] as $reservationitems_id) {
+            $rr = new self();
+            $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : null;
+
+            foreach ($dates_to_add as $begin => $end) {
+                $reservation_input = [
+                    'begin' => $begin,
+                    'end' => $end,
+                    'reservationitems_id' => $reservationitems_id,
+                    'comment' => $input['comment'],
+                    'users_id' => (int)$input['users_id'],
+                ];
+                if (count($dates_to_add) > 1) {
+                    $reservation_input['group'] = $group;
+                }
+
+                if ($newID = $rr->add($reservation_input)) {
+                    Event::log(
+                        $newID,
+                        "reservation",
+                        4,
+                        "inventory",
+                        sprintf(
+                            __('%1$s adds the reservation %2$s for item %3$s'),
+                            $_SESSION["glpiname"],
+                            $newID,
+                            $reservationitems_id
+                        )
+                    );
+
+                    $rri = new ReservationItem();
+                    $rri->getFromDB($reservationitems_id);
+                    $item = new $rri->fields["itemtype"]();
+                    $item->getFromDB($rri->fields["items_id"]);
+
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __('Reservation added for item %s at %s'),
+                            $item->getLink(),
+                            Html::convDateTime($reservation_input['begin'])
+                        )
+                    );
                 }
             }
         }
-    }
-
-    private static function logAndRedirect($newID, $reservationitems_id, $recu_res)
-    {
-        Event::log(
-            $newID,
-            "reservation",
-            4,
-            "inventory",
-            sprintf(
-                __('%1$s adds the reservation %2$s for item %3$s'),
-                $_SESSION["glpiname"],
-                $newID,
-                $reservationitems_id
-            )
-        );
-
-        $rri = new ReservationItem();
-        $rri->getFromDB($reservationitems_id);
-        $item = new $rri->fields["itemtype"]();
-        $item->getFromDB($rri->fields["items_id"]);
-
-        Session::addMessageAfterRedirect(
-            sprintf(
-                __('Reservation added for item %s at %s'),
-                $item->getLink(),
-                Html::convDateTime($recu_res['begin'])
-            )
-        );
     }
 
     /**
@@ -895,7 +893,8 @@ JAVASCRIPT;
             'min'        => 0,
             'max'        => 24 * HOUR_TIMESTAMP,
             'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
+            'emptylabel' => __('Specify an end date'),
+            'allow_max_change' => false
         ]);
         echo "<br><div id='date_end$rand'></div>";
         $params = [

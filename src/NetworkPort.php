@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1402,6 +1402,11 @@ class NetworkPort extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>\n";
         echo "<td>";
         echo Html::input('name', ['value' => $this->fields['name']]);
+        echo "</td></tr>\n";
+
+        echo "<tr class='tab_bg_1'><td>" . __('Alias') . "</td>\n";
+        echo "<td>";
+        echo Html::input('ifalias', ['value' => $this->fields['ifalias']]);
         echo "</td></tr>\n";
 
         $instantiation = $this->getInstantiation();

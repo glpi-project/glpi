@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -205,7 +205,7 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'];
         if (strpos($url, '_to_kb=') !== false) {
             Ajax::createIframeModalWindow(
                 'savetokb',

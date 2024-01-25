@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -270,11 +270,11 @@ class RemoteManagement extends AbstractInventoryAsset
        //computer inventory knows only "teamviewer" and "anydesk" remote managements
         $this->doInventory($xml_source, true);
 
-       //we still have 3 remote managements
+        //we still have 3 remote managements
         $mgmts = $mgmt->find();
         $this->integer(count($mgmts))->isIdenticalTo(3);
 
-       //we still have 3 remote managements items linked to the computer
+        //we still have 3 remote managements items linked to the computer
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($mgmts))->isIdenticalTo(3);
 
@@ -323,5 +323,57 @@ class RemoteManagement extends AbstractInventoryAsset
        //remote management not present in the inventory is still not dynamic
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->integer(count($mgmts))->isIdenticalTo(1);
+    }
+
+    public function testNoMoreRemoteManagement()
+    {
+        $mgmt = new \Item_RemoteManagement();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <REMOTE_MGMT>
+      <ID>abcdyz</ID>
+      <TYPE>anydesk</TYPE>
+    </REMOTE_MGMT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+
+        $this->doInventory($xml_source, true);
+
+        //we have 1 remote managements (anydesk / abcdyz) linked to computer
+        $mgmts = $mgmt->find();
+        $this->integer(count($mgmts))->isIdenticalTo(1);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        //we have no remote managements linked to computer
+        $mgmts = $mgmt->find();
+        $this->integer(count($mgmts))->isIdenticalTo(0);
     }
 }

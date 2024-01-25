@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -273,7 +273,7 @@ class Calendar extends CommonDropdown
     {
 
         if (!isset($this->fields['id'])) {
-            return false;
+            return 0;
         }
 
         if ($end < $start) {
@@ -568,7 +568,7 @@ class Calendar extends CommonDropdown
                         $timeoftheday = $cache_duration[$dayofweek];
                     }
 
-                    if ($delay === 0 && $timeoftheday === 0) {
+                    if ($delay === 0 && $timeoftheday === 0 && $this->isAWorkingHour($timestart)) {
                         // Special case:
                         // - current day is a working day;
                         // - there is no delay to add;

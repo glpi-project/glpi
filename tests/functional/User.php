@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -952,6 +952,7 @@ class User extends \DbTestCase
 
         return [
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 years', $time)),
                 'expiration_delay'                => -1,
                 'expiration_notice'               => -1,
@@ -960,6 +961,7 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
@@ -968,6 +970,7 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => 10,
@@ -976,10 +979,29 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-20 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
                 'expected_expiration_time'        => strtotime('-5 days', $time),
+                'expected_should_change_password' => true,
+                'expected_has_password_expire'    => true,
+            ],
+            [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'last_update'                     => null,
+                'expiration_delay'                => 15,
+                'expiration_notice'               => -1,
+                'expected_expiration_time'        => strtotime('+15 days', strtotime($_SESSION['glpi_currenttime'])),
+                'expected_should_change_password' => false,
+                'expected_has_password_expire'    => false,
+            ],
+            [
+                'creation_date'                   => '2021-12-03 17:54:32',
+                'last_update'                     => null,
+                'expiration_delay'                => 15,
+                'expiration_notice'               => -1,
+                'expected_expiration_time'        => strtotime('2021-12-18 17:54:32'),
                 'expected_should_change_password' => true,
                 'expected_has_password_expire'    => true,
             ],
@@ -990,7 +1012,8 @@ class User extends \DbTestCase
      * @dataProvider passwordExpirationMethodsProvider
      */
     public function testPasswordExpirationMethods(
-        string $last_update,
+        string $creation_date,
+        ?string $last_update,
         int $expiration_delay,
         int $expiration_notice,
         $expected_expiration_time,
@@ -1003,9 +1026,10 @@ class User extends \DbTestCase
         $username = 'prepare_for_update_' . mt_rand();
         $user_id = $user->add(
             [
-                'name'      => $username,
-                'password'  => 'pass',
-                'password2' => 'pass'
+                'date_creation' => $creation_date,
+                'name'          => $username,
+                'password'      => 'pass',
+                'password2'     => 'pass'
             ]
         );
         $this->integer($user_id)->isGreaterThan(0);
@@ -1292,5 +1316,90 @@ class User extends \DbTestCase
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
         $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_2);
+    }
+
+    /**
+     * Test that user_dn_hash is correctly set on user creation and update
+     *
+     * @return void
+     */
+    public function testUserDnIsHashedOnAddAndUpdate(): void
+    {
+        // Create user whithout dn and check that user_dn_hash is not set
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__,
+        ]);
+        $this->variable($user->fields['user_dn'])->isNull();
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Create user with dn and check that user_dn_hash is set
+        $dn = 'user=' . __FUNCTION__ . '_created,dc=test,dc=glpi-project,dc=org';
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__ . '_created',
+            'user_dn'   => $dn
+        ]);
+        $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Update user dn and check that user_dn_hash is updated
+        $dn = 'user=' . __FUNCTION__ . '_updated,dc=test,dc=glpi-project,dc=org';
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => $dn
+        ]);
+        $user->getFromDB($user->getID());
+        $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Set user_dn to empty and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => ''
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Set user_dn to null and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => null
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+    }
+
+    /**
+     * Test that user_dn_hash is correctly used in getFromDBbyDn method
+     *
+     * @return void
+     */
+    public function testUserDnHashIsUsedInGetFromDBbyDn(): void
+    {
+        global $DB;
+
+        $retrievedUser = new \User();
+
+        // Get a user with a bad dn
+        $this->boolean($retrievedUser->getFromDBbyDn(__FUNCTION__))
+            ->isFalse();
+        $this->boolean($retrievedUser->isNewItem())->isTrue();
+
+        // Create a user with a dn
+        $dn = 'user=' . __FUNCTION__ . ',dc=test,dc=glpi-project,dc=org';
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__,
+            'user_dn'   => $dn
+        ]);
+
+        // Retrieve the user using getFromDBbyDn method
+        $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->isNewItem())->isFalse();
+
+        // Unset user_dn to check that user_dn_hash is used
+        $DB->update(
+            \User::getTable(),
+            ['user_dn' => ''],
+            ['id' => $user->getID()]
+        );
+
+        // Retrieve the user using getFromDBbyDn and check if user_dn_hash is used
+        $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->isNewItem())->isFalse();
+        $this->string($retrievedUser->fields['user_dn'])->isEmpty();
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,7 +63,7 @@ class Toolbox
         if (!$max) {
             $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
         }
-        return $max;
+        return (int)$max;
     }
 
 
@@ -408,7 +408,7 @@ class Toolbox
         $tps = microtime(true);
 
         if ($logger === null) {
-            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            /** @var \Monolog\Logger $PHPLOGGER */
             global $PHPLOGGER;
             $logger = $PHPLOGGER;
         }
@@ -420,7 +420,7 @@ class Toolbox
             error_log($e);
         }
 
-        /** @var \Psr\Log\LoggerInterface $SQLLOGGER */
+        /** @var \Monolog\Logger $SQLLOGGER */
         global $SQLLOGGER;
         if (isCommandLine() && $level >= Logger::WARNING && $logger !== $SQLLOGGER) {
            // Do not output related messages to $SQLLOGGER as they are redundant with
@@ -672,10 +672,10 @@ class Toolbox
      * Send a file (not a document) to the navigator
      * See Document->send();
      *
-     * @param string      $file        storage filename
-     * @param string      $filename    file title
-     * @param string|null $mime        file mime type
-     * @param boolean     $add_expires add expires headers maximize cacheability ?
+     * @param string      $file            storage filename
+     * @param string      $filename        file title
+     * @param string|null $mime            file mime type
+     * @param boolean     $expires_headers add expires headers maximize cacheability ?
      *
      * @return void
      **/
@@ -867,7 +867,7 @@ class Toolbox
 
        // no K M or G
         if (isset($matches[1])) {
-            $mem = $matches[1];
+            $mem = (int)$matches[1];
             if (isset($matches[2])) {
                 switch ($matches[2]) {
                     case "G":
@@ -1173,7 +1173,6 @@ class Toolbox
                 return __('You have the latest available version');
             }
         }
-        return 1;
     }
 
 
@@ -1906,7 +1905,7 @@ class Toolbox
     {
 
         if (!Config::canUpdate()) {
-            return false;
+            return '';
         }
 
         $tab = Toolbox::parseMailServerConnectString($value);
@@ -2352,13 +2351,13 @@ class Toolbox
     /**
      * Create the GLPI default schema
      *
-     * @param string  $lang Language to install
-     * @param DBmysql $db   Database instance to use, will fallback to a new instance of DB if null
+     * @param string   $lang     Language to install
+     * @param ?DBmysql $database Database instance to use, will fallback to a new instance of DB if null
      *
      * @return void
      *
      * @since 9.1
-     * @since 9.4.7 Added $db parameter
+     * @since 9.4.7 Added $database parameter
      **/
     public static function createSchema($lang = 'en_GB', DBmysql $database = null)
     {
@@ -2371,7 +2370,8 @@ class Toolbox
             $database = new DB();
         }
 
-       // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
+        // Set global $DB as it is used in "Config::setConfigurationValues()" just after schema creation
+        /** @var \DBmysql $DB */
         $DB = $database;
 
         if (!$DB->runFile(sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT))) {
@@ -2502,7 +2502,7 @@ class Toolbox
      *
      * @param string $value  encoded value
      *
-     * @return string  decoded array
+     * @return array  decoded array
      *
      * @since 0.83.91
      **/
@@ -2803,7 +2803,6 @@ class Toolbox
                                 $new_image,
                                 $content_text
                             );
-                            $content_text = $content_text;
                         }
 
                         // If the tag is from another ticket : link document to ticket
@@ -2907,7 +2906,7 @@ class Toolbox
      * **Fast** JSON detection of a given var
      * From https://stackoverflow.com/a/45241792
      *
-     * @param mixed the var to test
+     * @param mixed $json the var to test
      *
      * @return bool
      */
@@ -3264,7 +3263,7 @@ class Toolbox
      * Get picture URL.
      *
      * @param string $path
-     * @param bool  bool get full path
+     * @param bool   $full get full path
      *
      * @return null|string
      *
@@ -3579,8 +3578,8 @@ HTML;
     /**
      * Get available tabs for a given item
      *
-     * @param string   $itemtype Type of the item
-     * @param int|string|null $itemtype Id the item, optional
+     * @param string          $itemtype Type of the item
+     * @param int|string|null $id       Id the item, optional
      *
      * @return array
      */
@@ -3709,7 +3708,7 @@ HTML;
         ];
         if (count($matches) >= 3 && isset($supported_sizes[strtolower($matches[2])])) {
             // Known format
-            $size = $matches[1];
+            $size = (int)$matches[1];
             $size *= pow(1024, $supported_sizes[strtolower($matches[2])]);
         }
         return $size;

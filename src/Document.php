@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,6 +42,7 @@ use Glpi\Toolbox\Sanitizer;
 class Document extends CommonDBTM
 {
     use Glpi\Features\TreeBrowse;
+    use Glpi\Features\ParentStatus;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -357,6 +358,12 @@ class Document extends CommonDBTM
                 'itemtype'     => $this->input["itemtype"],
                 'items_id'     => $this->input["items_id"]
             ]);
+
+            if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
+                $itilobject = new $this->input["itemtype"]();
+                $itilobject->getFromDB($this->input["items_id"]);
+                $this->updateParentStatus($itilobject, $this->input);
+            }
 
             Event::log(
                 $this->fields['id'],
@@ -1390,7 +1397,7 @@ class Document extends CommonDBTM
      * @param &$input    array of datas need for add/update (will be completed)
      * @param $FILEDESC        FILE descriptor
      *
-     * @return true on success
+     * @return boolean
      **/
     public static function uploadDocument(array &$input, $FILEDESC)
     {

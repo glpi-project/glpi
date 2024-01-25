@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -439,7 +439,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array for menu
+     * @return false|array array for menu
      **/
     public static function getMenuContent()
     {
@@ -522,7 +522,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array for menu
+     * @return false|array array for menu
      **/
     public static function getAdditionalMenuContent()
     {
@@ -561,7 +561,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array array of additional options
+     * @return false|array
      **/
     public static function getAdditionalMenuLinks()
     {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -3196,9 +3196,9 @@ JAVASCRIPT;
      *
      * @since 9.4
      *
-     * @param  class-string<CommonDBTM> $itemtype
+     * @param string $itemtype
      *
-     * @return array  criteria
+     * @return array criteria
      */
     public static function getDefaultCriteria($itemtype = '')
     {
@@ -3639,7 +3639,7 @@ JAVASCRIPT;
      * @param array  $sort_fields The search options to order on. This array should contain one or more associative arrays containing:
      *    - id: The search option ID
      *    - order: The sort direction (Default: ASC). Invalid sort directions will be replaced with the default option
-     * @param ?integer $_id    field to add (Deprecated)
+     * @param string $_id order field (Deprecated)
      *
      * @return string ORDER BY query string
      *
@@ -3911,11 +3911,11 @@ JAVASCRIPT;
      * @param string  $itemtype     item type
      * @param integer $ID           ID of the item to add
      * @param boolean $meta         boolean is a meta
-     * @param integer $meta_type    meta type table ID (default 0)
+     * @param string  $meta_type    meta item type
      *
      * @return string Select string
      **/
-    public static function addSelect($itemtype, $ID, $meta = 0, $meta_type = 0)
+    public static function addSelect($itemtype, $ID, $meta = false, $meta_type = '')
     {
         /**
          * @var array $CFG_GLPI
@@ -4604,7 +4604,7 @@ JAVASCRIPT;
      * @param string  $val          Item num in the request
      * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
      *
-     * @return string Where string
+     * @return false|string Where string
      **/
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
     {
@@ -5035,7 +5035,8 @@ JAVASCRIPT;
             case "glpi_problems.status":
             case "glpi_changes.status":
                 $tocheck = [];
-                if ($item = getItemForItemtype($itemtype)) {
+                $item = getItemForItemtype($itemtype);
+                if ($item instanceof CommonITILObject) {
                     switch ($val) {
                         case 'process':
                             $tocheck = $item->getProcessStatusArray();
@@ -5066,12 +5067,12 @@ JAVASCRIPT;
                             $tocheck = array_keys($item->getAllStatusArray());
                             break;
                     }
-                }
 
-                if (count($tocheck) == 0) {
-                    $statuses = $item->getAllStatusArray();
-                    if (isset($statuses[$val])) {
-                        $tocheck = [$val];
+                    if (count($tocheck) == 0) {
+                        $statuses = $item->getAllStatusArray();
+                        if (isset($statuses[$val])) {
+                            $tocheck = [$val];
+                        }
                     }
                 }
 
@@ -5836,7 +5837,7 @@ JAVASCRIPT;
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
      * @param boolean $meta                 Is it a meta item ? (default 0)
-     * @param integer $meta_type            Meta type table (default 0)
+     * @param string  $meta_type            Meta item type
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
      *
@@ -5848,8 +5849,8 @@ JAVASCRIPT;
         array &$already_link_tables,
         $new_table,
         $linkfield,
-        $meta = 0,
-        $meta_type = 0,
+        $meta = false,
+        $meta_type = '',
         $joinparams = [],
         $field = ''
     ) {
@@ -6565,7 +6566,7 @@ JAVASCRIPT;
      * @param string  $itemtype        item type
      * @param integer $ID              ID of the SEARCH_OPTION item
      * @param array   $data            array containing data results
-     * @param boolean $meta            is a meta item ? (default 0)
+     * @param boolean $meta            is a meta item ? (default false)
      * @param array   $addobjectparams array added parameters for union search
      * @param string  $orig_itemtype   Original itemtype, used for union_search_type
      *
@@ -6575,7 +6576,7 @@ JAVASCRIPT;
         $itemtype,
         $ID,
         array $data,
-        $meta = 0,
+        $meta = false,
         array $addobjectparams = [],
         $orig_itemtype = null
     ) {
@@ -6887,7 +6888,7 @@ JAVASCRIPT;
                         return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/" .
                            $data[$ID][0]['name'] . "'>";
                     }
-                    return "&nbsp;";
+                    return '';
 
                 case "glpi_documents.filename":
                     $doc = new Document();
@@ -7098,6 +7099,7 @@ JAVASCRIPT;
                                 $item->fields['date'],
                                 $data[$ID][0]['name']
                             );
+                            $waitingtime = $slaField === 'slas_id_ttr' ? $item->fields['sla_waiting_duration'] : 0;
                         } else {
                             $calendars_id = Entity::getUsedConfig(
                                 'calendars_strategy',
@@ -7121,9 +7123,10 @@ JAVASCRIPT;
                                 $totaltime   = strtotime($data[$ID][0]['name'])
                                                  - strtotime($item->fields['date']);
                             }
+                            $waitingtime = 0;
                         }
-                        if ($totaltime != 0) {
-                            $percentage  = round((100 * $currenttime) / $totaltime);
+                        if (($totaltime - $waitingtime) != 0) {
+                            $percentage  = round((100 * ($currenttime - $waitingtime)) / ($totaltime - $waitingtime));
                         } else {
                            // Total time is null : no active time
                             $percentage = 100;
@@ -7266,7 +7269,7 @@ JAVASCRIPT;
                             return implode("<br>", $items);
                         }
                     }
-                    return '&nbsp;';
+                    return '';
 
                 case 'glpi_items_tickets.itemtype':
                 case 'glpi_items_problems.itemtype':
@@ -7289,7 +7292,7 @@ JAVASCRIPT;
                         }
                     }
 
-                    return '&nbsp;';
+                    return '';
 
                 case 'glpi_tickets.name':
                 case 'glpi_problems.name':
@@ -7301,8 +7304,9 @@ JAVASCRIPT;
                         $link = $itemtype::getFormURLWithID($data[$ID][0]['id']);
 
                         $out  = "<a id='$itemtype" . $data[$ID][0]['id'] . "' href=\"" . $link;
-                       // Force solution tab if solved
+                        // Force solution tab if solved
                         if ($item = getItemForItemtype($itemtype)) {
+                            /** @var CommonITILObject $item */
                             if (in_array($data[$ID][0]['status'], $item->getSolvedStatusArray())) {
                                 $out .= "&amp;forcetab=$itemtype$2";
                             }
@@ -7430,7 +7434,7 @@ JAVASCRIPT;
                                           $data["refID"] . "' title=\"" . __s('See planning') . "\">" .
                                           "<i class='far fa-calendar-alt'></i><span class='sr-only'>" . __('See planning') . "</span></a>";
                     } else {
-                        return "&nbsp;";
+                        return '';
                     }
 
                 case "glpi_tickets.priority":
@@ -7641,7 +7645,7 @@ JAVASCRIPT;
                             $out .= "</a>";
                         }
                     }
-                    return (empty($out) ? "&nbsp;" : $out);
+                    return (empty($out) ? '' : $out);
 
                 case "weblink":
                     $orig_link = trim((string)$data[$ID][0]['name']);
@@ -7654,7 +7658,7 @@ JAVASCRIPT;
                         }
                         return "<a href=\"" . Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link</a>";
                     }
-                    return "&nbsp;";
+                    return '';
 
                 case "count":
                 case "number":
@@ -7925,7 +7929,7 @@ HTML;
                     $params = $user_default_values;
                 } else {
                     $bookmark = new SavedSearch();
-                    $bookmark->load($user_default_values['savedsearches_id'], false);
+                    $bookmark->load($user_default_values['savedsearches_id']);
                 }
             }
         }
@@ -8755,7 +8759,7 @@ HTML;
                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                     $value = '<div class="fup-popup">' . $value . '</div>';
-                    $valTip = "&nbsp;" . Html::showToolTip(
+                    $valTip = ' ' . Html::showToolTip(
                         $value,
                         [
                             'awesome-class'   => 'fa-comments',
@@ -9215,7 +9219,7 @@ HTML;
      * @param boolean $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
      *
-     * @return search SQL string
+     * @return string search SQL string
      **/
     public static function makeTextCriteria($field, $val, $not = false, $link = 'AND')
     {

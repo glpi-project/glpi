@@ -31,8 +31,7 @@ jobs:
       matrix:
         include:
           - {php-version: "7.4"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "8.2"} # Lint on higher PHP version to detected deprecated elements usage
-          - {php-version: "8.3-rc"}
+          - {php-version: "8.3"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -47,7 +46,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
@@ -57,7 +56,7 @@ jobs:
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
       - name: "Restore lint cache"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/phpcs.cache
@@ -104,20 +103,18 @@ jobs:
       matrix:
         include:
           # test higher PHP version with higher MariaDB and MySQL versions
-          - {php-version: "8.2", db-image: "mariadb:11.0", always: true}
-          - {php-version: "8.2", db-image: "mysql:8.1", always: true}
-          - {php-version: "8.3-rc", db-image: "mariadb:11.0", always: true}
+          - {php-version: "8.3", db-image: "mariadb:10.11", always: true}
+          - {php-version: "8.3", db-image: "mysql:8.0", always: true}
           # test other PHP versions
-          - {php-version: "8.1", db-image: "mariadb:11.0", always: false}
-          - {php-version: "8.0", db-image: "mariadb:11.0", always: false}
-          - {php-version: "7.4", db-image: "mariadb:11.0", always: false}
-          # test other DB servers/versions
-          - {php-version: "8.2", db-image: "mariadb:10.2", always: false}
           - {php-version: "8.2", db-image: "mariadb:10.11", always: false}
-          - {php-version: "8.2", db-image: "mysql:5.7", always: false}
-          - {php-version: "8.2", db-image: "mysql:8.0", always: false}
-          - {php-version: "8.2", db-image: "percona:5.7", always: false}
-          - {php-version: "8.2", db-image: "percona:8.0", always: false}
+          - {php-version: "8.1", db-image: "mariadb:10.11", always: false}
+          - {php-version: "8.0", db-image: "mariadb:10.11", always: false}
+          - {php-version: "7.4", db-image: "mariadb:10.11", always: false}
+          # test other DB servers/versions
+          - {php-version: "8.3", db-image: "mariadb:10.2", always: false}
+          - {php-version: "8.3", db-image: "mysql:5.7", always: false}
+          - {php-version: "8.3", db-image: "percona:5.7", always: false}
+          - {php-version: "8.3", db-image: "percona:8.0", always: false}
     env:
       # Skip jobs that should not be always run on pull requests or on push on tier repository (to limit workers usage).
       # No jobs will be skipped on nightly build, manual dispatch or push on main branches (main and */bugfixes) or tags.
@@ -139,7 +136,7 @@ jobs:
         uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
         if: env.skip != 'true'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/

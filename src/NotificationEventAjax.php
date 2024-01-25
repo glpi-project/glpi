@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -64,14 +64,14 @@ class NotificationEventAjax extends NotificationEventAbstract
     public static function getAdminData()
     {
        //since admin cannot be logged in; no ajax notifications for global admin
-        return false;
+        return [];
     }
 
 
     public static function getEntityAdminsData($entity)
     {
        //since entities admin cannot be logged in; no ajax notifications for them
-        return false;
+        return [];
     }
 
 

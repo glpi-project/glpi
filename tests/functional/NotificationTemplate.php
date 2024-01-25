@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -71,5 +71,67 @@ class NotificationTemplate extends DbTestCase
         unset($clonedTemplate->fields['date_mod']);
 
         $this->array($template->fields)->isIdenticalTo($clonedTemplate->fields);
+    }
+
+    protected function linksProvider(): iterable
+    {
+        $base_url = GLPI_URI;
+
+        yield [
+            'content' => <<<HTML
+Relative link from GLPI: <a href="/">GLPI index</a>
+HTML,
+            'expected' => <<<HTML
+Relative link from GLPI: <a href="{$base_url}/">GLPI index</a>
+HTML,
+        ];
+
+        yield [
+            'content' => <<<HTML
+Relative link from GLPI: <a href="/front/computer.php?id=2" title="Computer 2">Computer</a>
+HTML,
+            'expected' => <<<HTML
+Relative link from GLPI: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
+HTML,
+        ];
+
+        yield [
+            'content' => <<<HTML
+Absolute link from GLPI: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
+HTML,
+            'expected' => <<<HTML
+Absolute link from GLPI: <a href="{$base_url}/front/computer.php?id=2" title="Computer 2">Computer</a>
+HTML,
+        ];
+
+        yield [
+            'content' => <<<HTML
+External link from GLPI: <a href="https://faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+HTML,
+            'expected' => <<<HTML
+External link from GLPI: <a href="https://faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+HTML,
+        ];
+
+        yield [
+            'content' => <<<HTML
+External link without protocol from GLPI: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+HTML,
+            'expected' => <<<HTML
+External link without protocol from GLPI: <a href="//faq.teclib.com/01_getting_started/getting_started/" title="Faq">Faq</a>
+HTML,
+        ];
+    }
+
+    /**
+     * @dataProvider linksProvider
+     */
+    public function testConvertRelativeGlpiLinksToAbsolute(
+        string $content,
+        string $expected
+    ): void {
+        $instance = $this->newTestedInstance();
+        $result = $this->callPrivateMethod($instance, 'convertRelativeGlpiLinksToAbsolute', $content);
+        $this->string($result)->isEqualTo($expected);
     }
 }

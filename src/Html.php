@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -932,13 +932,13 @@ class Html
         $out = '';
         if ($params['create']) {
             $out = <<<HTML
-            <div class="progress" style="height: 16px" id="{$id}">
-               <div class="progress-bar progress-bar-striped bg-info" role="progressbar"
-                     style="width: 0%; overflow: visible"
-                     aria-valuenow="0"
-                     aria-valuemin="0" aria-valuemax="100"
-                     id="{$id}_text">
-               </div>
+            <div class="progress bg-primary-emphasis bg-light" style="height: 16px" id="{$id}">
+                <div class="progress-bar progress-bar-striped bg-info text-dark" role="progressbar"
+                    style="width: 0%; overflow: visible;"
+                    aria-valuenow="0"
+                    aria-valuemin="0" aria-valuemax="100"
+                    id="{$id}_text">
+                </div>
             </div>
 HTML;
         }
@@ -1147,7 +1147,12 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
-       //on demand JS
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['css_files'][] = ['path' => 'public/lib/codemirror.css'];
+            Html::requireJs('codemirror');
+        }
+
+        //on demand JS.
         if ($sector != 'none' || $item != 'none' || $option != '') {
             $jslibs = [];
             if (isset($CFG_GLPI['javascript'][$sector])) {
@@ -1236,7 +1241,10 @@ HTML;
                 Html::requireJs('charts');
             }
 
-            if (in_array('codemirror', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            if (
+                in_array('codemirror', $jslibs)
+                && $_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE // codemirror is already loaded when debug mode is active
+            ) {
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/codemirror.css'];
                 Html::requireJs('codemirror');
             }
@@ -5954,11 +5962,11 @@ HTML;
                             is_array($content)
                             && array_key_exists('checked', $content)
                         ) {
-                            $nb_cb_per_col[$col_name]['total'] ++;
-                            $nb_cb_per_row[$row_name]['total'] ++;
+                            $nb_cb_per_col[$col_name]['total']++;
+                            $nb_cb_per_row[$row_name]['total']++;
                             if ($content['checked']) {
-                                $nb_cb_per_col[$col_name]['checked'] ++;
-                                $nb_cb_per_row[$row_name]['checked'] ++;
+                                $nb_cb_per_col[$col_name]['checked']++;
+                                $nb_cb_per_row[$row_name]['checked']++;
                             }
                         }
                     }

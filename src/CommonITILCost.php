@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,7 +63,7 @@ abstract class CommonITILCost extends CommonDBChild
 
        // can exists for template
         if (
-            ($item->getType() == static::$itemtype)
+            (get_class($item) == static::$itemtype)
             && static::canView()
         ) {
             $nb = 0;
@@ -500,7 +500,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param $item                  CommonITILObject object or Project
      * @param $withtemplate boolean  Template or basic item (default 0)
      *
-     * @return number total cost
+     * @return false|integer total cost
      **/
     public static function showForObject($item, $withtemplate = 0)
     {

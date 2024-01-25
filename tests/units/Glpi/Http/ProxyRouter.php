@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,6 +55,11 @@ class ProxyRouter extends \GLPITestCase
                     'common.js' => 'console.log("ok");',
                 ],
                 'marketplace' => [
+                    'myplugin' => [
+                        'some.dir' => [
+                            'file.test.php' => '<?php //a PHP script in a dir that contains a dot',
+                        ],
+                    ],
                     'mystaleplugin' => [
                         'front' => [
                             'page.php5' => '<?php //a PHP5 script',
@@ -67,6 +72,7 @@ class ProxyRouter extends \GLPITestCase
                     ],
                 ],
                 'apirest.php' => '<php echo(1);',
+                'caldav.php' => '<php echo(1);',
                 'index.php' => '<php echo(1);',
             ]
         );
@@ -114,6 +120,13 @@ class ProxyRouter extends \GLPITestCase
 
         // Path to an existing file, but containing an extra PathInfo
         yield [
+            'path'            => '/apirest.php/',
+            'target_path'     => '/apirest.php',
+            'target_pathinfo' => '/',
+            'target_file'     => vfsStream::url('glpi/apirest.php'),
+            'is_php_script'   => true,
+        ];
+        yield [
             'path'            => '/apirest.php/initSession/',
             'target_path'     => '/apirest.php',
             'target_pathinfo' => '/initSession/',
@@ -125,6 +138,20 @@ class ProxyRouter extends \GLPITestCase
             'target_path'     => '/apirest.php',
             'target_pathinfo' => '/initSession/',
             'target_file'     => vfsStream::url('glpi/apirest.php'),
+            'is_php_script'   => true,
+        ];
+        yield [
+            'path'            => '/apirest.php/GlpiPlugin%5CNamespace%5CUnexemple/',
+            'target_path'     => '/apirest.php',
+            'target_pathinfo' => '/GlpiPlugin\Namespace\Unexemple/',
+            'target_file'     => vfsStream::url('glpi/apirest.php'),
+            'is_php_script'   => true,
+        ];
+        yield [
+            'path'            => '/caldav.php/calendars/users/J.DUPONT/calendar/',
+            'target_path'     => '/caldav.php',
+            'target_pathinfo' => '/calendars/users/J.DUPONT/calendar/',
+            'target_file'     => vfsStream::url('glpi/caldav.php'),
             'is_php_script'   => true,
         ];
 
@@ -144,6 +171,22 @@ class ProxyRouter extends \GLPITestCase
             'target_pathinfo' => null,
             'target_file'     => vfsStream::url('glpi/js/common.js'),
             'is_php_script'   => false,
+        ];
+
+        // Path to a PHP script in a directory that has a dot in its name.
+        yield [
+            'path'            => '/marketplace/myplugin/some.dir/file.test.php',
+            'target_path'     => '/marketplace/myplugin/some.dir/file.test.php',
+            'target_pathinfo' => null,
+            'target_file'     => vfsStream::url('glpi/marketplace/myplugin/some.dir/file.test.php'),
+            'is_php_script'   => true,
+        ];
+        yield [
+            'path'            => '/marketplace/myplugin/some.dir/file.test.php/path/to/item',
+            'target_path'     => '/marketplace/myplugin/some.dir/file.test.php',
+            'target_pathinfo' => '/path/to/item',
+            'target_file'     => vfsStream::url('glpi/marketplace/myplugin/some.dir/file.test.php'),
+            'is_php_script'   => true,
         ];
 
         // Path to a `.php5` script.

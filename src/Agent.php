@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -68,6 +68,8 @@ class Agent extends CommonDBTM
    //static $rightname = 'inventory';
 
     private static $found_address = false;
+
+    public $history_blacklist = ['last_contact'];
 
     public static function getTypeName($nb = 0)
     {

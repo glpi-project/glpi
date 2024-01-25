@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -446,7 +446,7 @@ final class DbUtils
      *
      * @param string $itemtype itemtype
      *
-     * @return object|false itemtype instance or false if class does not exists
+     * @return CommonDBTM|false itemtype instance or false if class does not exists
      */
     public function getItemForItemtype($itemtype)
     {
@@ -493,8 +493,8 @@ final class DbUtils
     /**
      * Count the number of elements in a table.
      *
-     * @param string|array $table     table name(s)
-     * @param array        $condition array of criteria
+     * @param string|array   $table     table name(s)
+     * @param ?string|?array $condition array of criteria
      *
      * @return integer Number of elements in table
      */
@@ -514,6 +514,7 @@ final class DbUtils
        }*/
 
         if (!is_array($condition)) {
+            Toolbox::Deprecated('Condition must be an array!');
             if (empty($condition)) {
                 $condition = [];
             }
@@ -527,9 +528,9 @@ final class DbUtils
     /**
      * Count the number of elements in a table.
      *
-     * @param string|array $table     table name(s)
-     * @param string       $field     field name
-     * @param array        $condition array of criteria
+     * @param string|array   $table     table name(s)
+     * @param string         $field     field name
+     * @param ?string|?array $condition array of criteria
      *
      * @return int nb of elements in table
      */
@@ -537,6 +538,7 @@ final class DbUtils
     {
 
         if (!is_array($condition)) {
+            Toolbox::Deprecated('Condition must be an array!');
             if (empty($condition)) {
                 $condition = [];
             }
@@ -599,10 +601,10 @@ final class DbUtils
      * Get data from a table in an array :
      * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
      *
-     * @param string  $table    Table name
-     * @param array   $criteria Request criteria
-     * @param boolean $usecache Use cache (false by default)
-     * @param string  $order    Result order (default '')
+     * @param string         $table    Table name
+     * @param ?string|?array $criteria Request criteria
+     * @param boolean        $usecache Use cache (false by default)
+     * @param string         $order    Result order (default '')
      *
      * @return array containing all the datas
      */

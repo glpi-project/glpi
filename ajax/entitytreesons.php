@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,74 +48,5 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-$base_path = $CFG_GLPI['root_doc'] . "/front/central.php";
-if (Session::getCurrentInterface() == 'helpdesk') {
-    $base_path = $CFG_GLPI["root_doc"] . "/front/helpdesk.public.php";
-}
-
-$ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
-
-$ckey = 'entity_selector'
-    . sha1(json_encode($_SESSION['glpiactiveprofile']['entities']))
-    . sha1($base_path) // cached value contains links based on `$base_path`, so cache key should change when `$base_path` changes
-;
-
-$entitiestree = $GLPI_CACHE->get($ckey);
-
-/* calculates the tree to save it in the cache if it is not already there */
-if ($entitiestree === null) {
-    $entitiestree = [];
-    foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
-        $default_entity_id = $default_entity['id'];
-
-        $entitytree  = $default_entity['is_recursive'] ? getTreeForItem('glpi_entities', $default_entity_id) : [$default_entity['id'] => $default_entity];
-        $adapt_tree = static function (&$entities) use (&$adapt_tree, $base_path) {
-            foreach ($entities as $entities_id => &$entity) {
-                $entity['key']   = $entities_id;
-
-                $title = "<a href='$base_path?active_entity={$entities_id}'>{$entity['name']}</a>";
-                $entity['title'] = $title;
-                unset($entity['name']);
-
-                if (isset($entity['tree']) && count($entity['tree']) > 0) {
-                    $entity['folder'] = true;
-
-                    $entity['title'] .= "<a href='$base_path?active_entity={$entities_id}&is_recursive=1'>
-                <i class='fas fa-angle-double-down ms-1' data-bs-toggle='tooltip' data-bs-placement='right' title='" . __('+ sub-entities') . "'></i>
-                </a>";
-
-                    $children = $adapt_tree($entity['tree']);
-                    $entity['children'] = array_values($children);
-                }
-
-                unset($entity['tree']);
-            }
-
-            return $entities;
-        };
-        $adapt_tree($entitytree);
-
-        $entitiestree = array_merge($entitiestree, $entitytree);
-    }
-
-    $GLPI_CACHE->set($ckey, $entitiestree);
-}
-
-/* scans the tree to select the active entity */
-$select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
-    foreach ($entities as &$entity) {
-        if (isset($ancestors[$entity['key']])) {
-            $entity['expanded'] = 'true';
-        }
-        if ($entity['key'] == $_SESSION['glpiactive_entity']) {
-            $entity['selected'] = 'true';
-        }
-        if (isset($entity['children'])) {
-            $select_tree($entity['children']);
-        }
-    }
-};
-$select_tree($entitiestree);
-
-echo json_encode($entitiestree);
-exit;
+echo json_encode(Entity::getEntitySelectorTree());
+return;

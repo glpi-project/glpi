@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -288,5 +288,35 @@ class Change extends DbTestCase
         $this->integer($changes_id)->isGreaterThan(0);
         // Even when automatically assigning a user, the initial status should be set to New
         $this->integer($change->fields['status'])->isIdenticalTo(\CommonITILObject::INCOMING);
+    }
+
+    public function testStatusWhenSolutionIsRefused()
+    {
+        $this->login();
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name' => "test initial status",
+            'content' => "test initial status",
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            '_users_id_assign' => getItemByTypeName('User', TU_USER, true),
+            'status'    => \CommonITILObject::SOLVED,
+        ]);
+        $this->integer($changes_id)->isGreaterThan(0);
+
+        $followup = new \ITILFollowup();
+        $followup_id = $followup->add([
+            'itemtype' => 'Change',
+            'items_id' => $changes_id,
+            'users_id' => getItemByTypeName('User', TU_USER, true),
+            'users_id_editor' => getItemByTypeName('User', TU_USER, true),
+            'content' => 'Test followup content',
+            'requesttypes_id' => 1,
+            'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
+            'add_reopen' => ''
+        ]);
+        $this->integer($followup_id)->isGreaterThan(0);
+
+        $item = $change->getById($changes_id);
+        $this->integer($item->fields['status'])->isIdenticalTo(\CommonITILObject::INCOMING);
     }
 }

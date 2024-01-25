@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -947,7 +947,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
 
        // Import a full tree from completename
-        $names  = explode('>', $input['completename']);
+        $names  = explode('>', self::unsanitizeSeparatorInCompletename($input['completename']));
         $fk     = $this->getForeignKeyField();
         $i      = count($names);
         $parent = 0;
@@ -1009,5 +1009,24 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
         $separator = ' > ';
         return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
+    }
+
+    /**
+     * Separator may be encoded in input, but should sometimes be decoded to have a complename
+     * that fits the value expected to be stored in DB.
+     *
+     * This method aims to normalize the completename value.
+     *
+     * @param string|null $completename
+     *
+     * @return string|null
+     */
+    public static function unsanitizeSeparatorInCompletename(?string $completename): ?string
+    {
+        if (empty($completename)) {
+            return $completename;
+        }
+        $separator = ' > ';
+        return implode($separator, explode(Sanitizer::sanitize($separator), $completename));
     }
 }

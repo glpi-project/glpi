@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1158,9 +1158,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @param $options      array of options
      *
-     * @return void|string
-     *    void if option display=true
-     *    string if option display=false (HTML code)
+     * @return boolean|string
      **/
     public function showFull($options = [])
     {
@@ -2083,7 +2081,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     && isset($options['item_items_id'])
                     && ($output_type == Search::HTML_OUTPUT)
                 ) {
-                    $forcetab = $options['item_itemtype'] . '$1';
+                    $forcetab = $options['item_itemtype'] . '$main';
                     $item_itemtype = $options['item_itemtype'];
                     $content = "<a href='" . $item_itemtype::getFormURLWithID($options['item_items_id']) .
                               "&amp;load_kb_sol=" . $data['id'] .
@@ -2138,7 +2136,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $faq = !Session::haveRight(self::$rightname, READ);
 
         $criteria = [
-            'SELECT'    => ['glpi_knowbaseitems.*'],
+            'SELECT'    => ['glpi_knowbaseitems' => ['id', 'name', 'is_faq']],
             'DISTINCT'  => true,
             'FROM'      => self::getTable(),
             'WHERE'     => [],
@@ -2146,10 +2144,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         ];
 
         if ($type == "recent") {
-            $criteria['ORDERBY'] = 'date_creation DESC';
+            $criteria['ORDERBY'] = self::getTable() . '.date_creation DESC';
             $title   = __('Recent entries');
         } else if ($type == 'lastupdate') {
-            $criteria['ORDERBY'] = 'date_mod DESC';
+            $criteria['ORDERBY'] = self::getTable() . '.date_mod DESC';
             $title   = __('Last updated entries');
         } else {
             $criteria['ORDERBY'] = 'view DESC';

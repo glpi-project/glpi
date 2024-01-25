@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -277,7 +277,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
      * @param integer|string $val        port speed
      * @param boolean        $to_string  true if we must transform the speed to string
      *
-     * @return integer|string (regarding what is requested)
+     * @return false|integer|string (regarding what is requested)
      **/
     public static function transformPortSpeed($val, $to_string)
     {

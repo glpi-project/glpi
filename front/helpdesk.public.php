@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -105,12 +105,6 @@ if (isset($_GET['create_ticket'])) {
     $password_alert = "";
     $user = new User();
     $user->getFromDB(Session::getLoginUserID());
-    if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-        $password_alert = sprintf(
-            __('Your password will expire on %s.'),
-            Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
-        );
-    }
 
     $ticket_summary = "";
     $survey_list    = "";
@@ -140,7 +134,7 @@ if (isset($_GET['create_ticket'])) {
 
     Html::requireJs('masonry');
     TemplateRenderer::getInstance()->display('pages/self-service/home.html.twig', [
-        'password_alert' => $password_alert,
+        'password_alert' => $user->getPasswordExpirationMessage(),
         'ticket_summary' => $ticket_summary,
         'survey_list'    => $survey_list,
         'reminder_list'  => $reminder_list,

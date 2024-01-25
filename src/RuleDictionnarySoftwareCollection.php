@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -579,9 +579,10 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     /**
      * Move licenses from a software to another
      *
-     * @param $old_software_id    old software ID
-     * @param $new_software_id    new software ID
-     * @return true if move was successful
+     * @param integer $old_software_id old software ID
+     * @param integer $new_software_id new software ID
+     *
+     * @return boolean
      **/
     public function moveLicenses($old_software_id, $new_software_id)
     {

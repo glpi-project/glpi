@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,7 +83,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @param array $input Input data
      *
-     * @return array
+     * @return false|array
      */
     private function prepareInput($input)
     {
@@ -718,14 +718,16 @@ JAVASCRIPT;
     /**
      * Return an iterator for all used pdu in all racks
      *
-     * @return  Iterator
+     * @param array $fields_requested Fields to request
+     * @return DBmysqlIterator
      */
-    public static function getUsed()
+    public static function getUsed($fields_requested = ['*'])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->request([
+            'SELECT' => $fields_requested,
             'FROM'  => self::getTable()
         ]);
     }
@@ -733,23 +735,19 @@ JAVASCRIPT;
     /**
      * Return the opposite side from a passed side
      * @param  integer $side
-     * @return integer       the oposite side
+     * @return false|integer       the opposite side
      */
     public static function getOtherSide($side)
     {
         switch ($side) {
             case self::SIDE_TOP:
                 return self::SIDE_BOTTOM;
-            break;
             case self::SIDE_BOTTOM:
                 return self::SIDE_TOP;
-            break;
             case self::SIDE_LEFT:
                 return self::SIDE_RIGHT;
-            break;
             case self::SIDE_RIGHT:
                 return self::SIDE_LEFT;
-            break;
         }
         return false;
     }

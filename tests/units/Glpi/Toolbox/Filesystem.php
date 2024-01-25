@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,7 @@ use org\bovigo\vfs\vfsStream;
 
 class Filesystem extends \GLPITestCase
 {
-    public function testCanWriteFile()
+    public function testCanWriteFile(): void
     {
         $config_dir = vfsStream::setup('config');
 
@@ -69,5 +69,115 @@ class Filesystem extends \GLPITestCase
         $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/config_db.php')))->isEqualTo(true);
         $this->boolean($this->testedInstance->canWriteFile(vfsStream::url('config/whatever.yml')))->isEqualTo(true);
         $this->boolean($this->testedInstance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]))->isEqualTo(true);
+    }
+
+    protected function isFilepathSafeProvider(): iterable
+    {
+        // Unix paths and file scheme
+        foreach (['', 'file://'] as $prefix) {
+            yield [
+                'path'                  => $prefix . '/path/to/whatever/file',
+                'restricted_directory'  => null,
+                'is_safe'               => true,
+            ];
+            yield [
+                'path'                  => $prefix . '/path/to/whatever/file',
+                'restricted_directory'  => '/path/to/whatever',
+                'is_safe'               => true,
+            ];
+            yield [
+                'path'                  => $prefix . '/path/to/whatever/file/in/a/subdir',
+                'restricted_directory'  => '/path/to/whatever',
+                'is_safe'               => true,
+            ];
+            yield [
+                'path'                  => $prefix . '/path/to/whatever_file',
+                'restricted_directory'  => '/path/to/whatever',
+                'is_safe'               => false,
+            ];
+            yield [
+                'path'                  => $prefix . '/path/to/whatever/file',
+                'restricted_directory'  => '/safedir',
+                'is_safe'               => false,
+            ];
+        }
+
+        // Windows paths (`\` separator)
+        yield [
+            'path'                  => 'C:\\path\\to\\whatever\\file',
+            'restricted_directory'  => null,
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => 'C:\\path\\to\\whatever\\file',
+            'restricted_directory'  => 'C:\\path\\to\\whatever',
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => 'C:\\path\\to\\whatever\\file\\in\\a\\subdir',
+            'restricted_directory'  => 'C:\\path\\to\\whatever',
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => 'C:\\path\\to\\whatever_file',
+            'restricted_directory'  => 'C:\\path\\to\\whatever',
+            'is_safe'               => false,
+        ];
+        yield [
+            'path'                  => 'C:\\path\\to\\whatever\\file',
+            'restricted_directory'  => 'C:\\safedir',
+            'is_safe'               => false,
+        ];
+
+        // Windows path on file scheme
+        yield [
+            'path'                  => 'file:///C:/path/to/whatever/file',
+            'restricted_directory'  => null,
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => 'file:///C:/path/to/whatever/file',
+            'restricted_directory'  => 'C:\\path\\to\\whatever',
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => 'file:///C:/path/to/whatever/file/in/a/subdir',
+            'restricted_directory'  => 'C:\\path\\to\\whatever',
+            'is_safe'               => true,
+        ];
+        yield [
+            'path'                  => 'file:///C:/path/to/whatever_file',
+            'restricted_directory'  => 'C:\\path\\to\\whatever',
+            'is_safe'               => false,
+        ];
+        yield [
+            'path'                  => 'file:///C:/path/to/whatever/file',
+            'restricted_directory'  => 'C:\\safedir',
+            'is_safe'               => false,
+        ];
+
+        // Streams and remote paths
+        foreach (['ftp', 'http', 'https', 'phar', 'whateverstream'] as $scheme) {
+            yield [
+                'path'                  => $scheme . '://path/to/whatever/file',
+                'restricted_directory'  => null,
+                'is_safe'               => false, // path using scheme is never considered to be safe
+            ];
+
+            yield [
+                'path'                  => $scheme . '://path/to/whatever/file',
+                'restricted_directory'  => $scheme . '://path/to/whatever',
+                'is_safe'               => false, // path using scheme is never considered to be safe
+            ];
+        }
+    }
+
+    /**
+     * @dataProvider isFilepathSafeProvider
+     */
+    public function testIsFilepathSafe(string $path, ?string $restricted_directory, bool $is_safe): void
+    {
+        $this->newTestedInstance();
+        $this->boolean($this->testedInstance->isFilepathSafe($path, $restricted_directory))->isEqualTo($is_safe);
     }
 }

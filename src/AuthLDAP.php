@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\Filesystem;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -306,7 +307,10 @@ class AuthLDAP extends CommonDBTM
             };
         }
 
-        $this->checkFilesExist($input);
+        if (!$this->checkFilesExist($input)) {
+            return false;
+        }
+
         return $input;
     }
 
@@ -693,8 +697,6 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Show config replicates form
-     *
-     * @var DBmysql $DB
      *
      * @return void
      */
@@ -1610,7 +1612,8 @@ class AuthLDAP extends CommonDBTM
      * Check if the sync_field is configured for an LDAP server
      *
      * @since 9.2
-     * @param integer authldaps_id the LDAP server ID
+     * @param integer $authldaps_id the LDAP server ID
+     *
      * @return boolean true if configured, false if not configured
      */
     public static function isSyncFieldConfigured($authldaps_id)
@@ -2027,7 +2030,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @param array   $options       possible options:
      *          - authldaps_id ID of the server to use
-     *          - mode user to synchronise or add?
+     *          - mode user to synchronize or add?
      *          - ldap_filter ldap filter to use
      *          - basedn force basedn (default authldaps_id one)
      *          - order display order
@@ -2037,7 +2040,7 @@ class AuthLDAP extends CommonDBTM
      * @param array   $results       result stats
      * @param boolean $limitexceeded limit exceeded exception
      *
-     * @return array of the user
+     * @return false|array
      */
     public static function getAllUsers(array $options, &$results, &$limitexceeded)
     {
@@ -2236,7 +2239,7 @@ class AuthLDAP extends CommonDBTM
      * @param array  $ldap_infos ldap user search result
      * @param string $user_dn    user dn to look for
      *
-     * @return boolean false if the user dn doesn't exist, user ldap infos otherwise
+     * @return false|array false if the user dn doesn't exist, user ldap infos otherwise
      */
     public static function dnExistsInLdap($ldap_infos, $user_dn)
     {
@@ -2540,7 +2543,7 @@ class AuthLDAP extends CommonDBTM
      * @param resource $ldap_connection ldap connection to use
      * @param string   $group_dn        the group's dn
      *
-     * @return string the group cn
+     * @return false|string the group cn
      */
     public static function getGroupCNByDn($ldap_connection, $group_dn)
     {
@@ -2864,7 +2867,11 @@ class AuthLDAP extends CommonDBTM
 
         $search_parameters = [];
        //Connect to the directory
-        if (isset(self::$conn_cache[$ldap_server])) {
+        if (
+            isset(self::$conn_cache[$ldap_server])
+            // check that connection is still alive
+            && @ldap_read(self::$conn_cache[$ldap_server], '', '(objectclass=*)', ['dn'], 0, 1) !== false
+        ) {
             $ds = self::$conn_cache[$ldap_server];
         } else {
             $ds = $config_ldap->connect();
@@ -2888,7 +2895,12 @@ class AuthLDAP extends CommonDBTM
             ];
 
             try {
-                $infos = self::searchUserDn($ds, $attribs);
+                $error = null;
+                $infos = self::searchUserDn($ds, $attribs, $error);
+
+                if ($error === true) {
+                    return false;
+                }
 
                 if ($infos && $infos['dn']) {
                     $user_dn = $infos['dn'];
@@ -3119,19 +3131,24 @@ class AuthLDAP extends CommonDBTM
                 );
             }
         }
-        if (
-            !empty($tls_certfile)
-            && file_exists($tls_certfile)
-            && !@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)
-        ) {
-            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+
+        if (!empty($tls_certfile)) {
+            if (!Filesystem::isFilepathSafe($tls_certfile)) {
+                trigger_error("TLS certificate path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_certfile)) {
+                trigger_error("TLS certificate path is not valid.", E_USER_WARNING);
+            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_CERTFILE, $tls_certfile)) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_CERTFILE`", E_USER_WARNING);
+            }
         }
-        if (
-            !empty($tls_keyfile)
-            && file_exists($tls_keyfile)
-            && !@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)
-        ) {
-            trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+        if (!empty($tls_keyfile)) {
+            if (!Filesystem::isFilepathSafe($tls_keyfile)) {
+                trigger_error("TLS key file path is not safe.", E_USER_WARNING);
+            } elseif (!file_exists($tls_keyfile)) {
+                trigger_error("TLS key file path is not valid.", E_USER_WARNING);
+            } elseif (!@ldap_set_option(null, LDAP_OPT_X_TLS_KEYFILE, $tls_keyfile)) {
+                trigger_error("Unable to set LDAP option `LDAP_OPT_X_TLS_KEYFILE`", E_USER_WARNING);
+            }
         }
 
         if ($use_tls) {
@@ -3516,11 +3533,12 @@ class AuthLDAP extends CommonDBTM
      *          - search_parameters array of search parameters
      *          - user_params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
      *          - condition : ldap condition used
+     * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean dn of the user, else false
      * @throws \RuntimeException
      */
-    public static function searchUserDn($ds, $options = [])
+    public static function searchUserDn($ds, $options = [], ?bool &$error = null)
     {
 
         $values = [
@@ -3549,7 +3567,11 @@ class AuthLDAP extends CommonDBTM
        //First : if a user dn is provided, look for it in the directory
        //Before trying to find the user using his login_field
         if ($values['user_dn']) {
-            $info = self::getUserByDn($ds, $values['user_dn'], $attrs);
+            $info = self::getUserByDn($ds, $values['user_dn'], $attrs, true, $error);
+
+            if ($error === true) {
+                return false;
+            }
 
             if ($info) {
                 $ret = [
@@ -3578,6 +3600,7 @@ class AuthLDAP extends CommonDBTM
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
+                $error = true;
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -3590,7 +3613,11 @@ class AuthLDAP extends CommonDBTM
         }
 
         //search has been done, let's check for found results
-        $info = self::get_entries_clean($ds, $result);
+        $info = self::get_entries_clean($ds, $result, $error);
+
+        if ($error === true) {
+            return false;
+        }
 
         if (is_array($info) && ($info['count'] == 1)) {
             $ret = [
@@ -3609,15 +3636,16 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get an object from LDAP by giving his DN
      *
-     * @param resource $ds        the active connection to the directory
-     * @param string   $condition the LDAP filter to use for the search
-     * @param string   $dn        DN of the object
-     * @param array    $attrs     Array of the attributes to retrieve
-     * @param boolean  $clean     (true by default)
+     * @param resource  $ds         the active connection to the directory
+     * @param string    $condition  the LDAP filter to use for the search
+     * @param string    $dn         DN of the object
+     * @param array     $attrs      Array of the attributes to retrieve
+     * @param boolean   $clean      (true by default)
+     * @param bool|null $error      Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean false if failed
      */
-    public static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true)
+    public static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true, ?bool &$error = null)
     {
         if (!$clean) {
             Toolbox::deprecated('Use of $clean = false is deprecated');
@@ -3627,6 +3655,7 @@ class AuthLDAP extends CommonDBTM
         if ($result === false) {
             // 32 = LDAP_NO_SUCH_OBJECT => This error can be silented as it just means that search produces no result.
             if (ldap_errno($ds) !== 32) {
+                $error = true;
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -3638,7 +3667,12 @@ class AuthLDAP extends CommonDBTM
             return false;
         }
 
-        $info = self::get_entries_clean($ds, $result);
+        $info = self::get_entries_clean($ds, $result, $error);
+
+        if ($error === true) {
+            return false;
+        }
+
         if (is_array($info) && ($info['count'] == 1)) {
             return $info[0];
         }
@@ -3650,20 +3684,21 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get user by domain name
      *
-     * @param resource $ds      the active connection to the directory
-     * @param string   $user_dn domain name
-     * @param array    $attrs   attributes
-     * @param boolean  $clean   (true by default)
+     * @param resource  $ds         the active connection to the directory
+     * @param string    $user_dn    domain name
+     * @param array     $attrs      attributes
+     * @param boolean   $clean      (true by default)
+     * @param bool|null $error      Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array|boolean false if failed
      */
-    public static function getUserByDn($ds, $user_dn, $attrs, $clean = true)
+    public static function getUserByDn($ds, $user_dn, $attrs, $clean = true, ?bool &$error = null)
     {
         if (!$clean) {
             Toolbox::deprecated('Use of $clean = false is deprecated');
         }
 
-        return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs);
+        return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs, $clean, $error);
     }
 
     /**
@@ -4056,8 +4091,6 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get number of servers
      *
-     * @var DBmysql $DB
-     *
      * @return integer
      */
     public static function getNumberOfServers()
@@ -4181,8 +4214,6 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Get default ldap
-     *
-     * @var DBmysql $DB DB instance
      *
      * @return integer
      */
@@ -4397,7 +4428,7 @@ class AuthLDAP extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (
             !$withtemplate
             && $item->can($item->getField('id'), READ)
@@ -4417,7 +4448,7 @@ class AuthLDAP extends CommonDBTM
     }
 
     /**
-     * Choose wich form to show
+     * Choose which form to show
      *
      * @param CommonGLPI $item         Item instance
      * @param integer    $tabnum       Tab number
@@ -4427,7 +4458,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        /** @var AuthLDAP $item */
         switch ($tabnum) {
             case 1:
                 $item->showFormTestLDAP();
@@ -4460,15 +4491,17 @@ class AuthLDAP extends CommonDBTM
     /**
      * Get ldap query results and clean them at the same time
      *
-     * @param resource $link   link to the directory connection
-     * @param array    $result the query results
+     * @param resource  $link   link to the directory connection
+     * @param array     $result the query results
+     * @param bool|null $error  Boolean flag that will be set to `true` if a LDAP error occurs during operation
      *
      * @return array which contains ldap query results
      */
-    public static function get_entries_clean($link, $result)
+    public static function get_entries_clean($link, $result, ?bool &$error = null)
     {
         $entries = @ldap_get_entries($link, $result);
         if ($entries === false) {
+            $error = true;
             trigger_error(
                 static::buildError(
                     $link,
@@ -4759,30 +4792,33 @@ class AuthLDAP extends CommonDBTM
 
     public function checkFilesExist(&$input)
     {
-
-        if (isset($input['tls_certfile'])) {
-            $file = realpath($input['tls_certfile']);
-            if (!file_exists($file)) {
-                Session::addMessageAfterRedirect(
-                    __('TLS certificate path is incorrect'),
-                    false,
-                    ERROR
-                );
-                return false;
-            }
+        if (
+            isset($input['tls_certfile'])
+            && strlen($input['tls_certfile']) > 0
+            && (!Filesystem::isFilepathSafe($input['tls_certfile']) || !file_exists($input['tls_certfile']))
+        ) {
+            Session::addMessageAfterRedirect(
+                __('TLS certificate path is incorrect'),
+                false,
+                ERROR
+            );
+            return false;
         }
 
-        if (isset($input['tls_keyfile'])) {
-            $file = realpath($input['tls_keyfile']);
-            if (!file_exists($file)) {
-                Session::addMessageAfterRedirect(
-                    __('TLS key file path is incorrect'),
-                    false,
-                    ERROR
-                );
-                return false;
-            }
+        if (
+            isset($input['tls_keyfile'])
+            && strlen($input['tls_keyfile']) > 0
+            && (!Filesystem::isFilepathSafe($input['tls_keyfile']) || !file_exists($input['tls_keyfile']))
+        ) {
+            Session::addMessageAfterRedirect(
+                __('TLS key file path is incorrect'),
+                false,
+                ERROR
+            );
+            return false;
         }
+
+        return true;
     }
 
 

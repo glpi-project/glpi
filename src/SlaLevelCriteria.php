@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,12 +46,18 @@ class SlaLevelCriteria extends RuleCriteria
     public $dohistory        = true;
 
 
-    /**
-     * Constructor
-     **/
-    public function __construct()
+    public function __construct($rule_type = 'SlaLevel')
     {
        // Override in order not to use glpi_rules table.
+        if ($rule_type !== static::$itemtype) {
+            throw new \LogicException(
+                sprintf(
+                    '%s is not expected to be used with a different rule type than %s',
+                    static::class,
+                    static::$itemtype
+                )
+            );
+        }
     }
 
     public function rawSearchOptions()

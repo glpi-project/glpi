@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -708,7 +708,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item to the database
      *
-     * @return integer|boolean new ID of the item is insert successfull else false
+     * @return integer|boolean new ID of the item is insert successful else false
      **/
     public function addToDB()
     {
@@ -1235,7 +1235,7 @@ class CommonDBTM extends CommonGLPI
      *   - unicity_message : do not display message if item it a duplicate (default is yes)
      * @param boolean $history do history log ? (true by default)
      *
-     * @return integer the new ID of the added item (or false if fail)
+     * @return false|integer the new ID of the added item (or false if fail)
      **/
     public function add(array $input, $options = [], $history = true)
     {
@@ -1534,11 +1534,11 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Prepare input datas for adding the item
+     * Prepare input data for adding the item. If false, add is cancelled.
      *
      * @param array $input datas used to add the item
      *
-     * @return array the modified $input array
+     * @return false|array the modified $input array
      **/
     public function prepareInputForAdd($input)
     {
@@ -1636,33 +1636,36 @@ class CommonDBTM extends CommonGLPI
                       // Compare item
                         $ischanged = true;
                         $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
+
+                        $current_value = $this->fields[$key];
+                        $new_value     = is_string($this->input[$key]) ? Sanitizer::dbUnescape($this->input[$key]) : $this->input[$key];
                         if (isset($searchopt['datatype'])) {
                             switch ($searchopt['datatype']) {
                                 case 'string':
                                 case 'text':
                                     $ischanged = (strcmp(
-                                        (string)$DB->escape($this->fields[$key]),
-                                        (string)$this->input[$key]
+                                        (string)$current_value,
+                                        (string)$new_value
                                     ) != 0);
                                     break;
 
                                 case 'itemlink':
                                     if ($key == 'name') {
                                         $ischanged = (strcmp(
-                                            (string)$DB->escape($this->fields[$key]),
-                                            (string)$this->input[$key]
+                                            (string)$current_value,
+                                            (string)$new_value
                                         ) != 0);
                                         break;
                                     }
                                // else default
 
                                 default:
-                                    $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                                    $ischanged = $current_value != $new_value;
                                     break;
                             }
                         } else {
                          // No searchoption case
-                            $ischanged = ($DB->escape($this->fields[$key]) != $this->input[$key]);
+                            $ischanged = $current_value != $new_value;
                         }
                         if ($ischanged) {
                             if ($key != "id") {
@@ -1972,11 +1975,11 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Prepare input datas for updating the item
+     * Prepare input data for updating the item. If false, update is cancelled.
      *
      * @param array $input data used to update the item
      *
-     * @return array the modified $input array
+     * @return false|array the modified $input array
      **/
     public function prepareInputForUpdate($input)
     {
@@ -4142,7 +4145,7 @@ class CommonDBTM extends CommonGLPI
      *    - used : array / Already used items ID: not to display in dropdown (default empty)
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
-     * @return string|void display the dropdown
+     * @return string|false|integer
      **/
     public static function dropdown($options = [])
     {
@@ -4719,6 +4722,7 @@ class CommonDBTM extends CommonGLPI
             case '_virtual_datacenter_position':
                 $static = new static();
                 if (method_exists($static, 'getDcBreadcrumbSpecificValueToDisplay')) {
+                    //FIXME phpstan-ignore-next-line
                     return $static::getDcBreadcrumbSpecificValueToDisplay($values['id']);
                 }
         }
@@ -4981,7 +4985,7 @@ class CommonDBTM extends CommonGLPI
      *    - comments : boolean / is the comments displayed near the value (default false)
      *    - any others options passed to specific display method
      *
-     * @return string the string to display
+     * @return false|string the string to display
      **/
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
@@ -5453,13 +5457,10 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string        $link       original string content
      * @param CommonDBTM    $item       item used to make replacements
-     * @param bool          $safe_url   indicates whether URL should be sanitized or not
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
-     *
-     * @FIXME Uncomment $safe_url parameter declaration in GLPI 10.1.
      */
-    public static function generateLinkContents($link, CommonDBTM $item/*, bool $safe_url = true*/)
+    public static function generateLinkContents($link, CommonDBTM $item)
     {
         $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
         return Link::generateLinkContents($link, $item, $safe_url);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,11 +49,6 @@ class Item_DeviceSimcard extends Item_Devices
     protected static $notable = false;
 
     public static $undisclosedFields      = ['pin', 'pin2', 'puk', 'puk2'];
-
-    public static function getTypeName($nb = 0)
-    {
-        return _n('Simcard', 'Simcards', $nb);
-    }
 
     public static function getSpecificities($specif = '')
     {

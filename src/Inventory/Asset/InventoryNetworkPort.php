@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -240,7 +240,8 @@ trait InventoryNetworkPort
                      'name'         => sprintf('%s/%s - %s', $port->subnet, $port->netmask, $port->gateway),
                      'network'      => sprintf('%s/%s', $port->subnet, $port->netmask),
                      'gateway'      => $port->gateway,
-                     'entities_id'  => $this->entities_id
+                     'entities_id'  => $this->entities_id,
+                     '_no_message'  => true //to prevent 'Network already defined in visible entities' message on add
                  ];
                  $ipnetwork->add(Sanitizer::sanitize($input));
             }
@@ -344,7 +345,7 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',

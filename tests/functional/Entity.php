@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1155,5 +1155,146 @@ class Entity extends DbTestCase
 
         $this->boolean($new_entity->getFromDB($entities_id))->isTrue();
         $this->string($new_entity->fields['name'])->isEqualTo('New entity');
+    }
+
+    protected function entityTreeProvider(): iterable
+    {
+        $entity_test_root    = getItemByTypeName('Entity', '_test_root_entity');
+        $entity_test_child_1 = getItemByTypeName('Entity', '_test_child_1');
+        $entity_test_child_2 = getItemByTypeName('Entity', '_test_child_2');
+
+        yield [
+            'entity_id' => 0,
+            'result'    => [
+                0 => [
+                    'name' => 'Root entity',
+                    'tree' => [
+                        $entity_test_root->getID() => [
+                            'name' => $entity_test_root->fields['name'],
+                            'tree' => [
+                                $entity_test_child_1->getID() => [
+                                    'name' => $entity_test_child_1->fields['name'],
+                                    'tree' => [],
+                                ],
+                                $entity_test_child_2->getID() => [
+                                    'name' => $entity_test_child_2->fields['name'],
+                                    'tree' => [],
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        yield [
+            'entity_id' => $entity_test_root->getID(),
+            'result'    => [
+                $entity_test_root->getID() => [
+                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_root->fields['completename']),
+                    'tree' => [
+                        $entity_test_child_1->getID() => [
+                            'name' => $entity_test_child_1->fields['name'],
+                            'tree' => [],
+                        ],
+                        $entity_test_child_2->getID() => [
+                            'name' => $entity_test_child_2->fields['name'],
+                            'tree' => [],
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        yield [
+            'entity_id' => $entity_test_child_1->getID(),
+            'result'    => [
+                $entity_test_child_1->getID() => [
+                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_1->fields['completename']),
+                    'tree' => [
+                    ]
+                ]
+            ]
+        ];
+
+        yield [
+            'entity_id' => $entity_test_child_2->getID(),
+            'result'    => [
+                $entity_test_child_2->getID() => [
+                    'name' => \Entity::sanitizeSeparatorInCompletename($entity_test_child_2->fields['completename']),
+                    'tree' => [
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider entityTreeProvider
+     */
+    public function testGetEntityTree(int $entity_id, array $result): void
+    {
+        $this->login();
+
+        $entity = $this->newTestedInstance();
+        $this->array($this->callPrivateMethod($entity, 'getEntityTree', $entity_id))->isEqualTo($result);
+    }
+
+    public function testGetEntitySelectorTree(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+
+        $fn_get_current_entities = static function () use ($DB) {
+            return iterator_to_array($DB->request([
+                'SELECT' => ['id', 'name', 'entities_id'],
+                'FROM' => 'glpi_entities',
+            ]));
+        };
+
+        $fn_find_entities_in_selector = static function ($selector, $entities, $parent_id = 0, &$found = []) use (&$fn_find_entities_in_selector) {
+            foreach ($selector as $item) {
+                // extract entity name from the first <a> element inside the 'title' property
+                $matches = [];
+                preg_match('/>(.+)<\/a>/', $item['title'], $matches);
+                $entity_name = $matches[1];
+                foreach ($entities as $child) {
+                    if ($child['name'] === $entity_name && $child['entities_id'] === $parent_id) {
+                        $found[] = $child['id'];
+                    }
+                }
+                if ($item['folder'] ?? false) {
+                    // Extract item id from the number at the end of the first <a> element's href inside the 'title' property
+                    $fn_find_entities_in_selector($item['children'], $entities, (int) $item['key'], $found);
+                }
+            }
+        };
+
+        $entities = $fn_get_current_entities();
+        $this->array($entities)->size->isGreaterThan(0);
+        $selector = \Entity::getEntitySelectorTree();
+        $found = [];
+        $fn_find_entities_in_selector($selector, $entities, null, $found);
+        $this->array($found)->size->isEqualTo(count($entities));
+
+        // Create a new entity
+        $entity = new \Entity();
+        $this->integer($entities_id = $entity_id = $entity->add([
+            'name' => __FUNCTION__ . '1',
+            'entities_id' => getItemByTypeName('Entity', '_test_child_2', true)
+        ]))->isGreaterThan(0);
+        $found = [];
+        $entities = $fn_get_current_entities();
+        $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
+        $this->array($found)->size->isEqualTo(count($entities));
+
+        // Delete the entity
+        $this->boolean($entity->delete(['id' => $entity_id]))->isTrue();
+        $found = [];
+        $entities = $fn_get_current_entities();
+        $fn_find_entities_in_selector(\Entity::getEntitySelectorTree(), $entities, null, $found);
+        $this->array($found)->size->isEqualTo(count($entities));
     }
 }

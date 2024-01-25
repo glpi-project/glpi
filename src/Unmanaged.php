@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -182,6 +182,15 @@ class Unmanaged extends CommonDBTM
             'table'        => $this->getTable(),
             'field'        => 'ip',
             'name'         => __('IP'),
+        ];
+
+        $tab[] = [
+            'id'                 => '31',
+            'table'              => 'glpi_states',
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => ['is_visible_unmanaged' => 1]
         ];
 
         return $tab;

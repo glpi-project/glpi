@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -33,6 +33,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Toolbox\Sanitizer;
 
 class RuleImportAsset extends Rule
 {
@@ -518,7 +520,7 @@ class RuleImportAsset extends Rule
                 $this->handleOneJoinPerCriteria($item, $it_criteria);
             }
 
-            $this->handleFieldsCriteria($item, $it_criteria, $input);
+            $this->handleFieldsCriteria($item, $it_criteria, Sanitizer::sanitize($input));
 
             if (isset($PLUGIN_HOOKS['use_rules'])) {
                 foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {

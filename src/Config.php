@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1900,7 +1900,7 @@ class Config extends CommonDBTM
             $dir = getcwd();
             chdir(GLPI_ROOT);
             $returnCode = 1;
-            /** @var array $output */
+            $output = [];
             $gitrev = @exec('git show --format="%h" --no-patch 2>&1', $output, $returnCode);
             $gitbranch = '';
             if (!$returnCode) {
@@ -1932,7 +1932,7 @@ class Config extends CommonDBTM
 
         foreach (
             ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
-                'session.save_handler', 'upload_max_filesize'
+                'session.save_handler', 'upload_max_filesize', 'disable_functions'
             ] as $key
         ) {
             $msg .= $key . '="' . ini_get($key) . '" ';
@@ -2146,8 +2146,10 @@ HTML;
 
     /**
      * Retrieve full directory of a lib
+     *
      * @param  $libstring  object, class or function
-     * @return string       the path or false
+     *
+     * @return false|string the path or false
      *
      * @since 9.1
      */
@@ -2549,11 +2551,11 @@ HTML;
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        switch ($item->getType()) {
-            case 'Preference':
+        switch (get_class($item)) {
+            case Preference::class:
                 return __('Personalization');
 
-            case 'User':
+            case User::class:
                 if (
                     User::canUpdate()
                     && $item->currentUserHaveMoreRightThan($item->getID())
@@ -2562,7 +2564,7 @@ HTML;
                 }
                 break;
 
-            case __CLASS__:
+            case self::class:
                 $tabs = [
                     1 => __('General setup'),  // Display
                     2 => __('Default values'), // Prefs
@@ -2602,18 +2604,18 @@ HTML;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if ($item->getType() == 'Preference') {
+        if ($item instanceof Preference) {
             $config = new self();
             $user   = new User();
             if ($user->getFromDB(Session::getLoginUserID())) {
                 $user->computePreferences();
                 $config->showFormUserPrefs($user->fields);
             }
-        } else if ($item->getType() == 'User') {
+        } else if ($item instanceof User) {
             $config = new self();
             $item->computePreferences();
             $config->showFormUserPrefs($item->fields);
-        } else if ($item->getType() == __CLASS__) {
+        } else if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     $item->showFormDisplay();
@@ -2871,7 +2873,7 @@ HTML;
      *
      * @since 0.85
      *
-     * @return DB version
+     * @return string DB version
      **/
     public static function getCurrentDBVersion()
     {

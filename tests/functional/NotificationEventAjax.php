@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -63,12 +63,12 @@ class NotificationEventAjax extends DbTestCase
 
     public function testGetAdminData()
     {
-        $this->boolean(\NotificationEventAjax::getAdminData())->isFalse();
+        $this->array(\NotificationEventAjax::getAdminData())->isIdenticalTo([]);
     }
 
     public function testGetEntityAdminsData()
     {
-        $this->boolean(\NotificationEventAjax::getEntityAdminsData(0))->isFalse();
+        $this->array(\NotificationEventAjax::getEntityAdminsData(0))->isIdenticalTo([]);
     }
 
     public function testSend()

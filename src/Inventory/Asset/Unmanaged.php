@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -147,13 +147,6 @@ class Unmanaged extends MainAsset
         $entities_id = $this->entities_id;
         $val->is_dynamic = 1;
         $val->entities_id = $entities_id;
-        $default_states_id = $this->states_id_default ?? 0;
-        if ($items_id != 0 && $default_states_id != '-1') {
-            $val->states_id = $default_states_id;
-        } elseif ($items_id == 0) {
-            //if create mode default states_id can't be '-1' put 0 if needed
-            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
-        }
 
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
@@ -218,6 +211,15 @@ class Unmanaged extends MainAsset
                 $items_id = $this->item->add(Sanitizer::sanitize($input));
                 $this->setNew();
             }
+        }
+
+        // compute states_id after check / get for 'real' asset (converted or not)
+        $default_states_id = $this->states_id_default ?? 0;
+        if ($items_id != 0 && $default_states_id != '-1') {
+            $val->states_id = $default_states_id;
+        } elseif ($items_id == 0) {
+            //if create mode default states_id can't be '-1' put 0 if needed
+            $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
         }
 
         //do not update itemtype / items_id Agent from Unmanaged item
@@ -338,6 +340,7 @@ class Unmanaged extends MainAsset
     public function checkConf(Conf $conf): bool
     {
         $this->conf = $conf;
+        $this->states_id_default = $conf->states_id_default;
         return $conf->import_unmanaged == 1;
     }
 

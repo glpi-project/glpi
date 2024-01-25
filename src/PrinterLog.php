@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -180,15 +180,22 @@ class PrinterLog extends CommonDBChild
             $labels[] = $fmt->format($date);
             unset($metrics['id'], $metrics['date'], $metrics['printers_id']);
 
+            // Keep values if at least 1 label is greater than 0
+            $valuesum = array_sum($metrics);
             foreach ($metrics as $key => $value) {
                 $label = $this->getLabelFor($key);
-                if ($label && $value > 0) {
+                if ($label && $valuesum > 0) {
                     $series[$key]['name'] = $label;
                     $series[$key]['data'][] = $value;
                 }
             }
         }
-
+        // If the metric has a value of 0 for all dates, remove it from the data set
+        foreach ($series as $key => $value) {
+            if (array_sum($value['data']) == 0) {
+                unset($series[$key]);
+            }
+        }
         $bar_conf = [
             'data'  => [
                 'labels' => $labels,

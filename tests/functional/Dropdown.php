@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -168,6 +168,13 @@ class Dropdown extends DbTestCase
 
        // test of return with translations
         $CFG_GLPI['translate_dropdowns'] = 1;
+        // Force generation of completename that was not done on dataset bootstrap
+        // because `translate_dropdowns` is false by default.
+        (new \DropdownTranslation())->generateCompletename([
+            'itemtype' => \TaskCategory::class,
+            'items_id' => getItemByTypeName(\TaskCategory::class, '_cat_1', true),
+            'language' => 'fr_FR'
+        ]);
         $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
         $expected = ['name'    => 'FR - _cat_1' . $encoded_sep . 'FR - _subcat_1',

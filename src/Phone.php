@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -117,6 +117,7 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Reservation', $ong, $options);
         $this->addStandardTab('Domain_Item', $ong, $options);
         $this->addStandardTab('Appliance_Item', $ong, $options);
+        $this->addStandardTab('RuleMatchedLog', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -160,7 +161,7 @@ class Phone extends CommonDBTM
     /**
      * Return the linked items (in computers_items)
      *
-     * @return an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
+     * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
     public function getLinkedItems()

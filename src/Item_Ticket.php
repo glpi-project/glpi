@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -383,13 +383,13 @@ class Item_Ticket extends CommonItilObject_Item
 
         $types_iterator = self::getDistinctTypes($instID);
         $number = count($types_iterator);
-
+        $ticket_closed = in_array($ticket->fields['status'], array_merge(
+            $ticket->getClosedStatusArray(),
+            $ticket->getSolvedStatusArray()
+        ));
         if (
             $canedit
-            && !in_array($ticket->fields['status'], array_merge(
-                $ticket->getClosedStatusArray(),
-                $ticket->getSolvedStatusArray()
-            ))
+            && !$ticket_closed
         ) {
             echo "<div class='firstbloc'>";
             echo "<form name='ticketitem_form$rand' id='ticketitem_form$rand' method='post'
@@ -427,9 +427,8 @@ class Item_Ticket extends CommonItilObject_Item
             Html::closeForm();
             echo "</div>";
         }
-
         echo "<div class='spaced'>";
-        if ($canedit && $number) {
+        if ($canedit && $number && !$ticket_closed) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
             Html::showMassiveActions($massiveactionparams);
@@ -439,7 +438,7 @@ class Item_Ticket extends CommonItilObject_Item
         $header_top    = '';
         $header_bottom = '';
         $header_end    = '';
-        if ($canedit && $number) {
+        if ($canedit && $number && !$ticket_closed) {
             $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
             $header_top    .= "</th>";
             $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
@@ -484,7 +483,7 @@ class Item_Ticket extends CommonItilObject_Item
                     }
 
                     echo "<tr class='tab_bg_1'>";
-                    if ($canedit) {
+                    if ($canedit && !$ticket_closed) {
                         echo "<td width='10'>";
                         Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
                         echo "</td>";
@@ -521,7 +520,7 @@ class Item_Ticket extends CommonItilObject_Item
         }
 
         echo "</table>";
-        if ($canedit && $number) {
+        if ($canedit && $number && !$ticket_closed) {
             $massiveactionparams['ontop'] = false;
             Html::showMassiveActions($massiveactionparams);
             Html::closeForm();

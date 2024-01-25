@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -218,10 +218,13 @@
       var itemtype  = element.data('itemtype');
       var items_id  = element.data('items-id');
       var actortype = element.data('actortype');
-      var text      = element.data('text');
+      var text      = element.find('.actor_text').text().trim();
 
-      var actorIndex = actors[actortype].findIndex(element => (element.itemtype == itemtype && element.items_id == items_id));
-      var actor      = actors[actortype][actorIndex];
+      actorIndex = actors[actortype].findIndex(element =>
+         element.itemtype == itemtype &&
+         (items_id === 0 ? element.alternative_email == text : element.items_id == items_id)
+      );
+      var actor = actors[actortype][actorIndex];
 
       var modal = $('#editActorNotifySettings');
       modal.find("input[name=_notifications_actortype]").val(actortype);
@@ -267,7 +270,13 @@
          fa_class = "fas";
       }
 
-      var actor_entry = $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+']');
+      var actor_entry = $('.actor_entry[data-itemtype='+actor.itemtype+'][data-items-id='+actor.items_id+'][data-actortype='+actortype+']')
+         .filter(function() {
+            if(actor.items_id == 0 && actor.itemtype == "User") {
+               return $(this).text().trim() === actor.alternative_email;
+            }
+            return $(this).text()
+         });
 
       // toggle notify icon
       actor_entry.find('.notify-icon')

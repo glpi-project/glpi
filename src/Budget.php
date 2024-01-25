@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -95,7 +95,7 @@ class Budget extends CommonDropdown
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
                     $item->showValuesByEntity();
@@ -264,7 +264,8 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'value',
             'name'               => _x('price', 'Value'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
+            'searchtype'         => ['contains', 'notcontains', 'equals', 'notequals'],
         ];
 
         $tab[] = [

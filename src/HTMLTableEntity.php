@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -183,7 +183,7 @@ abstract class HTMLTableEntity
             }
         } else {
             // Manage __RAND__ to be computed on display
-            $content = $this->content;
+            $content = $this->content ?? '';
             $content = str_replace('__RAND__', mt_rand(), $content);
             echo $content;
         }

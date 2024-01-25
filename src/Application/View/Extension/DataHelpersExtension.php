@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -162,7 +162,7 @@ class DataHelpersExtension extends AbstractExtension
      * Return string having its shortcut letter underlined.
      *
      * @param string $string
-     * @param string $shortcut
+     * @param string $shortcut_letter
      *
      * @return string
      */
@@ -233,7 +233,7 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * Return verbatim value for an itemtype field.
      * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
-     * Twig autoescaping system will then ensure that value is correctly escaped in redered HTML.
+     * Twig autoescaping system will then ensure that value is correctly escaped in rendered HTML.
      *
      * @param mixed  $string
      *
@@ -250,11 +250,11 @@ class DataHelpersExtension extends AbstractExtension
 
 
     /**
-     * return the provided string truncated on the left and preprend a prefix separator if length is reached
+     * return the provided string truncated on the left and prepend a prefix separator if length is reached
      *
-     * @param string  $string the string to left truncate
-     * @param int     $length number of char to preserve
-     * @param int     $separator prefix to prepend to the string
+     * @param string $string the string to left truncate
+     * @param int    $length number of char to preserve
+     * @param string $separator prefix to prepend to the string
      *
      * @return string truncated string
      */

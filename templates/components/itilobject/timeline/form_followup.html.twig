@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -120,7 +120,7 @@
                   ) }}
                </div>
                {% if get_current_interface() == 'central' %}
-                  <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-o pe-xxl-auto">
+                  <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
                      <div class="row">
 
                         {% set fup_template_lbl %}
@@ -136,6 +136,7 @@
                               'full_width': true,
                               'icon_label': true,
                               'on_change': 'itilfollowuptemplate_update' ~ rand ~ '(this.value)',
+                              'entity': item.fields['entities_id'],
                               'rand': rand,
                            }
                         ) }}
@@ -217,7 +218,7 @@
             <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
                {% set pending_reasons %}
                   {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not add_reopen %}
-                  {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) %}
+                  {% if get_current_interface() == 'central' and item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::WAITING')) and call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
                      <span
                         class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
                         id="pending-reasons-control-{{ rand }}"

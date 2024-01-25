@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -693,7 +693,7 @@ class Computer_Item extends CommonDBRelation
         $fromtype,
         $myname,
         $entity_restrict = -1,
-        $onlyglobal = 0,
+        $onlyglobal = false,
         $used = []
     ) {
         /** @var array $CFG_GLPI */
@@ -749,7 +749,7 @@ class Computer_Item extends CommonDBRelation
         $fromtype,
         $myname,
         $entity_restrict = -1,
-        $onlyglobal = 0,
+        $onlyglobal = false,
         $used = []
     ) {
         /** @var array $CFG_GLPI */
@@ -785,7 +785,8 @@ class Computer_Item extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // can exists for Template
+        // can exists for Template
+        /** @var CommonDBTM $item */
         if ($item->can($item->getField('id'), READ)) {
             $nb = 0;
             $canview = false;
@@ -874,7 +875,7 @@ class Computer_Item extends CommonDBRelation
                 'GROUP' => 'itemtype'
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                 if (!class_exists($data['itemtype'])) {
                     continue;
                 }

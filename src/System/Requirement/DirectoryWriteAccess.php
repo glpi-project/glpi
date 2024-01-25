@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,57 +54,57 @@ class DirectoryWriteAccess extends AbstractRequirement
      */
     public function __construct(string $path, bool $optional = false, ?string $description = null)
     {
-        $this->path = $path;
-        $this->optional = $optional;
-        $this->description = $description;
-
-        switch (realpath($this->path)) {
+        switch (realpath($path)) {
             case realpath(GLPI_CACHE_DIR):
-                $this->title = __('Permissions for cache files');
+                $title = __('Permissions for cache files');
                 break;
             case realpath(GLPI_CONFIG_DIR):
-                $this->title = __('Permissions for setting files');
+                $title = __('Permissions for setting files');
                 break;
             case realpath(GLPI_CRON_DIR):
-                $this->title = __('Permissions for automatic actions files');
+                $title = __('Permissions for automatic actions files');
                 break;
             case realpath(GLPI_DOC_DIR):
-                $this->title = __('Permissions for document files');
+                $title = __('Permissions for document files');
                 break;
             case realpath(GLPI_DUMP_DIR):
-                $this->title = __('Permissions for dump files');
+                $title = __('Permissions for dump files');
                 break;
             case realpath(GLPI_GRAPH_DIR):
-                $this->title = __('Permissions for graphic files');
+                $title = __('Permissions for graphic files');
                 break;
             case realpath(GLPI_LOCK_DIR):
-                $this->title = __('Permissions for lock files');
+                $title = __('Permissions for lock files');
                 break;
             case realpath(GLPI_MARKETPLACE_DIR):
-                $this->title = __('Permissions for marketplace directory');
+                $title = __('Permissions for marketplace directory');
                 break;
             case realpath(GLPI_PLUGIN_DOC_DIR):
-                $this->title = __('Permissions for plugins document files');
+                $title = __('Permissions for plugins document files');
                 break;
             case realpath(GLPI_PICTURE_DIR):
-                $this->title = __('Permissions for pictures files');
+                $title = __('Permissions for pictures files');
                 break;
             case realpath(GLPI_RSS_DIR):
-                $this->title = __('Permissions for rss files');
+                $title = __('Permissions for rss files');
                 break;
             case realpath(GLPI_SESSION_DIR):
-                $this->title = __('Permissions for session files');
+                $title = __('Permissions for session files');
                 break;
             case realpath(GLPI_TMP_DIR):
-                $this->title = __('Permissions for temporary files');
+                $title = __('Permissions for temporary files');
                 break;
             case realpath(GLPI_UPLOAD_DIR):
-                $this->title = __('Permissions for upload files');
+                $title = __('Permissions for upload files');
                 break;
             default:
-                $this->title = sprintf(__('Permissions for directory %s'), $this->path);
+                $title = sprintf(__('Permissions for directory %s'), $path);
                 break;
         }
+
+        parent::__construct($title, $description, $optional);
+
+        $this->path = $path;
     }
 
     protected function check()

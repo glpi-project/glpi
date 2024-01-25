@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -636,6 +636,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canpriority'             => $canupdate,
             'canassign'               => $canupdate,
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
+            'load_kb_sol'             => $options['load_kb_sol'] ?? 0,
         ]);
 
         return true;
@@ -1617,7 +1618,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param array $input Input
      *
-     * @return array
+     * @return false|array
      */
     protected function handleTemplateFields(array $input)
     {
@@ -3473,6 +3474,11 @@ abstract class CommonITILObject extends CommonDBTM
         return $tab;
     }
 
+    public static function getProcessStatusArray()
+    {
+        // To be overriden by class
+        return [];
+    }
 
     /**
      * Get the ITIL object process status list
@@ -3822,6 +3828,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $itemtype = $ma->getItemtype(true);
                 $tasktype = $itemtype . 'Task';
                 if ($ttype = getItemForItemtype($tasktype)) {
+                    /** @var CommonITILTask $ttype */
                     $ttype->showMassiveActionAddTaskForm();
                     return true;
                 }
@@ -3867,7 +3874,7 @@ abstract class CommonITILObject extends CommonDBTM
         CommonDBTM $item,
         array $ids
     ) {
-
+        /** @var CommonITILObject $item */
         switch ($ma->getAction()) {
             case 'add_actor':
                 $input = $ma->getInput();
@@ -3941,7 +3948,13 @@ abstract class CommonITILObject extends CommonDBTM
                             'state'             => $input['state'],
                             'content'           => $input['content']
                         ];
-                        if ($task->can(-1, CREATE, $input2) && !in_array($item->fields['status'], array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()))) {
+                        if (
+                            $task->can(-1, CREATE, $input2)
+                            && !in_array(
+                                $item->fields['status'],
+                                array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray())
+                            )
+                        ) {
                             if ($task->add($input2)) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
@@ -5265,7 +5278,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param string $itemtype the object's type
      *
-     * @return true if ticket can be assign to this type, false if not
+     * @return boolean true if ticket can be assigned to this type, false if not
      **/
     public static function isPossibleToAssignType($itemtype)
     {
@@ -6796,11 +6809,10 @@ abstract class CommonITILObject extends CommonDBTM
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        /** @var CommonITILObject $obj_type */
         $obj_type = static::getType();
         $foreign_key = static::getForeignKeyField();
 
-       //check sub-items rights
+        //check sub-items rights
         $tmp = [$foreign_key => $this->getID()];
         $fup = new ITILFollowup();
         $fup->getEmpty();
@@ -6940,8 +6952,6 @@ abstract class CommonITILObject extends CommonDBTM
      * - check_view_rights  : indicates whether current session rights should be checked for view rights
      * - hide_private_items : force hiding private items (followup/tasks), even if session allow it
      * @since 9.4.0
-     *
-     * @param bool $with_logs include logs ?
      *
      * @return mixed[] Timeline items
      */
@@ -7889,6 +7899,8 @@ abstract class CommonITILObject extends CommonDBTM
     public function getAssociatedDocumentsCriteria($bypass_rights = false): array
     {
         $task_class = $this->getType() . 'Task';
+        /** @var DBMysql $DB */
+        global $DB; // Used to get subquery results - better performance
 
         $or_crits = [
          // documents associated to ITIL item directly
@@ -7909,50 +7921,59 @@ abstract class CommonITILObject extends CommonDBTM
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
             }
-            $or_crits[] = [
-                Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
-                Document_Item::getTableField('items_id') => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => ITILFollowup::getTable(),
-                        'WHERE'  => $fup_crits,
-                    ]
-                ),
-            ];
+            // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => ITILFollowup::getTable(),
+                'WHERE'  => $fup_crits,
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
+                    Document_Item::getTableField('items_id') => $arr_values,
+                ];
+            }
         }
 
        // documents associated to solutions
         if ($bypass_rights || ITILSolution::canView()) {
-            $or_crits[] = [
-                Document_Item::getTableField('itemtype') => ITILSolution::getType(),
-                Document_Item::getTableField('items_id') => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => ITILSolution::getTable(),
-                        'WHERE'  => [
-                            ITILSolution::getTableField('itemtype') => $this->getType(),
-                            ITILSolution::getTableField('items_id') => $this->getID(),
-                        ],
-                    ]
-                ),
-            ];
+            // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => ITILSolution::getTable(),
+                'WHERE'  => [
+                    ITILSolution::getTableField('itemtype') => $this->getType(),
+                    ITILSolution::getTableField('items_id') => $this->getID(),
+                ],
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    Document_Item::getTableField('itemtype') => ITILSolution::getType(),
+                    Document_Item::getTableField('items_id') => $arr_values,
+                ];
+            }
         }
 
        // documents associated to ticketvalidation
         $validation_class = static::getType() . 'Validation';
         if (class_exists($validation_class) && ($bypass_rights ||  $validation_class::canView())) {
-            $or_crits[] = [
-                Document_Item::getTableField('itemtype') => $validation_class::getType(),
-                Document_Item::getTableField('items_id') => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => $validation_class::getTable(),
-                        'WHERE'  => [
-                            $validation_class::getTableField($validation_class::$items_id) => $this->getID(),
-                        ],
-                    ]
-                ),
-            ];
+             // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => $validation_class::getTable(),
+                'WHERE'  => [
+                    $validation_class::getTableField($validation_class::$items_id) => $this->getID(),
+                ],
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    Document_Item::getTableField('itemtype') => $validation_class::getType(),
+                    Document_Item::getTableField('items_id') => $arr_values,
+                ];
+            }
         }
 
        // documents associated to tasks
@@ -7965,18 +7986,20 @@ abstract class CommonITILObject extends CommonDBTM
                     'OR' => ['is_private' => 0, 'users_id' => Session::getLoginUserID()],
                 ];
             }
-            $or_crits[] = [
-                'glpi_documents_items.itemtype' => $task_class::getType(),
-                'glpi_documents_items.items_id' => new QuerySubQuery(
-                    [
-                        'SELECT' => 'id',
-                        'FROM'   => $task_class::getTable(),
-                        'WHERE'  => $tasks_crit,
-                    ]
-                ),
-            ];
+             // Run the subquery separately. It's better for huge databases
+            $iterator_tmp = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => $task_class::getTable(),
+                'WHERE'  => $tasks_crit,
+            ]);
+            $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
+            if (count($arr_values) > 0) {
+                $or_crits[] = [
+                    'glpi_documents_items.itemtype' => $task_class::getType(),
+                    'glpi_documents_items.items_id' => $arr_values,
+                ];
+            }
         }
-
         return ['OR' => $or_crits];
     }
 
@@ -8627,11 +8650,14 @@ abstract class CommonITILObject extends CommonDBTM
                     ) {
                         // "email" actor found
                         if ($actor['alternative_email'] == $existing['alternative_email']) {
+                            // The anonymous actor matches an existing one, update it
+                            $updated[] = $actor + ['id' => $existing['id']];
                             $found = true;
                             break;
+                        } else {
+                            // Do not check for modifications on "email" actors (they should be deleted then re-added on email change)
+                            continue;
                         }
-                        // Do not check for modifications on "email" actors (they should be deleted then re-added on email change)
-                        continue;
                     }
 
                     if ($actor['itemtype'] != $existing['itemtype'] || $actor['items_id'] != $existing['items_id']) {
@@ -8927,7 +8953,9 @@ abstract class CommonITILObject extends CommonDBTM
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
-        /** @var \DBmysql $DB */
+        /**
+         * @var \DBmysql $DB
+        */
         global $DB;
 
         // List of items to return
@@ -9170,11 +9198,23 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
+        $category_names = [];
         foreach ($common_itil_iterator as $data) {
+            if (!array_key_exists($data['itilcategories_id'], $category_names)) {
+                $category_name = DropdownTranslation::getTranslatedValue(
+                    $data['itilcategories_id'],
+                    ITILCategory::class
+                );
+                if ($category_name === '') {
+                    $category_name = ITILCategory::getFriendlyNameById($data['itilcategories_id']);
+                }
+
+                $category_names[$data['itilcategories_id']] = $category_name;
+            }
             $data = [
                 'id'        => $data['id'],
                 'name'      => $data['name'],
-                'category'  => $data['itilcategories_id'],
+                'category'  => $category_names[$data['itilcategories_id']] ?? '',
                 'content'   => $data['content'],
                 'status'    => $data['status'],
                 '_itemtype' => $itemtype,
@@ -9874,5 +9914,28 @@ abstract class CommonITILObject extends CommonDBTM
     {
         // All actions should be attached to thread instanciated by `new` event
         return 'new';
+    }
+
+    /**
+     * Is the current user have right to update the current ITIL object ?
+     *
+     * @return boolean
+     **/
+    public function canUpdateItem()
+    {
+        if (!$this->checkEntity()) {
+            return false;
+        }
+
+        return self::canUpdate();
+    }
+
+    public function canDeleteItem()
+    {
+
+        if (!$this->checkEntity()) {
+            return false;
+        }
+        return self::canDelete();
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,19 +42,21 @@ final class SafeDocumentRoot extends AbstractRequirement
 {
     public function __construct()
     {
-        $this->title = __('Safe configuration of web root directory');
-        $this->description = sprintf(
-            __('Web server root directory should be `%s` to ensure non-public files cannot be accessed.'),
-            realpath(GLPI_ROOT) . DIRECTORY_SEPARATOR . 'public'
+        parent::__construct(
+            __('Safe configuration of web root directory'),
+            sprintf(
+                __('Web server root directory should be `%s` to ensure non-public files cannot be accessed.'),
+                realpath(GLPI_ROOT) . DIRECTORY_SEPARATOR . 'public'
+            ),
+            true,
+            true,
+            isCommandLine() // out of context when tested from CLI
         );
-        $this->optional = true;
-        $this->recommended_for_security = true;
     }
 
     protected function check()
     {
         if (isCommandLine()) {
-            $this->out_of_context = true;
             $this->validated = false;
             $this->validation_messages[] = __('Checking web server root directory configuration cannot be done on CLI context.');
             return;

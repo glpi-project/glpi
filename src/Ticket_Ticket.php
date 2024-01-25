@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -128,29 +128,48 @@ class Ticket_Ticket extends CommonDBRelation
     /**
      * Get linked tickets to a ticket
      *
-     * @param $ID ID of the ticket id
+     * @param integer $ID ID of the ticket id
+     * @param boolean $check_view_rights check view rights
      *
      * @return array of linked tickets  array(id=>linktype)
      **/
-    public static function getLinkedTicketsTo($ID)
+    public static function getLinkedTicketsTo($ID, bool $check_view_rights = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
        // Make new database object and fill variables
         if (empty($ID)) {
-            return false;
+            return [];
         }
 
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
+        $table = self::getTable();
+        $criteria = [
+            'SELECT' => ["{$table}.*"],
+            'FROM'   => $table,
             'WHERE'  => [
                 'OR'  => [
                     'tickets_id_1' => $ID,
                     'tickets_id_2' => $ID
                 ]
             ]
-        ]);
+        ];
+        if ($check_view_rights && !Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $ticket_table = Ticket::getTable();
+            $criteria['LEFT JOIN'] = [
+                $ticket_table => [
+                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)")
+                ],
+            ];
+            $unused_ref = [];
+            $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
+            if (!empty($joins_str)) {
+                $db_it = new DBmysqlIterator($DB);
+                $criteria['LEFT JOIN'] = [new QueryExpression($db_it->analyseJoins(['LEFT JOIN' => $criteria['LEFT JOIN']]) . ' ' . $joins_str)];
+            }
+            $criteria['WHERE'][] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
+        }
+        $iterator = $DB->request($criteria);
         $tickets = [];
 
         foreach ($iterator as $data) {

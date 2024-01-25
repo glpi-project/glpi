@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -92,22 +92,7 @@ if (isset($_POST["update"])) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
                   "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 } else if (isset($_POST["add"])) {
-    $reservationitems_id = 0;
-    if (empty($_POST['users_id'])) {
-        $_POST['users_id'] = Session::getLoginUserID();
-    }
-    Toolbox::manageBeginAndEndPlanDates($_POST['resa']);
     Reservation::handleAddForm($_POST);
-    if (
-        !isset($_POST['items'])
-    ) {
-        Session::addMessageAfterRedirect(
-            __('No item selected'),
-            false,
-            ERROR
-        );
-    }
-
     Html::back();
 } else if (isset($_GET["id"])) {
     if (!isset($_GET['begin'])) {

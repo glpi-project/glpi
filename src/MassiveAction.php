@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -233,7 +233,7 @@ class MassiveAction
                             foreach ($ids as $id => $checked) {
                                 if ($checked == 1) {
                                     $items[$id] = $id;
-                                    $this->nb_items ++;
+                                    $this->nb_items++;
                                 }
                             }
                              $POST['items'][$itemtype] = $items;
@@ -525,7 +525,7 @@ class MassiveAction
     /**
      * Get current action
      *
-     * @return a string with the current action or NULL if we are at initial stage
+     * @return string with the current action or NULL if we are at initial stage
      **/
     public function getAction()
     {

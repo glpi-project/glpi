@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -33,7 +33,7 @@
 
 <input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
 
-{% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+{% set linked_tickets = linked_tickets|default(ticket_ticket.getLinkedTicketsTo(item.fields['id'], true)) %}
 {% if linked_tickets|length %}
 <div class="card">
    <div class="list-group list-group-flush list-group-hoverable">

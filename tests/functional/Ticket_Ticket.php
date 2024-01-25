@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -193,5 +193,47 @@ class Ticket_Ticket extends DbTestCase
             ])
         )->isTrue();
         $this->integer(\Ticket_Ticket::countOpenChildren($ttwo->getID()))->isIdenticalTo(0);
+    }
+
+    public function testRestrictedGetLinkedTicketsTo()
+    {
+        $this->login();
+        $this->createTickets();
+
+        $ticket_ticket = new \Ticket_Ticket();
+        $this->integer($ticket_ticket->add([
+            'tickets_id_1' => $this->tone->getID(),
+            'tickets_id_2' => $this->ttwo->getID(),
+            'link'         => \Ticket_Ticket::LINK_TO
+        ]))->isGreaterThan(0);
+
+        $ticket = new \Ticket();
+        $this->integer($other_tickets_id = $ticket->add([
+            'name'      => 'Linked ticket 03',
+            'content'   => 'Linked ticket 03',
+            'users_id'  => $_SESSION['glpiID'] + 1, // Not current user
+            '_skip_auto_assign' => true,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]))->isGreaterThan(0);
+
+        $this->integer($ticket_ticket->add([
+            'tickets_id_1' => $this->tone->getID(),
+            'tickets_id_2' => $other_tickets_id,
+            'link'         => \Ticket_Ticket::LINK_TO
+        ]))->isGreaterThan(0);
+
+        $linked = \Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
+        $this->integer(count($linked))->isEqualTo(2);
+        $this->array(array_column($linked, 'tickets_id'))->containsValues([$this->ttwo->getID(), $other_tickets_id]);
+
+        // Remove READALL ticket permission
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+        $linked = \Ticket_Ticket::getLinkedTicketsTo($this->tone->getID());
+        $this->integer(count($linked))->isEqualTo(2);
+        $this->array(array_column($linked, 'tickets_id'))->containsValues([$this->ttwo->getID(), $other_tickets_id]);
+        // Get linked tickets using view restrictions
+        $linked = \Ticket_Ticket::getLinkedTicketsTo($this->tone->getID(), true);
+        $this->integer(count($linked))->isEqualTo(1);
+        $this->array(array_column($linked, 'tickets_id'))->containsValues([$this->ttwo->getID()]);
     }
 }

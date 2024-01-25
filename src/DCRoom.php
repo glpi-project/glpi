@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -325,6 +325,42 @@ class DCRoom extends CommonDBTM
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
+
+        return $tab;
+    }
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        // separator
+        $tab[] = [
+            'id'   => 'dcroom',
+            'name' => self::getTypeName(1),
+        ];
+
+        $tab[] = [
+            'id'                 => '1450',
+            'table'              => 'glpi_dcrooms',
+            'field'              => 'name',
+            'datatype'           => 'itemlink',
+            'name'               => DCRoom::getTypeName(1),
+            'massiveaction'      => false,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_racks',
+                    'linkfield'          => 'racks_id',
+                    'joinparams'         => [
+                        'beforejoin'         => [
+                            'table'              => 'glpi_items_racks',
+                            'joinparams'         => [
+                                'jointype'           => 'itemtype_item'
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
 
         return $tab;
     }
