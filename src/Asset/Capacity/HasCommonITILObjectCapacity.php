@@ -148,9 +148,9 @@ class HasCommonITILObjectCapacity extends AbstractCapacity
         );
 
         // Delete history
-        $this->deleteRelationLogs($classname, Ticket::getType());
-        $this->deleteRelationLogs($classname, Problem::getType());
-        $this->deleteRelationLogs($classname, Change::getType());
+        $this->deleteRelationLogs($classname, Ticket::getType(), false);
+        $this->deleteRelationLogs($classname, Problem::getType(), false);
+        $this->deleteRelationLogs($classname, Change::getType(), false);
 
         // Unregister from the "ticket types" config definition
         // Must be done after search options are cleaned /!\
