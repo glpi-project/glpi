@@ -38,8 +38,6 @@
  * @var \DBmysql $DB
  */
 
-$default_charset = DBConnection::getDefaultCharset();
-$default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 $migration->renameTable('glpi_computerantiviruses', 'glpi_itemantiviruses');
@@ -50,7 +48,8 @@ if (!$DB->fieldExists('glpi_itemantiviruses', 'itemtype')) {
         'itemtype',
         'string',
         [
-            'after' => 'id'
+            'after'  => 'id',
+            'update' => $DB->quoteValue('Computer'), // Defines value for all existing elements
         ]
     );
     $migration->migrationOneTable('glpi_itemantiviruses');
