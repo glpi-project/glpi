@@ -960,6 +960,45 @@ class CommonDBTM extends DbTestCase
             ->exists();
     }
 
+    public function testAddWithSpacesInName()
+    {
+        $computer = new \Computer();
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $computerID = $computer->add([
+            'name'            => '    Computer 01  ',
+            'entities_id'     => $ent0
+        ]);
+        $this->integer($computerID)->isGreaterThan(0);
+        $this->boolean(
+            $computer->getFromDB($computerID)
+        )->isTrue();
+        $this->string($computer->fields['name'])->isIdenticalTo("Computer 01");
+    }
+
+    public function testUpdateWithSpacesInName()
+    {
+        $computer = new \Computer();
+        $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $computerID = $computer->add([
+            'name'            => 'Computer 01',
+            'entities_id'     => $ent0
+        ]);
+        $this->integer($computerID)->isGreaterThan(0);
+        $this->boolean(
+            $computer->getFromDB($computerID)
+        )->isTrue();
+        $this->string($computer->fields['name'])->isIdenticalTo("Computer 01");
+
+        $this->boolean(
+            $computer->update(['id' => $computerID, 'name' => '    Computer 01  '])
+        )->isTrue();
+        $this->string($computer->fields['name'])->isIdenticalTo('Computer 01');
+        $this->boolean($computer->getFromDB($computerID))->isTrue();
+        $this->string($computer->fields['name'])->isIdenticalTo('Computer 01');
+    }
+
     public function testTimezones()
     {
         global $DB;
