@@ -49,7 +49,7 @@ if (array_key_exists('id', $_REQUEST)) {
 } else {
     $definition = new AssetDefinition();
     $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-        ? $definition->getConcreteClassName()
+        ? $definition->getAssetClassName()
         : null;
     $asset      = $classname !== null && class_exists($classname)
         ? new $classname()

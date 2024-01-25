@@ -62,13 +62,13 @@ class HasVolumesCapacity extends DbTestCase
             ],
             profiles: $profiles_matrix
         );
-        $classname_1  = $definition_1->getConcreteClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getConcreteClassName();
+        $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasVolumesCapacity::class,
@@ -76,7 +76,7 @@ class HasVolumesCapacity extends DbTestCase
             ],
             profiles: $profiles_matrix
         );
-        $classname_3  = $definition_3->getConcreteClassName();
+        $classname_3  = $definition_3->getAssetClassName();
 
         $has_capacity_mapping = [
             $classname_1 => true,
@@ -136,14 +136,14 @@ class HasVolumesCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getConcreteClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasVolumesCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getConcreteClassName();
+        $classname_2  = $definition_2->getAssetClassName();
 
         $item_1          = $this->createItem(
             $classname_1,

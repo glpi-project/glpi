@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\DCBreadcrumb;
@@ -486,13 +487,13 @@ class Dropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        $item = getItemForItemtype(getItemTypeForTable($table));
+        $itemtype = getItemTypeForTable($table);
 
-        if (!is_object($item)) {
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
             return $default;
         }
 
-        if ($item instanceof CommonTreeDropdown) {
+        if (is_a($itemtype, CommonTreeDropdown::class, true)) {
             return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip, $default);
         }
 
@@ -564,7 +565,7 @@ class Dropdown
                 if ($translate && !empty($data['transname'])) {
                     $name = $data['transname'];
                 } else {
-                    $name = $data[$item->getNameField()];
+                    $name = $data[$itemtype::getNameField()];
                 }
                 if (isset($data["comment"])) {
                     if ($translate && !empty($data['transcomment'])) {
@@ -1157,7 +1158,7 @@ JAVASCRIPT;
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null
-                ],
+                ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetTypesClassesNames(), null),
 
                 _n('Model', 'Models', Session::getPluralNumber()) => [
                     'ComputerModel' => null,
@@ -1187,7 +1188,7 @@ JAVASCRIPT;
                     'EnclosureModel' => null,
                     'PDUModel' => null,
                     'PassiveDCEquipmentModel' => null,
-                ],
+                ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetModelsClassesNames(), null),
 
                 _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                     'VirtualMachineType' => null,

@@ -9765,6 +9765,8 @@ DROP TABLE IF EXISTS `glpi_assets_assets`;
 CREATE TABLE `glpi_assets_assets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `assets_assetdefinitions_id` int unsigned NOT NULL,
+  `assets_assetmodels_id` int unsigned NOT NULL DEFAULT '0',
+  `assets_assettypes_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) DEFAULT NULL,
   `comment` text,
   `serial` varchar(255) DEFAULT NULL,
@@ -9785,6 +9787,8 @@ CREATE TABLE `glpi_assets_assets` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
+  KEY `assets_assetmodels_id` (`assets_assetmodels_id`),
+  KEY `assets_assettypes_id` (`assets_assettypes_id`),
   KEY `name` (`name`),
   KEY `users_id` (`users_id`),
   KEY `groups_id` (`groups_id`),
@@ -9798,6 +9802,47 @@ CREATE TABLE `glpi_assets_assets` (
   KEY `is_deleted` (`is_deleted`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_assets_assetmodels`;
+CREATE TABLE `glpi_assets_assetmodels` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `assets_assetdefinitions_id` int unsigned NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `product_number` varchar(255) DEFAULT NULL,
+  `weight` int NOT NULL DEFAULT '0',
+  `required_units` int NOT NULL DEFAULT '1',
+  `depth` float NOT NULL DEFAULT '1',
+  `power_connections` int NOT NULL DEFAULT '0',
+  `power_consumption` int NOT NULL DEFAULT '0',
+  `is_half_rack` tinyint NOT NULL DEFAULT '0',
+  `picture_front` text,
+  `picture_rear` text,
+  `pictures` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`),
+  KEY `product_number` (`product_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_assets_assettypes`;
+CREATE TABLE `glpi_assets_assettypes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `assets_assetdefinitions_id` int unsigned NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `comment` text,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `assets_assetdefinitions_id` (`assets_assetdefinitions_id`),
+  KEY `name` (`name`),
+  KEY `date_mod` (`date_mod`),
+  KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

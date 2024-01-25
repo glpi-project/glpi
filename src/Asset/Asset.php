@@ -64,7 +64,7 @@ abstract class Asset extends CommonDBTM
         $definition = static::$definition ?? null;
 
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to de defined in concrete class.');
+            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
@@ -91,13 +91,13 @@ abstract class Asset extends CommonDBTM
     public static function getSearchURL($full = true)
     {
         return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getConcreteClassName(false);
+            . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getFormURL($full = true)
     {
         return Toolbox::getItemTypeFormURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getConcreteClassName(false);
+            . '?class=' . static::getDefinition()->getAssetClassName(false);
     }
 
     public static function getById(?int $id)
@@ -129,7 +129,7 @@ abstract class Asset extends CommonDBTM
         }
 
         // Instanciate concrete class
-        $asset_class = $definition->getConcreteClassName(true);
+        $asset_class = $definition->getAssetClassName(true);
         $asset = new $asset_class();
         if (!$asset->getFromDB($id)) {
             return false;
@@ -144,9 +144,32 @@ abstract class Asset extends CommonDBTM
 
         $search_options = array_merge($search_options, Location::rawSearchOptionsToAdd());
 
-        // TODO 4 for type
+        /** @var AssetModel $asset_model_class */
+        $asset_model_class = $this->getDefinition()->getAssetModelClassName();
+        /** @var AssetType $asset_type_class */
+        $asset_type_class = $this->getDefinition()->getAssetTypeClassName();
 
-        // TODO 40 for model
+        $search_options[] = [
+            'id'        => '4',
+            'table'     => $asset_type_class::getTable(),
+            'field'     => 'name',
+            'name'      => $asset_type_class::getTypeName(1),
+            'datatype'  => 'dropdown',
+            // Search class could not be able to retrieve the concrete type class when using `getItemTypeForTable()`
+            // so we have to define an `itemtype` here.
+            'itemtype'  => $asset_type_class,
+        ];
+
+        $search_options[] = [
+            'id'        => '40',
+            'table'     => $asset_model_class::getTable(),
+            'field'     => 'name',
+            'name'      => $asset_model_class::getTypeName(1),
+            'datatype'  => 'dropdown',
+            // Search class could not be able to retrieve the concrete model class when using `getItemTypeForTable()`
+            // so we have to define an `itemtype` here.
+            'itemtype'  => $asset_model_class,
+        ];
 
         $search_options[] = [
             'id'                 => '31',

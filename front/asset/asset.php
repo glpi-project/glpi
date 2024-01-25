@@ -41,7 +41,7 @@ include('../../inc/includes.php');
 
 $definition = new AssetDefinition();
 $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getConcreteClassName()
+    ? $definition->getAssetClassName()
     : null;
 
 if ($classname === null || !class_exists($classname)) {

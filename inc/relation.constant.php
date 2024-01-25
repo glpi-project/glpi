@@ -103,6 +103,16 @@ $RELATION = [
 
     'glpi_assets_assetdefinitions' => [
         '_glpi_assets_assets' => 'assets_assetdefinitions_id',
+        '_glpi_assets_assetmodels' => 'assets_assetdefinitions_id',
+        '_glpi_assets_assettypes' => 'assets_assetdefinitions_id',
+    ],
+
+    'glpi_assets_assetmodels' => [
+        'glpi_assets_assets' => 'assets_assetmodels_id',
+    ],
+
+    'glpi_assets_assettypes' => [
+        'glpi_assets_assets' => 'assets_assettypes_id',
     ],
 
     'glpi_databaseinstancetypes' => [

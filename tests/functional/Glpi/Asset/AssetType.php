@@ -37,34 +37,34 @@ namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
 
-class Asset extends DbTestCase
+class AssetType extends DbTestCase
 {
     protected function getByIdProvider(): iterable
     {
         $foo_definition = $this->initAssetDefinition();
-        $foo_classname = $foo_definition->getAssetClassName();
+        $foo_classname = $foo_definition->getAssetTypeClassName();
 
         $bar_definition = $this->initAssetDefinition();
-        $bar_classname = $bar_definition->getAssetClassName();
+        $bar_classname = $bar_definition->getAssetTypeClassName();
 
         // Loop to ensure that switching between definition does not cause any issue
         for ($i = 0; $i < 2; $i++) {
             $fields = [
-                'name' => 'Foo asset ' . $i,
+                'name' => 'Foo asset type' . $i,
             ];
-            $asset = $this->createItem($foo_classname, $fields);
+            $asset_type = $this->createItem($foo_classname, $fields);
             yield [
-                'id'              => $asset->getID(),
+                'id'              => $asset_type->getID(),
                 'expected_class'  => $foo_classname,
                 'expected_fields' => $fields,
             ];
 
             $fields = [
-                'name' => 'Bar asset ' . $i,
+                'name' => 'Bar asset type' . $i,
             ];
-            $asset = $this->createItem($bar_classname, $fields);
+            $asset_type = $this->createItem($bar_classname, $fields);
             yield [
-                'id'              => $asset->getID(),
+                'id'              => $asset_type->getID(),
                 'expected_class'  => $bar_classname,
                 'expected_fields' => $fields,
             ];
@@ -76,31 +76,31 @@ class Asset extends DbTestCase
      */
     public function testGetById(int $id, string $expected_class, array $expected_fields): void
     {
-        $asset = \Glpi\Asset\Asset::getById($id);
+        $asset_type = \Glpi\Asset\AssetType::getById($id);
 
-        $this->object($asset)->isInstanceOf($expected_class);
+        $this->object($asset_type)->isInstanceOf($expected_class);
 
         foreach ($expected_fields as $name => $value) {
-            $this->array($asset->fields)->hasKey($name);
-            $this->variable($asset->fields[$name])->isEqualTo($value);
+            $this->array($asset_type->fields)->hasKey($name);
+            $this->variable($asset_type->fields[$name])->isEqualTo($value);
         }
     }
 
     public function testPrepareInputDefinition(): void
     {
         $definition = $this->initAssetDefinition();
-        $classname = $definition->getAssetClassName();
-        $asset = new $classname();
+        $classname = $definition->getAssetTypeClassName();
+        $asset_type = new $classname();
 
         foreach (['prepareInputForAdd','prepareInputForUpdate'] as $method) {
             // definition is automatically set if missing
-            $this->array($asset->{$method}([]))->isEqualTo(['assets_assetdefinitions_id' => $definition->getID()]);
-            $this->array($asset->{$method}(['name' => 'test']))->isEqualTo(['name' => 'test', 'assets_assetdefinitions_id' => $definition->getID()]);
+            $this->array($asset_type->{$method}([]))->isEqualTo(['assets_assetdefinitions_id' => $definition->getID()]);
+            $this->array($asset_type->{$method}(['name' => 'test']))->isEqualTo(['name' => 'test', 'assets_assetdefinitions_id' => $definition->getID()]);
 
             // an exception is thrown if definition is invalid
             $this->exception(
-                function () use ($asset, $method, $definition) {
-                    $asset->{$method}(['assets_assetdefinitions_id' => $definition->getID() + 1]);
+                function () use ($asset_type, $method, $definition) {
+                    $asset_type->{$method}(['assets_assetdefinitions_id' => $definition->getID() + 1]);
                 }
             )->message->contains('Asset definition does not match the current concrete class.');
         }
@@ -109,16 +109,16 @@ class Asset extends DbTestCase
     public function testUpdateWithWrongDefinition(): void
     {
         $definition_1 = $this->initAssetDefinition();
-        $classname_1  = $definition_1->getAssetClassName();
+        $classname_1  = $definition_1->getAssetTypeClassName();
         $definition_2 = $this->initAssetDefinition();
-        $classname_2  = $definition_2->getAssetClassName();
+        $classname_2  = $definition_2->getAssetTypeClassName();
 
-        $asset = $this->createItem($classname_1, ['name' => 'new asset']);
+        $asset_type = $this->createItem($classname_1, ['name' => 'new asset type']);
 
         $this->exception(
-            function () use ($asset, $classname_2) {
+            function () use ($asset_type, $classname_2) {
                 $asset_2 = new $classname_2();
-                $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
+                $asset_2->update(['id' => $asset_type->getID(), 'name' => 'updated']);
             }
         )->message->contains('Asset definition cannot be changed.');
     }

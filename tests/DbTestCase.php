@@ -334,6 +334,8 @@ class DbTestCase extends \GLPITestCase
 
         $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
+        $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
 
         return $definition;

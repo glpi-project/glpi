@@ -135,7 +135,7 @@ final class AssetDefinitionManager
 
         $capacities = $this->getAvailableCapacities();
 
-        $concrete_class_name = $definition->getConcreteClassName();
+        $concrete_class_name = $definition->getAssetClassName();
 
         // Register asset into configuration entries related to the capacities that cannot be disabled
         $config_keys = [
@@ -166,19 +166,25 @@ final class AssetDefinitionManager
      */
     public function autoloadAssetClass(string $classname): void
     {
-        $asset_class_pattern = '/^Glpi\\\CustomAsset\\\([A-Za-z]+)$/';
-        if (preg_match($asset_class_pattern, $classname) !== 1) {
-            return;
+        $patterns = [
+            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Model$/' => 'loadConcreteModelClass',
+            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)Type$/' => 'loadConcreteTypeClass',
+            '/^Glpi\\\CustomAsset\\\([A-Za-z]+)$/' => 'loadConcreteClass',
+        ];
+
+        foreach ($patterns as $pattern => $load_function) {
+            if (preg_match($pattern, $classname) === 1) {
+                $system_name = preg_replace($pattern, '$1', $classname);
+                $definition  = $this->getDefinition($system_name);
+
+                if ($definition === null) {
+                    return;
+                }
+
+                $this->$load_function($definition);
+                break;
+            }
         }
-
-        $system_name = preg_replace($asset_class_pattern, '$1', $classname);
-        $definition  = $this->getDefinition($system_name);
-
-        if ($definition === null) {
-            return;
-        }
-
-        $this->loadConcreteClass($definition);
     }
 
     /**
@@ -187,7 +193,7 @@ final class AssetDefinitionManager
      * @param bool $with_namespace
      * @return array
      */
-    public function getConcreteClassesNames(bool $with_namespace = true): array
+    public function getAssetClassesNames(bool $with_namespace = true): array
     {
         $classes = [];
 
@@ -195,7 +201,47 @@ final class AssetDefinitionManager
             if (!$definition->isActive()) {
                 continue;
             }
-            $classes[] = $definition->getConcreteClassName($with_namespace);
+            $classes[] = $definition->getAssetClassName($with_namespace);
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get the classes names of all assets models concrete classes.
+     *
+     * @param bool $with_namespace
+     * @return array
+     */
+    public function getAssetModelsClassesNames(bool $with_namespace = true): array
+    {
+        $classes = [];
+
+        foreach ($this->getDefinitions() as $definition) {
+            if (!$definition->isActive()) {
+                continue;
+            }
+            $classes[] = $definition->getAssetModelClassName($with_namespace);
+        }
+
+        return $classes;
+    }
+
+    /**
+     * Get the classes names of all assets types concrete classes.
+     *
+     * @param bool $with_namespace
+     * @return array
+     */
+    public function getAssetTypesClassesNames(bool $with_namespace = true): array
+    {
+        $classes = [];
+
+        foreach ($this->getDefinitions() as $definition) {
+            if (!$definition->isActive()) {
+                continue;
+            }
+            $classes[] = $definition->getAssetTypeClassName($with_namespace);
         }
 
         return $classes;
@@ -273,7 +319,7 @@ namespace Glpi\\CustomAsset;
 use Glpi\\Asset\\Asset;
 use Glpi\\Asset\\AssetDefinition;
 
-final class {$definition->getConcreteClassName(false)} extends Asset {
+final class {$definition->getAssetClassName(false)} extends Asset {
     protected static AssetDefinition \$definition;
     public static \$rightname = '{$rightname}';
 }
@@ -283,7 +329,55 @@ PHP
         // Set the definition of the concrete class using reflection API.
         // It permits to directly store a pointer to the definition on the object without having
         // to make the property publicly writable.
-        $reflected_class = new ReflectionClass($definition->getConcreteClassName());
+        $reflected_class = new ReflectionClass($definition->getAssetClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    /**
+     * Load asset model concrete class.
+     *
+     * @param AssetDefinition $definition
+     * @return void
+     */
+    private function loadConcreteModelClass(AssetDefinition $definition): void
+    {
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetModel;
+use Glpi\\Asset\\AssetDefinition;
+
+final class {$definition->getAssetModelClassName(false)} extends AssetModel {
+    protected static AssetDefinition \$definition;
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getAssetModelClassName());
+        $reflected_class->setStaticPropertyValue('definition', $definition);
+    }
+
+    /**
+     * Load asset type concrete class.
+     *
+     * @param AssetDefinition $definition
+     * @return void
+     */
+    private function loadConcreteTypeClass(AssetDefinition $definition): void
+    {
+        eval(<<<PHP
+namespace Glpi\\CustomAsset;
+
+use Glpi\\Asset\\AssetType;
+use Glpi\\Asset\\AssetDefinition;
+
+final class {$definition->getAssetTypeClassName(false)} extends AssetType {
+    protected static AssetDefinition \$definition;
+}
+PHP
+        );
+
+        $reflected_class = new ReflectionClass($definition->getAssetTypeClassName());
         $reflected_class->setStaticPropertyValue('definition', $definition);
     }
 }
