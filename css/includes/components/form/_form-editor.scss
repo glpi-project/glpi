@@ -55,6 +55,8 @@
             }
         }
     }
+
+    overflow: scroll;
 }
 
 .editor-footer {
@@ -69,14 +71,33 @@
     }
 }
 
-// Higlight active question
-[data-glpi-form-editor-question].active {
-    border: 1px solid $primary;
+// Hide active status by default
+[data-active-status] {
+    display: none;
+}
+
+// Higlight active item
+[data-glpi-form-editor-form-details].active,
+[data-glpi-form-editor-question].active,
+[data-glpi-form-editor-section-form-container].active
+{
+    [data-active-status] {
+        display: inline-block;
+    }
+    // border: 1px solid $primary;
 }
 
 // Hide secondary data on inactive questions
+[data-glpi-form-editor-question].active [data-glpi-form-editor-question-extra-details] {
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s, opacity 0.20s linear;
+}
 [data-glpi-form-editor-question]:not(.active) [data-glpi-form-editor-question-extra-details] {
-    display: none !important;
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+    // display: none !important;
 }
 
 .glpi-form-editor-drag-question-placeholder {

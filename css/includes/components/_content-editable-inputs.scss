@@ -41,6 +41,21 @@
 // Must not be too high as content-editable is usually done without padding
 $inline-input-padding: 2px 4px;
 
+.content-editable-h1 {
+    // Copy h2 styles
+    font-size: 1.6rem !important;
+    line-height: 1.5rem;
+    font-weight: var(--tblr-font-weight-medium);
+    border: 0;
+    padding: $inline-input-padding;
+    margin-bottom: 1rem;
+    background-color: transparent;
+
+    // &:hover {
+    //     box-shadow: 0 0 0 0.25rem rgba($primary, 0.20);
+    // }
+}
+
 .content-editable-h2 {
     // Copy h2 styles
     font-size: 1.2rem !important;
@@ -51,11 +66,24 @@ $inline-input-padding: 2px 4px;
     margin-bottom: 1rem;
     background-color: transparent;
 
-    &:hover {
-        box-shadow: 0 0 0 0.25rem rgba($primary, 0.20);
-    }
+    // &:hover {
+    //     box-shadow: 0 0 0 0.25rem rgba($primary, 0.20);
+    // }
 }
 
+// Fix some weird margin issue due to the fact that part of a question form
+// is hidden using visibility: hidden and opacity: 0, which cause internal
+// negative margin to have unwanted effect on the parent container
+[data-glpi-form-editor-question]:not(.active) {
+    .content-editable-tinymce {
+        margin-bottom: 0 !important;
+    }
+}
+[data-glpi-form-editor-question].active {
+    .content-editable-tinymce.simulate-focus {
+        margin-bottom: 8px !important;
+    }
+}
 
 .content-editable-tinymce {
     // Override some hard-set tinymce margins
@@ -66,9 +94,9 @@ $inline-input-padding: 2px 4px;
         border-color: transparent !important;
         padding: $inline-input-padding;
 
-        &:hover {
-            box-shadow: 0 0 0 0.25rem rgba($primary, 0.20);
-        }
+        // &:hover {
+        //     box-shadow: 0 0 0 0.25rem rgba($primary, 0.20);
+        // }
     }
 
     // Status bar is empty here, do not display to gain some vertical space
@@ -90,6 +118,7 @@ $inline-input-padding: 2px 4px;
         // on width)
         opacity: 0;
         height: 0;
+        transition: height 0.25s ease !important;
     }
 
     // Override some hard-set tinymce margins
@@ -111,7 +140,8 @@ $inline-input-padding: 2px 4px;
     // Show richtext toolbar only when focused
     .tox-editor-header {
         opacity: unset;
-        height: unset;
+        height: 48px; // Need to set a fixed height for transition
+        transition: height 0.25s ease !important;
     }
 
     // Partial revert of margin change in this case as we want to keep the

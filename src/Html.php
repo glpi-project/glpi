@@ -3923,6 +3923,8 @@ JS;
                             $(e.target.editorContainer)
                                 .closest('.content-editable-tinymce')
                                 .addClass('simulate-focus');
+
+                            $(document).trigger('tinyMCEClick', [e]);
                         });
 
                         editor.on('Change', function (e) {

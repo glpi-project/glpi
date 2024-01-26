@@ -71,10 +71,14 @@
 
                     {# Card containing the main form data: title, header and status #}
                     <div
-                        class="card form-details mb-3"
+                        class="card form-details mb-3 active"
                         data-glpi-form-editor-on-click="set-active"
+                        data-glpi-form-editor-form-details
                     >
-                        <div class="card-status-top bg-primary"></div>
+                        <div
+                            class="card-status-start bg-primary"
+                            data-active-status
+                        ></div>
                         <div class="card-body">
 
                             {# Header #}
@@ -82,7 +86,7 @@
                                 {# Form's name #}
                                 <input
                                     type="text"
-                                    class="form-control content-editable-h2"
+                                    class="form-control content-editable-h1"
                                     name="name"
                                     value="{{ item.fields.name }}"
                                 >
@@ -131,6 +135,7 @@
                                 'question_types'     : question_types,
                                 'can_update'         : item.canUpdate(),
                                 'show_section_form'  : number_of_sections > 1,
+                                'number_of_sections' : number_of_sections,
                             }, with_context = false) }}
                             {% set section_input_index = section_input_index + 1 %}
                         {% endfor %}
@@ -310,6 +315,7 @@
                 'section_input_index': null,
                 'can_update'         : true,
                 'show_section_form'  : true,
+                'number_of_sections' : 0,
             }, with_context = false) }}
         </div>
 

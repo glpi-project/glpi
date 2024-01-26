@@ -37,6 +37,7 @@
 {# @var question_types       array #}
 {# @var can_update           bool #}
 {# @var show_section_form    bool #}
+{# @var number_of_sections   int #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -56,11 +57,24 @@
         data-glpi-form-editor-section-index="{{ section_input_index }}"
     {% endif %}
 >
+
     <div
-        class="card card-stacked mb-3 {{ show_section_form ? "": "d-none"}}"
+        class="bg-primary px-2 py-1 rounded-top {{ show_section_form ? "": "d-none"}}"
+        style="width: fit-content;"
+        data-glpi-form-editor-section-number-display
+    >
+        {{ __("Section %d of %d")|format(section_input_index + 1, number_of_sections) }}
+    </div>
+    <div
+        class="card mb-3 {{ show_section_form ? "": "d-none"}}"
+        style="border-top-left-radius:0;"
         data-glpi-form-editor-section-form-container
         data-glpi-form-editor-on-click="set-active"
     >
+        <div
+            class="card-status-start bg-primary"
+            data-active-status
+        ></div>
         <div class="card-body">
             {# Header #}
             {# <div class="card-status-top bg-primary"></div> #}

@@ -207,6 +207,13 @@ class GlpiFormEditorController
                 'tinyMCEChange',
                 (e, original_event) => this.#handleTinyMCEChange(original_event)
             );
+
+        // Handle tinymce click event
+        $(document)
+            .on(
+                'tinyMCEClick',
+                (e, original_event) => this.#handleTinyMCEClick(original_event)
+            );
     }
 
     /**
@@ -330,6 +337,7 @@ class GlpiFormEditorController
         // Remove current active item
         $(this.#target)
             .find("\
+                [data-glpi-form-editor-form-details], \
                 [data-glpi-form-editor-question], \
                 [data-glpi-form-editor-section-form-container] \
             ")
@@ -540,7 +548,7 @@ class GlpiFormEditorController
     #buildMoveSectionModalContent() {
         // Clear modal content
         const modal_content = $(this.#target)
-            .find("[data-form-editor-move-section-modal-items]");
+            .find("[data-glpi-form-editor-move-section-modal-items]");
 
         modal_content.children().remove();
 
@@ -574,7 +582,7 @@ class GlpiFormEditorController
                 modal_content.append(copy);
             });
 
-        sortable($("[data-form-editor-move-section-modal-items]"), {
+        sortable($("[data-glpi-form-editor-move-section-modal-items]"), {
             // Drag and drop handle selector
             handle: '[data-glpi-form-editor-section-handle]',
 
@@ -587,8 +595,13 @@ class GlpiFormEditorController
      * Reorder the sections based on the "move section modal" content.
      */
     #reorderSections() {
-        const modal_content = $(this.#target)
-            .find("[data-form-editor-move-section-modal-items]")
+        // Close modal
+        $(this.#target)
+            .find("[data-glpi-form-editor-move-section-modal]")
+            .modal('hide');
+
+        $(this.#target)
+            .find("[data-glpi-form-editor-move-section-modal-items]")
             .children()
             .each((index, item) => {
                 // Find section index
@@ -640,8 +653,6 @@ class GlpiFormEditorController
         // Compute and apply ideal height
         const height = (window_height - editor_height - tab_content_border);
         $(this.#target).css('height', `${height}`);
-
-        // TODO: footer should be at the bottom of the page without scrolling
     }
 
     /**
@@ -677,6 +688,18 @@ class GlpiFormEditorController
                 e.level.content
             );
         }
+    }
+
+    /**
+     * Handle tinymce click event
+     * @param {Object} e Event data
+     */
+    #handleTinyMCEClick(e) {
+        // Handle 'set-active' action for clicks inside tinymce
+        this.#setActiveItem(
+            $(e.target.container)
+                .closest('[data-glpi-form-editor-on-click="set-active"]')
+        );
     }
 
     /**
@@ -963,12 +986,33 @@ class GlpiFormEditorController
      * The value is set in the "rank" input of each section/question.
      */
     #computeRanks() {
+        // Count section
+        const number_of_sections = $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .length;
+
         // Compute ranks for each sections and questions
         $(this.#target)
             .find("[data-glpi-form-editor-section]")
             .each((index, section) => {
                 // Update rank input base on section index
                 this.#setSectionInput($(section), "rank", index);
+
+                if (number_of_sections > 1) {
+                    // Relabel sections numbers
+                    $(section)
+                        .find("[data-glpi-form-editor-section-number-display]")
+                        .html(
+                            __("Section %d1 of %d2")
+                                .replace("%d1", index + 1)
+                                .replace("%d2", number_of_sections)
+                        );
+                } else {
+                    // Delete section label
+                    $(section)
+                        .find("[data-glpi-form-editor-section-number-display]")
+                        .hide();
+                }
 
                 // Update rank of each questions of this section
                 $(section)
