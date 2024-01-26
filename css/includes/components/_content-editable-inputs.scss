@@ -74,15 +74,17 @@ $inline-input-padding: 2px 4px;
 // Fix some weird margin issue due to the fact that part of a question form
 // is hidden using visibility: hidden and opacity: 0, which cause internal
 // negative margin to have unwanted effect on the parent container
-[data-glpi-form-editor-question]:not(.active) {
-    .content-editable-tinymce {
-        margin-bottom: 0 !important;
-    }
+// Will really need some E2E tests to make sure these margins are not broken
+[data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce {
+    margin-bottom: 0 !important;
 }
 [data-glpi-form-editor-question].active {
     .content-editable-tinymce.simulate-focus {
         margin-bottom: 8px !important;
     }
+}
+[data-glpi-form-editor-question].active [data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce:not(.simulate-focus) {
+    margin-bottom: -1rem !important;
 }
 
 .content-editable-tinymce {
