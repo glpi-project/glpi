@@ -886,7 +886,7 @@ class Computer_Item extends CommonDBRelation
                 'GROUP' => 'itemtype'
             ]);
 
-            while ($data = $iterator->next()) {
+            foreach ($iterator as $data) {
                 if (!class_exists($data['itemtype'])) {
                     continue;
                 }
