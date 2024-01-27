@@ -490,28 +490,21 @@ class Toolbox
      * Switch error mode for GLPI
      *
      * @param integer|null $mode       From Session::*_MODE
-     * @param boolean|null $debug_sql
-     * @param boolean|null $debug_vars
+     * @param boolean|null $removed_param No longer used (Used to be $debug_sql)
+     * @param boolean|null $removed_param_2 No longer used (Used to be $debug_vars)
      * @param boolean|null $log_in_files
      *
      * @return void
      *
      * @since 0.84
      **/
-    public static function setDebugMode($mode = null, $debug_sql = null, $debug_vars = null, $log_in_files = null)
+    public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($mode)) {
             $_SESSION['glpi_use_mode'] = $mode;
-        }
-        //FIXME Deprecate the debug_sql and debug_vars parameters in GLPI 10.1.0
-        if (isset($debug_sql)) {
-            $CFG_GLPI['debug_sql'] = $debug_sql;
-        }
-        if (isset($debug_vars)) {
-            $CFG_GLPI['debug_vars'] = $debug_vars;
         }
         if (isset($log_in_files)) {
             $CFG_GLPI['use_log_in_files'] = $log_in_files;
