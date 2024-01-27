@@ -190,7 +190,7 @@
 </script>
 
 <template>
-    <div ref="content_area" @mousemove="onMouseMove($event)" @mouseup="onMouseUp()">
+    <div class="h-100" ref="content_area" @mousemove="onMouseMove($event)" @mouseup="onMouseUp()">
         <div class="request-timeline" v-if="is_mounted && show_timeline">
             <RequestTimeline :initial_request="initial_request" :ajax_requests="props.ajax_requests" :content_area="content_area"
                              @change_request="onRequestChanged"></RequestTimeline>
