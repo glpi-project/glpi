@@ -411,18 +411,24 @@ class Computer_Item extends CommonDBRelation
                 $header_bottom .=  "</th>";
             }
 
-            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
+            $header_end .= "<th>" . __('Item type') . "</th>";
             $header_end .= "<th>" . __('Name') . "</th>";
             $header_end .= "<th>" . __('Automatic inventory') . "</th>";
             $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Serial number') . "</th>";
             $header_end .= "<th>" . __('Inventory number') . "</th>";
+            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
             $header_end .= "</tr>";
             echo $header_begin . $header_top . $header_end;
 
             foreach ($datas as $data) {
                 $linkname = $data["name"];
                 $itemtype = $data['assoc_itemtype'];
+
+                $typeclass  = $itemtype . "Type";
+                $type_table = getTableForItemType($typeclass);
+                $typefield  = getForeignKeyFieldForTable(getTableForItemType($typeclass));
+
                 if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                     $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                 }
@@ -451,6 +457,11 @@ class Computer_Item extends CommonDBRelation
                    (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
                 echo "<td>" .
                    (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
+                echo "<td>" .
+                    (isset($data[$typefield]) ? "" . Dropdown::getDropdownName(
+                        $type_table,
+                        $data[$typefield]
+                    ) . "" : "-") . "</td>";
                 echo "</tr>";
             }
             echo $header_begin . $header_bottom . $header_end;
@@ -875,7 +886,7 @@ class Computer_Item extends CommonDBRelation
                 'GROUP' => 'itemtype'
             ]);
 
-            foreach ($iterator as $data) {
+            while ($data = $iterator->next()) {
                 if (!class_exists($data['itemtype'])) {
                     continue;
                 }
