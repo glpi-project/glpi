@@ -141,6 +141,23 @@ final class AssetDefinition extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $options['candel'] = false;
+
+        if (!self::isNewID($ID)) {
+            // Add custom delete button that will show the number of assets using this definition and a link to their search page
+            $asset_count = countElementsInTable('glpi_assets_assets', ['assets_assetdefinitions_id' => $ID]);
+            $asset_class = $this->getAssetClassName();
+            $asset_search_url = $asset_class::getSearchURL();
+            $options['addbuttons'] = [
+                'purge' => [
+                    'title' => _x('button', 'Delete permanently'),
+                    'add_class' => 'btn-outline-danger',
+                    'icon' => 'ti ti-trash',
+                    'text' => _x('button', 'Delete permanently'),
+                    'type' => 'submit',
+                ]
+            ];
+        }
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/main.html.twig',
             [
@@ -148,6 +165,8 @@ final class AssetDefinition extends CommonDBTM
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
                 'reserved_system_names' => AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames(),
+                'asset_count'        => $asset_count ?? 0,
+                'asset_search_url'   => $asset_search_url ?? '#',
             ]
         );
         return true;
