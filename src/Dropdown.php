@@ -2203,6 +2203,10 @@ JAVASCRIPT;
         } else {
             $output  .= "<select name='$field_name' id='$field_id'";
 
+            if ($param['width'] !== '') {
+                $output .= " style='width: " . $param['width'] . "'";
+            }
+
             if ($param['tooltip']) {
                 $output .= ' title="' . Html::entities_deep($param['tooltip']) . '"';
             }

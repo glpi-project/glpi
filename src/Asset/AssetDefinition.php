@@ -507,7 +507,7 @@ final class AssetDefinition extends CommonDBTM
      */
     public function getAssetsIcon(): string
     {
-        return $this->fields['icon'] ?: 'ti ti-box';
+        return 'ti ' . ($this->fields['icon'] ?: 'ti-box');
     }
 
     public function rawSearchOptions()
@@ -555,6 +555,7 @@ final class AssetDefinition extends CommonDBTM
             'field'         => 'icon',
             'name'          => __('Icon'),
             'datatype'      => 'specific',
+            'searchtype'    => ['equals'],
         ];
 
         $search_options[] = [
@@ -607,8 +608,7 @@ final class AssetDefinition extends CommonDBTM
         switch ($field) {
             case 'icon':
                 $value = htmlspecialchars($values[$field]);
-                return sprintf('<i class="%s"></i>', $value);
-                break;
+                return sprintf('<i class="ti %s"></i>', $value);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -621,8 +621,11 @@ final class AssetDefinition extends CommonDBTM
 
         switch ($field) {
             case 'icon':
-                // TODO Show icon selector
-                break;
+                $value = htmlspecialchars($values[$field]) ?? '';
+                return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                    {% import 'components/form/fields_macros.html.twig' as fields %}
+                    {{ fields.dropdownWebIcons(name, value, '', {no_label: true, width: '200px'}) }}
+TWIG, ['name' => $name, 'value' => $value]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }

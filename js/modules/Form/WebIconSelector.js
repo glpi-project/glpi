@@ -31,49 +31,51 @@
  * ---------------------------------------------------------------------
  */
 
-var GLPI = GLPI || {};
-GLPI.Forms = GLPI.Forms || {};
-
 /**
- * Font-Awesome icon selector component.
+ * Web icon selector component.
+ * This class can handle both Tabler and FontAwesome icons.
  *
- * @since 10.0.0
- * @deprecated 10.1.0 Use `modules/Form/WebIconSelector.js` instead.
+ * @since 10.1.0
  */
-GLPI.Forms.FaIconSelector = class {
+export class WebIconSelector {
 
     /**
-    * @param {HTMLSelectElement} selectElement
-    */
-    constructor(selectElement) {
+     * @param {HTMLSelectElement} selectElement The select element to use.
+     * @param {array} icon_sets The icon sets to use.
+     *                          Valid icon sets are 'ti' (Tabler) and 'fa' (FontAwesome).
+     *                          The tabler icon set is the preferred one.
+     */
+    constructor(selectElement, icon_sets = ['ti']) {
         this.selectElement = selectElement;
+        this.icon_sets = icon_sets;
     }
 
     /**
-    * Initialize the component.
-    *
-    * @returns {void}
-    */
+     * Initialize the component.
+     *
+     * @returns {void}
+     */
     init() {
-        const icons = this.fetchAvailableIcons();
+        const icons = this.#fetchAvailableIcons();
         $(this.selectElement).select2(
             {
                 data: icons,
-                templateResult: this.renderIcon,
-                templateSelection: this.renderIcon
+                templateResult: this.#renderIcon,
+                templateSelection: this.#renderIcon
             }
         );
     }
 
     /**
-    * Fetch available icons list from declared CSS.
-    *
-    * @private
-    *
-    * @returns {array}
-    */
-    fetchAvailableIcons() {
-        var icons = [];
+     * Fetch available icons list from declared CSS.
+     *
+     * @private
+     *
+     * @returns {array}
+     */
+    #fetchAvailableIcons() {
+        const icons = [];
+        const iconset_regex = new RegExp('^.(' + this.icon_sets.join('|') + '-[a-z-]+)::before$');
 
         for (let i = 0; i < document.styleSheets.length; i++) {
             const rules = document.styleSheets[i].cssRules;
@@ -84,10 +86,10 @@ GLPI.Forms.FaIconSelector = class {
                 }
                 // On minified CSS, similar icons will be grouped,
                 // e.g. `.fa-arrow-turn-right::before,.fa-mail-forward::before,.fa-share::before`.
-                // Split them to handle the separately.
+                // Split them to handle them separately.
                 const selectors = rule.selectorText.split(',');
                 for(let k = 0; k < selectors.length; k++) {
-                    let matches = selectors[k].trim().match(/^\.(fa-[a-z-]+)::before$/);
+                    let matches = selectors[k].trim().match(iconset_regex);
                     if (matches !== null) {
                         const cls = matches[1];
                         const entry = {
@@ -106,17 +108,22 @@ GLPI.Forms.FaIconSelector = class {
     }
 
     /**
-    * Render an icon entry..
-    *
-    * @private
-    *
-    * @returns {HTMLElement}
-    */
-    renderIcon(option) {
-        // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
-        const faFontFamilies = '\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\'';
-        let container = document.createElement('span');
-        container.innerHTML = `<i class="fa-lg fa-fw fa ${option.id}" style="font-family:${faFontFamilies};"></i> ${option.id}`;
-        return container;
+     * Render an icon entry.
+     *
+     * @private
+     *
+     * @returns {HTMLElement}
+     */
+    #renderIcon(option) {
+        if (typeof option.id !== 'undefined') {
+            let container = document.createElement('span');
+            const iconset_prefix = option.id.split('-')[0];
+            container.innerHTML = `<i class="${iconset_prefix} ${option.id}"></i> ${option.id}`;
+            return container;
+        } else {
+            return option.text;
+        }
     }
-};
+}
+
+export default WebIconSelector;
