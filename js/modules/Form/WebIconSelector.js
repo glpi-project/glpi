@@ -75,7 +75,7 @@ export class WebIconSelector {
      */
     #fetchAvailableIcons() {
         const icons = [];
-        const iconset_regex = new RegExp('^.(' + this.icon_sets.join('|') + '-[a-z-]+)::before$');
+        const iconset_regex = new RegExp('^.((?:' + this.icon_sets.join('|') + ')-[a-z-]+)::before$');
 
         for (let i = 0; i < document.styleSheets.length; i++) {
             const rules = document.styleSheets[i].cssRules;

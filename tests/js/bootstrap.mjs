@@ -38,7 +38,8 @@ await import('jquery').then((jquery) => {
 });
 await import('@tabler/core');
 await import('select2/dist/js/select2.full').then((select2) => {
-    $.fn.select2 = select2;
+    // Select2 exports a function that registers itself as a jQuery plugin
+    select2.default();
 });
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
