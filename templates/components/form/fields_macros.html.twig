@@ -591,7 +591,6 @@
     <script type="module">
         import('{{ js_path('js/modules/Form/WebIconSelector.js') }}').then((m) => {
             const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'}) }}';
-            console.log(dropdown_id);
             const selector = new m.default(document.getElementById(dropdown_id), ['ti']);
             selector.init();
         });
