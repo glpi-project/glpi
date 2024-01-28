@@ -355,4 +355,37 @@ class AssetDefinition extends DbTestCase
             'assets_assetdefinitions_id' => $definition->getID(),
         ]))->size->isEqualTo(0);
     }
+
+    public function testUpdateRights()
+    {
+        $definition = $this->initAssetDefinition('test');
+        $super_admin_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+        \ProfileRight::updateProfileRights(
+            profiles_id: $super_admin_id,
+            rights: [
+                $definition->getAssetRightname() => ALLSTANDARDRIGHT
+            ]
+        );
+        // Refresh
+        $definition->getFromDB($definition->getID());
+
+        $this->integer(json_decode($definition->fields['profiles'], true)[$super_admin_id])->isEqualTo(ALLSTANDARDRIGHT);
+
+        // Make the definition inactive and verify the rights are removed from the profilerights table
+        $definition->update([
+            'id' => $definition->getID(),
+            'is_active' => 0,
+        ]);
+        $this->array(getAllDataFromTable('glpi_profilerights', [
+            'profiles_id' => $super_admin_id,
+            'name' => $definition->getAssetRightname(),
+        ]))->size->isEqualTo(0);
+
+        // Make the definition active again and verify the rights are added back to the profilerights table
+        $definition->update([
+            'id' => $definition->getID(),
+            'is_active' => 1,
+        ]);
+        $this->integer(json_decode($definition->fields['profiles'], true)[$super_admin_id])->isEqualTo(ALLSTANDARDRIGHT);
+    }
 }

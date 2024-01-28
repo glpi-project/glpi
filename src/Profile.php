@@ -1172,6 +1172,14 @@ class Profile extends CommonDBTM
                     ]
                 ]
             ];
+
+            // Add rights for custom assets
+            $definitions = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions();
+            foreach ($definitions as $definition) {
+                if ($definition->fields['is_active']) {
+                    $all_rights['central']['assets']['custom_assets'][] = $fn_get_rights($definition->getAssetClassName(), 'central');
+                }
+            }
         }
 
         $result = $all_rights;
@@ -1386,6 +1394,15 @@ class Profile extends CommonDBTM
             'default_class' => 'tab_bg_2',
             'title'         => _n('Asset', 'Assets', Session::getPluralNumber())
         ]);
+
+        $custom_asset_rights = self::getRightsForForm('central', 'assets', 'custom_assets');
+        if (count($custom_asset_rights)) {
+            $this->displayRightsChoiceMatrix($custom_asset_rights, [
+                'canedit' => $canedit,
+                'default_class' => 'tab_bg_2',
+                'title' => _n('Custom asset', 'Custom assets', Session::getPluralNumber())
+            ]);
+        }
 
         if (
             $canedit

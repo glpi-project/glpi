@@ -338,6 +338,10 @@ class DbTestCase extends \GLPITestCase
         $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
 
+        // Clear definition cache
+        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
+
         return $definition;
     }
 

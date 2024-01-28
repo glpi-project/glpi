@@ -53,7 +53,7 @@ final class AssetDefinitionManager
     /**
      * Definitions cache.
      */
-    private array $definitions_data;
+    private ?array $definitions_data;
 
     /**
      * List of available capacities.
@@ -308,7 +308,7 @@ final class AssetDefinitionManager
      *
      * @return AssetDefinition[]
      */
-    private function getDefinitions(): array
+    public function getDefinitions(): array
     {
         if (!isset($this->definitions_data)) {
             $this->definitions_data = getAllDataFromTable(AssetDefinition::getTable());

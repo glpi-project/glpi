@@ -271,6 +271,8 @@ class ProfileRight extends CommonDBChild
      */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
+        $definitions = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions();
+        $definitions = array_change_key_case($definitions);
 
         $me = new self();
         foreach ($rights as $name => $right) {
@@ -290,6 +292,13 @@ class ProfileRight extends CommonDBChild
                         'rights'      => $right
                     ];
                     $me->add($input);
+                }
+
+                // Sync changed rights for custom assets (so we can delete them in this table when the definition is inactive
+                // to avoid a haveRight check returning true for assets of inactive definitions)
+                if (str_starts_with($name, 'asset_') && array_key_exists(substr($name, 6), $definitions)) {
+                    $definition = $definitions[substr($name, 6)];
+                    $definition->setRights($profiles_id, $right);
                 }
             }
         }
