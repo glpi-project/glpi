@@ -36,17 +36,26 @@
 namespace Glpi\Asset;
 
 use CommonDBTM;
+use Contract_Item;
+use Document_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Entity;
+use Glpi\Features\Clonable;
 use Group;
+use Infocom;
+use Item_Disk;
+use Item_OperatingSystem;
 use Location;
 use Manufacturer;
+use Notepad;
 use State;
 use Toolbox;
 use User;
 
 abstract class Asset extends CommonDBTM
 {
+    use Clonable;
+
     final public function __construct()
     {
         foreach (static::getDefinition()->getEnabledCapacities() as $capacity) {
@@ -402,5 +411,17 @@ abstract class Asset extends CommonDBTM
         $input[$definition_fkey] = $definition_id;
 
         return $input;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_OperatingSystem::class,
+            Infocom::class,
+            Item_Disk::class,
+            Contract_Item::class,
+            Document_Item::class,
+            Notepad::class,
+        ];
     }
 }
