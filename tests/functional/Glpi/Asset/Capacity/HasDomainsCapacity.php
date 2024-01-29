@@ -39,6 +39,7 @@ use DbTestCase;
 use DisplayPreference;
 use Domain;
 use Domain_Item;
+use DomainRelation;
 use Entity;
 use Log;
 use Profile;
@@ -167,19 +168,23 @@ class HasDomainsCapacity extends DbTestCase
         $domain_item_1 = $this->createItem(
             Domain_Item::class,
             [
-                'domains_id'   => $domain->getID(),
-                'itemtype'     => $item_1->getType(),
-                'items_id'     => $item_1->getID(),
+                'domains_id'         => $domain->getID(),
+                'itemtype'           => $item_1->getType(),
+                'items_id'           => $item_1->getID(),
+                'domainrelations_id' => DomainRelation::BELONGS,
             ]
         );
+        $this->updateItem(Domain_Item::class, $domain_item_1->getID(), ['domainrelations_id' => DomainRelation::MANAGE]);
         $domain_item_2 = $this->createItem(
             Domain_Item::class,
             [
-                'domains_id'   => $domain->getID(),
-                'itemtype'     => $item_2->getType(),
-                'items_id'     => $item_2->getID(),
+                'domains_id'         => $domain->getID(),
+                'itemtype'           => $item_2->getType(),
+                'items_id'           => $item_2->getID(),
+                'domainrelations_id' => DomainRelation::BELONGS,
             ]
         );
+        $this->updateItem(Domain_Item::class, $domain_item_2->getID(), ['domainrelations_id' => DomainRelation::MANAGE]);
         $displaypref_1   = $this->createItem(
             DisplayPreference::class,
             [
@@ -196,21 +201,37 @@ class HasDomainsCapacity extends DbTestCase
         );
 
         $item_1_logs_criteria = [
-            'itemtype'      => Domain::class,
-            'itemtype_link' => $classname_1,
+            'OR' => [
+                [
+                    'itemtype'      => $classname_1,
+                    'itemtype_link' => ['LIKE', 'Domain%'],
+                ],
+                [
+                    'itemtype'      => Domain::class,
+                    'itemtype_link' => $classname_1,
+                ]
+            ]
         ];
         $item_2_logs_criteria = [
-            'itemtype'      => Domain::class,
-            'itemtype_link' => $classname_2,
+            'OR' => [
+                [
+                    'itemtype'      => $classname_2,
+                    'itemtype_link' => ['LIKE', 'Domain%'],
+                ],
+                [
+                    'itemtype'      => Domain::class,
+                    'itemtype_link' => $classname_2,
+                ]
+            ]
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
         $this->object(Domain_Item::getById($domain_item_1->getID()))->isInstanceOf(Domain_Item::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(1);
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(3); // both side links + update
         $this->object(Domain_Item::getById($domain_item_2->getID()))->isInstanceOf(Domain_Item::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3); // both side links + update
         $this->array($CFG_GLPI['domain_types'])->contains($classname_1);
         $this->array($CFG_GLPI['domain_types'])->contains($classname_2);
 
@@ -223,7 +244,7 @@ class HasDomainsCapacity extends DbTestCase
         // Ensure relations, logs and global registration are preserved for other definition
         $this->object(Domain_Item::getById($domain_item_2->getID()))->isInstanceOf(Domain_Item::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3); // both side links + update
         $this->array($CFG_GLPI['domain_types'])->contains($classname_2);
     }
 }

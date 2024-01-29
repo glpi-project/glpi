@@ -75,6 +75,7 @@ class HasDomainsCapacity extends AbstractCapacity
 
         // Clean history related to domains
         $this->deleteRelationLogs($classname, Domain::class);
+        $this->deleteRelationLogs($classname, Domain_Item::class);
 
         // Clean display preferences
         $this->deleteDisplayPreferences($classname, $this->getSearchOptions($classname));
