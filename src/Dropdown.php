@@ -2575,12 +2575,14 @@ JAVASCRIPT;
 
         $values[Search::PDF_OUTPUT_LANDSCAPE]     = __('Current page in landscape PDF');
         $values[Search::PDF_OUTPUT_PORTRAIT]      = __('Current page in portrait PDF');
-        $values[Search::SYLK_OUTPUT]              = __('Current page in SLK');
         $values[Search::CSV_OUTPUT]               = __('Current page in CSV');
+        $values[Search::ODS_OUTPUT]               = __('Current page as Open Document format (.ods)');
+        $values[Search::XLSX_OUTPUT]              = __('Current page as Office Open XML (.xlsx)');
         $values['-' . Search::PDF_OUTPUT_LANDSCAPE] = __('All pages in landscape PDF');
         $values['-' . Search::PDF_OUTPUT_PORTRAIT]  = __('All pages in portrait PDF');
-        $values['-' . Search::SYLK_OUTPUT]          = __('All pages in SLK');
         $values['-' . Search::CSV_OUTPUT]           = __('All pages in CSV');
+        $values['-' . Search::ODS_OUTPUT]           = __('All pages as Open Document format (.ods)');
+        $values['-' . Search::XLSX_OUTPUT]          = __('All pages as Office Open XML (.xlsx)');
 
         if ($itemtype != "Stat") {
            // Do not show this option for stat page

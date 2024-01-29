@@ -1000,6 +1000,9 @@ class Config extends CommonDBTM
             [ 'name'    => 'ramsey/uuid',
                 'check'   => 'Ramsey\\Uuid\\Uuid'
             ],
+            [ 'name' => 'phpoffice/phpspreadsheet',
+                'check' => 'PhpOffice\\PhpSpreadsheet\\Spreadsheet'
+            ],
             [ 'name'    => 'psr/log',
                 'check'   => 'Psr\\Log\\LoggerInterface'
             ],

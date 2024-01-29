@@ -205,13 +205,17 @@
                         <i class="ti ti-file-type-pdf"></i>
                         {{ __('portrait PDF') }}
                     </a>
-                    <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::SYLK_OUTPUT') }}">
-                        <i class="ti ti-file-spreadsheet"></i>
-                        {{ __('SLK') }}
-                    </a>
                     <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}">
                         <i class="ti ti-file-type-csv"></i>
                         {{ __('CSV') }}
+                    </a>
+                    <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::ODS_OUTPUT') }}">
+                        <i class="ti ti-file-spreadsheet"></i>
+                        {{ __('ODS') }}
+                    </a>
+                    <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::XLSX_OUTPUT') }}">
+                        <i class="ti ti-file-spreadsheet"></i>
+                        {{ __('XLSX') }}
                     </a>
                     <hr class="dropdown-divider">
                     <h6 class="dropdown-header">{{ __("All pages") }}</h6>
@@ -223,13 +227,17 @@
                         <i class="ti ti-file-type-pdf"></i>
                         {{ __('portrait PDF') }}
                     </a>
-                    <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::SYLK_OUTPUT') }}">
-                        <i class="ti ti-file-spreadsheet"></i>
-                        {{ __('SLK') }}
-                    </a>
                     <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}">
                         <i class="ti ti-file-type-csv"></i>
                         {{ __('CSV') }}
+                    </a>
+                    <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::ODS_OUTPUT') }}">
+                        <i class="ti ti-file-spreadsheet"></i>
+                        {{ __('ODS') }}
+                    </a>
+                    <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::XLSX_OUTPUT') }}">
+                        <i class="ti ti-file-spreadsheet"></i>
+                        {{ __('XLSX') }}
                     </a>
                     {% if itemtype != 'Stat' %}
                     <hr class="dropdown-divider">

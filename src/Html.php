@@ -4333,7 +4333,7 @@ JAVASCRIPT
      * @param integer        $numrows                 total items
      * @param string         $target                  page would be open when click on the option (last,previous etc)
      * @param string         $parameters              parameters would be passed on the URL.
-     * @param integer|string $item_type_output        item type display - if >0 display export PDF et Sylk form
+     * @param integer|string $item_type_output        item type display - if >0 display export
      * @param integer|string $item_type_output_param  item type parameter for export
      * @param string         $additional_info         Additional information to display (default '')
      *
