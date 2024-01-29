@@ -385,6 +385,7 @@ class GLPIDashboard {
             glpi_close_all_dialogs();
 
             var filters = await that.getFiltersFromDB();
+            filters = filters || {};
             var filter_names = Object.keys(filters);
 
             glpi_ajax_dialog({
