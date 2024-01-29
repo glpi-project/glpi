@@ -102,7 +102,7 @@
                 const handle_delete = (e) => {
                     e.preventDefault();
                     glpi_confirm({
-                        title: '{{ __('Confirm the final deletion?') }}',
+                        title: '{{ __('Confirm the final deletion?')|e('js') }}',
                         message: '{{ delete_msg|e('js') }}',
                         confirm_callback: () => {
                             // Our 'one' custom handler was already called, so this will call the default one
