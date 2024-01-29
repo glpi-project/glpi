@@ -120,7 +120,7 @@ class HasCommonITILObjectCapacity extends AbstractCapacity
         ]);
         foreach ($profiles as $row) {
             $itemtypes = importArrayFromDB($row["helpdesk_item_type"]);
-            $itemtypes = array_keys(
+            $itemtypes = array_values(
                 array_diff(
                     $itemtypes,
                     [$classname]

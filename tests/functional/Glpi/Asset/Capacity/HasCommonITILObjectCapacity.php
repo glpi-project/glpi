@@ -38,12 +38,14 @@ namespace tests\units\Glpi\Asset\Capacity;
 use Change;
 use Change_Item;
 use CommonITILObject;
+use Computer;
 use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Item_Problem;
 use Item_Ticket;
 use Log;
+use Phone;
 use Problem;
 use Profile;
 use Search;
@@ -172,16 +174,21 @@ class HasCommonITILObjectCapacity extends DbTestCase
 
         // Allow this asset on the super admin profile
         $profile = getItemByTypeName(Profile::class, "Super-Admin");
-        $itemtypes = importArrayFromDB($profile->fields["helpdesk_item_type"]);
-        $itemtypes[] = $class;
+        $itemtypes = [
+            Computer::class,
+            $class,
+            Phone::class,
+        ];
         $this->updateItem(Profile::class, $profile->getID(), [
             'helpdesk_item_type' => exportArrayToDB($itemtypes),
         ]);
 
-        // Check that the item is enabled for the profile
+        // Check that the items are enabled for the profile
         $profile->getFromDB($profile->getID());
         $itemtypes = importArrayFromDB($profile->fields["helpdesk_item_type"]);
+        $this->array($itemtypes)->contains(Computer::class);
         $this->array($itemtypes)->contains($class);
+        $this->array($itemtypes)->contains(Phone::class);
 
         // Disable capacity
         $definition = $this->disableCapacity(
@@ -192,7 +199,9 @@ class HasCommonITILObjectCapacity extends DbTestCase
         // Recheck profile
         $profile->getFromDB($profile->getID());
         $itemtypes = importArrayFromDB($profile->fields["helpdesk_item_type"]);
+        $this->array($itemtypes)->contains(Computer::class);
         $this->array($itemtypes)->notContains($class);
+        $this->array($itemtypes)->contains(Phone::class);
     }
 
     /**
