@@ -75,7 +75,7 @@ final class Discover extends CommonGLPI
                 'steps' => $lesson['steps'],
                 'endingSteps' => isset($lesson['showEndingLesson']) && $lesson['showEndingLesson']
                     ? $discover_user->getEndingLesson()['steps']
-                    : null,
+                    : [],
             ]);
         }
     }
