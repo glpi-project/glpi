@@ -150,6 +150,15 @@ abstract class Asset extends CommonDBTM
         $asset_type_class = $this->getDefinition()->getAssetTypeClassName();
 
         $search_options[] = [
+            'id'            => '2',
+            'table'         => $this->getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number'
+        ];
+
+        $search_options[] = [
             'id'        => '4',
             'table'     => $asset_type_class::getTable(),
             'field'     => 'name',
