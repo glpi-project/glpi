@@ -36,6 +36,7 @@
 namespace Glpi\Search;
 
 use Change;
+use CommonDBTM;
 use Problem;
 use Ticket;
 
@@ -333,10 +334,10 @@ final class SearchOption implements \ArrayAccess
             }
 
             // Complete linkfield if not define
-            if (is_null($item)) { // Special union type
+            if (!is_a($itemtype, CommonDBTM::class, true)) { // Special union type
                 $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
             } else {
-                $itemtable = $item->getTable();
+                $itemtable = $itemtype::getTable();
             }
 
             foreach ($search[$itemtype] as $key => $val) {
