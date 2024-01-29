@@ -465,6 +465,7 @@ class HasCommonITILObjectCapacity extends DbTestCase
 
         // Run search criteria found in the message link
         $parts = parse_url($messages[0]["link"]);
+        $query_params = [];
         parse_str($parts["query"], $query_params);
         $search = Search::getDatas(Profile::class, $query_params, []);
 
