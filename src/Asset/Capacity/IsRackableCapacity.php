@@ -35,7 +35,7 @@
 
 namespace Glpi\Asset\Capacity;
 
-use CommonGLPI;
+use Item_Rack;
 use Rack;
 use Session;
 
@@ -60,13 +60,13 @@ class IsRackableCapacity extends AbstractCapacity
     {
         $this->unregisterFromTypeConfig('rackable_types', $classname);
 
-        $item_rack = new \Item_Rack();
+        $item_rack = new Item_Rack();
         $item_rack->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
 
-        $this->deleteRelationLogs($classname, \Item_Rack::class);
-        $this->deleteRelationLogs($classname, \Rack::class);
+        $this->deleteRelationLogs($classname, Item_Rack::class);
+        $this->deleteRelationLogs($classname, Rack::class);
 
-        $search_opts = \Rack::rawSearchOptionsToAdd($classname);
+        $search_opts = Rack::rawSearchOptionsToAdd($classname);
         $this->deleteDisplayPreferences($classname, $search_opts);
     }
 }
