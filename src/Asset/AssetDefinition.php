@@ -41,6 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Search\Input\QueryBuilder;
 use Profile;
 use ProfileRight;
 use Session;
@@ -148,6 +149,12 @@ final class AssetDefinition extends CommonDBTM
             $asset_count = countElementsInTable('glpi_assets_assets', ['assets_assetdefinitions_id' => $ID]);
             $asset_class = $this->getAssetClassName();
             $asset_search_url = $asset_class::getSearchURL();
+            $params = [
+                'reset' => 'reset',
+                'criteria' => QueryBuilder::getDefaultCriteria($asset_class::getType())
+            ];
+            $asset_search_url .= '&' . \Toolbox::append_params($params);
+
             $options['addbuttons'] = [
                 'purge' => [
                     'title' => _x('button', 'Delete permanently'),
