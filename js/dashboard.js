@@ -381,11 +381,11 @@ class GLPIDashboard {
         });
 
         // add new filter
-        $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", async function() {
+        $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .add-filter", function() {
             glpi_close_all_dialogs();
 
-            var filters = await that.getFiltersFromDB();
-            var filter_names = Object.keys(filters);
+            var filters = that.getFiltersFromDB();
+            var filter_names    = Object.keys(filters);
 
             glpi_ajax_dialog({
                 title: __("Add a filter"),
@@ -408,7 +408,7 @@ class GLPIDashboard {
         });
 
         // delete existing filter
-        $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .delete-filter", async function() {
+        $(document).on("click", "#dashboard-"+options.rand+" .filters_toolbar .delete-filter", function() {
             var filter = $(this).closest('.filter');
             var filter_id = filter.data('filter-id');
 
@@ -416,7 +416,7 @@ class GLPIDashboard {
             filter.remove();
 
             // remove filter from storage and refresh cards
-            var filters = await that.getFiltersFromDB();
+            var filters = that.getFiltersFromDB();
             delete filters[filter_id];
             that.setFiltersInDB(filters);
             that.refreshCardsImpactedByFilter(filter_id);
@@ -507,7 +507,7 @@ class GLPIDashboard {
         this.markdown_contents[gs_id] = content;
     }
 
-    async setWidgetFromForm(form) {
+    setWidgetFromForm(form) {
         const that = this;
 
         glpi_close_all_dialogs();
@@ -561,7 +561,7 @@ class GLPIDashboard {
 
         var args = form_data.card_options;
         args.force = true;
-        args.apply_filters = await this.getFiltersFromDB();
+        args.apply_filters = this.getFiltersFromDB();
 
         // add the new widget
         var widget = this.addWidget(form_data);
@@ -684,9 +684,9 @@ class GLPIDashboard {
         });
     }
 
-    async saveFilter(filter_id, value) {
+    saveFilter(filter_id, value) {
         // store current filter in localStorage
-        var filters = await this.getFiltersFromDB();
+        var filters = this.getFiltersFromDB();
         filters[filter_id] = value;
         this.setFiltersInDB(filters);
 
@@ -1000,12 +1000,12 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    async getCardsAjax(specific_one) {
+    getCardsAjax(specific_one) {
         const that = this;
 
         specific_one = specific_one || "";
 
-        const filters = await this.getFiltersFromDB();
+        const filters = this.getFiltersFromDB();
         const force = (specific_one.length > 0 ? 1 : 0);
 
         let requested_cards = [];
@@ -1182,14 +1182,14 @@ class GLPIDashboard {
     /**
     * init filters of the dashboard
     */
-    async initFilters() {
+    initFilters() {
         const that = this;
 
         if ($(this.filters_selector).length === 0) {
             return;
         }
 
-        var filters = await this.getFiltersFromDB();
+        var filters = this.getFiltersFromDB();
 
         // replace empty array by empty string to avoid jquery remove the corresponding key
         // when sending ajax query
@@ -1216,10 +1216,10 @@ class GLPIDashboard {
             sortable(that.filters_selector, {
                 placeholderClass: 'filter-placeholder',
                 orientation: 'horizontal',
-            })[0].addEventListener('sortupdate', async function(e) {
+            })[0].addEventListener('sortupdate', function(e) {
             // after drag, save the order of filters in storage
                 var items_after = $(e.detail.destination.items).filter(that.filters_selector);
-                var filters     = await that.getFiltersFromDB();
+                var filters     = that.getFiltersFromDB();
                 var new_filters = {};
                 $.each(items_after, function() {
                     var filter_id = $(this).data('filter-id');
@@ -1235,11 +1235,12 @@ class GLPIDashboard {
     /**
     * Return saved filter from server side database
     */
-    async getFiltersFromDB() {
+    getFiltersFromDB() {
         var filters;
         $.ajax({
             method: 'GET',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+            async: false,
             data: {
                 action:    'get_filter_data',
                 dashboard: this.current_name,
