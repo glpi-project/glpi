@@ -64,11 +64,11 @@ interface CapacityInterface
      * configuration steps related to external components (e.g. profiles).
      *
      * @param string $classname
-     * @return array An array of messages. A message is an array with the
-     *                following keys:
-     *                - type: The message type (INFO, WARNING or ERROR constants)
-     *                - text: The message content
-     *                - link: An optional link used to wrap the message
+     * @return array<int, array{type: int, text: string, ?link: string}>
+     *      An array of messages. A message is an array with the following keys:
+     *       - type: The message type (INFO, WARNING or ERROR constants)
+     *       - text: The message content
+     *       - link: An optional link used to wrap the message
      */
     public function getConfigurationMessages(string $classname): array;
 
