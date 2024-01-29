@@ -39,6 +39,7 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Log;
+use Profile;
 
 class HasAntivirusCapacity extends DbTestCase
 {
@@ -46,9 +47,9 @@ class HasAntivirusCapacity extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
-        $superadmin_p_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+        $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
         $profiles_matrix = [
             $superadmin_p_id => [
                 READ   => 1, // Need the READ right to be able to see the `ItemAntivirus$1` tab
@@ -103,12 +104,12 @@ class HasAntivirusCapacity extends DbTestCase
 
             // Check that the related search options are available
             $so_keys = [
-                167,
-                168,
-                169,
-                170,
-                171,
-                172
+                167, // Name
+                168, // Version
+                169, // Active
+                170, // Up to date
+                171, // Signature version
+                172, // Expiration date
             ];
             if ($has_capacity) {
                 $this->array($item->getOptions())->hasKeys($so_keys);
@@ -198,10 +199,10 @@ class HasAntivirusCapacity extends DbTestCase
         // Ensure relation, display preferences and logs exists, and class is registered to global config
         $this->object(\ItemAntivirus::getById($av_item_1->getID()))->isInstanceOf(\ItemAntivirus::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add volume
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add av
         $this->object(\ItemAntivirus::getById($av_item_2->getID()))->isInstanceOf(\ItemAntivirus::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add volume
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add av
         $this->array($CFG_GLPI['itemantivirus_types'])->contains($classname_1);
         $this->array($CFG_GLPI['itemantivirus_types'])->contains($classname_2);
 
