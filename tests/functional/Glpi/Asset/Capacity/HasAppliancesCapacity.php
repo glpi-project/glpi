@@ -35,10 +35,13 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Appliance;
+use Appliance_Item;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Log;
+use Profile;
 
 class HasAppliancesCapacity extends DbTestCase
 {
@@ -46,13 +49,21 @@ class HasAppliancesCapacity extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+        $profiles_matrix = [
+            $superadmin_p_id => [
+                READ   => 1,
+            ],
+        ];
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasAppliancesCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
-            ]
+            ],
+            profiles: $profiles_matrix
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
@@ -65,7 +76,8 @@ class HasAppliancesCapacity extends DbTestCase
             capacities: [
                 \Glpi\Asset\Capacity\HasAppliancesCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-            ]
+            ],
+            profiles: $profiles_matrix
         );
         $classname_3  = $definition_3->getAssetClassName();
 
@@ -77,10 +89,13 @@ class HasAppliancesCapacity extends DbTestCase
 
         foreach ($has_capacity_mapping as $classname => $has_capacity) {
             // Check that the class is globally registered
+            $this->login(); // must be logged in to have class in Appliance::getTypes()
             if ($has_capacity) {
                 $this->array($CFG_GLPI['appliance_types'])->contains($classname);
+                $this->array(Appliance::getTypes())->contains($classname);
             } else {
                 $this->array($CFG_GLPI['appliance_types'])->notContains($classname);
+                $this->array(Appliance::getTypes())->notContains($classname);
             }
 
             // Check that the corresponding tab is present on items
@@ -93,7 +108,12 @@ class HasAppliancesCapacity extends DbTestCase
             }
 
             // Check that the related search options are available
-            $so_keys = [1210, 1211, 1212, 1213];
+            $so_keys = [
+                1210, // Name
+                1211, // Type
+                1212, // User
+                1213, // Group
+            ];
             if ($has_capacity) {
                 $this->array($item->getOptions())->hasKeys($so_keys);
             } else {
@@ -140,7 +160,7 @@ class HasAppliancesCapacity extends DbTestCase
         );
 
         $appliance = $this->createItem(
-            \Appliance::class,
+            Appliance::class,
             [
                 'name' => __FUNCTION__,
                 'entities_id' => $root_entity_id,
@@ -148,7 +168,7 @@ class HasAppliancesCapacity extends DbTestCase
         );
 
         $appliance_item_1 = $this->createItem(
-            \Appliance_Item::class,
+            Appliance_Item::class,
             [
                 'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
@@ -156,7 +176,7 @@ class HasAppliancesCapacity extends DbTestCase
             ]
         );
         $appliance_item_2 = $this->createItem(
-            \Appliance_Item::class,
+            Appliance_Item::class,
             [
                 'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),

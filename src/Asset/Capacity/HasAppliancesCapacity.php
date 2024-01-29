@@ -35,6 +35,8 @@
 
 namespace Glpi\Asset\Capacity;
 
+use Appliance;
+use Appliance_Item;
 use CommonGLPI;
 use Session;
 
@@ -42,26 +44,26 @@ class HasAppliancesCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return \Appliance::getTypeName(Session::getPluralNumber());
+        return Appliance::getTypeName(Session::getPluralNumber());
     }
 
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('appliance_types', $classname);
-        CommonGLPI::registerStandardTab($classname, \Appliance_Item::class, 85);
+        CommonGLPI::registerStandardTab($classname, Appliance_Item::class, 85);
     }
 
     public function onCapacityDisabled(string $classname): void
     {
         $this->unregisterFromTypeConfig('appliance_types', $classname);
 
-        $appliance_item = new \Appliance_Item();
+        $appliance_item = new Appliance_Item();
         $appliance_item->deleteByCriteria([
             'itemtype' => $classname,
         ], true, false);
 
-        $this->deleteRelationLogs($classname, \Appliance_Item::class);
-        $this->deleteRelationLogs($classname, \Appliance::class);
-        $this->deleteDisplayPreferences($classname, \Appliance::rawSearchOptionsToAdd($classname));
+        $this->deleteRelationLogs($classname, Appliance_Item::class);
+        $this->deleteRelationLogs($classname, Appliance::class);
+        $this->deleteDisplayPreferences($classname, Appliance::rawSearchOptionsToAdd($classname));
     }
 }
