@@ -3014,13 +3014,7 @@ HTML;
 
             // if transparency present, get only the color part
             if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
-                $tmp = $color;
-                $alpha = hexdec(substr($tmp, 6, 2));
                 $color = substr($color, 0, 6);
-
-                if ($alpha <= 100) {
-                    return "inherit";
-                }
             }
 
             $color_inst = new Color($color);
