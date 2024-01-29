@@ -41,6 +41,7 @@ use Domain;
 use Domain_Item;
 use Entity;
 use Log;
+use Profile;
 
 class HasDomainsCapacity extends DbTestCase
 {
@@ -50,26 +51,35 @@ class HasDomainsCapacity extends DbTestCase
 
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
+        $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+        $profiles_matrix = [
+            $superadmin_p_id => [
+                READ   => 1,
+            ],
+        ];
+
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
-            ]
+            ],
+            profiles: $profiles_matrix
         );
-        $classname_1  = $definition_1->getConcreteClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getConcreteClassName();
+        $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-            ]
+            ],
+            profiles: $profiles_matrix
         );
-        $classname_3  = $definition_3->getConcreteClassName();
+        $classname_3  = $definition_3->getAssetClassName();
 
         $has_domains_mapping = [
             $classname_1 => true,
@@ -79,10 +89,13 @@ class HasDomainsCapacity extends DbTestCase
 
         foreach ($has_domains_mapping as $classname => $has_domains) {
             // Check that the class is globally registered
+            $this->login(); // must be logged in to have class in Domain::getTypes()
             if ($has_domains) {
                 $this->array($CFG_GLPI['domain_types'])->contains($classname);
+                $this->array(Domain::getTypes())->contains($classname);
             } else {
                 $this->array($CFG_GLPI['domain_types'])->notContains($classname);
+                $this->array(Domain::getTypes())->notContains($classname);
             }
 
             // Check that the corresponding tab is present on items
@@ -92,6 +105,18 @@ class HasDomainsCapacity extends DbTestCase
                 $this->array($item->defineAllTabs())->hasKey('Domain_Item$1');
             } else {
                 $this->array($item->defineAllTabs())->notHasKey('Domain_Item$1');
+            }
+
+            // Check that the releated search options are available
+            $so_keys = [
+                205, // Name
+                206, // Type
+            ];
+            $this->login(); // must be logged in to get search options
+            if ($has_domains) {
+                $this->array($item->getOptions())->hasKeys($so_keys);
+            } else {
+                $this->array($item->getOptions())->notHasKeys($so_keys);
             }
         }
     }
@@ -109,14 +134,14 @@ class HasDomainsCapacity extends DbTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_1  = $definition_1->getConcreteClassName();
+        $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
             ]
         );
-        $classname_2  = $definition_2->getConcreteClassName();
+        $classname_2  = $definition_2->getAssetClassName();
 
         $item_1          = $this->createItem(
             $classname_1,
