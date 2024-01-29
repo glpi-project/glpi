@@ -3007,7 +3007,7 @@ HTML;
     }
 
 
-    public static function isColorDark(string $color = ""): bool
+    public static function isColorDark(string $color): bool
     {
         if ($color !== "") {
             $color = str_replace("#", "", $color);
@@ -3030,7 +3030,7 @@ HTML;
         return false;
     }
 
-    public static function isColorLight(string $color = ""): bool
+    public static function isColorLight(string $color): bool
     {
         return !self::isColorDark($color);
     }
