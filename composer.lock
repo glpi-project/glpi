@@ -777,11 +777,11 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/lessons.git",
-                "reference": "152fb90961479c4b8394923c4a43bc0a94e7708a"
+                "reference": "a7d81bab71790da86ebacf0dc90ac9e4ab3f7a97"
             },
             "default-branch": true,
             "type": "library",
-            "time": "2023-10-25T09:54:00+00:00"
+            "time": "2024-01-22T13:28:30+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
