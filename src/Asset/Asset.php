@@ -415,13 +415,11 @@ abstract class Asset extends CommonDBTM
 
     public function getCloneRelations(): array
     {
-        return [
-            Item_OperatingSystem::class,
-            Infocom::class,
-            Item_Disk::class,
-            Contract_Item::class,
-            Document_Item::class,
-            Notepad::class,
-        ];
+        $relations = [];
+        $capacities = static::getDefinition()->getEnabledCapacities();
+        foreach ($capacities as $capacity) {
+            $relations = [...$relations, ...$capacity->getCloneRelations()];
+        }
+        return array_unique($relations);
     }
 }

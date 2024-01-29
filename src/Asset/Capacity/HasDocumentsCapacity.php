@@ -47,6 +47,13 @@ class HasDocumentsCapacity extends AbstractCapacity
         return Document::getTypeName(Session::getPluralNumber());
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Document_Item::class
+        ];
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('document_types', $classname);

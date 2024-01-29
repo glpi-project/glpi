@@ -65,6 +65,11 @@ abstract class AbstractCapacity implements CapacityInterface
         return [];
     }
 
+    public function getCloneRelations(): array
+    {
+        return [];
+    }
+
     public function onClassBootstrap(string $classname): void
     {
     }

@@ -45,6 +45,13 @@ class HasInfocomCapacity extends AbstractCapacity
         return Infocom::getTypeName();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Infocom::class
+        ];
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('infocom_types', $classname);

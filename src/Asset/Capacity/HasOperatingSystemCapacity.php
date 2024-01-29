@@ -66,6 +66,13 @@ class HasOperatingSystemCapacity extends AbstractCapacity
         return Item_OperatingSystem::rawSearchOptionsToAdd($classname);
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_OperatingSystem::class
+        ];
+    }
+
     // #Override
     public function onCapacityDisabled(string $classname): void
     {
