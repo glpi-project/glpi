@@ -208,7 +208,7 @@ class Item_Rack extends CommonDBRelation
             ];
 
             $model_class = $item->getType() . 'Model';
-            $modelsfield = strtolower($item->getType()) . 'models_id';
+            $modelsfield = $model_class::getForeignKeyField();
             $model = new $model_class();
             if ($model->getFromDB($item->fields[$modelsfield])) {
                 if ($model->fields['required_units'] > 1) {
@@ -470,7 +470,7 @@ JAVASCRIPT;
             $item->getFromDB($row['items_id']);
 
             $model_class = $item->getType() . 'Model';
-            $modelsfield = strtolower($item->getType()) . 'models_id';
+            $modelsfield = $model_class::getForeignKeyField();
             $model = new $model_class();
 
             if ($model->getFromDB($item->fields[$modelsfield])) {
@@ -1011,7 +1011,7 @@ JAVASCRIPT;
             $item = new $itemtype();
             $item->getFromDB($items_id);
             $model_class = $item->getType() . 'Model';
-            $modelsfield = strtolower($item->getType()) . 'models_id';
+            $modelsfield = $model_class::getForeignKeyField();
             $model = new $model_class();
 
             $required_units = 1;

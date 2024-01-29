@@ -36,6 +36,7 @@
 namespace Glpi\Asset;
 
 use CommonDropdown;
+use Glpi\Asset\Capacity\IsRackableCapacity;
 use Toolbox;
 
 abstract class AssetModel extends \CommonDCModelDropdown
@@ -185,10 +186,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
         $options = CommonDropdown::rawSearchOptions();
         $table   = static::getTable();
 
-        //TODO Replace with HasRackableCapacity capacity check
-        $rackable = false;
-
-        if ($rackable) {
+        if (static::getDefinition()->hasCapacityEnabled(new IsRackableCapacity())) {
             $options[] = [
                 'id'       => '131',
                 'table'    => $table,
@@ -259,10 +257,8 @@ abstract class AssetModel extends \CommonDCModelDropdown
         global $DB;
 
         $fields = CommonDropdown::getAdditionalFields();
-        //TODO Replace with HasRackableCapacity capacity check
-        $rackable = false;
 
-        if ($rackable) {
+        if (static::getDefinition()->hasCapacityEnabled(new IsRackableCapacity())) {
             $fields[] = [
                 'name'   => 'weight',
                 'type'   => 'integer',

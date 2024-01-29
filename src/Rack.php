@@ -832,9 +832,9 @@ JAVASCRIPT;
             $units = 1;
             $width = 1;
             $depth = 1;
-            if ($item->fields[strtolower($item->getType()) . 'models_id'] != 0) {
-                $model_class = $item->getType() . 'Model';
-                $modelsfield = strtolower($item->getType()) . 'models_id';
+            $model_class = $item->getType() . 'Model';
+            $modelsfield = $model_class::getForeignKeyField();
+            if ($item->fields[$modelsfield] != 0) {
                 $model = new $model_class();
                 if ($model->getFromDB($item->fields[$modelsfield])) {
                     $units = $model->fields['required_units'];
