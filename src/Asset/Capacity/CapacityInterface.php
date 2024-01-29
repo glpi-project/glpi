@@ -49,7 +49,7 @@ interface CapacityInterface
     /**
      * Get the search options related to the capacity.
      *
-     * @param string $classname
+     * @param class-string<\Glpi\Asset\Asset> $classname
      * @return array
      */
     public function getSearchOptions(string $classname): array;
@@ -70,9 +70,25 @@ interface CapacityInterface
     public function getCloneRelations(): array;
 
     /**
+     * Indicates whether the capacity is used by given asset class.
+     *
+     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @return bool
+     */
+    public function isUsed(string $classname): bool;
+
+    /**
+     * Get the capacity usage description for given asset class.
+     *
+     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @return string
+     */
+    public function getCapacityUsageDescription(string $classname): string;
+
+    /**
      * Method executed during asset classes bootstraping.
      *
-     * @param string $classname
+     * @param class-string<\Glpi\Asset\Asset> $classname
      * @return void
      */
     public function onClassBootstrap(string $classname): void;
@@ -80,7 +96,7 @@ interface CapacityInterface
     /**
      * Method executed when capacity is disabled on given asset class.
      *
-     * @param string $classname
+     * @param class-string<\Glpi\Asset\Asset> $classname
      * @return void
      */
     public function onCapacityDisabled(string $classname): void;

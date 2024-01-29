@@ -35,13 +35,26 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
+use Link;
+use Link_Itemtype;
 use Log;
+use ManualLink;
 
-class HasLinksCapacity extends DbTestCase
+class HasLinksCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasLinksCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -219,5 +232,37 @@ class HasLinksCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['link_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => ManualLink::class,
+            'target_fields' => [
+                'url'      => 'https://glpi-project.org'
+            ]
+        ];
+
+        yield [
+            'target_classname' => Link::class,
+            'relation_classname' => Link_Itemtype::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => ManualLink::class,
+            'target_fields' => [
+                'url'      => 'https://glpi-project.org'
+            ],
+            'expected' => '%d links attached to %d assets'
+        ];
+
+        yield [
+            'target_classname' => Link::class,
+            'relation_classname' => Link_Itemtype::class,
+            'expected' => '%d links attached to %d assets'
+        ];
     }
 }

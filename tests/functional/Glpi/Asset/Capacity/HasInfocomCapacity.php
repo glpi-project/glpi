@@ -35,15 +35,25 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
+use Glpi\Tests\CapacityTestCase;
 use Infocom;
 use Log;
 
-class HasInfocomCapacity extends DbTestCase
+class HasInfocomCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasInfocomCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -277,5 +287,20 @@ class HasInfocomCapacity extends DbTestCase
             'delivery_date' => '2020-03-04',
             'value' => '25.3',
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Infocom::class,
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Infocom::class,
+            'expected' => 'Used by %d of %d assets'
+        ];
     }
 }

@@ -37,13 +37,13 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Contract;
 use Contract_Item;
-use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 
-class HasContractsCapacity extends DbTestCase
+class HasContractsCapacity extends CapacityTestCase
 {
     /**
      * Get the tested capacity class.
@@ -360,5 +360,22 @@ class HasContractsCapacity extends DbTestCase
             'itemtype' => $asset::getType(),
             'items_id' => $clone_id,
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Contract::class,
+            'relation_classname' => Contract_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Contract::class,
+            'relation_classname' => Contract_Item::class,
+            'expected' => '%d contracts attached to %d assets'
+        ];
     }
 }

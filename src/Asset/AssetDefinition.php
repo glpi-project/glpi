@@ -165,6 +165,7 @@ final class AssetDefinition extends CommonDBTM
             'pages/admin/assetdefinition/capacities.html.twig',
             [
                 'item' => $this,
+                'classname' => $this->getAssetClassName(),
                 'capacities' => $capacities,
             ]
         );

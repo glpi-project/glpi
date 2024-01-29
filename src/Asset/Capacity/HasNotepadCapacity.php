@@ -65,6 +65,21 @@ class HasNotepadCapacity extends AbstractCapacity
         ];
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Notepad::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s notes attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Notepad::class),
+            $this->countAssetsLinkedToPeerItem($classname, Notepad::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         CommonGLPI::registerStandardTab($classname, Notepad::class, 80);

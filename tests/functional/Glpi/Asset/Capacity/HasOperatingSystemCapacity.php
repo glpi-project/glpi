@@ -35,14 +35,14 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Tests\CapacityTestCase;
 use Item_OperatingSystem;
 use Log;
 
-class HasOperatingSystemCapacity extends DbTestCase
+class HasOperatingSystemCapacity extends CapacityTestCase
 {
     /**
      * Get the tested capacity class.
@@ -367,5 +367,20 @@ class HasOperatingSystemCapacity extends DbTestCase
             'items_id' => $clone_id,
             'license_number' => '012345',
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Item_OperatingSystem::class,
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Item_OperatingSystem::class,
+            'expected' => 'Used by %d of %d assets'
+        ];
     }
 }

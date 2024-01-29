@@ -53,6 +53,21 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         ];
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Item_RemoteManagement::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s remote management items attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Item_RemoteManagement::class),
+            $this->countAssetsLinkedToPeerItem($classname, Item_RemoteManagement::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('remote_management_types', $classname);

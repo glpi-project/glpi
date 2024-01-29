@@ -37,14 +37,24 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Certificate;
 use Certificate_Item;
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 use Profile;
 
-class HasCertificatesCapacity extends DbTestCase
+class HasCertificatesCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasCertificatesCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -241,5 +251,22 @@ class HasCertificatesCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['certificate_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Certificate::class,
+            'relation_classname' => Certificate_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Certificate::class,
+            'relation_classname' => Certificate_Item::class,
+            'expected' => '%d certificates attached to %d assets'
+        ];
     }
 }

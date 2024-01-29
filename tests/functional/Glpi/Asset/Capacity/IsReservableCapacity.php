@@ -35,13 +35,24 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
+use ReservationItem;
 
-class IsReservableCapacity extends DbTestCase
+class IsReservableCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\IsReservableCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -199,5 +210,20 @@ class IsReservableCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['reservation_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => ReservationItem::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => ReservationItem::class,
+            'expected' => 'Used by %d of %d assets'
+        ];
     }
 }

@@ -35,14 +35,24 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use Log;
 
-class HasKnowbaseCapacity extends DbTestCase
+class HasKnowbaseCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasKnowbaseCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         /** @var array $CFG_GLPI */
@@ -221,5 +231,22 @@ class HasKnowbaseCapacity extends DbTestCase
             'itemtype'         => $class,
             'items_id'         => $clone_id,
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => KnowbaseItem::class,
+            'relation_classname' => KnowbaseItem_Item::class,
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => KnowbaseItem::class,
+            'relation_classname' => KnowbaseItem_Item::class,
+            'expected' => '%d knowbase items attached to %d assets'
+        ];
     }
 }

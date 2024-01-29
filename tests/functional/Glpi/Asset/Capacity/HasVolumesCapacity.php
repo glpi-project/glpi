@@ -35,16 +35,26 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
+use Glpi\Tests\CapacityTestCase;
 use Item_Disk;
 use Log;
 use Profile;
 
-class HasVolumesCapacity extends DbTestCase
+class HasVolumesCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasVolumesCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -255,5 +265,20 @@ class HasVolumesCapacity extends DbTestCase
             'itemtype' => $asset::getType(),
             'items_id' => $clone_id,
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Item_Disk::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Item_Disk::class,
+            'expected' => '%d volumes attached to %d assets'
+        ];
     }
 }

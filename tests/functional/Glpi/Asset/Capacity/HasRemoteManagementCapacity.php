@@ -35,14 +35,24 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Item_RemoteManagement;
 use Log;
 
-class HasRemoteManagementCapacity extends DbTestCase
+class HasRemoteManagementCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -238,5 +248,20 @@ class HasRemoteManagementCapacity extends DbTestCase
             'type'     => 'anydesk',
             'remoteid' => 'abcdef123456',
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Item_RemoteManagement::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Item_RemoteManagement::class,
+            'expected' => '%d remote management items attached to %d assets'
+        ];
     }
 }

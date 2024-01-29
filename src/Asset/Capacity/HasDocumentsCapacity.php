@@ -54,6 +54,21 @@ class HasDocumentsCapacity extends AbstractCapacity
         ];
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Document_Item::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s documents attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Document_Item::class),
+            $this->countAssetsLinkedToPeerItem($classname, Document_Item::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('document_types', $classname);

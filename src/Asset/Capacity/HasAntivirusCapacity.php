@@ -58,6 +58,21 @@ class HasAntivirusCapacity extends AbstractCapacity
         return ItemAntivirus::rawSearchOptionsToAdd();
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, ItemAntivirus::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s antiviruses attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, ItemAntivirus::class),
+            $this->countAssetsLinkedToPeerItem($classname, ItemAntivirus::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('itemantivirus_types', $classname);

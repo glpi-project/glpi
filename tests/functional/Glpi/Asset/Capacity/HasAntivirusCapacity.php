@@ -35,15 +35,25 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use ItemAntivirus;
 use Log;
 use Profile;
 
-class HasAntivirusCapacity extends DbTestCase
+class HasAntivirusCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasAntivirusCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -252,5 +262,20 @@ class HasAntivirusCapacity extends DbTestCase
             'itemtype' => $class,
             'items_id' => $clone_id,
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => ItemAntivirus::class,
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => ItemAntivirus::class,
+            'expected' => '%d antiviruses attached to %d assets'
+        ];
     }
 }

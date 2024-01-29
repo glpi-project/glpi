@@ -35,15 +35,25 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Item_Rack;
 use Log;
 use Rack;
 
-class IsRackableCapacity extends DbTestCase
+class IsRackableCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\IsRackableCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -232,5 +242,100 @@ class IsRackableCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3);
         $this->array($CFG_GLPI['rackable_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        $racks_id = $this->createItem(Rack::class, [
+            'name' => 'rack 1',
+            'entities_id' => $this->getTestRootEntity(true),
+            'number_units' => 40
+        ])->getID();
+
+        yield [
+            'target_classname' => Item_Rack::class,
+            'target_fields' => [
+                'racks_id' => $racks_id,
+                'position' => 1
+            ]
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Item_Rack::class,
+            'expected' => 'Used by %d of %d assets'
+        ];
+    }
+
+    /**
+     * @dataProvider provideGetCapacityUsageDescription
+     */
+    public function testGetCapacityUsageDescription(
+        string $target_classname,
+        string $expected,
+        array $target_fields = [],
+        ?string $relation_classname = null,
+        array $relation_fields = [],
+        array $expected_results = [[1, 1], [2, 1], [2, 2]],
+    ): void {
+        // Retrieve the test root entity
+        $entity_id = $this->getTestRootEntity(true);
+
+        // Create custom asset definition with the target capacity enabled
+        $definition = $this->initAssetDefinition(
+            system_name: 'TestAsset',
+            capacities: [$this->getTargetCapacity()]
+        );
+
+        // Create our test subject
+        $subject = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset',
+        ]);
+
+        // Create a rack
+        $rack = $this->createItem(Rack::class, [
+            'name' => 'Test rack',
+            'entities_id' => $entity_id,
+            'number_units' => 40
+        ]);
+
+        // Create an item
+        $this->createItem($target_classname, [
+            'itemtype'       => $subject::getType(),
+            'items_id'       => $subject->getID(),
+            'racks_id'       => $rack->getID(),
+            'position'       => 1
+        ]);
+
+        // Check that the capacity usage description is correct
+        $capacity = new ($this->getTargetCapacity());
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo(
+            sprintf($expected, 1, 1)
+        );
+
+        // Create a second subject
+        $subject2 = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset 2',
+        ]);
+
+        // Check that the capacity usage description is correct
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo(
+            sprintf($expected, 1, 2)
+        );
+
+        // Create an item linked to the second subject
+        $this->createItem($target_classname, [
+            'itemtype'       => $subject2::getType(),
+            'items_id'       => $subject2->getID(),
+            'racks_id'       => $rack->getID(),
+            'position'       => 2
+        ]);
+
+        // Check that the capacity usage description is correct
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo(
+            sprintf($expected, 2, 2)
+        );
     }
 }
