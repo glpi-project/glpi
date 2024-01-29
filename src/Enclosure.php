@@ -230,6 +230,8 @@ class Enclosure extends CommonDBTM
 
         $tab = array_merge($tab, EnclosureModel::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
+
         return $tab;
     }
 

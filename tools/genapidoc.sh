@@ -51,6 +51,6 @@ then
       --destination api
 
 else
-   echo -e "\nApiGen not found, see http://www.apigen.org/\n"
+   echo -e "\nApiGen not found, see https://github.com/ApiGen/ApiGen\n"
 
 fi

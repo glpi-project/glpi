@@ -2075,7 +2075,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     && isset($options['item_items_id'])
                     && ($output_type == Search::HTML_OUTPUT)
                 ) {
-                    $forcetab = $options['item_itemtype'] . '$1';
+                    $forcetab = $options['item_itemtype'] . '$main';
                     $item_itemtype = $options['item_itemtype'];
                     $content = "<a href='" . $item_itemtype::getFormURLWithID($options['item_items_id']) .
                               "&amp;load_kb_sol=" . $data['id'] .
@@ -2138,10 +2138,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         ];
 
         if ($type == "recent") {
-            $criteria['ORDERBY'] = 'date_creation DESC';
+            $criteria['ORDERBY'] = self::getTable() . '.date_creation DESC';
             $title   = __('Recent entries');
         } else if ($type == 'lastupdate') {
-            $criteria['ORDERBY'] = 'date_mod DESC';
+            $criteria['ORDERBY'] = self::getTable() . '.date_mod DESC';
             $title   = __('Last updated entries');
         } else {
             $criteria['ORDERBY'] = 'view DESC';

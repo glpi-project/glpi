@@ -123,12 +123,13 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
     /**
      * Get linked tickets to a ticket
      *
-     * @param $ID ID of the ticket id
+     * @param integer $ID ID of the ticket id
+     * @param boolean $check_view_rights check view rights
      *
      * @return array of linked tickets  array(id=>linktype)
      * @deprecated 10.1.0 Use CommonITILObject_CommonITILObject::getLinkedTo()
      **/
-    public static function getLinkedTicketsTo($ID)
+    public static function getLinkedTicketsTo($ID, bool $check_view_rights = false)
     {
         Toolbox::deprecated('Use "Ticket_Ticket::getLinkedTo()"');
 
@@ -140,15 +141,33 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
             return [];
         }
 
-        $iterator = $DB->request([
-            'FROM'   => self::getTable(),
+        $table = self::getTable();
+        $criteria = [
+            'SELECT' => ["{$table}.*"],
+            'FROM'   => $table,
             'WHERE'  => [
                 'OR'  => [
                     'tickets_id_1' => $ID,
                     'tickets_id_2' => $ID
                 ]
             ]
-        ]);
+        ];
+        if ($check_view_rights && !Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+            $ticket_table = Ticket::getTable();
+            $criteria['LEFT JOIN'] = [
+                $ticket_table => [
+                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)")
+                ],
+            ];
+            $unused_ref = [];
+            $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
+            if (!empty($joins_str)) {
+                $db_it = new DBmysqlIterator($DB);
+                $criteria['LEFT JOIN'] = [new QueryExpression($db_it->analyseJoins(['LEFT JOIN' => $criteria['LEFT JOIN']]) . ' ' . $joins_str)];
+            }
+            $criteria['WHERE'][] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
+        }
+        $iterator = $DB->request($criteria);
         $tickets = [];
 
         foreach ($iterator as $data) {

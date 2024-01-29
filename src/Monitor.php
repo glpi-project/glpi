@@ -461,6 +461,8 @@ class Monitor extends CommonDBTM
 
         $tab = array_merge($tab, MonitorModel::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
+
         return $tab;
     }
 

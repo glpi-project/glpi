@@ -41,15 +41,23 @@
 {% for search in saved_searches %}
    <div class="savedsearches-item grip-savedsearch list-group-item search-line d-flex align-items-center pe-1 {{ active == search['id'] ? 'active' : '' }}"
          data-id="{{ search['id'] }}">
-      <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
-         class="d-block saved-searches-link text-truncate">
-         {{ search['name'] }}
-      </a>
+      {% if not search['_error'] %}
+          <a href="{{ 'SavedSearch'|itemtype_search_path }}?action=load&amp;id={{ search['id'] }}"
+             class="d-block saved-searches-link text-truncate">
+             {{ search['name'] }}
+          </a>
+      {% else %}
+          <span class="d-block text-truncate">
+              {{ search['name'] }}
+          </span>
+      {% endif %}
       <div class="{{ search['is_default'] > 0 ? '' : 'list-group-item-actions' }} ms-auto default-ctrl">
-         <i class="{{ search['is_default'] > 0 ? 'fas' : 'far' }} fa-star fa-xs mark-default me-1"
-            title="{{ search['is_default'] > 0 ? __('Default search') : __('mark as default') }}"
-            data-bs-toggle="tooltip" data-bs-placement="right"
-            role="button"></i>
+          {% if not search['_error'] %}
+             <i class="{{ search['is_default'] > 0 ? 'fas' : 'far' }} fa-star fa-xs mark-default me-1"
+                title="{{ search['is_default'] > 0 ? __('Default search') : __('mark as default') }}"
+                data-bs-toggle="tooltip" data-bs-placement="right"
+                role="button"></i>
+          {% endif %}
       </div>
       <div class="d-flex flex-nowrap align-items-center">
          {% if search['is_private'] == 1 %}

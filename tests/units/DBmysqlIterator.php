@@ -42,6 +42,7 @@ use Psr\Log\LogLevel;
 
 class DBmysqlIterator extends DbTestCase
 {
+    /** @var \DBmysqlIterator */
     private $it;
 
     public function beforeTestMethod($method)
@@ -1541,5 +1542,14 @@ SQL
         $iterator = $db->request(['FROM' => 'glpi_mocks']);
 
         $this->array($iterator->current())->isEqualTo($result);
+    }
+
+    public function testRawFKeyCondition()
+    {
+        $this->string(
+            $this->it->analyseCrit([
+                'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+            ])
+        )->isEqualTo("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)");
     }
 }

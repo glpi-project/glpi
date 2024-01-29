@@ -1101,6 +1101,7 @@ class ReservationItem extends CommonDBChild
     private static function getAvailableItemsCriteria(string $itemtype): array
     {
         $reservation_table = ReservationItem::getTable();
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item_table = $itemtype::getTable();
 
@@ -1120,6 +1121,10 @@ class ReservationItem extends CommonDBChild
                 "$item_table.is_deleted"  => 0,
             ]
         ];
+
+        if ($item->isEntityAssign()) {
+            $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table, '', '', true);
+        }
 
         if ($item->maybeTemplate()) {
             $criteria['WHERE']["$item_table.is_template"] = 0;

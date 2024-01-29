@@ -536,12 +536,14 @@ class Auth extends CommonGLPI
 
         switch ($authtype) {
             case self::CAS:
+                $url_base = parse_url($CFG_GLPI["url_base"]);
+                $service_base_url = $url_base["scheme"] . "://" . $url_base["host"] . (isset($url_base["port"]) ? ":" . $url_base["port"] : "");
                 phpCAS::client(
                     constant($CFG_GLPI["cas_version"]),
                     $CFG_GLPI["cas_host"],
                     intval($CFG_GLPI["cas_port"]),
                     $CFG_GLPI["cas_uri"],
-                    $CFG_GLPI["url_base"],
+                    $service_base_url,
                     false
                 );
 
@@ -815,7 +817,7 @@ class Auth extends CommonGLPI
                 $ldapservers = [];
                 $ldapservers_status = false;
                 //if LDAP enabled too, get user's infos from LDAP
-                if (Toolbox::canUseLdap()) {
+                if ((!isset($this->user->fields['authtype']) || $this->user->fields['authtype'] === self::LDAP) && Toolbox::canUseLdap()) {
                     //User has already authenticated, at least once: its ldap server is filled
                     if (
                         isset($this->user->fields["auths_id"])

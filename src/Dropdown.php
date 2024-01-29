@@ -1941,6 +1941,7 @@ JAVASCRIPT;
         $params['class']               = 'form-select';
         $params['allow_max_change']    = true;
         $params['readonly']            = false;
+        $params['disabled']            = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -2051,6 +2052,7 @@ JAVASCRIPT;
             'emptylabel'          => $params['emptylabel'],
             'class'               => $params['class'],
             'readonly'            => $params['readonly'],
+            'disabled'            => $params['disabled'],
         ]);
     }
 
@@ -3338,6 +3340,24 @@ JAVASCRIPT;
                        /*if (isset($visibility['WHERE'])) {
                          $where = $visibility['WHERE'];
                        }*/
+                    }
+                    break;
+
+                case Ticket::class:
+                    $criteria = [
+                        'SELECT' => array_merge(["$table.*"], $addselect),
+                        'FROM'   => $table,
+                    ];
+                    if (count($ljoin)) {
+                        $criteria['LEFT JOIN'] = $ljoin;
+                    }
+                    if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+                        $unused_ref = [];
+                        $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
+                        if (!empty($joins_str)) {
+                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        }
+                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
                     }
                     break;
 

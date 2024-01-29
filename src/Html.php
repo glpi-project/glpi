@@ -1118,7 +1118,14 @@ HTML;
         $tpl_vars['css_files'][] = ['path' => 'public/lib/photoswipe.css'];
         Html::requireJs('photoswipe');
 
-       //on demand JS
+        $is_monaco_added = false;
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
+            $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
+            $is_monaco_added = true;
+        }
+
+        //on demand JS.
         if ($sector != 'none' || $item != 'none' || $option != '') {
             $jslibs = [];
             if (isset($CFG_GLPI['javascript'][$sector])) {
@@ -1204,7 +1211,7 @@ HTML;
                 Html::requireJs('cable');
             }
 
-            if (in_array('monaco', $jslibs) || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            if (in_array('monaco', $jslibs) && !$is_monaco_added) {
                 $tpl_vars['js_modules'][] = ['path' => 'js/modules/Monaco/MonacoEditor.js'];
                 $tpl_vars['css_files'][] = ['path' => 'public/lib/monaco.css'];
             }

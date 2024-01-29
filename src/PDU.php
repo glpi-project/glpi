@@ -214,6 +214,8 @@ class PDU extends CommonDBTM
 
         $tab = array_merge($tab, PDUModel::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
+
         return $tab;
     }
 

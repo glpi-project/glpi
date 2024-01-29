@@ -298,13 +298,15 @@ class PrinterLog extends CommonDBChild
                 $series[$printer_id]['name'] = Printer::getById($printer_id)->fields['name'];
             }
 
+            // Keep values if at least 1 label is greater than 0
+            $valuesum = array_sum($metrics);
             foreach ($metrics as $metric) {
                 if ($is_comparison) {
                     $series[$printer_id]['data'][array_search($metric['date'], $labels, false)] = $metric[$compare_printer_stat];
                 } else {
                     foreach ($metric as $key => $value) {
                         $label = $this->getLabelFor($key);
-                        if ($label && $value > 0) {
+                        if ($label && $valuesum > 0) {
                             $series[$key]['name'] = $label;
                             $series[$key]['data'][] = $value;
                         }
@@ -326,7 +328,12 @@ class PrinterLog extends CommonDBChild
                 }
             }
         }
-
+        // If the metric has a value of 0 for all dates, remove it from the data set
+        foreach ($series as $key => $value) {
+            if (array_sum($value['data']) == 0) {
+                unset($series[$key]);
+            }
+        }
         $bar_conf = [
             'data'  => [
                 'labels' => array_map(fn ($date) => $fmt->format(new DateTime($date)), $labels), // Format the labels array
