@@ -42,7 +42,7 @@
 
 
 {% block form_fields %}
-    {% set concrete_class = item.getConcreteClassName() %}
+    {% set concrete_class = item.getAssetClassName() %}
 
     {# Display configuration messages #}
     {% for capacity in capacities %}
