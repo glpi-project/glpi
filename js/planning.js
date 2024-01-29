@@ -85,28 +85,12 @@ var GLPIPlanning  = {
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
         var loadedLocales = Object.keys(FullCalendarLocales);
 
-        // We need to check that the default view is valid to avoid errors
-        // FullCalendar does not seem to offer a method to check if a view is
-        // valid or list all possible views.
-        // It seems the only way to validate our view is to try to create a fake
-        // Calendar instance
-        try {
-            new FullCalendar.Calendar("fake_calendar", { // Invalid selector does not matter
-                defaultView: options.default_view,
-                plugins: options.plugins,
-            });
-        } catch (e) {
-            // Invalid view type, fallback to default
-            options.default_view = default_options.default_view;
-        }
-
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
             plugins:     options.plugins,
             height:      options.height,
             timeZone:    'UTC',
             theme:       true,
             weekNumbers: options.full_view ? true : false,
-            defaultView: options.default_view,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
@@ -629,6 +613,12 @@ var GLPIPlanning  = {
                 GLPIPlanning.calendar.unselect();
             }
         });
+
+        // Load the last known view only if it is valid (else load default view)
+        const view = this.calendar.isValidViewType(options.default_view) ?
+            options.default_view :
+            default_options.default_view;
+        this.calendar.changeView(view);
 
         $('.planning_on_central a')
             .mousedown(function() {
