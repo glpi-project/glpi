@@ -330,6 +330,9 @@ class Widget
         $fg_color         = Toolbox::getFgColor($p['color']);
         $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
         $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
+        $border_color     = Toolbox::isColorLight($p['color'])
+            ? $p['color']
+            : Toolbox::getFgColor($p['color'], 15);
 
         $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
@@ -343,11 +346,12 @@ class Widget
          #{$p['id']} {
             background-color: {$p['color']};
             color: {$fg_color};
+            border: 2px solid {$border_color};
          }
 
          #{$p['id']}:hover {
             background-color: {$fg_hover_color};
-            border: 1px solid {$fg_hover_border};
+            border: 2px solid {$fg_hover_border};
          }
 
          .theme-dark #{$p['id']} {
