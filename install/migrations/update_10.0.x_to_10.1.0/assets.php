@@ -92,6 +92,8 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '0',
             `is_deleted` tinyint NOT NULL DEFAULT '0',
+            `is_template` tinyint NOT NULL DEFAULT '0',
+            `template_name` varchar(255) DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -109,6 +111,7 @@ if (!$DB->tableExists('glpi_assets_assets')) {
             KEY `entities_id` (`entities_id`),
             KEY `is_recursive` (`is_recursive`),
             KEY `is_deleted` (`is_deleted`),
+            KEY `is_template` (`is_template`),
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
