@@ -20,6 +20,10 @@ on:
   # Enable manual run
   workflow_dispatch:
 
+concurrency:
+  group: "${{ github.workflow }}-${{ github.ref }}"
+  cancel-in-progress: true
+
 jobs:
   lint:
     # Do not run scheduled lint on tier repositories
