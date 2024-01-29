@@ -122,6 +122,9 @@ SQL;
     $migration->addKey('glpi_assets_assets', 'assets_assetmodels_id');
     $migration->addField('glpi_assets_assets', 'assets_assettypes_id', 'fkey');
     $migration->addKey('glpi_assets_assets', 'assets_assettypes_id');
+    $migration->addField('glpi_assets_assets', 'is_template', 'bool');
+    $migration->addKey('glpi_assets_assets', 'is_template');
+    $migration->addField('glpi_assets_assets', 'template_name', 'string');
 }
 
 if (!$DB->tableExists('glpi_assets_assetmodels')) {
