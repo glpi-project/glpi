@@ -47,11 +47,6 @@ class HasDomainsCapacity extends AbstractCapacity
         return Domain::getTypeName(Session::getPluralNumber());
     }
 
-    public function getSearchOptions(string $classname): array
-    {
-        return Domain::rawSearchOptionsToAdd($classname::getType());
-    }
-
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('domain_types', $classname);
