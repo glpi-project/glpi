@@ -77,7 +77,7 @@ jobs:
           .github/actions/init_initialize-imap-fixtures.sh
           docker-compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Codecov"
-        uses: "codecov/codecov-action@v3.1.4"
+        uses: "codecov/codecov-action@v3.1.5"
         with:
           files: ./tests/coverage-unit/clover.xml,./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
           override_branch: ${{ matrix.branch }}
