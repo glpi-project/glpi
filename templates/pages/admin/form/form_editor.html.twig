@@ -73,15 +73,16 @@
 
                     {# Card containing the main form data: title, header and status #}
                     <div class="card form-details">
-                        <div class="card-status-top bg-primary"></div>
+
+                        <div class="card-status-start bg-primary"></div>
                         <div class="card-body">
 
                             {# Header #}
-                            <div class="d-flex mt-2">
+                            <div class="d-flex">
                                 {# Form's name #}
                                 <input
                                     type="text"
-                                    class="form-control content-editable-h2"
+                                    class="form-control content-editable-h1"
                                     name="name"
                                     value="{{ item.fields.name }}"
                                 >
