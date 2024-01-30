@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Asset;
 use Log;
 use Notepad;
 use Profile;
@@ -149,7 +150,7 @@ class HasNotepadCapacity extends DbTestCase
         $notepad_1 = $this->createItem(
             Notepad::class,
             [
-                'itemtype' => $item_1->getType(),
+                'itemtype' => $item_1::getType(),
                 'items_id' => $item_1->getID(),
                 'content'  => 'A note related to asset 1',
             ]
@@ -157,7 +158,7 @@ class HasNotepadCapacity extends DbTestCase
         $notepad_2 = $this->createItem(
             Notepad::class,
             [
-                'itemtype' => $item_2->getType(),
+                'itemtype' => $item_2::getType(),
                 'items_id' => $item_2->getID(),
                 'content'  => 'A note related to asset 2',
             ]
@@ -229,7 +230,7 @@ class HasNotepadCapacity extends DbTestCase
         $notepad_1 = $this->createItem(
             Notepad::class,
             [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::getType(),
                 'items_id' => $item->getID(),
                 'content'  => 'A note related to the asset',
             ]
@@ -278,5 +279,31 @@ class HasNotepadCapacity extends DbTestCase
         $this->array($item->defineAllTabs())->notHasKey('Notepad$1');
         $this->boolean((new Notepad())->can(-1, CREATE, $new_notepad_input))->isTrue();
         $this->boolean((new Notepad())->can($notepad_1->getID(), UPDATE))->isTrue();
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasNotepadCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name' => 'Test asset',
+        ]);
+
+        $this->createItem(Notepad::class, [
+            'itemtype' => $asset::getType(),
+            'items_id' => $asset->getID(),
+            'content'  => 'A note related to the asset',
+        ]);
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Notepad::getTable(), [
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+            'content'  => 'A note related to the asset'
+        ]))->hasSize(1);
     }
 }

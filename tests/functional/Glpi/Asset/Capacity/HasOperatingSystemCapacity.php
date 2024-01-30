@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use DbTestCase;
 use DisplayPreference;
+use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Item_OperatingSystem;
 use Log;
@@ -138,7 +139,7 @@ class HasOperatingSystemCapacity extends DbTestCase
 
         // Check that we have some valid search options to add
         $item_os = new Item_OperatingSystem();
-        $count_to_add = count($item_os->rawSearchOptionsToAdd($class));
+        $count_to_add = count($item_os::rawSearchOptionsToAdd($class));
         $this->integer($count_to_add)->isGreaterThan(0);
 
         // Create our test subject
@@ -338,5 +339,31 @@ class HasOperatingSystemCapacity extends DbTestCase
             ]
         );
         $this->integer($count_display_preferences)->isEqualTo(1);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasOperatingSystemCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name' => 'Test asset',
+        ]);
+
+        $this->createItem(Item_OperatingSystem::class, [
+            'itemtype'       => $asset::getType(),
+            'items_id'       => $asset->getID(),
+            'license_number' => '012345',
+        ]);
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Item_OperatingSystem::getTable(), [
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+            'license_number' => '012345',
+        ]))->hasSize(1);
     }
 }

@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Asset;
 use Log;
 
 class HasVolumesCapacity extends DbTestCase
@@ -164,7 +165,7 @@ class HasVolumesCapacity extends DbTestCase
             \Item_Disk::class,
             [
                 'name'         => 'disk item 1',
-                'itemtype'     => $item_1->getType(),
+                'itemtype'     => $item_1::getType(),
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -172,7 +173,7 @@ class HasVolumesCapacity extends DbTestCase
             \Item_Disk::class,
             [
                 'name'         => 'disk item 2',
-                'itemtype'     => $item_2->getType(),
+                'itemtype'     => $item_2::getType(),
                 'items_id'     => $item_2->getID(),
             ]
         );
@@ -222,5 +223,33 @@ class HasVolumesCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['disk_types'])->contains($classname_2);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasVolumesCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name' => 'Test asset',
+        ]);
+
+        $this->createItem(
+            \Item_Disk::class,
+            [
+                'name'         => 'disk item 1',
+                'itemtype'     => $asset::getType(),
+                'items_id'     => $asset->getID(),
+            ]
+        );
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(\Item_Disk::getTable(), [
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+        ]))->hasSize(1);
     }
 }

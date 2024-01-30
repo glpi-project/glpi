@@ -63,6 +63,13 @@ interface CapacityInterface
     public function getSpecificRights(): array;
 
     /**
+     * Get array of classes related to the capacity which should be cloned when the asset is cloned.
+     * @return array
+     * @phpstan-return class-string<\CommonDBTM>[]
+     */
+    public function getCloneRelations(): array;
+
+    /**
      * Method executed during asset classes bootstraping.
      *
      * @param string $classname
