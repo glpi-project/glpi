@@ -77,7 +77,7 @@ $(() => {
     };
 
     /**
-     * Handle feedback message found in the reponse
+     * Handle feedback message found in the response
      *
      * @param {Object} response
      * @returns {void}
@@ -94,7 +94,7 @@ $(() => {
     };
 
     /**
-     * Handle friendly name updates found in the reponse
+     * Handle friendly name updates found in the response
      *
      * @param {Object} response
      * @returns {void}
@@ -109,7 +109,7 @@ $(() => {
     };
 
     /**
-     * Handle thrashin status updates found in the reponse
+     * Handle thrashin status updates found in the response
      *
      * @param {Object} response
      * @param {Object} form
@@ -135,7 +135,7 @@ $(() => {
     };
 
     /**
-     * Handle redirect instructions found in the reponse
+     * Handle redirect instructions found in the response
      *
      * @param {Object} response
      * @returns {void}
@@ -164,7 +164,7 @@ $(() => {
                 data: data,
             });
 
-            // Response might contain specific content dependign on the action type
+            // Response might contain specific content depending on the action type
             // This extra content will be handled by the functions below
             handleFeedbackMessages(response);
             handleFriendlyNameUpdate(response);
