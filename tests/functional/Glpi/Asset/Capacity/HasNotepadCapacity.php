@@ -263,7 +263,8 @@ class HasNotepadCapacity extends CapacityTestCase
             'id' => $definition->getID(),
             'profiles' => [
                 $superadmin_p_id => [
-                    READNOTE   => 1,
+                    READ => 1,
+                    READNOTE => 1,
                     UPDATENOTE => 0,
                 ],
             ],

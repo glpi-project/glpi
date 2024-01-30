@@ -388,12 +388,12 @@ final class AssetDefinition extends CommonDBTM
             }
         }
 
-        if (in_array('is_active', $this->updates)) {
+        if (in_array('is_active', $this->updates, true)) {
             // Force menu refresh when active state change
             unset($_SESSION['menu']);
         }
 
-        if (in_array('is_active', $this->updates, true)) {
+        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
             $this->syncProfilesRights();
         }
     }
@@ -419,6 +419,9 @@ final class AssetDefinition extends CommonDBTM
 
     public function setRights(int $profiles_id, int $rights): void
     {
+        /**
+         * @var \DBmysql $DB
+         */
         global $DB;
 
         $profiles = $this->getDecodedProfilesField();
