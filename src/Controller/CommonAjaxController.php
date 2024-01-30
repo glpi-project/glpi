@@ -73,7 +73,13 @@ class CommonAjaxController
         $this->item = new $itemtype();
 
         // Handle requested action
-        return $this->handleAction($input);
+        try {
+            return $this->handleAction($input);
+        } catch (\Glpi\Controller\RequestException $e) {
+            return $this->errorReponse($e->getHttpCode(), $e->getMessage());
+        } catch (\Throwable $e) {
+            return $this->errorReponse(500, __('An unexpected error occured.'));
+        }
     }
 
     /**
@@ -210,10 +216,7 @@ class CommonAjaxController
     final protected function handleUpdateAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $input['id'], UPDATE, $input);
-        if ($error_response instanceof Response) {
-            return $error_response;
-        }
+        $this->check((int) $input['id'], UPDATE, $input);
 
         if ($this->item->update($input)) {
             // Successfull update
@@ -240,10 +243,7 @@ class CommonAjaxController
     final protected function handleDeleteAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $input['id'], DELETE, $input);
-        if ($error_response instanceof Response) {
-            return $error_response;
-        }
+        $this->check((int) $input['id'], DELETE, $input);
 
         if ($this->item->delete($input)) {
             // Successfull deletion
@@ -270,10 +270,7 @@ class CommonAjaxController
     final protected function handleRestoreAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $input['id'], DELETE, $input);
-        if ($error_response instanceof Response) {
-            return $error_response;
-        }
+        $this->check((int) $input['id'], DELETE, $input);
 
         if ($this->item->restore($input)) {
             // Successfull restoration
@@ -300,10 +297,7 @@ class CommonAjaxController
     final protected function handlePurgeAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $input['id'], PURGE, $input);
-        if ($error_response instanceof Response) {
-            return $error_response;
-        }
+        $this->check((int) $input['id'], PURGE, $input);
 
         if ($this->item->delete($input, true)) {
             // Successfull purge
@@ -324,26 +318,28 @@ class CommonAjaxController
      * Similar checks than done in CommonDBTM::check() without parts that aren't
      * compatible with an AJAX response
      *
-     * If a check fail, an error reponse will be returned
-     * If everything is OK, `null` is returned
+     * If a check fail, throws an  exception
      *
      * @param int   $id     Target item's id
      * @param int   $right  Specific right to check
      * @param array $input  Input data
      *
-     * @return Response|null
+     * @return void
+     *
+     * @throws \Glpi\Controller\RequestException
      */
-    final protected function check(int $id, int $right, array $input): ?Response
+    final protected function check(int $id, int $right, array $input): void
     {
         if (!$this->item->checkIfExistOrNew($id)) {
-            return $this->errorReponse(403, __("Item not found"));
+            throw new \Glpi\Controller\RequestException(
+                403,
+                __("Item not found.")
+            );
         } elseif (!$this->item->can($id, $right, $input)) {
-            return $this->errorReponse(
+            throw new \Glpi\Controller\RequestException(
                 403,
                 __("You don't have permission to perform this action.")
             );
-        } else {
-            return null;
         }
     }
 
