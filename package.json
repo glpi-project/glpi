@@ -5,8 +5,8 @@
     "description": "GLPI dependencies",
     "license": "GPL-3.0-or-later",
     "engines": {
-        "node": ">= 20.9",
-        "npm": ">= 10.1"
+        "node": ">= 18.12",
+        "npm": ">= 8.19"
     },
     "dependencies": {
         "@algolia/autocomplete-js": "^1.12.1",
