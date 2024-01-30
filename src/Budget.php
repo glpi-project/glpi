@@ -328,7 +328,7 @@ class Budget extends CommonDropdown
                 'WHERE'        => [
                     'glpi_infocoms.itemtype'            => $itemtype,
                     'glpi_infocoms.budgets_id'          => $budgets_id
-                ] + getEntitiesRestrictCriteria($item_table),
+                ],
                 'ORDERBY'      => [
                     $item_table . '.entities_id'
                 ]
@@ -368,7 +368,7 @@ class Budget extends CommonDropdown
                 ],
                 'WHERE' => [
                     $cost_table . '.budgets_id' => $budgets_id,
-                ] + getEntitiesRestrictCriteria($item_table),
+                ],
                 'GROUPBY'      => [
                     $item_table . '.id',
                     $item_table . '.entities_id'
@@ -525,14 +525,21 @@ class Budget extends CommonDropdown
         ]);
 
         $itemtypes = [];
-        $entities = [];
+        $entities = [
+            -1 => [
+                'name' => __('Other entities'),
+                'itemtypes' => [],
+                'total' => 0,
+            ]
+        ];
         $entries = [];
         $itemtype_totals = [];
         $grand_total = 0;
+        $active_entities = $_SESSION['glpiactiveentities'];
 
         foreach ($iterator as $data) {
             $itemtype = $data['_itemtype'];
-            $entity = $data['entities_id'];
+            $entity = in_array($data['entities_id'], $active_entities, false) ? $data['entities_id'] : -1;
             if (!in_array($itemtype, $itemtypes, true)) {
                 $itemtypes[] = $itemtype;
             }
