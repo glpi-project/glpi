@@ -173,7 +173,7 @@ class GlpiCommonAjaxController
     /**
      * Handle thrashin status updates found in the response
      *
-     * @param {jQuery} response
+     * @param {Object} response
      * @param {jQuery} form
      * @returns {void}
      */

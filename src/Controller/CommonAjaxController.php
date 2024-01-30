@@ -81,7 +81,7 @@ class CommonAjaxController
         } catch (\Glpi\Controller\RequestException $e) {
             return $this->errorReponse($e->getHttpCode(), $e->getMessage());
         } catch (\Throwable $e) {
-            return $this->errorReponse(500, __('An unexpected error occured.'));
+            return $this->errorReponse(500, __('An unexpected error occurred.'));
         }
     }
 
