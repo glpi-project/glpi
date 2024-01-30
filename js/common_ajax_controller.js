@@ -40,15 +40,65 @@
 /* global glpi_toast_error */
 
 // Isolate functions and run when document is ready
-$(() => {
+class GlpiCommonAjaxController
+{
+    constructor() {
+        // Init events handler
+        $(document).on(
+            'submit',
+            'form[data-ajax-submit]',
+            (e) => this.#handleFormSubmit(e)
+        );
+    }
+
+    /**
+     * Handle ajax form submission event
+     *
+     * @param {Event} e
+     */
+    async #handleFormSubmit(e) {
+        e.preventDefault();
+
+        // Build form data
+        const form = $(e.target).closest('form');
+        const data = this.#buildFormData(form);
+
+        // Send AJAX request
+        try {
+            const response = await $.post({
+                url: CFG_GLPI.root_doc + '/ajax/common_ajax_controller.php',
+                data: data,
+            });
+
+            // Response might contain specific content depending on the action type
+            // This extra content will be handled by the functions below
+            this.#handleFeedbackMessages(response);
+            this.#handleFriendlyNameUpdate(response);
+            this.#handleTrashbinStatus(response, form);
+            this.#handleRedirect(response);
+        } catch (error) {
+            // Handle known backend errors
+            if (
+                error.responseJSON !== undefined
+                && error.responseJSON.messages !== undefined
+            ) {
+                this.#handleFeedbackMessages(error.responseJSON.messages);
+            } else {
+                // We don't know how to handle this error
+                console.error(error);
+                this.#handleFeedbackMessages({error: __("Unexpected error")});
+            }
+        }
+    }
+
     /**
      * Build form data from the submitted form data + some extra params like
      * the expected action and the target itemtype.
      *
-     * @param {Object} form
+     * @param {jQuery} form
      * @returns {string}
      */
-    const buildFormData = function (form) {
+    #buildFormData(form) {
         // Parse raw form data
         const data = form.serializeArray();
 
@@ -86,7 +136,7 @@ $(() => {
         data.push({'name': 'itemtype', 'value': form.data('ajaxSubmitItemtype')});
 
         return $.param(data);
-    };
+    }
 
     /**
      * Handle feedback message found in the response
@@ -94,7 +144,7 @@ $(() => {
      * @param {Object} response
      * @returns {void}
      */
-    const handleFeedbackMessages = function (response) {
+    #handleFeedbackMessages(response) {
         if (!response.messages) {
             return;
         }
@@ -103,7 +153,7 @@ $(() => {
         response.messages.info.forEach(message => glpi_toast_info(message));
         response.messages.warning.forEach(message => glpi_toast_warning(message));
         response.messages.error.forEach(message => glpi_toast_error(message));
-    };
+    }
 
     /**
      * Handle friendly name updates found in the response
@@ -111,23 +161,23 @@ $(() => {
      * @param {Object} response
      * @returns {void}
      */
-    const handleFriendlyNameUpdate = function (response) {
+    #handleFriendlyNameUpdate(response) {
         if (!response.friendlyname || !$('#header-friendlyname').length) {
             return;
         }
 
         // Update friendlyname
         $('#header-friendlyname').text(response.friendlyname);
-    };
+    }
 
     /**
      * Handle thrashin status updates found in the response
      *
-     * @param {Object} response
-     * @param {Object} form
+     * @param {jQuery} response
+     * @param {jQuery} form
      * @returns {void}
      */
-    const handleTrashbinStatus = function (response, form) {
+    #handleTrashbinStatus = function (response, form) {
         if (response.is_deleted === undefined) {
             return;
         }
@@ -145,48 +195,12 @@ $(() => {
      * @param {Object} response
      * @returns {void}
      */
-    const handleRedirect = function (response) {
+    #handleRedirect = function (response) {
         if (response.redirect === undefined) {
             return;
         }
 
         // Redirect to specified page
         window.location = response.redirect;
-    };
-
-    // Event handler on ajax form submit
-    $(document).on('submit', 'form[data-ajax-submit]', async function(e) {
-        e.preventDefault();
-
-        // Build form data
-        const form = $(e.target).closest('form');
-        const data = buildFormData(form);
-
-        // Send AJAX request
-        try {
-            const response = await $.post({
-                url: CFG_GLPI.root_doc + '/ajax/common_ajax_controller.php',
-                data: data,
-            });
-
-            // Response might contain specific content depending on the action type
-            // This extra content will be handled by the functions below
-            handleFeedbackMessages(response);
-            handleFriendlyNameUpdate(response);
-            handleTrashbinStatus(response, form);
-            handleRedirect(response);
-        } catch (error) {
-            // Handle known backend errors
-            if (
-                error.responseJSON !== undefined
-                && error.responseJSON.messages !== undefined
-            ) {
-                handleFeedbackMessages(error.responseJSON.messages);
-            } else {
-                // We don't know how to handle this error
-                console.error(error);
-                handleFeedbackMessages({error: __("Unexpected error")});
-            }
-        }
-    });
-});
+    }
+}

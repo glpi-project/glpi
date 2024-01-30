@@ -1669,3 +1669,6 @@ function waitForElement(selector) {
         });
     });
 }
+
+// Init the AJAX controller
+new GlpiCommonAjaxController();
