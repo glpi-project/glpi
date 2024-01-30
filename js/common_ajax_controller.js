@@ -177,7 +177,7 @@ class GlpiCommonAjaxController
      * @param {jQuery} form
      * @returns {void}
      */
-    #handleTrashbinStatus = function (response, form) {
+    #handleTrashbinStatus(response, form) {
         if (response.is_deleted === undefined) {
             return;
         }
@@ -187,7 +187,7 @@ class GlpiCommonAjaxController
         form.find('button[name=delete]').toggleClass("d-none", response.is_deleted);
         form.find('button[name=purge]').toggleClass("d-none", !response.is_deleted);
         form.find('button[name=restore]').toggleClass("d-none", !response.is_deleted);
-    };
+    }
 
     /**
      * Handle redirect instructions found in the response
@@ -195,7 +195,7 @@ class GlpiCommonAjaxController
      * @param {Object} response
      * @returns {void}
      */
-    #handleRedirect = function (response) {
+    #handleRedirect(response) {
         if (response.redirect === undefined) {
             return;
         }
