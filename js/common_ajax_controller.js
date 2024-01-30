@@ -55,8 +55,20 @@ $(() => {
         // Try to get submit button info
         const active_element = document.activeElement;
         let action = null;
-        if (active_element.tagName.toLowerCase() == "button") {
-            // Form submitted by presssing a button, get value from button
+
+        if (
+            // Submitted using the submit button
+            active_element.tagName.toLowerCase() == "button"
+            || (
+                // Submitted using a "submit" or "button" input
+                active_element.tagName.toLowerCase() == "input"
+                && (
+                    $(active_element).attr("type") == "submit"
+                    || $(active_element).attr("type") == "button"
+                )
+            )
+        ) {
+            // Get value from active element name
             action = $(active_element).prop('name');
         } else {
             // Form submitted by shift + enter, default to "update"
