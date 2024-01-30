@@ -3029,13 +3029,13 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      */
-    public function checkIfExistOrNew($id): bool
+    final public function checkIfExistOrNew($id): bool
     {
         return
             $this->isNewID($id)
             || (
                 isset($this->fields['id'])
-                && $this->fields['id'] == $id
+                && $this->fields['id'] === $id
             )
             || $this->getFromDB($id)
         ;
