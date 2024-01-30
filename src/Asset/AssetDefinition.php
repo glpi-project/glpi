@@ -146,7 +146,13 @@ final class AssetDefinition extends CommonDBTM
 
         if (!self::isNewID($ID)) {
             // Add custom delete button that will show the number of assets using this definition and a link to their search page
-            $asset_count = countElementsInTable('glpi_assets_assets', ['assets_assetdefinitions_id' => $ID]);
+            $asset_count = countElementsInTable(
+                table: 'glpi_assets_assets',
+                condition: [
+                    'assets_assetdefinitions_id' => $ID,
+                    'is_template' => 0
+                ]
+            );
             $asset_class = $this->getAssetClassName();
             $asset_search_url = $asset_class::getSearchURL();
             $params = [
