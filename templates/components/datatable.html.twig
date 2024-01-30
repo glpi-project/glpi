@@ -172,7 +172,7 @@
                                 <td>
                                     {% if colkey in entry|keys %}
 
-                                        {% set formatter = formatters[colkey] %}
+                                        {% set formatter = row_formatters[colkey]|default(formatters[colkey]) %}
 
                                         {% if formatter == "maintext" %}
                                             <span class="d-inline-block bg-blue-lt p-1 text-truncate"
