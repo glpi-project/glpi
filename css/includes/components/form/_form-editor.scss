@@ -58,6 +58,6 @@
 }
 
 .editor-footer {
-    border-top: 1px solid $border-color;
+    border-top: 1px solid var(--tblr-border-color);
     background: var(--glpi-form-toolbar-bg);
 }
