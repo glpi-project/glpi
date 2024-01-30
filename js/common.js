@@ -1672,4 +1672,6 @@ function waitForElement(selector) {
 
 // Init the AJAX controller
 /* global GlpiCommonAjaxController */
-new GlpiCommonAjaxController();
+if (typeof GlpiCommonAjaxController == "function") {
+    new GlpiCommonAjaxController();
+}
