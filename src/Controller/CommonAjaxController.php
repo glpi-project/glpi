@@ -51,56 +51,56 @@ class CommonAjaxController
     protected CommonDBTM $item;
 
     /**
-     * Handle a given POST request
+     * Handle a given HTTP request
      *
-     * @param array $post POST data
+     * @param array $input request data
      *
      * @return Response
      */
-    final public function handleRequest(array $post): Response
+    final public function handleRequest(array $input): Response
     {
         // Validate id as soon as possible so all sub-methods can assume
-        // $post['id'] exist
-        if (!isset($post['id'])) {
+        // $input['id'] exist
+        if (!isset($input['id'])) {
             return $this->errorReponse(400, __("Invalid id"));
         }
 
         // Validate and instanciate item from supplied itemtype
-        $itemtype = $post['itemtype'] ?? "";
+        $itemtype = $input['itemtype'] ?? "";
         if (!$this->isClassWhitelisted($itemtype)) {
             return $this->errorReponse(403, __("Forbidden itemtype"));
         }
         $this->item = new $itemtype();
 
         // Handle requested action
-        return $this->handleAction($post);
+        return $this->handleAction($input);
     }
 
     /**
      * Handle the requested action ("update", "delete", "restore" or "purge")
      * Can be overloaded by potential children classes to add new actions
      *
-     * @param array $post POST data
+     * @param array $input Input data
      *
      * @return Response
      */
-    protected function handleAction(array $post): Response
+    protected function handleAction(array $input): Response
     {
-        switch ($post['_action'] ?? "") {
+        switch ($input['_action'] ?? "") {
             default:
                 return $this->errorReponse(400, __("Invalid action"));
 
             case "update":
-                return $this->handleUpdateAction($post);
+                return $this->handleUpdateAction($input);
 
             case "delete":
-                return $this->handleDeleteAction($post);
+                return $this->handleDeleteAction($input);
 
             case "restore":
-                return $this->handleRestoreAction($post);
+                return $this->handleRestoreAction($input);
 
             case "purge":
-                return $this->handlePurgeAction($post);
+                return $this->handlePurgeAction($input);
         }
     }
 
@@ -203,19 +203,19 @@ class CommonAjaxController
     /**
      * Handle "update" action
      *
-     * @param array $post POST data
+     * @param array $input Input data
      *
      * @return Response
      */
-    final protected function handleUpdateAction(array $post): Response
+    final protected function handleUpdateAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $post['id'], UPDATE, $post);
+        $error_response = $this->check((int) $input['id'], UPDATE, $input);
         if ($error_response instanceof Response) {
             return $error_response;
         }
 
-        if ($this->item->update($post)) {
+        if ($this->item->update($input)) {
             // Successfull update
             // Feedback message is already handled by CommonDBTM::addMessageOnUpdateAction
             return $this->successResponse(200, [
@@ -233,19 +233,19 @@ class CommonAjaxController
     /**
      * Handle "delete" action
      *
-     * @param array $post POST data
+     * @param array $input Input data
      *
      * @return Response
      */
-    final protected function handleDeleteAction(array $post): Response
+    final protected function handleDeleteAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $post['id'], DELETE, $post);
+        $error_response = $this->check((int) $input['id'], DELETE, $input);
         if ($error_response instanceof Response) {
             return $error_response;
         }
 
-        if ($this->item->delete($post)) {
+        if ($this->item->delete($input)) {
             // Successfull deletion
             // Feedback message is already handled by CommonDBTM::addMessageOnDeleteAction
             return $this->successResponse(200, [
@@ -263,19 +263,19 @@ class CommonAjaxController
     /**
      * Handle "restore" action
      *
-     * @param array $post POST data
+     * @param array $input Input data
      *
      * @return Response
      */
-    final protected function handleRestoreAction(array $post): Response
+    final protected function handleRestoreAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $post['id'], DELETE, $post);
+        $error_response = $this->check((int) $input['id'], DELETE, $input);
         if ($error_response instanceof Response) {
             return $error_response;
         }
 
-        if ($this->item->restore($post)) {
+        if ($this->item->restore($input)) {
             // Successfull restoration
             // Feedback message is already handled by CommonDBTM::addMessageOnRestoreAction
             return $this->successResponse(200, [
@@ -293,19 +293,19 @@ class CommonAjaxController
     /**
      * Handle "purge" action
      *
-     * @param array $post POST data
+     * @param array $input Input data
      *
      * @return Response
      */
-    final protected function handlePurgeAction(array $post): Response
+    final protected function handlePurgeAction(array $input): Response
     {
         // Validate rights
-        $error_response = $this->check((int) $post['id'], PURGE, $post);
+        $error_response = $this->check((int) $input['id'], PURGE, $input);
         if ($error_response instanceof Response) {
             return $error_response;
         }
 
-        if ($this->item->delete($post, true)) {
+        if ($this->item->delete($input, true)) {
             // Successfull purge
             // Feedback message is already handled by CommonDBTM::addMessageOnPurgeAction
             return $this->successResponse(200, [
@@ -329,11 +329,11 @@ class CommonAjaxController
      *
      * @param int   $id     Target item's id
      * @param int   $right  Specific right to check
-     * @param array $post   POST data
+     * @param array $input  Input data
      *
      * @return Response|null
      */
-    final protected function check(int $id, int $right, array $post): ?Response
+    final protected function check(int $id, int $right, array $input): ?Response
     {
         if (!$this->item->checkIfExistOrNew($id)) {
             return $this->errorReponse(403, __("Item not found"));
