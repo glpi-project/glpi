@@ -74,6 +74,9 @@ class CommonAjaxController
 
         // Handle requested action
         try {
+            // READ right is historically always checked no matter the action
+            $this->check((int) $input['id'], READ, $input);
+
             return $this->handleAction($input);
         } catch (\Glpi\Controller\RequestException $e) {
             return $this->errorReponse($e->getHttpCode(), $e->getMessage());
