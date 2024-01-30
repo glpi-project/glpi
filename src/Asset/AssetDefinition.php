@@ -621,7 +621,7 @@ final class AssetDefinition extends CommonDBTM
 
         switch ($field) {
             case 'icon':
-                $value = htmlspecialchars($values[$field]) ?? '';
+                $value = htmlspecialchars($values[$field] ?? '');
                 return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                     {% import 'components/form/fields_macros.html.twig' as fields %}
                     {{ fields.dropdownWebIcons(name, value, '', {no_label: true, width: '200px'}) }}
