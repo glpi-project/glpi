@@ -119,7 +119,7 @@
                                        <select name="filters[{{ colkey }}][]"
                                             class="form-select filter-select-multiple" multiple>
                                         {% for field, value in columns_values[colkey] %}
-                                            <option value="{{ field }}" {{ filters[colkey] is defined and value in filters[colkey] ? 'selected' : '' }}>
+                                            <option value="{{ field }}" {{ filters[colkey] is defined and field in filters[colkey] ? 'selected' : '' }}>
                                                 {{ value }}
                                             </option>
                                         {% endfor %}
@@ -172,7 +172,7 @@
                                 <td>
                                     {% if colkey in entry|keys %}
 
-                                        {% set formatter = formatters[colkey] %}
+                                        {% set formatter = row_formatters[colkey]|default(formatters[colkey]) %}
 
                                         {% if formatter == "maintext" %}
                                             <span class="d-inline-block bg-blue-lt p-1 text-truncate"
@@ -212,7 +212,7 @@
                                                    {% endif %}
                                                 </span>
                                         {% else %}
-                                            {{ entry[colkey] }}
+                                            {{ entry[colkey]}}
                                         {% endif %}
                                     {% endif %}
                                 </td>
