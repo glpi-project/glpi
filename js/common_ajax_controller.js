@@ -132,18 +132,11 @@ $(() => {
             return;
         }
 
-        // Toggle "is_deleted" badge
-        if (response.is_deleted) {
-            $('#navigationheader').addClass("asset-deleted");
-            form.find('button[name=delete]').addClass("d-none");
-            form.find('button[name=purge]').removeClass("d-none");
-            form.find('button[name=restore]').removeClass("d-none");
-        } else {
-            $('#navigationheader').removeClass("asset-deleted");
-            form.find('button[name=delete]').removeClass("d-none");
-            form.find('button[name=purge]').addClass("d-none");
-            form.find('button[name=restore]').addClass("d-none");
-        }
+        // Update UX to show deleted state and relevant actions
+        $('#navigationheader').toggleClass("asset-deleted", response.is_deleted);
+        form.find('button[name=delete]').toggleClass("d-none", response.is_deleted);
+        form.find('button[name=purge]').toggleClass("d-none", !response.is_deleted);
+        form.find('button[name=restore]').toggleClass("d-none", !response.is_deleted);
     };
 
     /**
