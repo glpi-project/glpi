@@ -1939,7 +1939,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string Formatted message
      */
-    public function formatSessionMessageAfterAction(string $message): string
+    final public function formatSessionMessageAfterAction(string $message): string
     {
         if (isset($this->input['_no_message_link'])) {
             $display = $this->getNameID();
