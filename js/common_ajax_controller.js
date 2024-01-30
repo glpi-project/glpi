@@ -176,15 +176,17 @@ $(() => {
             handleTrashbinStatus(response, form);
             handleRedirect(response);
         } catch (error) {
-            // Handle backend errors
-            const response = error.responseJSON;
-
-            // Add minimal error message if server provided no feedback
-            if (response.messages === undefined) {
-                response.messages = {error: __("Unexpected error")};
+            // Handle known backend errors
+            if (
+                error.responseJSON !== undefined
+                && error.responseJSON.messages !== undefined
+            ) {
+                handleFeedbackMessages(error.responseJSON.messages);
+            } else {
+                // We don't know how to handle this error
+                console.error(error);
+                handleFeedbackMessages({error: __("Unexpected error")});
             }
-
-            handleFeedbackMessages(response);
         }
     });
 });
