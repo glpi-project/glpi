@@ -67,7 +67,7 @@ class CommonAjaxController
 
         // Validate and instanciate item from supplied itemtype
         $itemtype = $input['itemtype'] ?? "";
-        if (!$this->isClassWhitelisted($itemtype)) {
+        if (!$this->isClassAllowed($itemtype)) {
             return $this->errorReponse(403, __("Forbidden itemtype"));
         }
         $this->item = new $itemtype();
@@ -344,16 +344,20 @@ class CommonAjaxController
     }
 
     /**
-     * Check that the given class is whitelisted for ajax updates
+     * Check that the given class is allowed for ajax updates
      * This is needed as we don't want others controllers to be bypassed by this
-     * endpoint
+     * endpoint.
+     *
+     * Temporary method, this check should be deleted once we are confident
+     * that our rights management is good enough to allow all classes to access
+     * this endpoint.
      *
      * @param string $class Given class
      *
      * @return bool
      */
-    final protected function isClassWhitelisted(string $class): bool
+    final protected function isClassAllowed(string $class): bool
     {
-        return in_array($class, CommonAjaxControllerWhitelist::getClasses());
+        return in_array($class, CommonAjaxControllerAllowedClassesList::getClasses());
     }
 }

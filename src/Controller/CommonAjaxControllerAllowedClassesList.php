@@ -38,9 +38,12 @@ namespace Glpi\Controller;
 use Glpi\Form\Form;
 
 /**
- * Whitelist for classes allowed to be used with the CommonAjaxController class
+ * List of classes that are allowed to be used with the CommonAjaxController class
+ *
+ * Temporary class, will be deleted once we are confident that our rights
+ * management is good enough to allow all classes to access this endpoint.
  */
-final class CommonAjaxControllerWhitelist
+final class CommonAjaxControllerAllowedClassesList
 {
     /**
      * Return allowed classes list
@@ -49,7 +52,6 @@ final class CommonAjaxControllerWhitelist
      */
     public static function getClasses(): array
     {
-        // TOOD: add a hook so plugins can whitelist their classes
         return [
             Form::class,
         ];
