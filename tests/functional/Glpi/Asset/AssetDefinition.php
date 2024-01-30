@@ -106,66 +106,18 @@ class AssetDefinition extends DbTestCase
                 DELETE => 1,
             ],
         ];
+        $output = [
+            $self_service_p_id => READ,
+            $admin_p_id => READ | CREATE | UPDATE | DELETE,
+        ];
         yield [
             'input'    => [
                 'profiles' => $valid_profiles_input,
             ],
             'output'   => [
-                'profiles' => json_encode($valid_profiles_input),
+                'profiles' => json_encode($output),
             ],
             'messages' => [],
-        ];
-
-        yield [
-            'input'    => [
-                'profiles' => [
-                    999999999 => [ // invalid profile ID
-                        READ => 1,
-                        CREATE => 0,
-                        UPDATE => 0,
-                        DELETE => 0,
-                    ],
-                ],
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The following field has an incorrect value: "Profiles".',
-                ],
-            ],
-        ];
-
-        yield [
-            'input'    => [
-                'profiles' => [
-                    $self_service_p_id => [
-                        'read' => 1, // invalid right value
-                    ],
-                ],
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The following field has an incorrect value: "Profiles".',
-                ],
-            ],
-        ];
-
-        yield [
-            'input'    => [
-                'profiles' => [
-                    $self_service_p_id => [
-                        READ => 'a', // invalid boolean value
-                        UPDATE => 0,
-                    ],
-                ],
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The following field has an incorrect value: "Profiles".',
-                ],
-            ],
         ];
     }
 

@@ -321,6 +321,16 @@ final class AssetDefinition extends CommonDBTM
         }
 
         if (array_key_exists('profiles', $input)) {
+            // Adjust profile right format
+            foreach ($input['profiles'] as $profiles_id => $rights) {
+                $combined_rights = 0;
+                foreach ($rights as $right_value => $checked) {
+                    if ($checked) {
+                        $combined_rights |= (int) $right_value;
+                    }
+                }
+                $input['profiles'][$profiles_id] = $combined_rights;
+            }
             $input['profiles'] = json_encode($input['profiles']);
         }
 
@@ -409,9 +419,19 @@ final class AssetDefinition extends CommonDBTM
 
     public function setRights(int $profiles_id, int $rights): void
     {
+        global $DB;
+
         $profiles = $this->getDecodedProfilesField();
         $profiles[$profiles_id] = $rights;
-        $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
+        // Direct update to avoid infinite loops
+        $DB->update(
+            self::getTable(),
+            [
+                'id' => $this->getID(),
+                'profiles' => json_encode($profiles)
+            ],
+            ['id' => $this->getID()]
+        );
     }
 
     public function cleanDBonPurge()
@@ -508,7 +528,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 1,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'system_name',
             'name'          => __('System name'),
             'datatype'      => 'itemlink',
@@ -517,7 +537,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 3,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'is_active',
             'name'          => __('Active'),
             'datatype'      => 'bool'
@@ -525,7 +545,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 4,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
@@ -534,7 +554,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 5,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
@@ -543,7 +563,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 6,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'icon',
             'name'          => __('Icon'),
             'datatype'      => 'specific',
@@ -552,7 +572,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 7,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'comment',
             'name'          => __('Comments'),
             'datatype'      => 'text'
