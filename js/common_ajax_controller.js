@@ -134,12 +134,12 @@ $(() => {
 
         // Toggle "is_deleted" badge
         if (response.is_deleted) {
-            $('#header-is-deleted').removeClass("d-none");
+            $('#navigationheader').addClass("asset-deleted");
             form.find('button[name=delete]').addClass("d-none");
             form.find('button[name=purge]').removeClass("d-none");
             form.find('button[name=restore]').removeClass("d-none");
         } else {
-            $('#header-is-deleted').addClass("d-none");
+            $('#navigationheader').removeClass("asset-deleted");
             form.find('button[name=delete]').removeClass("d-none");
             form.find('button[name=purge]').addClass("d-none");
             form.find('button[name=restore]').addClass("d-none");

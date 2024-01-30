@@ -89,7 +89,7 @@
             <i class="{{ icon }} fa-2x"></i>
          </div>
       {% endif %}
-      <span {% if in_navheader %} class="status rounded-1" {% endif %}>
+      <span {% if in_navheader %} class="status rounded-1 me-1" {% endif %}>
          {% if in_navheader %}
             <i class="{{ icon }}"></i>
          {% endif %}
@@ -110,7 +110,7 @@
       {% set title = item.isField('date_mod') ? __('Item has been deleted on %s')|format(item.fields['date_mod']) : __('Deleted') %}
       <span
          id="header-is-deleted"
-         class="mx-1 text-white status rounded-1 {{ item.fields['is_deleted'] ? "" : "d-none" }}"
+         class="mx-1 status rounded-1"
          title="{{ title }}"
          data-bs-toggle="tooltip"
       >
