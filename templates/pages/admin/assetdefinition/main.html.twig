@@ -75,8 +75,7 @@
 {% endblock %}
 
 {% block more_fields %}
-    {# TODO Replace it by a reusable "icon" field macro (based on tabler icons) #}
-    {{ fields.textField(
+    {{ fields.dropdownWebIcons(
         'icon',
         item.fields['icon'],
         __('Icon'),

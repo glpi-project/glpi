@@ -184,6 +184,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::seems_utf8()`
 - `Toolbox::stripslashes_deep()`
 - `Search::getOptions()` no longer returns a reference
+- `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.

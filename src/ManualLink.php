@@ -159,6 +159,7 @@ class ManualLink extends CommonDBChild
         );
         echo '</td>';
         echo '</tr>';
+        //TODO Replace this with the WebIconSelector module via the dropdownWebIcons macro when this gets migrated to twig
         echo Html::script('js/Forms/FaIconSelector.js');
         echo Html::scriptBlock(<<<JAVASCRIPT
          $(

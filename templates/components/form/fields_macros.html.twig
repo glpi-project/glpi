@@ -578,6 +578,25 @@
    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name ~ options.rand})) }}
 {% endmacro %}
 
+{% macro dropdownWebIcons(name, value, label = '', options = {}) %}
+    {% set options = {
+        rand: random(),
+    }|merge(options|merge({
+        noselect2: true,
+    })) %}
+    {# Trim 'ti ' prefix if it exists in the value #}
+    {% set value = value|replace({'ti ': ''}) %}
+
+    {{ _self.dropdownArrayField(name, value, {(value): value}, label, options) }}
+    <script type="module">
+        import('{{ js_path('js/modules/Form/WebIconSelector.js') }}').then((m) => {
+            const dropdown_id = '{{ ('dropdown_' ~ name ~ options.rand)|replace({'[': '_', ']': '_'}) }}';
+            const selector = new m.default(document.getElementById(dropdown_id), ['ti']);
+            selector.init();
+        });
+    </script>
+{% endmacro %}
+
 {% macro dropdownHoursField(name, value, label = '', options = {}) %}
     {% set options = {
         'rand': random(),
