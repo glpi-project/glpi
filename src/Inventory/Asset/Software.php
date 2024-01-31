@@ -120,7 +120,7 @@ class Software extends InventoryAsset
                 $res_rule       = [];
 
                 // get entity of the parent asset
-                $this->computeParentAssetEntity($this->item->fields['entities_id'] ?? $this->entities_id);
+                $this->computeParentAssetEntity($this->item->fields['entities_id'] ?? 0);
 
                 //Only play rules engine if there's at least one rule
                 //for software dictionary
