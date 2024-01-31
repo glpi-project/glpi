@@ -41,31 +41,23 @@
 // Must not be too high as content-editable is usually done without padding
 $inline-input-padding: 2px 4px;
 
-.content-editable-h2 {
+.content-editable-h1 {
     // Copy h2 styles
-    font-size: 1.2rem !important;
+    font-size: 1.6rem !important;
     line-height: 1.5rem;
     font-weight: var(--tblr-font-weight-medium);
     border: 0;
     padding: $inline-input-padding;
     margin-bottom: 1rem;
     background-color: transparent;
-
-    &:hover {
-        box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.20);
-    }
+    box-shadow: none;
 }
-
 
 .content-editable-tinymce {
     // Remove default border and padding, add similar hover style used on our inputs
     .tox-tinymce {
         border-color: transparent !important;
         padding: $inline-input-padding;
-
-        &:hover {
-            box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.20);
-        }
     }
 
     // Status bar is empty here, do not display to gain some vertical space

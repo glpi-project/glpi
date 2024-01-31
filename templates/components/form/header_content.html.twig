@@ -89,14 +89,14 @@
             <i class="{{ icon }} fa-2x"></i>
          </div>
       {% endif %}
-      <span {% if in_navheader %} class="status rounded-1" {% endif %}>
+      <span {% if in_navheader %} class="status rounded-1 me-1" {% endif %}>
          {% if in_navheader %}
             <i class="{{ icon }}"></i>
          {% endif %}
          {% if withtemplate == 1 and item.id > 0 %}
             {{ _n('Template', 'Templates', 1) }} - {{ nametype }} - {{ template_name }}
          {% elseif not item.isNewItem() %}
-            {{ nametype }} - {{ friendlyname }}
+            {{ nametype }} - <span id="header-friendlyname"> {{ friendlyname }} </span>
          {% else %}
             {{ nametype }}
          {% endif %}
@@ -106,9 +106,14 @@
          <i class="{{ call('Agent::getIcon') }}"></i>
       </span>
       {% endif %}
-      {% if in_navheader and item.isField('is_deleted') and item.fields['is_deleted'] %}
+      {% if in_navheader and item.isField('is_deleted') %}
       {% set title = item.isField('date_mod') ? __('Item has been deleted on %s')|format(item.fields['date_mod']) : __('Deleted') %}
-      <span class="mx-1 status rounded-1" title="{{ title }}" data-bs-toggle="tooltip">
+      <span
+         id="header-is-deleted"
+         class="mx-1 status rounded-1"
+         title="{{ title }}"
+         data-bs-toggle="tooltip"
+      >
          <i class="ti ti-trash"></i>
          {{ __('Deleted') }}
       </span>
