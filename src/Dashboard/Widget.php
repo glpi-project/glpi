@@ -347,7 +347,7 @@ class Widget
 
          #{$p['id']}:hover {
             background-color: {$fg_hover_color};
-            border: TicketTask$1px solid {$fg_hover_border};
+            border: 1px solid {$fg_hover_border};
          }
 
          .theme-dark #{$p['id']} {
