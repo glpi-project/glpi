@@ -33,28 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
+namespace Glpi\Controller;
 
-include('../../inc/includes.php');
+use Exception;
 
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
+final class RequestException extends Exception
+{
+    protected int $http_code;
 
-// Read parameters
-$id = $_REQUEST['id'] ?? null;
-
-if (isset($_POST["add"])) {
-    // Create form
-    $form = new Form();
-    $form->check($id, CREATE);
-
-    if ($form->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($form->getLinkURL());
-        }
+    public function __construct($http_code, $message, $code = 0, $previous = null)
+    {
+        $this->http_code = $http_code;
+        parent::__construct($message, $code, $previous);
     }
-    Html::back();
-} else {
-    // Show requested form
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
+
+    public function getHttpCode(): int
+    {
+        return $this->http_code;
+    }
 }

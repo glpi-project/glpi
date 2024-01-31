@@ -1669,3 +1669,9 @@ function waitForElement(selector) {
         });
     });
 }
+
+// Init the AJAX controller
+/* global GlpiCommonAjaxController */
+if (typeof GlpiCommonAjaxController == "function") {
+    new GlpiCommonAjaxController();
+}

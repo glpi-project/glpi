@@ -1083,7 +1083,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
             $cleantarget = Html::cleanParametersURL($target);
             $is_deleted = $this instanceof CommonDBTM && $this->isField('is_deleted') && $this->fields['is_deleted'];
-            echo "<div class='navigationheader justify-content-sm-between " . ($is_deleted ? 'asset-deleted' : '') . "'>";
+            echo "<div id='navigationheader' class='navigationheader justify-content-sm-between " . ($is_deleted ? 'asset-deleted' : '') . "'>";
 
             // First set of header pagination actions, displayed on the left side of the page
             echo "<div class='left-icons'>";
