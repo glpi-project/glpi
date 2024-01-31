@@ -252,7 +252,7 @@ class Software extends InventoryAsset
         $mainasset_entities_id = $entities_id ?? 0;
         // find configuration for main asset entity in which entity we must create the software
         $strategy = Entity::getUsedConfig(
-            'entities_strategy_software', 
+            'entities_strategy_software',
             $mainasset_entities_id
         );
 
