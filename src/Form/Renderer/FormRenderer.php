@@ -44,9 +44,9 @@ use Glpi\Form\Form;
 final class FormRenderer
 {
     /**
-     * Render a form using the `render_form.html.twig` template
+     * Render the given form.
      *
-     * @param Form $form Form to be displayed
+     * @param Form $form
      *
      * @return string
      */
