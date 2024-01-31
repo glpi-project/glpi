@@ -3006,29 +3006,6 @@ HTML;
         return "#" . $fg_color;
     }
 
-
-    public static function isColorDark(string $color): bool
-    {
-        if ($color !== "") {
-            $color = str_replace("#", "", $color);
-
-            // if transparency present, get only the color part
-            if (strlen($color) === 8 && preg_match('/^[a-fA-F0-9]+$/', $color)) {
-                $color = substr($color, 0, 6);
-            }
-
-            $color_inst = new Color($color);
-            return $color_inst->isLight();
-        }
-
-        return false;
-    }
-
-    public static function isColorLight(string $color): bool
-    {
-        return !self::isColorDark($color);
-    }
-
     /**
      * Get an HTTP header value
      *
