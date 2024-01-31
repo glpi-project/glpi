@@ -1060,7 +1060,11 @@ class Config extends CommonDBTM
             ],
             [
                 'name'  => 'symfony/polyfill-php82',
-                'check' => 'Symfony\\Polyfill\\Php82\\SensitiveParameterValue'
+                'check' => 'ini_parse_quantity'
+            ],
+            [
+                'name'  => 'symfony/polyfill-php83',
+                'check' => 'json_validate'
             ],
             [
                 'name'  => 'league/oauth2-client',
