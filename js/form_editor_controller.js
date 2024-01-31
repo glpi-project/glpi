@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global _ */
+
 /**
  * Client code to handle users actions on the form_editor template
  */
@@ -88,7 +90,7 @@ class GlpiFormEditorController
                     const target = $(e.currentTarget);
                     const action = target.attr(attribute);
 
-                    this.#handleEditorAction(action, target);
+                    this.#handleEditorAction(action);
                 });
         });
     }
@@ -97,9 +99,8 @@ class GlpiFormEditorController
      * This method should be the unique entry point for any action on the editor.
      *
      * @param {string} action Action to perform
-     * @param {jQuery} target Element that triggered the action
      */
-    #handleEditorAction(action, target) {
+    #handleEditorAction(action) {
         switch (action) {
             // Show the preview of the current form in a modal
             case "show-preview":
