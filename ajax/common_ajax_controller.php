@@ -33,28 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
+use Glpi\Controller\CommonAjaxController;
 
-include('../../inc/includes.php');
+include('../inc/includes.php');
 
-// Only super admins for now - TODO add specific rights
-Session::checkRight("config", UPDATE);
-
-// Read parameters
-$id = $_REQUEST['id'] ?? null;
-
-if (isset($_POST["add"])) {
-    // Create form
-    $form = new Form();
-    $form->check($id, CREATE);
-
-    if ($form->add($_POST)) {
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($form->getLinkURL());
-        }
-    }
-    Html::back();
-} else {
-    // Show requested form
-    Form::displayFullPageForItem($id, ['admin', Form::getType()], []);
-}
+/**
+ * AJAX endpoint used to update, delete, restore or purge a CommonDBTM item
+ */
+$controller = new CommonAjaxController();
+$response = $controller->handleRequest($_POST);
+$response->send();
