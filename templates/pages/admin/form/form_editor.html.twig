@@ -41,6 +41,7 @@
 
 <form
     id="form-form"
+    data-glpi-form-editor-container
     class="
         form-editor-container
         d-flex
@@ -134,6 +135,23 @@
         ms-n2
         me-n2
     ">
+        {# Preview form action #}
+        {# Mostly useful to test forms ATM. Final UI/UX are not really thought out #}
+        {# TODO: UI/UX #}
+        <button
+            class="btn btn-ghost-secondary me-auto"
+            type="button"
+            name="preview"
+            form="form-form"
+            title="{{ __("Preview") }}"
+            data-bs-toggle="modal"
+            data-bs-target="#glpi_form_editor_preview_modal"
+            data-glpi-form-editor-on-click="show-preview"
+        >
+            <i class="ti ti-eye me-1"></i>
+            <span class="d-none d-xl-block">{{ __("Preview") }}</span>
+        </button>
+
         {# Move to trashbin form action #}
         {% if not item.isNewItem() and item.canDelete() %}
             <button
@@ -212,24 +230,18 @@
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
 
-<script>
-    // Isolate variables in a self calling function
-    (function(){
-        // Adjust height using javascript
-        // This is the only reliable way to make our content use the remaining
-        // height of the page as the tabs container doesn't define a height
-        const adjust_container_height = function() {
-            const window_height = document.body.offsetHeight ;
-            const editor_height = $('.form-editor-container').offset().top;
-            const tab_content_border = 1; // Border added at the bottom of the page, must be taken into account
-            $('.form-editor-container').css('height', (window_height - editor_height - tab_content_border) + "px");
-        };
-        adjust_container_height();
+{# Preview form modal #}
+<div
+    id="glpi_form_editor_preview_modal"
+    class="modal modal-blur fade"
+    aria-modal="true"
+    role="dialog"
+>
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 
-        // Trigger on resize
-        const adjust_container_height_throttled = _.throttle(adjust_container_height, 100);
-        $(window).on('resize', function() {
-           adjust_container_height_throttled();
-        });
-    })();
+<script>
+    new GlpiFormEditorController("[data-glpi-form-editor-container]");
 </script>
