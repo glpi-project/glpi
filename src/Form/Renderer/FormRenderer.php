@@ -53,7 +53,7 @@ final class FormRenderer
     public function render(Form $form): string
     {
         $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/render_form.html.twig', [
+        return $twig->render('pages/admin/form/form_renderer.html.twig', [
             'form' => $form,
         ]);
     }
