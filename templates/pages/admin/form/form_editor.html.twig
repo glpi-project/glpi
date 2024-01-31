@@ -41,6 +41,7 @@
 
 <form
     id="form-form"
+    data-glpi-form-editor-container
     class="
         form-editor-container
         d-flex
@@ -144,7 +145,8 @@
             form="form-form"
             title="{{ __("Preview") }}"
             data-bs-toggle="modal"
-            data-bs-target="#preview_form_modal"
+            data-bs-target="#glpi_form_editor_preview_modal"
+            data-glpi-form-editor-on-click="show-preview"
         >
             <i class="ti ti-eye me-1"></i>
             <span class="d-none d-xl-block">{{ __("Preview") }}</span>
@@ -230,11 +232,10 @@
 
 {# Preview form modal #}
 <div
-    id="preview_form_modal"
+    id="glpi_form_editor_preview_modal"
     class="modal modal-blur fade"
     aria-modal="true"
     role="dialog"
-    aria-labelledby="preview_form_modal_label"
 >
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content"></div>
@@ -242,38 +243,5 @@
 </div>
 
 <script>
-    // Isolate variables in a self calling function
-    (function(){
-        // Adjust height using javascript
-        // This is the only reliable way to make our content use the remaining
-        // height of the page as the tabs container doesn't define a height
-        const adjust_container_height = function() {
-            const window_height = document.body.offsetHeight ;
-            const editor_height = $('.form-editor-container').offset().top;
-            const tab_content_border = 1; // Border added at the bottom of the page, must be taken into account
-            $('.form-editor-container').css('height', (window_height - editor_height - tab_content_border) + "px");
-        };
-        adjust_container_height();
-
-        // Trigger on resize
-        const adjust_container_height_throttled = _.throttle(adjust_container_height, 100);
-        $(window).on('resize', function() {
-           adjust_container_height_throttled();
-        });
-
-        // Handle preview
-        $('#form-form button[name=preview]').on('click', function(e) {
-            // Read form's id
-            const form = $(e.target).closest('form');
-            const id = form.find('input[name=id]').val();
-
-            // Unsaved changes wont be taken into account as the ajax endpoint will load data from DB using the given id
-            // TODO: trigger a save before preview ?
-
-            // Render form
-            $("#preview_form_modal .modal-content").load(
-                CFG_GLPI.root_doc + "/ajax/form/form_renderer.php?id=" + id,
-            );
-        });
-    })();
+    new GlpiFormEditorController("[data-glpi-form-editor-container]");
 </script>

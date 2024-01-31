@@ -39,6 +39,7 @@ use CommonDBTM;
 use Config;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Html;
 use Log;
 
 /**
@@ -107,6 +108,9 @@ class Form extends CommonDBTM
             $this->getEmpty();
         }
         $this->initForm($id, $options);
+
+        // We will be editing and previewing forms from this page
+        echo Html::script("js/form_editor_controller.js");
 
         // Render twig template
         $twig = TemplateRenderer::getInstance();
