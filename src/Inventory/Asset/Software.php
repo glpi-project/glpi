@@ -119,6 +119,9 @@ class Software extends InventoryAsset
 
                 $res_rule       = [];
 
+                // get entity of the parent asset
+                $this->computeParentAssetEntity($this->item->fields['entities_id']);
+
                 //Only play rules engine if there's at least one rule
                 //for software dictionary
                 if ($count_rules > 0) {
@@ -244,22 +247,15 @@ class Software extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    private function computeParentAssetEntity($entities_id)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $mainasset_entities_id = 0;
-        // get entity of the parent asset
-        if (isset($this->main_asset)) {
-            $mainasset_entities_id = $this->main_asset->getEntityID();
-        }
-
+        $mainasset_entities_id = $entities_id ?? 0;
         // find configuration for main asset entity in which entity we must create the software
         $strategy = Entity::getUsedConfig(
-            'entities_strategy_software',
+            'entities_strategy_software', 
             $mainasset_entities_id
         );
+
         $entities_id_software = Entity::getUsedConfig(
             'entities_strategy_software',
             $mainasset_entities_id,
@@ -276,6 +272,15 @@ class Software extends InventoryAsset
             $this->entities_id  = $entities_id_software;
             $this->is_recursive = 1;
         }
+    }
+
+    public function handle()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // get entity of the parent asset
+        $this->computeParentAssetEntity($this->main_asset->getEntityID());
 
         //Get operating system
         $operatingsystems_id = 0;
