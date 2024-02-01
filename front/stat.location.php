@@ -51,8 +51,16 @@ Session::checkRight("statistic", READ);
 
 if (empty($_GET["showgraph"])) {
     $_GET["showgraph"] = 0;
+} else {
+    $_GET["showgraph"] = (int)$_GET["showgraph"];
 }
 
+//sanitize dates
+foreach (['date1', 'date2'] as $key) {
+    if (array_key_exists($key, $_GET) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_GET[$key]) !== 1) {
+        unset($_GET[$key]);
+    }
+}
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
     $year          = date("Y") - 1;
     $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
@@ -71,18 +79,20 @@ if (
 
 if (!isset($_GET["start"])) {
     $_GET["start"] = 0;
-}
-// Why this test ?? For me it's doing nothing
-if (isset($_GET["dropdown"])) {
-    $_GET["dropdown"] = $_GET["dropdown"];
+} else {
+    $_GET["start"] = (int)$_GET["start"];
 }
 
 if (empty($_GET["dropdown"])) {
     $_GET["dropdown"] = "ComputerType";
+} else {
+    $_GET["dropdown"] = (string)$_GET["dropdown"];
 }
 
 if (!isset($_GET['itemtype'])) {
     $_GET['itemtype'] = 'Ticket';
+} else {
+    $_GET['itemtype'] = (string)$_GET["itemtype"];
 }
 
 $stat = new Stat();
@@ -90,7 +100,7 @@ Stat::title();
 
 echo "<form method='get' name='form' action='stat.location.php'>";
 // keep it first param
-echo "<input type='hidden' name='itemtype' value='" . $_GET['itemtype'] . "'>";
+echo "<input type='hidden' name='itemtype' value=\"" . htmlspecialchars($_GET['itemtype']) . "\">";
 
 echo "<table class='tab_cadre_fixe' ><tr class='tab_bg_2'><td rowspan='2' width='30%'>";
 $values = [_n('Dropdown', 'Dropdowns', Session::getPluralNumber()) => ['ComputerType'    => _n('Type', 'Types', 1),
@@ -165,8 +175,15 @@ Html::printPager(
     $_GET['start'],
     count($val),
     $CFG_GLPI['root_doc'] . '/front/stat.location.php',
-    "date1=" . $_GET["date1"] . "&amp;date2=" . $_GET["date2"] .
-                     "&amp;itemtype=" . $_GET['itemtype'] . "&amp;dropdown=" . $_GET["dropdown"],
+    Toolbox::append_params(
+        [
+            'date1'    => $_GET['date1'],
+            'date2'    => $_GET['date2'],
+            'itemtype' => $_GET['itemtype'],
+            'dropdown' => $_GET['dropdown'],
+        ],
+        '&amp;'
+    ),
     'Stat',
     $params
 );

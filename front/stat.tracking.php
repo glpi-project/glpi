@@ -53,6 +53,12 @@ if (!$item = getItemForItemtype($_GET['itemtype'])) {
     exit;
 }
 
+//sanitize dates
+foreach (['date1', 'date2'] as $key) {
+    if (array_key_exists($key, $_GET) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_GET[$key]) !== 1) {
+        unset($_GET[$key]);
+    }
+}
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
     $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), date("Y") - 1));
     $_GET["date2"] = date("Y-m-d");
@@ -70,12 +76,12 @@ if (
 
 $params = [
     'itemtype'  => $_GET["itemtype"] ?? "",
-    'type'      => $_GET["type"] ?? "user",
+    'type'      => (string)$_GET["type"] ?? "user",
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
     'value2'    => $_GET["value2"] ?? 0,
-    'start'     => $_GET["start"] ?? 0,
-    'showgraph' => $_GET["showgraph"] ?? 0,
+    'start'     => (int)$_GET["start"] ?? 0,
+    'showgraph' => (int)$_GET["showgraph"] ?? 0,
 ];
 
 $caract = [
