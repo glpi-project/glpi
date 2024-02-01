@@ -623,6 +623,8 @@ class Computer extends CommonDBTM
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Item_RemoteManagement::rawSearchOptionsToAdd(self::class));
+
         return $tab;
     }
 
