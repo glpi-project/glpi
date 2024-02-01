@@ -233,7 +233,6 @@
         {% endif %}
     {% endif %}
 
-    {# Do not handle this in the input macro (would show a plain checkbox to clear) #}
     <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
