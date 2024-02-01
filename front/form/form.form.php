@@ -46,7 +46,8 @@ $id = $_REQUEST['id'] ?? null;
 if (($_GET['id'] ?? 0) == 0) {
     // Clear stale drafts
     // TODO: move to a dedicated cron task
-    $DB->delete(Form::getTable(), [
+    $form = new Form();
+    $form->deleteByCriteria([
         'is_draft'      => true,
         'date_creation' => ['<=', date('Y-m-d', strtotime('-7 days'))]
     ]);
