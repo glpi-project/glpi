@@ -234,16 +234,13 @@
     {% endif %}
 
     {# Do not handle this in the input macro (would show a plain checkbox to clear) #}
-    {% set clearable = options.clearable %}
-    {% set options = options|merge({
-        clearable: false
-    }) %}
     <div class="btn-group flex-grow-1 flatpickr" id="{{ options.id }}">
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
             'additional_attributes': {'data-input': ''},
             'input_addclass': options.input_addclass ~ final_expiration_class
+            'clearable': false
         })) }}
 
         {% if not options.readonly %}
@@ -252,7 +249,7 @@
                 <i class="{{ calendar_icon }}"></i>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
-            {% if clearable or options.maybeempty %}
+            {% if options.clearable or options.maybeempty %}
                 <i class="input-group-text fas fa-times-circle pointer" data-clear
                     title="{{ __('Clear') }}"></i>
             {% endif %}
