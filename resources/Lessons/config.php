@@ -46,7 +46,7 @@ return [
             "steps" => [
                 [
                     "title" => __("Introduction"),
-                    "content" => "file://introduction.md",
+                    "content" => "file://./sources/introduction.md",
                     "tooltipClass" => "large-tooltip",
                 ],
                 [
@@ -69,7 +69,7 @@ return [
             "steps" => [
                 [
                     "title" => __("🎉 Congratulations!"),
-                    "content" => "file://end-of-lesson.md",
+                    "content" => "file://./sources/end-of-lesson.md",
                     "tooltipClass" => "large-tooltip",
                 ]
             ]
@@ -118,27 +118,27 @@ return [
             "steps" => [
                 [
                     "title" => __("Empty ticket page"),
-                    "content" => "file://assistance/empty-ticket-page.md"
+                    "content" => "file://./sources/assistance/empty-ticket-page.md"
                 ],
                 [
                     "element" => "#page .dashboard-card .card-body",
                     "title" => __("Ticket Dashboard"),
-                    "content" => "file://assistance/ticket-dashboard.md",
+                    "content" => "file://./sources/assistance/ticket-dashboard.md",
                 ],
                 [
                     "element" => ".ajax-container.search-display-data",
                     "title" => __("Ticket List"),
-                    "content" => "file://assistance/ticket-list.md",
+                    "content" => "file://./sources/assistance/ticket-list.md",
                 ],
                 [
                     "element" => ".search-form-container",
                     "title" => __("Ticket Search"),
-                    "content" => "file://assistance/ticket-search.md",
+                    "content" => "file://./sources/assistance/ticket-search.md",
                 ],
                 [
                     "element" => "header.navbar .container-fluid ul li:nth-child(1)",
                     "title" => __("Create a ticket"),
-                    "content" => "file://assistance/create-ticket.md"
+                    "content" => "file://./sources/assistance/create-ticket.md"
                 ]
             ]
         ]

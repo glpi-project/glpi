@@ -143,12 +143,12 @@ class Discover_User extends CommonDBTM
         $discoverConfig = require GLPI_ROOT . '/resources/Lessons/config.php';
 
         array_walk_recursive($discoverConfig, function (&$value, $key) {
-            if ($key === 'content' && str_starts_with($value, 'file://')) {
-                $filepath = GLPI_ROOT . '/resources/Lessons/translated/' . Session::getLanguage() . '/' . substr($value, 7);
+            if ($key === 'content' && str_starts_with($value, 'file://./sources/')) {
+                $filepath = GLPI_ROOT . '/resources/Lessons/translated/' . Session::getLanguage() . '/' . substr($value, 17);
 
                 // If the file doesn't exist in the user language, we fallback to english
                 if (!file_exists($filepath)) {
-                    $filepath = GLPI_ROOT . '/resources/Lessons/translated/en_GB/' . substr($value, 7);
+                    $filepath = GLPI_ROOT . '/resources/Lessons/translated/en_GB/' . substr($value, 17);
                 }
 
                 $value = file_get_contents($filepath);
