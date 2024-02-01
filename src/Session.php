@@ -995,15 +995,23 @@ class Session
         } else {
             $user_table = User::getTable();
             $pu_table   = Profile_User::getTable();
+            $profile_table = Profile::getTable();
             $result = $DB->request(
                 [
                     'COUNT'     => 'count',
+                    'SELECT'    => [$profile_table . '.last_rights_update'],
                     'FROM'      => $user_table,
                     'LEFT JOIN' => [
                         $pu_table => [
                             'FKEY'  => [
                                 Profile_User::getTable() => 'users_id',
                                 $user_table         => 'id'
+                            ]
+                        ],
+                        $profile_table => [
+                            'FKEY'  => [
+                                $pu_table => 'profiles_id',
+                                $profile_table => 'id'
                             ]
                         ]
                     ],
@@ -1013,10 +1021,20 @@ class Session
                         $user_table . '.is_deleted' => 0,
                         $pu_table . '.profiles_id'  => $profile_id,
                     ] + getEntitiesRestrictCriteria($pu_table, 'entities_id', $entity_id, true),
+                    'GROUPBY'   => [$profile_table . '.id'],
                 ]
             );
-            if ($result->current()['count'] === 0) {
+
+            $row = $result->current();
+
+            if ($row['count'] === 0) {
                 $valid_user = false;
+            } elseif (
+                $row['last_rights_update'] !== null
+                && $row['last_rights_update'] > $_SESSION['glpiactiveprofile']['last_rights_update'] ?? 0
+            ) {
+                Session::reloadCurrentProfile();
+                $_SESSION['glpiactiveprofile']['last_rights_update'] = $row['last_rights_update'];
             }
         }
 
@@ -2169,5 +2187,25 @@ class Session
         $session_handler = ini_get('session.save_handler');
         return $session_handler !== false
             && (strtolower($session_handler) !== 'files' || is_writable(GLPI_SESSION_DIR));
+    }
+
+    /**
+     * Reload the current profile from the database
+     * Update the session variable accordingly
+     *
+     * @return void
+     */
+    public static function reloadCurrentProfile(): void
+    {
+        $current_profile_id = $_SESSION['glpiactiveprofile']['id'];
+
+        $profile = new Profile();
+        if ($profile->getFromDB($current_profile_id)) {
+            $profile->cleanProfile();
+            $_SESSION['glpiactiveprofile'] = array_merge(
+                $_SESSION['glpiactiveprofile'],
+                $profile->fields
+            );
+        }
     }
 }
