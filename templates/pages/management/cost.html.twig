@@ -61,7 +61,7 @@
         step: 0.0001
     }) }}
 
-    {{ fields.textareaField('comment', item.fields['comment'], __('Comment')) }}
+    {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', get_plural_number())) }}
     {{ fields.numberField('cost_fixed', item.fields['cost_fixed'], __('Fixed cost'), {
         min: 0,
         max: constant('PHP_INT_MAX'),
