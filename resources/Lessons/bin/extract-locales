@@ -3,9 +3,12 @@
 #
 # ---------------------------------------------------------------------
 #
-# GLPI tools
+# GLPI - Gestionnaire Libre de Parc Informatique
 #
-# @copyright 2017-2022 Teclib' and contributors.
+# http://glpi-project.org
+#
+# @copyright 2015-2024 Teclib' and contributors.
+# @copyright 2003-2014 by the INDEPNET Development Team.
 # @licence   https://www.gnu.org/licenses/gpl-3.0.html
 # @link      https://github.com/glpi-project/tools
 #
@@ -13,7 +16,7 @@
 #
 # LICENSE
 #
-# This file is part of GLPI tools.
+# This file is part of GLPI.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
