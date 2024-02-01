@@ -4444,6 +4444,17 @@ class Search extends DbTestCase
             $this->variable(array_search('dcroom', array_column($so, 'id')))->isNotEqualTo(false, $item->getTypeName() . ' should use \'$tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());');
         }
     }
+
+    public function testDataCenterSearchOption()
+    {
+        global $CFG_GLPI;
+        foreach ($CFG_GLPI['rackable_types'] as $rackable_type) {
+            $item = new $rackable_type();
+            $so = $item->rawSearchOptions();
+            //check if search option separator 'datacenter' exist
+            $this->variable(array_search('datacenter', array_column($so, 'id')))->isNotEqualTo(false, $item->getTypeName() . ' should use \'$tab = array_merge($tab, DataCenter::rawSearchOptionsToAdd());');
+        }
+    }
 }
 
 // @codingStandardsIgnoreStart
