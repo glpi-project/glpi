@@ -93,7 +93,7 @@ class HasRemoteManagementCapacity extends DbTestCase
             }
 
             // Check that the related search options are available
-            $so_keys = [180, 181];
+            $so_keys = [1220, 1221];
             if ($has_capacity) {
                 $this->array($item->getOptions())->hasKeys($so_keys);
             } else {
@@ -159,7 +159,7 @@ class HasRemoteManagementCapacity extends DbTestCase
             DisplayPreference::class,
             [
                 'itemtype' => $classname_1,
-                'num'      => 180, // remoteid
+                'num'      => 1220, // remoteid
                 'users_id' => 0,
             ]
         );
@@ -167,7 +167,7 @@ class HasRemoteManagementCapacity extends DbTestCase
             DisplayPreference::class,
             [
                 'itemtype' => $classname_2,
-                'num'      => 180, // remoteid
+                'num'      => 1221, // remoteid
                 'users_id' => 0,
             ]
         );

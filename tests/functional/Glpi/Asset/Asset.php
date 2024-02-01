@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
+use Glpi\Asset\AssetDefinitionManager;
 
 class Asset extends DbTestCase
 {
@@ -121,5 +122,21 @@ class Asset extends DbTestCase
                 $asset_2->update(['id' => $asset->getID(), 'name' => 'updated']);
             }
         )->message->contains('Asset definition cannot be changed.');
+    }
+
+    public function testSearchOptionsUnicity(): void
+    {
+        $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
+        $definition = $this->initAssetDefinition(
+            capacities: array_keys($capacities)
+        );
+
+        $asset = $this->createItem($definition->getAssetClassName(), ['name' => 'test asset']);
+
+        $this->when(
+            function () use ($asset) {
+                $this->array($asset->searchOptions());
+            }
+        )->error()->notExists();
     }
 }
