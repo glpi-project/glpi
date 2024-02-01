@@ -53,13 +53,10 @@
     "
     method="POST"
     action="{{ item.getFormURL() }}"
-    {% if not item.isNewItem() %}
-        data-ajax-submit {# Form will be submitted using AJAX #}
-        data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
-    {% endif %}
+    data-ajax-submit {# Form will be submitted using AJAX #}
+    data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
 >
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
-
 
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
@@ -153,9 +150,16 @@
         </button>
 
         {# Move to trashbin form action #}
-        {% if not item.isNewItem() and item.canDelete() %}
+        {% if item.canDelete() %}
+            {# Hidden if the item is still in draft mode #}
             <button
-                class="btn btn-ghost-warning me-2 {{ item.fields.is_deleted ? "d-none" : "" }}"
+                class="
+                    btn
+                    btn-ghost-warning
+                    me-2
+                    {{ item.fields.is_deleted ? "d-none" : "" }}
+                    {{ item.fields.is_draft ? "d-none" : "" }}
+                "
                 type="submit"
                 name="delete"
                 form="form-form"
@@ -181,7 +185,12 @@
         {# Restore action #}
         {% if item.canDelete() %}
             <button
-                class="btn btn-ghost-secondary me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
+                class="
+                    btn
+                    btn-ghost-secondary
+                    me-2
+                    {{ not item.fields.is_deleted ? "d-none" : "" }}
+                "
                 type="submit"
                 name="restore"
                 form="form-form"
@@ -191,12 +200,12 @@
             </button>
         {% endif %}
 
-        {% if item.isNewItem() and item.canCreate() %}
-            {# Add action #}
+        {% if item.fields.is_draft %}
+            {# Add action (which is an update form as we just change the is_draft field's value #}
             <button
                 class="btn btn-primary"
                 type="submit"
-                name="add"
+                name="update"
                 form="form-form"
                 title="{{ __("Add") }}"
             >
@@ -222,10 +231,12 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
-    {% if item.isNewItem() %}
-        {# CSRF #}
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    {# Set as non draft once saved #}
+    {% if item.fields.is_draft %}
+        <input type="hidden" name="is_draft" value="0">
     {% endif %}
+
+    {# TODO: add bootstrap tooltips on each buttons #}
 
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
@@ -243,5 +254,8 @@
 </div>
 
 <script>
-    new GlpiFormEditorController("[data-glpi-form-editor-container]");
+    new GlpiFormEditorController(
+        "[data-glpi-form-editor-container]",
+        {{ item.fields.is_draft ? "true" : "false" }}
+    );
 </script>
