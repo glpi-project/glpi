@@ -209,6 +209,7 @@
         'rand': random(),
         'enableTime': false,
         'checkIsExpired ': false,
+        'clearable': false,
     }|merge(options) %}
 
     {% set options = {
@@ -232,7 +233,7 @@
         {% endif %}
     {% endif %}
 
-    {% set clearable = options.clearable|default('false') %}
+    {# Do not handle this in the input macro (would show a plain checkbox to clear) #}
     {% set options = options|merge({
         clearable: false
     }) %}
@@ -249,7 +250,8 @@
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
                 <i class="{{ calendar_icon }}"></i>
             </button>
-            {% if clearable %}
+            {# maybeempty has no distinct purpose, but it was here first #}
+            {% if options.clearable or options.maybeempty %}
                 <i class="input-group-text fas fa-times-circle pointer" data-clear
                     title="{{ __('Clear') }}"></i>
             {% endif %}
