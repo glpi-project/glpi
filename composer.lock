@@ -772,18 +772,6 @@
             "time": "2024-01-23T12:17:07+00:00"
         },
         {
-            "name": "glpi-project/lessons",
-            "version": "dev-feature/lessons",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/glpi-project/lessons.git",
-                "reference": "a7d81bab71790da86ebacf0dc90ac9e4ab3f7a97"
-            },
-            "default-branch": true,
-            "type": "library",
-            "time": "2024-01-22T13:28:30+00:00"
-        },
-        {
             "name": "guzzlehttp/guzzle",
             "version": "7.8.1",
             "source": {
@@ -8055,9 +8043,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "glpi-project/lessons": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
