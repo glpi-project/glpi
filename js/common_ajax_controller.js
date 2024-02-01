@@ -76,6 +76,10 @@ class GlpiCommonAjaxController
             this.#handleFriendlyNameUpdate(response);
             this.#handleTrashbinStatus(response, form);
             this.#handleRedirect(response);
+
+            // Trigger a custom event to allow the client to execute an handler
+            // after the form has been successfully submitted
+            form.trigger("glpi-ajax-controller-submit-success", response);
         } catch (error) {
             // Handle known backend errors
             if (
