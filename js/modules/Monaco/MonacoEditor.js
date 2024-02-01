@@ -226,7 +226,7 @@ window.GLPI.Monaco = {
             minimap: {
                 enabled: false
             },
-            occurrencesHighlight: false,
+            occurrencesHighlight: "off",
             overviewRulerBorder: false,
             overviewRulerLanes: 0,
             quickSuggestions: false,
@@ -238,7 +238,7 @@ window.GLPI.Monaco = {
                 vertical: "hidden",
                 alwaysConsumeMouseWheel: false
             },
-            wordBasedSuggestions: false,
+            wordBasedSuggestions: "off",
             wordWrap: "off",
         };
     },
