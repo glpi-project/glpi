@@ -36,7 +36,6 @@
 namespace tests\units\Glpi\Asset\Capacity;
 
 use DbTestCase;
-use DisplayPreference;
 use Entity;
 use Log;
 
@@ -44,9 +43,10 @@ class HasKnowbaseCapacity extends DbTestCase
 {
     public function testCapacityActivation(): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
@@ -152,22 +152,6 @@ class HasKnowbaseCapacity extends DbTestCase
                 'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
                 'knowbaseitems_id' => $kb_item->getID(),
-            ]
-        );
-        $displaypref_1   = $this->createItem(
-            DisplayPreference::class,
-            [
-                'itemtype' => $classname_1,
-                'num'      => 81, // Reservable
-                'users_id' => 0,
-            ]
-        );
-        $displaypref_2   = $this->createItem(
-            DisplayPreference::class,
-            [
-                'itemtype' => $classname_2,
-                'num'      => 81, // Reservable
-                'users_id' => 0,
             ]
         );
 
