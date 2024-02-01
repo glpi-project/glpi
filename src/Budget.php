@@ -274,6 +274,7 @@ class Budget extends CommonDropdown
      */
     private function getItemListCriteria(bool $entity_restrict = true): QueryUnion
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
