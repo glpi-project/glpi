@@ -267,7 +267,12 @@ class Budget extends CommonDropdown
         return $tab;
     }
 
-    private function getItemListCriteria(): QueryUnion
+    /**
+     * Get the SQL union query to get the list of items on a budget and the associated costs
+     * @param bool $entity_restrict Whether to restrict the items to the current entity
+     * @return QueryUnion
+     */
+    private function getItemListCriteria(bool $entity_restrict = true): QueryUnion
     {
         global $DB;
 
@@ -333,6 +338,9 @@ class Budget extends CommonDropdown
                     $item_table . '.entities_id'
                 ]
             ];
+            if ($entity_restrict) {
+                $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
+            }
 
             /** @var CommonDBTM $item */
             $item = new $itemtype();
@@ -378,6 +386,9 @@ class Budget extends CommonDropdown
                     $item_table . '.name'
                 ]
             ];
+            if ($entity_restrict) {
+                $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
+            }
             if ($item instanceof Item_Devices) {
                 $criteria['ORDERBY'][] = $item_table . '.itemtype';
             } else {
@@ -521,7 +532,7 @@ class Budget extends CommonDropdown
         }
 
         $iterator = $DB->request([
-            'FROM' => $this->getItemListCriteria()
+            'FROM' => $this->getItemListCriteria(false)
         ]);
 
         $itemtypes = [];
