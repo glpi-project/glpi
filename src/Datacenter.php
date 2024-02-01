@@ -143,52 +143,52 @@ class Datacenter extends CommonDBTM
         ];
 
         $tab[] = [
-                'id'                 => '178',
-                'table'              => $itemtype::getTable(),
-                'field'              => '_virtual_datacenter_position', // virtual field
-                'additionalfields'   => [
-                    'id',
-                    'name'
-                ],
-                'name'               => __('Data center position'),
-                'datatype'           => 'specific',
-                'nosearch'           => true,
-                'nosort'             => true,
-                'massiveaction'      => false
+            'id'                 => '178',
+            'table'              => $itemtype::getTable(),
+            'field'              => '_virtual_datacenter_position', // virtual field
+            'additionalfields'   => [
+                'id',
+                'name'
+            ],
+            'name'               => __('Data center position'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
+            'massiveaction'      => false
         ];
 
         if (($itemtype != Rack::getType()) && ($itemtype != DCRoom::getType())) {
             $tab[] = [
-                    'id'            => '1451',
-                    'table'         => Datacenter::getTable(),
-                    'field'         => 'name',
-                    'datatype'      => 'dropdown',
-                    'linkfield'     => 'datacenters_id',
-                    'name'          => Datacenter::getTypeName(1),
-                    'massiveaction' => false,
-                    'joinparams'    => [
-                        'beforejoin'    => [
-                            'table'         => DCRoom::getTable(),
-                            'linkfield'     => 'dcrooms_id',
-                            'joinparams'    => [
-                                'beforejoin'    => [
-                                    'table'         => Rack::getTable(),
-                                    'linkfield'     => 'racks_id',
-                                    'joinparams'    => [
-                                        'beforejoin'    => [
-                                            'table'         => Item_Rack::getTable(),
-                                            'joinparams'    => [
-                                                'jointype'      => 'itemtype_item'
-                                            ]
+                'id'            => '1451',
+                'table'         => Datacenter::getTable(),
+                'field'         => 'name',
+                'datatype'      => 'dropdown',
+                'linkfield'     => 'datacenters_id',
+                'name'          => Datacenter::getTypeName(1),
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin'    => [
+                        'table'         => DCRoom::getTable(),
+                        'linkfield'     => 'dcrooms_id',
+                        'joinparams'    => [
+                            'beforejoin'    => [
+                                'table'         => Rack::getTable(),
+                                'linkfield'     => 'racks_id',
+                                'joinparams'    => [
+                                    'beforejoin'    => [
+                                        'table'         => Item_Rack::getTable(),
+                                        'joinparams'    => [
+                                            'jointype'      => 'itemtype_item'
                                         ]
                                     ]
                                 ]
                             ]
                         ]
                     ]
+                ]
             ];
         }
-    
+
         return $tab;
     }
 
