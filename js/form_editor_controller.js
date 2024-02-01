@@ -45,15 +45,21 @@ class GlpiFormEditorController
     #target;
 
     /**
+     * Is this form a draft?
+     * @type {boolean}
+     */
+    #is_draft;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
-     * @param {string} target
-     * @param {string} defaultQuestionType
-     * @param {string} templates
+     * @param {string}  target
+     * @param {boolean} is_draft
      */
-    constructor(target) {
+    constructor(target, is_draft) {
         this.#target = target;
+        this.#is_draft = is_draft;
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
@@ -79,6 +85,12 @@ class GlpiFormEditorController
         // Compute correct height when the window is resized
         $(window).on('resize', () => adjust_container_height_throttled());
 
+        // Handle ajax controller submit event
+        $(this.#target).on(
+            "glpi-ajax-controller-submit-success",
+            () => this.#handleBackendUpdateResponse()
+        );
+
         // Register handlers for each possible editor actions using custom
         // data attributes
         const events = ["click", "change", "input"];
@@ -93,6 +105,16 @@ class GlpiFormEditorController
                     this.#handleEditorAction(action);
                 });
         });
+    }
+
+    /**
+     * Handle backend response
+     */
+    #handleBackendUpdateResponse() {
+        // Item can no longer be draft after the first backend update
+        if (this.#is_draft) {
+            this.#removeDraftStatus();
+        }
     }
 
     /**
@@ -139,5 +161,26 @@ class GlpiFormEditorController
         $("#glpi_form_editor_preview_modal .modal-content").load(
             CFG_GLPI.root_doc + "/ajax/form/form_renderer.php?id=" + id,
         );
+    }
+
+    /**
+     * Update UX to reflect the fact that the form is no longer a draft.
+     */
+    #removeDraftStatus() {
+        // Turn the "Add" button into "Save"
+        const add_button = $('#form-form button[name=update]');
+        add_button
+            .find('.ti-plus')
+            .removeClass('ti-plus')
+            .addClass('ti-device-floppy');
+        add_button.find('.add-label').text(__('Save'));
+        add_button.prop("title", __('Save'));
+
+        // Show the delete button
+        const del_button = $('#form-form button[name=delete]');
+        del_button.removeClass('d-none');
+
+        // Mark as no longer a draft to avoid running this code again
+        this.#is_draft = false;
     }
 }

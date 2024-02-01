@@ -9477,6 +9477,7 @@ CREATE TABLE `glpi_forms_forms` (
     `is_recursive` tinyint NOT NULL DEFAULT '0',
     `is_active` tinyint NOT NULL DEFAULT '0',
     `is_deleted` tinyint NOT NULL DEFAULT '0',
+    `is_draft` tinyint NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `header` text,
     `date_mod` timestamp NULL DEFAULT NULL,
@@ -9487,6 +9488,7 @@ CREATE TABLE `glpi_forms_forms` (
     KEY `is_recursive` (`is_recursive`),
     KEY `is_active` (`is_active`),
     KEY `is_deleted` (`is_deleted`),
+    KEY `is_draft` (`is_draft`),
     KEY `date_mod` (`date_mod`),
     KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
