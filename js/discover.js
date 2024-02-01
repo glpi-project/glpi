@@ -75,7 +75,7 @@ function launchIntro(endpoint, lessonId, steps, endingSteps = [], isEndingLesson
 
                 switch (action) {
                     case 'dropdown-show':
-                        var dropdown = document.querySelector(data.dropdown);
+                        var dropdown = document.querySelector(data);
                         if ($(dropdown).length === 0) {
                             return;
                         }

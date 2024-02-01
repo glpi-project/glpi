@@ -59,9 +59,7 @@ return [
                     "title" => __("Lessons Entry"),
                     "content" => __("This menu is a hub for numerous functionalities related to the user. It includes options for account settings, profile information, and more. One of the most important entries in this menu is **My Lessons**. This is where users can access all their lessons, track their progress, and continue learning. It's important to focus on finding the **My Lessons** entry as it is the gateway to the user's learning journey."),
                     "actions" => [
-                        "dropdown-show" => [
-                            "dropdown" => "header .btn-group .dropdown",
-                        ]
+                        "dropdown-show" => "header .btn-group .dropdown",
                     ],
                 ]
             ]
