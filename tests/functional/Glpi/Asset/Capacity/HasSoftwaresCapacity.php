@@ -203,23 +203,33 @@ class HasSoftwaresCapacity extends DbTestCase
             ]
         );
 
+        $item_1_logs_criteria = [
+            'itemtype_link' => $classname_1,
+        ];
+        $item_2_logs_criteria = [
+            'itemtype_link' => $classname_2,
+        ];
+
         // Ensure relation, display preferences and logs exists, and class is registered to global config
         $this->object(Item_SoftwareVersion::getById($item_software_1->getID()))->isInstanceOf(Item_SoftwareVersion::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(1);
         $this->object(Item_SoftwareVersion::getById($item_software_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
-        //$this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
         $this->boolean(Item_SoftwareVersion::getById($item_software_1->getID()))->isFalse();
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['software_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
         $this->object(Item_SoftwareVersion::getById($item_software_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
     }
 }

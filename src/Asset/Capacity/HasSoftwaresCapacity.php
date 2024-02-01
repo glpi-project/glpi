@@ -63,14 +63,30 @@ class HasSoftwaresCapacity extends AbstractCapacity
         $this->unregisterFromTypeConfig('software_types', $classname);
 
         //Delete related softwares
-        $softwares = new Item_SoftwareVersion();
-        $softwares->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
+        $softwares_version = new Item_SoftwareVersion();
+        $softwares_version->deleteByCriteria(
+            [
+                'itemtype' => $classname
+            ],
+            force: true,
+            history: false
+        );
+
+        $software_licenses = new Item_SoftwareLicense();
+        $software_licenses->deleteByCriteria(
+            [
+                'itemtype' => $classname
+            ],
+            force: true,
+            history: false
+        );
 
         // Clean history related to softwares
         $this->deleteRelationLogs($classname, Item_SoftwareVersion::class);
+        $this->deleteRelationLogs($classname, Item_SoftwareLicense::class);
         $this->deleteRelationLogs($classname, Software::class);
-        $this->deleteRelationLogs($classname, SoftwareLicense::class);
         $this->deleteRelationLogs($classname, SoftwareVersion::class);
+        $this->deleteRelationLogs($classname, SoftwareLicense::class);
 
         // Clean display preferences
         $softwares_search_options = Item_SoftwareVersion::getSearchOptionsToAdd($classname::getType());
