@@ -54,12 +54,14 @@ class WifiNetwork extends CommonDropdown
         return [
             ''          => '',
             'a'         => 'a',
+            'b'         => 'b',
             'a/b'       => 'a/b',
             'a/b/g'     => 'a/b/g',
             'a/b/g/n'   => 'a/b/g/n',
             'a/b/g/n/y' => 'a/b/g/n/y',
-            'ac'        => 'ac',
-            'ax'        => 'ax',
+            'ac'        => 'ac', // Wifi 5
+            'ax'        => 'ax', // Wifi 6/6E
+            'be'        => 'be', // Wifi 7
         ];
     }
 
