@@ -47,32 +47,6 @@ interface CapacityInterface
     public function getLabel(): string;
 
     /**
-     * Get the capacity helptext.
-     *
-     * This text may be defined to help explain what the capacity is
-     * doing if the label is not precise enough by itself.
-     *
-     * @return string
-     */
-    public function getHelpText(): string;
-
-    /**
-     * Get configuration messages related to the capacity.
-     *
-     * These messages are displayed on the asset definition configuration page
-     * in order to give feedeback to the user about possible extra
-     * configuration steps related to external components (e.g. profiles).
-     *
-     * @param string $classname
-     * @return array<int, array{type: int, text: string, ?link: string}>
-     *      An array of messages. A message is an array with the following keys:
-     *       - type: The message type (INFO, WARNING or ERROR constants)
-     *       - text: The message content
-     *       - link: An optional link used to wrap the message
-     */
-    public function getConfigurationMessages(string $classname): array;
-
-    /**
      * Get the search options related to the capacity.
      *
      * @param string $classname

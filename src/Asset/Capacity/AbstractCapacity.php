@@ -55,16 +55,6 @@ abstract class AbstractCapacity implements CapacityInterface
     {
     }
 
-    public function getHelpText(): string
-    {
-        return '';
-    }
-
-    public function getConfigurationMessages(string $classname): array
-    {
-        return [];
-    }
-
     public function getSearchOptions(string $classname): array
     {
         return [];

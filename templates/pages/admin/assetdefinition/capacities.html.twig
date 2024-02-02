@@ -42,35 +42,6 @@
 
 
 {% block form_fields %}
-    {% set concrete_class = item.getAssetClassName() %}
-
-    {# Display configuration messages #}
-    {% for capacity in capacities %}
-        {% for message in capacity.getConfigurationMessages(concrete_class) %}
-
-            {# Compute message type #}
-            {% if message.type == constant('WARNING') %}
-                {% set type = "warning" %}
-            {% elseif message.type == constant('ERROR') %}
-                {% set type = "danger" %}
-            {% else %}
-                {% set type = "info" %}
-            {% endif %}
-
-            {# Display message #}
-            <div class="alert alert-{{ type }}" role="alert">
-                <strong class="me-1">{{ capacity.getLabel() }}: </strong>
-
-                {# Link is optional #}
-                {% if message.link is defined %}
-                    <a href={{ message.link }}> {{ message.text }} </a>
-                {% else %}
-                    {{ message.text }}
-                {% endif %}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
     <input type="hidden" name="_update_capacities" value="1" />
     {% for capacity in capacities %}
         {% set field %}
@@ -83,15 +54,6 @@
                     {{ item.hasCapacityEnabled(capacity) ? 'checked' : '' }} />
             </label>
         {% endset %}
-
-        {# Base options #}
-        {% set options = {} %}
-
-        {# Add help text if defined #}
-        {% if not (capacity.getHelpText() is empty) %}
-            {% set options = options|merge({'helper': capacity.getHelpText()}) %}
-        {% endif %}
-
-        {{ fields.field('capacities[]', field, capacity.getLabel(), options) }}
+        {{ fields.field('capacities[]', field, capacity.getLabel()) }}
     {% endfor %}
 {% endblock %}

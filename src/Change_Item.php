@@ -1,4 +1,5 @@
 <?php
+use Glpi\Asset\Asset;
 
 /**
  * ---------------------------------------------------------------------
@@ -226,6 +227,10 @@ class Change_Item extends CommonItilObject_Item
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if ($item instanceof Asset && !$this->shouldDisplayTabForAsset($item)) {
+            return '';
+        }
 
         /** @var CommonDBTM $item */
         if (!$withtemplate) {
