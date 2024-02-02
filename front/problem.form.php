@@ -201,9 +201,7 @@ if (isset($_POST["add"])) {
 } else {
     // Add a problem from item : format data
     if (
-        isset($_REQUEST['_add_fromitem'])
-        && isset($_REQUEST['itemtype'])
-        && isset($_REQUEST['items_id'])
+        isset($_REQUEST['_add_fromitem'], $_REQUEST['itemtype'], $_REQUEST['items_id'])
     ) {
         $_REQUEST['items_id'] = [$_REQUEST['itemtype'] => [$_REQUEST['items_id']]];
     }
