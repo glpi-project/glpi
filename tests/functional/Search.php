@@ -1511,6 +1511,175 @@ class Search extends DbTestCase
                             )) DESC ");
     }
 
+    public function testAddOrderByUser()
+    {
+        $this->login('glpi', 'glpi');
+
+        $user_1 = getItemByTypeName('User', TU_USER)->getID();
+        $user_2 = getItemByTypeName('User', 'glpi')->getID();
+        $group_1 = getItemByTypeName('Group', '_test_group_1')->getID();
+
+        // Creates Changes with different requesters
+        $t = $this->createItems('Change', [
+            // Test set on requester
+            [
+                'name' => 'testAddOrderByUser user 1 (R)',
+                'content' => '',
+                '_actors' => [
+                    'requester' => [['itemtype' => 'User', 'items_id' => $user_1]],
+                ]
+            ],
+            [
+                'name' => 'testAddOrderByUser user 2 (R)',
+                'content' => '',
+                '_actors' => [
+                    'requester' => [['itemtype' => 'User', 'items_id' => $user_2]],
+                ]
+            ],
+            [
+                'name' => 'testAddOrderByUser user 1 (R) + user 2 (R)',
+                'content' => '',
+                '_actors' => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user_1],
+                        ['itemtype' => 'User', 'items_id' => $user_2],
+                    ],
+                ]
+            ],
+            [
+                'name' => 'testAddOrderByUser anonymous user (R)',
+                'content' => '',
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'itemtype' => 'User',
+                            'items_id' => 0,
+                            "alternative_email" => "myemail@email.com",
+                            'use_notification' => true
+                        ]
+                    ],
+                ]
+            ],
+            [
+                'name' => 'testAddOrderByUser group 1 (R)',
+                'content' => '',
+                '_actors' => [
+                    'requester' => [['itemtype' => 'Group', 'items_id' => $group_1]],
+                ]
+            ],
+            [
+                'name' => 'testAddOrderByUser user 1 (R) + group 1 (R)',
+                'content' => '',
+                '_actors' => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user_1],
+                        ['itemtype' => 'Group', 'items_id' => $group_1],
+                    ],
+                ]
+            ],
+        ]);
+
+        // get the Changes filtered title containing 'testAddOrderByUser' and ordered by requester name in ASC
+        $search_params = [
+            'is_deleted' => 0,
+            'start' => 0,
+            'criteria[0][field]' => 1,
+            'criteria[0][searchtype]' => 'contains',
+            'criteria[0][value]' => 'testAddOrderByUser',
+            'sort' => 4,
+            'order' => 'ASC',
+        ];
+        $data = $this->doSearch('Change', $search_params);
+
+        $this->integer($data['data']['totalcount'])->isEqualTo(6);
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[0]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser group 1 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[1]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 1 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[2]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 1 (R) + group 1 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[3]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 1 (R) + user 2 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[4]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 2 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[5]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser anonymous user (R)');
+
+        // get the Changes filtered title containing 'testAddOrderByUser' and sort by requester name in DESC
+        $search_params = [
+            'is_deleted' => 0,
+            'start' => 0,
+            'criteria[0][field]' => 1,
+            'criteria[0][searchtype]' => 'contains',
+            'criteria[0][value]' => 'testAddOrderByUser',
+            'sort' => 4,
+            'order' => 'DESC',
+        ];
+        $data = $this->doSearch('Change', $search_params);
+
+        $this->integer($data['data']['totalcount'])->isEqualTo(6);
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[0]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser anonymous user (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[1]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 2 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[2]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 1 (R) + user 2 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[3]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 1 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[4]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser user 1 (R) + group 1 (R)');
+        $this->array($data)
+            ->array['data']
+            ->array['rows']
+            ->array[5]
+            ->array['raw']
+            ->string['ITEM_Change_1']->isEqualTo('testAddOrderByUser group 1 (R)');
+    }
+
     private function cleanSQL($sql)
     {
         // Clean whitespaces
