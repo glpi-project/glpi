@@ -185,7 +185,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         // ITIL Object update case
         if ($params['id'] > 0) {
             // Get associated elements for obj
-            $used = static::getUsedItems($params['id']);
+            $used = static::getUsedItems($params['id'], $obj::class);
             foreach ($used as $itemtype => $items) {
                 foreach ($items as $items_id) {
                     if (
@@ -265,7 +265,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 foreach ($items as $items_id) {
                     $count++;
                     $twig_params['items_to_add'][] = static::showItemToAdd(
-                        $params['id'],
                         $itemtype,
                         $items_id,
                         [
@@ -287,54 +286,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         TemplateRenderer::getInstance()->display('components/itilobject/add_items.html.twig', $twig_params);
     }
 
-    /**
-     * Print the HTML ajax associated item add
-     *
-     * @param $object_id  object id from item_ticket but it seems to be useless UNUSED
-     * @param $itemtype   type of the item t show
-     * @param $items_id   item id
-     * @param $options   array of possible options:
-     *    - id                  : ID of the object holding the items
-     *    - _users_id_requester : ID of the requester user
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
-     *
-     * @return string
-     **/
-    public static function showItemToAdd($object_id, $itemtype, $items_id, $options)
-    {
-        $params = [
-            'rand'      => mt_rand(),
-            'delete'    => true,
-            'visible'   => true,
-            'kblink'    => true
-        ];
-
-        foreach ($options as $key => $val) {
-            $params[$key] = $val;
-        }
-
-        $result = "";
-
-        if ($item = getItemForItemtype($itemtype)) {
-            if ($params['visible']) {
-                $item->getFromDB($items_id);
-                $result =  "<div id='{$itemtype}_$items_id'>";
-                $result .= $item->getTypeName(1) . " : " . $item->getLink(['comments' => true]);
-                $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
-                if ($params['delete']) {
-                    $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
-                }
-                if ($params['kblink']) {
-                    $result .= ' ' . $item->getKBLinks();
-                }
-                $result .= "</div>";
-            } else {
-                $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
-            }
-        }
-
-        return $result;
-    }
 
     /**
      * Print the HTML array for Items linked to a ITIL object
@@ -386,7 +337,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     [static::$items_id_1 => $instID]
                 );
             }
-            $used = static::getUsedItems($instID);
+            $used = static::getUsedItems($instID, static::$itemtype_1);
             static::dropdownAllDevices("itemtype", null, 0, 1, $devices_user_id, $obj->fields["entities_id"], [static::$items_id_1 => $instID, 'used' => $used, 'rand' => $rand]);
             echo "<span id='item_selection_information$rand'></span>";
             echo "</td><td class='center' width='30%'>";
@@ -1129,26 +1080,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return Dropdown::showFromArray($p['name'], $output, $p);
     }
 
-    /**
-     * Return used items for a ITIL object
-     *
-     * @param integer type $obj_id ITIL object on which the used item are attached
-     *
-     * @return array
-     */
-    public static function getUsedItems($items_id)
-    {
-
-        $data = getAllDataFromTable(static::getTable(), [static::$items_id_1 => $items_id]);
-        $used = [];
-        if (!empty($data)) {
-            foreach ($data as $val) {
-                $used[$val['itemtype']][] = $val['items_id'];
-            }
-        }
-
-        return $used;
-    }
 
     /**
      * Form for Followup on Massive action
@@ -1575,5 +1506,217 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             echo "</div>";
         }
         return $rand;
+    }
+
+
+    /**
+     * Return used items for a commonitilobject
+     *
+     * @param integer $itilobject_id
+     * @param string  $itilobject_type
+     *
+     * @return array
+     */
+    public static function getUsedItems($itilobject_id, $itilobject_type)
+    {
+
+        $data = getAllDataFromTable(static::getTable(), [getForeignKeyFieldForItemType($itilobject_type) => $itilobject_id]);
+        $used = [];
+        if (!empty($data)) {
+            foreach ($data as $val) {
+                $used[$val['itemtype']][] = $val['items_id'];
+            }
+        }
+
+        return $used;
+    }
+
+
+    public static function showItemToAdd($itemtype, $items_id, $options)
+    {
+        $params = [
+            'rand'      => mt_rand(),
+            'delete'    => true,
+            'visible'   => true,
+            'kblink'    => true
+        ];
+
+        foreach ($options as $key => $val) {
+            $params[$key] = $val;
+        }
+
+        $result = "";
+
+        if ($item = getItemForItemtype($itemtype)) {
+            if ($params['visible']) {
+                $item->getFromDB($items_id);
+                $result =  "<div id='{$itemtype}_$items_id'>";
+                $result .= $item->getTypeName(1) . " : " . $item->getLink(['comments' => true]);
+                $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
+                if ($params['delete']) {
+                    $result .= "<button class='btn btn-sm btn-outline-secondary' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\">";
+                    $result .= "<i class='ti ti-circle-x'></i>";
+                    $result .= "</button>";
+                }
+                if ($params['kblink']) {
+                    $result .= ' ' . $item->getKBLinks();
+                }
+                $result .= "</div>";
+            } else {
+                $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
+            }
+        }
+
+        return $result;
+    }
+
+        /**
+     * Print the HTML ajax associated item add
+     *
+     * @param $ticket Ticket object
+     * @param $options   array of possible options:
+     *    - id                  : ID of the ticket
+     *    - _users_id_requester : ID of the requester user
+     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
+     *
+     * @return void
+     **/
+    public static function itemAddForm(CommonDBTM $itil_object, $options = [])
+    {
+        $params = [
+            'id'  => (isset($itil_object->fields['id']) && $itil_object->fields['id'] != '') ? $itil_object->fields['id'] : 0,
+            'entities_id'  => (isset($itil_object->fields['entities_id']) && is_numeric($itil_object->fields['entities_id']) ? $itil_object->fields['entities_id'] : Session::getActiveEntity()),
+            '_users_id_requester' => 0,
+            'items_id'            => [],
+            'itemtype'            => '',
+            '_canupdate'          => false
+        ];
+
+        $opt = [];
+
+        foreach ($options as $key => $val) {
+            if (!empty($val)) {
+                $params[$key] = $val;
+            }
+        }
+
+        if (!$itil_object->can($params['id'], READ)) {
+            return false;
+        }
+
+        $can_add_items = $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(2, $itil_object::HELPDESK_MY_HARDWARE) || $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(2, $itil_object::HELPDESK_ALL_HARDWARE);
+        $canedit = ($can_add_items && $itil_object->can($params['id'], UPDATE)
+                  && $params['_canupdate']);
+
+       // Ticket update case
+        $usedcount = 0;
+        if ($params['id'] > 0) {
+           // Get requester
+            $class        = new $itil_object->userlinkclass();
+            $tickets_user = $class->getActors($params['id']);
+            if (
+                isset($tickets_user[CommonITILActor::REQUESTER])
+                && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)
+            ) {
+                foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {
+                    $params['_users_id_requester'] = $user_id_single['users_id'];
+                }
+            }
+
+           // Get associated elements for ticket
+            $used = self::getUsedItems($params['id'], $itil_object->getType());
+            foreach ($used as $itemtype => $items) {
+                foreach ($items as $items_id) {
+                    if (
+                        !isset($params['items_id'][$itemtype])
+                        || !in_array($items_id, $params['items_id'][$itemtype])
+                    ) {
+                        $params['items_id'][$itemtype][] = $items_id;
+                    }
+                    ++$usedcount;
+                }
+            }
+        }
+
+        $rand  = mt_rand();
+        $count = 0;
+
+        $twig_params = [
+            'rand'               => $rand,
+            'can_edit'           => $canedit,
+            'my_items_dropdown'  => '',
+            'all_items_dropdown' => '',
+            'items_to_add'       => [],
+            'params'             => $params,
+            'opt'                => []
+        ];
+
+        // Get itil template
+        $template_class = static::$itemtype_1 . "Template";
+        $itil_t = new $template_class();
+        if (isset($options['_' . strtolower($template_class) . 'template'])) {
+            $itil_t                  = $options['_' . strtolower($template_class) . 'template'];
+            if (isset($itil_t->fields['id'])) {
+                $twig_params['opt']['templates_id'] = $itil_t->fields['id'];
+            }
+        } else if (isset($options['templates_id'])) {
+            $itil_t->getFromDBWithData($options['templates_id']);
+            if (isset($itil_t->fields['id'])) {
+                $twig_params['opt']['templates_id'] = $itil_t->fields['id'];
+            }
+        }
+       // Show associated item dropdowns
+        if ($canedit) {
+            $p = ['used'       => $params['items_id'],
+                'rand'       => $rand,
+                getForeignKeyFieldForTable(static::getTable()) => $params['id']
+            ];
+           // My items
+            if ($params['_users_id_requester'] > 0) {
+                ob_start();
+                self::dropdownMyDevices($params['_users_id_requester'], $params['entities_id'], $params['itemtype'], 0, $p);
+                $twig_params['my_items_dropdown'] = ob_get_clean();
+            }
+           // Global search
+            ob_start();
+            self::dropdownAllDevices("itemtype", $params['itemtype'], 0, 1, $params['_users_id_requester'], $params['entities_id'], $p);
+            $twig_params['all_items_dropdown'] = ob_get_clean();
+        }
+
+       // Display list
+        if (!empty($params['items_id'])) {
+           // No delete if mandatory and only one item
+            $delete = $itil_object->canAddItem(__CLASS__);
+            $cpt = 0;
+            foreach ($params['items_id'] as $itemtype => $items) {
+                $cpt += count($items);
+            }
+
+            if ($cpt == 1 && isset($itil_t->mandatory['items_id'])) {
+                $delete = false;
+            }
+            foreach ($params['items_id'] as $itemtype => $items) {
+                foreach ($items as $items_id) {
+                    $count++;
+                    $twig_params['items_to_add'][] = self::showItemToAdd(
+                        $itemtype,
+                        $items_id,
+                        [
+                            'rand'      => $rand,
+                            'delete'    => $delete,
+                            'visible'   => ($count <= 5)
+                        ]
+                    );
+                }
+            }
+        }
+        $twig_params['count'] = $count;
+        $twig_params['usedcount'] = $usedcount;
+
+        foreach (['id', '_users_id_requester', 'items_id', 'itemtype', '_canupdate', 'entities_id'] as $key) {
+            $twig_params['opt'][$key] = $params[$key];
+        }
+
+        TemplateRenderer::getInstance()->display('components/itilobject/add_items.html.twig', $twig_params);
     }
 }

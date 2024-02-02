@@ -113,35 +113,6 @@ class Item_Ticket extends CommonItilObject_Item
 
 
     /**
-     * Print the HTML ajax associated item add
-     *
-     * @param $ticket Ticket object
-     * @param $options   array of possible options:
-     *    - id                  : ID of the ticket
-     *    - _users_id_requester : ID of the requester user
-     *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
-     *
-     * @return void
-     **/
-    public static function itemAddForm(Ticket $ticket, $options = [])
-    {
-        if ($options['id'] ?? 0 > 0) {
-            // Get requester
-            $class        = new $ticket->userlinkclass();
-            $tickets_user = $class->getActors($options['id']);
-            if (
-                isset($tickets_user[CommonITILActor::REQUESTER])
-                && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)
-            ) {
-                foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {
-                    $options['_users_id_requester'] = $user_id_single['users_id'];
-                }
-            }
-        }
-        parent::displayItemAddForm($ticket, $options);
-    }
-
-    /**
      * Print the HTML array for Items linked to a ticket
      *
      * @param $ticket Ticket object

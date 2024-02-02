@@ -788,8 +788,8 @@ class Change extends CommonITILObject
                 '_add_fromitem',
                 __('New change for this item...'),
                 [
-                    '_from_itemtype' => $item->getType(),
-                    '_from_items_id' => $item->getID(),
+                    'itemtype' => $item::class,
+                    'items_id' => $item->getID(),
                     'entities_id'    => $item->fields['entities_id']
                 ]
             );
@@ -943,7 +943,7 @@ class Change extends CommonITILObject
             'backoutplancontent'         => '',
             'checklistcontent'           => '',
             'items_id'                   => 0,
-            '_actors'                     => [],
+            '_actors'                    => [],
         ];
     }
 
