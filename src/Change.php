@@ -788,7 +788,7 @@ class Change extends CommonITILObject
                 '_add_fromitem',
                 __('New change for this item...'),
                 [
-                    'itemtype' => $item->getType(),
+                    'itemtype' => $item::class,
                     'items_id' => $item->getID(),
                     'entities_id'    => $item->fields['entities_id']
                 ]

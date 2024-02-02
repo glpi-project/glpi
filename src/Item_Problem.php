@@ -171,7 +171,7 @@ class Item_Problem extends CommonItilObject_Item
         $options['_users_id_requester'] = 0;
         if (
             isset($tickets_user[CommonITILActor::REQUESTER])
-            && (count($tickets_user[CommonITILActor::REQUESTER]) == 1)
+            && (count($tickets_user[CommonITILActor::REQUESTER]) === 1)
         ) {
             foreach ($tickets_user[CommonITILActor::REQUESTER] as $user_id_single) {
                 $options['_users_id_requester'] = $user_id_single['users_id'];

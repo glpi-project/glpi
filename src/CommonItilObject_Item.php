@@ -185,7 +185,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         // ITIL Object update case
         if ($params['id'] > 0) {
             // Get associated elements for obj
-            $used = static::getUsedItems($params['id'], $obj->getType());
+            $used = static::getUsedItems($params['id'], $obj::class);
             foreach ($used as $itemtype => $items) {
                 foreach ($items as $items_id) {
                     if (
@@ -337,7 +337,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     [static::$items_id_1 => $instID]
                 );
             }
-            $used = static::getUsedItems($instID, Ticket::class);
+            $used = static::getUsedItems($instID, static::$itemtype_1);
             static::dropdownAllDevices("itemtype", null, 0, 1, $devices_user_id, $obj->fields["entities_id"], [static::$items_id_1 => $instID, 'used' => $used, 'rand' => $rand]);
             echo "<span id='item_selection_information$rand'></span>";
             echo "</td><td class='center' width='30%'>";
@@ -1554,7 +1554,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $result .= $item->getTypeName(1) . " : " . $item->getLink(['comments' => true]);
                 $result .= Html::hidden("items_id[$itemtype][$items_id]", ['value' => $items_id]);
                 if ($params['delete']) {
-                    $result .= " <i class='fas fa-times-circle pointer' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\"></i>";
+                    $result .= "<button class='btn btn-sm btn-outline-secondary' onclick=\"itemAction" . $params['rand'] . "('delete', '$itemtype', '$items_id');\">";
+                    $result .= "<i class='ti ti-circle-x'></i>";
+                    $result .= "</button>";
                 }
                 if ($params['kblink']) {
                     $result .= ' ' . $item->getKBLinks();
@@ -1649,17 +1651,18 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'opt'                => []
         ];
 
-       // Get ticket template
-        $tt = new TicketTemplate();
-        if (isset($options['_tickettemplate'])) {
-            $tt                  = $options['_tickettemplate'];
-            if (isset($tt->fields['id'])) {
-                $twig_params['opt']['templates_id'] = $tt->fields['id'];
+        // Get itil template
+        $template_class = static::$itemtype_1 . "Template";
+        $itil_t = new $template_class();
+        if (isset($options['_' . strtolower($template_class) . 'template'])) {
+            $itil_t                  = $options['_' . strtolower($template_class) . 'template'];
+            if (isset($itil_t->fields['id'])) {
+                $twig_params['opt']['templates_id'] = $itil_t->fields['id'];
             }
         } else if (isset($options['templates_id'])) {
-            $tt->getFromDBWithData($options['templates_id']);
-            if (isset($tt->fields['id'])) {
-                $twig_params['opt']['templates_id'] = $tt->fields['id'];
+            $itil_t->getFromDBWithData($options['templates_id']);
+            if (isset($itil_t->fields['id'])) {
+                $twig_params['opt']['templates_id'] = $itil_t->fields['id'];
             }
         }
        // Show associated item dropdowns
@@ -1689,7 +1692,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $cpt += count($items);
             }
 
-            if ($cpt == 1 && isset($tt->mandatory['items_id'])) {
+            if ($cpt == 1 && isset($itil_t->mandatory['items_id'])) {
                 $delete = false;
             }
             foreach ($params['items_id'] as $itemtype => $items) {

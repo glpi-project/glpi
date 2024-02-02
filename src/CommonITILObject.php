@@ -632,8 +632,8 @@ abstract class CommonITILObject extends CommonDBTM
         $item_commonitilobject = null;
         if ($options['_canupdate']) {
             //compute related item object (Ticket havee his own showForm)
-            $item_commonitilobject = get_called_class() === Change::class ? new Change_Item() : new Item_Problem();
-            $item_commonitilobject = new $item_commonitilobject();
+            $item_link = static::getItemLinkClass();
+            $item_commonitilobject = new $item_link();
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
