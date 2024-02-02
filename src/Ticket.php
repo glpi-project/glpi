@@ -6473,7 +6473,7 @@ JAVASCRIPT;
      * DUPLICATED METHOD FROM CommonItilObject_Item
      * Needed because assets uses the "Ticket" tab instead of "Item_Ticket"
      * TODO: once linkeds tickets use the correct "Item_Ticket" tab, delete
-     * this method and move it's reference in Ticket::getTabNameForItem() in
+     * this method and move its reference in Ticket::getTabNameForItem() in
      * Item_Ticket::getTabNameForItem()
      *
      * ------------------------------------------------------------
