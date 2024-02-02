@@ -92,7 +92,7 @@ return [
                     "element" => ".navbar-brand",
                     "tooltipPosition" => "right",
                     "title" => __("Menu"),
-                    "content" => __("Vous pouvez accéder à la page d'accueil en cliquant sur le logo GLPI en haut à gauche."),
+                    "content" => __("You can access the home page by clicking on the GLPI logo at the top left."),
                 ],
                 [
                     "element" => "#navbar-menu .nav-item.dropdown:first-child",
@@ -112,7 +112,7 @@ return [
             "id" => "create-ticket",
             "title" => __("Create a ticket"),
             "category" => "assistance",
-            "description" => __("Create our first ticket"),
+            "description" => __("Create your first ticket"),
             "points" => 10,
             "navigateTo" => "front/ticket.php",
             "steps" => [

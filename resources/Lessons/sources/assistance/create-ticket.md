@@ -1,1 +1,1 @@
-You can now create a ticket by clicking on this button.
+You can create a ticket now by clicking on this button.

@@ -33,7 +33,7 @@
 
 {% set anonymous = session('glpiactiveprofile') is null %}
 
-{% set is_super_admin = session('glpiactiveprofile')['id'] in call('Profile::getSuperAdminProfilesId') %}
+{% set is_super_admin = has_profile_right('config', constant('UPDATE')) %}
 
 {% set is_vertical = user_pref('page_layout') == 'vertical' %}
 

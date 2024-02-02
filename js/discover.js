@@ -34,7 +34,7 @@
 /* global introJs */
 
 function launchIntro(endpoint, lessonId, steps, endingSteps = [], isEndingLesson = false) {
-    var intro = introJs();
+    const intro = introJs();
     intro.setOptions({
         steps: steps,
     });

@@ -44,7 +44,7 @@ if (isset($_POST['action'])) {
     switch ($_POST['action']) {
         case 'lesson-done':
             if (!isset($_POST['lesson_id'])) {
-                header('HTTP/1.1 400 Bad Request');
+                http_response_code(400);
                 exit();
             }
 
@@ -53,5 +53,5 @@ if (isset($_POST['action'])) {
             break;
     }
 } else {
-    header('HTTP/1.1 400 Bad Request');
+    http_response_code(400);
 }

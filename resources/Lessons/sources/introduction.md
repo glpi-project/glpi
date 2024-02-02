@@ -1,4 +1,4 @@
-Hello 👋 and welcome to GLPI! This is the beginning of your adventure into the world of Free and OpenSource ITSM software designed and written by Teclib'. Throughout this wizard, I'll guide you step by step so that you get off to a good start and don't feel lost in this ocean of settings :).
+Hello 👋 and welcome to GLPI! This is the beginning of your adventure into the world of Free and Open Source ITSM software designed and written by Teclib'. Throughout this wizard, you will be guided step by step through some of the basic GLPI functionality.
 
 This wizard will unfold in several steps, which you can then complete in several stages. You'll be able to stop and resume later, at your convenience and according to the time you have available.
 
