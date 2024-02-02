@@ -67,9 +67,9 @@ abstract class CommonITILValidation extends CommonDBChild
         return 'ti ti-thumb-up';
     }
 
-    public function getItilObjectItemType()
+    public static function getItilObjectItemType()
     {
-        return str_replace('Validation', '', $this->getType());
+        return str_replace('Validation', '', static::class);
     }
 
     public static function getCreateRights()
