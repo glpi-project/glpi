@@ -2365,7 +2365,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->updates[]                 = "time_to_resolve";
                 $this->fields['time_to_resolve'] = $sla->computeDate(
                     $this->fields['date'],
-                    $this->fields["sla_waiting_duration"]
+                    (int) $this->fields["sla_waiting_duration"]
                 );
                // Add current level to do
                 $sla->addLevelToDo($this);
@@ -2413,7 +2413,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->updates[]                          = "internal_time_to_resolve";
                 $this->fields['internal_time_to_resolve'] = $ola->computeDate(
                     $this->fields['ola_ttr_begin_date'],
-                    $this->fields["ola_waiting_duration"]
+                    (int) $this->fields["ola_waiting_duration"]
                 );
                // Add current level to do
                 $ola->addLevelToDo($this, $this->fields["olalevels_id_ttr"]);
