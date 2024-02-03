@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 
 /**
@@ -93,85 +94,13 @@ class ManualLink extends CommonDBChild
 
     public function showForm($ID, array $options = [])
     {
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        if ($this->isNewItem()) {
-            echo Html::hidden('itemtype', ['value' => $options['itemtype']]);
-            echo Html::hidden('items_id', ['value' => $options['items_id']]);
-        }
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Name');
-        echo '</td>';
-        echo '<td>';
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo '</td>';
-        echo '<td rowspan="4">';
-        echo __('Comments');
-        echo '</td>';
-        echo '<td rowspan="4">';
-        Html::textarea(
-            [
-                'name'  => 'comment',
-                'cols'  => 50,
-                'rows'  => 8,
-                'value' => $this->fields['comment'],
+        TemplateRenderer::getInstance()->display('pages/setup/manuallink.html.twig', [
+            'item' => $this,
+            'parent_item' => [
+                'itemtype' => $options['itemtype'] ?? null,
+                'items_id' => $options['items_id'] ?? null
             ]
-        );
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('URL');
-        echo '</td>';
-        echo '<td>';
-        echo Html::input('url', ['value' => $this->fields['url']]);
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Open in a new window');
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo('open_window', $this->fields['open_window']);
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Icon');
-        echo '</td>';
-        echo '<td>';
-        $icon_selector_id = 'icon_' . mt_rand();
-        echo Html::select(
-            'icon',
-            [$this->fields['icon'] => $this->fields['icon']],
-            [
-                'id'       => $icon_selector_id,
-                'selected' => $this->fields['icon'],
-                'style'    => 'width:175px;'
-            ]
-        );
-        echo '</td>';
-        echo '</tr>';
-        //TODO Replace this with the WebIconSelector module via the dropdownWebIcons macro when this gets migrated to twig
-        echo Html::script('js/Forms/FaIconSelector.js');
-        echo Html::scriptBlock(<<<JAVASCRIPT
-         $(
-            function() {
-               var icon_selector = new GLPI.Forms.FaIconSelector(document.getElementById('{$icon_selector_id}'));
-               icon_selector.init();
-            }
-         );
-JAVASCRIPT
-        );
-
-        $this->showFormButtons($options);
+        ]);
 
         return true;
     }
@@ -228,6 +157,14 @@ JAVASCRIPT
             return;
         }
 
+        $canedit = $item->canUpdateItem();
+        $rand = mt_rand();
+        // Create a fake link to check rights.
+        // This is mandatory as CommonDBChild needs to know itemtype and items_id to compute rights.
+        $link = new self();
+        $link->fields['itemtype'] = $item->getType();
+        $link->fields['items_id'] = $item->fields[$item->getIndexName()];
+
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',
             'WHERE'        => [
@@ -237,74 +174,54 @@ JAVASCRIPT
             'ORDERBY'      => 'name'
         ]);
 
-        echo '<div class="spaced">';
-        echo '<table class="tab_cadrehov">';
-        echo '<tr>';
-        echo '<th colspan="2">';
-        echo self::getTypeName(Session::getPluralNumber());
-        echo '</th>';
-        echo '<th class="right">';
-       // Create a fake link to check rights.
-       // This is mandatory as CommonDBChild needs to know itemtype and items_id to compute rights.
-        $link = new self();
-        $link->fields['itemtype'] = $item->getType();
-        $link->fields['items_id'] = $item->fields[$item->getIndexName()];
-        if ($link->canCreateItem()) {
-            $form_url = self::getFormURL() . '?itemtype=' . $item->getType() . '&items_id=' . $item->fields[$item->getIndexName()];
-            echo '<a class="btn btn-primary" href="' . $form_url . '">';
-            echo '<i class="fas fa-plus"></i>&nbsp;';
-            echo _x('button', 'Add');
-            echo '</a>';
-        }
-        echo '</th>';
-        echo '</tr>';
+        $entries = [];
+        foreach ($iterator as $row) {
+            $link->getFromResultSet($row);
 
-        if (count($iterator)) {
-            foreach ($iterator as $row) {
-                $link->getFromResultSet($row);
+            $entry = [
+                'itemtype' => self::class,
+                'id' => $row['id'],
+                'name' => self::getLinkHtml($row),
+                'comment' => $row['comment'],
+            ];
+            $actions = '';
 
-                echo '<tr class="tab_bg_2">';
-                echo '<td>';
-                echo self::getLinkHtml($row);
-                echo '</td>';
-                echo '<td>';
-                echo $row['comment'];
-                echo '</td>';
-                echo '<td class="right">';
-                if ($link->canUpdateItem()) {
-                    echo '<a class="pointer" href="' . self::getFormURLWithID($row[$item->getIndexName()]) . '" title="' . _sx('button', 'Update') . '">';
-                    echo '<i class="fas fa-edit"></i>&nbsp;';
-                    echo '<span class="sr-only">' . _x('button', 'Update') . '</span>';
-                    echo '</a>';
-                    echo '&nbsp;';
-                }
-                if ($link->canDeleteItem()) {
-                    echo '<form action="' . self::getFormURL() . '" method="post" style="display:inline-block;">';
-                    echo Html::hidden('id', ['value' =>  $row[$item->getIndexName()]]);
-                    echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-                    echo Html::hidden('delete', ['value' => 1]);
-                    $confirm_js = 'if (window.confirm(\'' . __s('You are about to delete this item. Do you confirm?') . '\')) { '
-                    . 'this.parentNode.submit();'
-                    . ' }';
-                    echo '<a class="pointer" href="#" onclick="' . $confirm_js . '" title="' . _sx('button', 'Delete') . '">';
-                    echo '<i class="fas fa-times"></i>&nbsp;';
-                    echo '<span class="sr-only">' . _x('button', 'Delete') . '</span>';
-                    echo '</a>';
-                    echo '</form>';
-                }
-                echo '</td>';
-                echo '</tr>';
+            if ($link->canUpdateItem()) {
+                $actions .= '<a href="' . self::getFormURLWithID($row[$item->getIndexName()]) . '" title="' . _sx('button', 'Update') . '">';
+                $actions .= '<i class="fas fa-edit"></i>';
+                $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
+                $actions .= '</a>';
             }
-        } else {
-            echo '<tr class="tab_bg_2">';
-            echo '<td colspan="3">';
-            echo __('No link defined');
-            echo '</td>';
-            echo '</tr>';
+            $entry['actions'] = $actions;
+            $entries[] = $entry;
         }
 
-        echo '</table>';
-        echo '</div>';
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nopager' => true,
+            'columns' => [
+                'name' => self::getTypeName(1),
+                'comment' => __('Comment'),
+                'actions' => __('Actions')
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'actions' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'specific_actions' => [
+                    'update' => _x('button', 'Update'),
+                    'purge'  => _x('button', 'Delete permanently')
+                ]
+            ],
+        ]);
     }
 
     public static function rawSearchOptionsToAdd($itemtype = null)

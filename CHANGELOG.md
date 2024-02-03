@@ -56,6 +56,7 @@ The present file will list all changes made to the project; according to the
 - Followups, Tasks and Solutions now check the `canView()` method of the parent ITIL Object rather than just the "See my/See author" right of the parent item.
   This means they now take into account "See all", "See group", etc. rights for the global permission check.
   Permission checks at the item-level have not been changed.
+- External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.

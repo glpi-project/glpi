@@ -116,7 +116,7 @@ class Link extends DbTestCase
         foreach ([true, false] as $safe_url) {
             // Link that is actually a title (it is a normal usage!)
             yield [
-                'link'     => '[LOCATION] > [SERIAL] ([USER])',
+                'link'     => '{{ LOCATION }} > {{ SERIAL }} ({{ USER }})',
                 'item'     => $item,
                 'safe_url' => $safe_url,
                 'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6 (glpi)'],
@@ -125,12 +125,12 @@ class Link extends DbTestCase
             // Link that is actually a long text (it is a normal usage!)
             yield [
                 'link'     => <<<TEXT
-id:       [ID]
-name:     [NAME]
-serial:   [SERIAL]/[OTHERSERIAL]
-location: [LOCATION] ([LOCATIONID])
-domain:   [DOMAIN] ([NETWORK])
-owner:    [USER]/[GROUP]
+id:       {{ ID }}
+name:     {{ NAME }}
+serial:   {{ SERIAL }}/{{ OTHERSERIAL }}
+location: {{ LOCATION }} ({{ LOCATIONID }})
+domain:   {{ DOMAIN }} ({{ NETWORK }})
+owner:    {{ USER }}/{{ GROUP }}
 TEXT,
                 'item'     => $item,
                 'safe_url' => $safe_url,
@@ -150,7 +150,7 @@ TEXT,
 
             // Valid http link
             yield [
-                'link'     => 'https://[LOGIN]@[DOMAIN]/[FIELD:uuid]/',
+                'link'     => 'https://{{ LOGIN }}@{{ DOMAIN }}/{{ item.uuid }}/',
                 'item'     => $item,
                 'safe_url' => $safe_url,
                 'expected' => ['https://_test_user@domain1.tld/c938f085-4192-4473-a566-46734bbaf6ad/'],
@@ -159,13 +159,13 @@ TEXT,
 
         // Javascript link
         yield [
-            'link'     => 'javascript:alert(1);" title="[NAME]"',
+            'link'     => 'javascript:alert(1);" title="{{ NAME }}"',
             'item'     => $item,
             'safe_url' => false,
             'expected' => ['javascript:alert(1);" title="Test computer"'],
         ];
         yield [
-            'link'     => 'javascript:alert(1);" title="[NAME]"',
+            'link'     => 'javascript:alert(1);" title="{{ NAME }}"',
             'item'     => $item,
             'safe_url' => true,
             'expected' => ['#'],
@@ -190,5 +190,34 @@ TEXT,
             $this->array($this->testedInstance->generateLinkContents($link, $item))
                 ->isEqualTo($expected);
         }
+    }
+
+    protected function invalidLinkContentsProvider()
+    {
+        return [
+            ['{{'],
+            ['{% if ID'],
+            ['{% if ID %}']
+        ];
+    }
+
+    /**
+     * @dataProvider invalidLinkContentsProvider
+     */
+    public function testInvalidLinkContents($content)
+    {
+        $link = new \Link();
+        $this->boolean($link->add([
+            'link' => $content
+        ]))->isFalse();
+        $this->hasSessionMessages(ERROR, [
+            __('Invalid link or content')
+        ]);
+        $this->boolean($link->add([
+            'data' => $content
+        ]))->isFalse();
+        $this->hasSessionMessages(ERROR, [
+            __('Invalid link or content')
+        ]);
     }
 }

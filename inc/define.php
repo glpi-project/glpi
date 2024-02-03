@@ -603,6 +603,7 @@ $CFG_GLPI['javascript'] = [
         ],
         'config' => ['clipboard'],
         'webhook' => ['monaco', 'autocomplete'],
+        'link' => ['monaco']
     ],
     'admin'        => ['clipboard', 'monaco'],
     'preference'   => ['clipboard'],
