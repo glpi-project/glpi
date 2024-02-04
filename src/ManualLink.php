@@ -202,7 +202,7 @@ class ManualLink extends CommonDBChild
             'nopager' => true,
             'columns' => [
                 'name' => self::getTypeName(1),
-                'comment' => __('Comment'),
+                'comment' => _n('Comment', 'Comments', 1),
                 'actions' => __('Actions')
             ],
             'formatters' => [
