@@ -535,24 +535,13 @@ class Reminder extends CommonDBVisible implements
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $html = "";
-        $rand     = mt_rand();
-        $users_id = "";  // show users_id reminder
         $img      = "rdv_private.png"; // default icon for reminder
 
         if ((int) $val["users_id"] !== Session::getLoginUserID()) {
-            $users_id = "<br>" . sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"]));
             $img      = "rdv_public.png";
         }
 
-        $html .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" . $img . "' alt='' title=\"" .
-             self::getTypeName(1) . "\">&nbsp;";
-        $html .= "<a id='reminder_" . $val["reminders_id"] . $rand . "' href='" .
-             self::getFormURLWithID($val["reminders_id"]) . "'>";
-
-        $html .= $users_id;
-        $html .= "</a>";
-        $recall = '';
+        $planning_recall = '';
         if (isset($val['reminders_id'])) {
             $pr = new PlanningRecall();
             if (
@@ -562,35 +551,23 @@ class Reminder extends CommonDBVisible implements
                     Session::getLoginUserID()
                 )
             ) {
-                $recall = "<br><span class='b'>" . sprintf(
-                    __('Recall on %s'),
-                    Html::convDateTime($pr->fields['when'])
-                ) .
-                      "<span>";
+                $planning_recall = $pr->fields['when'];
             }
-        }
-        $text = $val['text'];
-        if (!empty($val['transtext'])) {
-            $text = $val['transtext'];
-        }
-        if ($complete) {
-            $html .= "<span>" . Planning::getState($val["state"]) . "</span><br>";
-            $html .= "<div class='event-description rich_text_container'>" . $text . $recall . "</div>";
-        } else {
-            $html .= Html::showToolTip(
-                "<span class='b'>" . Planning::getState($val["state"]) . "</span><br>
-                                   " . $text . $recall,
-                ['applyto' => "reminder_" . $val["reminders_id"] . $rand,
-                    'display' => false
-                ]
-            );
         }
 
         $parent = getItemForItemtype($val['itemtype']);
         $parent->getFromDB($val[$parent::getForeignKeyField()]);
-        $html .= $parent->getLink(['icon' => true, 'forceid' => true]) . "<br>";
-        $html .= "<span>" . Entity::badgeCompletenameById($parent->getEntityID()) . "</span><br>";
-        return $html;
+
+        return TemplateRenderer::getInstance()->render('pages/tools/reminder_planning.html.twig', [
+            'val' => $val,
+            'rand' => mt_rand(),
+            'user_name' => getUserName($val["users_id"]),
+            'planning_img' => $CFG_GLPI["root_doc"] . "/pics/" . $img,
+            'planning_recall' => $planning_recall,
+            'complete' => $complete,
+            'parent_link' => $parent->getLink(['icon' => true, 'forceid' => true]),
+            'parent_entity_badge' => Entity::badgeCompletenameById($parent->getEntityID()),
+        ]);
     }
 
     /**
