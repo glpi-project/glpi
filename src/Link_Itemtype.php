@@ -33,39 +33,37 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class Link_Itemtype extends CommonDBChild
 {
    // From CommonDbChild
     public static $itemtype = 'Link';
     public static $items_id = 'links_id';
 
-
     /**
      * @since 0.84
      **/
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-
     /**
      * Print the HTML array for device on link
      *
-     * @param $link : Link
+     * @param Link $link
      *
      * @return void
      **/
     public static function showForLink($link)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $links_id = $link->getField('id');
 
@@ -93,72 +91,45 @@ class Link_Itemtype extends CommonDBChild
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='changeticket_form$rand' id='changeticket_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Add an item type') . "</th></tr>";
-
-            echo "<tr class='tab_bg_2'><td class='right'>";
-            echo "<input type='hidden' name='links_id' value='$links_id'>";
-            Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], ['used' => $used]);
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            TemplateRenderer::getInstance()->display('pages/setup/externallink_itemtype.html.twig', [
+                'links_id' => $links_id,
+                'used' => $used,
+                'no_header' => true,
+            ]);
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit && $numrows) {
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['num_displayed'  => min($_SESSION['glpilist_limit'], $numrows),
-                'container'      => 'mass' . __CLASS__ . $rand
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-        echo "<table class='tab_cadre_fixe'>";
-        $header_begin  = "<tr>";
-        $header_top    = '';
-        $header_bottom = '';
-        $header_end    = '';
-        if ($canedit && $numrows) {
-            $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_top    .= "</th>";
-            $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_bottom .= "</th>";
-        }
-        $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-        $header_end .= "</tr>";
-        echo $header_begin . $header_top . $header_end;
-
+        $entries = [];
         foreach ($types as $data) {
-            $typename = NOT_AVAILABLE;
             if ($item = getItemForItemtype($data['itemtype'])) {
-                $typename = $item->getTypeName(1);
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    echo "</td>";
-                }
-                echo "<td class='center'>$typename</td>";
-                echo "</tr>";
+                $typename = $item::getTypeName(1);
+                $entries[] = [
+                    'itemtype' => static::class,
+                    'id'       => $data['id'],
+                    'type'     => $typename
+                ];
             }
         }
-        echo $header_begin . $header_bottom . $header_end;
-        echo "</table>";
-        if ($canedit && $numrows) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
-    }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nopager' => true,
+            'columns' => [
+                'type' => _n('Type', 'Types', 1)
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => $numrows,
+                'container' => 'mass' . __CLASS__ . $rand,
+                'specific_actions' => [
+                    'purge'  => _x('button', 'Delete permanently')
+                ]
+            ],
+        ]);
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
@@ -183,16 +154,13 @@ class Link_Itemtype extends CommonDBChild
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == 'Link') {
+        if ($item::class === Link::class) {
             self::showForLink($item);
         }
         return true;
     }
-
 
     /**
      *

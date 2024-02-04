@@ -217,7 +217,6 @@ class ManualLink extends CommonDBChild
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
                 'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
                 'specific_actions' => [
-                    'update' => _x('button', 'Update'),
                     'purge'  => _x('button', 'Delete permanently')
                 ]
             ],
