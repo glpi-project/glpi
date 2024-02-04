@@ -322,15 +322,13 @@ class Planning extends CommonGLPI
     /**
      * Dropdown of planning state
      *
-     * @param $name   select name
-     * @param $value  default value (default '')
-     * @param $display  display of send string ? (true by default)
-     * @param $options  options
+     * @param string $name   Select name
+     * @param string $value  Default value (default '')
+     * @param boolean $display  Display of send string ? (true by default)
+     * @param array $options
      **/
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
-
-
         $js = <<<JAVASCRIPT
         templateTaskStatus = function(option) {
             if (option === false) {

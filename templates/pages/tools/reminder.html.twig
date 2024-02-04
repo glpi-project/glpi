@@ -1,0 +1,173 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+#}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {% set field_options = {
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10'
+    } %}
+    {% if not id %}
+        {{ inputs.hidden('users_id', item.fields['users_id']) }}
+    {% endif %}
+    {% if params['from_planning_edit_ajax'] %}
+        {{ inputs.hidden('from_planning_edit_ajax', 1) }}
+    {% endif %}
+
+    {{ fields.textField('name', item.fields['name'], __('Title'), field_options|merge({
+        full_width: true,
+        full_width_adapt_column: false
+    })) }}
+
+    {% if params['from_planning_ajax'] is not defined %}
+        {% set visibility_fields %}
+            {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), field_options|merge({
+                clearable: true,
+                readonly: not params['canedit'],
+                mb: '',
+            })) }}
+            {{ fields.datetimeField('end_view_date', item.fields['end_view_date'], __('End'), field_options|merge({
+                clearable: true,
+                readonly: not params['canedit'],
+                mb: '',
+            })) }}
+        {% endset %}
+        {{ fields.htmlField('', visibility_fields, __('Visibility'), field_options|merge({
+            full_width: true,
+            full_width_adapt_column: false,
+            wrapper_class: 'd-flex',
+        })) }}
+    {% endif %}
+
+    {% set state_dropdown %}
+        {% if params['canedit'] %}
+            {% do call('Planning::dropdownState', ['state', item.fields['state']]) %}
+        {% else %}
+            {{ call('Planning::getState', [item.fields['state']]) }}
+        {% endif %}
+    {% endset %}
+    {{ fields.htmlField('', state_dropdown, __('Status'), field_options|merge({
+        full_width: true,
+        full_width_adapt_column: false,
+    })) }}
+
+    {% set calendar_field %}
+        {% if params['from_planning_ajax'] %}
+            {{ inputs.hidden('plan[begin]', params['begin']) }}
+            {{ inputs.hidden('plan[end]', params['end']) }}
+            {{ __('From %1$s to %2$s')|format(params['begin']|formatted_datetime, params['end']|formatted_datetime) }}
+        {% else %}
+            {% if params['canedit'] %}
+                {% set ajax_params = {
+                    action: 'add_event_classic_form',
+                    form: 'remind',
+                    users_id: item.fields['users_id'],
+                    itemtype: item.getType,
+                    items_id: item.getID
+                } %}
+                {% if id and item.fields['is_planned'] %}
+                    {% set ajax_params = ajax_params|merge({
+                        begin: item.fields['begin'],
+                        end: item.fields['end']
+                    }) %}
+                {% endif %}
+                <script>
+                    function showPlan{{ rand }}() {
+                        $('#plan{{ rand }}').hide();
+                        {% do call('Ajax::updateItemJsCode', ['viewplan' ~ rand, config('root_doc') ~ '/ajax/planning.php', ajax_params]) %}
+                    }
+                </script>
+            {% endif %}
+            {% if not id or not item.fields['is_planned'] %}
+                {% if has_profile_right('planning', constant('Planning::READMY')) or
+                    has_profile_right('planning', constant('Planning::READGROUP')) or
+                    has_profile_right('planning', constant('Planning::READALL')) %}
+                    <button id="plan{{ rand }}" class="btn btn-primary" type="button" onclick="showPlan{{ rand }}()">
+                        {{ __('Add to schedule') }}
+                    </button>
+                {% endif %}
+            {% else %}
+                {% if params['canedit'] %}
+                    <div id="plan{{ rand }}" onclick="showPlan{{ rand }}()">
+                        <span class="showplan">
+                {% endif %}
+                {% if item.fields['begin'] is not empty or item.fields['end'] is not empty %}
+                    {{ __('From %1$s to %2$s')|format(item.fields['begin']|formatted_datetime, item.fields['end']|formatted_datetime) }}
+                {% else %}
+                    {{ __('Not planned') }}
+                {% endif %}
+                {% if params['canedit'] %}
+                        </span>
+                    </div>
+                {% endif %}
+            {% endif %}
+            {% if params['canedit'] %}
+                <div id="viewplan{{ rand }}"></div>
+            {% endif %}
+            {% if active_recall %}
+                {% set recall_field %}
+                    {% if params['canedit'] %}
+                        {% do call('PlanningRecall::dropdown', [{
+                            itemtype: 'Reminder',
+                            items_id: id
+                        }]) %}
+                    {% else %}
+                        {% do call('PlanningRecall::specificForm', [{
+                            itemtype: 'Reminder',
+                            items_id: id
+                        }]) %}
+                    {% endif %}
+                {% endset %}
+                {{ fields.htmlField('', recall_field, _x('Planning', 'Reminder'), field_options|merge({
+                    full_width: true,
+                    full_width_adapt_column: false,
+                    mb: 'mb-3',
+                })) }}
+            {% endif %}
+        {% endif %}
+    {% endset %}
+    {{ fields.htmlField('', calendar_field, _n('Calendar', 'Calendars', 1), field_options|merge({
+        full_width: true,
+        full_width_adapt_column: false,
+    })) }}
+
+    {{ fields.textareaField('text', item.fields['text'], __('Description'), field_options|merge({
+        full_width: true,
+        full_width_adapt_column: false,
+        enable_richtext: true,
+        enable_fileupload: true,
+    })) }}
+{% endblock %}
