@@ -253,7 +253,7 @@ class Link extends CommonDBTM
         return $tab;
     }
 
-    private static  function getIPAndMACForItem(CommonDBTM $item, $get_ip = false, $get_mac = false): array
+    private static function getIPAndMACForItem(CommonDBTM $item, $get_ip = false, $get_mac = false): array
     {
         /**
          * @var \DBmysql $DB
@@ -728,7 +728,8 @@ TWIG, ['configure_msg' => __('Configure')]);
                 'realname' => '',
                 'firstname' => '',
             ];
-            $fake_item = new class extends CommonDBTM {};
+            $fake_item = new class extends CommonDBTM {
+            };
             $fake_item->fields = $fields;
             self::generateLinkContents($template, $fake_item, false);
         } catch (Throwable) {
