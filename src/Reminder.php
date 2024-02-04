@@ -696,30 +696,23 @@ class Reminder extends CommonDBVisible implements
 
         $reminders = $personal ? $personal_reminders : $public_reminders;
         $nb = count($reminders);
-
-        $output = "";
-        $output .= "<table class='table table-striped card-table table-hover'>";
-        $output .= "<thead>";
-        $output .= "<tr class='noHover'><th><div class='relative'><span>$titre</span>";
+        $add_link = '';
 
         if (
             ($personal && self::canCreate())
             || (!$personal && Session::haveRight(self::$rightname, CREATE))
         ) {
-            $output .=  "<span class='float-end'>";
-            $output .=  "<a href='" . self::getFormURL() . "'>";
-            $output .=  "<img src='" . $CFG_GLPI["root_doc"] . "/pics/plus.png' alt='" . __s('Add') . "'
-                title=\"" . __s('Add') . "\"></a></span>";
+            $add_link = self::getFormURL();
         }
-
-        $output .= "</div></th></tr>";
-        $output .= "</thead>";
+        $rows = [];
 
         if ($nb) {
             $rand = mt_rand();
 
             foreach ($reminders as $data) {
-                $output .= "<tr><td>";
+                $row = [
+                    'values' => []
+                ];
                 $name = $data['name'];
 
                 if (!empty($data['transname'])) {
@@ -738,26 +731,34 @@ class Reminder extends CommonDBVisible implements
                         'display' => false
                     ]
                 );
-                $output .= sprintf(__('%1$s %2$s'), $link, $tooltip);
+                $row['values'][] = sprintf(__('%1$s %2$s'), $link, $tooltip);
 
                 if ($data["is_planned"]) {
-                     $tab      = explode(" ", $data["begin"]);
-                     $date_url = $tab[0];
-                     $output .=  "<a href='" . $CFG_GLPI["root_doc"] . "/front/planning.php?date=" . $date_url .
-                     "&amp;type=day' class='pointer float-end' title=\"" . sprintf(
-                         __s('From %1$s to %2$s'),
-                         Html::convDateTime($data["begin"]),
-                         Html::convDateTime($data["end"])
-                     ) . "\">";
-                       $output .= "<i class='fa fa-bell'></i>";
-                       $output .= "<pan class='sr-only'>" . __s('Planning') . "</span>";
-                       $output .= "</a>";
+                    $tab      = explode(" ", $data["begin"]);
+                    $date_url = $tab[0];
+                    $planning_text = sprintf(
+                        __s('From %1$s to %2$s'),
+                        Html::convDateTime($data["begin"]),
+                        Html::convDateTime($data["end"])
+                    );
+                    $planning_link =  "<a href='" . $CFG_GLPI["root_doc"] . "/front/planning.php?date=" . $date_url .
+                        "&amp;type=day' class='pointer float-end' title=\"" . $planning_text . "\">";
+                    $planning_link .= "<i class='ti ti-bell'></i>";
+                    $planning_link .= "<span class='sr-only'>" . __s('Planning') . "</span>";
+                    $planning_link .= "</a>";
+                    $row['values'][] = $planning_link;
+                } else {
+                    $row['values'][] = '';
                 }
-
-                $output .= "</td></tr>";
+                $rows[] = $row;
             }
         }
-        $output .= "</table>";
+
+        $output = TemplateRenderer::getInstance()->render('central/lists/table.html.twig', [
+            'title' => $titre,
+            'add_link' => $add_link,
+            'rows' => $rows,
+        ]);
 
         if ($display) {
             echo $output;
