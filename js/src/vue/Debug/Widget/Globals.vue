@@ -1,5 +1,5 @@
 <script setup>
-    import {onMounted} from "vue";
+    import {onMounted, watch} from "vue";
 
     const props = defineProps({
         current_profile: {
@@ -16,6 +16,7 @@
             return;
         }
 
+        container.empty();
         let data_string = data;
         try {
             data_string = JSON.stringify(data, null, ' ');
@@ -52,12 +53,18 @@
 
     const rand = Math.floor(Math.random() * 1000000);
 
-    const globals = props.current_profile.globals;
+    function refreshGlobals() {
+        appendGlobals(props.current_profile.globals['post'], $(`#debugpanel${rand} #debugpost${rand}`));
+        appendGlobals(props.current_profile.globals['get'], $(`#debugpanel${rand} #debugget${rand}`));
+        appendGlobals(props.current_profile.globals['session'], $(`#debugpanel${rand} #debugsession${rand}`));
+        appendGlobals(props.current_profile.globals['server'], $(`#debugpanel${rand} #debugserver${rand}`));
+    }
+
     onMounted(() => {
-        appendGlobals(globals['post'], $(`#debugpanel${rand} #debugpost${rand}`));
-        appendGlobals(globals['get'], $(`#debugpanel${rand} #debugget${rand}`));
-        appendGlobals(globals['session'], $(`#debugpanel${rand} #debugsession${rand}`));
-        appendGlobals(globals['server'], $(`#debugpanel${rand} #debugserver${rand}`));
+        refreshGlobals();
+    });
+    watch(() => props.current_profile.globals, () => {
+        refreshGlobals();
     });
 </script>
 
