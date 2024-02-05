@@ -161,7 +161,16 @@ class Domain extends CommonDBTM
             'name'               => _n('Associated item', 'Associated items', Session::getPluralNumber()),
             'forcegroupby'       => true,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
+                'condition'          => [
+                    'OR'  => [
+                        'AND' => [
+                            'NEWTABLE.is_deleted' => 0,
+                            'NEWTABLE.is_dynamic' => 1
+                        ],
+                        'NEWTABLE.is_dynamic' => 0
+                    ]
+                ]
             ]
         ];
 
@@ -258,7 +267,18 @@ class Domain extends CommonDBTM
                     'joinparams'         => [
                         'beforejoin' => [
                             'table'      => Domain_Item::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                                'condition'          => [
+                                    'OR'  => [
+                                        'AND' => [
+                                            'NEWTABLE.is_deleted' => 0,
+                                            'NEWTABLE.is_dynamic' => 1
+                                        ],
+                                        'NEWTABLE.is_dynamic' => 0
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ];
@@ -277,7 +297,18 @@ class Domain extends CommonDBTM
                             'joinparams'         => [
                                 'beforejoin' => [
                                     'table'      => Domain_Item::getTable(),
-                                    'joinparams' => ['jointype' => 'itemtype_item']
+                                    'joinparams' => [
+                                        'jointype' => 'itemtype_item',
+                                        'condition'          => [
+                                            'OR'  => [
+                                                'AND' => [
+                                                    'NEWTABLE.is_deleted' => 0,
+                                                    'NEWTABLE.is_dynamic' => 1
+                                                ],
+                                                'NEWTABLE.is_dynamic' => 0
+                                            ]
+                                        ]
+                                    ]
                                 ]
                             ]
                         ]
