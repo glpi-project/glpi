@@ -228,16 +228,4 @@ abstract class AbstractCapacity implements CapacityInterface
             )
         );
     }
-
-    /**
-     * Escape and encode an itemtype for use in a SQL "LIKE" query.
-     *
-     * @param string $classname
-     *
-     * @return string
-     */
-    protected function escapeAndEncodeClassName(string $classname): string
-    {
-        return str_replace('\\', '\\\\', json_encode($classname));
-    }
 }

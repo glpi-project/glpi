@@ -174,7 +174,7 @@ final class AssetDefinitionManager
         CommonGLPI::registerStandardTab(
             $asset_class_name,
             Item_Problem::class,
-            51
+            52
         );
         CommonGLPI::registerStandardTab(
             $asset_class_name,
