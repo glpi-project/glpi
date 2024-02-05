@@ -40,7 +40,6 @@
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
 
-
 {% block form_fields %}
     <input type="hidden" name="_update_capacities" value="1" />
     {% for capacity in capacities %}
