@@ -126,7 +126,7 @@ class NotificationTargetCertificate extends NotificationTarget
 
         $tags = ['certificate.expirationdate' => __('Expiration date'),
             'certificate.name'           => __('Name'),
-            'certificate.type'         => __('Type'),
+            'certificate.type'         => _n('Type', 'Types', 1),
             'certificate.serial'         => __('Serial number'),
             'certificate.url'            => __('URL'),
             'certificate.entity'         => Entity::getTypeName(1),
