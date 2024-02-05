@@ -74,7 +74,7 @@
             class="content-editable-tinymce"
             data-glpi-form-editor-question-description
             {# Mark as secondary if empty #}
-            {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : ""}}
+            {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
         >
             {{ fields.textareaField(
                 'description',
