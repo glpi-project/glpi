@@ -302,6 +302,8 @@
         'required': false,
         'add_body_classes': [],
         'toolbar_location': 'top',
+        'init': true,
+        'placeholder': "",
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name) %}
@@ -329,6 +331,8 @@
             options.editor_height|default(150),
             options.add_body_classes,
             options.toolbar_location,
+            options.init,
+            options.placeholder,
         ]) %}
    {% endif %}
 

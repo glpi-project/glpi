@@ -192,7 +192,6 @@ class CommonDBTM extends CommonGLPI
      */
     public $right;
 
-
     /**
      * Return the table used to store this object
      *
