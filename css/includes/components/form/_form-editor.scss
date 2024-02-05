@@ -57,6 +57,11 @@
     }
 
     overflow: scroll;
+
+    // Revert border radius change from parent div
+    .card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+    }
 }
 
 .editor-footer {
