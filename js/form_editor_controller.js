@@ -268,7 +268,7 @@ class GlpiFormEditorController
             $(input).attr(
                 "name",
                 this.#buildInputIndex(section_index, question_index) + `[${field}]`
-            )
+            );
         });
     }
 
