@@ -38,12 +38,19 @@ namespace Glpi\Asset\Capacity;
 use CommonGLPI;
 use Glpi\Asset\Asset;
 use Log;
+use Override;
 
 class HasHistoryCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
         return Log::getTypeName();
+    }
+
+    #[Override]
+    public function getDescription(): string
+    {
+        return __("Records the modifications made to the asset.");
     }
 
     public function isUsed(string $classname): bool

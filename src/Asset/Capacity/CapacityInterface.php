@@ -47,6 +47,14 @@ interface CapacityInterface
     public function getLabel(): string;
 
     /**
+     * Get the description of the capacity.
+     * This description is used in the capacity management interface.
+     *
+     * @return string
+     */
+    public function getDescription(): string;
+
+    /**
      * Get the search options related to the capacity.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
