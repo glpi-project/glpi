@@ -46,7 +46,7 @@ interface QuestionTypeInterface
      * Render the administration template for the given question.
      * This template is used on the form editor page.
      *
-     * @param Question|null $question     Given question's data. May be null for a new question.
+     * @param Question|null $question Given question's data. May be null for a new question.
      *
      * @return string
      */

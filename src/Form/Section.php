@@ -71,7 +71,7 @@ class Section extends CommonDBChild
                 $question = new Question();
                 $question->getFromResultSet($row);
                 $question->post_getFromDB();
-                $this->questions[] = $question;
+                $this->questions[$row['id']] = $question;
             }
         }
 

@@ -1751,7 +1751,7 @@ function getUUID() {
         // Only available for HTTPS
         return crypto.randomUUID();
     } else {
-        // Always available but collisions are possible (but quite unlikely)
+        // Always available but collisions are possible (very unlikely to happen)
         return uniqid();
     }
 }

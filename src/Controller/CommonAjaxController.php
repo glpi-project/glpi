@@ -146,7 +146,6 @@ class CommonAjaxController
         // the response so it can be applied in the UX but its not yet displayed
         // for Forms so there is no way to test it right now
         $body = $this->insertSessionMessages($body);
-
         return $this->jsonResponse($code, $body);
     }
 
