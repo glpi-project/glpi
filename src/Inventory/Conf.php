@@ -939,9 +939,13 @@ class Conf extends CommonGLPI
                 if ($('#dropdown_stale_agents_action$rand').val() != 0) {
                 $('#blocaction1').show();
                 $('#blocaction2').show();
+                $('#blocaction3').show();
+                $('#blocaction4').show();
                 } else {
                 $('#blocaction1').hide();
                 $('#blocaction2').hide();
+                $('#blocaction3').hide();
+                $('#blocaction4').hide();
                 }
             }
             changestatus();
@@ -953,11 +957,31 @@ class Conf extends CommonGLPI
             echo "<tr class='tab_bg_1'><td colspan=2></td>";
             echo "<td>";
             echo "<span id='blocaction1' style='display:none'>";
-            echo \State::createTabEntry(__('Change the status'), 0, \State::getType());
+            echo \State::createTabEntry(__('Status to change (all if empty)'), 0, \State::getType());
             echo "</span>";
             echo "</td>";
             echo "<td width='20%'>";
             echo "<span id='blocaction2' style='display:none'>";
+            Dropdown::showFromArray(
+                'old_stale_agents_status',
+                State::getStateList(),
+                [
+                    'values' => importArrayFromDB($config['old_stale_agents_status']),
+                    'multiple' => true
+                ]
+            );
+            echo "</span>";
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1'><td colspan=2></td>";
+            echo "<td>";
+            echo "<span id='blocaction3' style='display:none'>";
+            echo \State::createTabEntry(__('Status changed'), 0, \State::getType());
+            echo "</span>";
+            echo "</td>";
+            echo "<td width='20%'>";
+            echo "<span id='blocaction4' style='display:none'>";
             State::dropdown(
                 [
                     'name'   => 'stale_agents_status',
@@ -1062,7 +1086,7 @@ class Conf extends CommonGLPI
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            if ($prop == 'stale_agents_action') {
+            if ($prop == 'stale_agents_action' || $prop == 'old_stale_agents_status') {
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
@@ -1179,6 +1203,7 @@ class Conf extends CommonGLPI
             'stale_agents_delay'             => 0,
             'stale_agents_action'            => exportArrayToDB([0]),
             'stale_agents_status'            => 0,
+            'old_stale_agents_status'        => exportArrayToDB([0]),
             'import_env'                     => 0,
         ];
     }

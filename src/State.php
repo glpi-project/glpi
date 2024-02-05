@@ -655,6 +655,17 @@ class State extends CommonTreeDropdown
         ];
     }
 
+    public static function getStateList()
+    {
+        $states = new self();
+        $states_list = $states->find();
+        $output = [];
+        foreach ($states_list as $state) {
+            $output[$state['id']] = $state['completename'];
+        }
+        return $output;
+    }
+
     public function getCloneRelations(): array
     {
         return [];
