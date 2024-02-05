@@ -72,11 +72,13 @@ $inline-input-padding: 2px 4px;
 [data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce {
     margin-bottom: 0 !important;
 }
+
 [data-glpi-form-editor-question].active {
     .content-editable-tinymce.simulate-focus {
         margin-bottom: 8px !important;
     }
 }
+
 [data-glpi-form-editor-question].active [data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce:not(.simulate-focus) {
     margin-bottom: -1rem !important;
 }
