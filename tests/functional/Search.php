@@ -948,9 +948,10 @@ class Search extends DbTestCase
         ]);
         $this->integer($computer_id)->isGreaterThan(0);
 
-        $cvm = new \ComputerVirtualMachine();
+        $cvm = new \ItemVirtualMachine();
         $cvm_id = $cvm->add([
-            'computers_id' => $computer_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computer_id,
             'name'         => $fname,
             'vcpu'         => 1,
         ]);
@@ -964,7 +965,8 @@ class Search extends DbTestCase
         ]);
         $this->integer($computer_id)->isGreaterThan(0);
         $cvm_id = $cvm->add([
-            'computers_id' => $computer_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computer_id,
             'name'         => $fname,
         ]);
         $this->integer($cvm_id)->isGreaterThan(0);

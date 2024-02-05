@@ -42,15 +42,15 @@ use Glpi\DBAL\QueryFunction;
 
 
 /**
- * ComputerVirtualMachine Class
+ * ItemVirtualMachine Class
  *
  * Class to manage virtual machines
  **/
-class ComputerVirtualMachine extends CommonDBChild
+class ItemVirtualMachine extends CommonDBChild
 {
    // From CommonDBChild
-    public static $itemtype = 'Computer';
-    public static $items_id = 'computers_id';
+    public static $itemtype = 'itemtype';
+    public static $items_id = 'items_id';
     public $dohistory       = true;
 
 
@@ -71,17 +71,23 @@ class ComputerVirtualMachine extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         if (
             !$withtemplate
-            && $item instanceof Computer
-            && Computer::canView()
+            && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])
+            && $item::canView()
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = countElementsInTable(
                     self::getTable(),
-                    ['computers_id' => $item->getID(), 'is_deleted' => 0 ]
+                    [
+                        'itemtype' => $item->getType(),
+                        'items_id' => $item->getID(),
+                        'is_deleted' => 0
+                    ]
                 );
             }
             return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
@@ -106,7 +112,7 @@ class ComputerVirtualMachine extends CommonDBChild
     {
 
         self::showForVirtualMachine($item);
-        self::showForComputer($item);
+        self::showForAsset($item);
         return true;
     }
 
@@ -133,32 +139,33 @@ class ComputerVirtualMachine extends CommonDBChild
             return false;
         }
 
-        $comp = new Computer();
 
         if ($ID > 0) {
+            $asset = new $this->fields['itemtype']();
             $this->check($ID, READ);
-            $comp->getFromDB($this->fields['computers_id']);
+            $asset->getFromDB($this->fields['items_id']);
         } else {
            // Create item
+            $asset = new $options['itemtype']();
             $this->check(-1, CREATE, $options);
-            $comp->getFromDB($options['computers_id']);
+            $asset->getFromDB($options['items_id']);
         }
 
-        $linked_computer = "";
-        if ($link_computer = self::findVirtualMachine($this->fields)) {
-            $computer = new Computer();
-            if ($computer->getFromDB($link_computer)) {
-                $linked_computer = $computer->getLink(['comments' => true]);
+        $linked_asset = "";
+        if ($link_asset = self::findVirtualMachine($this->fields)) {
+            $asset = new $this->fields['itemtype']();
+            if ($asset->getFromDB($link_asset)) {
+                $linked_asset = $asset->getLink(['comments' => true]);
             }
         }
 
-        $options['canedit'] = Session::haveRight("computer", UPDATE);
+        $options['canedit'] = Session::haveRight($asset::$rightname, UPDATE);
         $this->initForm($ID, $options);
-        TemplateRenderer::getInstance()->display('components/form/computervirtualmachine.html.twig', [
+        TemplateRenderer::getInstance()->display('components/form/itemvirtualmachine.html.twig', [
             'item'                      => $this,
-            'computer'                  => $comp,
+            'asset'                     => $asset,
             'params'                    => $options,
-            'linked_computer'           => $linked_computer,
+            'linked_asset'           => $linked_asset,
         ]);
 
         return true;
@@ -239,23 +246,24 @@ class ComputerVirtualMachine extends CommonDBChild
     /**
      * Print the computers disks
      *
-     * @param Computer $comp Computer object
+     * @param CommonDBTM $asset Asset instance
      *
      * @return void|boolean (display) Returns false if there is a rights error.
      **/
-    public static function showForComputer(Computer $comp)
+    public static function showForAsset(CommonDBTM $asset)
     {
 
-        $ID = $comp->fields['id'];
+        $ID = $asset->fields['id'];
+        $itemtype = $asset->getType();
 
-        if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
+        if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return false;
         }
-        $canedit = $comp->canEdit($ID);
+        $canedit = $asset->canEdit($ID);
 
         if ($canedit) {
             echo "<div class='center firstbloc'>" .
-                "<a class='btn btn-primary' href='" . ComputerVirtualMachine::getFormURL() . "?computers_id=$ID'>";
+                "<a class='btn btn-primary' href='" . ItemVirtualMachine::getFormURL() . "?itemtype=$itemtype&amp;items_id=$ID'>";
             echo __('Add a virtual machine');
             echo "</a></div>\n";
         }
@@ -266,7 +274,8 @@ class ComputerVirtualMachine extends CommonDBChild
             self::getTable(),
             [
                 'WHERE'  => [
-                    'computers_id' => $ID
+                    'itemtype' => $itemtype,
+                    'items_id' => $ID
                 ],
                 'ORDER'  => 'name'
             ]
@@ -275,17 +284,17 @@ class ComputerVirtualMachine extends CommonDBChild
         echo "<table class='tab_cadre_fixehov'>";
 
         Session::initNavigateListItems(
-            'ComputerVirtualMachine',
+            'ItemVirtualMachine',
             sprintf(
                 __('%1$s = %2$s'),
-                Computer::getTypeName(1),
-                (empty($comp->fields['name'])
-                ? "($ID)" : $comp->fields['name'])
+                $asset::getTypeName(1),
+                (empty($asset->fields['name'])
+                ? "($ID)" : $asset->fields['name'])
             )
         );
 
         if (empty($virtualmachines)) {
-            echo "<tr><th>" . __('No virtualized environment associated with the computer') . "</th></tr>";
+            echo "<tr><th>" . __('No virtualized environment associated with the item') . "</th></tr>";
         } else {
             echo "<tr class='noHover'><th colspan='10'>" . __('List of virtualized environments') . "</th></tr>";
 
@@ -332,28 +341,32 @@ class ComputerVirtualMachine extends CommonDBChild
                 echo "<td>" . $virtualmachine['vcpu'] . "</td>";
                 echo "<td>" . $virtualmachine['ram'] . "</td>";
                 echo "<td>";
-                if ($link_computer = self::findVirtualMachine($virtualmachine)) {
-                     $computer = new Computer();
-                    if ($computer->can($link_computer, READ)) {
-                        $url  = "<a href='" . $computer->getFormURLWithID($link_computer) . "'>";
-                        $url .= $computer->fields["name"] . "</a>";
+                if ($link_asset = self::findVirtualMachine($virtualmachine)) {
+                     $asset = new $itemtype();
+                    if ($asset->can($link_asset, READ)) {
+                        $url  = "<a href='" . $asset->getFormURLWithID($link_asset) . "'>";
+                        $url .= $asset->fields["name"] . "</a>";
 
-                        $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $computer->fields['name'] .
+                        $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $asset->fields['name'] .
                             '</td></tr>';
-                        $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $computer->fields['serial'] .
-                            '</td></tr>';
-                        $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $computer->fields['comment'] .
-                            '</td></tr></table>';
+                        if (isset($asset->fields['serial'])) {
+                            $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $asset->fields['serial'] .
+                                '</td></tr>';
+                        }
+                        if (isset($asset->fields['comment'])) {
+                            $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $asset->fields['comment'] .
+                                '</td></tr></table>';
+                        }
 
                         $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
                     } else {
-                        $url = $computer->fields['name'];
+                        $url = $asset->fields['name'];
                     }
                     echo $url;
                 }
                 echo "</td>";
                 echo "</tr>";
-                Session::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
+                Session::addToNavigateListItems('ItemVirtualMachine', $virtualmachine['id']);
             }
             echo $header;
         }
@@ -413,7 +426,7 @@ class ComputerVirtualMachine extends CommonDBChild
      *
      * @param array $fields  Array of virtualmachine fields
      *
-     * @return integer|boolean ID of the computer that have this uuid or false otherwise
+     * @return integer|boolean ID of the asset that have this uuid or false otherwise
      **/
     public static function findVirtualMachine($fields = [])
     {
@@ -424,9 +437,15 @@ class ComputerVirtualMachine extends CommonDBChild
             return false;
         }
 
+        $itemtype = $fields['itemtype'];
+        $item = new $itemtype();
+        if (!$item->isField('uuid')) {
+            return false;
+        }
+
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => 'glpi_computers',
+            'FROM'   => $itemtype::getTable(),
             'WHERE'  => [
                 'RAW' => [
                     (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid'])
@@ -520,7 +539,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
@@ -536,7 +555,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
+                        'jointype'           => 'itemtype_item'
                     ]
                 ]
             ]
@@ -554,7 +573,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
+                        'jointype'           => 'itemtype_item'
                     ]
                 ]
             ]
@@ -572,7 +591,7 @@ class ComputerVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'child'
+                        'jointype'           => 'itemtype_item'
                     ]
                 ]
             ]
@@ -587,7 +606,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
@@ -601,7 +620,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
@@ -613,7 +632,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 
@@ -626,7 +645,7 @@ class ComputerVirtualMachine extends CommonDBChild
             'datatype'           => 'string',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'itemtype_item'
             ]
         ];
 

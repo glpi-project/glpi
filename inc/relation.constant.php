@@ -245,7 +245,6 @@ $RELATION = [
 
     'glpi_computers' => [
         '_glpi_computers_items'           => 'computers_id',
-        '_glpi_computervirtualmachines'   => 'computers_id',
         'glpi_networknames'               => [['items_id', 'itemtype']], // FIXME Find a list that can be used to declare this polymorphic relation
     ],
 
@@ -541,7 +540,7 @@ $RELATION = [
         'glpi_clustertypes'                => 'entities_id',
         'glpi_computers'                   => 'entities_id',
         '_glpi_items_softwareversions'     => 'entities_id',
-        '_glpi_computervirtualmachines'    => 'entities_id',
+        '_glpi_itemvirtualmachines'        => 'entities_id',
         'glpi_consumableitems'             => 'entities_id',
         '_glpi_consumables'                => 'entities_id',
         'glpi_contacts'                    => 'entities_id',
@@ -1659,15 +1658,15 @@ $RELATION = [
     ],
 
     'glpi_virtualmachinestates' => [
-        'glpi_computervirtualmachines' => 'virtualmachinestates_id',
+        'glpi_itemvirtualmachines' => 'virtualmachinestates_id',
     ],
 
     'glpi_virtualmachinesystems' => [
-        'glpi_computervirtualmachines' => 'virtualmachinesystems_id',
+        'glpi_itemvirtualmachines' => 'virtualmachinesystems_id',
     ],
 
     'glpi_virtualmachinetypes' => [
-        'glpi_computervirtualmachines' => 'virtualmachinetypes_id',
+        'glpi_itemvirtualmachines' => 'virtualmachinetypes_id',
     ],
 
     'glpi_vlans' => [

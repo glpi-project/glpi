@@ -1104,13 +1104,14 @@ CREATE TABLE `glpi_computertypes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_computervirtualmachines
+### Dump table glpi_itemvirtualmachines
 
-DROP TABLE IF EXISTS `glpi_computervirtualmachines`;
-CREATE TABLE `glpi_computervirtualmachines` (
+DROP TABLE IF EXISTS `glpi_itemvirtualmachines`;
+CREATE TABLE `glpi_itemvirtualmachines` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `entities_id` int unsigned NOT NULL DEFAULT '0',
-  `computers_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) DEFAULT NULL,
+  `items_id` int unsigned NOT NULL DEFAULT '0',
   `name` varchar(255) NOT NULL DEFAULT '',
   `virtualmachinestates_id` int unsigned NOT NULL DEFAULT '0',
   `virtualmachinesystems_id` int unsigned NOT NULL DEFAULT '0',
@@ -1124,7 +1125,7 @@ CREATE TABLE `glpi_computervirtualmachines` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
+  KEY `item` (`itemtype`, `items_id`),
   KEY `entities_id` (`entities_id`),
   KEY `name` (`name`),
   KEY `virtualmachinestates_id` (`virtualmachinestates_id`),

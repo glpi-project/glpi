@@ -55,12 +55,13 @@
 
                   {% set field_options = field_options|merge(params) %}
 
-                  <input type="hidden" name="computers_id"  value={{ computer.getID() }}>
+                  <input type="hidden" name="itemtype" value={{ asset.getType() }}>
+                  <input type="hidden" name="items_id"value={{ asset.getID() }}>
 
                   {{ fields.htmlField(
-                     "Computer",
-                     computer.getLink(),
-                     computer.getTypeName(1),
+                     asset.getType(),
+                     asset.getLink(),
+                     asset.getTypeName(1),
                      field_options
                   ) }}
 
@@ -113,8 +114,8 @@
                   ) }}
 
                   {{ fields.htmlField(
-                     "Computer",
-                     linked_computer,
+                     asset.getType(),
+                     linked_asset,
                      __('Machine'),
                      field_options
                   ) }}
