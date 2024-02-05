@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
@@ -701,6 +702,10 @@ class Ticket extends CommonITILObject
     {
         /** @var CommonDBTM $item */
         if (static::canView()) {
+            if ($item instanceof Asset && !$this->shouldDisplayTabForAsset($item)) {
+                return '';
+            }
+
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -3141,7 +3146,10 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight('problem', READ)) {
-            $tab = array_merge($tab, Problem::rawSearchOptionsToAdd());
+            $tab = array_merge(
+                $tab,
+                Problem::rawSearchOptionsToAdd(self::class)
+            );
         }
 
         $tab[] = [
@@ -6428,5 +6436,76 @@ JAVASCRIPT;
                 $this->olaAffect($slmType, $input, $manual_olas_id);
             }
         }
+    }
+
+    public static function rawSearchOptionsToAdd($itemtype)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $options = [];
+
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $options[] = [
+                'id'            => 60,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of tickets'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
+        return $options;
+    }
+
+    /**
+     * DUPLICATED METHOD FROM CommonItilObject_Item
+     * Needed because assets uses the "Ticket" tab instead of "Item_Ticket"
+     * TODO: once linkeds tickets use the correct "Item_Ticket" tab, delete
+     * this method and move its reference in Ticket::getTabNameForItem() in
+     * Item_Ticket::getTabNameForItem()
+     *
+     * ------------------------------------------------------------
+     *
+     * ITIL tabs for generic assets should only be displayed if the asset already
+     * has associated ITIL items OR if the current user profile is allowed to
+     * link this asset to ITIL items
+     *
+     * @param Asset $asset
+     *
+     * @return bool
+     */
+    protected function shouldDisplayTabForAsset(Asset $asset): bool
+    {
+        // Always display tab if the current profile is allowed to link ITIL
+        // items to this asset
+        if (
+            in_array(
+                $asset::class,
+                $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] ?? []
+            )
+        ) {
+            return true;
+        }
+
+        // Only show if at least one item is already linked
+        return countElementsInTable(
+            Item_Ticket::getTable(),
+            [
+                'itemtype' => $asset::getType(),
+                'items_id' => $asset->getId(),
+            ]
+        ) > 0;
     }
 }

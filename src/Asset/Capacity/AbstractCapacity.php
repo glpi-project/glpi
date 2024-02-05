@@ -49,7 +49,7 @@ abstract class AbstractCapacity implements CapacityInterface
     /**
      * Constructor.
      *
-     * Declared as final to ensure that constructor can be call without having to pass any parameter.
+     * Declared as final to ensure that constructor can be called without having to pass any parameter.
      */
     final public function __construct()
     {

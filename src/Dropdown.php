@@ -3769,7 +3769,7 @@ JAVASCRIPT;
             return;
         }
 
-        $where = [];
+        $where = [$post['itemtype']::getSystemSQLCriteria()];
         if (isset($post['used']) && !empty($post['used'])) {
             $where['NOT'] = ['id' => $post['used']];
         }

@@ -39,6 +39,7 @@
  * Relation between CommonItilObject_Item and Items
  */
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
@@ -1575,5 +1576,37 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             echo "</div>";
         }
         return $rand;
+    }
+
+    /**
+     * ITIL tabs for generic assets should only be displayed if the asset already
+     * has associated ITIL items OR if the current user profile is allowed to
+     * link this asset to ITIL items
+     *
+     * @param Asset $asset
+     *
+     * @return bool
+     */
+    protected function shouldDisplayTabForAsset(Asset $asset): bool
+    {
+        // Always display tab if the current profile is allowed to link ITIL
+        // items to this asset
+        if (
+            in_array(
+                $asset::class,
+                $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] ?? []
+            )
+        ) {
+            return true;
+        }
+
+        // Only show if at least one item is already linked
+        return countElementsInTable(
+            static::getTable(),
+            [
+                'itemtype' => $asset::getType(),
+                'items_id' => $asset->getId(),
+            ]
+        ) > 0;
     }
 }

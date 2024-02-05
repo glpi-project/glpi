@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+ use Glpi\Asset\Asset;
+
 /**
  * Item_Problem Class
  *
@@ -222,6 +224,10 @@ class Item_Problem extends CommonItilObject_Item
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if ($item instanceof Asset && !$this->shouldDisplayTabForAsset($item)) {
+            return '';
+        }
 
         if (!$withtemplate) {
             $nb = 0;
