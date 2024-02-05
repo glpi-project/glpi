@@ -210,9 +210,10 @@ class Item_Ticket extends CommonItilObject_Item
             return false;
         }
 
+        $ticket_is_closed = in_array($ticket->fields['status'], $ticket->getClosedStatusArray());
         $can_add_items = $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(2, Ticket::HELPDESK_MY_HARDWARE) || $_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(2, Ticket::HELPDESK_ALL_HARDWARE);
         $canedit = ($can_add_items && $ticket->can($params['id'], UPDATE)
-                  && $params['_canupdate']);
+                  && $params['_canupdate'] && !$ticket_is_closed);
 
        // Ticket update case
         $usedcount = 0;
@@ -290,8 +291,8 @@ class Item_Ticket extends CommonItilObject_Item
 
        // Display list
         if (!empty($params['items_id'])) {
-           // No delete if mandatory and only one item
-            $delete = $ticket->canAddItem(__CLASS__);
+            // No delete if mandatory and only one item or if ticket is closed
+            $delete = $ticket->canAddItem(__CLASS__) && !$ticket_is_closed;
             $cpt = 0;
             foreach ($params['items_id'] as $itemtype => $items) {
                 $cpt += count($items);

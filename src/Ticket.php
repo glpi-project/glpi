@@ -4400,18 +4400,15 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
         $can_requester = $this->canRequesterUpdateItem();
+        $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
 
-        $item_ticket = null;
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
             $canpriority = false;
-        } else {
-            $item_ticket = new Item_Ticket();
-            $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         }
 
         $sla = new SLA();
@@ -4421,6 +4418,11 @@ JAVASCRIPT;
             $options['_canupdate'] = Session::haveRight('ticket', CREATE);
         } else {
             $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
+        }
+
+        $item_ticket = null;
+        if ($options['_canupdate']) {
+            $item_ticket = new Item_Ticket();
         }
 
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
