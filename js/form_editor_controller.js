@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -379,13 +379,13 @@ class GlpiFormEditorController
         this.#is_draft = false;
     }
 
-     /**
+    /**
      * Mark question description as extra details if empty.
      *
      * @param {jQuery} container
      * @param {Object} content
      */
-     #markQuestionDescriptionAsExtraDetailsIfEmpty(container, content) {
+    #markQuestionDescriptionAsExtraDetailsIfEmpty(container, content) {
         // Compute raw text length
         const div = document.createElement("div");
         div.innerHTML = content;
@@ -502,7 +502,7 @@ class GlpiFormEditorController
             const config = window.tinymce_editor_configs[id];
 
             // Rename id to ensure it is unique
-            const uid = uniqid();
+            const uid = getUUID();
             $(this).attr("id", `_tinymce_${uid}`);
             id = $(this).attr("id"); // Reload ID
 
