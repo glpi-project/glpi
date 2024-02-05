@@ -40,6 +40,7 @@ use DateInterval;
 use Dropdown;
 use GLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
@@ -903,6 +904,7 @@ HTML;
             "</div>";
 
         $start = microtime(true);
+        Profiler::getInstance()->start(__METHOD__ . ' get card data');
         try {
             $cards = $this->getAllDasboardCards();
             if (!isset($cards[$card_id])) {
@@ -935,7 +937,9 @@ HTML;
                 if (isset($card_options['args']['apply_filters'])) {
                     $provider_args['params']['apply_filters'] = $card_options['args']['apply_filters'];
                 }
+                Profiler::getInstance()->start($card['provider'] . ' (Provider function)');
                 $widget_args = call_user_func_array($card['provider'], array_values($provider_args));
+                Profiler::getInstance()->stop($card['provider'] . ' (Provider function)');
             }
             $widget_args = array_merge($widget_args ?? [], $card_options['args'] ?? []);
 
@@ -943,13 +947,13 @@ HTML;
             $all_widgets = Widget::getAllTypes();
             $widgettype = $card_options['args']['widgettype'] ?? "";
             $widgetfct = $all_widgets[$widgettype]['function'] ?? "";
-            if (strlen($widgetfct)) {
+            if ($widgetfct !== '') {
                 // clean urls in embed mode
                 if (isset($card_options['embed']) && $card_options['embed']) {
                     unset($widget_args['url']);
 
                     if (isset($widget_args['data'])) {
-                        $unset_url = function (&$array) use (&$unset_url) {
+                        $unset_url = static function (&$array) use (&$unset_url) {
                             unset($array['url']);
                             foreach ($array as &$value) {
                                 if (is_array($value)) {
@@ -966,11 +970,13 @@ HTML;
                 }
 
                 // call widget function
-                $html = call_user_func($widgetfct, $widget_args);
+                Profiler::getInstance()->start($widgetfct . ' (Widget function)');
+                $html = $widgetfct($widget_args);
+                Profiler::getInstance()->stop($widgetfct . ' (Widget function)');
             }
 
             // display a warning for empty card
-            if (strlen($html) === 0) {
+            if ($html === '') {
                 return $notfound_html;
             }
 
@@ -983,6 +989,7 @@ HTML;
             global $GLPI;
             $GLPI->getErrorHandler()->handleException($e, true);
         }
+        Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 
         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
             $html .= <<<HTML
@@ -1108,6 +1115,7 @@ HTML;
          */
         global $CFG_GLPI, $GLPI_CACHE;
 
+        Profiler::getInstance()->start(__METHOD__);
         $cards = $GLPI_CACHE->get(self::getAllDashboardCardsCacheKey());
 
         if ($cards === null || $force) {
@@ -1380,6 +1388,7 @@ HTML;
         if (is_array($more_cards)) {
             $cards = array_merge($cards, $more_cards);
         }
+        Profiler::getInstance()->stop(__METHOD__);
 
         return $cards;
     }
