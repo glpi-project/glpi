@@ -164,7 +164,7 @@
         full_width_adapt_column: false,
     })) }}
 
-    {{ fields.textareaField('text', item.fields['text'], __('Description'), field_options|merge({
+    {{ fields.textareaField('text', item.fields['text']|safe_html, __('Description'), field_options|merge({
         full_width: true,
         full_width_adapt_column: false,
         enable_richtext: true,

@@ -51,10 +51,13 @@ if (
     && ($parent = getItemForItemtype($_POST['parenttype']))
 ) {
     if (
-        isset($_POST[$parent->getForeignKeyField()])
+        isset($_POST[$parent::getForeignKeyField()])
         && isset($_POST["id"])
-        && $parent->getFromDB($_POST[$parent->getForeignKeyField()])
+        && $parent->getFromDB($_POST[$parent::getForeignKeyField()])
     ) {
+        if (!$item::isNewID($_POST['id'])) {
+            $item->getFromDB($_POST["id"]);
+        }
         $item->showForm($_POST["id"], ['parent' => $parent]);
     } else {
         echo __('Access denied');
