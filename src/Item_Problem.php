@@ -222,10 +222,13 @@ class Item_Problem extends CommonItilObject_Item
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         **/
+        global $DB, $CFG_GLPI;
 
-        if ($item instanceof Asset && !$this->shouldDisplayTabForAsset($item)) {
+        if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
             return '';
         }
 
