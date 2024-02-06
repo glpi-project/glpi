@@ -79,14 +79,12 @@ class GlpiFormEditorController
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
-            console.error("Target must be a valid form");
+            throw new Error("Target must be a valid form");
         }
 
         // Validate default question type
         if (this.#getQuestionTemplate(this.#defaultQuestionType).length == 0) {
-            console.error(
-                `Invalid default question type: ${defaultQuestionType}`
-            );
+            throw new Error(`Invalid default question type: ${defaultQuestionType}`);
         }
 
         // Adjust container height and init handlers
@@ -216,7 +214,7 @@ class GlpiFormEditorController
 
             // Unknown action
             default:
-                console.error(`Unknown action: ${action}`);
+                throw new Error(`Unknown action: ${action}`);
         }
 
         // Compute input dynamic names and values (keep at the end)

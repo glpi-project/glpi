@@ -52,7 +52,7 @@ class GlpiFormRendererController
         // Target must be a valid form
         this.#target = target;
         if ($(this.#target).prop("tagName") != "FORM") {
-            console.error("Target must be a valid form");
+            throw new Error("Target must be a valid form");
         }
 
         // Init event handlers
