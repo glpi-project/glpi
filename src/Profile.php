@@ -1193,7 +1193,7 @@ class Profile extends CommonDBTM
         echo "</tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Associable items to a ticket') . "</td>";
+        echo "<td>" . __('Associable items to tickets, changes and problems') . "</td>";
         echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
         self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
 
@@ -1574,7 +1574,7 @@ class Profile extends CommonDBTM
         echo "</td></tr>";
 
         echo "<tr>";
-        echo "<td>" . __('Associable items to a ticket') . "</td>";
+        echo "<td>" . __('Associable items to tickets, changes and problems') . "</td>";
         echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
         self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
         echo "</td>";
@@ -3245,7 +3245,7 @@ class Profile extends CommonDBTM
             'id'                 => '87',
             'table'              => $this->getTable(),
             'field'              => 'helpdesk_item_type',
-            'name'               => __('Associable items to a ticket'),
+            'name'               => __('Associable items to tickets, changes and problems'),
             'massiveaction'      => false,
             'datatype'           => 'specific'
         ];
