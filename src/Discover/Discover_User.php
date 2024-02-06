@@ -151,6 +151,11 @@ class Discover_User extends CommonDBTM
                     $filepath = GLPI_ROOT . '/resources/Lessons/translated/en_GB/' . substr($value, 17);
                 }
 
+                // If the file doesn't exist in english, we fallback to the original file
+                if (!file_exists($filepath)) {
+                    $filepath = GLPI_ROOT . '/resources/Lessons/sources/' . substr($value, 17);
+                }
+
                 $value = file_get_contents($filepath);
             }
         });
