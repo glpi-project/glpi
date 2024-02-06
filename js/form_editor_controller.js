@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, glpi_toast_info */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -79,14 +79,12 @@ class GlpiFormEditorController
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
-            console.error("Target must be a valid form");
+            throw new Error("Target must be a valid form");
         }
 
         // Validate default question type
         if (this.#getQuestionTemplate(this.#defaultQuestionType).length == 0) {
-            console.error(
-                `Invalid default question type: ${defaultQuestionType}`
-            );
+            throw new Error(`Invalid default question type: ${defaultQuestionType}`);
         }
 
         // Adjust container height and init handlers
@@ -138,6 +136,12 @@ class GlpiFormEditorController
                 (e, original_event) => this.#handleTinyMCEClick(original_event)
             );
 
+        // Handle form preview successful submit
+        $(document)
+            .on(
+                'glpi-form-renderer-submit-success',
+                (e, data) => this.#handleFormPreviewSubmitSuccess(data)
+            );
 
         // Register handlers for each possible editor actions using custom
         // data attributes
@@ -210,7 +214,7 @@ class GlpiFormEditorController
 
             // Unknown action
             default:
-                console.error(`Unknown action: ${action}`);
+                throw new Error(`Unknown action: ${action}`);
         }
 
         // Compute input dynamic names and values (keep at the end)
@@ -571,5 +575,22 @@ class GlpiFormEditorController
      */
     #computeDynamicInputSize(input) {
         $(input).css("width", getRealInputWidth(input, "1.2rem"));
+    }
+
+    /**
+     * Handle form preview successful submit.
+     * @param {Object} data Response data
+     */
+    #handleFormPreviewSubmitSuccess(data) {
+        // Close modal
+        $("#glpi_form_editor_preview_modal").modal('hide');
+
+        // Show toast with link to answers set
+        glpi_toast_info(
+            __("Item successfully created: %s").replace(
+                "%s",
+                data.link_to_created_item
+            )
+        );
     }
 }

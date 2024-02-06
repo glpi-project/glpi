@@ -39,7 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 
 /**
- * Short answers are single line inputs use to answer simple questions.
+ * Short answers are single line inputs used to answer simple questions.
  */
 class QuestionTypeShortAnswer implements QuestionTypeInterface
 {
@@ -69,7 +69,7 @@ TWIG;
             <input
                 type="text"
                 class="form-control"
-                name="question[{{ question.fields.id|e('html_attr') }}]"
+                name="answers[{{ question.fields.id|e('html_attr') }}]"
                 value="{{ question.fields.default_value|e('html_attr') }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
@@ -78,6 +78,18 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'question' => $question,
+        ]);
+    }
+
+    public function renderAnswerTemplate($answer): string
+    {
+        $template = <<<TWIG
+            <div class="form-control-plaintext">{{ answer }}</div>
+TWIG;
+
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'answer' => $answer,
         ]);
     }
 }

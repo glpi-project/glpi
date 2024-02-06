@@ -33,42 +33,49 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Form;
+use Glpi\Http\Response;
 
-use Glpi\Form\Question;
+include('../../inc/includes.php');
 
 /**
- * Interface that must be implemented by all available questions types
+ * AJAX endpoint used to submit answers for a given form.
  */
-interface QuestionTypeInterface
-{
-    /**
-     * Render the administration template for the given question.
-     * This template is used on the form editor page.
-     *
-     * @param Question|null $question Given question's data. May be null for a new question.
-     *
-     * @return string
-     */
-    public function renderAdminstrationTemplate(?Question $question): string;
 
-    /**
-     * Render the end up user template for a given question.
-     * This template is used when rendered forms are displayed to users.
-     *
-     * @param Question $question Given question's data.
-     *
-     * @return string
-     */
-    public function renderEndUserTemplate(Question $question): string;
+// TODO: check that the current user is allowed to respond to forms
 
-    /**
-     * Render the given answer.
-     * This template is used when rendering answers for a form.
-     *
-     * @param mixed $answer Given raw answer data.
-     *
-     * @return string
-     */
-    public function renderAnswerTemplate($answer): string;
+// Validate forms_forms_id parameter
+$forms_id = $_POST['forms_id'] ?? 0;
+if (!$forms_id) {
+    Response::sendError(400, __('Missing form id'));
 }
+
+// Load form
+$form = Form::getById($forms_id);
+if (!$form) {
+    Response::sendError(404, __('Form not found'));
+}
+
+// Validate answers parameter
+$answers = $_POST['answers'] ?? [];
+if (!is_array($answers) || empty($answers)) {
+    Response::sendError(400, __('Invalid answers'));
+}
+
+// Try to save answers
+$handler = new AnswersHandler();
+$answers_set = $handler->saveAnswers($form, $answers, Session::getLoginUserID());
+if (!$answers_set) {
+    Response::sendError(500, __('Failed to save answers'));
+}
+
+// Success response
+$response = new Response(
+    200,
+    ['Content-Type' => 'application/json'],
+    json_encode([
+        'link_to_created_item' => $answers_set->getLink(),
+    ]),
+);
+$response->send();
