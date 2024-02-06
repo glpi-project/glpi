@@ -39,9 +39,9 @@
 
         <div class="mb-3">
             <label class="form-label">
-                {{ (__("Author")) }}
+                {{ __("Author") }}
             </label>
-            <div class="form-control-plaintext">{{ get_item('User', item.fields.users_id).getLink()|raw }}</div>
+            <div class="form-control-plaintext">{{ get_item_link('User', item.fields.users_id) }}</div>
         </div>
 
         <div class="mb-3">

@@ -67,9 +67,7 @@ class AnswersHandler
                 'forms_forms_id' => $form->getID(),
             ],
         ]);
-        foreach ($rows as $row) {
-            $next_index = $row['current_index'] + 1;
-        }
+        $next_index = $rows->current()['current_index'] + 1;
 
         // Load relevant questions data from the DB
         $questions = $form->getQuestions();
