@@ -50,14 +50,15 @@ class QuestionTypeShortAnswer implements QuestionTypeInterface
                 class="form-control mb-2"
                 type="text"
                 name="default_value"
-                placeholder="{{ __("No default value") }}"
+                placeholder="{{ placehoder }}"
                 value="{{ question is not null ? question.fields.default_value : '' }}"
             />
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question,
+            'question'   => $question,
+            'placehoder' => __('No default value'),
         ]);
     }
 
