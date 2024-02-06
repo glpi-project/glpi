@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 - Custom palette/theme support (uses `files/_themes` directory by default).
 - Two-Factor Authentication (2FA) support via Time-based One-time Password (TOTP).
 - `Deny login` authorization rule action to deny login for a user, but not prevent the import/existence of the user in GLPI.
+- Directly capture screenshots or screen recordings from the "Add a document" form in tickets.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
