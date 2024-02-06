@@ -86,7 +86,7 @@ class GlpiCommonAjaxController
                 error.responseJSON !== undefined
                 && error.responseJSON.messages !== undefined
             ) {
-                this.#handleFeedbackMessages(error.responseJSON.messages);
+                this.#handleFeedbackMessages(error.responseJSON);
             } else {
                 // We don't know how to handle this error
                 console.error(error);

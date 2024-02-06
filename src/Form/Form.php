@@ -167,8 +167,26 @@ class Form extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
-        // Update questions
-        $this->updateQuestions();
+        global $DB;
+
+        $DB->beginTransaction();
+
+        try {
+            // Update questions
+            $this->updateQuestions();
+            $DB->commit();
+        } catch (\Throwable $e) {
+            // Do not keep half updated data
+            $DB->rollback();
+
+            // Propagate exception to ensure the server return an error code
+            throw $e;
+
+            // TODO: succesfull update message is still shown in this case as
+            // the exception in thrown after the main form object was already
+            // updated. Maybe this process should be done before the actual
+            // update using the prepareInputForUpdate method instead.
+        }
 
         // Clear any lazy loaded data
         $this->clearLazyLoadedData();
