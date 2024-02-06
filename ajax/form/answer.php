@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,6 @@
  */
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Http\Response;
 
@@ -46,7 +45,12 @@ include('../../inc/includes.php');
 
 // Validate forms_forms_id parameter
 $forms_id = $_POST['forms_id'] ?? 0;
-if (!$forms_id || !($form = Form::getById($forms_id))) {
+if (!$forms_id) {
+    Response::sendError(400, __('Missing or invalid form id'));
+}
+
+$form = Form::getById($forms_id);
+if (!$form) {
     Response::sendError(400, __('Missing or invalid form id'));
 }
 
