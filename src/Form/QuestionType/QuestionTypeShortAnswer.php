@@ -50,8 +50,8 @@ class QuestionTypeShortAnswer implements QuestionTypeInterface
                 class="form-control mb-2"
                 type="text"
                 name="default_value"
-                placeholder="{{ placehoder }}"
-                value="{{ question is not null ? question.fields.default_value : '' }}"
+                placeholder="{{ placehoder|e('html_attr') }}"
+                value="{{ question is not null ? question.fields.default_value|e('html_attr') : '' }}"
             />
 TWIG;
 
@@ -69,8 +69,8 @@ TWIG;
             <input
                 type="text"
                 class="form-control"
-                name="question[{{ question.fields.id }}]"
-                value="{{ question.fields.default_value }}"
+                name="question[{{ question.fields.id|e('html_attr') }}]"
+                value="{{ question.fields.default_value|e('html_attr') }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >
 TWIG;
