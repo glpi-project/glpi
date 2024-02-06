@@ -700,9 +700,12 @@ class Ticket extends CommonITILObject
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         /** @var CommonDBTM $item */
         if (static::canView()) {
-            if ($item instanceof Asset && !$this->shouldDisplayTabForAsset($item)) {
+            if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
                 return '';
             }
 
@@ -6478,15 +6481,15 @@ JAVASCRIPT;
      *
      * ------------------------------------------------------------
      *
-     * ITIL tabs for generic assets should only be displayed if the asset already
+     * ITIL tabs for assets should only be displayed if the asset already
      * has associated ITIL items OR if the current user profile is allowed to
      * link this asset to ITIL items
      *
-     * @param Asset $asset
+     * @param CommonDBTM $asset
      *
      * @return bool
      */
-    protected function shouldDisplayTabForAsset(Asset $asset): bool
+    protected function shouldDisplayTabForAsset(CommonDBTM $asset): bool
     {
         // Always display tab if the current profile is allowed to link ITIL
         // items to this asset

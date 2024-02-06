@@ -39,7 +39,6 @@
  * Relation between CommonItilObject_Item and Items
  */
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
@@ -1579,15 +1578,15 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     }
 
     /**
-     * ITIL tabs for generic assets should only be displayed if the asset already
+     * ITIL tabs for assets should only be displayed if the asset already
      * has associated ITIL items OR if the current user profile is allowed to
      * link this asset to ITIL items
      *
-     * @param Asset $asset
+     * @param CommonDBTM $asset
      *
      * @return bool
      */
-    protected function shouldDisplayTabForAsset(Asset $asset): bool
+    protected function shouldDisplayTabForAsset(CommonDBTM $asset): bool
     {
         // Always display tab if the current profile is allowed to link ITIL
         // items to this asset
