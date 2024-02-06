@@ -48,13 +48,17 @@ class AnswersHandler
     /**
      * Saves the given answers of a given form into an AnswersSet object
      *
-     * @param Form  $form    The form to save answers for
-     * @param array $answers The answers to save
+     * @param Form  $form     The form to save answers for
+     * @param array $answers  The answers to save
+     * @param int   $users_id The author of the answers
      *
      * @return AnswersSet|false The created AnswersSet object or false on failure
      */
-    public function saveAnswers(Form $form, array $answers): AnswersSet|false
-    {
+    public function saveAnswers(
+        Form $form,
+        array $answers,
+        int $users_id
+    ): AnswersSet|false {
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -90,7 +94,7 @@ class AnswersHandler
             'name'           => $form->getName() . " #$next_index",
             'forms_forms_id' => $form->getID(),
             'answers'        => json_encode($formatted_answers),
-            'users_id'       => Session::getLoginUserID(),
+            'users_id'       => $users_id,
             'index'          => $next_index,
         ]);
 
