@@ -47,6 +47,12 @@ class HasKnowbaseCapacity extends AbstractCapacity
     {
         return Knowbase::getTypeName(Session::getPluralNumber());
     }
+    public function getCloneRelations(): array
+    {
+        return [
+            KnowbaseItem_Item::class,
+        ];
+    }
 
     public function onClassBootstrap(string $classname): void
     {

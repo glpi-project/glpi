@@ -36,18 +36,12 @@
 namespace Glpi\Asset;
 
 use CommonDBTM;
-use Contract_Item;
-use Document_Item;
 use Glpi\Application\View\TemplateRenderer;
 use Entity;
 use Glpi\Features\Clonable;
 use Group;
-use Infocom;
-use Item_Disk;
-use Item_OperatingSystem;
 use Location;
 use Manufacturer;
-use Notepad;
 use State;
 use Toolbox;
 use User;
