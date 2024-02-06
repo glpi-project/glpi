@@ -425,9 +425,9 @@ class Computer_Item extends CommonDBRelation
                 $linkname = $data["name"];
                 $itemtype = $data['assoc_itemtype'];
 
-                $typeclass  = $itemtype . "Type";
-                $type_table = getTableForItemType($typeclass);
-                $typefield  = getForeignKeyFieldForTable(getTableForItemType($typeclass));
+                $type_class  = $itemtype . "Type";
+                $type_table = getTableForItemType($type_class);
+                $type_field  = getForeignKeyFieldForTable($type_table);
 
                 if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                     $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
@@ -458,9 +458,9 @@ class Computer_Item extends CommonDBRelation
                 echo "<td>" .
                    (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
                 echo "<td>" .
-                    (isset($data[$typefield]) ? "" . Dropdown::getDropdownName(
+                    (isset($data[$type_field]) ? "" . Dropdown::getDropdownName(
                         $type_table,
-                        $data[$typefield]
+                        $data[$type_field]
                     ) . "" : "-") . "</td>";
                 echo "</tr>";
             }
