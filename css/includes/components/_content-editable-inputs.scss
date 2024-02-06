@@ -42,8 +42,20 @@
 $inline-input-padding: 2px 4px;
 
 .content-editable-h1 {
-    // Copy h2 styles
+    // Copy h1 styles
     font-size: 1.6rem !important;
+    line-height: 1.5rem;
+    font-weight: var(--tblr-font-weight-medium);
+    border: 0;
+    padding: $inline-input-padding;
+    margin-bottom: 1.1rem;
+    background-color: transparent;
+    box-shadow: none;
+}
+
+.content-editable-h2 {
+    // Copy h2 styles
+    font-size: 1.2rem !important;
     line-height: 1.5rem;
     font-weight: var(--tblr-font-weight-medium);
     border: 0;
@@ -53,7 +65,28 @@ $inline-input-padding: 2px 4px;
     box-shadow: none;
 }
 
+// Fix some weird margin issue due to the fact that part of a question form
+// is hidden using visibility: hidden and opacity: 0, which cause internal
+// negative margin to have unwanted effect on the parent container
+// TODO: need some E2E tests to make sure these margins are not broken
+[data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce {
+    margin-bottom: 0 !important;
+}
+
+[data-glpi-form-editor-question].active {
+    .content-editable-tinymce.simulate-focus {
+        margin-bottom: 8px !important;
+    }
+}
+
+[data-glpi-form-editor-question].active [data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce:not(.simulate-focus) {
+    margin-bottom: -1rem !important;
+}
+
 .content-editable-tinymce {
+    // Override some hard-set tinymce margins
+    margin-bottom: -1rem !important;
+
     // Remove default border and padding, add similar hover style used on our inputs
     .tox-tinymce {
         border-color: transparent !important;
@@ -78,7 +111,18 @@ $inline-input-padding: 2px 4px;
         // the rendering of the header (probably caused by some calculations done
         // on width)
         opacity: 0;
-        height: 0;
+        height: 0 !important;
+        transition: height 0.25s ease !important;
+    }
+
+    // Override some hard-set tinymce margins
+    .tox-sidebar-wrap {
+        margin-bottom: -20px;
+    }
+
+    // Do not display file upload summary as it will only contains pasted images
+    .fileupload {
+        display: none;
     }
 }
 
@@ -90,7 +134,15 @@ $inline-input-padding: 2px 4px;
     // Show richtext toolbar only when focused
     .tox-editor-header {
         opacity: unset;
-        height: unset;
+        height: 48px !important; // Need to set a fixed height for transition
+        transition: height 0.25s ease !important;
+        margin-top: 1rem !important;
+    }
+
+    // Partial revert of margin change in this case as we want to keep the
+    // natural margin while the toolbar is visible
+    .tox-sidebar-wrap {
+        margin-bottom: -5px;
     }
 }
 
@@ -98,4 +150,14 @@ $inline-input-padding: 2px 4px;
 .content-editable-tinymce-editor {
     margin: 0 !important;
     padding: 0 !important;
+
+    // Remove margin after final paragraph
+    p:last-child {
+        margin-bottom: 0 !important;
+    }
+
+    // Show correct cursor on tinymce's placeholders
+    &[data-mce-placeholder] {
+        cursor: text !important;
+    }
 }

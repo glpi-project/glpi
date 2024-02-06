@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -51,24 +51,57 @@ class GlpiFormEditorController
     #is_draft;
 
     /**
+     * Default question type to use when creating a new question
+     * @type {string}
+     */
+    #defaultQuestionType;
+
+    /**
+     * Templates container (jquery selector)
+     * @type {string}
+     */
+    #templates;
+
+    /**
      * Create a new GlpiFormEditorController instance for the given target.
      * The target must be a valid form.
      *
      * @param {string}  target
      * @param {boolean} is_draft
+     * @param {string} defaultQuestionType
+     * @param {string} templates
      */
-    constructor(target, is_draft) {
-        this.#target = target;
-        this.#is_draft = is_draft;
+    constructor(target, is_draft, defaultQuestionType, templates) {
+        this.#target              = target;
+        this.#is_draft            = is_draft;
+        this.#defaultQuestionType = defaultQuestionType;
+        this.#templates           = templates;
 
         // Validate target
         if ($(this.#target).prop("tagName") != "FORM") {
             console.error("Target must be a valid form");
         }
 
+        // Validate default question type
+        if (this.#getQuestionTemplate(this.#defaultQuestionType).length == 0) {
+            console.error(
+                `Invalid default question type: ${defaultQuestionType}`
+            );
+        }
+
         // Adjust container height and init handlers
         this.#adjustContainerHeight();
         this.#initEventHandlers();
+
+        // Adjust dynamics inputs size
+        $(this.#target)
+            .find("[data-glpi-form-editor-dynamic-input]")
+            .each((index, input) => {
+                this.#computeDynamicInputSize(input);
+            });
+
+        // Compute base state (keep at the end)
+        this.#computeState();
     }
 
     /**
@@ -91,6 +124,21 @@ class GlpiFormEditorController
             () => this.#handleBackendUpdateResponse()
         );
 
+        // Handle tinymce change event
+        $(document)
+            .on(
+                'tinyMCEChange',
+                (e, original_event) => this.#handleTinyMCEChange(original_event)
+            );
+
+        // Handle tinymce click event
+        $(document)
+            .on(
+                'tinyMCEClick',
+                (e, original_event) => this.#handleTinyMCEClick(original_event)
+            );
+
+
         // Register handlers for each possible editor actions using custom
         // data attributes
         const events = ["click", "change", "input"];
@@ -102,7 +150,7 @@ class GlpiFormEditorController
                     const target = $(e.currentTarget);
                     const action = target.attr(attribute);
 
-                    this.#handleEditorAction(action);
+                    this.#handleEditorAction(action, target);
                 });
         });
     }
@@ -121,18 +169,165 @@ class GlpiFormEditorController
      * This method should be the unique entry point for any action on the editor.
      *
      * @param {string} action Action to perform
+     * @param {jQuery} target Element that triggered the action
      */
-    #handleEditorAction(action) {
+    #handleEditorAction(action, target) {
         switch (action) {
             // Show the preview of the current form in a modal
             case "show-preview":
                 this.#showPreview();
                 break;
 
+            // Mark the target item as active
+            case "set-active":
+                this.#setActiveItem(target);
+                break;
+
+            // Add a new question at the end of the current section
+            case "add-question":
+                this.#addQuestion();
+                break;
+
+            // Delete the target question
+            case "delete-question":
+                this.#deleteQuestion(
+                    target.closest("[data-glpi-form-editor-question]")
+                );
+                break;
+
+            // Toggle mandatory class on the target question
+            case "toggle-mandatory-question":
+                this.#toggleMandatoryClass(
+                    target.closest("[data-glpi-form-editor-question]"),
+                    target.prop("checked")
+                );
+                break;
+
+            // Compute the ideal width of the given input based on its content
+            case "compute-dynamic-input":
+                this.#computeDynamicInputSize(target[0]);
+                break;
+
             // Unknown action
             default:
                 console.error(`Unknown action: ${action}`);
         }
+
+        // Compute input dynamic names and values (keep at the end)
+        this.#computeState();
+    }
+
+    /**
+     * Compute the state of the form editor (= inputs names and values).
+     * Must be executed after each actions.
+     */
+    #computeState() {
+        // Find all sections
+        const s_index = 0; // Only one section for now
+        const questions = $(this.#target).find("[data-glpi-form-editor-question]");
+        questions.each((q_index, question) => {
+            // Compute state for each questions
+            this.#formatInputsNames(
+                $(question),
+                s_index,
+                q_index,
+            );
+            this.#remplaceEmptyIdByUuid($(question));
+            this.#setKey($(question));
+        });
+    }
+
+    /**
+     * Must not be called directly, use #computeState() instead.
+     *
+     * Inputs names of questions and sections must be formatted to match the
+     * expected format, which is:
+     * - Sections: _sections[section_index][field]
+     * - Questions: _questions[section_index][question_index][field]
+     *
+     * @param {jQuery} item                Section or question form container
+     * @param {number} section_index       Section index
+     * @param {number|null} question_index Question index
+     */
+    #formatInputsNames(item, section_index, question_index = null) {
+        // Find all inputs for this section
+        const inputs = item.find("input, select, textarea");
+
+        // Find all section inputs and update their names to match the
+        // "_section[section_index][field]" format
+        inputs.each((index, input) => {
+            const name = $(input).attr("name");
+
+            // Input was never parsed before, store its original name
+            if (!$(input).data("glpi-form-editor-original-name")) {
+                $(input).attr("data-glpi-form-editor-original-name", name);
+            }
+
+            // Format input name
+            const field = $(input).data("glpi-form-editor-original-name");
+            $(input).attr(
+                "name",
+                this.#buildInputIndex(section_index, question_index) + `[${field}]`
+            );
+        });
+    }
+
+    /**
+     * Must not be called directly, use #computeState() instead.
+     *
+     * Generate a UUID for each newly created questions and sections.
+     * This UUID will be used by the backend to handle updates for news items.
+     *
+     * @param {jQuery} item Section or question
+     */
+    #remplaceEmptyIdByUuid(item) {
+        const id = this.#getItemInput(item, "id");
+
+        if (id == 0) {
+            // Replace by UUID
+            this.#setItemInput(item, "id", getUUID());
+        }
+    }
+
+    /**
+     * Must not be called directly, use #computeState() instead.
+     * @param {jQuery} item Section or question
+     */
+    #setKey(item) {
+        item.attr(
+            "data-glpi-form-editor-key",
+            this.#getItemInput(item, "id")
+        );
+    }
+
+    /**
+     * Handle tinymce change event
+     * @param {Object} e Event data
+     */
+    #handleTinyMCEChange(e) {
+        // Check if the change is related to a question description
+        const description_container = $(e.target.container)
+            .closest("[data-glpi-form-editor-question-description]");
+
+        if (description_container.length > 0) {
+            // This is a question description, mark as extra details if empty
+            this.#markQuestionDescriptionAsExtraDetailsIfEmpty(
+                description_container,
+                e.level.content
+            );
+        }
+    }
+
+    /**
+     * Handle tinymce click event
+     * @param {Object} e Event data
+     */
+    #handleTinyMCEClick(e) {
+        // Handle 'set-active' action for clicks inside tinymce
+        this.#setActiveItem(
+            $(e.target.container)
+                .closest('[data-glpi-form-editor-on-click="set-active"]')
+        );
     }
 
     /**
@@ -182,5 +377,199 @@ class GlpiFormEditorController
 
         // Mark as no longer a draft to avoid running this code again
         this.#is_draft = false;
+    }
+
+    /**
+     * Mark question description as extra details if empty.
+     *
+     * @param {jQuery} container
+     * @param {Object} content
+     */
+    #markQuestionDescriptionAsExtraDetailsIfEmpty(container, content) {
+        // Compute raw text length
+        const div = document.createElement("div");
+        div.innerHTML = content;
+        const raw_text = div.textContent || div.innerText || "";
+        const length = raw_text.length;
+
+        // Mark as secondary data if empty
+        if (length == 0) {
+            container
+                .attr("data-glpi-form-editor-question-extra-details", "");
+        } else {
+            container
+                .removeAttr("data-glpi-form-editor-question-extra-details");
+        }
+    }
+
+    /**
+     * Set the current active item.
+     * An active item may have additionnal fields displayed, allowing more
+     * complex customization.
+     *
+     * There can only be a single active item at once.
+     *
+     * A null value may be passed if there are no active item.
+     *
+     * @param {jQuery|null} item_container
+     */
+    #setActiveItem(item_container) {
+        // Remove current active item
+        $(this.#target)
+            .find("\
+                [data-glpi-form-editor-form-details], \
+                [data-glpi-form-editor-question], \
+                [data-glpi-form-editor-section-form-container] \
+            ")
+            .removeClass("active");
+
+        // Set new active item if specified
+        if (item_container !== null) {
+            item_container.addClass("active");
+        }
+    }
+
+    /**
+     * Add a new question at the end of the form
+     */
+    #addQuestion() {
+        // Get template content
+        const template_content = this.#getQuestionTemplate(
+            this.#defaultQuestionType
+        ).children();
+
+        // Insert the new template into the questions area of the current section
+        const new_question = this.#copy_template(
+            template_content,
+            $(this.#target).find("[data-glpi-form-editor-questions]"),
+        );
+
+        // Update UX
+        this.#setActiveItem(new_question);
+    }
+
+    /**
+     * Delete the given question.
+     * @param {jQuery} question
+     */
+    #deleteQuestion(question) {
+        // Remove question and update UX
+        question.remove();
+    }
+
+    /**
+     * Toggle the mandatory class for the given question.
+     * @param {jQuery} question
+     * @param {boolean} is_mandatory
+     */
+    #toggleMandatoryClass(question, is_mandatory) {
+        if (is_mandatory) {
+            question.addClass("mandatory-question");
+        } else {
+            question.removeClass("mandatory-question");
+        }
+    }
+
+    /**
+     * Get the template for the given question type.
+     * @param {string} question_type
+     * @returns {jQuery}
+     */
+    #getQuestionTemplate(question_type) {
+        const type = $.escapeSelector(question_type);
+
+        return $(this.#templates)
+            .find(`[data-glpi-form-editor-question-template=${type}]`);
+    }
+
+    /**
+     * Copy the given template into the given destination.
+     *
+     * @param {jQuery} target         Template to copy
+     * @param {jQuery} destination    Destination to copy the template into
+     * @returns {jQuery} Copy of the template
+     */
+    #copy_template(target, destination) {
+        const copy = target.clone();
+
+        // Keep track of rich text editors that will need to be initialized
+        const tiny_mce_to_init = [];
+
+        // Look for tiynmce editor to init
+        copy.find("textarea").each(function() {
+            // Get editor config for this field
+            let id = $(this).attr("id");
+            const config = window.tinymce_editor_configs[id];
+
+            // Rename id to ensure it is unique
+            const uid = getUUID();
+            $(this).attr("id", `_tinymce_${uid}`);
+            id = $(this).attr("id"); // Reload ID
+
+            // Push config into init queue, needed because we can't init
+            // the rich text editor until the template is inserted into
+            // its final DOM destination
+            config.selector = "#" + id;
+            tiny_mce_to_init.push(config);
+
+            // Store config with udpated ID in case we need to re render
+            // this question
+            window.tinymce_editor_configs[id] = config;
+        });
+
+        // Insert the new question and init the editors
+        copy.appendTo(destination);
+        tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
+
+        return copy;
+    }
+
+    /**
+     * Build the input name prefix for the given section/question.
+     * @param {number} section_index
+     * @param {number|null} question_index
+     * @returns {string}
+     */
+    #buildInputIndex(section_index, question_index = null) {
+        if (question_index === null) {
+            // The input is for the section itself
+            return `_sections[${section_index}]`;
+        } else {
+            // The input is for a question
+            return `_questions[${section_index}][${question_index}]`;
+        }
+    }
+
+    /**
+     * Get input value for the given question.
+     * @param {jQuery} item Question or section
+     * @param {string} field
+     * @returns {string|number}
+     */
+    #getItemInput(item, field) {
+        return item
+            .find(`input[data-glpi-form-editor-original-name=${field}]`)
+            .val();
+    }
+
+    /**
+     * Set input value for the given question.
+     * @param {jQuery} item Question or section
+     * @param {string} field
+     * @param {string|number} value
+     * @returns {jQuery}
+     */
+    #setItemInput(item, field, value) {
+        return item
+            .find(`input[data-glpi-form-editor-original-name=${field}]`)
+            .val(value);
+    }
+
+    /**
+     * Compute the ideal width of the given input based on its content.
+     * @param {HTMLElement} input
+     */
+    #computeDynamicInputSize(input) {
+        $(input).css("width", getRealInputWidth(input, "1.2rem"));
     }
 }

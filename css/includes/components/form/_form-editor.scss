@@ -55,9 +55,51 @@
             }
         }
     }
+
+    overflow: scroll;
+
+    // Revert border radius change from parent div
+    .card {
+        border-bottom-left-radius: var(--tblr-border-radius) !important;
+    }
 }
 
 .editor-footer {
     border-top: 1px solid var(--tblr-border-color);
     background: var(--glpi-form-toolbar-bg);
+}
+
+// Show required mark on mandatory question
+.mandatory-question {
+    [data-glpi-form-editor-required-mark] {
+        display: inline !important;
+    }
+}
+
+// Hide active status by default
+[data-active-status] {
+    display: none;
+}
+
+// Higlight active item
+[data-glpi-form-editor-form-details].active,
+[data-glpi-form-editor-question].active,
+[data-glpi-form-editor-section-form-container].active
+{
+    [data-active-status] {
+        display: inline-block;
+    }
+}
+
+// Hide secondary data on inactive questions
+[data-glpi-form-editor-question].active [data-glpi-form-editor-question-extra-details] {
+    opacity: 1;
+    visibility: visible;
+    transition: visibility 0s, opacity 0.20s linear;
+}
+
+[data-glpi-form-editor-question]:not(.active) [data-glpi-form-editor-question-extra-details] {
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
 }
