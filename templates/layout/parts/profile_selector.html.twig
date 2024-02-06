@@ -122,7 +122,10 @@
                 <tbody>
                 </tbody>
                 </table>
-                <div id="verticalScrollbar-{{ rand }}" style="height:100%;"></div>
+                <div id="verticalScrollbar-{{ rand }}" class="position-absolute overflow-auto" style="height:100%; width: 16px; top: 0; right: 0;">
+                    <div class="fake-scrollbar-inner" style="height: 100%; width: 100%;">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -184,32 +187,13 @@
                     counter: false, // do not show counters when filtering entity tree
                 },
 
-                // load 3rd party scrollbar extension for viewport mode
-                preInit: function(event, data) {
-                    var tree = data.tree;
-
-                    tree.verticalScrollbar = new PlainScrollbar({
-                    alwaysVisible: true,
-                    arrows: true,
-                    orientation: "vertical",
-                    onSet: function(numberOfItems) {
-                        tree.setViewport({
-                            start: Math.round(numberOfItems.start),
-                        });
-                    },
-                    scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
-                    });
-                },
-
                 // update scrollbar when viewport is updated
                 updateViewport: function(event, data) {
-                    var tree = data.tree;
-
-                    tree.verticalScrollbar.set({
-                    start: tree.viewport.start,
-                    total: tree.visibleNodeList.length,
-                    visible: tree.viewport.count,
-                    }, true);  // do not trigger `onSet`
+                    const fake_scrollbar = $("#verticalScrollbar-{{ rand }}");
+                    const item_height = $(data.tree.tbody).find('tr').height();
+                    block_fake_scrollbar_event = true;
+                    fake_scrollbar.find('.fake-scrollbar-inner').height(item_height * data.tree.visibleNodeList.length);
+                    fake_scrollbar.scrollTop(item_height * data.tree.viewport.start);
 
                     initTooltips();
                 },
@@ -220,6 +204,20 @@
                 },
             });
         };
+
+        //Sync viewport with fake scrollbar
+        $("#verticalScrollbar-{{ rand }}").on('scroll', function(e) {
+            if (block_fake_scrollbar_event) {
+                block_fake_scrollbar_event = false;
+                return;
+            }
+            const fake_scrollbar = $(e.target);
+            const item_height = fake_scrollbar.find('.fake-scrollbar-inner').height() / $.ui.fancytree.getTree("#tree_entity{{ rand }}").visibleNodeList.length;
+            const new_start = Math.round(fake_scrollbar.scrollTop() / item_height);
+            $.ui.fancytree.getTree("#tree_entity{{ rand }}").setViewport({
+                start: new_start,
+            });
+        });
 
       // init Entities tree only when user ask for it (when dropdown is opened)
         document.getElementById('entity-tree-dropdown-{{ rand }}')
