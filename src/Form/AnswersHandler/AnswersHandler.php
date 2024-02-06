@@ -41,6 +41,7 @@ use Session;
 
 /**
  * Helper class to handle raw answers data
+ * TODO: singleton
  */
 class AnswersHandler
 {

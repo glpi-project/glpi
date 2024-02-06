@@ -39,6 +39,7 @@ use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\QuestionType\QuestionTypesLoader;
+use Log;
 use Search;
 use User;
 
@@ -63,6 +64,7 @@ class AnswersSet extends CommonDBChild
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
+        $this->addStandardTab(Log::class, $tabs, []);
 
         // TODO: add tab for created objects
         return $tabs;

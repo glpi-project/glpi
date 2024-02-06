@@ -40,18 +40,19 @@ use Glpi\Http\Response;
 include('../../inc/includes.php');
 
 /**
- * AJAX endpoint used to submit answsers for a given form.
+ * AJAX endpoint used to submit answers for a given form.
  */
 
 // Validate forms_forms_id parameter
 $forms_id = $_POST['forms_id'] ?? 0;
 if (!$forms_id) {
-    Response::sendError(400, __('Missing or invalid form id'));
+    Response::sendError(400, __('Missing form id'));
 }
 
+// Load form
 $form = Form::getById($forms_id);
 if (!$form) {
-    Response::sendError(400, __('Missing or invalid form id'));
+    Response::sendError(404, __('Form not found'));
 }
 
 // Validate answers parameter
