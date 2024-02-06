@@ -33,42 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Form;
 
-use Glpi\Form\Question;
+include('../../inc/includes.php');
 
-/**
- * Interface that must be implemented by all available questions types
- */
-interface QuestionTypeInterface
-{
-    /**
-     * Render the administration template for the given question.
-     * This template is used on the form editor page.
-     *
-     * @param Question|null $question Given question's data. May be null for a new question.
-     *
-     * @return string
-     */
-    public function renderAdminstrationTemplate(?Question $question): string;
+// Read parameters
+$id = $_REQUEST['id'] ?? null;
 
-    /**
-     * Render the end up user template for a given question.
-     * This template is used when rendered forms are displayed to users.
-     *
-     * @param Question $question Given question's data.
-     *
-     * @return string
-     */
-    public function renderEndUserTemplate(Question $question): string;
-
-    /**
-     * Render the given answer.
-     * This template is used when rendering answers for a form.
-     *
-     * @param mixed $answer Given raw answer data.
-     *
-     * @return string
-     */
-    public function renderAnswerTemplate($answer): string;
+if (isset($_POST["purge"])) {
+    $answers_set = new AnswersSet();
+    // TODO: Add a specific right to ensure the user can delete an answer
+    $answers_set->check($id, DELETE);
+    $answers_set->delete($_POST, 1);
+    $answers_set->redirectToList();
+} else {
+    Session::checkRight(Form::$rightname, READ);
+    AnswersSet::displayFullPageForItem($id, ['admin', Form::getType()], []);
 }
