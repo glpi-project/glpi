@@ -883,9 +883,9 @@ class Agent extends CommonDBTM
                         if (isset($config['stale_agents_status']) && $item !== null) {
                             $shouldUpdate = false;
                             if (
-                                (isset($config['old_stale_agents_status']) && $config['old_stale_agents_status'] != json_encode([0]))
+                                (isset($config['previous_stale_agents_status']) && $config['previous_stale_agents_status'] != json_encode([0]))
                             ) {
-                                $old_state_list = json_decode($config['old_stale_agents_status']);
+                                $old_state_list = json_decode($config['previous_stale_agents_status']);
                                 if (in_array($item->fields['states_id'], $old_state_list)) {
                                     $shouldUpdate = true;
                                 }

@@ -935,62 +935,46 @@ class Conf extends CommonGLPI
             );
             //if action == action_status => show blocation else hide blocaction
             echo Html::scriptBlock("
-            function changestatus() {
-                if ($('#dropdown_stale_agents_action$rand').val() != 0) {
-                $('#blocaction1').show();
-                $('#blocaction2').show();
-                $('#blocaction3').show();
-                $('#blocaction4').show();
-                } else {
-                $('#blocaction1').hide();
-                $('#blocaction2').hide();
-                $('#blocaction3').hide();
-                $('#blocaction4').hide();
+                function changestatus() {
+                    if ($('#dropdown_stale_agents_action$rand').val() != 0 && $('#dropdown_stale_agents_action$rand').val() != 2) {
+                        $('#bloc_status_action1').show();
+                        $('#bloc_status_action2').show();
+                    } else {
+                        $('#bloc_status_action1').hide();
+                        $('#bloc_status_action2').hide();
+                    }
                 }
-            }
-            changestatus();
-
-        ");
+                changestatus();
+            ");
             echo "</td>";
             echo "</tr>";
             //blocaction with status
-            echo "<tr class='tab_bg_1'><td colspan=2></td>";
+            echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
+
             echo "<td>";
-            echo "<span id='blocaction1' style='display:none'>";
             echo \State::createTabEntry(__('Status to change (all if empty)'), 0, \State::getType());
-            echo "</span>";
             echo "</td>";
             echo "<td width='20%'>";
-            echo "<span id='blocaction2' style='display:none'>";
             Dropdown::showFromArray(
-                'old_stale_agents_status',
-                State::getStateList(),
-                [
-                    'values' => importArrayFromDB($config['old_stale_agents_status']),
-                    'multiple' => true
-                ]
+                'previous_stale_agents_status',
+                $CFG_GLPI['inventory_types']
             );
-            echo "</span>";
             echo "</td>";
             echo "</tr>";
 
-            echo "<tr class='tab_bg_1'><td colspan=2></td>";
+            echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action2'><td colspan=2></td>";
             echo "<td>";
-            echo "<span id='blocaction3' style='display:none'>";
             echo \State::createTabEntry(__('Status changed'), 0, \State::getType());
-            echo "</span>";
             echo "</td>";
             echo "<td width='20%'>";
-            echo "<span id='blocaction4' style='display:none'>";
             State::dropdown(
                 [
                     'name'   => 'stale_agents_status',
-                    'value'  => $config['stale_agents_status'] ?? -1,
+                    'value'  => $config['stale_agents_status'],
                     'entity' => $_SESSION['glpiactive_entity'],
                     'toadd'  => [-1 => __('No change')]
                 ]
             );
-            echo "</span>";
             echo "</td>";
             echo "</tr>";
 
@@ -1086,7 +1070,7 @@ class Conf extends CommonGLPI
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            if ($prop == 'stale_agents_action' || $prop == 'old_stale_agents_status') {
+            if ($prop == 'stale_agents_action' || $prop == 'previous_stale_agents_status') {
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
@@ -1203,7 +1187,7 @@ class Conf extends CommonGLPI
             'stale_agents_delay'             => 0,
             'stale_agents_action'            => exportArrayToDB([0]),
             'stale_agents_status'            => 0,
-            'old_stale_agents_status'        => exportArrayToDB([0]),
+            'previous_stale_agents_status'        => exportArrayToDB([0]),
             'import_env'                     => 0,
         ];
     }
