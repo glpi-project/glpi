@@ -79,7 +79,7 @@ class GlpiFormRendererController
      * with the response as argument.
      *
      * The event "glpi-form-renderer-submit-failed" is triggered on failure,
-     * with the response as argument.
+     * with the error as argument.
      */
     async #submitForm() {
         // Form will be sumitted using an AJAX request instead
@@ -94,7 +94,7 @@ class GlpiFormRendererController
             $(document).trigger('glpi-form-renderer-submit-success', response);
         } catch (e) {
             // Failure event
-            $(document).trigger('glpi-form-renderer-submit-failed', response);
+            $(document).trigger('glpi-form-renderer-submit-failed', e);
         }
     }
 }

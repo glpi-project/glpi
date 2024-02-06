@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, glpi_toast_info */
 
 /**
  * Client code to handle users actions on the form_editor template
