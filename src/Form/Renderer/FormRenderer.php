@@ -58,7 +58,7 @@ final class FormRenderer
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/form_renderer.html.twig', [
             'form' => $form,
-            'question_types' => QuestionTypesLoader::getQuestionTypes(),
+            'question_types' => (new QuestionTypesLoader())->getQuestionTypes(),
         ]);
     }
 }

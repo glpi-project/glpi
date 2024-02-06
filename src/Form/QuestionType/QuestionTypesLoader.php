@@ -37,6 +37,7 @@ namespace Glpi\Form\QuestionType;
 
 /**
  * Helper class to load all available question types
+ * TODO: singleton
  */
 class QuestionTypesLoader
 {
@@ -46,7 +47,7 @@ class QuestionTypesLoader
      *
      * @return QuestionTypeInterface[]
      */
-    public static function getQuestionTypes(): array
+    public function getQuestionTypes(): array
     {
         return [
             QuestionTypeShortAnswer::class => new QuestionTypeShortAnswer(),

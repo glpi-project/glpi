@@ -102,7 +102,7 @@ class Form extends CommonDBTM
         $twig->display('pages/admin/form/form_editor.html.twig', [
             'item'                  => $this,
             'params'                => $options,
-            'question_types'        => QuestionTypesLoader::getQuestionTypes(),
+            'question_types'        => (new QuestionTypesLoader())->getQuestionTypes(),
             'default_question_type' => QuestionTypeShortAnswer::class,
         ]);
         return true;
