@@ -43,6 +43,8 @@ include('../../inc/includes.php');
  * AJAX endpoint used to submit answers for a given form.
  */
 
+// TODO: check that the current user is allowed to respond to forms
+
 // Validate forms_forms_id parameter
 $forms_id = $_POST['forms_id'] ?? 0;
 if (!$forms_id) {
