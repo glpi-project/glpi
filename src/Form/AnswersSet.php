@@ -94,7 +94,7 @@ class AnswersSet extends CommonDBChild
         Search::showList(self::class, [
             'showmassiveactions' => false,
             'hide_controls'      => true,
-            'sort'               => 4,
+            'sort'               => 4, // Creation date
             'order'              => 'DESC',
         ]);
         return true;
