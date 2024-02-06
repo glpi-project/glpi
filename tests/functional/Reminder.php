@@ -41,11 +41,11 @@ use DbTestCase;
 
 class Reminder extends DbTestCase
 {
-     public function testAddVisibilityRestrict()
-     {
-          //first, as a super-admin
-          $this->login();
-          $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '7'
+    public function testAddVisibilityRestrict()
+    {
+         //first, as a super-admin
+         $this->login();
+         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '7'
                OR `glpi_reminders_users`.`users_id` = '7'
                OR (`glpi_profiles_reminders`.`profiles_id` = '4'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
@@ -55,34 +55,34 @@ class Reminder extends DbTestCase
                OR ((`glpi_entities_reminders`.`entities_id` IN ('1', '2', '3')
                          OR (`glpi_entities_reminders`.`is_recursive` = '1'
                               AND `glpi_entities_reminders`.`entities_id` IN ('0')))))");
-          $this->string(\Reminder::addVisibilityRestrict())
-               ->isIdenticalTo($expected);
+         $this->string(\Reminder::addVisibilityRestrict())
+              ->isIdenticalTo($expected);
 
-          $this->login('normal', 'normal');
-          $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
+         $this->login('normal', 'normal');
+         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '5'
                OR `glpi_reminders_users`.`users_id` = '5'
                OR (`glpi_profiles_reminders`.`profiles_id` = '2'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
                OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
-          $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-               ->isIdenticalTo($expected);
+         $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
+              ->isIdenticalTo($expected);
 
-          $this->login('tech', 'tech');
-          $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
+         $this->login('tech', 'tech');
+         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_profiles_reminders`.`profiles_id` = '6'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
                OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
-          $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
-               ->isIdenticalTo($expected);
+         $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
+              ->isIdenticalTo($expected);
 
-          $bkp_groups = $_SESSION['glpigroups'];
-          $_SESSION['glpigroups'] = [42, 1337];
-          $str = \Reminder::addVisibilityRestrict();
-          $_SESSION['glpigroups'] = $bkp_groups;
-          $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
+         $bkp_groups = $_SESSION['glpigroups'];
+         $_SESSION['glpigroups'] = [42, 1337];
+         $str = \Reminder::addVisibilityRestrict();
+         $_SESSION['glpigroups'] = $bkp_groups;
+         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '4'
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_groups_reminders`.`groups_id` IN ('42', '1337')
                     AND (`glpi_groups_reminders`.`no_entity_restriction` = '1'
@@ -91,7 +91,7 @@ class Reminder extends DbTestCase
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
                          OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
                OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
-          $this->string(trim(preg_replace('/\s+/', ' ', $str)))
-               ->isIdenticalTo($expected);
-     }
+         $this->string(trim(preg_replace('/\s+/', ' ', $str)))
+              ->isIdenticalTo($expected);
+    }
 }
