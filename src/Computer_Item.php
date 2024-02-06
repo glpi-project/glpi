@@ -425,9 +425,9 @@ class Computer_Item extends CommonDBRelation
                 $linkname = $data["name"];
                 $itemtype = $data['assoc_itemtype'];
 
-                $type_class  = $itemtype . "Type";
+                $type_class = $itemtype . "Type";
                 $type_table = getTableForItemType($type_class);
-                $type_field  = getForeignKeyFieldForTable($type_table);
+                $type_field = getForeignKeyFieldForTable($type_table);
 
                 if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                     $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
