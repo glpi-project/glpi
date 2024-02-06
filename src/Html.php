@@ -3816,6 +3816,8 @@ JS;
      * @param int     $editor_height    editor default height
      * @param array   $add_body_classes tinymce iframe's body classes
      * @param string  $toolbar_location tinymce toolbar location (default: top)
+     * @param bool    $init             init the editor (default: true)
+     * @param string  $placeholder      textarea placeholder
      *
      * @return void|string
      *    integer if param display=true
@@ -3829,7 +3831,9 @@ JS;
         $enable_images = true,
         int $editor_height = 150,
         array $add_body_classes = [],
-        string $toolbar_location = 'top'
+        string $toolbar_location = 'top',
+        bool $init = true,
+        string $placeholder = ''
     ) {
         /**
          * @var array $CFG_GLPI
@@ -3864,6 +3868,10 @@ JS;
         }, $content_css_paths));
         $content_css .= ',' . preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('public/lib/base.css', ['force_no_version' => true]));
         $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
+
+        // TODO: the recent changes to $skin_url above break tinyMCE's placeholders
+        // Reverted to the previous version here, but this should be fixed properly
+        $skin_url = $CFG_GLPI['root_doc'] . "/public/lib/tinymce/skins/ui/oxide";
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -3913,17 +3921,19 @@ JS;
             $body_class .= " $class";
         }
 
-        // init tinymce
+        // Compute init option as "string boolean" so it can be inserted directly into the js output
+        $init = $init ? 'true' : 'false';
+
         $js = <<<JS
          $(function() {
             const html_el = $('html');
             var richtext_layout = "{$_SESSION['glpirichtext_layout']}";
 
-            // init editor
-            tinyMCE.init(Object.assign({
+            // Store config in global var so the editor can be reinitialized from the client side if needed
+            tinymce_editor_configs['{$id}'] = Object.assign({
                link_default_target: '_blank',
                branding: false,
-               selector: '#{$id}',
+               selector: '#' + $.escapeSelector('{$id}'),
                text_patterns: false,
 
                plugins: {$pluginsjs},
@@ -3933,12 +3943,15 @@ JS;
                body_class: '{$body_class}',
                content_css: '{$content_css}',
                autoresize_bottom_margin: 0, // Avoid excessive bottom padding
+               autoresize_overflow_padding: 0,
 
                min_height: $editor_height,
                resize: true,
 
                // disable path indicator in bottom bar
                elementpath: false,
+
+               placeholder: "{$placeholder}",
 
                // inline toolbar configuration
                menubar: false,
@@ -4013,29 +4026,48 @@ JS;
                         // Pasting with Ctrl+V is already handled by keyup event above
                         $(editor.container).removeClass('required');
                      });
-                  }
+                   }
 
-                  // Simulate focus on content-editable tinymce
-                  editor.on('click focus', function (e) {
-                    // Clear focus on other editors
-                    $('.simulate-focus').removeClass('simulate-focus');
-                    // Simulate input focus on our current editor
-                    $('.content-editable-tinymce').addClass('simulate-focus');
-                  });
+                        // Simulate focus on content-editable tinymce
+                        editor.on('click focus', function (e) {
+                            // Some focus events don't have the correct target and cant be handled
+                            if (!$(e.target.editorContainer).length) {
+                                return;
+                            }
 
-                  editor.on('Change', function (e) {
-                     // Nothing fancy here. Since this is only used for tracking unsaved changes,
-                     // we want to keep the logic in common.js with the other form input events.
-                     onTinyMCEChange(e);
-                  });
-                  // ctrl + enter submit the parent form
-                  editor.addShortcut('ctrl+13', 'submit', function() {
-                     editor.save();
-                     submitparentForm($('#$id'));
-                  });
-               }
-            }, {$language_opts}));
-         });
+                            // Clear focus on other editors
+                            $('.simulate-focus').removeClass('simulate-focus');
+
+                            // Simulate input focus on our current editor
+                            $(e.target.editorContainer)
+                                .closest('.content-editable-tinymce')
+                                .addClass('simulate-focus');
+
+                            // Propagate event to the document to allow other components to listen to it
+                            $(document).trigger('tinyMCEClick', [e]);
+                        });
+
+                        editor.on('Change', function (e) {
+                            // Nothing fancy here. Since this is only used for tracking unsaved changes,
+                            // we want to keep the logic in common.js with the other form input events.
+                            onTinyMCEChange(e);
+
+                            // Propagate event to the document to allow other components to listen to it
+                            $(document).trigger('tinyMCEChange', [e]);
+                        });
+                        // ctrl + enter submit the parent form
+                        editor.addShortcut('ctrl+13', 'submit', function() {
+                            editor.save();
+                            submitparentForm($('#$id'));
+                        });
+                    }
+                }, {$language_opts});
+
+                // Init tinymce
+                if ({$init}) {
+                    tinyMCE.init(tinymce_editor_configs['{$id}']);
+                }
+            });
 JS;
 
         if ($display) {

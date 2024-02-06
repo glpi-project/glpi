@@ -70,9 +70,16 @@
                 <div class="col-7">
 
                     {# Card containing the main form data: title, header and status #}
-                    <div class="card form-details">
+                    <div
+                        class="card form-details mb-3 active"
+                        data-glpi-form-editor-on-click="set-active"
+                        data-glpi-form-editor-form-details
+                    >
 
-                        <div class="card-status-start bg-primary"></div>
+                        <div
+                            class="card-status-start bg-primary"
+                            data-active-status
+                        ></div>
                         <div class="card-body">
 
                             {# Header #}
@@ -100,7 +107,7 @@
                             </div>
 
                             {# Form's hader #}
-                            <div class="content-editable-tinymce" tabindex="5">
+                            <div class="content-editable-tinymce">
                                 {{ fields.textareaField(
                                     'header',
                                     item.fields.header,
@@ -108,7 +115,7 @@
                                     base_field_options|merge({
                                         'enable_richtext': true,
                                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                        'editor_height': "50",
+                                        'editor_height': "0",
                                         'rows' : 1,
                                         'toolbar_location': 'bottom',
                                     })
@@ -116,6 +123,32 @@
                             </div>
                         </div>
                     </div>
+
+                    {# Display all questions here #}
+                    <div data-glpi-form-editor-questions>
+                        {% for section in item.getSections() %}
+                            {% for question in section.getQuestions() %}
+                                {# Render admin template for the given question type #}
+                                {{ include('pages/admin/form/form_question.html.twig', {
+                                    'question_type': question_types[question.fields.type],
+                                    'question'     : question,
+                                }, with_context = false) }}
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+
+                    {# Add question action #}
+                    {# TODO: UI/UX #}
+                    {% if item.canUpdate() %}
+                        <div
+                            class="card cursor-pointer align-items-center"
+                            data-glpi-form-editor-on-click="add-question"
+                        >
+                            <div class="card-body">
+                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add question") }}</h3>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -128,7 +161,7 @@
         py-2
         px-3
         {# Negative margins to cancel parent padding, this is needed as we want
-        our footer to use the full width of it's parent #}
+        our footer to use the full width of its parent #}
         ms-n2
         me-n2
     ">
@@ -201,7 +234,7 @@
         {% endif %}
 
         {% if item.fields.is_draft %}
-            {# Add action (which is an update form as we just change the is_draft field's value #}
+            {# Add action (which is an update form as we just change the is_draft field's value) #}
             <button
                 class="btn btn-primary"
                 type="submit"
@@ -231,6 +264,9 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
+    {# Special input to indicate that missing question must be deleted #}
+    <input type="hidden" name="_delete_missing_questions" value="1">
+
     {# Set as non draft once saved #}
     {% if item.fields.is_draft %}
         <input type="hidden" name="is_draft" value="0">
@@ -240,6 +276,26 @@
 
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
 </form>
+
+{% if item.canUpdate() %}
+    {# Templates, must be outside the main form to avoid submitting their inputs #}
+    <div data-glpi-form-editor-templates class="d-none">
+
+        {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
+        <div id="question_type_model_container" class="d-none">
+            {% for key, question_type in question_types %}
+                <div data-glpi-form-editor-question-template="{{ key }}">
+                    {# Render admin template for the given question type #}
+                    {{ include('pages/admin/form/form_question.html.twig', {
+                        'question_type': question_type,
+                        'question': null,
+                    }, with_context = false) }}
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+{% endif %}
 
 {# Preview form modal #}
 <div
@@ -256,6 +312,8 @@
 <script>
     new GlpiFormEditorController(
         "[data-glpi-form-editor-container]",
-        {{ item.fields.is_draft ? "true" : "false" }}
+        {{ item.fields.is_draft ? "true" : "false" }},
+        "{{ default_question_type|escape('js') }}",
+        "[data-glpi-form-editor-templates]"
     );
 </script>
