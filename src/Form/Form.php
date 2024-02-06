@@ -167,6 +167,7 @@ class Form extends CommonDBTM
 
     public function post_updateItem($history = 1)
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->beginTransaction();
