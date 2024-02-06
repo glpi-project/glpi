@@ -39,7 +39,9 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
+use Item_Disk;
 use Log;
+use Profile;
 
 class HasVolumesCapacity extends DbTestCase
 {
@@ -47,9 +49,9 @@ class HasVolumesCapacity extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
-        $superadmin_p_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+        $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
         $profiles_matrix = [
             $superadmin_p_id => [
                 READ   => 1, // Need the READ right to be able to see the `Item_Disk$1` tab
@@ -162,7 +164,7 @@ class HasVolumesCapacity extends DbTestCase
         );
         //$document        = $this->createTxtDocument();
         $disk_item_1 = $this->createItem(
-            \Item_Disk::class,
+            Item_Disk::class,
             [
                 'name'         => 'disk item 1',
                 'itemtype'     => $item_1::getType(),
@@ -170,7 +172,7 @@ class HasVolumesCapacity extends DbTestCase
             ]
         );
         $disk_item_2 = $this->createItem(
-            \Item_Disk::class,
+            Item_Disk::class,
             [
                 'name'         => 'disk item 2',
                 'itemtype'     => $item_2::getType(),
@@ -202,10 +204,10 @@ class HasVolumesCapacity extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->object(\Item_Disk::getById($disk_item_1->getID()))->isInstanceOf(\Item_Disk::class);
+        $this->object(Item_Disk::getById($disk_item_1->getID()))->isInstanceOf(Item_Disk::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add volume
-        $this->object(\Item_Disk::getById($disk_item_2->getID()))->isInstanceOf(\Item_Disk::class);
+        $this->object(Item_Disk::getById($disk_item_2->getID()))->isInstanceOf(Item_Disk::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add volume
         $this->array($CFG_GLPI['disk_types'])->contains($classname_1);
@@ -213,13 +215,13 @@ class HasVolumesCapacity extends DbTestCase
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(\Item_Disk::getById($disk_item_1->getID()))->isFalse();
+        $this->boolean(Item_Disk::getById($disk_item_1->getID()))->isFalse();
         $this->boolean(DisplayPreference::getById($displaypref_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['disk_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->object(\Item_Disk::getById($disk_item_2->getID()))->isInstanceOf(\Item_Disk::class);
+        $this->object(Item_Disk::getById($disk_item_2->getID()))->isInstanceOf(Item_Disk::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['disk_types'])->contains($classname_2);
@@ -231,14 +233,16 @@ class HasVolumesCapacity extends DbTestCase
             capacities: [\Glpi\Asset\Capacity\HasVolumesCapacity::class]
         );
         $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
 
         /** @var Asset $asset */
         $asset = $this->createItem($class, [
-            'name' => 'Test asset',
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
         ]);
 
         $this->createItem(
-            \Item_Disk::class,
+            Item_Disk::class,
             [
                 'name'         => 'disk item 1',
                 'itemtype'     => $asset::getType(),
@@ -247,7 +251,7 @@ class HasVolumesCapacity extends DbTestCase
         );
 
         $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
-        $this->array(getAllDataFromTable(\Item_Disk::getTable(), [
+        $this->array(getAllDataFromTable(Item_Disk::getTable(), [
             'itemtype' => $asset::getType(),
             'items_id' => $clone_id,
         ]))->hasSize(1);

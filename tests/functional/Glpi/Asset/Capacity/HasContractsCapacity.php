@@ -339,7 +339,8 @@ class HasContractsCapacity extends DbTestCase
 
         /** @var Asset $asset */
         $asset = $this->createItem($class, [
-            'name' => 'Test asset',
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
         ]);
 
         $contract = $this->createItem(Contract::class, [
@@ -348,8 +349,8 @@ class HasContractsCapacity extends DbTestCase
         ]);
 
         $this->createItem(Contract_Item::class, [
-            'itemtype'       => $asset::getType(),
-            'items_id'       => $asset->getID(),
+            'itemtype'     => $asset::getType(),
+            'items_id'     => $asset->getID(),
             'contracts_id' => $contract->getID(),
         ]);
 

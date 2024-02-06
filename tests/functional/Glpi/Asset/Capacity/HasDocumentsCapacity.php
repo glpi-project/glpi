@@ -257,10 +257,12 @@ class HasDocumentsCapacity extends DbTestCase
             capacities: [\Glpi\Asset\Capacity\HasDocumentsCapacity::class]
         );
         $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
 
         /** @var Asset $asset */
         $asset = $this->createItem($class, [
-            'name' => 'Test asset',
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
         ]);
 
         $document = $this->createTxtDocument();

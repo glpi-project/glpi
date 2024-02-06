@@ -347,10 +347,12 @@ class HasOperatingSystemCapacity extends DbTestCase
             capacities: [\Glpi\Asset\Capacity\HasOperatingSystemCapacity::class]
         );
         $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
 
         /** @var Asset $asset */
         $asset = $this->createItem($class, [
-            'name' => 'Test asset',
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
         ]);
 
         $this->createItem(Item_OperatingSystem::class, [

@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Item_RemoteManagement;
 use Log;
 
 class HasRemoteManagementCapacity extends DbTestCase
@@ -46,7 +47,7 @@ class HasRemoteManagementCapacity extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
@@ -140,19 +141,19 @@ class HasRemoteManagementCapacity extends DbTestCase
         );
 
         $remotemanagement_item_1 = $this->createItem(
-            \Item_RemoteManagement::class,
+            Item_RemoteManagement::class,
             [
                 'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
-                'type' => \Item_RemoteManagement::ANYDESK,
+                'type' => Item_RemoteManagement::ANYDESK,
             ]
         );
         $remotemanagement_item_2 = $this->createItem(
-            \Item_RemoteManagement::class,
+            Item_RemoteManagement::class,
             [
                 'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
-                'type' => \Item_RemoteManagement::ANYDESK,
+                'type' => Item_RemoteManagement::ANYDESK,
             ]
         );
         $displaypref_1   = $this->createItem(
@@ -180,10 +181,10 @@ class HasRemoteManagementCapacity extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->object(\Item_RemoteManagement::getById($remotemanagement_item_1->getID()))->isInstanceOf(\Item_RemoteManagement::class);
+        $this->object(Item_RemoteManagement::getById($remotemanagement_item_1->getID()))->isInstanceOf(Item_RemoteManagement::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add volume
-        $this->object(\Item_RemoteManagement::getById($remotemanagement_item_2->getID()))->isInstanceOf(\Item_RemoteManagement::class);
+        $this->object(Item_RemoteManagement::getById($remotemanagement_item_2->getID()))->isInstanceOf(Item_RemoteManagement::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add volume
         $this->array($CFG_GLPI['remote_management_types'])->contains($classname_1);
@@ -191,15 +192,51 @@ class HasRemoteManagementCapacity extends DbTestCase
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(\Item_RemoteManagement::getById($remotemanagement_item_1->getID()))->isFalse();
+        $this->boolean(Item_RemoteManagement::getById($remotemanagement_item_1->getID()))->isFalse();
         $this->boolean(DisplayPreference::getById($displaypref_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['remote_management_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->object(\Item_RemoteManagement::getById($remotemanagement_item_2->getID()))->isInstanceOf(\Item_RemoteManagement::class);
+        $this->object(Item_RemoteManagement::getById($remotemanagement_item_2->getID()))->isInstanceOf(Item_RemoteManagement::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['remote_management_types'])->contains($classname_2);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasRemoteManagementCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        $asset = $this->createItem(
+            $class,
+            [
+                'name'        => 'Test asset',
+                'entities_id' => $entity,
+            ]
+        );
+
+        $this->createItem(
+            Item_RemoteManagement::class,
+            [
+                'itemtype' => $class,
+                'items_id' => $asset->getID(),
+                'type'     => 'anydesk',
+                'remoteid' => 'abcdef123456',
+            ]
+        );
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Item_RemoteManagement::getTable(), [
+            'items_id' => $clone_id,
+            'itemtype' => $class,
+            'items_id' => $clone_id,
+            'type'     => 'anydesk',
+            'remoteid' => 'abcdef123456',
+        ]))->hasSize(1);
     }
 }
