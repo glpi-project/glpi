@@ -1681,7 +1681,7 @@ function waitForElement(selector) {
  *
  * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
  *
- * @param {JQuery} input
+ * @param {HTMLElement} input
  * @param {String} real_font_size It seems the font size computed by styles.fontSize
  *                                 is not really accurate when using rem units.
  *                                 This parameter allows to directly provide the
@@ -1692,7 +1692,6 @@ function waitForElement(selector) {
 function getRealInputWidth(input, real_font_size = null)
 {
     let fakeEle = $("#fake_dom_getRealInputWidth");
-    const textboxEle = input[0];
 
     // Initialize our fake element only once to prevent useless computations
     if (fakeEle.length === 0) {
@@ -1717,7 +1716,7 @@ function getRealInputWidth(input, real_font_size = null)
     }
 
     // We copy some styles from the textbox that effect the width
-    const styles = window.getComputedStyle(textboxEle);
+    const styles = window.getComputedStyle(input);
 
     // Copy font styles from the textbox
     fakeEle.style.fontFamily = styles.fontFamily;
@@ -1733,7 +1732,7 @@ function getRealInputWidth(input, real_font_size = null)
     fakeEle.style.paddingRight = styles.paddingRight;
 
     // Compute width
-    const string = textboxEle.value || textboxEle.getAttribute('placeholder') || '';
+    const string = input.value || input.getAttribute('placeholder') || '';
     fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
 
     const fakeEleStyles = window.getComputedStyle(fakeEle);

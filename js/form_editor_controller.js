@@ -97,7 +97,7 @@ class GlpiFormEditorController
         $(this.#target)
             .find("[data-glpi-form-editor-dynamic-input]")
             .each((index, input) => {
-                this.#computeDynamicInputSize($(input));
+                this.#computeDynamicInputSize(input);
             });
 
         // Compute base state (keep at the end)
@@ -205,7 +205,7 @@ class GlpiFormEditorController
 
             // Compute the ideal width of the given input based on its content
             case "compute-dynamic-input":
-                this.#computeDynamicInputSize(target);
+                this.#computeDynamicInputSize(target[0]);
                 break;
 
             // Unknown action
@@ -567,9 +567,9 @@ class GlpiFormEditorController
 
     /**
      * Compute the ideal width of the given input based on its content.
-     * @param {jQuery} input
+     * @param {HTMLElement} input
      */
     #computeDynamicInputSize(input) {
-        input.css("width", getRealInputWidth(input, "1.2rem"));
+        $(input).css("width", getRealInputWidth(input, "1.2rem"));
     }
 }
