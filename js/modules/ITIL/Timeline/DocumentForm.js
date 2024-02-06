@@ -34,6 +34,7 @@
 import Screenshot  from '../../Screenshot/Screenshot.js';
 
 if (Screenshot.isSupported()) {
+    $('.document_item .upload-from-section').removeClass('d-none');
     $('.document_item .fileupload').each((i, fileupload) => {
         Screenshot.listenOnFileUpload(fileupload);
     });
