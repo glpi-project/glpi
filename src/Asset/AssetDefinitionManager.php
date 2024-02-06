@@ -40,7 +40,6 @@ use CommonGLPI;
 use DirectoryIterator;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Item_Problem;
-use Item_Ticket;
 use ReflectionClass;
 use Ticket;
 

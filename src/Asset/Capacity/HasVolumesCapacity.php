@@ -51,6 +51,13 @@ class HasVolumesCapacity extends AbstractCapacity
         return Item_Disk::rawSearchOptionsToAdd($classname::getType());
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_Disk::class
+        ];
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('disk_types', $classname);

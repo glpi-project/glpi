@@ -37,6 +37,8 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use DbTestCase;
 use Entity;
+use KnowbaseItem;
+use KnowbaseItem_Item;
 use Log;
 
 class HasKnowbaseCapacity extends DbTestCase
@@ -139,7 +141,7 @@ class HasKnowbaseCapacity extends DbTestCase
             ]
         );
         $kbitem_item_1 = $this->createItem(
-            \KnowbaseItem_Item::class,
+            KnowbaseItem_Item::class,
             [
                 'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
@@ -147,7 +149,7 @@ class HasKnowbaseCapacity extends DbTestCase
             ]
         );
         $kbitem_item_2 = $this->createItem(
-            \KnowbaseItem_Item::class,
+            KnowbaseItem_Item::class,
             [
                 'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
@@ -163,22 +165,61 @@ class HasKnowbaseCapacity extends DbTestCase
         ];
 
         // Ensure relation and logs exists, and class is registered to global config
-        $this->object(\KnowbaseItem_Item::getById($kbitem_item_1->getID()))->isInstanceOf(\KnowbaseItem_Item::class);
+        $this->object(KnowbaseItem_Item::getById($kbitem_item_1->getID()))->isInstanceOf(KnowbaseItem_Item::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add kb item
-        $this->object(\KnowbaseItem_Item::getById($kbitem_item_2->getID()))->isInstanceOf(\KnowbaseItem_Item::class);
+        $this->object(KnowbaseItem_Item::getById($kbitem_item_2->getID()))->isInstanceOf(KnowbaseItem_Item::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add kb item
         $this->array($CFG_GLPI['kb_types'])->contains($classname_1);
         $this->array($CFG_GLPI['kb_types'])->contains($classname_2);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(\KnowbaseItem_Item::getById($kbitem_item_1->getID()))->isFalse();
+        $this->boolean(KnowbaseItem_Item::getById($kbitem_item_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['kb_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->object(\KnowbaseItem_Item::getById($kbitem_item_2->getID()))->isInstanceOf(\KnowbaseItem_Item::class);
+        $this->object(KnowbaseItem_Item::getById($kbitem_item_2->getID()))->isInstanceOf(KnowbaseItem_Item::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['kb_types'])->contains($classname_2);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasKnowbaseCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        $asset = $this->createItem(
+            $class,
+            [
+                'name'        => 'Test asset',
+                'entities_id' => $entity,
+            ]
+        );
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'KB',
+            'answer'      => 'KB answer',
+            'entities_id' => $entity,
+        ]);
+
+        $this->createItem(
+            KnowbaseItem_Item::class,
+            [
+                'itemtype'         => $class,
+                'items_id'         => $asset->getID(),
+                'knowbaseitems_id' => $kb->getID(),
+            ]
+        );
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(KnowbaseItem_Item::getTable(), [
+            'knowbaseitems_id' => $kb->getID(),
+            'itemtype'         => $class,
+            'items_id'         => $clone_id,
+        ]))->hasSize(1);
     }
 }

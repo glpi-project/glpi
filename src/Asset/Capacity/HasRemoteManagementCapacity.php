@@ -46,6 +46,13 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         return Item_RemoteManagement::getTypeName(Session::getPluralNumber());
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_RemoteManagement::class,
+        ];
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('remote_management_types', $classname);

@@ -58,6 +58,13 @@ class HasNotepadCapacity extends AbstractCapacity
         return [READNOTE, UPDATENOTE];
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Notepad::class
+        ];
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         CommonGLPI::registerStandardTab($classname, Notepad::class, 80);

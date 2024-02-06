@@ -38,6 +38,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Asset;
 use Infocom;
 use Log;
 
@@ -188,7 +189,7 @@ class HasInfocomCapacity extends DbTestCase
         $infocom_2 = $this->createItem(
             Infocom::class,
             [
-                'itemtype' => $item_2->getType(),
+                'itemtype' => $item_2::getType(),
                 'items_id' => $item_2->getID(),
             ]
         );
@@ -246,5 +247,35 @@ class HasInfocomCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3);
         $this->array($CFG_GLPI['infocom_types'])->contains($classname_2);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasInfocomCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
+        ]);
+
+        $this->createItem(Infocom::class, [
+            'itemtype' => $class,
+            'items_id' => $asset->getID(),
+            'delivery_date' => '2020-03-04',
+            'value'         => 25.3,
+        ]);
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Infocom::getTable(), [
+            'items_id' => $clone_id,
+            'itemtype' => $class,
+            'delivery_date' => '2020-03-04',
+            'value' => '25.3',
+        ]))->hasSize(1);
     }
 }
