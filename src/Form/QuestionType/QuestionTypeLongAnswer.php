@@ -103,7 +103,7 @@ TWIG;
     public function renderAnswerTemplate($answer): string
     {
         $template = <<<TWIG
-            <div class="form-control-plaintext">{{ answer|raw }}</div>
+            <div class="form-control-plaintext">{{ answer|safe_html }}</div>
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
