@@ -486,8 +486,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         $data = $api_data;
         if ($data !== null) {
+            $data['item'] = $api_data;
+            $data['event'] = $event;
+            $this->addParentItemData($data, $itemtype, $items_id);
             if ($raw_output) {
-                $data['event'] = $event;
                 return json_encode($data, JSON_PRETTY_PRINT);
             } else {
                 $payload_template = isset($this->fields['payload']) ? $this->fields['payload'] : null;
@@ -508,11 +510,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     };
                     $data = $fn_desanitize($data);
                     try {
-                        $data = [
-                            'item' => $data
-                        ];
-                        $this->addParentItemData($data, $itemtype, $items_id);
-                        $data['event'] = $event;
                         $env = new \Twig\Environment(
                             new \Twig\Loader\ArrayLoader([
                                 'payload' => $payload_template
@@ -524,7 +521,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         return null;
                     }
                 } else {
-                    $data['event'] = $event;
                     return json_encode($data, JSON_PRETTY_PRINT);
                 }
             }
@@ -1149,11 +1145,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
             ];
 
             $api_data = [
+                'event' => $event,
                 'item' => $api_data
             ];
             $webhook->addParentItemData($api_data, $item::getType(), $item->getID());
 
-            $api_data['event'] = $event;
             $custom_headers = $webhook->fields['custom_headers'];
             foreach ($custom_headers as $key => $value) {
                 $env = new \Twig\Environment(
