@@ -161,17 +161,6 @@ final class Profile
         ];
     }
 
-    public function getSQLErrors(): array
-    {
-        $errors = [];
-        foreach ($this->additional_info['sql']['queries'] ?? [] as $query) {
-            if ($query['errors'] !== '') {
-                $errors[] = $query;
-            }
-        }
-        return $errors;
-    }
-
     public function getDebugInfo(): array
     {
         if ($this->is_readonly) {

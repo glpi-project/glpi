@@ -52,7 +52,6 @@ use Document;
 use Dropdown;
 use Glpi\Api\HL\Router;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Debug\Profile;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\MarkdownRenderer;
@@ -2365,11 +2364,6 @@ abstract class API
             foreach ($messages as $message) {
                 $all_messages[] = Toolbox::stripTags($message);
             }
-        }
-
-       // get sql errors
-        if (count($all_messages) <= 0) {
-            $all_messages = Profile::getCurrent()->getSQLErrors();
         }
 
         if (!end($all_messages)) {
