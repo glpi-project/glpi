@@ -50,7 +50,7 @@ class Timer
      */
     public function start()
     {
-        Toolbox::deprecated('Timer class is deprecated, use Glpi\Debug\Profiler instead');
+        Toolbox::deprecated();
         $this->timer = microtime(true);
         return true;
     }
