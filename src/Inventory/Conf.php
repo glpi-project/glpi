@@ -950,7 +950,6 @@ class Conf extends CommonGLPI
             echo "</tr>";
             //blocaction with status
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
-            echo '---' . var_dump(State::getStateNotForInventory());
             echo "<td>";
             echo \State::createTabEntry(__('Status to change (all if empty)'), 0, \State::getType());
             echo "</td>";
