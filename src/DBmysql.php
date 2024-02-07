@@ -38,7 +38,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
-use Glpi\Debug\Profiler;
 use Glpi\System\Requirement\DbTimezones;
 
 /**
@@ -386,9 +385,7 @@ class DBmysql
             'warnings' => '',
         ];
 
-        $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
-
-        Profiler::getInstance()->start('sql_query', Profiler::CATEGORY_DB, true);
+        $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
 
@@ -403,16 +400,13 @@ class DBmysql
 
             ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
 
-            if (($is_debug || isAPI())) {
-                $debug_data['errors'] = $this->error();
-            }
+            $debug_data['errors'] = $this->error();
         }
 
-        $duration = Profiler::getInstance()->stop('sql_query', true);
-        if ($is_debug) {
-            $debug_data['time'] = $duration;
-            $debug_data['rows'] = $this->affectedRows();
-        }
+        $duration = (microtime(true) - $start_time) * 1000;
+
+        $debug_data['time'] = $duration;
+        $debug_data['rows'] = $this->affectedRows();
 
         $this->last_query_warnings = $this->fetchQueryWarnings();
 
@@ -440,13 +434,16 @@ class DBmysql
             ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
-        \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
-            $debug_data['query'],
-            $debug_data['time'],
-            $debug_data['rows'],
-            $debug_data['errors'],
-            $debug_data['warnings']
-        );
+        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+            \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+                $debug_data['query'],
+                $debug_data['time'],
+                $debug_data['rows'],
+                $debug_data['errors'],
+                $debug_data['warnings']
+            );
+        }
+
         if ($this->execution_time === true) {
             $this->execution_time = $duration;
         }

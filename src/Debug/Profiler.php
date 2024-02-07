@@ -71,15 +71,12 @@ final class Profiler
      * Starts a new section in the profiler. This section will be stopped when Profiler::stop() is called with the same name.
      * @param string $name The name of the section. This name will be used to stop the section later.
      * @param string $category The category of the section. See Profiler::CATEGORY_* for some predefined categories.
-     * @param bool $force_start If true, the section will be started even if the user is not in debug mode.
-     *                          This is useful if the profiler is going to be used to simply time a section of code and
-     *                          the result will be used in the application.
      * @return void
      */
-    public function start(string $name, string $category = self::CATEGORY_CORE, bool $force_start = false): void
+    public function start(string $name, string $category = self::CATEGORY_CORE): void
     {
         $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE;
-        if (!$force_start && ($this->disabled || !$debug_mode_or_pre_session)) {
+        if ($this->disabled || !$debug_mode_or_pre_session) {
             return;
         }
 
@@ -129,10 +126,9 @@ final class Profiler
     /**
      * Stops a section started with Profiler::start()
      * @param string $name The name of the section to stop. This name must be the same as the one used in Profiler::start()
-     * @param bool $discard If true, the section will not be added to the debug information.
-     * @return int The duration of the section in milliseconds
+     * @return void
      */
-    public function stop(string $name, bool $discard = false): int
+    public function stop(string $name): void
     {
         // get the last section with the given name and stop it
         $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
@@ -142,30 +138,9 @@ final class Profiler
             $k = array_key_last($section);
             $section = array_pop($section);
             $section->end(microtime(true) * 1000);
-            $duration = $section->getDuration();
             unset($this->current_sections[$k]);
-            if (!$discard) {
-                Profile::getCurrent()->setData('profiler', $section->toArray());
-            }
+            Profile::getCurrent()->setData('profiler', $section->toArray());
         }
-        return $duration ?? 0;
-    }
-
-    /**
-     * Get the current duration of a running section by name without stopping it.
-     * @param string $name The name of the section to get the duration of.
-     * @return int The duration of the section in milliseconds
-     */
-    public function getCurrentDuration(string $name): int
-    {
-        $section = array_filter($this->current_sections, static function (ProfilerSection $section) use ($name) {
-            return $section->getName() === $name;
-        });
-        if (count($section)) {
-            $section = array_pop($section);
-            return $section->getDuration();
-        }
-        return 0;
     }
 
     /**
