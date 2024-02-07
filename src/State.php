@@ -655,13 +655,32 @@ class State extends CommonTreeDropdown
         ];
     }
 
+    public static function getStateNotForInventory()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $states = new self();
+        $states_list = $states->find();
+        $output = [];
+        foreach ($states_list as $state) {
+            foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
+                if ($state['is_visible_' . strtolower($inv_type)] === 0) {
+                    $output[$state['id']] = $state['id'];
+                    break;
+                }
+            }
+        }
+        return $output;
+    }
+
     public static function getStateList()
     {
         $states = new self();
         $states_list = $states->find();
         $output = [];
         foreach ($states_list as $state) {
-            $output[$state['id']] = $state['completename'];
+            $output[$state['id']] = $state['name'];
         }
         return $output;
     }

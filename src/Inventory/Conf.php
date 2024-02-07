@@ -950,14 +950,19 @@ class Conf extends CommonGLPI
             echo "</tr>";
             //blocaction with status
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
-
+            echo '---' . var_dump(State::getStateNotForInventory());
             echo "<td>";
             echo \State::createTabEntry(__('Status to change (all if empty)'), 0, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
             Dropdown::showFromArray(
                 'previous_stale_agents_status',
-                $CFG_GLPI['inventory_types']
+                State::getStateList(),
+                [
+                    'values'    => importArrayFromDB($config['previous_stale_agents_status'] ?? json_encode([0])),
+                    'multiple'  => true,
+                    'used'      => State::getStateNotForInventory(),
+                ]
             );
             echo "</td>";
             echo "</tr>";
@@ -972,7 +977,8 @@ class Conf extends CommonGLPI
                     'name'   => 'stale_agents_status',
                     'value'  => $config['stale_agents_status'],
                     'entity' => $_SESSION['glpiactive_entity'],
-                    'toadd'  => [-1 => __('No change')]
+                    'toadd'  => [-1 => __('No change')],
+                    'used'   => State::getStateNotForInventory(),
                 ]
             );
             echo "</td>";
