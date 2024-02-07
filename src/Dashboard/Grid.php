@@ -979,11 +979,8 @@ HTML;
             if ($html === '') {
                 return $notfound_html;
             }
-
-            $execution_time = round(microtime(true) - $start, 3);
         } catch (\Throwable $e) {
             $html = $render_error_html;
-            $execution_time = round(microtime(true) - $start, 3);
             // Log the error message without exiting
             /** @var \GLPI $GLPI */
             global $GLPI;
@@ -991,10 +988,12 @@ HTML;
         }
         Profiler::getInstance()->stop(__METHOD__ . ' get card data');
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            // Use the current PHP request duration as the execution time for a more accurate card loading time
+            $execution_time = Profiler::getInstance()->getCurrentDuration('php_request');
             $html .= <<<HTML
          <span class='debug-card'>
-            {$execution_time}s
+            {$execution_time}ms
          </span>
 HTML;
         }
