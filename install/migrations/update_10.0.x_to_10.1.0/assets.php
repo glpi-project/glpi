@@ -184,8 +184,10 @@ foreach ($it as $data) {
         foreach ($profiles as $profile_id => $rights) {
             if (is_array($rights)) {
                 $new_value = 0;
-                foreach ($rights as $right) {
-                    $new_value |= $right;
+                foreach ($rights as $right => $is_enabled) {
+                    if ($is_enabled) {
+                        $new_value |= (int)$right;
+                    }
                 }
                 $profiles[$profile_id] = $new_value;
                 $changed = true;
