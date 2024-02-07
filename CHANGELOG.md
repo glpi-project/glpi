@@ -61,6 +61,7 @@ The present file will list all changes made to the project; according to the
   Permission checks at the item-level have not been changed.
 - External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
+- The `Computer_Item` class has been replaced by the `\Glpi\Asset\Asset_PeripheralAsset` class.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -221,6 +222,11 @@ The present file will list all changes made to the project; according to the
 - `CommonDropdown::displayHeader()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
+- `Computer_Item::countForAll()`
+- `Computer_Item::disconnectForItem()`
+- `Computer_Item::dropdownAllConnect()`
+- `Computer_Item::showForComputer()`
+- `Computer_Item::showForItem()`
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
@@ -287,6 +293,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
+- `Transfer::manageConnectionComputer()`
 - `User::title()`
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters

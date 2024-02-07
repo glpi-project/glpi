@@ -36,11 +36,10 @@
 namespace Glpi\Features;
 
 use Agent;
-use AutoUpdateSystem;
 use CommonDBTM;
 use Computer;
-use Computer_Item;
 use DatabaseInstance;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Plugin\Hooks;
 use Html;
@@ -264,10 +263,14 @@ JAVASCRIPT;
             // if no agent has been found, check if there is are linked items, and find most recent agent
             $relations_iterator = $DB->request(
                 [
-                    'SELECT' => ['itemtype', 'items_id'],
-                    'FROM'   => Computer_Item::getTable(),
+                    'SELECT' => [
+                        'itemtype_peripheral',
+                        'items_id_peripheral'
+                    ],
+                    'FROM'   => Asset_PeripheralAsset::getTable(),
                     'WHERE'  => [
-                        'computers_id' => $this->getID()
+                        'itemtype_asset' => Computer::class,
+                        'items_id_asset' => $this->getID()
                     ]
                 ]
             );
@@ -275,10 +278,10 @@ JAVASCRIPT;
                 $conditions = ['OR' => []];
                 $itemtype_ids = [];
                 foreach ($relations_iterator as $relation_data) {
-                    if (!isset($itemtype_ids[$relation_data['itemtype']])) {
-                        $itemtype_ids[$relation_data['itemtype']] = [];
+                    if (!isset($itemtype_ids[$relation_data['itemtype_peripheral']])) {
+                        $itemtype_ids[$relation_data['itemtype_peripheral']] = [];
                     }
-                    $itemtype_ids[$relation_data['itemtype']][] = $relation_data['items_id'];
+                    $itemtype_ids[$relation_data['itemtype_peripheral']][] = $relation_data['items_id_peripheral'];
                 }
                 foreach ($itemtype_ids as $itemtype => $ids) {
                     if (count($ids) > 0) {

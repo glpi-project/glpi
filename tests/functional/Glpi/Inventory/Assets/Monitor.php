@@ -35,6 +35,8 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use Glpi\Asset\Asset_PeripheralAsset;
+
 include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 /* Test for inc/inventory/asset/monitor.class.php */
@@ -148,12 +150,15 @@ class Monitor extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no monitor linked to this computer
-        $ico = new \Computer_Item();
-        $this->boolean($ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']))
-           ->isFalse('A monitor is already linked to computer!');
+        //first, check there are no monitor linked to this computer
+        $ico = new Asset_PeripheralAsset();
+        $this->boolean($ico->getFromDbByCrit([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computer->fields['id'],
+            'itemtype_peripheral' => 'Monitor'
+        ]))->isFalse('A monitor is already linked to computer!');
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -170,11 +175,14 @@ class Monitor extends AbstractInventoryAsset
         $agent->getEmpty();
         $asset->setAgent($agent);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($ico->getFromDbByCrit(['computers_id' => $computer->fields['id'], 'itemtype' => 'Monitor']))
-           ->isTrue('Monitor has not been linked to computer :(');
+        $this->boolean($ico->getFromDbByCrit([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computer->fields['id'],
+            'itemtype_peripheral' => 'Monitor'
+        ]))->isTrue('Monitor has not been linked to computer :(');
     }
 
     public function testInventoryMove()
@@ -182,7 +190,7 @@ class Monitor extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -234,11 +242,20 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //same inventory again
@@ -265,7 +282,11 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we still have only 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //same monitor, but on another computer
@@ -315,15 +336,28 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //no longer linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(0);
 
         //but now linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //replay first computer inventory, monitor is back \o/
@@ -347,15 +381,28 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //linked again on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //no longer linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(0);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
 
@@ -364,7 +411,7 @@ class Monitor extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -416,11 +463,20 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //same inventory again
@@ -447,11 +503,15 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we still have only 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //set to global management
-        $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
+        $this->boolean($monitor->getFromDB(current($monitors)['items_id_peripheral']));
         $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same monitor, but on another computer
@@ -501,17 +561,35 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //still linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //also linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
 
@@ -520,7 +598,7 @@ class Monitor extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -582,11 +660,20 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //same monitor, but on another computer
@@ -646,17 +733,35 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //still linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //also linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
 
@@ -665,7 +770,7 @@ class Monitor extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -727,11 +832,20 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //same inventory again
@@ -758,11 +872,15 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //we still have only 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //set to global management
-        $this->boolean($monitor->getFromDB(current($monitors)['items_id']));
+        $this->boolean($monitor->getFromDB(current($monitors)['items_id_peripheral']));
         $this->boolean($monitor->update(['id' => $monitor->fields['id'], 'is_global' => \Config::GLOBAL_MANAGEMENT]));
 
         //same monitor, but on another computer
@@ -822,15 +940,28 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //no longer linked on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(0);
 
         //but now linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //change default configuration to unit management
@@ -864,15 +995,28 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(current($monitors)['manufacturers_id'])->isIdenticalTo($manufacturers_id);
 
         //linked again on first computer inventoried
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //no longer linked on last inventoried computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_2_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_2_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(0);
 
         //monitor is still dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
 
@@ -881,7 +1025,7 @@ class Monitor extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -966,11 +1110,20 @@ class Monitor extends AbstractInventoryAsset
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //we have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
 
         //monitor present in the inventory source is dynamic
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $monitors = $item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ]);
         $this->integer(count($monitors))->isIdenticalTo(1);
     }
 
@@ -979,7 +1132,7 @@ class Monitor extends AbstractInventoryAsset
         global $DB;
 
         $monitor = new \Monitor();
-        $item_monitor = new \Computer_Item();
+        $item_monitor = new Asset_PeripheralAsset();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -1036,9 +1189,18 @@ class Monitor extends AbstractInventoryAsset
         //we have 2 monitor
         $this->integer(count($monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]])))->isIdenticalTo(2);
         //we have 2 monitor items linked to the computer
-        $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id])))->isIdenticalTo(2);
+        $this->integer(count($item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ])))->isIdenticalTo(2);
         //we have 2 dynamic link
-        $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1])))->isIdenticalTo(2);
+        $this->integer(count($item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ])))->isIdenticalTo(2);
 
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -1079,9 +1241,18 @@ class Monitor extends AbstractInventoryAsset
         //we have 2 monitor
         $this->integer(count($monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]])))->isIdenticalTo(2);
         //we have 1 monitor items linked to the computer
-        $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id])))->isIdenticalTo(1);
+        $this->integer(count($item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ])))->isIdenticalTo(1);
         //we have 1 dynamic link
-        $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1])))->isIdenticalTo(1);
+        $this->integer(count($item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ])))->isIdenticalTo(1);
 
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -1129,8 +1300,17 @@ class Monitor extends AbstractInventoryAsset
         //we have 2 monitor
         $this->integer(count($monitor->find(['NOT' => ['name' => ['LIKE', '_test_%']]])))->isIdenticalTo(2);
         //we have 2 monitor items linked to the computer
-        $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id])))->isIdenticalTo(2);
+        $this->integer(count($item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor'
+        ])))->isIdenticalTo(2);
         //we have 2 dynamic link
-        $this->integer(count($item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id, 'is_dynamic' => 1])))->isIdenticalTo(2);
+        $this->integer(count($item_monitor->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+            'itemtype_peripheral' => 'Monitor',
+            'is_dynamic' => 1
+        ])))->isIdenticalTo(2);
     }
 }

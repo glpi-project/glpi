@@ -39,6 +39,7 @@
  * Relation between CommonItilObject_Item and Items
  */
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
@@ -964,69 +965,72 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 }
             }
             // Get linked items to computers
-            if (isset($already_add['Computer']) && count($already_add['Computer'])) {
-                $devices = [];
+            foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
+                if (isset($already_add[$peripheralhost_itemtype]) && count($already_add[$peripheralhost_itemtype])) {
+                    $devices = [];
 
-                // Direct Connection
-                $types = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
-                foreach ($types as $itemtype) {
-                    if (
-                        in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
-                        && ($item = getItemForItemtype($itemtype))
-                    ) {
-                        $itemtable = getTableForItemType($itemtype);
-                        if (!isset($already_add[$itemtype])) {
-                            $already_add[$itemtype] = [];
-                        }
-                        $criteria = [
-                            'SELECT'          => "$itemtable.*",
-                            'DISTINCT'        => true,
-                            'FROM'            => 'glpi_computers_items',
-                            'LEFT JOIN'       => [
-                                $itemtable  => [
-                                    'ON' => [
-                                        'glpi_computers_items'  => 'items_id',
-                                        $itemtable              => 'id'
+                    // Direct Connection
+                    foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
+                        if (
+                            in_array($peripheral_itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
+                            && ($item = getItemForItemtype($peripheral_itemtype))
+                        ) {
+                            $itemtable = getTableForItemType($peripheral_itemtype);
+                            if (!isset($already_add[$peripheral_itemtype])) {
+                                $already_add[$peripheral_itemtype] = [];
+                            }
+                            $relation_table = Asset_PeripheralAsset::getTable();
+                            $criteria = [
+                                'SELECT'          => "$itemtable.*",
+                                'DISTINCT'        => true,
+                                'FROM'            => $relation_table,
+                                'LEFT JOIN'       => [
+                                    $itemtable  => [
+                                        'ON' => [
+                                            $relation_table => 'items_id_peripheral',
+                                            $itemtable      => 'id'
+                                        ]
                                     ]
-                                ]
-                            ],
-                            'WHERE'           => [
-                                'glpi_computers_items.itemtype'     => $itemtype,
-                                'glpi_computers_items.computers_id' => $already_add['Computer']
-                            ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
-                            'ORDERBY'         => "$itemtable.name"
-                        ];
+                                ],
+                                'WHERE'           => [
+                                    $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
+                                    $relation_table . '.itemtype_asset'      => $peripheralhost_itemtype,
+                                    $relation_table . '.items_id_asset'      => $already_add[$peripheralhost_itemtype]
+                                ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
+                                'ORDERBY'         => "$itemtable.name"
+                            ];
 
-                        if ($item->maybeDeleted()) {
-                            $criteria['WHERE']["$itemtable.is_deleted"] = 0;
-                        }
-                        if ($item->maybeTemplate()) {
-                            $criteria['WHERE']["$itemtable.is_template"] = 0;
-                        }
+                            if ($item->maybeDeleted()) {
+                                $criteria['WHERE']["$itemtable.is_deleted"] = 0;
+                            }
+                            if ($item->maybeTemplate()) {
+                                $criteria['WHERE']["$itemtable.is_template"] = 0;
+                            }
 
-                        $iterator = $DB->request($criteria);
-                        if (count($iterator)) {
-                            $type_name = $item->getTypeName();
-                            foreach ($iterator as $data) {
-                                if (!in_array($data["id"], $already_add[$itemtype])) {
-                                    $output = $data["name"];
-                                    if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                                        $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                            $iterator = $DB->request($criteria);
+                            if (count($iterator)) {
+                                $type_name = $item->getTypeName();
+                                foreach ($iterator as $data) {
+                                    if (!in_array($data["id"], $already_add[$peripheral_itemtype])) {
+                                        $output = $data["name"];
+                                        if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
+                                            $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
+                                        }
+                                        $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
+                                        if ($peripheral_itemtype != 'Software') {
+                                            $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
+                                        }
+                                        $devices[$peripheral_itemtype . "_" . $data["id"]] = $output;
+
+                                        $already_add[$peripheral_itemtype][] = $data["id"];
                                     }
-                                    $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
-                                    if ($itemtype != 'Software') {
-                                        $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
-                                    }
-                                    $devices[$itemtype . "_" . $data["id"]] = $output;
-
-                                    $already_add[$itemtype][] = $data["id"];
                                 }
                             }
                         }
                     }
-                }
-                if (count($devices)) {
-                    $my_devices[__('Connected devices')] = $devices;
+                    if (count($devices)) {
+                        $my_devices[__('Connected devices')] = $devices;
+                    }
                 }
             }
             echo "<div id='tracking_my_devices' class='input-group mb-1'>";

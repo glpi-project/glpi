@@ -40,6 +40,7 @@ use CommonDBTM;
 use CommonITILObject;
 use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
 use Glpi\Features\AssignableAsset;
@@ -2596,16 +2597,33 @@ final class SQLProvider implements SearchProviderInterface
                         ) {
                             $used_itemtype = $joinparams['specific_itemtype'];
                         }
+
+                        $items_id_column = 'items_id';
+                        if (
+                            isset($joinparams['specific_items_id_column'])
+                            && !empty($joinparams['specific_items_id_column'])
+                        ) {
+                            $items_id_column = $joinparams['specific_items_id_column'];
+                        }
+
+                        $itemtype_column = 'itemtype';
+                        if (
+                            isset($joinparams['specific_itemtype_column'])
+                            && !empty($joinparams['specific_itemtype_column'])
+                        ) {
+                            $itemtype_column = $joinparams['specific_itemtype_column'];
+                        }
+
                         // Itemtype join
                         $itemtype_join = [
                             'LEFT JOIN' => [
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $rt => 'id',
-                                        $nt => "{$addmain}items_id",
+                                        $nt => "{$addmain}{$items_id_column}",
                                         [
                                             'AND' => [
-                                                "$nt.{$addmain}itemtype" => $used_itemtype
+                                                "$nt.{$addmain}{$itemtype_column}" => $used_itemtype
                                             ]
                                         ]
                                     ]
@@ -2950,6 +2968,54 @@ final class SQLProvider implements SearchProviderInterface
                         $to_table_alias => 'reservationitems_id',
                         [
                             'AND' => $to_entity_restrict_criteria + $to_criteria
+                        ]
+                    ]
+                ];
+            }
+            return $joins;
+        }
+
+        // Specific JOIN for Asset_PeripheralAsset
+        if (
+            (
+                in_array($to_type, $CFG_GLPI['directconnect_types'])
+                && in_array($from_referencetype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
+            )
+            || (
+                in_array($from_referencetype, $CFG_GLPI['directconnect_types'])
+                && in_array($to_type, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
+            )
+        ) {
+            $asset_itemtype = in_array($to_type, $CFG_GLPI['directconnect_types']) ? $from_referencetype : $to_type;
+            $peripheral_itemtype = $asset_itemtype === $from_referencetype ? $to_type : $from_referencetype;
+            $relation_table = Asset_PeripheralAsset::getTable();
+            $relation_table_alias = $relation_table . $alias_suffix;
+            if (!in_array($relation_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $relation_table_alias;
+                $deleted_criteria = ["`$relation_table_alias`.`is_deleted`" => 0];
+                $joins['LEFT JOIN']["`$relation_table` AS `$relation_table_alias`"] = [
+                    'ON' => [
+                        $relation_table_alias => 'items_id_asset',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$relation_table_alias." . 'itemtype_asset'      => $asset_itemtype,
+                                "$relation_table_alias." . 'itemtype_peripheral' => $peripheral_itemtype,
+                            ] + $deleted_criteria
+                        ]
+                    ]
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $relation_table_alias => 'items_id_peripheral',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => [
+                                "$relation_table_alias." . 'itemtype_peripheral' => $peripheral_itemtype,
+                            ] + $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];

@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Asset_PeripheralAsset;
 
 /* Test for inc/computer.class.php */
 
@@ -80,10 +81,12 @@ class Computer extends DbTestCase
         $printer  = $this->getNewPrinter();
 
        // Create the link
-        $link = new \Computer_Item();
-        $in = ['computers_id' => $computer->getField('id'),
-            'itemtype'     => $printer->getType(),
-            'items_id'     => $printer->getID(),
+        $link = new Asset_PeripheralAsset();
+        $in = [
+            'itemtype_asset' => $computer->getType(),
+            'items_id_asset' => $computer->getField('id'),
+            'itemtype_peripheral' => $printer->getType(),
+            'items_id_peripheral' => $printer->getID(),
         ];
         $this->integer((int)$link->add($in))->isGreaterThan(0);
 
@@ -297,10 +300,12 @@ class Computer extends DbTestCase
         $this->integer((int)$pid)->isGreaterThan(0);
 
        // Create the link
-        $link = new \Computer_Item();
-        $in2 = ['computers_id' => $computer->getField('id'),
-            'itemtype'     => $printer->getType(),
-            'items_id'     => $printer->getID(),
+        $link = new Asset_PeripheralAsset();
+        $in2 = [
+            'itemtype_asset' => $computer->getType(),
+            'items_id_asset' => $computer->getField('id'),
+            'itemtype_peripheral' => $printer->getType(),
+            'items_id_peripheral' => $printer->getID(),
         ];
         $this->integer((int)$link->add($in2))->isGreaterThan(0);
 
@@ -744,20 +749,22 @@ class Computer extends DbTestCase
         $computer = $this->getNewComputer();
         $printer1 = $this->getNewPrinter();
         $this->createItem(
-            \Computer_Item::class,
+            Asset_PeripheralAsset::class,
             [
-                'computers_id' => $computer->fields['id'],
-                'itemtype'     => \Printer::class,
-                'items_id'     => $printer1->fields['id'],
+                'itemtype_asset' => $computer->getType(),
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => \Printer::class,
+                'items_id_peripheral' => $printer1->fields['id'],
             ]
         );
         $printer2 = $this->getNewPrinter();
         $this->createItem(
-            \Computer_Item::class,
+            Asset_PeripheralAsset::class,
             [
-                'computers_id' => $computer->fields['id'],
-                'itemtype'     => \Printer::class,
-                'items_id'     => $printer2->fields['id'],
+                'itemtype_asset' => $computer->getType(),
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => \Printer::class,
+                'items_id_peripheral' => $printer2->fields['id'],
             ]
         );
 
