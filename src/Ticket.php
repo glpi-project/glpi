@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\Asset;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
@@ -700,15 +699,8 @@ class Ticket extends CommonITILObject
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         /** @var CommonDBTM $item */
         if (static::canView()) {
-            if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
-                return '';
-            }
-
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -777,50 +769,10 @@ class Ticket extends CommonITILObject
                         break;
 
                     default:
-                        // Direct one
-                        $nb = countElementsInTable(
-                            'glpi_items_tickets',
-                            [
-                                'INNER JOIN' => [
-                                    'glpi_tickets' => [
-                                        'FKEY' => [
-                                            'glpi_items_tickets' => 'tickets_id',
-                                            'glpi_tickets'       => 'id'
-                                        ]
-                                    ]
-                                ],
-                                'WHERE' => [
-                                    'itemtype' => $item->getType(),
-                                    'items_id' => $item->getID(),
-                                    'is_deleted' => 0
-                                ]
-                            ]
-                        );
-
-                       // Linked items
-                        $linkeditems = $item->getLinkedItems();
-
-                        if (count($linkeditems)) {
-                            foreach ($linkeditems as $type => $tab) {
-                                $nb += countElementsInTable(
-                                    'glpi_items_tickets',
-                                    [
-                                        'INNER JOIN' => [
-                                            'glpi_tickets' => [
-                                                'FKEY' => [
-                                                    'glpi_items_tickets' => 'tickets_id',
-                                                    'glpi_tickets'       => 'id'
-                                                ]
-                                            ]
-                                        ],
-                                        'WHERE' => [
-                                            'itemtype' => $type,
-                                            'items_id' => $tab,
-                                            'is_deleted' => 0
-                                        ]
-                                    ]
-                                );
-                            }
+                        if ($item->getType() != __CLASS__) {
+                            // Deprecated, these items should use the Item_Ticket tab instead
+                            \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
+                            return (new Item_Ticket())->getTabNameForItem($item, $withtemplate);
                         }
                         break;
                 }
@@ -873,7 +825,8 @@ class Ticket extends CommonITILObject
             case SLA::class:
             case OLA::class:
             default:
-                self::showListForItem($item, $withtemplate);
+                \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
+                return Item_Ticket::displayTabContentForItem($item, $tabnum, $withtemplate);
         }
         return true;
     }
@@ -6470,45 +6423,5 @@ JAVASCRIPT;
             ];
         }
         return $options;
-    }
-
-    /**
-     * DUPLICATED METHOD FROM CommonItilObject_Item
-     * Needed because assets uses the "Ticket" tab instead of "Item_Ticket"
-     * TODO: once linkeds tickets use the correct "Item_Ticket" tab, delete
-     * this method and move its reference in Ticket::getTabNameForItem() in
-     * Item_Ticket::getTabNameForItem()
-     *
-     * ------------------------------------------------------------
-     *
-     * ITIL tabs for assets should only be displayed if the asset already
-     * has associated ITIL items OR if the current user profile is allowed to
-     * link this asset to ITIL items
-     *
-     * @param CommonDBTM $asset
-     *
-     * @return bool
-     */
-    protected function shouldDisplayTabForAsset(CommonDBTM $asset): bool
-    {
-        // Always display tab if the current profile is allowed to link ITIL
-        // items to this asset
-        if (
-            in_array(
-                $asset::class,
-                $_SESSION["glpiactiveprofile"]["helpdesk_item_type"] ?? []
-            )
-        ) {
-            return true;
-        }
-
-        // Only show if at least one item is already linked
-        return countElementsInTable(
-            Item_Ticket::getTable(),
-            [
-                'itemtype' => $asset::getType(),
-                'items_id' => $asset->getId(),
-            ]
-        ) > 0;
     }
 }
