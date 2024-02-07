@@ -37,8 +37,7 @@ namespace Glpi\Debug;
 
 /**
  * Class that handles profiling sections of code.
- * The data is viewable in the debug bar only. If the current user is not in debug mode, the profiler is normally disabled.
- * This can also be used to simply time sections of code (even across functions) and use the result in the application even in debug mode.
+ * The data is viewable in the debug bar only. If the current user is not in debug mode, the profiler is disabled.
  */
 final class Profiler
 {
@@ -72,15 +71,12 @@ final class Profiler
      * Starts a new section in the profiler. This section will be stopped when Profiler::stop() is called with the same name.
      * @param string $name The name of the section. This name will be used to stop the section later.
      * @param string $category The category of the section. See Profiler::CATEGORY_* for some predefined categories.
-     * @param bool $force_start If true, the section will be started even if the user is not in debug mode.
-     *                           This is useful if the profiler is going to be used to simply time a section of code and
-     *                           the result will be used in the application.
      * @return void
      */
-    public function start(string $name, string $category = self::CATEGORY_CORE, bool $force_start = false): void
+    public function start(string $name, string $category = self::CATEGORY_CORE): void
     {
         $debug_mode_or_pre_session = !isset($_SESSION['glpi_use_mode']) || $_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE;
-        if (!$force_start && ($this->disabled || !$debug_mode_or_pre_session)) {
+        if ($this->disabled || !$debug_mode_or_pre_session) {
             return;
         }
 
