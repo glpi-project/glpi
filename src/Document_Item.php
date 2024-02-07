@@ -437,7 +437,7 @@ class Document_Item extends CommonDBRelation
                         || $item instanceof CommonITILValidation
                     ) {
                         $linkname_extra = "(" . CommonITILTask::getTypeName(1) . ")";
-                        $itemtype = $item->getItilObjectItemType();
+                        $itemtype = $item::getItilObjectItemType();
                         $item = new $itemtype();
                         $item->getFromDB($data[$item->getForeignKeyField()]);
                         $data['id'] = $item->fields['id'];

@@ -50,13 +50,6 @@ class ProblemTask extends CommonITILTask
           || Session::haveRight(self::$rightname, parent::ADDALLITEM);
     }
 
-
-    public static function canView()
-    {
-        return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
-    }
-
-
     public static function canUpdate()
     {
         return Session::haveRight('problem', UPDATE)

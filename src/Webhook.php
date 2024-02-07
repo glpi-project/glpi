@@ -688,7 +688,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $parent_name = $itemtypes[$controller]['main'][$itemtype_value]['name'];
                 $parent_id = $items_id_value;
             } else if ($item instanceof CommonITILTask) {
-                $parent_itemtype = $item->getItilObjectItemType();
+                $parent_itemtype = $item::getItilObjectItemType();
                 $parent_name = $itemtypes[$controller]['main'][$parent_itemtype]['name'];
                 $parent_id = $item->fields[$parent_itemtype::getForeignKeyField()];
             }

@@ -66,7 +66,7 @@ switch ($action) {
             $values = [];
             foreach ($data as $items_id => $items_data) {
                 if ($object instanceof CommonITILTask || $object instanceof CommonITILValidation) {
-                    $itil_type = $object->getItilObjectItemType();
+                    $itil_type = $object::getItilObjectItemType();
                     $foreign_key = getForeignKeyFieldForItemType($itil_type);
                     $values[$items_id] = $itil_type::getTypeName(0) . " " . $items_data[$foreign_key] . " => " . $object::getTypeName(0) . " " . $items_id;
                 } else {
