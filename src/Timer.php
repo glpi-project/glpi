@@ -35,7 +35,7 @@
 
 /**
  *  Timer class for debug and some other cases
- * @deprecated 10.1.0 Use Glpi\Debug\Profiler instead
+ * @deprecated 10.1.0
  */
 class Timer
 {
