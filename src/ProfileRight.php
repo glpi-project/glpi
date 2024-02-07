@@ -271,6 +271,7 @@ class ProfileRight extends CommonDBChild
      */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
+
         $me = new self();
         foreach ($rights as $name => $right) {
             if (isset($right)) {

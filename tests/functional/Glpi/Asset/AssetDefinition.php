@@ -105,6 +105,34 @@ class AssetDefinition extends DbTestCase
             ],
             'messages' => [],
         ];
+
+        yield [
+            'input'    => [
+                'profiles' => [
+                    999999999 => READ, // invalid profile ID
+                ],
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "Profiles".',
+                ],
+            ],
+        ];
+
+        yield [
+            'input'    => [
+                'profiles' => [
+                    $self_service_p_id => 'a', // invalid right value
+                ],
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "Profiles".',
+                ],
+            ],
+        ];
     }
 
     /**
