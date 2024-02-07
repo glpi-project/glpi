@@ -83,4 +83,33 @@ class State extends DbTestCase
         $state = new \State();
         $this->boolean($state->isUnique($input))->isEqualTo($expected);
     }
+
+    public function testGetStateList()
+    {
+        $state = new \State();
+        $this->integer($state->add(['name' => 'Test']))->isGreaterThan(0);
+        $this->integer($state->add(['name' => 'Test 2']))->isGreaterThan(0);
+        $this->integer($state->add(['name' => 'Test 3']))->isGreaterThan(0);
+
+        $this->array(\State::getStateList())->hasSize(3);
+    }
+
+    public function testGetStateNotInvList()
+    {
+        $state = new \State();
+        $this->integer($state_id = $state->add(
+            [
+                'name'                          => 'Not for inv',
+                'is_visible_computer'           => 0,
+                'is_visible_networkequipment'   => 0,
+                'is_visible_phone'              => 0,
+                'is_visible_printer'            => 0,
+            ]
+        ))->isGreaterThan(0);
+        $this->integer($state->add(['name' => 'For inv']))->isGreaterThan(0);
+
+        $list = \State::getStateNotForInventory();
+        $this->array($list)->hasSize(1);
+        $this->boolean(in_array($state_id, $list))->isTrue();
+    }
 }
