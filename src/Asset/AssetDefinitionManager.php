@@ -100,6 +100,35 @@ final class AssetDefinitionManager
     }
 
     /**
+     * Returns the list of reserved system names
+     * @return array
+     */
+    public function getReservedAssetsSystemNames(): array
+    {
+        $names = [
+            'Computer',
+            'Monitor',
+            'Software',
+            'NetworkEquipment',
+            'Peripheral',
+            'Printer',
+            'Cartridge',
+            'Consumable',
+            'Phone',
+            'Rack',
+            'Enclosure',
+            'PDU',
+            'PassiveDCEquipment',
+            'Unmanaged',
+            'Cable',
+        ];
+
+        sort($names);
+
+        return $names;
+    }
+
+    /**
      * Register assets concrete classes autoload.
      *
      * @return void
