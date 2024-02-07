@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -3652,29 +3653,22 @@ JAVASCRIPT;
             $post['onlyglobal'] = false;
         }
 
-        if (
-            $post["onlyglobal"]
-            && ($post["itemtype"] != 'Computer')
-        ) {
-            $where["$table.is_global"] = 1;
-        } else {
-            $where_used = [];
-            if (!empty($used)) {
-                $where_used[] = ['NOT' => ["$table.id" => $used]];
-            }
+        $relation_table = Asset_PeripheralAsset::getTable();
 
-            if ($post["itemtype"] == 'Computer') {
-                $where = $where + $where_used;
-            } else {
-                $where[] = [
-                    'OR' => [
-                        [
-                            'glpi_computers_items.id'  => null
-                        ] + $where_used,
-                        "$table.is_global"            => 1
-                    ]
-                ];
-            }
+        if ($post["onlyglobal"]) {
+            $where[] = ["$table.is_global" => 1];
+        } else {
+            $where[] = [
+                'OR' => [
+                    [
+                        $relation_table . '.id' => null
+                    ],
+                    "$table.is_global" => 1
+                ]
+            ];
+        }
+        if (!empty($used)) {
+            $where[] = ['NOT' => ["$table.id" => $used]];
         }
 
         $criteria = [
@@ -3687,26 +3681,23 @@ JAVASCRIPT;
             ],
             'DISTINCT'        => true,
             'FROM'            => $table,
+            'LEFT JOIN'       => [
+                $relation_table  => [
+                    'ON' => [
+                        $table          => 'id',
+                        $relation_table => 'items_id_peripheral' , [
+                            'AND' => [
+                                $relation_table . '.itemtype_peripheral' => $post['itemtype']
+                            ]
+                        ]
+                    ]
+                ]
+            ],
             'WHERE'           => $where,
             'ORDERBY'         => ['entities_id', 'name ASC'],
             'LIMIT'           => $limit,
             'START'           => $start
         ];
-
-        if (($post["itemtype"] != 'Computer') && !$post["onlyglobal"]) {
-            $criteria['LEFT JOIN'] = [
-                'glpi_computers_items'  => [
-                    'ON' => [
-                        $table                  => 'id',
-                        'glpi_computers_items'  => 'items_id', [
-                            'AND' => [
-                                'glpi_computers_items.itemtype'  => $post['itemtype']
-                            ]
-                        ]
-                    ]
-                ]
-            ];
-        }
 
         $iterator = $DB->request($criteria);
 

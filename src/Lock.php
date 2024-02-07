@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
@@ -158,17 +159,18 @@ class Lock extends CommonGLPI
                         ];
                     }
                 } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
-                    // we need to restrict scope with Computer_Item to prevent loading of all lockedfield
-                    $query['LEFT JOIN'][Computer_Item::getTable()] =
+                    //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
+                    $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()] =
                     [
                         'FKEY'   => [
-                            Computer_Item::getTable()  => 'items_id',
-                            $lockable_itemtype::getTable()   => 'id'
+                            Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
+                            $lockable_itemtype::getTable()    => 'id'
                         ]
                     ];
                     $query['WHERE'][] = [
-                        Computer_Item::getTable() . '.computers_id'  => $ID,
-                        Computer_Item::getTable() . '.is_deleted' => 0
+                        Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
+                        Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
+                        Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0
                     ];
                 } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
                     $query['WHERE'][] = [
@@ -344,27 +346,30 @@ class Lock extends CommonGLPI
 
         //TODO We already get a lot of data from the DB so we may as well display links to the different items rather than just the names.
         //TODO Since a lot of data is loaded from the DB, try to cache as much as possible to avoid multiple queries
-        //Special locks for computers only
-        if ($itemtype === Computer::class) {
-            //computer_item
-            $computer_item = new Computer_Item();
+        if (in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
+            // Asset_PeripheralAsset
             $types = $CFG_GLPI['directconnect_types'];
             foreach ($types as $type) {
-                $params = ['is_dynamic'    => 1,
-                    'is_deleted'    => 1,
-                    'computers_id'  => $ID,
-                    'itemtype'      => $type
-                ];
-                $params['FIELDS'] = ['id', 'items_id'];
+                $peripheral_iterator = $DB->request([
+                    'SELECT' => ['id', 'items_id_peripheral'],
+                    'FROM'   => Asset_PeripheralAsset::getTable(),
+                    'WHERE'  => [
+                        'itemtype_asset'      => $itemtype,
+                        'items_id_asset'      => $ID,
+                        'itemtype_peripheral' => $type,
+                        'is_dynamic'          => 1,
+                        'is_deleted'          => 1
+                    ]
+                ]);
                 $first  = true;
-                foreach ($DB->request('glpi_computers_items', $params) as $line) {
+                foreach ($peripheral_iterator as $row) {
                     /** @var CommonDBTM $asset */
-                    $asset = new $type();
-                    $asset->getFromDB($line['items_id']);
+                    $peripheral = new $type();
+                    $peripheral->getFromDB($row['items_id_peripheral']);
                     if ($first) {
                         echo "<tr>";
                         echo "<th width='10'></th>";
-                        echo "<th>" . $asset::getTypeName(Session::getPluralNumber()) . "</th>";
+                        echo "<th>" . $peripheral::getTypeName(Session::getPluralNumber()) . "</th>";
                         echo "<th>" . __('Serial number') . "</th>";
                         echo "<th>" . __('Inventory number') . "</th>";
                         echo "<th>" . __('Automatic inventory') . "</th>";
@@ -374,20 +379,23 @@ class Lock extends CommonGLPI
 
                     echo "<tr class='tab_bg_1'>";
                     echo "<td class='center' width='10'>";
-                    if ($computer_item->can($line['id'], UPDATE) || $computer_item->can($line['id'], PURGE)) {
+                    $relation_item = new Asset_PeripheralAsset();
+                    if ($relation_item->can($row['id'], UPDATE) || $relation_item->can($row['id'], PURGE)) {
                         $header = true;
-                        echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'>";
+                        echo "<input type='checkbox' name='" . Asset_PeripheralAsset::class . "[" . $row['id'] . "]'>";
                     }
                     echo "</td>";
 
-                    echo "<td class='left'>" . $asset->getLink() . "</td>";
-                    echo "<td class='left'>" . $asset->fields['serial'] . "</td>";
-                    echo "<td class='left'>" . $asset->fields['otherserial'] . "</td>";
-                    echo "<td class='left'>" . Dropdown::getYesNo($asset->fields['is_dynamic']) . "</td>";
+                    echo "<td class='left'>" . $peripheral->getLink() . "</td>";
+                    echo "<td class='left'>" . $peripheral->fields['serial'] . "</td>";
+                    echo "<td class='left'>" . $peripheral->fields['otherserial'] . "</td>";
+                    echo "<td class='left'>" . Dropdown::getYesNo($peripheral->fields['is_dynamic']) . "</td>";
                     echo "</tr>";
                 }
             }
+        }
 
+        if (in_array($itemtype, $CFG_GLPI['disk_types'], true)) {
             //items disks
             $item_disk = new Item_Disk();
             $item_disks = $DB->request([
@@ -1024,17 +1032,19 @@ class Lock extends CommonGLPI
             case 'Monitor':
             case 'Printer':
             case 'Phone':
+                $relation_table = Asset_PeripheralAsset::getTable();
                 $criteria = [
-                    'SELECT' => ['glpi_computers_items.id'],
-                    'FROM' => 'glpi_computers_items',
+                    'SELECT' => [$relation_table . '.id'],
+                    'FROM' => $relation_table,
                     'WHERE' => [
-                        'itemtype'   => $itemtype,
-                        'is_dynamic' => 1,
-                        'is_deleted' => 1
+                        'itemtype_asset'      => $baseitemtype,
+                        'itemtype_peripheral' => $itemtype,
+                        'is_dynamic'          => 1,
+                        'is_deleted'          => 1,
                     ]
                 ];
-                $field     = 'computers_id';
-                $type      = 'Computer_Item';
+                $field = 'items_id_asset';
+                $type  = Asset_PeripheralAsset::class;
                 break;
 
             case 'NetworkPort':

@@ -35,8 +35,8 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\Request;
-use Glpi\OAuth\Server;
 
 class CoreController extends \HLAPITestCase
 {
@@ -145,13 +145,14 @@ class CoreController extends \HLAPITestCase
         $this->integer($monitors_id)->isGreaterThan(0);
 
         // Connect the monitor to the computer
-        $computer_item = new \Computer_Item();
-        $computer_items_id = $computer_item->add([
-            'computers_id' => $computers_id_1,
-            'itemtype' => \Monitor::class,
-            'items_id' => $monitors_id,
+        $connection_item = new Asset_PeripheralAsset();
+        $connection_item_id = $connection_item->add([
+            'itemtype_asset' => \Computer::class,
+            'items_id_asset' => $computers_id_1,
+            'itemtype_peripheral' => \Monitor::class,
+            'items_id_peripheral' => $monitors_id,
         ]);
-        $this->integer($computer_items_id)->isGreaterThan(0);
+        $this->integer($connection_item_id)->isGreaterThan(0);
 
         // Create 2 new entities (not using API)
         $entity = new \Entity();
@@ -208,16 +209,18 @@ class CoreController extends \HLAPITestCase
         $this->integer($computer->fields['entities_id'])->isEqualTo($entities_id_2);
 
         // Verify computer 1 has a monitor connection, and computer 2 doesn't
-        $this->boolean($computer_item->getFromDBByCrit([
-            'computers_id' => $computers_id_1,
-            'itemtype' => \Monitor::class,
-            'items_id' => $monitors_id,
+        $this->boolean($connection_item->getFromDBByCrit([
+            'itemtype_asset' => \Computer::class,
+            'items_id_asset' => $computers_id_1,
+            'itemtype_peripheral' => \Monitor::class,
+            'items_id_peripheral' => $monitors_id,
         ]) === true)->isTrue();
 
-        $this->boolean($computer_item->getFromDBByCrit([
-            'computers_id' => $computers_id_2,
-            'itemtype' => \Monitor::class,
-            'items_id' => $monitors_id,
+        $this->boolean($connection_item->getFromDBByCrit([
+            'itemtype_asset' => \Computer::class,
+            'items_id_asset' => $computers_id_2,
+            'itemtype_peripheral' => \Monitor::class,
+            'items_id_peripheral' => $monitors_id,
         ]) === true)->isFalse();
     }
 

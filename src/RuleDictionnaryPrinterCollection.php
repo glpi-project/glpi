@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
+
 class RuleDictionnaryPrinterCollection extends RuleCollection
 {
    // From RuleCollection
@@ -358,33 +360,39 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      **/
     public function moveDirectConnections($ID, $new_printers_id)
     {
-        $computeritem = new Computer_Item();
-       //For each direct connection of this printer
+        $conn = new Asset_PeripheralAsset();
+
+        $relation_table = Asset_PeripheralAsset::getTable();
+
+        // For each direct connection of this printer
         $connections = getAllDataFromTable(
-            'glpi_computers_items',
+            $relation_table,
             [
-                'itemtype'  => 'Printer',
-                'items_id'  => $ID
+                'itemtype_peripheral' => 'Printer',
+                'items_id_peripheral' => $ID
             ]
         );
         foreach ($connections as $connection) {
-            //Direct connection exists in the target printer ?
+            // Direct connection exists in the target printer ?
             if (
                 !countElementsInTable(
-                    "glpi_computers_items",
-                    ['itemtype'     => 'Printer',
-                        'items_id'     => $new_printers_id,
-                        'computers_id' => $connection["computers_id"]
+                    $relation_table,
+                    [
+                        'itemtype_asset'      => $connection["itemtype_asset"],
+                        'items_id_asset'      => $connection["items_id_asset"],
+                        'itemtype_peripheral' => 'Printer',
+                        'items_id_peripheral' => $new_printers_id,
                     ]
                 )
             ) {
-               //Direct connection doesn't exists in the target printer : move it
-                $computeritem->update(['id'       => $connection['id'],
-                    'items_id' => $new_printers_id
+                // Direct connection doesn't exists in the target printer : move it
+                $conn->update([
+                    'id'                  => $connection['id'],
+                    'items_id_peripheral' => $new_printers_id
                 ]);
             } else {
-               //Direct connection already exists in the target printer : delete it
-                $computeritem->delete($connection);
+                // Direct connection already exists in the target printer : delete it
+                $conn->delete($connection);
             }
         }
     }

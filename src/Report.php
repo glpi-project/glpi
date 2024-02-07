@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -222,13 +223,14 @@ class Report extends CommonGLPI
             }
 
             if (in_array($itemtype, $linkitems)) {
+                $relation_table = Asset_PeripheralAsset::getTable();
                 $criteria['LEFT JOIN'] = [
-                    'glpi_computers_items' => [
+                    $relation_table => [
                         'ON' => [
-                            'glpi_computers_items'  => 'items_id',
-                            $table_item             => 'id', [
+                            $relation_table => 'items_id_peripheral',
+                            $table_item     => 'id', [
                                 'AND' => [
-                                    'glpi_computers_items.itemtype' => $itemtype
+                                    $relation_table . '.itemtype_peripheral' => $itemtype
                                 ]
                             ]
                         ]
@@ -317,12 +319,13 @@ class Report extends CommonGLPI
             }
 
             if (in_array($itemtype, $linkitems)) {
-                $criteria['LEFT JOIN']['glpi_computers_items'] = [
+                $relation_table = Asset_PeripheralAsset::getTable();
+                $criteria['LEFT JOIN'][$relation_table] = [
                     'ON' => [
-                        'glpi_computers_items'  => 'items_id',
-                        $table_item             => 'id', [
+                        $relation_table => 'items_id_peripheral',
+                        $table_item     => 'id', [
                             'AND' => [
-                                'glpi_computers_items.itemtype'  => $itemtype
+                                $relation_table . '.itemtype_peripheral' => $itemtype
                             ]
                         ]
                     ]

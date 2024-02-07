@@ -36,7 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Computer_Item;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
@@ -105,26 +105,28 @@ class Monitor extends InventoryAsset
 
         $db_existing = [];
 
+        $relation_table = Asset_PeripheralAsset::getTable();
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_monitors.id',
-                'glpi_computers_items.id AS link_id'
+                $relation_table . '.id AS link_id'
             ],
-            'FROM'      => 'glpi_computers_items',
+            'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_monitors' => [
                     'FKEY' => [
-                        'glpi_monitors'         => 'id',
-                        'glpi_computers_items'  => 'items_id'
+                        'glpi_monitors' => 'id',
+                        $relation_table => 'items_id_peripheral'
                     ]
                 ]
             ],
             'WHERE'     => [
-                'itemtype'                          => 'Monitor',
-                'computers_id'                      => $this->item->getID(),
-                'entities_id'                       => $this->entities_id,
-                'glpi_computers_items.is_dynamic'   => 1,
-                'glpi_monitors.is_global'           => 0
+                'itemtype_peripheral'           => 'Monitor',
+                'itemtype_asset'                => 'Computer',
+                'items_id_asset'                => $this->item->getID(),
+                'entities_id'                   => $this->entities_id,
+                $relation_table . '.is_dynamic' => 1,
+                'glpi_monitors.is_global'       => 0
             ]
         ]);
 
@@ -141,7 +143,6 @@ class Monitor extends InventoryAsset
     {
         $entities_id = $this->entities_id;
         $monitor = new GMonitor();
-        $computer_Item = new Computer_Item();
         $rule = new RuleImportAssetCollection();
         $monitors = [];
 
@@ -191,9 +192,10 @@ class Monitor extends InventoryAsset
         if (count($db_monitors) == 0) {
             foreach ($monitors as $monitors_id) {
                 $input = [
-                    'computers_id' => $this->item->fields['id'],
-                    'itemtype'     => 'Monitor',
-                    'items_id'     => $monitors_id,
+                    'itemtype_asset' => \Computer::class,
+                    'items_id_asset' => $this->item->fields['id'],
+                    'itemtype_peripheral' => \Monitor::class,
+                    'items_id_peripheral' => $monitors_id,
                     'is_dynamic'   => 1,
                 ];
                 $this->addOrMoveItem($input);
@@ -213,15 +215,16 @@ class Monitor extends InventoryAsset
            // Delete monitors links in DB
             if (!$this->main_asset || !$this->main_asset->isPartial()) {
                 foreach ($db_monitors as $idtmp => $monits_id) {
-                    $computer_Item->delete(['id' => $idtmp], true);
+                    (new Asset_PeripheralAsset())->delete(['id' => $idtmp], true);
                 }
             }
 
             foreach ($monitors as $key => $monitors_id) {
                 $input = [
-                    'computers_id' => $this->item->fields['id'],
-                    'itemtype'     => 'Monitor',
-                    'items_id'     => $monitors_id,
+                    'itemtype_asset' => \Computer::class,
+                    'items_id_asset' => $this->item->fields['id'],
+                    'itemtype_peripheral' => \Monitor::class,
+                    'items_id_peripheral' => $monitors_id,
                     'is_dynamic'   => 1,
                 ];
                 $this->addOrMoveItem($input);
@@ -237,6 +240,6 @@ class Monitor extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \Computer_Item::class;
+        return Asset_PeripheralAsset::class;
     }
 }

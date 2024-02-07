@@ -1246,7 +1246,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Computer_Item:add",
+    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {
@@ -1368,7 +1368,7 @@ $ curl -X GET \
     "label": "Operating systems"
   },
   {
-    "key": "Computer_Item:add",
+    "key": "Glpi\\Asset\\Asset_PeripheralAsset:add",
     "label": "Connect"
   },
   {

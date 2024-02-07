@@ -1,0 +1,19 @@
+{
+    "common": {
+        "name": "Characteristics"
+    },
+    "2": {
+        "name": "ID",
+        "table": "glpi_computers_items",
+        "field": "id",
+        "datatype": "number",
+        "nosearch": false,
+        "nodisplay": false,
+        "available_searchtypes": [
+            "contains",
+            "notcontains",
+            "empty"
+        ],
+        "uid": "Computer_Item.id"
+    }
+}

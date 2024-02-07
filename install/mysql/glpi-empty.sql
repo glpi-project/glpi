@@ -1025,19 +1025,21 @@ CREATE TABLE `glpi_computers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_computers_items
+### Previously glpi_computers_items < 11.0.0
+### Dump table glpi_assets_assets_peripheralassets
 
-DROP TABLE IF EXISTS `glpi_computers_items`;
-CREATE TABLE `glpi_computers_items` (
+DROP TABLE IF EXISTS `glpi_assets_assets_peripheralassets`;
+CREATE TABLE `glpi_assets_assets_peripheralassets` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `items_id` int unsigned NOT NULL DEFAULT '0' COMMENT 'RELATION to various table, according to itemtype (ID)',
-  `computers_id` int unsigned NOT NULL DEFAULT '0',
-  `itemtype` varchar(100) NOT NULL,
+  `itemtype_asset` varchar(255) NOT NULL,
+  `items_id_asset` int unsigned NOT NULL DEFAULT '0',
+  `items_id_peripheral` int unsigned NOT NULL DEFAULT '0',
+  `itemtype_peripheral` varchar(255) NOT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `computers_id` (`computers_id`),
-  KEY `item` (`itemtype`,`items_id`),
+  KEY `item_asset` (`itemtype_asset`,`items_id_asset`),
+  KEY `item_peripheral` (`itemtype_peripheral`,`items_id_peripheral`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
