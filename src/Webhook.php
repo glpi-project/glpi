@@ -1151,6 +1151,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $api_data = [
                 'item' => $api_data
             ];
+            $webhook->addParentItemData($api_data, $item::getType(), $item->getID());
+
             $api_data['event'] = $event;
             $custom_headers = $webhook->fields['custom_headers'];
             foreach ($custom_headers as $key => $value) {
