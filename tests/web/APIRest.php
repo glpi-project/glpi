@@ -40,6 +40,7 @@ use Auth;
 use atoum\atoum;
 use Computer;
 use Config;
+use Glpi\Tests\Api\Deprecated\Computer_Item;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
@@ -2350,6 +2351,7 @@ class APIRest extends atoum
             ['provider' => Computer_SoftwareLicense::class],
             ['provider' => ComputerAntivirus::class],
             ['provider' => ComputerVirtualMachine::class],
+            ['provider' => Computer_Item::class],
         ];
     }
 
@@ -2607,7 +2609,7 @@ class APIRest extends atoum
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
                     ["key" => "Item_Rack:delete",                "label" => "Remove from a rack"],
                     ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
-                    ["key" => "Computer_Item:add",               "label" => "Connect"],
+                    ["key" => "Glpi\\Asset\\Asset_PeripheralAsset:add", "label" => "Connect"],
                     ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
                     ["key" => "Item_SoftwareLicense:add",        "label" => "Add a license"],
                     ["key" => "Domain:add_item",                 "label" => "Add a domain"],
@@ -2653,7 +2655,7 @@ class APIRest extends atoum
                     ["key" => "Appliance:add_item",              "label" => "Associate to an appliance"],
                     ["key" => "Item_Rack:delete",                "label" => "Remove from a rack"],
                     ["key" => "Item_OperatingSystem:update",     "label" => "Operating systems"],
-                    ["key" => "Computer_Item:add",               "label" => "Connect"],
+                    ["key" => "Glpi\\Asset\\Asset_PeripheralAsset:add", "label" => "Connect"],
                     ["key" => "Item_SoftwareVersion:add",        "label" => "Install"],
                     ["key" => "Item_SoftwareLicense:add",        "label" => "Add a license"],
                     ["key" => "Domain:add_item",                 "label" => "Add a domain"],
@@ -2770,10 +2772,10 @@ class APIRest extends atoum
                 'response' => [],
             ],
             [
-                'url' => 'getMassiveActionParameters/Computer/Computer_Item:add',
+                'url' => 'getMassiveActionParameters/Computer/Glpi\\Asset\\Asset_PeripheralAsset:add',
                 'status' => 200,
                 'response' => [
-                    ["name" => "peer_computers_id", "type" => "dropdown"],
+                    ["name" => "peer_itemtype_peripheral", "type" => "dropdown"],
                 ],
             ],
             [

@@ -35,6 +35,7 @@
 
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
@@ -408,55 +409,59 @@ class Transfer extends CommonDBTM
             $DC_CONNECT[] = 'Printer';
         }
 
-        if (
-            count($DC_CONNECT)
-            && (count($this->needtobe_transfer['Computer']) > 0)
-        ) {
-            foreach ($DC_CONNECT as $itemtype) {
-                $itemtable = getTableForItemType($itemtype);
+        if (count($DC_CONNECT) > 0) {
+            foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $asset_itemtype) {
+                if (count($this->needtobe_transfer[$asset_itemtype]) > 0) {
+                    foreach ($DC_CONNECT as $peripheral_itemtype) {
+                        $peripheral_itemtable = getTableForItemType($peripheral_itemtype);
+                        $relation_table = Asset_PeripheralAsset::getTable();
 
-               // Clean DB / Search unexisting links and force disconnect
-                $DB->delete(
-                    'glpi_computers_items',
-                    [
-                        "$itemtable.id" => null,
-                        'glpi_computers_items.itemtype' => $itemtype,
-                    ],
-                    [
-                        'LEFT JOIN' => [
-                            $itemtable  => [
-                                'ON' => [
-                                    'glpi_computers_items'  => 'items_id',
-                                    $itemtable              => 'id',
+                        // Clean DB / Search unexisting links and force disconnect
+                        $DB->delete(
+                            $relation_table,
+                            [
+                                $peripheral_itemtable . '.id' => null,
+                                $relation_table . '.itemtype_asset'      => $asset_itemtype,
+                                $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
+                            ],
+                            [
+                                'LEFT JOIN' => [
+                                    $peripheral_itemtable => [
+                                        'ON' => [
+                                            $relation_table       => 'items_id_peripheral',
+                                            $peripheral_itemtable => 'id',
+                                        ]
+                                    ]
                                 ]
                             ]
-                        ]
-                    ]
-                );
+                        );
 
-                if (!($item = getItemForItemtype($itemtype))) {
-                     continue;
-                }
+                        if (!($peripheral = getItemForItemtype($peripheral_itemtype))) {
+                             continue;
+                        }
 
-                $iterator = $DB->request([
-                    'SELECT'          => 'items_id',
-                    'DISTINCT'        => true,
-                    'FROM'            => 'glpi_computers_items',
-                    'WHERE'           => [
-                        'itemtype'     => $itemtype,
-                        'computers_id' => $this->needtobe_transfer['Computer']
-                    ]
-                ]);
+                        $iterator = $DB->request([
+                            'SELECT'          => 'items_id_peripheral',
+                            'DISTINCT'        => true,
+                            'FROM'            => $relation_table,
+                            'WHERE'           => [
+                                'itemtype_peripheral' => $peripheral_itemtype,
+                                'itemtype_asset'      => $asset_itemtype,
+                                'items_id_asset'      => $this->needtobe_transfer[$asset_itemtype]
+                            ]
+                        ]);
 
-                foreach ($iterator as $data) {
-                    if (
-                        $item->getFromDB($data['items_id'])
-                        && $item->isRecursive()
-                        && in_array($item->getEntityID(), $to_entity_ancestors)
-                    ) {
-                        $this->addNotToBeTransfer($itemtype, $data['items_id']);
-                    } else {
-                        $this->addToBeTransfer($itemtype, $data['items_id']);
+                        foreach ($iterator as $data) {
+                            if (
+                                $peripheral->getFromDB($data['items_id_peripheral'])
+                                && $peripheral->isRecursive()
+                                && in_array($peripheral->getEntityID(), $to_entity_ancestors)
+                            ) {
+                                $this->addNotToBeTransfer($peripheral_itemtype, $data['items_id_peripheral']);
+                            } else {
+                                $this->addToBeTransfer($peripheral_itemtype, $data['items_id_peripheral']);
+                            }
+                        }
                     }
                 }
             }
@@ -1259,7 +1264,7 @@ class Transfer extends CommonDBTM
 
                // Connected item is transferred
                 if (in_array($itemtype, $CFG_GLPI["directconnect_types"])) {
-                    $this->manageConnectionComputer($itemtype, $ID);
+                    $this->managePeripheralMainAsset($itemtype, $ID);
                 }
 
                // Certificate : keep / delete + clean unused / keep unused
@@ -1335,8 +1340,8 @@ class Transfer extends CommonDBTM
                 $item->update($input);
                 $this->addToAlreadyTransfer($itemtype, $ID, $newID);
 
-               // Do it after item transfer for entity checks
-                if ($itemtype == 'Computer') {
+                // Do it after item transfer for entity checks
+                if (in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
                    // Monitor Direct Connect : keep / delete + clean unused / keep unused
                     $this->transferDirectConnection($itemtype, $ID, 'Monitor');
                    // Peripheral Direct Connect : keep / delete + clean unused / keep unused
@@ -2640,10 +2645,11 @@ class Transfer extends CommonDBTM
 
        // Get connections
         $criteria = [
-            'FROM'   => 'glpi_computers_items',
+            'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'computers_id' => $ID,
-                'itemtype'     => $link_type
+                'itemtype_asset'      => $itemtype,
+                'items_id_asset'      => $ID,
+                'itemtype_peripheral' => $link_type
             ]
         ];
 
@@ -2655,7 +2661,7 @@ class Transfer extends CommonDBTM
 
        // Foreach get item
         foreach ($iterator as $data) {
-            $item_ID = $data['items_id'];
+            $item_ID = $data['items_id_peripheral'];
             if ($link_item->getFromDB($item_ID)) {
                // If global :
                 if ($link_item->fields['is_global'] == 1) {
@@ -2672,22 +2678,25 @@ class Transfer extends CommonDBTM
                                 $need_clean_process = true;
                             }
                         } else { // Not yet tranfer
-                           // Can be managed like a non global one ?
-                           // = all linked computers need to be transfer (so not copy)
-                            $comp_criteria = [
+                            // Can be managed like a non global one ?
+                            // = all linked assets need to be transfer (so not copy)
+                            $asset_criteria = [
                                 'COUNT'  => 'cpt',
-                                'FROM'   => 'glpi_computers_items',
+                                'FROM'   => Asset_PeripheralAsset::getTable(),
                                 'WHERE'  => [
-                                    'itemtype'  => $link_type,
-                                    'items_id'  => $item_ID
+                                    'itemtype_asset'      => $itemtype,
+                                    'itemtype_peripheral' => $link_type,
+                                    'items_id_peripheral' => $item_ID
                                 ]
                             ];
-                            if (count($this->needtobe_transfer['Computer'])) {
-                                $comp_criteria['WHERE']['NOT'] = ['computers_id' => $this->needtobe_transfer['Computer']];
+                            if (count($this->needtobe_transfer[$itemtype])) {
+                                $asset_criteria['WHERE']['NOT'] = [
+                                    'items_id_asset' => $this->needtobe_transfer[$itemtype]
+                                ];
                             }
-                            $result = $DB->request($comp_criteria)->current();
+                            $result = $DB->request($asset_criteria)->current();
 
-                         // All linked computers need to be transfer -> use unique transfer system
+                            // All linked assets need to be transfer -> use unique transfer system
                             if ($result['cpt'] == 0) {
                                 $need_clean_process = false;
                                 $this->transferItem($link_type, $item_ID, $item_ID);
@@ -2733,9 +2742,9 @@ class Transfer extends CommonDBTM
                             && ($newID != $item_ID)
                         ) {
                             $DB->update(
-                                'glpi_computers_items',
+                                Asset_PeripheralAsset::getTable(),
                                 [
-                                    'items_id' => $newID
+                                    'items_id_peripheral' => $newID
                                 ],
                                 [
                                     'id' => $data['id']
@@ -2743,10 +2752,10 @@ class Transfer extends CommonDBTM
                             );
                         }
                     } else {
-                     // Else delete link
-                     // Call Disconnect for global device (no disconnect behavior, but history )
-                        $conn = new Computer_Item();
-                        $conn->delete(['id'              => $data['id'],
+                        // Else delete link
+                        // Call Disconnect for global device (no disconnect behavior, but history )
+                        (new Asset_PeripheralAsset())->delete([
+                            'id'              => $data['id'],
                             '_no_auto_action' => true
                         ]);
 
@@ -2754,14 +2763,14 @@ class Transfer extends CommonDBTM
                     }
                    // If clean and not linked dc -> delete
                     if ($need_clean_process && $clean) {
-                         $result = $DB->request([
-                             'COUNT'  => 'cpt',
-                             'FROM'   => 'glpi_computers_items',
-                             'WHERE'  => [
-                                 'items_id'  => $item_ID,
-                                 'itemtype'  => $link_type
-                             ]
-                         ])->current();
+                        $result = $DB->request([
+                            'COUNT'  => 'cpt',
+                            'FROM'   => Asset_PeripheralAsset::getTable(),
+                            'WHERE'  => [
+                                'items_id_peripheral' => $item_ID,
+                                'itemtype_peripheral' => $link_type
+                            ]
+                        ])->current();
 
                         if ($result['cpt'] == 0) {
                             if ($clean == 1) {
@@ -2777,9 +2786,8 @@ class Transfer extends CommonDBTM
                     if ($keep) {
                         $this->transferItem($link_type, $item_ID, $item_ID);
                     } else {
-                       // Else delete link (apply disconnect behavior)
-                        $conn = new Computer_Item();
-                        $conn->delete(['id' => $data['id']]);
+                        // Else delete link (apply disconnect behavior)
+                        (new Asset_PeripheralAsset())->delete(['id' => $data['id']]);
 
                        //if clean -> delete
                         if ($clean == 1) {
@@ -2790,10 +2798,10 @@ class Transfer extends CommonDBTM
                     }
                 }
             } else {
-               // Unexisting item / Force disconnect
-                $conn = new Computer_Item();
-                $conn->delete(['id'             => $data['id'],
-                    '_no_history'    => true,
+                // Unexisting item / Force disconnect
+                (new Asset_PeripheralAsset())->delete([
+                    'id'              => $data['id'],
+                    '_no_history'     => true,
                     '_no_auto_action' => true
                 ]);
             }
@@ -2802,47 +2810,68 @@ class Transfer extends CommonDBTM
 
 
     /**
-     * Delete direct connection beetween an item and a computer when transfering the item
+     * Handle direct connection between a peripheral and its main asset when transfering the peripheral.
      *
-     * @param string $itemtype Itemtype to tranfer
-     * @param int $ID          ID of the item
+     * @param string $peripheral_itemtype
+     * @param int    $ID
      *
      * @return void
      * @since 0.84.4
      **/
-    public function manageConnectionComputer($itemtype, $ID)
+    private function managePeripheralMainAsset(string $peripheral_itemtype, int $ID): void
     {
         /** @var \DBmysql $DB */
         global $DB;
 
        // Get connections
         $criteria = [
-            'FROM'   => 'glpi_computers_items',
+            'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype'  => $itemtype,
-                'items_id'  => $ID
+                'itemtype_peripheral' => $peripheral_itemtype,
+                'items_id_peripheral' => $ID
             ]
         ];
-        if (count($this->needtobe_transfer['Computer'])) {
-            $criteria['WHERE']['NOT'] = ['computers_id' => $this->needtobe_transfer['Computer']];
+
+        $transfered_itemtypes = array_intersect(
+            Asset_PeripheralAsset::getPeripheralHostItemtypes(),
+            array_keys($this->needtobe_transfer)
+        );
+        if (count($transfered_itemtypes) > 0) {
+            $where_not = [];
+            foreach ($transfered_itemtypes as $itemtype) {
+                if ($this->needtobe_transfer[$itemtype]) {
+                    $where_not[] = [
+                        'itemtype_asset' => $itemtype,
+                        'items_id_asset' => $this->needtobe_transfer[$itemtype]
+                    ];
+                }
+            }
+            if (count($where_not) > 0) {
+                $criteria['WHERE'][] = ['NOT' => $where_not];
+            }
         }
         $iterator = $DB->request($criteria);
 
         if (count($iterator)) {
-           // Foreach get item
-            $conn = new Computer_Item();
-            $comp = new Computer();
+            // Foreach get item
             foreach ($iterator as $data) {
-                $item_ID = $data['items_id'];
-                if ($comp->getFromDB($item_ID)) {
-                    $conn->delete(['id' => $data['id']]);
-                } else {
-                   // Unexisting item / Force disconnect
-                    $conn->delete(['id'             => $data['id'],
-                        '_no_history'    => true,
+                $itemtype = $data['itemtype_asset'];
+                $item_id  = $data['items_id_asset'];
+
+                $delete_params = [
+                    'id' => $data['id'],
+                ];
+                if (
+                    !is_a($itemtype, CommonDBTM::class, true)
+                    || !(new $itemtype())->getFromDB($item_id)
+                ) {
+                    // Unexisting item / Force disconnect
+                    $delete_params += [
+                        '_no_history'     => true,
                         '_no_auto_action' => true
-                    ]);
+                    ];
                 }
+                (new Asset_PeripheralAsset())->delete($delete_params);
             }
         }
     }

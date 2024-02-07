@@ -41,6 +41,7 @@ use Blacklist;
 use CommonDBTM;
 use CommonDropdown;
 use Dropdown;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Lockedfield;
@@ -383,8 +384,8 @@ abstract class InventoryAsset
     }
 
     /**
-     * Add or move a computer_item.
-     * If the computer is item is already linked to another computer, existing link will be replaced by new link.
+     * Add or move a peripheral asset.
+     * If the peripheral asset is already linked to another maina sset, existing link will be replaced by new link.
      *
      * @param array $input
      *
@@ -392,25 +393,26 @@ abstract class InventoryAsset
      */
     protected function addOrMoveItem(array $input): void
     {
-        $itemtype = $input['itemtype'];
+        $itemtype = $input['itemtype_peripheral'];
         $item = new $itemtype();
-        $item->getFromDB($input['items_id']);
+        $item->getFromDB($input['items_id_peripheral']);
 
         if (!$item->isGlobal()) {
             // Item is not global, delete links with other assets.
-            $citem = new \Computer_Item();
-            $citem->deleteByCriteria(
+            $relation = new Asset_PeripheralAsset();
+            $relation->deleteByCriteria(
                 [
-                    'itemtype' => $input['itemtype'],
-                    'items_id' => $input['items_id'],
+                    'itemtype_asset' => \Computer::getType(),
+                    'itemtype_peripheral' => $input['itemtype_peripheral'],
+                    'items_id_peripheral' => $input['items_id_peripheral'],
                 ],
                 true,
                 false
             );
         }
 
-        $citem = new \Computer_Item();
-        $citem->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
+        $relation = new Asset_PeripheralAsset();
+        $relation->add($input, [], !$this->item->isNewItem()); //log only if mainitem is not new
     }
 
     protected function setNew(): self

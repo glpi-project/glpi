@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -197,7 +199,7 @@ function display_infocoms_report($itemtype, $begin, $end)
                 isset($line["is_global"]) && $line["is_global"]
                 && $item->getFromDB($line["items_id"])
             ) {
-                $line["value"] *= Computer_Item::countForItem($item);
+                $line["value"] *= Asset_PeripheralAsset::countForItem($item);
             }
 
             if ($line["value"] > 0) {

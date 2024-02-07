@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
@@ -167,17 +168,18 @@ TWIG;
                         ];
                     }
                 } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
-                    // we need to restrict scope with Computer_Item to prevent loading of all lockedfield
-                    $query['LEFT JOIN'][Computer_Item::getTable()] =
+                    //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
+                    $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()] =
                     [
                         'FKEY'   => [
-                            Computer_Item::getTable()  => 'items_id',
-                            $lockable_itemtype::getTable()   => 'id'
+                            Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
+                            $lockable_itemtype::getTable()    => 'id'
                         ]
                     ];
                     $query['WHERE'][] = [
-                        Computer_Item::getTable() . '.computers_id'  => $ID,
-                        Computer_Item::getTable() . '.is_deleted' => 0
+                        Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
+                        Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
+                        Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0
                     ];
                 } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
                     $query['WHERE'][] = [
@@ -348,19 +350,20 @@ TWIG, $twig_params);
             'alert_content' => __("The automatic inventory will no longer handle this item, unless you unlock it."),
         ]);
 
-        //Special locks for computers only
-        if ($itemtype === Computer::class && count($CFG_GLPI['directconnect_types'])) {
-            //computer_item
-            $computer_item = new Computer_Item();
+        if (
+            in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
+            || $itemtype === Computer::class && count($CFG_GLPI['directconnect_types'])
+        ) {
             $types = $CFG_GLPI['directconnect_types'];
             $it = $DB->request([
-                'SELECT' => ['id', 'itemtype', 'items_id'],
-                'FROM'   => 'glpi_computers_items',
-                'WHERE' => [
-                    'computers_id' => $ID,
-                    'is_dynamic'   => 1,
-                    'is_deleted'   => 1,
-                    'itemtype'    => $CFG_GLPI['directconnect_types']
+                'SELECT' => ['id', 'itemtype_peripheral', 'items_id_peripheral'],
+                'FROM'   => Asset_PeripheralAsset::getTable(),
+                'WHERE'  => [
+                    'itemtype_asset'      => $itemtype,
+                    'items_id_asset'      => $ID,
+                    'is_dynamic'          => 1,
+                    'is_deleted'          => 1,
+                    'itemtype_peripheral' => $CFG_GLPI['directconnect_types'],
                 ]
             ]);
             $results = iterator_to_array($it);
@@ -368,7 +371,7 @@ TWIG, $twig_params);
             $types_flipped = array_flip($types);
             // Sort results to match the order of the types in $CFG_GLPI['directconnect_types']
             usort($results, static function ($a, $b) use ($types_flipped) {
-                return $types_flipped[$a['itemtype']] - $types_flipped[$b['itemtype']];
+                return $types_flipped[$a['itemtype_peripheral']] - $types_flipped[$b['itemtype_peripheral']];
             });
 
             $subtable = [
@@ -389,20 +392,26 @@ TWIG, $twig_params);
 
             foreach ($results as $result) {
                 /** @var CommonDBTM $asset */
-                $asset = new $result['itemtype']();
-                $asset->getFromDB($result['items_id']);
-                $show_checkbox = $computer_item->can($result['id'], UPDATE) || $computer_item->can($result['id'], PURGE);
+                $peripheral = getItemForItemtype($result['itemtype_peripheral']);
+                if ($peripheral === false || $peripheral->getFromDB($result['items_id_peripheral']) === false) {
+                    // ignore orphan data
+                    continue;
+                }
+                $relation_item = new Asset_PeripheralAsset();
+                $show_checkbox = $relation_item->can($result['id'], UPDATE) || $relation_item->can($result['id'], PURGE);
                 $subtable['entries'][] = [
                     'chk' => $show_checkbox ? "<input type='checkbox' name='Computer_Item[{$result['id']}]'>" : '',
-                    'type' => $asset::getTypeName(),
-                    'item' => $asset->getLink(),
-                    'serial' => $asset->fields['serial'],
-                    'inventory' => $asset->fields['otherserial'],
-                    'is_dynamic' => Dropdown::getYesNo($asset->fields['is_dynamic'])
+                    'type' => $peripheral::getTypeName(),
+                    'item' => $peripheral->getLink(),
+                    'serial' => $peripheral->fields['serial'],
+                    'inventory' => $peripheral->fields['otherserial'],
+                    'is_dynamic' => Dropdown::getYesNo($peripheral->fields['is_dynamic'])
                 ];
             }
             $subtables[] = $subtable;
+        }
 
+        if (in_array($itemtype, $CFG_GLPI['disk_types'], true)) {
             //items disks
             $item_disk = new Item_Disk();
             $item_disks = $DB->request([
@@ -864,7 +873,7 @@ TWIG, $twig_params);
 
                     $subtable['entries'][] = [
                         'chk' => $show_checkbox ? "<input type='checkbox' name='{$type}[{$data['id']}]'>" : '',
-                        'type' => $object_link,
+                        'item' => $object_link,
                         'placeholder_1' => '',
                         'placeholder_2' => '',
                         'is_dynamic' => Dropdown::getYesNo($object_item_type->fields['is_dynamic'])
@@ -1079,17 +1088,19 @@ TWIG);
             case 'Monitor':
             case 'Printer':
             case 'Phone':
+                $relation_table = Asset_PeripheralAsset::getTable();
                 $criteria = [
-                    'SELECT' => ['glpi_computers_items.id'],
-                    'FROM' => 'glpi_computers_items',
+                    'SELECT' => [$relation_table . '.id'],
+                    'FROM' => $relation_table,
                     'WHERE' => [
-                        'itemtype'   => $itemtype,
-                        'is_dynamic' => 1,
-                        'is_deleted' => 1
+                        'itemtype_asset'      => $baseitemtype,
+                        'itemtype_peripheral' => $itemtype,
+                        'is_dynamic'          => 1,
+                        'is_deleted'          => 1,
                     ]
                 ];
-                $field     = 'computers_id';
-                $type      = 'Computer_Item';
+                $field = 'items_id_asset';
+                $type  = Asset_PeripheralAsset::class;
                 break;
 
             case 'NetworkPort':

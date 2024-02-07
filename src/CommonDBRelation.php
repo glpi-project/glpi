@@ -1938,13 +1938,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
     protected static function getDistinctTypesParams($items_id, $extra_where = [])
     {
         $params = [
-            'SELECT'          => 'itemtype',
+            'SELECT'          => static::$itemtype_2,
             'DISTINCT'        => true,
             'FROM'            => static::getTable(),
             'WHERE'           => [
                 static::$items_id_1  => $items_id,
             ] + $extra_where,
-            'ORDER'           => 'itemtype'
+            'ORDER'           => static::$itemtype_2
         ];
         return $params;
     }
@@ -2137,7 +2137,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return $nb;
     }
 
-    final public static function getItemField($itemtype): string
+    public static function getItemField($itemtype): string
     {
         if (isset(static::$items_id_1) && getItemtypeForForeignKeyField(static::$items_id_1) == $itemtype) {
             return static::$items_id_1;

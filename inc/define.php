@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\SocketModel;
 
 // Current version of GLPI
@@ -238,7 +239,9 @@ $CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEqui
     'Software', 'SoftwareLicense', 'Certificate'
 ];
 
-
+// `peripheralhost_types` contains assets that can host peripherals
+// `directconnect_types` contains the list of assets that are considred as peripherals
+$CFG_GLPI["peripheralhost_types"]         = ['Computer'];
 $CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
 
 $CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Computer',
@@ -492,7 +495,7 @@ $CFG_GLPI['inventory_types'] = [
     'NetworkEquipment'
 ];
 
-$CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
+$CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  'Item_SoftwareLicense',
     'Item_SoftwareVersion', 'Item_Disk', 'ItemVirtualMachine','ItemAntivirus',
     'NetworkPort', 'NetworkName', 'IPAddress', 'Item_OperatingSystem', 'Item_DeviceBattery', 'Item_DeviceCase',
     'Item_DeviceControl', 'Item_DeviceDrive', 'Item_DeviceFirmware', 'Item_DeviceGeneric', 'Item_DeviceGraphicCard',

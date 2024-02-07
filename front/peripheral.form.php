@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Event;
 
 include('../inc/includes.php');
@@ -119,7 +120,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["unglobalize"])) {
     $peripheral->check($_POST["id"], UPDATE);
 
-    Computer_Item::unglobalizeItem($peripheral);
+    Asset_PeripheralAsset::unglobalizeItem($peripheral);
     Event::log(
         $_POST["id"],
         "peripherals",

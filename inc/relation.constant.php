@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
     die("Sorry. You can't access this file directly");
 }
 
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Socket;
 
 /**
@@ -244,8 +245,7 @@ $RELATION = [
     ],
 
     'glpi_computers' => [
-        '_glpi_computers_items'           => 'computers_id',
-        'glpi_networknames'               => [['items_id', 'itemtype']], // FIXME Find a list that can be used to declare this polymorphic relation
+        'glpi_networknames' => [['items_id', 'itemtype']], // FIXME Find a list that can be used to declare this polymorphic relation
     ],
 
     'glpi_computertypes' => [
@@ -1734,7 +1734,6 @@ $polymorphic_types_mapping = [
     Appliance_Item_Relation::class => $CFG_GLPI['appliance_relation_types'],
     Certificate_Item::class        => $CFG_GLPI['certificate_types'],
     Change_Item::class             => $CFG_GLPI['ticket_types'],
-    Computer_Item::class           => $CFG_GLPI['directconnect_types'],
     Consumable::class              => $CFG_GLPI['consumables_types'],
     Contract_Item::class           => $CFG_GLPI['contract_types'],
     DatabaseInstance::class        => $CFG_GLPI['databaseinstance_types'],
@@ -1824,4 +1823,20 @@ foreach ($CFG_GLPI['networkport_types'] as $source_itemtype) {
     $define_mapping_entry($source_table, $target_table_key);
 
     $RELATION[$source_table][$target_table_key][] = ['mainitems_id', 'mainitemtype'];
+}
+
+// Asset_PeripheralAsset specific case
+foreach ($CFG_GLPI['directconnect_types'] as $directconnect_itemtype) {
+    $target_table_key = Asset_PeripheralAsset::getTable();
+    $source_table     = $directconnect_itemtype::getTable();
+
+    $define_mapping_entry($source_table, $target_table_key);
+    $RELATION[$source_table][$target_table_key][] = ['itemtype_peripheral', 'items_id_peripheral'];
+}
+foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
+    $target_table_key = Asset_PeripheralAsset::getTable();
+    $source_table     = $peripheralhost_itemtype::getTable();
+
+    $define_mapping_entry($source_table, $target_table_key);
+    $RELATION[$source_table][$target_table_key][] = ['itemtype_asset', 'items_id_asset'];
 }
