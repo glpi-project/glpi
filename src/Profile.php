@@ -1185,11 +1185,9 @@ class Profile extends CommonDBTM
             ];
 
             // Add rights for custom assets
-            $definitions = \Glpi\Asset\AssetDefinitionManager::getInstance()->getDefinitions();
+            $definitions = AssetDefinitionManager::getInstance()->getDefinitions(only_active: true);
             foreach ($definitions as $definition) {
-                if ($definition->fields['is_active']) {
-                    $all_rights['central']['assets']['custom_assets'][] = $fn_get_rights($definition->getAssetClassName(), 'central');
-                }
+                $all_rights['central']['assets']['custom_assets'][] = $fn_get_rights($definition->getAssetClassName(), 'central');
             }
         }
 

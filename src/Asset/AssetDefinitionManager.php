@@ -306,9 +306,10 @@ final class AssetDefinitionManager
     /**
      * Get all the asset definitions.
      *
+     * @param bool $only_active
      * @return AssetDefinition[]
      */
-    public function getDefinitions(): array
+    public function getDefinitions(bool $only_active = false): array
     {
         if (!isset($this->definitions_data)) {
             $this->definitions_data = getAllDataFromTable(AssetDefinition::getTable());
@@ -316,6 +317,10 @@ final class AssetDefinitionManager
 
         $definitions = [];
         foreach ($this->definitions_data as $definition_data) {
+            if ($only_active && (bool)$definition_data['is_active'] !== true) {
+                continue;
+            }
+
             $system_name = $definition_data['system_name'];
             $definition = new AssetDefinition();
             $definition->getFromResultSet($definition_data);
