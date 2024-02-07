@@ -35,8 +35,10 @@
 
 namespace Glpi\Asset\Capacity;
 
+use CommonDBRelation;
 use DisplayPreference;
 use Glpi\Asset\Asset;
+use Glpi\Asset\AssetDefinition;
 use Log;
 
 /**
@@ -68,6 +70,101 @@ abstract class AbstractCapacity implements CapacityInterface
     public function getCloneRelations(): array
     {
         return [];
+    }
+
+    public function isUsed(string $classname): bool
+    {
+        return $classname::getDefinition()->hasCapacityEnabled($this);
+    }
+
+    /**
+     * Count the number of peer item used.
+     *
+     * The count is based on the number of distinct peer items IDs found in the table of the relation class
+     * in rows linked to the given asset class.
+     *
+     * @param class-string<\CommonDBTM> $asset_classname
+     * @param class-string<\CommonDBTM> $relation_classname
+     * @return int
+     */
+    protected function countPeerItemsUsage(string $asset_classname, string $relation_classname): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (is_a($relation_classname, CommonDBRelation::class, true)) {
+            // We assume that asset type/id are always store in `itemtype`/`items_id` fields
+            // and we use the other `items_id_X` property as the peer item ID storage field.
+            $distinct_field  = null;
+            if ($relation_classname::$items_id_1 === 'items_id') {
+                $distinct_field  = $relation_classname::$items_id_2;
+            } elseif ($relation_classname::$items_id_2 === 'items_id') {
+                $distinct_field  = $relation_classname::$items_id_1;
+            }
+            if ($distinct_field === null) {
+                throw new \Exception('Unable to compute peer item foreign key field.');
+            }
+
+            return countDistinctElementsInTable(
+                $relation_classname::getTable(),
+                $distinct_field,
+                [
+                    'itemtype' => $asset_classname,
+                ]
+            );
+        }
+
+        if (
+            is_a($relation_classname, CommonDBRelation::class, true)
+            || $DB->fieldExists($relation_classname::getTable(), 'itemtype')
+        ) {
+            // We assume that asset type/id are always store in `itemtype`/`items_id` fields.
+            return countElementsInTable(
+                $relation_classname::getTable(),
+                [
+                    'itemtype' => $asset_classname,
+                ]
+            );
+        }
+
+        throw new \Exception('Unable to compute peer items usage.');
+    }
+
+    /**
+     * Count the number assets that are linked to a peer item.
+     *
+     * The count is based on the number of distinct assets IDs found in the table of the relation class.
+     *
+     * @param class-string<\CommonDBTM> $asset_classname
+     * @param class-string<\CommonDBTM> $relation_classname
+     * @return int
+     */
+    protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname): int
+    {
+        // We assume that asset type/id are always store in `itemtype`/`items_id` fields.
+        return countDistinctElementsInTable(
+            $relation_classname::getTable(),
+            'items_id',
+            [
+                'itemtype' => $asset_classname,
+            ]
+        );
+    }
+
+    /**
+     * Count the number of assets for the given asset definition.
+     *
+     * @param class-string<\Glpi\Asset\Asset> $classname
+     * @return int
+     */
+    protected function countAssets(string $classname): int
+    {
+        return countElementsInTable(
+            Asset::getTable(),
+            [
+                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id']
+            ]
+        );
     }
 
     public function onClassBootstrap(string $classname): void

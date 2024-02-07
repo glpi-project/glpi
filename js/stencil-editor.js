@@ -112,7 +112,7 @@ const StencilEditor = function (container, rand, zones_definition) {
                     const originalText = submitButton.text();
 
                     submitButton.data('delete', '1');
-                    submitButton.text(__('Are you sure?'));
+                    submitButton.text(_x('button', 'Are you sure?'));
                     setInterval(() => {
                         submitButton.data('delete', '0');
                         submitButton.text(originalText);

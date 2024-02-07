@@ -35,17 +35,27 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Document;
 use Document_Item;
 use Entity;
 use Glpi\Asset\Asset;
+use Glpi\Tests\CapacityTestCase;
 use Iterator;
 use Log;
 
-class HasDocumentsCapacity extends DbTestCase
+class HasDocumentsCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasDocumentsCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -281,5 +291,22 @@ class HasDocumentsCapacity extends DbTestCase
             'itemtype' => $asset::getType(),
             'items_id' => $clone_id,
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Document::class,
+            'relation_classname' => Document_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Document::class,
+            'relation_classname' => Document_Item::class,
+            'expected' => '%d documents attached to %d assets'
+        ];
     }
 }

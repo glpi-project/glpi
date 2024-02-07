@@ -54,6 +54,21 @@ class HasKnowbaseCapacity extends AbstractCapacity
         ];
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, KnowbaseItem_Item::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s knowbase items attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, KnowbaseItem_Item::class),
+            $this->countAssetsLinkedToPeerItem($classname, KnowbaseItem_Item::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('kb_types', $classname);

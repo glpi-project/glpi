@@ -35,16 +35,26 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 use Notepad;
 use Profile;
 
-class HasNotepadCapacity extends DbTestCase
+class HasNotepadCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasNotepadCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
@@ -307,5 +317,20 @@ class HasNotepadCapacity extends DbTestCase
             'items_id' => $clone_id,
             'content'  => 'A note related to the asset'
         ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Notepad::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Notepad::class,
+            'expected' => '%d notes attached to %d assets'
+        ];
     }
 }

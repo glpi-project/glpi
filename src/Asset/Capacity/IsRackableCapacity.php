@@ -51,6 +51,21 @@ class IsRackableCapacity extends AbstractCapacity
         return Rack::rawSearchOptionsToAdd($classname::getType());
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Item_Rack::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('Used by %1$s of %2$s assets'),
+            $this->countAssetsLinkedToPeerItem($classname, Item_Rack::class),
+            $this->countAssets($classname)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('rackable_types', $classname);

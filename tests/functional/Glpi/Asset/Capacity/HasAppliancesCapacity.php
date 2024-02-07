@@ -37,14 +37,24 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Appliance;
 use Appliance_Item;
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 use Profile;
 
-class HasAppliancesCapacity extends DbTestCase
+class HasAppliancesCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasAppliancesCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -229,5 +239,22 @@ class HasAppliancesCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['appliance_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Appliance::class,
+            'relation_classname' => Appliance_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Appliance::class,
+            'relation_classname' => Appliance_Item::class,
+            'expected' => '%d appliances attached to %d assets'
+        ];
     }
 }

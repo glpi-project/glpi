@@ -36,12 +36,22 @@
 namespace tests\units\Glpi\Asset\Capacity;
 
 use DatabaseInstance;
-use DbTestCase;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Profile;
 
-class HasDatabaseInstanceCapacity extends DbTestCase
+class HasDatabaseInstanceCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasDatabaseInstanceCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -192,5 +202,25 @@ class HasDatabaseInstanceCapacity extends DbTestCase
         $this->string($dbi_2->fields['itemtype'])->isEqualTo($classname_2);
         $this->integer($dbi_2->fields['items_id'])->isGreaterThan(0);
         $this->array($CFG_GLPI['databaseinstance_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => DatabaseInstance::class,
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => DatabaseInstance::class,
+            'expected' => '%d database instances attached to %d assets',
+            'expected_results' => [
+                [1, 1],
+                [2, 1],
+                [2, 1],
+            ]
+        ];
     }
 }

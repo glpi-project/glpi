@@ -46,6 +46,21 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
         return DatabaseInstance::getTypeName(Session::getPluralNumber());
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, DatabaseInstance::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s database instances attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, DatabaseInstance::class),
+            $this->countAssetsLinkedToPeerItem($classname, DatabaseInstance::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('databaseinstance_types', $classname);
