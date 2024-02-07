@@ -321,15 +321,16 @@ final class AssetDefinition extends CommonDBTM
         }
 
         if (array_key_exists('profiles', $input)) {
-            // Adjust profile right format
-            foreach ($input['profiles'] as $profiles_id => $rights) {
-                $combined_rights = 0;
-                foreach ($rights as $right_value => $checked) {
-                    if ($checked) {
-                        $combined_rights |= (int) $right_value;
-                    }
-                }
-                $input['profiles'][$profiles_id] = $combined_rights;
+            if (!$this->validateProfileArray($input['profiles'])) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('The following field has an incorrect value: "%s".'),
+                        _n('Profile', 'Profiles', Session::getPluralNumber())
+                    ),
+                    false,
+                    ERROR
+                );
+                return false;
             }
             $input['profiles'] = json_encode($input['profiles']);
         }
@@ -417,23 +418,23 @@ final class AssetDefinition extends CommonDBTM
         $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
     }
 
-    public function setRights(int $profiles_id, int $rights): void
+    /**
+     * Set rights for given profile.
+     *
+     * @param int $profiles_id
+     * @param int $rights
+     * @return void
+     */
+    public function setProfileRights(int $profiles_id, int $rights): void
     {
-        /**
-         * @var \DBmysql $DB
-         */
-        global $DB;
-
         $profiles = $this->getDecodedProfilesField();
         $profiles[$profiles_id] = $rights;
-        // Direct update to avoid infinite loops
-        $DB->update(
-            self::getTable(),
+
+        $this->update(
             [
-                'id' => $this->getID(),
-                'profiles' => json_encode($profiles)
-            ],
-            ['id' => $this->getID()]
+                'id'       => $this->getID(),
+                'profiles' => $profiles,
+            ]
         );
     }
 
@@ -807,6 +808,59 @@ TWIG, ['name' => $name, 'value' => $value]);
     private function getDecodedProfilesField(): array
     {
         $profiles = @json_decode($this->fields['profiles'], associative: true);
+        if (!$this->validateProfileArray($profiles, false)) {
+            trigger_error(
+                sprintf('Invalid `profiles` value (`%s`).', $this->fields['profiles']),
+                E_USER_WARNING
+            );
+            $this->fields['profiles'] = '[]'; // prevent warning to be triggered on each method call
+            $profiles = [];
+        }
         return $profiles;
+    }
+
+    /**
+     * Validate that the given profiles array contains valid values.
+     *
+     * @param mixed $profiles
+     * @param bool $check_values
+     * @return bool
+     */
+    private function validateProfileArray(mixed $profiles, bool $check_values = true): bool
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (!is_array($profiles)) {
+            return false;
+        }
+
+        $is_valid = true;
+
+        $available_profiles = [];
+        if ($check_values) {
+            $profiles_iterator = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => Profile::getTable(),
+            ]);
+            $available_profiles = array_column(iterator_to_array($profiles_iterator), 'id');
+        }
+
+        foreach ($profiles as $profile_id => $rights) {
+            if (!is_int($profile_id) && !ctype_digit($profile_id)) {
+                $is_valid = false;
+                break;
+            }
+            if ($check_values && !in_array((int)$profile_id, $available_profiles, true)) {
+                $is_valid = false;
+                break;
+            }
+            if (!is_int($rights)) {
+                $is_valid = false;
+                break;
+            }
+        }
+
+        return $is_valid;
     }
 }

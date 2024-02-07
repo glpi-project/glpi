@@ -317,8 +317,16 @@ class DbTestCase extends \GLPITestCase
     protected function initAssetDefinition(
         ?string $system_name = null,
         array $capacities = [],
-        array $profiles = [],
+        ?array $profiles = null,
     ): AssetDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
         $definition = $this->createItem(
             AssetDefinition::class,
             [
@@ -330,16 +338,7 @@ class DbTestCase extends \GLPITestCase
             skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
         );
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
-        $decoded_profiles = $this->callPrivateMethod($definition, 'getDecodedProfilesField');
-        foreach ($profiles as $profile_id => $rights_array) {
-            $combined_rights = 0;
-            foreach ($rights_array as $right => $is_enabled) {
-                if ($is_enabled) {
-                    $combined_rights |= $right;
-                }
-            }
-            $this->integer($decoded_profiles[$profile_id])->isEqualTo($combined_rights);
-        }
+        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
 
         $manager = \Glpi\Asset\AssetDefinitionManager::getInstance();
         $this->callPrivateMethod($manager, 'loadConcreteClass', $definition);
