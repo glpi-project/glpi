@@ -120,6 +120,7 @@ The present file will list all changes made to the project; according to the
 - `Rule::dropdownRulesMatch()` has been made protected.
 - `ITILTemplateField::showForITILTemplate()` method is no longer abstract.
 - `CommonITILTask::getItilObjectItemType` is now static.
+- The `Item_Ticket$1` tab should be used in replacement of the `Ticket$1` tab to display tickets associated with an item.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
