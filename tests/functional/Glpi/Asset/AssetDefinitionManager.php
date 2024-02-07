@@ -111,7 +111,7 @@ class AssetDefinitionManager extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Ticket$1"]
+            ["Item_Ticket$1"]
         ];
 
         // Link subject to problem
@@ -127,7 +127,7 @@ class AssetDefinitionManager extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Ticket$1", "Item_Problem$1"]
+            ["Item_Ticket$1", "Item_Problem$1"]
         ];
 
         // Link subject to change
@@ -143,7 +143,7 @@ class AssetDefinitionManager extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Ticket$1", "Item_Problem$1", "Change_Item$1"]
+            ["Item_Ticket$1", "Item_Problem$1", "Change_Item$1"]
         ];
 
         // Create a separate definition to test rights as tabs are not removed
@@ -173,7 +173,7 @@ class AssetDefinitionManager extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Ticket$1", "Item_Problem$1", "Change_Item$1"]
+            ["Item_Ticket$1", "Item_Problem$1", "Change_Item$1"]
         ];
     }
 

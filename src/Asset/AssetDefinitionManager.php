@@ -42,7 +42,6 @@ use Glpi\Asset\Capacity\CapacityInterface;
 use Item_Problem;
 use Item_Ticket;
 use ReflectionClass;
-use Ticket;
 
 final class AssetDefinitionManager
 {
@@ -165,10 +164,10 @@ final class AssetDefinitionManager
 
         // Register IITL tabs, which will only be displayed if some condition
         // are met (see the shouldDisplayTabForAsset method in
-        // CommonItilObject_Item and Ticket classes).
+        // CommonItilObject_Item).
         CommonGLPI::registerStandardTab(
             $asset_class_name,
-            Ticket::class, // TODO: Why not Item_Ticket ?
+            Item_Ticket::class,
             51
         );
         CommonGLPI::registerStandardTab(
