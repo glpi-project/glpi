@@ -259,9 +259,8 @@ The present file will list all changes made to the project; according to the
 - `Config::showLibrariesInformation()`
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
-- `DEBUG_SQL` and `SQL_TOTAL_REQUEST` globals. Replaced by `Glpi\Debug\Profile` class.
-- `debug_sql` and `debug_vars` options for `$CFG_GLPI` configuration array.
-- `TIMER_DEBUG` and `TIMER` globals.
+- `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
+- `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
 
 
 ## [10.0.13] unreleased
@@ -402,7 +401,6 @@ The present file will list all changes made to the project; according to the
 - `$TIMER_DEBUG` global variable.
 - `$DEBUG_SQL` global variable.
 - `$SQL_TOTAL_REQUEST` global variable.
-- `$DEBUG_SQL` global variable.
 - `$CFG_GLPI['debug_sql']` configuration option.
 - `$CFG_GLPI['debug_vars']` configuration option.
 

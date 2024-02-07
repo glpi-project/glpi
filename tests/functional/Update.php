@@ -70,8 +70,6 @@ class Update extends \GLPITestCase
             'glpi_currenttime',
         ])->notHasKeys([
             'glpi_use_mode',
-            'debug_sql',
-            'debug_vars',
             'use_log_in_files'
         ]);
     }
