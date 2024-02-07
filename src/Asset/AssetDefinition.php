@@ -144,9 +144,10 @@ final class AssetDefinition extends CommonDBTM
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/main.html.twig',
             [
-                'item'               => $this,
-                'params'             => $options,
-                'has_rights_enabled' => $this->hasRightsEnabled(),
+                'item'                  => $this,
+                'params'                => $options,
+                'has_rights_enabled'    => $this->hasRightsEnabled(),
+                'reserved_system_names' => AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames(),
             ]
         );
         return true;
@@ -290,19 +291,37 @@ final class AssetDefinition extends CommonDBTM
      */
     private function prepareInput(array $input): array|bool
     {
-        if (
-            array_key_exists('system_name', $input)
-            && (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+(?<!Model|Type)$/i', $input['system_name']) !== 1)
-        ) {
-            Session::addMessageAfterRedirect(
-                sprintf(
-                    __('The following field has an incorrect value: "%s".'),
-                    __('System name')
-                ),
-                false,
-                ERROR
-            );
-            return false;
+        $has_errors = false;
+
+        if (array_key_exists('system_name', $input)) {
+            if (!is_string($input['system_name']) || preg_match('/^[A-Za-z]+$/i', $input['system_name']) !== 1) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('The following field has an incorrect value: "%s".'),
+                        __('System name')
+                    ),
+                    false,
+                    ERROR
+                );
+                $has_errors = true;
+            } elseif (in_array($input['system_name'], AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames())) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('The system name must not be the reserved word "%s".'),
+                        $input['system_name']
+                    ),
+                    false,
+                    ERROR
+                );
+                $has_errors = true;
+            } elseif (preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
+                Session::addMessageAfterRedirect(
+                    __('The system name must not end with the word "Model" or the word "Type".'),
+                    false,
+                    ERROR
+                );
+                $has_errors = true;
+            }
         }
 
         if (array_key_exists('capacities', $input)) {
@@ -315,9 +334,10 @@ final class AssetDefinition extends CommonDBTM
                     false,
                     ERROR
                 );
-                return false;
+                $has_errors = true;
+            } else {
+                $input['capacities'] = json_encode($input['capacities']);
             }
-            $input['capacities'] = json_encode($input['capacities']);
         }
 
         if (array_key_exists('profiles', $input)) {
@@ -330,12 +350,13 @@ final class AssetDefinition extends CommonDBTM
                     false,
                     ERROR
                 );
-                return false;
+                $has_errors = true;
+            } else {
+                $input['profiles'] = json_encode($input['profiles']);
             }
-            $input['profiles'] = json_encode($input['profiles']);
         }
 
-        return $input;
+        return $has_errors ? false : $input;
     }
 
     public function post_addItem()
