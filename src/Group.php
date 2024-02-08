@@ -633,11 +633,11 @@ class Group extends CommonTreeDropdown
             $syncrand = mt_rand();
             echo "<tr class='tab_bg_1'><td><label for='textfield_sync_field$syncrand'>" . __('Synchronization field') . "</label></td><td>";
 
-                if (empty($this->fields['sync_field_group'])) {
-                    echo Dropdown::EMPTY_VALUE;
-                } else {
-                    echo $this->fields['sync_field_group'];
-                }
+            if (empty($this->fields['sync_field_group'])) {
+                echo Dropdown::EMPTY_VALUE;
+            } else {
+                echo $this->fields['sync_field_group'];
+            }
 
             echo "</td></tr>";
         }

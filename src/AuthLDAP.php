@@ -2393,7 +2393,7 @@ class AuthLDAP extends CommonDBTM
                     $group       = $groupinfos["cn"];
                     $group_dn    = $groupinfos["dn"];
                     $search_type = $groupinfos["search_type"];
-                    $sync_group_field= $groupinfos["sync_field_group"]??"";
+                    $sync_group_field = $groupinfos["sync_field_group"] ?? "";
 
                     echo "<tr>";
                     echo "<td>";
@@ -2543,7 +2543,7 @@ class AuthLDAP extends CommonDBTM
                         $groups[$ligne]["cn"]          = $info["cn"];
                         $groups[$ligne]["search_type"] = $info["search_type"];
                         $sync_field = $config_ldap->isSyncFieldGroupEnabled() ? $config_ldap->fields['sync_field_group'] : null;
-                        if(!is_null($sync_field)) {
+                        if (!is_null($sync_field)) {
                             $groups[$ligne][$sync_field] = self::getFieldValue($info, $sync_field);
                         }
                         $ligne++;
@@ -2605,7 +2605,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return string the group cn
      */
-    public static function getGroupSyncFieldByDn($ldap_connection, $group_dn,$syncfield)
+    public static function getGroupSyncFieldByDn($ldap_connection, $group_dn, $syncfield)
     {
 
         $sr = @ldap_read($ldap_connection, $group_dn, "objectClass=*", [$syncfield]);
@@ -2629,7 +2629,8 @@ class AuthLDAP extends CommonDBTM
         if (!is_array($v) || (count($v) == 0) || empty($v[0][$syncfield])) {
             return false;
         }
-        return self::getFieldValue($v[0], $syncfield);;
+        return self::getFieldValue($v[0], $syncfield);
+        ;
     }
 
 
@@ -2662,7 +2663,7 @@ class AuthLDAP extends CommonDBTM
         $extra_attribute = ($search_in_groups ? "cn" : $config_ldap->fields["group_field"]);
         $attrs           = ["dn", $extra_attribute];
         $sync_field = $config_ldap->isSyncFieldGroupEnabled() ? $config_ldap->fields['sync_field_group'] : null;
-        if(!is_null($sync_field)) {
+        if (!is_null($sync_field)) {
             $attrs           = ["dn", $extra_attribute,$sync_field];
         }
 
@@ -2759,7 +2760,7 @@ class AuthLDAP extends CommonDBTM
                          $groups[$infos[$ligne]["dn"]] = (["cn" => $infos[$ligne]["cn"][0],
                              "search_type" => "groups"
                          ]);
-                        if(!is_null($sync_field)) {
+                        if (!is_null($sync_field)) {
                             $groups[$infos[$ligne]["dn"]][$sync_field] = $infos[$ligne][$sync_field];
                         }
                     }
@@ -2792,7 +2793,6 @@ class AuthLDAP extends CommonDBTM
                                      $groups[$group['ldap_value']] = ["cn"          => $group['ldap_value'],
                                          "search_type" => "users"
                                      ];
-
                                 }
                             }
                         } else {
@@ -2808,12 +2808,12 @@ class AuthLDAP extends CommonDBTM
                                     "search_type"
                                          => "users"
                                 ];
-                                if(!is_null($sync_field)) {
-
+                                if (!is_null($sync_field)) {
                                     $groups[$infos[$ligne][$extra_attribute][$ligne_extra]][$sync_field] = self::getGroupSyncFieldByDn(
                                         $ldap_connection,
                                         $infos[$ligne][$extra_attribute][$ligne_extra],
-                                        $sync_field);
+                                        $sync_field
+                                    );
                                 }
                             }
                         }
@@ -3082,16 +3082,18 @@ class AuthLDAP extends CommonDBTM
         $ds = $config_ldap->connect();
         if ($ds) {
             $attrs = ['cn'];
-            if(!empty($config_ldap->fields['sync_field_group'])) {
+            if (!empty($config_ldap->fields['sync_field_group'])) {
                 $attrs[] = $config_ldap->fields['sync_field_group'];
             }
-            $group_infos = self::getGroupByDn($ds, Sanitizer::unsanitize($group_dn),$attrs);
+            $group_infos = self::getGroupByDn($ds, Sanitizer::unsanitize($group_dn), $attrs);
             $group       = new Group();
             $syncfield = self::getFieldValue($group_infos, $config_ldap->fields['sync_field_group']);
-            if((isset($config_ldap->fields['sync_field_group'])
+            if (
+                (isset($config_ldap->fields['sync_field_group'])
                 && !empty($config_ldap->fields['sync_field_group'])
                 && !empty($syncfield)
-                && $group->getFromDBByCrit(['sync_field_group' => $syncfield ]))) {
+                && $group->getFromDBByCrit(['sync_field_group' => $syncfield ]))
+            ) {
                 if ($options['type'] == "groups") {
                     return $group->update(Sanitizer::sanitize([
                         "id"               => $group->getID(),
@@ -3112,9 +3114,8 @@ class AuthLDAP extends CommonDBTM
                     "is_recursive"     => $options['is_recursive']
                 ]));
             } else {
-
                 if ($options['type'] == "groups") {
-                    if($group->getFromDBByCrit(['ldap_group_dn' => $group_infos["dn"]])) {
+                    if ($group->getFromDBByCrit(['ldap_group_dn' => $group_infos["dn"]])) {
                         return $group->update(Sanitizer::sanitize([
                             "id"               => $group->getID(),
 
@@ -3132,7 +3133,7 @@ class AuthLDAP extends CommonDBTM
                         "is_recursive"     => $options['is_recursive']
                     ]));
                 }
-                if($group->getFromDBByCrit(['ldap_value' => $group_infos["dn"]])) {
+                if ($group->getFromDBByCrit(['ldap_value' => $group_infos["dn"]])) {
                     return $group->update(Sanitizer::sanitize([
                         "id"               => $group->getID(),
 
@@ -3152,7 +3153,6 @@ class AuthLDAP extends CommonDBTM
                     "is_recursive"     => $options['is_recursive']
                 ]));
             }
-
         }
         return false;
     }
@@ -4954,21 +4954,24 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array
      */
-    public static function getGroups(  $auths_id,
-                                       $filter,
-                                       $filter2,
-                                       $entity,
-                                       &$limitexceeded,
-                                       $order = 'DESC')
-    {
+    public static function getGroups(
+        $auths_id,
+        $filter,
+        $filter2,
+        $entity,
+        &$limitexceeded,
+        $order = 'DESC'
+    ) {
         global $DB;
 //        $users = [];
-        $ldap_groups    = self::getAllGroups($auths_id,
+        $ldap_groups    = self::getAllGroups(
+            $auths_id,
             $filter,
             $filter2,
             $entity,
             $limitexceeded,
-            $order);
+            $order
+        );
 
         $config_ldap   = new AuthLDAP();
         $config_ldap->getFromDB($auths_id);
@@ -4999,7 +5002,7 @@ class AuthLDAP extends CommonDBTM
             }
         }
         $groups = [];
-        $ligne=0;
+        $ligne = 0;
         foreach ($ldap_groups as $groupinfos) {
             $groups_to_add = [];
             $group = new Group();
@@ -5021,12 +5024,10 @@ class AuthLDAP extends CommonDBTM
             $groups[$ligne]["dn"]          = $groupinfos['dn'];
             $groups[$ligne]["cn"]          = $groupinfos["cn"];
             $groups[$ligne]["search_type"] = $groupinfos["search_type"];
-            if(!is_null($group_sync_field)) {
+            if (!is_null($group_sync_field)) {
                 $groups[$ligne]["sync_field_group"] = $group_sync_field;
             }
             $ligne++;
-
-
         }
 
         return $groups;

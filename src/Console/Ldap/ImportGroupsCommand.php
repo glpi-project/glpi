@@ -66,7 +66,6 @@ class ImportGroupsCommand extends AbstractCommand
     protected function configure()
     {
         try {
-
         } catch (\Exception $e) {
             return true;
         }
@@ -123,7 +122,6 @@ class ImportGroupsCommand extends AbstractCommand
             InputOption::VALUE_OPTIONAL,
             __('Remove old groups')
         );
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -302,7 +300,7 @@ class ImportGroupsCommand extends AbstractCommand
                         $options['type'] = "groups";
                         break;
                 }
-$glpi_groups = [];
+                $glpi_groups = [];
 //Get all groups from GLPI DB for the current entity and the subentities
                 $iterator = $DB->request([
                     'SELECT' => ['ldap_group_dn','ldap_value'],
@@ -385,8 +383,8 @@ $glpi_groups = [];
                             'SELECT' => ['id', 'ldap_group_dn', 'ldap_value'],
                             'FROM' => 'glpi_groups',
                             'WHERE' => [
-                                    'is_assign'     => 0
-                                ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity)
+                                'is_assign'     => 0
+                            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity)
                         ]);
 
                         //If the group exists in DB -> unset it from the LDAP groups
