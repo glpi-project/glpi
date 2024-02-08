@@ -50,13 +50,6 @@ class ChangeTask extends CommonITILTask
           || Session::haveRight(self::$rightname, parent::ADDALLITEM);
     }
 
-
-    public static function canView()
-    {
-        return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
-    }
-
-
     public static function canUpdate()
     {
         return Session::haveRight('change', UPDATE)

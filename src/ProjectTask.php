@@ -615,7 +615,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all linked tickets for a project
      *
-     * @param $ID        integer  Id of the project
+     * @param integer $ID Id of the project
      *
      * @return array of tickets
      **/

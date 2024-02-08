@@ -1588,4 +1588,9 @@ class Change extends CommonITILObject
             echo "<td colspan='6' ><i>" . __('No change found.') . "</i></td></tr>";
         }
     }
+
+    public static function rawSearchOptionsToAdd(string $itemtype)
+    {
+        return [];
+    }
 }

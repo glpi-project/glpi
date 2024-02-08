@@ -1300,4 +1300,86 @@ class Migration extends \GLPITestCase
             ]
         ])))->isEqualTo(0);
     }
+
+    public function reloadCurrentProfileDataProvider()
+    {
+        $data = [
+            [
+                'fn' => function () {
+                    $this->migration->addRight('testReloadCurrentProfile', READ);
+                },
+                'expected' => 'New rights has been added for testReloadCurrentProfile, you should review ACLs after update'
+            ],
+            [
+                'fn' => function () {
+                    $this->migration->addRightByInterface('testReloadCurrentProfile', READ, ['interface' => 'central']);
+                },
+                'expected' => 'Rights has been updated for testReloadCurrentProfile, you should review ACLs after update'
+            ],
+            [
+                'fn' => function () {
+                    $this->migration->updateRight('testReloadCurrentProfile', READ);
+                },
+                'expected' => 'Rights has been updated for testReloadCurrentProfile, you should review ACLs after update'
+            ],
+        ];
+
+        return $data;
+    }
+
+    /**
+     * @dataProvider reloadCurrentProfileDataProvider
+     */
+    public function testReloadCurrentProfile($fn, $expected)
+    {
+        global $DB;
+
+        // Clean DB to handle potential failure of previous test
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'testReloadCurrentProfile'
+            ]
+        ]);
+
+        $sub_query = new \Glpi\DBAL\QuerySubQuery([
+            'SELECT' => [
+                'profiles_id'
+            ],
+            'FROM' => 'glpi_profilerights',
+            'WHERE' => [
+                'name' => 'config',
+                'rights' => READ | UPDATE
+            ]
+        ]);
+
+        $DB->update('glpi_profiles', [
+            'last_rights_update' => null
+        ], [
+            'id' => $sub_query
+        ]);
+
+        //Test adding a READ right when profile has READ and UPDATE config right (Default)
+        $this->output($fn)->isEqualTo($expected);
+
+        $last_rights_updates = $DB->request([
+            'SELECT' => [
+                'last_rights_update'
+            ],
+            'FROM' => 'glpi_profiles',
+            'WHERE' => [
+                'id' => $sub_query
+            ]
+        ]);
+
+        foreach ($last_rights_updates as $last_rights_update) {
+            $this->variable($last_rights_update['last_rights_update'])->isEqualTo($_SESSION['glpi_currenttime']);
+        }
+
+        // Clean DB after test
+        $DB->delete('glpi_profilerights', [
+            'name' => [
+                'testReloadCurrentProfile'
+            ]
+        ]);
+    }
 }

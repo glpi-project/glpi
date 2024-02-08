@@ -35,14 +35,25 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
+use ItemAntivirus;
 use Log;
 use Profile;
 
-class HasAntivirusCapacity extends DbTestCase
+class HasAntivirusCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasAntivirusCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -157,7 +168,7 @@ class HasAntivirusCapacity extends DbTestCase
         );
 
         $av_item_1 = $this->createItem(
-            \ItemAntivirus::class,
+            ItemAntivirus::class,
             [
                 'name'         => 'antivirus item 1',
                 'itemtype'     => $item_1->getType(),
@@ -165,7 +176,7 @@ class HasAntivirusCapacity extends DbTestCase
             ]
         );
         $av_item_2 = $this->createItem(
-            \ItemAntivirus::class,
+            ItemAntivirus::class,
             [
                 'name'         => 'antivirus item 2',
                 'itemtype'     => $item_2->getType(),
@@ -197,10 +208,10 @@ class HasAntivirusCapacity extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->object(\ItemAntivirus::getById($av_item_1->getID()))->isInstanceOf(\ItemAntivirus::class);
+        $this->object(ItemAntivirus::getById($av_item_1->getID()))->isInstanceOf(ItemAntivirus::class);
         $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); //create + add av
-        $this->object(\ItemAntivirus::getById($av_item_2->getID()))->isInstanceOf(\ItemAntivirus::class);
+        $this->object(ItemAntivirus::getById($av_item_2->getID()))->isInstanceOf(ItemAntivirus::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); //create + add av
         $this->array($CFG_GLPI['itemantivirus_types'])->contains($classname_1);
@@ -208,15 +219,63 @@ class HasAntivirusCapacity extends DbTestCase
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(\ItemAntivirus::getById($av_item_1->getID()))->isFalse();
+        $this->boolean(ItemAntivirus::getById($av_item_1->getID()))->isFalse();
         $this->boolean(DisplayPreference::getById($displaypref_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['itemantivirus_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->object(\ItemAntivirus::getById($av_item_2->getID()))->isInstanceOf(\ItemAntivirus::class);
+        $this->object(ItemAntivirus::getById($av_item_2->getID()))->isInstanceOf(ItemAntivirus::class);
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['itemantivirus_types'])->contains($classname_2);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasAntivirusCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem(
+            $class,
+            [
+                'name'        => 'Test asset',
+                'entities_id' => $entity,
+            ]
+        );
+
+        $antivirus = $this->createItem(
+            ItemAntivirus::class,
+            [
+                'name'     => 'Antivirus',
+                'itemtype' => $class,
+                'items_id' => $asset->getID(),
+            ]
+        );
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(ItemAntivirus::getTable(), [
+            'name'     => 'Antivirus (copy)',
+            'itemtype' => $class,
+            'items_id' => $clone_id,
+        ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => ItemAntivirus::class,
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => ItemAntivirus::class,
+            'expected' => '%d antiviruses attached to %d assets'
+        ];
     }
 }

@@ -52,6 +52,21 @@ class HasCertificatesCapacity extends AbstractCapacity
         return Certificate::rawSearchOptionsToAdd($classname);
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Certificate_Item::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s certificates attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Certificate_Item::class),
+            $this->countAssetsLinkedToPeerItem($classname, Certificate_Item::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('certificate_types', $classname);

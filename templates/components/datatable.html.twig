@@ -37,11 +37,13 @@
       {{ __('No data') }}
    </div>
 {% else %}
-    {{ include('components/pager.html.twig', {
-        'count': filtered_number,
-        'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
-    }) }}
     {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + (nofilter ? 0 : 1) %}
+    {% if not nopager %}
+        {{ include('components/pager.html.twig', {
+            'count': filtered_number,
+            'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
+        }) }}
+    {% endif %}
 
     <div class="table-responsive" {% if showmassiveactions %} id="{{ massiveactionparams['container'] }}" {% endif %}>
         {% if showmassiveactions %}
@@ -196,6 +198,8 @@
                                             {{ call("Html::convDateTime", [entry[colkey]])|raw }}
                                         {% elseif formatter == "bytesize" %}
                                             {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
+                                        {% elseif formatter == 'number' %}
+                                            {{ entry[colkey]|formatted_number }}
                                         {% elseif formatter == "raw_html" %}
                                             {{ entry[colkey]|raw }}
                                         {% elseif formatter == 'avatar' %}
@@ -232,13 +236,26 @@
                     </tr>
                 {% endif %}
             </tbody>
+            {% if footers %}
+                <tfoot class="{{ footer_class|default('') }}">
+                    {% for footer in footers %}
+                        <tr>
+                            {% for footer_col, footerval in footer %}
+                                <td>{{ footerval }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tfoot>
+            {% endif %}
         </table>
     </div>
 
-    {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
-    <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
-        {{ __('Show %s entries')|format(limitdropdown)|raw }}
-    </div>
+    {% if not nopager %}
+        {% set limitdropdown = include('components/dropdown/limit.html.twig') %}
+        <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
+            {{ __('Show %s entries')|format(limitdropdown)|raw }}
+        </div>
+    {% endif %}
 
     <script type="text/javascript">
     $(function() {

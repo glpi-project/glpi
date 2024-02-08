@@ -769,50 +769,10 @@ class Ticket extends CommonITILObject
                         break;
 
                     default:
-                        // Direct one
-                        $nb = countElementsInTable(
-                            'glpi_items_tickets',
-                            [
-                                'INNER JOIN' => [
-                                    'glpi_tickets' => [
-                                        'FKEY' => [
-                                            'glpi_items_tickets' => 'tickets_id',
-                                            'glpi_tickets'       => 'id'
-                                        ]
-                                    ]
-                                ],
-                                'WHERE' => [
-                                    'itemtype' => $item->getType(),
-                                    'items_id' => $item->getID(),
-                                    'is_deleted' => 0
-                                ]
-                            ]
-                        );
-
-                       // Linked items
-                        $linkeditems = $item->getLinkedItems();
-
-                        if (count($linkeditems)) {
-                            foreach ($linkeditems as $type => $tab) {
-                                $nb += countElementsInTable(
-                                    'glpi_items_tickets',
-                                    [
-                                        'INNER JOIN' => [
-                                            'glpi_tickets' => [
-                                                'FKEY' => [
-                                                    'glpi_items_tickets' => 'tickets_id',
-                                                    'glpi_tickets'       => 'id'
-                                                ]
-                                            ]
-                                        ],
-                                        'WHERE' => [
-                                            'itemtype' => $type,
-                                            'items_id' => $tab,
-                                            'is_deleted' => 0
-                                        ]
-                                    ]
-                                );
-                            }
+                        if ($item->getType() != __CLASS__) {
+                            // Deprecated, these items should use the Item_Ticket tab instead
+                            \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
+                            return (new Item_Ticket())->getTabNameForItem($item, $withtemplate);
                         }
                         break;
                 }
@@ -865,7 +825,8 @@ class Ticket extends CommonITILObject
             case SLA::class:
             case OLA::class:
             default:
-                self::showListForItem($item, $withtemplate);
+                \Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
+                return Item_Ticket::displayTabContentForItem($item, $tabnum, $withtemplate);
         }
         return true;
     }
@@ -3141,7 +3102,10 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight('problem', READ)) {
-            $tab = array_merge($tab, Problem::rawSearchOptionsToAdd());
+            $tab = array_merge(
+                $tab,
+                Problem::rawSearchOptionsToAdd(self::class)
+            );
         }
 
         $tab[] = [
@@ -6428,5 +6392,36 @@ JAVASCRIPT;
                 $this->olaAffect($slmType, $input, $manual_olas_id);
             }
         }
+    }
+
+    public static function rawSearchOptionsToAdd($itemtype)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $options = [];
+
+        if (in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $options[] = [
+                'id'            => 60,
+                'table'         => self::getTable(),
+                'field'         => "id",
+                'datatype'      => "count",
+                'name'          => _x('quantity', 'Number of tickets'),
+                'forcegroupby'  => true,
+                'usehaving'     => true,
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin' => [
+                        'table' => self::getItemLinkClass()::getTable(),
+                        'joinparams' => [
+                            'jointype' => 'itemtype_item'
+                        ]
+                    ],
+                    'condition' => getEntitiesRestrictRequest('AND', 'NEWTABLE')
+                ],
+            ];
+        }
+        return $options;
     }
 }

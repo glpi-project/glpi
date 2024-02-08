@@ -35,12 +35,22 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 
-class HasHistoryCapacity extends DbTestCase
+class HasHistoryCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasHistoryCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
@@ -166,5 +176,71 @@ class HasHistoryCapacity extends DbTestCase
         $this->string($history_data[2]['change'])->isEqualTo('Change <del>test_Log_getHistoryData</del> to <ins>updated</ins>');
         $this->string($history_data[1]['change'])->isEqualTo('Change <del></del> to <ins>AAAA0000</ins>');
         $this->string($history_data[0]['change'])->isEqualTo('Change <del>AAAA0000</del> to <ins>AAAA0001</ins>');
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Log::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Log::class,
+            'expected' => '%d logs attached to %d assets',
+            'expected_results' => [
+                [2, 1],
+                [3, 1],
+                [4, 2]
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider provideIsUsed
+     */
+    public function testIsUsed(
+        string $target_classname,
+        array $target_fields = [],
+        ?string $relation_classname = null,
+        array $relation_fields = [],
+    ): void {
+        global $DB;
+
+        // Create custom asset definition with the target capacity enabled
+        $definition = $this->initAssetDefinition(
+            capacities: [$this->getTargetCapacity()]
+        );
+
+        // Check that the capacity can be disabled
+        $capacity = new ($this->getTargetCapacity());
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
+
+        // Create our test subject
+        $subject = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset',
+        ]);
+
+        // Check that the capacity can't be safely disabled
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
+
+        // Create item
+        $table = $target_classname::getTable();
+        if ($DB->fieldExists($table, 'itemtype')) {
+            $target_fields['itemtype'] = $definition->getAssetClassName();
+        }
+        if ($DB->fieldExists($table, 'items_id')) {
+            $target_fields['items_id'] = $subject->getID();
+        }
+
+        $this->createItem(
+            $target_classname,
+            $target_fields
+        );
+
+        // Check that the capacity can't be safely disabled
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
     }
 }

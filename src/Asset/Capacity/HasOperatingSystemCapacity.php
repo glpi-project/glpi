@@ -47,6 +47,21 @@ class HasOperatingSystemCapacity extends AbstractCapacity
         return OperatingSystem::getTypeName();
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Item_OperatingSystem::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('Used by %1$s of %2$s assets'),
+            $this->countAssetsLinkedToPeerItem($classname, Item_OperatingSystem::class),
+            $this->countAssets($classname)
+        );
+    }
+
     // #Override
     public function onClassBootstrap(string $classname): void
     {
@@ -64,6 +79,13 @@ class HasOperatingSystemCapacity extends AbstractCapacity
     public function getSearchOptions(string $classname): array
     {
         return Item_OperatingSystem::rawSearchOptionsToAdd($classname);
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_OperatingSystem::class
+        ];
     }
 
     // #Override

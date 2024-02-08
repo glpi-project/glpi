@@ -105,16 +105,23 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-
     public static function canView()
     {
-        return (Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])
-              || Session::haveRight('ticket', Ticket::OWN))
-              || Session::haveRight('ticket', READ)
-              || Session::haveRight('change', READ)
-              || Session::haveRight('problem', READ);
-    }
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
+        if (!Session::haveRightsOr(self::$rightname, [self::SEEPUBLIC, self::SEEPRIVATE])) {
+            return false;
+        }
+        $itil_types = $CFG_GLPI['itil_types'];
+        /** @var class-string<CommonITILObject> $type */
+        foreach ($itil_types as $type) {
+            if ($type::canView()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public static function canCreate()
     {

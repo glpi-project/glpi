@@ -1107,7 +1107,8 @@ class GLPIDashboard {
                 'dashboard': this.current_name,
                 'force': (specific_one.length > 0 ? 1 : 0),
                 'd_cache_key': this.cache_key,
-                'cards': card_ajax_data
+                'cards': card_ajax_data,
+                'action': 'get_cards'
             };
             if (this.embed) {
                 data.embed        = 1;
@@ -1119,10 +1120,7 @@ class GLPIDashboard {
             return $.ajax({
                 url:CFG_GLPI.root_doc+"/ajax/dashboard.php",
                 method: 'POST',
-                data: {
-                    'action': 'get_cards',
-                    data: JSON.stringify(data)
-                }
+                data: data
             }).then((results) => {
                 $.each(requested_cards, (i2, crd) => {
                     let has_result = false;

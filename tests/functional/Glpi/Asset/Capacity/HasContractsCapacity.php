@@ -37,12 +37,13 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Contract;
 use Contract_Item;
-use DbTestCase;
 use DisplayPreference;
+use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 
-class HasContractsCapacity extends DbTestCase
+class HasContractsCapacity extends CapacityTestCase
 {
     /**
      * Get the tested capacity class.
@@ -326,5 +327,55 @@ class HasContractsCapacity extends DbTestCase
             ]
         );
         $this->integer($count_display_preferences)->isEqualTo(1);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasContractsCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
+        ]);
+
+        $contract = $this->createItem(Contract::class, [
+            'name'        => 'Contract 1',
+            'entities_id' => $entity,
+        ]);
+
+        $this->createItem(Contract_Item::class, [
+            'itemtype'     => $asset::getType(),
+            'items_id'     => $asset->getID(),
+            'contracts_id' => $contract->getID(),
+        ]);
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Contract_Item::getTable(), [
+            'contracts_id' => $contract->getID(),
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+        ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Contract::class,
+            'relation_classname' => Contract_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Contract::class,
+            'relation_classname' => Contract_Item::class,
+            'expected' => '%d contracts attached to %d assets'
+        ];
     }
 }

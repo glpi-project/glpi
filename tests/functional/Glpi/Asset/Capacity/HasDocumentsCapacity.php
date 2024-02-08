@@ -35,16 +35,27 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Document;
 use Document_Item;
 use Entity;
+use Glpi\Asset\Asset;
+use Glpi\Tests\CapacityTestCase;
 use Iterator;
 use Log;
 
-class HasDocumentsCapacity extends DbTestCase
+class HasDocumentsCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasDocumentsCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -152,7 +163,7 @@ class HasDocumentsCapacity extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $item_1->getType(),
+                'itemtype'     => $item_1::getType(),
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -160,7 +171,7 @@ class HasDocumentsCapacity extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $item_2->getType(),
+                'itemtype'     => $item_2::getType(),
                 'items_id'     => $item_2->getID(),
             ]
         );
@@ -237,7 +248,7 @@ class HasDocumentsCapacity extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::getType(),
                 'items_id'     => $item->getID(),
             ]
         );
@@ -248,5 +259,54 @@ class HasDocumentsCapacity extends DbTestCase
         $this->object($relation_iterator)->isInstanceOf(Iterator::class);
         $relation_array = iterator_to_array($relation_iterator);
         $this->array($relation_array)->hasKey($item->getID());
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasDocumentsCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
+        ]);
+
+        $document = $this->createTxtDocument();
+        $this->createItem(
+            Document_Item::class,
+            [
+                'documents_id' => $document->getID(),
+                'itemtype'     => $asset::getType(),
+                'items_id'     => $asset->getID(),
+            ]
+        );
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Document_Item::getTable(), [
+            'documents_id' => $document->getID(),
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+        ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Document::class,
+            'relation_classname' => Document_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Document::class,
+            'relation_classname' => Document_Item::class,
+            'expected' => '%d documents attached to %d assets'
+        ];
     }
 }

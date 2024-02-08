@@ -170,4 +170,97 @@ class Item_Ticket extends CommonItilObject_Item
         }
         return parent::showForObject($ticket, $options);
     }
+
+    #[Override]
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        // The Item_Ticket tab is only supported on CommonDBTM objects
+        if (!($item instanceof CommonDBTM)) {
+            return "";
+        }
+
+        // This tab might be hidden on assets
+        if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
+            return '';
+        }
+
+        $nb = 0;
+        if (!($item instanceof Ticket)) {
+            $title = Ticket::getTypeName(Session::getPluralNumber());
+
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                // Direct one
+                $nb = countElementsInTable(
+                    'glpi_items_tickets',
+                    [
+                        'INNER JOIN' => [
+                            'glpi_tickets' => [
+                                'FKEY' => [
+                                    'glpi_items_tickets' => 'tickets_id',
+                                    'glpi_tickets'       => 'id'
+                                ]
+                            ]
+                        ],
+                        'WHERE' => [
+                            'itemtype' => $item->getType(),
+                            'items_id' => $item->getID(),
+                            'is_deleted' => 0
+                        ]
+                    ]
+                );
+
+                // Linked items
+                $linkeditems = $item->getLinkedItems();
+                if (count($linkeditems)) {
+                    foreach ($linkeditems as $type => $tab) {
+                        $nb += countElementsInTable(
+                            'glpi_items_tickets',
+                            [
+                                'INNER JOIN' => [
+                                    'glpi_tickets' => [
+                                        'FKEY' => [
+                                            'glpi_items_tickets' => 'tickets_id',
+                                            'glpi_tickets'       => 'id'
+                                        ]
+                                    ]
+                                ],
+                                'WHERE' => [
+                                    'itemtype' => $type,
+                                    'items_id' => $tab,
+                                    'is_deleted' => 0
+                                ]
+                            ]
+                        );
+                    }
+                }
+            }
+        } else {
+            $title = _n('Item', 'Items', Session::getPluralNumber());
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $nb = self::countForMainItem($item);
+            }
+        }
+
+        return self::createTabEntry($title, $nb, $item::getType());
+    }
+
+    #[Override]
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        // The Item_Ticket tab is only supported on CommonDBTM objects
+        if (!($item instanceof CommonDBTM)) {
+            return "";
+        }
+
+        if ($item instanceof Ticket) {
+            self::showForObject($item);
+            return true;
+        } else {
+            Ticket::showListForItem($item, $withtemplate);
+            return true;
+        }
+    }
 }

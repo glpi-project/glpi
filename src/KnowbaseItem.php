@@ -706,7 +706,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // Special case for KB Admins
         if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
             // See all articles
-            return [1];
+            return [new QueryExpression('1')];
         }
 
         // Prepare criteria, which will use an OR statement (the user can read

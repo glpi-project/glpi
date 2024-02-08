@@ -1822,13 +1822,14 @@ final class DbUtils
 
                     if ($anon_name === null) {
                         $user_params = array_merge($user_params, [
-                            'email'              => UserEmail::getDefaultForUser($ID),
-                            'phone'              => $data["phone"],
-                            'phone2'             => $data["phone2"],
-                            'mobile'             => $data["mobile"],
-                            'locations_id'       => $data['locations_id'],
-                            'usertitles_id'      => $data['usertitles_id'],
-                            'usercategories_id'  => $data['usercategories_id'],
+                            'email'               => UserEmail::getDefaultForUser($ID),
+                            'phone'               => $data["phone"],
+                            'phone2'              => $data["phone2"],
+                            'mobile'              => $data["mobile"],
+                            'locations_id'        => $data['locations_id'],
+                            'usertitles_id'       => $data['usertitles_id'],
+                            'usercategories_id'   => $data['usercategories_id'],
+                            'registration_number' => $data['registration_number'],
                         ]);
 
                         if (Session::haveRight('user', READ)) {

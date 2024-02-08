@@ -45,6 +45,28 @@ class HasInfocomCapacity extends AbstractCapacity
         return Infocom::getTypeName();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Infocom::class
+        ];
+    }
+
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Infocom::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('Used by %1$s of %2$s assets'),
+            $this->countAssetsLinkedToPeerItem($classname, Infocom::class),
+            $this->countAssets($classname)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('infocom_types', $classname);

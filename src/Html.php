@@ -4511,15 +4511,6 @@ JAVASCRIPT
             $button[$btname] = $btname;
         }
         $fields          = array_merge($button, $fields);
-        $javascriptArray = [];
-        foreach ($fields as $name => $value) {
-           /// TODO : trouble :  urlencode not available for array / do not pass array fields...
-            if (!is_array($value)) {
-               // Javascript no gettext
-                $javascriptArray[] = "'$name': '" . urlencode($value) . "'";
-            }
-        }
-
         $link = "<a ";
 
         if (!empty($btoption)) {
@@ -4533,7 +4524,7 @@ JAVASCRIPT
                 $link .= " class='pointer' ";
             }
         }
-        $action  = " submitGetLink('$action', {" . implode(', ', $javascriptArray) . "});";
+        $action  = " submitGetLink('$action', " . htmlspecialchars(json_encode($fields)) . ");";
 
         if (is_array($confirm) || strlen($confirm)) {
             $link .= self::addConfirmationOnAction($confirm, $action);

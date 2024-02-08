@@ -1,5 +1,5 @@
 <script setup>
-    import {onMounted} from "vue";
+    import {computed} from "vue";
 
     const props = defineProps({
         parent_id: {
@@ -90,7 +90,9 @@
         }
         return sections_data;
     }
-    const top_level_data = getProfilerData(props.parent_id);
+    const top_level_data = computed(() => {
+        return getProfilerData(props.parent_id);
+    });
 
     const instant_threshold = 1.0;
 
@@ -111,20 +113,20 @@
 <template>
     <table class="table table-striped card-table" v-show="hasUnfilteredSections(top_level_data)">
         <thead>
-        <tr>
-            <th class="nesting-spacer" v-for="i in nest_level"></th>
-            <th>Category</th>
-            <th>Name</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Duration</th>
-            <th>Percent of parent</th>
-        </tr>
+            <tr>
+                <th class="nesting-spacer" v-for="i in nest_level" :key="i"></th>
+                <th>Category</th>
+                <th>Name</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+                <th>Percent of parent</th>
+            </tr>
         </thead>
         <tbody>
             <template v-for="section in top_level_data">
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
-                    <td class="nesting-spacer" v-for="i in nest_level"></td>
+                    <td class="nesting-spacer" v-for="i in nest_level" :key="i"></td>
                     <td>
                         <span class="category-badge" :style="`background-color: ${section.bg_color}; color: ${section.text_color}`">
                             {{ section.category }}

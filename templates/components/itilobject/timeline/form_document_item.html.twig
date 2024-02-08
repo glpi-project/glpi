@@ -102,6 +102,33 @@
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
                 {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
 
+                {% set can_screenshot = call('Document::isValidDoc', ['.png']) is not empty %}
+                {% set can_screenrecord = call('Document::isValidDoc', ['.webm']) is not empty %}
+
+                {% if can_screenshot or can_screenrecord %}
+                    <div class="upload-from-section d-none">
+                        <label id="upload_source_label" class="form-label">{{ __("Upload from") }}</label>
+                        <div class="d-inline" role="group" aria-labelledby="upload_source_label">
+                            {% if can_screenshot %}
+                                <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenshot">
+                                    <i class="ti ti-photo"></i>
+                                    <span>{{ __('Screenshot') }}</span>
+                                </button>
+                            {% endif %}
+                            {% if can_screenrecord %}
+                                <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenrecording">
+                                    <i class="ti ti-camera"></i>
+                                    <span>{{ __('Screen recording') }}</span>
+                                </button>
+                            {% endif %}
+                        </div>
+                        <div id="screen_capture_preview" class="w-100">
+                            <div class="previews overflow-x-scroll my-2 d-flex px-2"></div>
+                            <button type="button" name="stop_recording" class="btn btn-secondary d-none">{{ __('Stop recording') }}</button>
+                        </div>
+                        <hr class="my-1">
+                    </div>
+                {% endif %}
                 {% if get_current_interface() == 'central' %}
                     {{ fields.dropdownField(
                         'DocumentCategory',
@@ -151,5 +178,8 @@
                 </div>
             </form>
         </div>
+        <script type="module">
+            import('{{ js_path('js/modules/ITIL/Timeline/DocumentForm.js') }}');
+        </script>
    {% endif %}
 {% endblock %}

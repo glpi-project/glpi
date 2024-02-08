@@ -27,6 +27,7 @@ The present file will list all changes made to the project; according to the
 - Custom palette/theme support (uses `files/_themes` directory by default).
 - Two-Factor Authentication (2FA) support via Time-based One-time Password (TOTP).
 - `Deny login` authorization rule action to deny login for a user, but not prevent the import/existence of the user in GLPI.
+- Directly capture screenshots or screen recordings from the "Add a document" form in tickets.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -50,6 +51,11 @@ The present file will list all changes made to the project; according to the
 - Project description field is now a rich text field.
 - Entity, profile, debug mode flag, and language are restored after ending impersonation.
 - Volumes now show `Used percentage` instead of `Free percentage`.
+- Budget "Main" tab now shows negative values for "Total remaining in the budget" in parentheses instead of with a negative sign to align with typical accounting practices.
+- Followups and Tasks no longer visible without the "See public" or "See private" rights even if the user has permission to be assigned the parent ITIL Object.
+- Followups, Tasks and Solutions now check the `canView()` method of the parent ITIL Object rather than just the "See my/See author" right of the parent item.
+  This means they now take into account "See all", "See group", etc. rights for the global permission check.
+  Permission checks at the item-level have not been changed.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -113,6 +119,8 @@ The present file will list all changes made to the project; according to the
 - The `date_mod` property for historical entries returned by `Log::getHistoryData` is no longer formatted based on the user's preferences.
 - `Rule::dropdownRulesMatch()` has been made protected.
 - `ITILTemplateField::showForITILTemplate()` method is no longer abstract.
+- `CommonITILTask::getItilObjectItemType` is now static.
+- The `Item_Ticket$1` tab should be used in replacement of the `Ticket$1` tab to display tickets associated with an item.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
@@ -258,7 +266,28 @@ The present file will list all changes made to the project; according to the
 - `DisplayPreference::showFormPerso` `target_id` parameter.
 
 
-## [10.0.12] unreleased
+## [10.0.13] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.12] 2024-02-01
 
 ### Added
 

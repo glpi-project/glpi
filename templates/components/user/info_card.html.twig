@@ -81,6 +81,12 @@
                   <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
                </div>
             {% endif %}
+            {% if user['registration_number']|length > 0 %}
+               <div>
+                  <i class="fas fa-fw fa-id-card-clip"></i>
+                  {{ user['registration_number'] }}
+               </div>
+            {% endif %}
             {% if user['locations_id'] > 0 %}
                <div title="{{ 'Location'|itemtype_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
                   <i class="fas fa-fw fa-map-marker-alt"></i>

@@ -56,7 +56,7 @@ if (!$task->canView()) {
     Html::displayRightError();
 }
 
-$itemtype = $task->getItilObjectItemType();
+$itemtype = $task::getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 $track = new $itemtype();

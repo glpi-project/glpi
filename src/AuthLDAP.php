@@ -3562,6 +3562,8 @@ class AuthLDAP extends CommonDBTM
         $filter_value = $values['user_params']['value'];
         if ($values['login_field'] == 'objectguid' && self::isValidGuid($filter_value)) {
             $filter_value = self::guidToHex($filter_value);
+        } else {
+            $filter_value = ldap_escape($filter_value, '', LDAP_ESCAPE_FILTER);
         }
         $filter = "(" . $values['login_field'] . "=" . $filter_value . ")";
 

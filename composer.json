@@ -72,17 +72,18 @@
         "symfony/html-sanitizer": "^6.4",
         "symfony/mailer": "^6.4",
         "symfony/mime": "^6.3",
-        "symfony/polyfill-ctype": "^1.27",
+        "symfony/polyfill-ctype": "^1.28",
         "symfony/polyfill-iconv": "^1.28",
-        "symfony/polyfill-mbstring": "^1.27",
+        "symfony/polyfill-mbstring": "^1.28",
         "symfony/polyfill-php82": "^1.28",
+        "symfony/polyfill-php83": "^1.28",
         "tecnickcom/tcpdf": "^6.6",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.8",
         "twig/string-extra": "^3.8",
         "twig/twig": "^3.8",
         "wapmorgan/unified-archive": "^1.2",
-        "webonyx/graphql-php": "^15.8"
+        "webonyx/graphql-php": "^15.9"
     },
     "require-dev": {
         "ext-xml": "*",

@@ -47,6 +47,21 @@ class HasAppliancesCapacity extends AbstractCapacity
         return Appliance::getTypeName(Session::getPluralNumber());
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Appliance_Item::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s appliances attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Appliance_Item::class),
+            $this->countAssetsLinkedToPeerItem($classname, Appliance_Item::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('appliance_types', $classname);

@@ -122,7 +122,7 @@ final class UserMention
                 'validation_status' => $item->fields['status']
             ];
 
-            $main_item = getItemForItemtype($item->getItilObjectItemType());
+            $main_item = getItemForItemtype($item::getItilObjectItemType());
             $main_item->getFromDB($item->fields[$item::$items_id]);
         } else if ($item instanceof ITILFollowup) {
             $options = [

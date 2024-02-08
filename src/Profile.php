@@ -422,20 +422,23 @@ class Profile extends CommonDBTM
 
 
         // Check if profile edit right was removed
-        $can_edit_profile = $this->fields['profile'] & UPDATE == UPDATE;
-        $updated_value = $input['_profile'][UPDATE . "_0"] ?? null;
-        $update_profiles_right_was_removed = $updated_value !== null && !(bool) $updated_value;
-        if (
-            $can_edit_profile
-            && $update_profiles_right_was_removed
-            && $this->isLastSuperAdminProfile()
-        ) {
-            Session::addMessageAfterRedirect(
-                __("Can't remove update right on this profile as it is the only remaining profile with this right."),
-                false,
-                ERROR
-            );
-            unset($input['_profile']);
+        // `$this->fields['profile']` will not be present if the `profile` right is not present in DB for the current profile
+        if (array_key_exists('profile', $this->fields)) {
+            $can_edit_profile = $this->fields['profile'] & UPDATE == UPDATE;
+            $updated_value = $input['_profile'][UPDATE . "_0"] ?? null;
+            $update_profiles_right_was_removed = $updated_value !== null && !(bool) $updated_value;
+            if (
+                $can_edit_profile
+                && $update_profiles_right_was_removed
+                && $this->isLastSuperAdminProfile()
+            ) {
+                Session::addMessageAfterRedirect(
+                    __("Can't remove update right on this profile as it is the only remaining profile with this right."),
+                    false,
+                    ERROR
+                );
+                unset($input['_profile']);
+            }
         }
 
         if (isset($input['interface']) && $input['interface'] == 'helpdesk' && $this->isLastSuperAdminProfile()) {

@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Asset;
 
 use Computer;
 use DbTestCase;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
 use Profile;
@@ -234,6 +235,45 @@ class AssetDefinition extends DbTestCase
             }
         }
 
+        foreach (AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames() as $system_name) {
+            // System name must not be a reserved name
+            yield [
+                'input'    => [
+                    'system_name' => $system_name,
+                ],
+                'output'   => false,
+                'messages' => [
+                    ERROR => [
+                        sprintf('The system name must not be the reserved word "%s".', $system_name),
+                    ],
+                ],
+            ];
+            // but can start with it
+            yield [
+                'input'    => [
+                    'system_name' => 'My' . $system_name,
+                ],
+                'output'   => [
+                    'system_name' => 'My' . $system_name,
+                    'capacities'  => '[]',
+                    'profiles'    => '[]',
+                ],
+                'messages' => [],
+            ];
+            // or end with it
+            yield [
+                'input'    => [
+                    'system_name' => $system_name . 'NG',
+                ],
+                'output'   => [
+                    'system_name' => $system_name . 'NG',
+                    'capacities'  => '[]',
+                    'profiles'    => '[]',
+                ],
+                'messages' => [],
+            ];
+        }
+
         // System name must not end with `Model` suffix
         yield [
             'input'    => [
@@ -242,7 +282,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "System name".',
+                    'The system name must not end with the word "Model" or the word "Type".',
                 ],
             ],
         ];
@@ -267,7 +307,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "System name".',
+                    'The system name must not end with the word "Model" or the word "Type".',
                 ],
             ],
         ];

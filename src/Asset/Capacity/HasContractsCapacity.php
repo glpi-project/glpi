@@ -47,6 +47,28 @@ class HasContractsCapacity extends AbstractCapacity
         return Contract::getTypeName();
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Contract_Item::class
+        ];
+    }
+
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Contract_Item::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s contracts attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Contract_Item::class),
+            $this->countAssetsLinkedToPeerItem($classname, Contract_Item::class)
+        );
+    }
+
     // #Override
     public function onClassBootstrap(string $classname): void
     {

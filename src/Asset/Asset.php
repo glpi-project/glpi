@@ -38,6 +38,7 @@ namespace Glpi\Asset;
 use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Entity;
+use Glpi\Features\Clonable;
 use Group;
 use Location;
 use Manufacturer;
@@ -47,6 +48,8 @@ use User;
 
 abstract class Asset extends CommonDBTM
 {
+    use Clonable;
+
     final public function __construct()
     {
         foreach (static::getDefinition()->getEnabledCapacities() as $capacity) {
@@ -148,6 +151,15 @@ abstract class Asset extends CommonDBTM
         $asset_model_class = $this->getDefinition()->getAssetModelClassName();
         /** @var AssetType $asset_type_class */
         $asset_type_class = $this->getDefinition()->getAssetTypeClassName();
+
+        $search_options[] = [
+            'id'            => '2',
+            'table'         => $this->getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number'
+        ];
 
         $search_options[] = [
             'id'        => '4',
@@ -393,5 +405,15 @@ abstract class Asset extends CommonDBTM
         $input[$definition_fkey] = $definition_id;
 
         return $input;
+    }
+
+    public function getCloneRelations(): array
+    {
+        $relations = [];
+        $capacities = static::getDefinition()->getEnabledCapacities();
+        foreach ($capacities as $capacity) {
+            $relations = [...$relations, ...$capacity->getCloneRelations()];
+        }
+        return array_unique($relations);
     }
 }

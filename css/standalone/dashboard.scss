@@ -37,12 +37,6 @@ $filter_height: 62px;
 $break_phones: 700px;
 $break_tablet: 1400px;
 
-@mixin soft-shadow {
-    box-shadow:
-        0 1px 3px rgba(0, 0, 0, 12%),
-        0 1px 2px rgba(0, 0, 0, 24%) !important;
-}
-
 @mixin custom-scroll-bar() {
     // firefox
     scrollbar-width: none;
@@ -741,20 +735,15 @@ $break_tablet: 1400px;
     }
 
     .card {
-        @include soft-shadow;
-
         text-align: left;
         padding: 5px;
         height: 100%;
         width: 100%;
-        margin: 2px 0 0 2px;
         display: block;
         color: rgba(0, 0, 0, 70%);
         border: 2px solid transparent;
-        border-radius: 3px;
-        border-top-left-radius: 3px !important;
+        border-radius: 3px !important;
         position: relative;
-        background-color: #ddd;
 
         img {
             max-width: 100%;

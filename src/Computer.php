@@ -122,7 +122,7 @@ class Computer extends CommonDBTM
          ->addStandardTab('ComputerVirtualMachine', $ong, $options)
          ->addStandardTab('ItemAntivirus', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
@@ -622,6 +622,8 @@ class Computer extends CommonDBTM
         $tab = array_merge($tab, ComputerModel::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Item_RemoteManagement::rawSearchOptionsToAdd(self::class));
 
         return $tab;
     }

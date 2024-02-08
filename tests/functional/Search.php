@@ -37,6 +37,7 @@ namespace tests\units;
 
 use CommonDBTM;
 use CommonITILActor;
+use DateTime;
 use DBConnection;
 use DbTestCase;
 use Document;
@@ -1614,6 +1615,9 @@ class Search extends DbTestCase
         \ProfileRight::updateProfileRights(getItemByTypeName('Profile', "Technician", true), [
             'Ticket' => (\Ticket::READMY + \Ticket::READNEWTICKET)
         ]);
+
+        // reload current profile to take into account the new rights
+        $this->login('tech', 'tech');
 
        // do search and check presence of the created problem
         $data = \Search::prepareDatasForSearch('Ticket', ['reset' => 'reset']);

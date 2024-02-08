@@ -5807,6 +5807,7 @@ CREATE TABLE `glpi_profiles` (
   `managed_domainrecordtypes` text,
   `date_creation` timestamp NULL DEFAULT NULL,
   `2fa_enforced` tinyint NOT NULL DEFAULT '0',
+  `last_rights_update` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `interface` (`interface`),
@@ -5815,7 +5816,8 @@ CREATE TABLE `glpi_profiles` (
   KEY `date_creation` (`date_creation`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `changetemplates_id` (`changetemplates_id`),
-  KEY `problemtemplates_id` (`problemtemplates_id`)
+  KEY `problemtemplates_id` (`problemtemplates_id`),
+  KEY `last_rights_update` (`last_rights_update`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

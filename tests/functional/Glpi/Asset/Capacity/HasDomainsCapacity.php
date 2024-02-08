@@ -35,17 +35,27 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Domain;
 use Domain_Item;
 use DomainRelation;
 use Entity;
+use Glpi\Tests\CapacityTestCase;
 use Log;
 use Profile;
 
-class HasDomainsCapacity extends DbTestCase
+class HasDomainsCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasDomainsCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -246,5 +256,22 @@ class HasDomainsCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(3); // both side links + update
         $this->array($CFG_GLPI['domain_types'])->contains($classname_2);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Domain::class,
+            'relation_classname' => Domain_Item::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Domain::class,
+            'relation_classname' => Domain_Item::class,
+            'expected' => '%d domains attached to %d assets'
+        ];
     }
 }

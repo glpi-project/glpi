@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\Asset;
+
 /**
  * Change_Item Class
  *
@@ -224,8 +226,15 @@ class Change_Item extends CommonItilObject_Item
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         **/
+        global $DB, $CFG_GLPI;
+
+        if (in_array($item::getType(), $CFG_GLPI['asset_types']) && !$this->shouldDisplayTabForAsset($item)) {
+            return '';
+        }
 
         /** @var CommonDBTM $item */
         if (!$withtemplate) {

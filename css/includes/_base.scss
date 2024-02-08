@@ -359,26 +359,6 @@ table {
     .fancytree-selected {
         background-color: var(--tblr-primary);
     }
-
-    .plain-scrollbar {
-        &[data-scrollable="false"] {
-            visibility: hidden;
-        }
-
-        &.scrollbar-vertical {
-            width: 8px;
-        }
-
-        .arrow-up,
-        .arrow-down {
-            display: none;
-        }
-
-        .slider-area {
-            top: 0 !important;
-            bottom: 0 !important;
-        }
-    }
 }
 
 .qtip-bootstrap,

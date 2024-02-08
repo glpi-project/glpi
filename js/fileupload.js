@@ -179,7 +179,7 @@ var deleteImagePasted = function(elementsIdToRemove, tagToRemove, editor) {
         $('#'+element).remove();
     });
 
-    if (typeof editor !== "undefined"
+    if (typeof editor !== "undefined" && editor !== null
        && typeof editor.dom !== "undefined") {
         var regex = new RegExp('#', 'g');
         editor.dom.remove(tagToRemove.replace(regex, ''));

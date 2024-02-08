@@ -35,8 +35,12 @@
 
 namespace Glpi\Asset;
 
+use Change_Item;
+use CommonGLPI;
 use DirectoryIterator;
 use Glpi\Asset\Capacity\CapacityInterface;
+use Item_Problem;
+use Item_Ticket;
 use ReflectionClass;
 
 final class AssetDefinitionManager
@@ -96,6 +100,35 @@ final class AssetDefinitionManager
     }
 
     /**
+     * Returns the list of reserved system names
+     * @return array
+     */
+    public function getReservedAssetsSystemNames(): array
+    {
+        $names = [
+            'Computer',
+            'Monitor',
+            'Software',
+            'NetworkEquipment',
+            'Peripheral',
+            'Printer',
+            'Cartridge',
+            'Consumable',
+            'Phone',
+            'Rack',
+            'Enclosure',
+            'PDU',
+            'PassiveDCEquipment',
+            'Unmanaged',
+            'Cable',
+        ];
+
+        sort($names);
+
+        return $names;
+    }
+
+    /**
      * Register assets concrete classes autoload.
      *
      * @return void
@@ -135,7 +168,7 @@ final class AssetDefinitionManager
 
         $capacities = $this->getAvailableCapacities();
 
-        $concrete_class_name = $definition->getAssetClassName();
+        $asset_class_name = $definition->getAssetClassName();
 
         // Register asset into configuration entries related to the capacities that cannot be disabled
         $config_keys = [
@@ -145,17 +178,37 @@ final class AssetDefinitionManager
             'linkuser_tech_types',
             'linkgroup_tech_types',
             'location_types',
+            'ticket_types',
         ];
         foreach ($config_keys as $config_key) {
-            $CFG_GLPI[$config_key][] = $concrete_class_name;
+            $CFG_GLPI[$config_key][] = $asset_class_name;
         }
 
         // Bootstrap capacities
         foreach ($capacities as $capacity) {
             if ($definition->hasCapacityEnabled($capacity)) {
-                $capacity->onClassBootstrap($concrete_class_name);
+                $capacity->onClassBootstrap($asset_class_name);
             }
         }
+
+        // Register IITL tabs, which will only be displayed if some condition
+        // are met (see the shouldDisplayTabForAsset method in
+        // CommonItilObject_Item).
+        CommonGLPI::registerStandardTab(
+            $asset_class_name,
+            Item_Ticket::class,
+            51
+        );
+        CommonGLPI::registerStandardTab(
+            $asset_class_name,
+            Item_Problem::class,
+            52
+        );
+        CommonGLPI::registerStandardTab(
+            $asset_class_name,
+            Change_Item::class,
+            53
+        );
     }
 
     /**

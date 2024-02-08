@@ -47,6 +47,21 @@ class IsReservableCapacity extends AbstractCapacity
         return \Reservation::getTypeName(Session::getPluralNumber());
     }
 
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, ReservationItem::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('Used by %1$s of %2$s assets'),
+            $this->countPeerItemsUsage($classname, ReservationItem::class),
+            $this->countAssets($classname)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('reservation_types', $classname);

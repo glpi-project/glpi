@@ -58,7 +58,7 @@ if (!$validation->canView()) {
     Html::displayRightError();
 }
 
-$itemtype = $validation->getItilObjectItemType();
+$itemtype = $validation::getItilObjectItemType();
 $fk       = getForeignKeyFieldForItemType($itemtype);
 
 if (isset($_POST["add"])) {

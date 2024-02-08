@@ -483,11 +483,18 @@ class Stat extends CommonGLPI
                     && strstr($type, '_tree')
                     && $value2
                 ) {
-                   // HTML display
-                    $link = $_SERVER['PHP_SELF'] .
-                       "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type" .
-                       "&amp;value2=0";
-                    $link = "<a href='$link'>" . __('Back') . "</a>";
+                    // HTML display
+                    $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                        [
+                            'date1'    => $date1,
+                            'date2'    => $date2,
+                            'itemtype' => $itemtype,
+                            'type'     => $type,
+                            'value2'   => 0,
+                        ],
+                        '&amp;'
+                    );
+                    $link = "<a href='$url'>" . __('Back') . "</a>";
                     echo Search::showHeaderItem($output_type, $link, $header_num);
                 } else {
                     echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
@@ -635,11 +642,18 @@ class Stat extends CommonGLPI
                     && strstr($type, '_tree')
                     && ($value[$i]['id'] != $value2)
                 ) {
-                   // HTML display
-                    $link = $_SERVER['PHP_SELF'] .
-                       "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type" .
-                       "&amp;value2=" . $value[$i]['id'];
-                    $link = "<a href='$link'>" . $value[$i]['link'] . "</a>";
+                    // HTML display
+                    $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                        [
+                            'date1'    => $date1,
+                            'date2'    => $date2,
+                            'itemtype' => $itemtype,
+                            'type'     => $type,
+                            'value2'  => $value[$i]['id'],
+                        ],
+                        '&amp;'
+                    );
+                    $link = "<a href='$url'>" . $value[$i]['link'] . "</a>";
                     echo Search::showItem($output_type, $link, $item_num, $row_num);
                 } else {
                     echo Search::showItem($output_type, $value[$i]['link'], $item_num, $row_num);
@@ -648,9 +662,17 @@ class Stat extends CommonGLPI
                 if ($output_type == Search::HTML_OUTPUT) { // HTML display
                     $link = "";
                     if ($value[$i]['id'] > 0) {
-                        $link = "<a href='stat.graph.php?id=" . $value[$i]['id'] .
-                            "&amp;date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type" .
-                            (!empty($value2) ? "&amp;champ=$value2" : "") . "'>" .
+                        $url = 'stat.graph.php?' . Toolbox::append_params(
+                            [
+                                'date1'    => $date1,
+                                'date2'    => $date2,
+                                'itemtype' => $itemtype,
+                                'type'     => $type,
+                                'champ'    => $value2,
+                            ],
+                            '&amp;'
+                        );
+                        $link = "<a href='$url'>" .
                           "<img src='" . $CFG_GLPI["root_doc"] . "/pics/stats_item.png' alt=''>" .
                           "</a>";
                     }
@@ -1639,8 +1661,15 @@ class Stat extends CommonGLPI
                     $start,
                     $numrows,
                     $target,
-                    "date1=" . $date1 . "&amp;date2=" . $date2 .
-                                 "&amp;type=hardwares&amp;start=$start",
+                    Toolbox::append_params(
+                        [
+                            'date1'     => $date1,
+                            'date2'     => $date2,
+                            'type'      => 'hardwares',
+                            'start'     => $start,
+                        ],
+                        '&amp;'
+                    ),
                     'Stat'
                 );
                 echo "<div class='center'>";

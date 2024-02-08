@@ -2522,7 +2522,7 @@ JAVASCRIPT;
                      }
 
                      if (is_subclass_of($item, "CommonITILTask")) {
-                         $parentitemtype = $item->getItilObjectItemType();
+                         $parentitemtype = $item::getItilObjectItemType();
                          if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
                              return;
                          }
