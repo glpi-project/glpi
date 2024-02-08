@@ -153,7 +153,6 @@ class ReminderTranslation extends CommonDBChild
                     });
                 </script>
 TWIG, $twig_params);
-
         }
 
         $obj   = new self();
