@@ -112,9 +112,7 @@
                 </script>
             {% endif %}
             {% if not id or not item.fields['is_planned'] %}
-                {% if has_profile_right('planning', constant('Planning::READMY')) or
-                    has_profile_right('planning', constant('Planning::READGROUP')) or
-                    has_profile_right('planning', constant('Planning::READALL')) %}
+                {% if has_profile_right('planning', constant('Planning::READMY')) or has_profile_right('planning', constant('Planning::READGROUP')) or has_profile_right('planning', constant('Planning::READALL')) %}
                     <button id="plan{{ rand }}" class="btn btn-primary" type="button" onclick="showPlan{{ rand }}()">
                         {{ __('Add to schedule') }}
                     </button>

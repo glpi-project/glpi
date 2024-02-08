@@ -32,7 +32,7 @@
 #}
 
 <img src="{{ planning_img }}" alt="{{ 'Reminder'|itemtype_name(1) }}">
-<a id="reminder_{{ val['reminders_id'] ~ rand}}" href="{{ 'Reminder'|itemtype_form_path(val['reminders_id']) }}">
+<a id="reminder_{{ val['reminders_id'] ~ rand }}" href="{{ 'Reminder'|itemtype_form_path(val['reminders_id']) }}">
     {% if val['users_id'] == session('glpiID') %}
         <br>
         {{ __('%1$s: %2$s')|format(__('By'), user_name) }}
