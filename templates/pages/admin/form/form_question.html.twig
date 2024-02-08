@@ -31,6 +31,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{# @var question_types Glpi\Form\QuestionType\QuestionTypeInterface[] #}
 {# @var question_type Glpi\Form\QuestionType\QuestionTypeInterface #}
 {# @var question      Glpi\Form\Question|null #}
 
@@ -67,7 +68,9 @@
         </div>
 
         {# Render the specific question type #}
-        {{ question_type.renderAdminstrationTemplate(question)|raw }}
+        <div data-glpi-form-editor-question-type-specific>
+            {{ question_type.renderAdminstrationTemplate(question)|raw }}
+        </div>
 
         {# Display common fields #}
         <div
@@ -96,6 +99,25 @@
             class="d-flex align-items-center"
             data-glpi-form-editor-question-extra-details
         >
+            <select
+                name="type"
+                class="form-select form-select-sm"
+                aria-label="{{ __('Question type') }}"
+                style="width: auto;"
+                data-glpi-form-editor-on-change="change-question-type"
+                data-glpi-form-editor-question-type-selector
+            >
+                {% for possible_question_type in question_types %}
+                    {# TODO: add icon, use select2 ? #}
+                    <option
+                        value="{{ get_class(possible_question_type) }}"
+                        {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
+                    >
+                        {{ possible_question_type.getName() }}
+                    </option>
+                {% endfor %}
+            </select>
+
             <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
                 <input type="hidden" value="0" name="is_mandatory">
                 <input
@@ -125,11 +147,6 @@
         type="hidden"
         name="_use_uuid"
         value="{{ question is not null ? 0 : 1 }}"
-    />
-    <input
-        type="hidden"
-        name="type"
-        value="{{ get_class(question_type) }}"
     />
     <input
         type="hidden"
