@@ -216,7 +216,7 @@ TWIG, $twig_params);
     public function showForm($ID = -1, array $options = [])
     {
         if ($this->getID() > 0) {
-            $this->check($this->getID(), READ);
+            $this->check($ID, READ);
         } else {
            // Create item
             $item                = $options['parent'];
@@ -224,6 +224,7 @@ TWIG, $twig_params);
             $options['reminders_id'] = $item->getID();
             $this->check(-1, CREATE, $options);
         }
+        $options['canedit'] = $this->can($ID, UPDATE);
 
         TemplateRenderer::getInstance()->display('pages/tools/reminder_translation.html.twig', [
             'item' => $this,
