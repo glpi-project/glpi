@@ -50,6 +50,29 @@ class HasSoftwaresCapacity extends AbstractCapacity
         return Software::getTypeName(Session::getPluralNumber());
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            Item_SoftwareVersion::class,
+            Item_SoftwareLicense::class,
+        ];
+    }
+
+    public function isUsed(string $classname): bool
+    {
+        return parent::isUsed($classname)
+            && $this->countAssetsLinkedToPeerItem($classname, Item_SoftwareVersion::class) > 0;
+    }
+
+    public function getCapacityUsageDescription(string $classname): string
+    {
+        return sprintf(
+            __('%1$s software(s) attached to %2$s assets'),
+            $this->countPeerItemsUsage($classname, Item_SoftwareVersion::class),
+            $this->countAssetsLinkedToPeerItem($classname, Item_SoftwareVersion::class)
+        );
+    }
+
     public function onClassBootstrap(string $classname): void
     {
         $this->registerToTypeConfig('software_types', $classname);
