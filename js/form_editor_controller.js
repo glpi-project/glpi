@@ -212,6 +212,15 @@ class GlpiFormEditorController
                 this.#computeDynamicInputSize(target[0]);
                 break;
 
+            // Change the type of the target question
+            case "change-question-type":
+                this.#changeQuestionType(
+                    target.closest("[data-glpi-form-editor-question]"),
+                    target.val()
+                );
+                break;
+
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
@@ -591,6 +600,30 @@ class GlpiFormEditorController
                 "%s",
                 data.link_to_created_item
             )
+        );
+    }
+
+    /**
+     * Change the type of the given question.
+     * @param {jQuery} question Question to update
+     * @param {string} type     New parent type
+     */
+    #changeQuestionType(question, type) {
+        // Clear the specific form of the question
+        const specific = question
+            .find("[data-glpi-form-editor-question-type-specific]");
+        specific.children().remove();
+
+        // Find the specific content of the given type
+        const new_specific_content = this
+            .#getQuestionTemplate(type)
+            .find("[data-glpi-form-editor-question-type-specific]")
+            .children();
+
+        // Copy the specific form of the new question type into the question
+        this.#copy_template(
+            new_specific_content,
+            specific,
         );
     }
 }

@@ -130,8 +130,9 @@
                             {% for question in section.getQuestions() %}
                                 {# Render admin template for the given question type #}
                                 {{ include('pages/admin/form/form_question.html.twig', {
-                                    'question_type': question_types[question.fields.type],
-                                    'question'     : question,
+                                    'question_types': question_types,
+                                    'question_type' : question_types[question.fields.type],
+                                    'question'      : question,
                                 }, with_context = false) }}
                             {% endfor %}
                         {% endfor %}
@@ -287,6 +288,7 @@
                 <div data-glpi-form-editor-question-template="{{ key }}">
                     {# Render admin template for the given question type #}
                     {{ include('pages/admin/form/form_question.html.twig', {
+                        'question_types': question_types,
                         'question_type': question_type,
                         'question': null,
                     }, with_context = false) }}
