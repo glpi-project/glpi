@@ -3115,7 +3115,7 @@ class AuthLDAP extends CommonDBTM
                 ]));
             } else {
                 if ($options['type'] == "groups") {
-                    if ($group->getFromDBByCrit(['ldap_group_dn' => $group_infos["dn"]])) {
+                    if ($group->getFromDBByCrit(['ldap_group_dn' => addslashes($group_infos["dn"])])) {
                         return $group->update(Sanitizer::sanitize([
                             "id"               => $group->getID(),
 
@@ -3130,10 +3130,14 @@ class AuthLDAP extends CommonDBTM
                         "ldap_group_dn"    => $group_infos["dn"],
                         "sync_field_group" => $syncfield,
                         "entities_id"      => $options['entities_id'],
-                        "is_recursive"     => $options['is_recursive']
+                        "is_recursive"     => $options['is_recursive'],
+                        "is_assign"        => 0,
+                        "is_task"          => 0,
+                        "is_notify"        => 0,
+                        "is_manager"       => 0,
                     ]));
                 }
-                if ($group->getFromDBByCrit(['ldap_value' => $group_infos["dn"]])) {
+                if ($group->getFromDBByCrit(['ldap_value' => addslashes($group_infos["dn"])])) {
                     return $group->update(Sanitizer::sanitize([
                         "id"               => $group->getID(),
 
@@ -3150,7 +3154,11 @@ class AuthLDAP extends CommonDBTM
                     "ldap_value"       => $group_infos["dn"],
                     "sync_field_group" => $syncfield,
                     "entities_id"      => $options['entities_id'],
-                    "is_recursive"     => $options['is_recursive']
+                    "is_recursive"     => $options['is_recursive'],
+                    "is_assign"        => 0,
+                    "is_task"          => 0,
+                    "is_notify"        => 0,
+                    "is_manager"       => 0,
                 ]));
             }
         }
@@ -4746,7 +4754,6 @@ class AuthLDAP extends CommonDBTM
         $count = countElementsInTable(
             'glpi_groups',
             [
-                'auths_id'  => $this->getID(),
                 'NOT'       => ['sync_field_group' => null]
             ]
         );
