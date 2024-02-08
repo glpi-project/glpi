@@ -65,12 +65,11 @@ $(function () {
      * if the input get a paste event, the text is trimmed before being pasted
      */
     $(document).on("paste", "input[type='text']", function (event) {
-        if ($(this).val() === '') {
-            event.preventDefault();
-            var pastedData = event.originalEvent.clipboardData || window.clipboardData;
-            var pastedText = pastedData.getData('text');
-            $(this).val(pastedText.trim());
-        }
+        event.preventDefault();
+        var actualValue = $(this).val();
+        var pastedData = event.originalEvent.clipboardData || window.clipboardData;
+        var pastedText = pastedData.getData('text');
+        $(this).val(actualValue + pastedText.trim());
     });
 });
 
