@@ -35,16 +35,27 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Asset;
+use Glpi\Tests\CapacityTestCase;
 use Item_SoftwareVersion;
 use Log;
 use Software;
 use SoftwareVersion;
 
-class HasSoftwaresCapacity extends DbTestCase
+class HasSoftwaresCapacity extends CapacityTestCase
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
+    protected function getTargetCapacity(): string
+    {
+        return \Glpi\Asset\Capacity\HasSoftwaresCapacity::class;
+    }
+
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -231,5 +242,69 @@ class HasSoftwaresCapacity extends DbTestCase
         $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
+    }
+
+    public function testCloneAsset()
+    {
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+        );
+        $class = $definition->getAssetClassName();
+        $entity = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
+        ]);
+
+        $software = $this->createItem(
+            Software::class,
+            [
+                'name' => 'Software',
+                'entities_id' => $entity,
+            ]
+        );
+        $software_version = $this->createItem(
+            SoftwareVersion::class,
+            [
+                'name' => 'V1.0',
+                'entities_id' => $entity,
+                'softwares_id' => $software->getID(),
+            ]
+        );
+        $this->createItem(
+            Item_SoftwareVersion::class,
+            [
+                'entities_id' => $entity,
+                'softwareversions_id' => $software_version->getID(),
+                'itemtype' => $asset->getType(),
+                'items_id' => $asset->getID(),
+            ]
+        );
+
+        $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
+        $this->array(getAllDataFromTable(Item_SoftwareVersion::getTable(), [
+            'softwareversions_id' => $software_version->getID(),
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+        ]))->hasSize(1);
+    }
+
+    public function provideIsUsed(): iterable
+    {
+        yield [
+            'target_classname' => Software::class,
+            'relation_classname' => Item_SoftwareVersion::class
+        ];
+    }
+
+    public function provideGetCapacityUsageDescription(): iterable
+    {
+        yield [
+            'target_classname' => Item_SoftwareVersion::class,
+            'expected' => '%d software(s) attached to %d assets',
+            'expected_results' => [[1, 1], [2, 1], [1, 2]]
+        ];
     }
 }
