@@ -132,6 +132,7 @@
 
     <script type="text/javascript">
     $(function() {
+        let block_fake_scrollbar_event = false;
         var initTree{{ rand }} = function() {
             if ($.ui.fancytree.getTree("#tree_entity{{ rand }}") !== null) {
                 return;
