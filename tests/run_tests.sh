@@ -44,6 +44,7 @@ TESTS_SUITES=(
   "lint_js"
   "lint_scss"
   "lint_twig"
+  "lint_misc"
   "install"
   "update"
   "units"
@@ -145,6 +146,7 @@ Available tests suites:
  - lint_js
  - lint_scss
  - lint_twig
+ - lint_misc
  - install
  - update
  - units
@@ -207,7 +209,7 @@ INSTALL_TESTS_RUN=false
 
 run_single_test () {
   local TEST_TO_RUN=$1
-  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
+  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "lint_misc" "javascript")
   if [[ $INSTALL_TESTS_RUN == false && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
     echo "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
     # Run install test suite before any other test suite
@@ -236,6 +238,7 @@ run_single_test () {
       && docker-compose exec -T app .github/actions/lint_js-lint.sh \
       && docker-compose exec -T app .github/actions/lint_scss-lint.sh \
       && docker-compose exec -T app .github/actions/lint_twig-lint.sh \
+      && docker-compose exec -T app .github/actions/lint_misc-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "lint_php")
@@ -252,6 +255,10 @@ run_single_test () {
       ;;
     "lint_twig")
          docker-compose exec -T app .github/actions/lint_twig-lint.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
+    "lint_misc")
+         docker-compose exec -T app .github/actions/lint_misc-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "install")
