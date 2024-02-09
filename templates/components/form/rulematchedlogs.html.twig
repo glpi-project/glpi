@@ -68,7 +68,7 @@
                         {% set rand = random() %}
                         <div class="accordion" id="inputAccordion{{ rand }}">
                             <div id="item{{ rand }}">
-                                <a data-bs-toggle="collapse" href="#collapse{{ rand }}">{{ __("See input") }}</a>
+                                <a class="btn btn-ghost-secondary btn-sm" data-bs-toggle="collapse" href="#collapse{{ rand }}">{{ __("See input") }}</a>
                             </div>
                             <div id="collapse{{ rand }}" class="accordion-collapse collapse" data-bs-parent="#inputAccordion{{ rand }}">
                                 <div class="nested list-group list-group-flush card">
