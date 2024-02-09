@@ -53,7 +53,9 @@ if (isset($_GET['full_page_tab'])) {
     Html::header_nocache();
 }
 
-if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"] ?? $_SERVER['REQUEST_URI'], '/front/helpdesk.faq.php'))) {
+$_GET['_target'] = Toolbox::cleanTarget($_GET['_target'] ?? $_SERVER['REQUEST_URI']);
+
+if (!($CFG_GLPI["use_public_faq"] && str_ends_with($_GET["_target"], '/front/helpdesk.faq.php'))) {
     Session::checkLoginUser();
 }
 
@@ -97,10 +99,6 @@ if ($item = getItemForItemtype($_UGET['_itemtype'])) {
             exit();
         }
     }
-}
-
-if (isset($_GET['_target'])) {
-    $_GET['_target'] = Toolbox::cleanTarget($_GET['_target']);
 }
 
 Session::setActiveTab($_GET['_itemtype'], $_GET['_glpi_tab']);
