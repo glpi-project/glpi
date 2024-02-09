@@ -414,11 +414,13 @@ final class RoutePath
         $matched_doc = array_filter($docs, static function (Doc\Route $doc) use ($request) {
             return !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true);
         });
-        $route_params = $matched_doc[0]->getParameters();
-        /** @var Parameter $param */
-        foreach ($route_params as $param) {
-            if (!isset($params[$param->getName()]) && $param->getDefaultValue() !== null) {
-                $request->setParameter($param->getName(), $param->getDefaultValue());
+        if (count($matched_doc)) {
+            $route_params = $matched_doc[0]->getParameters();
+            /** @var Parameter $param */
+            foreach ($route_params as $param) {
+                if (!isset($params[$param->getName()]) && $param->getDefaultValue() !== null) {
+                    $request->setParameter($param->getName(), $param->getDefaultValue());
+                }
             }
         }
         $response = $this->getMethod()->invoke($this->getControllerInstance(), $request);

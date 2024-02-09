@@ -401,7 +401,7 @@ HTML;
         return new JSONResponse($session);
     }
 
-    #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'])]
+    #[Route(path: '/authorize', methods: ['GET', 'POST'], security_level: Route::SECURITY_NONE, tags: ['Session'], middlewares: [CookieAuthMiddleware::class])]
     #[Doc\Route(
         description: 'Authorize the API client using the authorization code grant type.',
     )]
@@ -411,11 +411,6 @@ HTML;
         global $CFG_GLPI;
         try {
             $auth_request = Server::getAuthorizationServer()->validateAuthorizationRequest($request);
-            // Try loading session from Cookie
-            session_destroy();
-            ini_set('session.use_cookies', 1);
-            session_name("glpi_" . md5(realpath(GLPI_ROOT)));
-            @session_start();
 
             $user_id = Session::getLoginUserID();
             if ($user_id === false) {
