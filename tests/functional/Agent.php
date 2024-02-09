@@ -505,7 +505,14 @@ class Agent extends DbTestCase
         $states_id2 = $state->add(['name' => 'Stale2']);
         $this->integer($states_id2)->isGreaterThan(0);
 
-        //define sale agents actions
+        //set last agent contact far ago
+        $DB->update(
+            \Agent::getTable(),
+            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+            ['id' => $agent['id']]
+        );
+
+        //define stale agents actions
         \Config::setConfigurationValues(
             'inventory',
             [
