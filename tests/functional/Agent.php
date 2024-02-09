@@ -505,13 +505,6 @@ class Agent extends DbTestCase
         $states_id2 = $state->add(['name' => 'Stale2']);
         $this->integer($states_id2)->isGreaterThan(0);
 
-        //set last agent contact far ago
-        $DB->update(
-            \Agent::getTable(),
-            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
-            ['id' => $agent['id']]
-        );
-
         //define sale agents actions
         \Config::setConfigurationValues(
             'inventory',
@@ -541,13 +534,6 @@ class Agent extends DbTestCase
         $states_id3 = $state->add(['name' => 'Stale3']);
         $this->integer($states_id3)->isGreaterThan(0);
 
-        //set last agent contact far ago
-        $DB->update(
-            \Agent::getTable(),
-            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
-            ['id' => $agent['id']]
-        );
-
         //define sale agents actions
         \Config::setConfigurationValues(
             'inventory',
@@ -575,13 +561,6 @@ class Agent extends DbTestCase
         $states_id4 = $state->add(['name' => 'Stale4']);
         $this->integer($states_id4)->isGreaterThan(0);
 
-        //set last agent contact far ago
-        $DB->update(
-            \Agent::getTable(),
-            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
-            ['id' => $agent['id']]
-        );
-
         //define sale agents actions
         \Config::setConfigurationValues(
             'inventory',
@@ -594,6 +573,31 @@ class Agent extends DbTestCase
                 'previous_stale_agents_status' => json_encode([
                     $states_id,
                     $states_id2,
+                ]),
+                'stale_agents_status' => $states_id4
+            ]
+        );
+
+        //run crontask
+        $task = new \CronTask();
+        $this->integer(\Agent::cronCleanoldagents($task))->isIdenticalTo(1);
+
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id3);
+
+        //test with invalide status or undefined status
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'previous_stale_agents_status' => json_encode([
+                    "aaaaaaa"
                 ]),
                 'stale_agents_status' => $states_id4
             ]
