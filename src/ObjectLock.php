@@ -120,165 +120,6 @@ class ObjectLock extends CommonDBTM
     }
 
     /**
-     *
-     */
-    private function getScriptToUnlock()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $ret = Html::scriptBlock("
-         function unlockIt(obj) {
-            function callUnlock( ) {
-               $.post({
-                  url: '" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php',
-                  cache: false,
-                  data: {
-                     unlock: 1,
-                     force: 1,
-                     id: {$this->fields['id']}
-                  },
-                  dataType: 'json',
-                  success: function( data, textStatus, jqXHR ) { " .
-                        Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
-                              window.location.reload(true);
-                           }") . "
-                     },
-                  error: function() { " .
-                        Html::jsAlertCallback(__('Contact your GLPI admin!'), __('Item NOT unlocked!')) . "
-                     }
-               });
-            }" .
-            Html::jsConfirmCallback(__('Force unlock this item?'), $this->itemtypename . " #" . $this->itemid, "callUnlock") . "
-         }");
-
-        return $ret;
-    }
-
-    /**
-     * @return string '' if no rights to unlock type,
-     *                else html @see getForceUnlockButton
-     */
-    private function getForceUnlockMessage()
-    {
-        if (isset($_SESSION['glpilocksavedprofile']) && ($_SESSION['glpilocksavedprofile'][strtolower($this->itemtype)] & UNLOCK)) {
-            echo $this->getScriptToUnlock();
-            return $this->getForceUnlockButton();
-        }
-
-        return '';
-    }
-
-    private function getForceUnlockButton()
-    {
-        return "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:unlockIt(this);'>
-               <i class='fas fa-unlock'></i>
-               <span>" . sprintf(__('Force unlock %1s #%2s'), $this->itemtypename, $this->itemid) . "</span>
-            </a>";
-    }
-
-    /**
-     * Shows 'Locked by You!' message and proposes to unlock it
-     **/
-    private function setLockedByYouMessage()
-    {
-        echo $this->getScriptToUnlock();
-        $msg  = "<strong class='nowrap'>";
-        $msg .= __("Locked by you!");
-        $msg .= $this->getForceUnlockButton();
-        $msg .= "</strong>";
-        $this->displayLockMessage($msg);
-    }
-
-    /**
-     * Shows 'Locked by ' message and proposes to request unlock from locker
-     **/
-    private function setLockedByMessage()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        // should get locking user info
-        $user = new User();
-        $user->getFromDB($this->fields['users_id']);
-
-        $useremail     = new UserEmail();
-        $showAskUnlock = $useremail->getFromDBByCrit([
-            'users_id'     => $this->fields['users_id'],
-            'is_default'   => 1
-        ]) && ($CFG_GLPI['notifications_mailing'] == 1);
-
-        $userdata = getUserName($this->fields['users_id'], 2);
-
-        if ($showAskUnlock) {
-            $ret = Html::scriptBlock("
-         function askUnlock() {
-            " . Html::jsConfirmCallback(__('Ask for unlock this item?'), $this->itemtypename . " #" . $this->itemid, "function() {
-                  $.post({
-                     url: '" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php',
-                     cache: false,
-                     data: {
-                        requestunlock: 1,
-                        id: {$this->fields['id']}
-                     },
-                     dataType: 'json',
-                     success: function( data, textStatus, jqXHR ) {
-                           " . Html::jsAlertCallback($userdata['name'], __('Request sent to')) . "
-                        }
-                     });
-               }") . "
-         }");
-            echo $ret;
-        }
-
-        $ret = Html::scriptBlock("
-         $(function(){
-            var lockStatusTimer;
-            $('#alertMe').change(function( eventObject ){
-               if( this.checked ) {
-                  lockStatusTimer = setInterval( function() {
-                     $.get({
-                           url: '" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php',
-                           cache: false,
-                           data: 'lockstatus=1&id=" . $this->fields['id'] . "',
-                           success: function( data, textStatus, jqXHR ) {
-                                 if( data == 0 ) {
-                                    clearInterval(lockStatusTimer);" .
-                                    Html::jsConfirmCallback(__('Reload page?'), __('Item unlocked!'), "function() {
-                                       window.location.reload(true);
-                                    }") . "
-                                 }
-                              }
-                           });
-                  },15000)
-               } else {
-                  clearInterval(lockStatusTimer);
-               }
-            });
-         });
-      ");
-
-        echo $ret;
-
-        $msg = "<strong class='nowrap'>";
-        $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
-        $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
-        $msg .= " -&gt; " . Html::convDateTime($this->fields['date']);
-        $msg .= "</strong>";
-        if ($showAskUnlock) {
-            $msg .= "<a class='btn btn-sm btn-primary ms-2' onclick='javascript:askUnlock();'>
-               <i class='fas fa-unlock'></i>
-               <span>" . __('Ask for unlock') . "</span>
-            </a>";
-        }
-        $msg .= "<label for='alertMe'>" . __('Alert me when unlocked') . "</label>";
-        $msg .= Html::getCheckbox(['id' => 'alertMe']);
-        $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
-
-        $this->displayLockMessage($msg);
-    }
-
-    /**
      * Shows 'Read-only!' message and propose to request a lock on the item
      * This function is used by autoLockMode function
      **/
@@ -309,6 +150,18 @@ class ObjectLock extends CommonDBTM
         global $CFG_GLPI;
 
         $ret = false;
+        $new_lock = false;
+        // should get locking user info
+        $user = new User();
+        $user->getFromDB($this->fields['users_id']);
+
+        $useremail     = new UserEmail();
+        $showAskUnlock = $useremail->getFromDBByCrit([
+                'users_id'     => $this->fields['users_id'],
+                'is_default'   => 1
+            ]) && ($CFG_GLPI['notifications_mailing'] == 1);
+
+
         if (
             !($gotIt = $this->getFromDBByCrit(['itemtype' => $this->itemtype,
                 'items_id' => $this->itemid
@@ -318,43 +171,7 @@ class ObjectLock extends CommonDBTM
                    'users_id' => Session::getLoginUserID()
                ])
         ) {
-            // add a script to unlock the Object
-            echo Html::scriptBlock("$(function() {
-            $(window).on('beforeunload', function() {
-               var fallback_request = function() {
-                  $.post({
-                     url: '" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php',
-                     async: false,
-                     cache: false,
-                     data: {
-                        unlock: 1,
-                        id: $id
-                     },
-                     dataType: 'json'
-                  });
-               };
-
-               if (typeof window.fetch !== 'undefined') {
-                  fetch('" . $CFG_GLPI['root_doc'] . "/ajax/unlockobject.php', {
-                     method: 'POST',
-                     cache: 'no-cache',
-                     headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/x-www-form-urlencoded;',
-                        'X-Glpi-Csrf-Token': getAjaxCsrfToken()
-                     },
-                     body: 'unlock=1&id={$id}'
-                  }).catch(function(error) {
-                     //fallback if fetch fails
-                     fallback_request();
-                  });
-               } else {
-                  //fallback for browsers with no fetch support
-                  fallback_request();
-               }
-            });
-         })");
-
+            $new_lock = true;
             $ret = true;
         } else { // can't add a lock as another one is already existing
             if (!$gotIt) {
@@ -365,14 +182,21 @@ class ObjectLock extends CommonDBTM
             }
             // open the object as read-only as it is already locked by someone
             self::setReadonlyProfile();
-            if ($this->fields['users_id'] !== Session::getLoginUserID()) {
-                $this->setLockedByMessage();
-            } else {
-                $this->setLockedByYouMessage();
-            }
+//            if ($this->fields['users_id'] !== Session::getLoginUserID()) {
+//                $this->setLockedByMessage();
+//            } else {
+//                $this->setLockedByYouMessage();
+//            }
             // and if autolock was set for this item then unset it
             unset($_SESSION['glpilock_autolock_items'][ $this->itemtype ][ $this->itemid ]);
         }
+
+        TemplateRenderer::getInstance()->display('layout/parts/objectlock_message.html.twig', [
+            'new_lock' => $new_lock,
+            'item' => $this,
+            'user_data' => getUserName($this->fields['users_id'], 2),
+            'show_ask_unlock' => $showAskUnlock
+        ]);
         return $ret;
     }
 
