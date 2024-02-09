@@ -951,7 +951,7 @@ class Conf extends CommonGLPI
             //blocaction with status
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
             echo "<td>";
-            echo \State::createTabEntry(__('Status to change (all if empty)'), 0, \State::getType());
+            echo \State::createTabEntry(__('If the asset status is (all if empty)'), 0, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
             Dropdown::showFromArray(
