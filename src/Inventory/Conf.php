@@ -968,7 +968,7 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action2'><td colspan=2></td>";
             echo "<td>";
-            echo \State::createTabEntry(__('Status changed'), 0, \State::getType());
+            echo \State::createTabEntry(__('Status to apply'), 0, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
             State::dropdown(
