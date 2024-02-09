@@ -66,10 +66,9 @@ $(function () {
      */
     $(document).on("paste", "input[type='text']", function (event) {
         event.preventDefault();
-        var actualValue = $(this).val();
         var pastedData = event.originalEvent.clipboardData || window.clipboardData;
         var pastedText = pastedData.getData('text');
-        $(this).val(actualValue + pastedText.trim());
+        document.execCommand('insertText', false, pastedText.trim());
     });
 });
 
