@@ -47,8 +47,24 @@
                     <div class="row flex-row">
                         {% block form_fields %}
                             {{ fields.textField('name', item.fields['name'], __('Name')) }}
+                            {{ fields.dropdownArrayField('grants', null, {
+                                'password': __("Password"),
+                                'client_credentials': __("Client credentials"),
+                                'authorization_code': __("Authorization code"),
+                            }, __('Grants'), {
+                                multiple: true,
+                                values: item.fields['grants']|default(['authorization_code']),
+                            }) }}
                             {% if not item.isNewItem() %}
                                 {{ fields.readOnlyField('identifier', item.fields['identifier'], __('Client ID')) }}
+                            {% endif %}
+                            {% if allowed_scopes is defined and allowed_scopes is not empty %}
+                                {{ fields.dropdownArrayField('scopes', null, allowed_scopes, __('Scopes'), {
+                                    multiple: true,
+                                    values: item.fields['scopes'],
+                                }) }}
+                            {% else %}
+                                {{ fields.nullField() }}
                             {% endif %}
                             {% if not item.isNewItem() %}
                                 {{ fields.passwordField('secret', item.fields['secret'], __('Client Secret'), {
@@ -63,15 +79,6 @@
                                     values: item.fields['scopes'],
                                 }) }}
                             {% endif %}
-
-                            {{ fields.dropdownArrayField('grants', null, {
-                                'password': __("Password"),
-                                'client_credentials': __("Client credentials"),
-                                'authorization_code': __("Authorization code"),
-                            }, __('Grants'), {
-                                multiple: true,
-                                values: item.fields['grants']|default(['authorization_code']),
-                            }) }}
 
                             {{ fields.textareaField(
                                 'comment',
