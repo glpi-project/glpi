@@ -1211,6 +1211,7 @@ JAVASCRIPT;
                     'DomainType' => null,
                     'DomainRelation' => null,
                     'DomainRecordType' => null,
+                    'DomainRecord' => null,
                     'NetworkPortFiberchannelType' => null,
 
                 ],
