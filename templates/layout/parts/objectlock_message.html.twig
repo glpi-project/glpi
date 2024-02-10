@@ -32,18 +32,19 @@
 #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
-{% macro forceUnlockButton(check_unlock_right) %}
+{% macro forceUnlockButton(item, check_unlock_right) %}
     {% set real_profile = session('glpilocksavedprofile')|default(null) %}
-    {% if not check_unlock_right or (real_profile != null and real_profile[item.itemtype] b-and constant('UNLOCK')) %}
+    {% if not check_unlock_right or (real_profile != null and real_profile[item.fields['itemtype']] b-and constant('UNLOCK')) %}
         <button type="button" class="btn btn-sm btn-primary ms-2 force-unlock-item">
             <i class="ti ti-lock-open"></i>
-            <span>{{ __('Force unlock %1s #%2s')|format(item.itemtypename, item.itemid) }}</span>
+            <span>{{ __('Force unlock %1s #%2s')|format(item.fields['itemtype']|itemtype_name, item.fields['items_id']) }}</span>
         </button>
         <script>
             $('button.force-unlock-item').on('click', () => {
                 glpi_confirm({
-                    title: '{{ item.itemtypename }} #{{ item.itemid }}',
+                    title: '{{ item.fields['itemtype']|itemtype_name }} #{{ item.fields['items_id'] }}',
                     message: __('Force unlock this item?'),
                     confirm_callback: () => {
                         $.post({
@@ -52,7 +53,7 @@
                             data: {
                                 unlock: 1,
                                 force: 1,
-                                id: {{ lock_id }}
+                                id: {{ item.getID }},
                             },
                             dataType: 'json'
                         }).then(() => {
@@ -76,40 +77,57 @@
     {% endif %}
 {% endmacro %}
 
-{% if autolock %}
-
+{% if autolock_readmode %}
+    <div id="message_after_lock" class="d-inline-block w-100 alert alert-warning">
+        <span class="me-3">
+            <i class="ti ti-eye"></i>
+            {{ __('Read-only mode') }}
+        </span>
+        <form method="post" class="d-inline">
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {{ inputs.submit('lockwrite', __('Edit'), 1, {
+                class: 'btn btn-sm btn-primary ms-2',
+                icon: 'ti ti-pencil',
+            }) }}
+        </form>
+    </div>
 {% else %}
     {% if not new_lock %}
-        <div id="message_after_lock" class="objectlockmessage d-inline-block w-100">
+        <div id="message_after_lock" class="d-inline-block w-100 alert alert-warning">
             {% if item.fields['users_id'] != session('glpiID') %}
                 <strong class="nowrap">
                     {% set locked_by_msg %}
                         {% set locked_by_link %}
                             <a href="{{ 'User'|itemtype_form_path(item.fields['users_id']) }}">{{ user_data['name'] }}</a>
                         {% endset %}
-                        {{ __('Locked by %1s')|format(locked_by_link)|raw }}
+                        {{ __('Locked: %1$s by %2$s')|e|format(item.fields['date']|relative_datetime, locked_by_link)|raw }}
                     {% endset %}
                     {{ fields.htmlField('', locked_by_msg, '', {
                         no_label: true,
                         helper: user_data['comment'],
                         field_class: 'd-inline-block',
+                        wrapper_class: 'd-block',
                         mb: '',
                     }) }}
-                    <span class="mx-2">-></span>
-                    <span>{{ item.fields['date']|formatted_datetime }}</span>
                 </strong>
                 {% if show_ask_unlock %}
-                    <button type="button" class="btn btn-sm btn-primary ms-2 ask-unlock-item">
+                    <br>
+                    <button type="button" class="btn btn-sm btn-primary ask-unlock-item mt-2 me-2">
                         <i class="ti ti-lock-open"></i>
                         <span>{{ __('Ask for unlock') }}</span>
                     </button>
-                    {{ fields.checkboxField('alertMe', 0, __('Alert me when unlocked')) }}
-                    {{ _self.forceUnlockButton(true) }}
+                    <div class="d-inline-flex" style="vertical-align: sub">
+                        {{ inputs.label(__('Alert me when unlocked'), 'alertMe', {}, 'form-label mb-0 me-2') }}
+                        {{ inputs.checkbox('alertMe', 0, {
+                            id: 'alertMe'
+                        }) }}
+                    </div>
+                    {{ _self.forceUnlockButton(item, true) }}
                 {% endif %}
             {% else %}
                 <strong class="nowrap">
                     {{ __('Locked by you!') }}
-                    {{ _self.forceUnlockButton(false) }}
+                    {{ _self.forceUnlockButton(item, false) }}
                 </strong>
             {% endif %}
         </div>
@@ -120,9 +138,9 @@
     import({{ js_path('modules/ObjectLock.js') }}).then((m) => {
         new m.initObjectLock({
             id: {{ item.getID }},
-            itemtype: {{ item.itemtype }},
-            itemtype_name: '{{ item.itemtypename }}',
-            items_id: {{ item.itemid }},
+            itemtype: {{ item.fields['itemtype'] }},
+            itemtype_name: '{{ item.fields['itemtype']|itemtype_name }}',
+            items_id: {{ item.fields['items_id'] }},
         }, {{ user_data }}, {{ new_lock }});
     });
 </script>
