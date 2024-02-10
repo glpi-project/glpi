@@ -42,12 +42,7 @@ include('./inc/includes.php');
 
 // Force in normal mode
 $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
-
-// Example usage with Nagios check_http plugin:
-// check_http -H servername -u /glpi/status.php -s GLPI_OK
-
 // Redirect handling to the High-Level API (we may eventually remove this script)
-
 $request = new Request('GET', '/Status/All', getallheaders() ?? []);
 try {
     $response = Router::getInstance()->handleRequest($request);

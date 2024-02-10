@@ -70,6 +70,8 @@ The present file will list all changes made to the project; according to the
 - The database "master" property in the status checker (/status.php and glpi:system:status), replaced by "main".
 - The database "slaves" property in the status checker (/status.php and glpi:system:status), replaced by "replicas".
 - API URL is no longer customizable within GLPI. Use alias/rewrite rules in your web server configuration instead if needed.
+- `status.php` and `bin/console system:status` no longer supports plain-text output.
+- `Glpi\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
 
 ### API changes
 
