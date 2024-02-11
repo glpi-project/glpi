@@ -120,9 +120,9 @@ class ObjectLock extends CommonDBTM
             // should get locking user info
             $useremail = new UserEmail();
             $showAskUnlock = $useremail->getFromDBByCrit([
-                    'users_id' => $this->fields['users_id'],
-                    'is_default' => 1
-                ]) && ($CFG_GLPI['notifications_mailing'] == 1);
+                'users_id' => $this->fields['users_id'],
+                'is_default' => 1
+            ]) && ($CFG_GLPI['notifications_mailing'] == 1);
         }
 
         if (!$autolock) {

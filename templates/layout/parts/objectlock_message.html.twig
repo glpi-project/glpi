@@ -135,14 +135,17 @@
 {% endif %}
 
 <script>
-    import({{ js_path('modules/ObjectLock.js') }}).then((m) => {
+    import('{{ js_path('js/modules/ObjectLock.js') }}').then((m) => {
         $(() => {
+            if ($('.navigationheader').length > 0) {
+                $('#message_after_lock').insertAfter('.navigationheader');
+            }
             new m.initObjectLock({
                 id: {{ item.getID }},
-                itemtype: {{ item.fields['itemtype'] }},
+                itemtype: '{{ item.fields['itemtype'] }}',
                 itemtype_name: '{{ item.fields['itemtype']|itemtype_name }}',
                 items_id: {{ item.fields['items_id'] }},
-            }, {{ user_data }}, {{ new_lock }});
+            }, {{ user_data|json_encode|raw }}, {{ new_lock }});
         });
     });
 </script>

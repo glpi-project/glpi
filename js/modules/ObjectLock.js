@@ -98,6 +98,11 @@ class ObjectLock {
                             title: __('Unlock request sent!'),
                             message: escapeMarkupText(__('Request sent to %s').replace('%s', this.user_data['name'])),
                         });
+                    }, () => {
+                        glpi_alert({
+                            title: __('Error'),
+                            message: __('An error occurred while sending the unlock request'),
+                        });
                     });
                 }
             });
