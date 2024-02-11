@@ -136,11 +136,13 @@
 
 <script>
     import({{ js_path('modules/ObjectLock.js') }}).then((m) => {
-        new m.initObjectLock({
-            id: {{ item.getID }},
-            itemtype: {{ item.fields['itemtype'] }},
-            itemtype_name: '{{ item.fields['itemtype']|itemtype_name }}',
-            items_id: {{ item.fields['items_id'] }},
-        }, {{ user_data }}, {{ new_lock }});
+        $(() => {
+            new m.initObjectLock({
+                id: {{ item.getID }},
+                itemtype: {{ item.fields['itemtype'] }},
+                itemtype_name: '{{ item.fields['itemtype']|itemtype_name }}',
+                items_id: {{ item.fields['items_id'] }},
+            }, {{ user_data }}, {{ new_lock }});
+        });
     });
 </script>

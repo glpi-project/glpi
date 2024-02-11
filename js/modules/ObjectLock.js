@@ -47,9 +47,7 @@ class ObjectLock {
         this.user_data = user_data;
         this.new_lock = new_lock;
         this.lockStatusTimer = undefined;
-        $(() => {
-            this.#registerListeners();
-        });
+        this.#registerListeners();
     }
 
     #registerListeners() {
@@ -60,7 +58,10 @@ class ObjectLock {
                     $.get({
                         url: `${CFG_GLPI.root_doc}/ajax/unlockobject.php`,
                         cache: false,
-                        data: `lockstatus=1&id=${this.lock.id}`,
+                        data: {
+                            lockstatus: 1,
+                            id: this.lock.id
+                        },
                     }).then((data) => {
                         if (data === 0) {
                             clearInterval(this.lockStatusTimer);
