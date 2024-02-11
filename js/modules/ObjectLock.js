@@ -100,7 +100,7 @@ class ObjectLock {
                         });
                     }, () => {
                         glpi_alert({
-                            title: __('Error'),
+                            title: _n('Error', 'Errors', 1),
                             message: __('An error occurred while sending the unlock request'),
                         });
                     });
