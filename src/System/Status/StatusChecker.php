@@ -127,7 +127,7 @@ final class StatusChecker
                 ]
             ];
             foreach ($services as $name => $service_check_method) {
-                $service_status = self::getServiceStatus($name, $public_only, true);
+                $service_status = self::getServiceStatus($name, $public_only);
                 $status[$name] = $service_status;
             }
 
