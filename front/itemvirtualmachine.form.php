@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
     );
     $asset = new $_POST['itemtype']();
     $asset->getFromDB($item_vm->fields['items_id']);
-    Html::redirect($asset->getFormURLWithID($item_vm->fields['itemss_id']) .
+    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
                   ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["purge"])) {
     $item_vm->check($_POST["id"], PURGE);
@@ -130,7 +130,12 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    $menus = ["assets", $_GET['itemtype']];
+    if ($item_vm->getFromDB($_GET['id'])) {
+        $menus = ['assets', $item_vm->fields['itemtype']];
+    } else {
+        $menus = ['assets', $_GET['itemtype']];
+    }
+
     ItemVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
         'itemtype' => $_GET['itemtype'],
         'items_id' => $_GET["items_id"]

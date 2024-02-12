@@ -208,6 +208,7 @@ The present file will list all changes made to the project; according to the
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `ComputerAntivirus::showForComputer()`
+- `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `GLPI::getLogLevel()`
