@@ -76,15 +76,6 @@ class Form extends CommonDBTM
         return $tabs;
     }
 
-    public function getEmpty()
-    {
-        parent::getEmpty();
-        $this->fields['name'] = __("Untitled form");
-        $this->fields['header'] = __("My form description...");
-
-        return true;
-    }
-
     public function showForm($id, array $options = [])
     {
         if (!empty($id)) {
@@ -155,9 +146,15 @@ class Form extends CommonDBTM
         return $search_options;
     }
 
+    public function post_addItem()
+    {
+        // Automatically create the first form section
+        $this->createFirstSection();
+    }
+
     public function prepareInputForUpdate($input)
     {
-        // Insert date_mod event if the framework would handle it by itself
+        // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
         // its questions are
         $input['date_mod'] = $_SESSION['glpi_currenttime'];
@@ -174,6 +171,7 @@ class Form extends CommonDBTM
 
         try {
             // Update questions
+            $this->updateSections();
             $this->updateQuestions();
             $DB->commit();
         } catch (\Throwable $e) {
@@ -247,28 +245,102 @@ class Form extends CommonDBTM
     }
 
     /**
-     * Temporary function to get the working section
-     * Will be removed once multiple sections are supported
+     * Create the first section of a form
      *
-     * @return Section
+     * @return void
      */
-    protected function getUniqueSection(): Section
+    protected function createFirstSection(): void
     {
-        // For now use a single hidden section as users cant interact with them
         $section = new Section();
-        $sections = $section->find(['forms_forms_id' => $this->fields['id']]);
-        if (!count($sections)) {
+        $section->add([
+            'forms_forms_id' => $this->fields['id'],
+            'name'           => __("First section"),
+            'rank'           => 1,
+        ]);
+    }
+
+    /**
+     * Update form's sections using the special data found in
+     * $this->input['_sections']
+     *
+     * @return void
+     */
+    protected function updateSections(): void
+    {
+        $sections = $this->input['_sections'] ?? [];
+
+        // Keep track of sections found
+        $found_sections = [];
+
+        // Parse each submitted section
+        foreach ($sections as $form_data) {
             $section = new Section();
-            $section->add([
+
+            // Newly created section, may need to be updated using temporary UUID instead of ID
+            if ($form_data['_use_uuid']) {
+                $uuid = $form_data['id'];
+                $form_data['id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+            } else {
+                $uuid = null;
+            }
+
+            if ($form_data['id'] == 0) {
+                // Add new section
+                unset($form_data['id']);
+                $id = $section->add($form_data);
+
+                if (!$id) {
+                    trigger_error("Failed to add section", E_USER_WARNING);
+                    continue;
+                }
+
+                // Store temporary UUID -> ID mapping in session
+                if ($uuid !== null) {
+                    $_SESSION['form_editor_sections_uuid'][$uuid] = $id;
+                }
+            } else {
+                // Update existing section
+                $success = $section->update($form_data);
+                if (!$success) {
+                    trigger_error("Failed to update section", E_USER_WARNING);
+                }
+                $id = $section->getID();
+            }
+
+            // Keep track of its id
+            $found_sections[] = $id;
+        }
+
+        // Safety check to avoid deleting all sections if some code run an update
+        // without the _sections keys.
+        // Deletion is only done if the special "_delete_missing_sections" key
+        // is present
+        $delete_missing_sections = $this->input['_delete_missing_sections'] ?? false;
+        if ($delete_missing_sections) {
+            // Avoid empty IN clause
+            if (empty($found_sections)) {
+                $found_sections = [-1];
+            }
+
+            $missing_sections = (new Section())->find([
+                // Is part of this form
                 'forms_forms_id' => $this->fields['id'],
-                'name'           => 'tmp',
-                'rank'           => 1,
+
+                // Was not found in the submitted data
+                'id' => ['NOT IN', $found_sections],
             ]);
 
-            return $section;
-        } else {
-            return Section::getById(array_pop($sections)['id']);
+            foreach ($missing_sections as $row) {
+                $section = new Section();
+                $success = $section->delete($row);
+                if (!$success) {
+                    trigger_error("Failed to delete section", E_USER_WARNING);
+                }
+            }
         }
+
+        // Special input has been handled, it can be deleted
+        unset($this->input['_sections']);
     }
 
     /**
@@ -280,7 +352,6 @@ class Form extends CommonDBTM
     protected function updateQuestions(): void
     {
         $questions_data_per_section = $this->input['_questions'] ?? [];
-        $section = $this->getUniqueSection();
 
         // Keep track of questions found
         $found_questions = [];
@@ -290,8 +361,12 @@ class Form extends CommonDBTM
             foreach ($questions_data as $question_data) {
                 $question = new Question();
 
-                // Insert forced section id
-                $question_data['forms_sections_id'] = $section->fields['id'];
+                if ($question_data["_use_uuid_for_sections_id"]) {
+                    // This question was added to a newly created section
+                    // We need to find the correct section id using the temporary UUID
+                    $uuid = $question_data['forms_sections_id'];
+                    $question_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
+                }
 
                 // Newly created question, may need to be updated using temporary UUID instead of ID
                 if ($question_data['_use_uuid']) {
@@ -363,6 +438,6 @@ class Form extends CommonDBTM
         }
 
         // Special input has been handled, it can be deleted
-        unset($this->input['_sections']);
+        unset($this->input['_questions']);
     }
 }
