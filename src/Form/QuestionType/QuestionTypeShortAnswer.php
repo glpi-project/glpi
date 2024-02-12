@@ -44,6 +44,11 @@ use Override;
  */
 abstract class QuestionTypeShortAnswer implements QuestionTypeInterface
 {
+    #[Override]
+    public function __construct()
+    {
+    }
+
     /**
      * Specific input type for child classes
      *

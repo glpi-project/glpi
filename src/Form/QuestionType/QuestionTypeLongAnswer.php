@@ -45,6 +45,11 @@ use Override;
 class QuestionTypeLongAnswer implements QuestionTypeInterface
 {
     #[Override]
+    public function __construct()
+    {
+    }
+
+    #[Override]
     public function renderAdminstrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
