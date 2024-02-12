@@ -272,9 +272,10 @@ class DbTestCase extends \GLPITestCase
      */
     protected function createRule(RuleBuilder $builder): Rule
     {
-        $rule = $this->createItem(RuleTicket::class, [
+        // Add rule ticket
+        $rule = $this->createItem($builder->getRuleType(), [
             'is_active'    => 1,
-            'sub_type'     => 'RuleTicket',
+            'sub_type'     => $builder->getRuleType(),
             'name'         => $builder->getName(),
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),

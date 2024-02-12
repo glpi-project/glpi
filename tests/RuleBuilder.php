@@ -44,6 +44,11 @@ class RuleBuilder
     protected string $name;
 
     /**
+     * @property string $name Rule name
+     */
+    protected string $rule_type;
+
+    /**
      * @property string $operator 'AND' or 'OR'
      */
     protected string $operator;
@@ -76,17 +81,23 @@ class RuleBuilder
     /**
      * @param string $name Rule name
      */
-    public function __construct(string $name)
+    public function __construct(string $name, ?string $rule_type = null)
     {
         $this->name = $name;
 
         // Default values
         $this->operator     = "AND";
-        $this->condition    = RuleTicket::ONADD | RuleTicket::ONUPDATE;
+        $this->rule_type    = $rule_type ?? RuleTicket::class;
         $this->is_recursive = true;
         $this->entities_id  = getItemByTypeName(Entity::class, '_test_root_entity', true);
         $this->criteria     = [];
         $this->actions      = [];
+
+        if ($this->rule_type === RuleTicket::class) {
+            $this->condition = RuleTicket::ONADD | RuleTicket::ONUPDATE;
+        } else {
+            $this->condition = 0;
+        }
     }
 
     /**
@@ -185,7 +196,6 @@ class RuleBuilder
         return $this;
     }
 
-
     /**
      * Get rule name
      *
@@ -194,6 +204,16 @@ class RuleBuilder
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * Get rule type
+     *
+     * @return string Rule type
+     */
+    public function getRuleType(): string
+    {
+        return $this->rule_type;
     }
 
     /**
