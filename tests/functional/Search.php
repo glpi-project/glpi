@@ -2193,7 +2193,11 @@ class Search extends DbTestCase
                                 IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
                                 IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
                                 IFNULL(`glpi_users_users_id_recipient`.`name`, '')
-                            )) ASC");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
+                                IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
+                                IFNULL(`glpi_users_users_id_recipient`.`name`, '')) ASC
+                            ) ASC");
     }
 
     public function testSearchAllAssets()
