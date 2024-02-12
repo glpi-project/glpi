@@ -3759,7 +3759,11 @@ JAVASCRIPT;
                                 IFNULL(`$table$addtable`.`$name1`, ''),
                                 IFNULL(`$table$addtable`.`$name2`, ''),
                                 IFNULL(`$table$addtable`.`name`, '')$addaltemail
-                            )) $order";
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table$addtable`.`$name1`, ''),
+                                IFNULL(`$table$addtable`.`$name2`, ''),
+                                IFNULL(`$table$addtable`.`name`, '')$addaltemail) ASC
+                            ) $order";
                         } else {
                             $criterion = "`" . $table . $addtable . "`.`name` $order";
                         }

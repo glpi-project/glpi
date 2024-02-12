@@ -1394,7 +1394,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`realname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) ASC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) ASC ");
 
         $user_order_2 = null;
         $this->when(
@@ -1410,7 +1415,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`realname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) DESC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) DESC ");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = null;
@@ -1427,7 +1437,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`firstname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) ASC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) ASC ");
 
         $user_order_4 = null;
         $this->when(
@@ -1443,7 +1458,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`firstname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) DESC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) DESC ");
     }
 
     /**
@@ -1470,7 +1490,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`realname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) ASC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) ASC ");
         $user_order_2 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1482,7 +1507,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`realname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) DESC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) DESC ");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
@@ -1496,7 +1526,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`firstname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) ASC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) ASC ");
         $user_order_4 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1508,7 +1543,12 @@ class Search extends DbTestCase
                                 IFNULL(`$table_addtable`.`firstname`, ''),
                                 IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            )) DESC ");
+                            ) ORDER BY CONCAT(
+                                IFNULL(`$table_addtable`.`realname`, ''),
+                                IFNULL(`$table_addtable`.`firstname`, ''),
+                                IFNULL(`$table_addtable`.`name`, ''),
+                                IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
+                            ) DESC ");
     }
 
     /**
