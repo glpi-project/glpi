@@ -76,7 +76,7 @@
                     type="text"
                     class="form-control content-editable-h2"
                     name="name"
-                    value="{{ section is not null ? section.fields.name : '' }}"
+                    value="{{ section is not null ? section.fields.name|e('html_attr') : '' }}"
                     placeholder="{{ __("New section") }}"
                 >
 
