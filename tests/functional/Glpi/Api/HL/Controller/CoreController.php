@@ -312,7 +312,7 @@ class CoreController extends \HLAPITestCase
             'response_type' => 'code',
             'client_id' => $client_data['identifier'],
             'scope' => '',
-            'redirect_uri' => $client_data['redirect_uri'],
+            'redirect_uri' => json_decode($client_data['redirect_uri'])[0],
         ]);
 
         $this->api->call($request, function ($call) {

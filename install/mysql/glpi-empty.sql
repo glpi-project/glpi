@@ -9568,7 +9568,7 @@ CREATE TABLE `glpi_oauthclients` (
    `name` varchar(255) NOT NULL DEFAULT '',
    `comment` text DEFAULT NULL,
    `secret` varchar(255) NOT NULL,
-   `redirect_uri` varchar(255) NOT NULL,
+   `redirect_uri` TEXT NOT NULL,
    `grants` text NOT NULL,
    `scopes` text NOT NULL,
    `is_active` tinyint NOT NULL DEFAULT '1',

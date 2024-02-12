@@ -136,7 +136,9 @@ final class OAuthClient extends CommonDBTM
         if (isset($input['scopes'])) {
             $input['scopes'] = json_encode($input['scopes']);
         }
-        $input['redirect_uri'] = json_encode($input['redirect_uri'] ?? []);
+        if (isset($input['redirect_uri'])) {
+            $input['redirect_uri'] = json_encode($input['redirect_uri'] ?? []);
+        }
 
         return $input;
     }
