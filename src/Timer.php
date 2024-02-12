@@ -35,6 +35,7 @@
 
 /**
  *  Timer class for debug and some other cases
+ * @deprecated 10.1.0
  */
 class Timer
 {
@@ -49,7 +50,7 @@ class Timer
      */
     public function start()
     {
-
+        Toolbox::deprecated();
         $this->timer = microtime(true);
         return true;
     }

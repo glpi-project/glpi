@@ -1572,9 +1572,6 @@ abstract class API
      */
     protected function searchItems($itemtype, $params = [])
     {
-        /** @var array $DEBUG_SQL */
-        global $DEBUG_SQL;
-
         $itemtype = $this->handleDepreciation($itemtype);
 
        // check rights
@@ -1673,16 +1670,13 @@ abstract class API
        // force reset
         $params['reset'] = 'reset';
 
-       // force logging sql queries
-        $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
-
        // call Core Search method
         $rawdata = Search::getDatas($itemtype, $params, $params['forcedisplay']);
 
        // probably a sql error
         if (!isset($rawdata['data']) || count($rawdata['data']) === 0) {
             $this->returnError(
-                "Unexpected SQL Error : " . array_splice($DEBUG_SQL['errors'], -2)[0],
+                'An internal error occured while trying to fetch the data.',
                 500,
                 "ERROR_SQL",
                 false
@@ -2352,9 +2346,6 @@ abstract class API
      */
     private function getGlpiLastMessage()
     {
-        /** @var array $DEBUG_SQL */
-        global $DEBUG_SQL;
-
         $all_messages             = [];
 
         $messages_after_redirect  = [];
@@ -2373,14 +2364,6 @@ abstract class API
             foreach ($messages as $message) {
                 $all_messages[] = Toolbox::stripTags($message);
             }
-        }
-
-       // get sql errors
-        if (
-            count($all_messages) <= 0
-            && ($DEBUG_SQL['errors'] ?? null) !== null
-        ) {
-            $all_messages = $DEBUG_SQL['errors'];
         }
 
         if (!end($all_messages)) {

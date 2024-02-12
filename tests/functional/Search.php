@@ -37,7 +37,6 @@ namespace tests\units;
 
 use CommonDBTM;
 use CommonITILActor;
-use DateTime;
 use DBConnection;
 use DbTestCase;
 use Document;
@@ -55,7 +54,7 @@ class Search extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
     {
-        global $DEBUG_SQL, $CFG_GLPI;
+        global $CFG_GLPI;
 
        // check param itemtype exists (to avoid search errors)
         if ($itemtype !== 'AllAssets') {
@@ -73,26 +72,12 @@ class Search extends DbTestCase
             $CFG_GLPI["lock_item_list"] = [$itemtype];
         }
 
-       // force session in debug mode (to store & retrieve sql errors)
-        $glpi_use_mode             = $_SESSION['glpi_use_mode'];
-        $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
-
        // don't compute last request from session
         $params['reset'] = 'reset';
 
        // do search
         $params = \Search::manageParams($itemtype, $params);
         $data   = \Search::getDatas($itemtype, $params, $forcedisplay);
-
-       // append existing errors to returned data
-        $data['last_errors'] = [];
-        if (isset($DEBUG_SQL['errors'])) {
-            $data['last_errors'] = implode(', ', $DEBUG_SQL['errors']);
-            unset($DEBUG_SQL['errors']);
-        }
-
-       // restore glpi mode to previous
-        $_SESSION['glpi_use_mode'] = $glpi_use_mode;
 
        // do not store this search from session
         \Search::resetSaveSearch();
@@ -2200,10 +2185,6 @@ class Search extends DbTestCase
         $this->array($result['data']['cols']);
         $this->array($result['data']['rows']);
         $this->array($result['data']['items']);
-
-       // No errors
-        $this->array($result)->hasKey('last_errors');
-        $this->array($result['last_errors'])->isIdenticalTo([]);
 
         $this->array($result)->hasKey('sql');
         $this->array($result['sql'])->hasKey('search');

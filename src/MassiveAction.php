@@ -131,10 +131,10 @@ class MassiveAction
     private $timeout_delay;
 
     /**
-     * Current process timer.
-     * @var int
+     * Current process start time.
+     * @var float
      */
-    private $timer;
+    private float $start_time;
 
     /**
      * Item used to check rights.
@@ -410,9 +410,7 @@ class MassiveAction
 
             $this->fields_to_remove_when_reload = ['fields_to_remove_when_reload'];
 
-            $this->timer = new Timer();
-            $this->timer->start();
-            $this->fields_to_remove_when_reload[] = 'timer';
+            $this->start_time = microtime(true);
 
             $max_time = (get_cfg_var("max_execution_time") == 0) ? 60
                                                               : get_cfg_var("max_execution_time");
@@ -457,7 +455,6 @@ class MassiveAction
             case 'redirect':
             case 'remainings':
             case 'timeout_delay':
-            case 'timer':
                 Toolbox::deprecated(sprintf('Reading private property %s::%s is deprecated', __CLASS__, $property));
                 $value = $this->$property;
                 break;
@@ -495,7 +492,6 @@ class MassiveAction
             case 'redirect':
             case 'remainings':
             case 'timeout_delay':
-            case 'timer':
                 Toolbox::deprecated(sprintf('Writing private property %s::%s is deprecated', __CLASS__, $property));
                 $this->$property = $value;
                 break;
@@ -1337,7 +1333,7 @@ class MassiveAction
             return;
         }
 
-        if ($this->timer->getTime() > 1) {
+        if ((microtime(true) - $this->start_time) > 1000) {
            // If the action's delay is more than one second, the display progress bars
             $this->display_progress_bars = true;
         }
@@ -1868,7 +1864,7 @@ class MassiveAction
         $this->nb_done += $number;
 
        // If delay is to big, then reload !
-        if ($this->timer->getTime() > $this->timeout_delay) {
+        if ((microtime(true) - $this->start_time) > ($this->timeout_delay * 1000)) {
             Html::redirect($_SERVER['PHP_SELF'] . '?identifier=' . $this->identifier);
         }
 

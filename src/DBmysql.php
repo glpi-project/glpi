@@ -359,10 +359,6 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
-     *
      * @return mysqli_result|boolean Query result handler
      *
      * @deprecated 10.0.11
@@ -377,23 +373,10 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @var array   $CFG_GLPI
-     * @var array   $DEBUG_SQL
-     * @var integer $SQL_TOTAL_REQUEST
-     *
      * @return mysqli_result|boolean Query result handler
      */
     public function doQuery($query)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $DEBUG_SQL
-         * @var integer $SQL_TOTAL_REQUEST
-         */
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
-
-        //FIXME Remove use of $DEBUG_SQL and $SQL_TOTAL_REQUEST
-
         $debug_data = [
             'query' => $query,
             'time' => 0,
@@ -402,14 +385,7 @@ class DBmysql
             'warnings' => '',
         ];
 
-        $is_debug = isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE);
-        if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $SQL_TOTAL_REQUEST++;
-            $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
-        }
-
-        $TIMER = new Timer();
-        $TIMER->start();
+        $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
 
@@ -424,22 +400,15 @@ class DBmysql
 
             ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
 
-            if (($is_debug || isAPI()) && $CFG_GLPI["debug_sql"]) {
-                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
-                $debug_data['errors'] = $this->error();
-            }
+            $debug_data['errors'] = $this->error();
         }
 
-        if ($is_debug && $CFG_GLPI["debug_sql"]) {
-            $TIME = $TIMER->getTime();
-            $debug_data['time'] = (int) ($TIME * 1000);
-            $debug_data['rows'] = $this->affectedRows();
-            $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
-            $DEBUG_SQL['rows'][$SQL_TOTAL_REQUEST] = $this->affectedRows();
-        }
+        $duration = (microtime(true) - $start_time) * 1000;
+
+        $debug_data['time'] = $duration;
+        $debug_data['rows'] = $this->affectedRows();
 
         $this->last_query_warnings = $this->fetchQueryWarnings();
-        $DEBUG_SQL['warnings'][$SQL_TOTAL_REQUEST] = $this->last_query_warnings;
 
         $warnings_string = implode(
             "\n",
@@ -465,15 +434,18 @@ class DBmysql
             ErrorHandler::getInstance()->handleSqlWarnings($this->last_query_warnings, $query);
         }
 
-        \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
-            $debug_data['query'],
-            $debug_data['time'],
-            $debug_data['rows'],
-            $debug_data['errors'],
-            $debug_data['warnings']
-        );
+        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+            \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+                $debug_data['query'],
+                $debug_data['time'],
+                $debug_data['rows'],
+                $debug_data['errors'],
+                $debug_data['warnings']
+            );
+        }
+
         if ($this->execution_time === true) {
-            $this->execution_time = $TIMER->getTime(0, true);
+            $this->execution_time = $duration;
         }
         return $res;
     }
@@ -535,13 +507,6 @@ class DBmysql
      */
     public function prepare($query)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var array $DEBUG_SQL
-         * @var integer $SQL_TOTAL_REQUEST
-         */
-        global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
-
         $res = $this->dbh->prepare($query);
         if (!$res) {
             // no translation for error logs
@@ -553,13 +518,12 @@ class DBmysql
 
             ErrorHandler::getInstance()->handleSqlError($this->dbh->errno, $this->dbh->error, $query);
 
-            if (
-                isset($_SESSION['glpi_use_mode'])
-                && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
-                && $CFG_GLPI["debug_sql"]
-            ) {
-                $SQL_TOTAL_REQUEST++;
-                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+            if (isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+                \Glpi\Debug\Profile::getCurrent()->addSQLQueryData(
+                    query: $query,
+                    time: 0,
+                    errors: $this->error()
+                );
             }
         }
         $this->current_query = $query;

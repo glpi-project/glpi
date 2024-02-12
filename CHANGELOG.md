@@ -193,6 +193,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 - `Search::getOptions()` no longer returns a reference
 - `js/Forms/FaIconSelector.js` and therefore `window.GLPI.Forms.FaIconSelector` has been deprecated and replaced by `js/modules/Form/WebIconSelector.js`
+- `Timer` class.
 
 #### Removed
 - Usage of `csrf_compliant` plugins hook.
@@ -264,6 +265,8 @@ The present file will list all changes made to the project; according to the
 - `Config::showLibrariesInformation()`
 - `DisplayPreference::showFormGlobal` `target` parameter.
 - `DisplayPreference::showFormPerso` `target_id` parameter.
+- `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
+- `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
 
 
 ## [10.0.13] unreleased
@@ -404,7 +407,6 @@ The present file will list all changes made to the project; according to the
 - `$TIMER_DEBUG` global variable.
 - `$DEBUG_SQL` global variable.
 - `$SQL_TOTAL_REQUEST` global variable.
-- `$DEBUG_SQL` global variable.
 - `$CFG_GLPI['debug_sql']` configuration option.
 - `$CFG_GLPI['debug_vars']` configuration option.
 

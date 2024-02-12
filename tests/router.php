@@ -45,13 +45,6 @@ define(
     ]
 );
 
-// Avoid warnings because of missing globals
-$DEBUG_SQL = [
-    'queries' => [],
-    'errors'  => [],
-    'times'   => [],
-];
-
 ini_set("log_error", 1);
 
 // Forward to GLPI router
