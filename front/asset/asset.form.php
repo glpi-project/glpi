@@ -129,7 +129,7 @@ if (isset($_POST['add'])) {
     $menus = ['assets', $asset::class];
     $asset::displayFullPageForItem($id, $menus, [
         AssetDefinition::getForeignKeyField() => $asset::getDefinition()->getID(),
-        'withtemplate' => $_GET["withtemplate"],
+        'withtemplate' => $_GET["withtemplate"] ?? '',
         'formoptions'  => "data-track-changes=true",
     ]);
 }
