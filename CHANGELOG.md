@@ -141,6 +141,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
+- `ComputerVirtualMachine` has been deprecated and replaced by `ItemVirtualMachine`
 - `Config::validatePassword()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`
@@ -208,6 +209,7 @@ The present file will list all changes made to the project; according to the
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `ComputerAntivirus::showForComputer()`
+- `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `GLPI::getLogLevel()`

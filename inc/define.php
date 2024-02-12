@@ -490,7 +490,7 @@ $CFG_GLPI['inventory_types'] = [
 ];
 
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
-    'Item_SoftwareVersion', 'Item_Disk', 'ComputerVirtualMachine','ItemAntivirus',
+    'Item_SoftwareVersion', 'Item_Disk', 'ItemVirtualMachine','ItemAntivirus',
     'NetworkPort', 'NetworkName', 'IPAddress', 'Item_OperatingSystem', 'Item_DeviceBattery', 'Item_DeviceCase',
     'Item_DeviceControl', 'Item_DeviceDrive', 'Item_DeviceFirmware', 'Item_DeviceGeneric', 'Item_DeviceGraphicCard',
     'Item_DeviceHardDrive', 'Item_DeviceMemory', 'Item_DeviceMotherboard', 'Item_DeviceNetworkCard', 'Item_DevicePci',
@@ -677,3 +677,4 @@ $CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
 ];
 
 $CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];
+$CFG_GLPI['itemvirtualmachines_types'] = ['Computer'];

@@ -43,6 +43,7 @@ use Config;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
 use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
+use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
 use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GuzzleHttp;
 use Item_DeviceSimcard;
@@ -2334,6 +2335,7 @@ class APIRest extends atoum
             ['provider' => Computer_SoftwareVersion::class],
             ['provider' => Computer_SoftwareLicense::class],
             ['provider' => ComputerAntivirus::class],
+            ['provider' => ComputerVirtualMachine::class],
         ];
     }
 

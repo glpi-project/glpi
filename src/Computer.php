@@ -47,7 +47,7 @@ class Computer extends CommonDBTM
    // From CommonDBTM
     public $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Item_Disk','ComputerVirtualMachine',
+    protected static $forward_entity_to = ['Item_Disk','ItemVirtualMachine',
         'Item_SoftwareVersion', 'Infocom',
         'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem'
@@ -119,7 +119,7 @@ class Computer extends CommonDBTM
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Contract_Item', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('ComputerVirtualMachine', $ong, $options)
+         ->addStandardTab('ItemVirtualMachine', $ong, $options)
          ->addStandardTab('ItemAntivirus', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
          ->addStandardTab('Item_Ticket', $ong, $options)
@@ -325,7 +325,7 @@ class Computer extends CommonDBTM
             [
                 Computer_Item::class,
                 ItemAntivirus::class,
-                ComputerVirtualMachine::class,
+                ItemVirtualMachine::class,
                 Item_Environment::class,
                 Item_Process::class,
             ]
@@ -599,7 +599,7 @@ class Computer extends CommonDBTM
 
         $tab = array_merge($tab, Item_Disk::rawSearchOptionsToAdd(get_class($this)));
 
-        $tab = array_merge($tab, ComputerVirtualMachine::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, ItemVirtualMachine::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, ItemAntivirus::rawSearchOptionsToAdd());
 

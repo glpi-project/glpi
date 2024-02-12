@@ -37,7 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 
-class ComputerVirtualMachine extends DbTestCase
+class ItemVirtualMachine extends DbTestCase
 {
     public function testCreateAndGet()
     {
@@ -47,13 +47,14 @@ class ComputerVirtualMachine extends DbTestCase
         $obj = $this->testedInstance;
         $uuid = 'c37f7ce8-af95-4676-b454-0959f2c5e162';
 
-       // Add
+        // Add
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->object($computer)->isInstanceOf('\Computer');
 
         $this->integer(
             $id = (int)$obj->add([
-                'computers_id' => $computer->fields['id'],
+                'itemtype'     => 'Computer',
+                'items_id'     => $computer->fields['id'],
                 'name'         => 'Virtu Hall',
                 'uuid'         => $uuid,
                 'vcpu'         => 1,
@@ -63,9 +64,9 @@ class ComputerVirtualMachine extends DbTestCase
         $this->boolean($obj->getFromDB($id))->isTrue();
         $this->string($obj->fields['uuid'])->isIdenticalTo($uuid);
 
-        $this->boolean($obj->findVirtualMachine(['name' => 'Virtu Hall']))->isFalse();
-       //n machin exists yet
-        $this->boolean($obj->findVirtualMachine(['uuid' => $uuid]))->isFalse();
+        $this->boolean($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'name' => 'Virtu Hall']))->isFalse();
+        //no machine exists yet
+        $this->boolean($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'uuid' => $uuid]))->isFalse();
 
         $this->integer(
             $cid = (int)$computer->add([
@@ -75,6 +76,6 @@ class ComputerVirtualMachine extends DbTestCase
             ])
         )->isGreaterThan(0);
 
-        $this->variable($obj->findVirtualMachine(['uuid' => $uuid]))->isEqualTo($cid);
+        $this->variable($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'uuid' => $uuid]))->isEqualTo($cid);
     }
 }

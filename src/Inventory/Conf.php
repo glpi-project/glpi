@@ -627,14 +627,14 @@ class Conf extends CommonGLPI
 
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='4'>";
-            echo \ComputerVirtualMachine::getTypeName(Session::getPluralNumber());
+            echo \ItemVirtualMachine::getTypeName(Session::getPluralNumber());
             echo "</th>";
             echo "</tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
             echo "<label for='import_vm'>";
-            echo \ComputerVirtualMachine::createTabEntry(__('Import virtual machines'), 0, \ComputerVirtualMachine::getType());
+            echo \ItemVirtualMachine::createTabEntry(__('Import virtual machines'), 0, \ItemVirtualMachine::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";
@@ -677,7 +677,7 @@ class Conf extends CommonGLPI
             echo "</td>";
             echo "<td>";
             echo "<label for='vm_components'>";
-            echo \ComputerVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, \ComputerVirtualMachine::getType());
+            echo \ItemVirtualMachine::createTabEntry(__('Create components for virtual machines'), 0, \ItemVirtualMachine::getType());
             echo "</label>";
             echo "</td>";
             echo "<td>";

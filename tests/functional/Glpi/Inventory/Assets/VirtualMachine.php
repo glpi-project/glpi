@@ -130,8 +130,8 @@ class VirtualMachine extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
         //first, check there are no vms linked to this computer
-        $cvm = new \ComputerVirtualMachine();
-        $this->boolean($cvm->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+        $cvm = new \ItemVirtualMachine();
+        $this->boolean($cvm->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isFalse('A virtual machine is already linked to computer!');
 
         //convert data
@@ -163,7 +163,7 @@ class VirtualMachine extends AbstractInventoryAsset
         //handle
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($cvm->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+        $this->boolean($cvm->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isTrue('Virtual machine has not been linked to computer :(');
     }
 
@@ -248,14 +248,15 @@ class VirtualMachine extends AbstractInventoryAsset
           $this->integer($esx_id_first)->isGreaterThan(0);
 
           //always one VM
-          $vm = new \ComputerVirtualMachine();
+          $vm = new \ItemVirtualMachine();
           $this->array($vm->find())->hasSize(1);
 
           //get ComputervirtualMachine
-          $vm_first = new \ComputerVirtualMachine();
+          $vm_first = new \ItemVirtualMachine();
           $this->boolean($vm_first->getFromDBByCrit([
               'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
-              'computers_id' => $esx_id_first
+              'itemtype' => 'Computer',
+              'items_id' => $esx_id_first
           ]))->isTrue();
 
 
@@ -340,14 +341,15 @@ class VirtualMachine extends AbstractInventoryAsset
           $this->integer($esx_id_first)->isEqualTo($esx_id_second);
 
           //always one VM
-          $vm = new \ComputerVirtualMachine();
+          $vm = new \ItemVirtualMachine();
           $this->array($vm->find())->hasSize(1);
 
           //get ComputervirtualMachine
-          $vm_second = new \ComputerVirtualMachine();
+          $vm_second = new \ItemVirtualMachine();
           $this->boolean($vm_second->getFromDBByCrit([
               'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-              'computers_id' => $esx_id_second
+              'itemtype' => 'Computer',
+              'items_id' => $esx_id_second
           ]))->isTrue();
 
           //get Computer
@@ -423,14 +425,15 @@ class VirtualMachine extends AbstractInventoryAsset
         $this->integer($esx_id_first)->isGreaterThan(0);
 
         //get two VM
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->array($vm->find())->hasSize(2);
 
         //get first ComputervirtualMachine -> not deleted / purged
-        $firlst_vm = new \ComputerVirtualMachine();
+        $firlst_vm = new \ItemVirtualMachine();
         $this->boolean($firlst_vm->getFromDBByCrit([
             'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-            'computers_id' => $esx_id_first,
+            'itemtype' => 'Computer',
+            'items_id' => $esx_id_first,
             'is_deleted' => false
         ]))->isTrue();
         //get related computer with fe040942-926a-e895-13f9-a37fc3607c14 -> not deleted / purged
@@ -441,10 +444,11 @@ class VirtualMachine extends AbstractInventoryAsset
         ]))->isTrue();
 
         //get second ComputervirtualMachine -> not deleted / purged
-        $second_vm = new \ComputerVirtualMachine();
+        $second_vm = new \ItemVirtualMachine();
         $this->boolean($second_vm->getFromDBByCrit([
             'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
-            'computers_id' => $esx_id_first,
+            'itemtype' => 'Computer',
+            'items_id' => $esx_id_first,
             'is_deleted' => false
         ]))->isTrue();
         //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162 -> not deleted / purged
@@ -496,14 +500,15 @@ class VirtualMachine extends AbstractInventoryAsset
         $inventory = $this->doInventory($xml_source, true);
 
         //now one VM
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->array($vm->find())->hasSize(1);
 
         //get first ComputervirtualMachine -> not deleted / purged
-        $firlst_vm = new \ComputerVirtualMachine();
+        $firlst_vm = new \ItemVirtualMachine();
         $this->boolean($firlst_vm->getFromDBByCrit([
             'uuid' => 'fe040942-926a-e895-13f9-a37fc3607c14',
-            'computers_id' => $esx_id_first,
+            'itemtype' => 'Computer',
+            'items_id' => $esx_id_first,
             'is_deleted' => false
         ]))->isTrue();
         //get computer with fe040942-926a-e895-13f9-a37fc3607c14 -> not deleted / purged
@@ -514,10 +519,11 @@ class VirtualMachine extends AbstractInventoryAsset
         ]))->isTrue();
 
         //get second ComputervirtualMachine -> purged
-        $second_vm = new \ComputerVirtualMachine();
+        $second_vm = new \ItemVirtualMachine();
         $this->boolean($second_vm->getFromDBByCrit([
             'uuid' => 'c37f7ce8-af95-4676-b454-0959f2c5e162',
-            'computers_id' => $esx_id_first
+            'itemtype' => 'Computer',
+            'items_id' => $esx_id_first
         ]))->isFalse();
         //get computer with c37f7ce8-af95-4676-b454-0959f2c5e162 -> not deleted / purged
         $second_computer_linked = new \Computer();
@@ -641,7 +647,7 @@ class VirtualMachine extends AbstractInventoryAsset
         $this->integer($esx_id_first)->isGreaterThan(0);
 
         //get three VM
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->array($vm->find())->hasSize(3);
 
 
@@ -674,14 +680,15 @@ class VirtualMachine extends AbstractInventoryAsset
         $this->integer($id_first)->isGreaterThan(0);
 
         //one VM
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->array($vm->find())->hasSize(1);
 
         //get ComputervirtualMachine
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->boolean($vm->getFromDBByCrit([
             'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
-            'computers_id' => $id_first
+            'itemtype' => 'Computer',
+            'items_id' => $id_first
         ]))->isTrue();
 
         //make sure partial with no VM does not remove existing VMs
@@ -697,14 +704,15 @@ class VirtualMachine extends AbstractInventoryAsset
         $this->integer($id_first)->isEqualTo($id_second);
 
         //VM still present
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->array($vm->find())->hasSize(1);
 
         //get ComputervirtualMachine
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->boolean($vm->getFromDBByCrit([
             'uuid' => '420904fe-6a92-95e8-13f9-a37fc3607c14',
-            'computers_id' => $id_first
+            'itemtype' => 'Computer',
+            'items_id' => $id_first
         ]))->isTrue();
 
         //remove VM, but set partial
@@ -718,7 +726,7 @@ class VirtualMachine extends AbstractInventoryAsset
         $this->integer($id_first)->isEqualTo($id_second);
 
         //no VM left
-        $vm = new \ComputerVirtualMachine();
+        $vm = new \ItemVirtualMachine();
         $this->array($vm->find())->hasSize(0);
     }
 }

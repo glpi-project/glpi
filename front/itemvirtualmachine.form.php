@@ -43,68 +43,72 @@ if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
 
-if (!isset($_GET["computers_id"])) {
-    $_GET["computers_id"] = "";
+if (!isset($_GET["itemtype"])) {
+    $_GET["itemtype"] = "";
 }
 
-$computer_vm = new ComputerVirtualMachine();
-if (isset($_POST["add"])) {
-    $computer_vm->check(-1, CREATE, $_POST);
+if (!isset($_GET["items_id"])) {
+    $_GET["items_id"] = "";
+}
 
-    if ($computer_vm->add($_POST)) {
+$item_vm = new ItemVirtualMachine();
+if (isset($_POST["add"])) {
+    $item_vm->check(-1, CREATE, $_POST);
+
+    if ($item_vm->add($_POST)) {
         Event::log(
-            $_POST['computers_id'],
-            "computers",
+            $_POST['items_id'],
+            $_POST['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
             sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"])
         );
         if ($_SESSION['glpibackcreated']) {
-            Html::redirect($computer_vm->getLinkURL());
+            Html::redirect($item_vm->getLinkURL());
         }
     }
     Html::back();
 } else if (isset($_POST["delete"])) {
-    $computer_vm->check($_POST["id"], DELETE);
-    $computer_vm->delete($_POST);
+    $item_vm->check($_POST["id"], DELETE);
+    $item_vm->delete($_POST);
 
     Event::log(
         $_POST["id"],
-        "computers",
+        $_POST['itemtype'],
         4,
         "inventory",
         //TRANS: %s is the user login
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
-    $computer = new Computer();
-    $computer->getFromDB($computer_vm->fields['computers_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
-                  ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
+    $asset = new $_POST['itemtype']();
+    $asset->getFromDB($item_vm->fields['items_id']);
+    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
+                  ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["purge"])) {
-    $computer_vm->check($_POST["id"], PURGE);
+    $item_vm->check($_POST["id"], PURGE);
 
-    if ($computer_vm->delete($_POST, 1)) {
+    if ($item_vm->delete($_POST, 1)) {
         Event::log(
-            $computer_vm->fields['computers_id'],
-            "computers",
+            $item_vm->fields['items_id'],
+            $item_vm->fields['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
             sprintf(__('%s purges a virtual machine'), $_SESSION["glpiname"])
         );
     }
-    $computer = new Computer();
-    $computer->getFromDB($computer_vm->fields['computers_id']);
-    Html::redirect(Toolbox::getItemTypeFormURL('Computer') . '?id=' . $computer_vm->fields['computers_id'] .
-                  ($computer->fields['is_template'] ? "&withtemplate=1" : ""));
+    $asset = new $item_vm->fields['itemtype']();
+    $asset->getFromDB($item_vm->fields['items_id']);
+    Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
+                  ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
 } else if (isset($_POST["update"])) {
-    $computer_vm->check($_POST["id"], UPDATE);
+    $item_vm->check($_POST["id"], UPDATE);
 
-    if ($computer_vm->update($_POST)) {
+    if ($item_vm->update($_POST)) {
         Event::log(
-            $computer_vm->fields['computers_id'],
-            "computers",
+            $item_vm->fields['items_id'],
+            $item_vm->fields['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
@@ -113,11 +117,11 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else if (isset($_POST["restore"])) {
-    $computer_vm->check($_POST['id'], DELETE);
-    if ($computer_vm->restore($_POST)) {
+    $item_vm->check($_POST['id'], DELETE);
+    if ($item_vm->restore($_POST)) {
         Event::log(
             $_POST["id"],
-            "computers",
+            $_POST['itemtype'],
             4,
             "inventory",
             //TRANS: %s is the user login
@@ -126,8 +130,14 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    $menus = ["assets", "computer"];
-    ComputerVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
-        'computers_id' => $_GET["computers_id"]
+    if ($item_vm->getFromDB($_GET['id'])) {
+        $menus = ['assets', $item_vm->fields['itemtype']];
+    } else {
+        $menus = ['assets', $_GET['itemtype']];
+    }
+
+    ItemVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
+        'itemtype' => $_GET['itemtype'],
+        'items_id' => $_GET["items_id"]
     ]);
 }

@@ -34,39 +34,41 @@
  */
 
 /**
- * Manage ComputerVirtualMachine.
- * @deprecated 10.1.0 Use ItemVirtualMachine
+ * @var \Migration $migration
+ * @var \DBmysql $DB
  */
-class ComputerVirtualMachine extends ItemVirtualMachine
-{
-    public static function getTable($classname = null)
-    {
-        return ItemVirtualMachine::getTable();
-    }
 
-    public function prepareInputForAdd($input)
-    {
-        //add missing itemtype, rename computers_id to items_id
-        $input['itemtype'] = 'Computer';
-        if (isset($input['computers_id'])) {
-            $input['itemps_id'] = $input['computers_id'];
-            unset($input['computers_id']);
-        }
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-        return parent::prepareInputForAdd($input);
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        //add missing itemtype, rename computers_id to items_id
-        if (!isset($input['itemtype'])) {
-            $input['itemtype'] = 'Computer';
-        }
-        if (isset($input['computers_id'])) {
-            $input['itemps_id'] = $input['computers_id'];
-            unset($input['computers_id']);
-        }
-
-        return parent::prepareInputForUpdate($input);
-    }
+if ($DB->tableExists('glpi_computervirtualmachines')) {
+    $migration->renameTable('glpi_computervirtualmachines', 'glpi_itemvirtualmachines');
 }
+
+if (!$DB->fieldExists('glpi_itemvirtualmachines', 'itemtype')) {
+    $migration->addField(
+        'glpi_itemvirtualmachines',
+        'itemtype',
+        'string',
+        [
+            'after'  => 'id',
+            'update' => $DB->quoteValue('Computer'), // Defines value for all existing elements
+        ]
+    );
+    $migration->migrationOneTable('glpi_itemvirtualmachines');
+}
+
+if (!$DB->fieldExists('glpi_itemvirtualmachines', 'items_id')) {
+    $migration->dropKey('glpi_itemvirtualmachines', 'computers_id');
+    $migration->changeField(
+        'glpi_itemvirtualmachines',
+        'computers_id',
+        'items_id',
+        "int {$default_key_sign} NOT NULL DEFAULT '0'",
+        [
+            'after' => 'itemtype'
+        ]
+    );
+    $migration->migrationOneTable('glpi_itemvirtualmachines');
+}
+
+$migration->addKey('glpi_itemvirtualmachines', ['itemtype', 'items_id'], 'item');
