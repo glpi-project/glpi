@@ -42,6 +42,8 @@ use Glpi\Form\Question;
  */
 interface QuestionTypeInterface
 {
+    public function __construct();
+
     /**
      * Render the administration template for the given question.
      * This template is used on the form editor page.
