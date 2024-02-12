@@ -954,13 +954,16 @@ class Conf extends CommonGLPI
             echo \State::createTabEntry(__('If the asset status is (all if empty)'), 0, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
-            Dropdown::showFromArray(
-                'previous_stale_agents_status',
-                State::getStateList(),
+            $condition = [];
+            foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
+                $condition['is_visible_' . strtolower($inv_type)] = 1;
+            }
+            State::dropdown(
                 [
-                    'values'    => importArrayFromDB($config['previous_stale_agents_status'] ?? json_encode([0])),
+                    'name'      => 'previous_stale_agents_status[]',
+                    'value'     => importArrayFromDB($config['previous_stale_agents_status'] ?? json_encode([])),
                     'multiple'  => true,
-                    'used'      => State::getStateNotForInventory(),
+                    'condition' => $condition,
                 ]
             );
             echo "</td>";
@@ -973,11 +976,11 @@ class Conf extends CommonGLPI
             echo "<td width='20%'>";
             State::dropdown(
                 [
-                    'name'   => 'stale_agents_status',
-                    'value'  => $config['stale_agents_status'],
-                    'entity' => $_SESSION['glpiactive_entity'],
-                    'toadd'  => [-1 => __('No change')],
-                    'used'   => State::getStateNotForInventory(),
+                    'name'      => 'stale_agents_status',
+                    'value'     => $config['stale_agents_status'],
+                    'entity'    => $_SESSION['glpiactive_entity'],
+                    'toadd'     => [-1 => __('No change')],
+                    'condition' => $condition,
                 ]
             );
             echo "</td>";
@@ -1192,7 +1195,7 @@ class Conf extends CommonGLPI
             'stale_agents_delay'             => 0,
             'stale_agents_action'            => exportArrayToDB([0]),
             'stale_agents_status'            => 0,
-            'previous_stale_agents_status'        => exportArrayToDB([0]),
+            'previous_stale_agents_status'   => exportArrayToDB([0]),
             'import_env'                     => 0,
         ];
     }
