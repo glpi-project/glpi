@@ -94,18 +94,8 @@ class AssetDefinition extends DbTestCase
         $self_service_p_id = getItemByTypeName(Profile::class, 'Self-Service', true);
         $admin_p_id        = getItemByTypeName(Profile::class, 'Admin', true);
         $valid_profiles_input = [
-            $self_service_p_id => [
-                READ => 1,
-                CREATE => 0,
-                UPDATE => 0,
-                DELETE => 0,
-            ],
-            $admin_p_id => [
-                READ => 1,
-                CREATE => 1,
-                UPDATE => 1,
-                DELETE => 1,
-            ],
+            $self_service_p_id => READ,
+            $admin_p_id => READ | CREATE | UPDATE | DELETE,
         ];
         yield [
             'input'    => [
@@ -120,12 +110,7 @@ class AssetDefinition extends DbTestCase
         yield [
             'input'    => [
                 'profiles' => [
-                    999999999 => [ // invalid profile ID
-                        READ => 1,
-                        CREATE => 0,
-                        UPDATE => 0,
-                        DELETE => 0,
-                    ],
+                    999999999 => READ, // invalid profile ID
                 ],
             ],
             'output'   => false,
@@ -139,26 +124,7 @@ class AssetDefinition extends DbTestCase
         yield [
             'input'    => [
                 'profiles' => [
-                    $self_service_p_id => [
-                        'read' => 1, // invalid right value
-                    ],
-                ],
-            ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The following field has an incorrect value: "Profiles".',
-                ],
-            ],
-        ];
-
-        yield [
-            'input'    => [
-                'profiles' => [
-                    $self_service_p_id => [
-                        READ => 'a', // invalid boolean value
-                        UPDATE => 0,
-                    ],
+                    $self_service_p_id => 'a', // invalid right value
                 ],
             ],
             'output'   => false,
@@ -394,5 +360,96 @@ class AssetDefinition extends DbTestCase
         $this->array(getAllDataFromTable('glpi_assets_assets', [
             'assets_assetdefinitions_id' => $definition->getID(),
         ]))->size->isEqualTo(0);
+    }
+
+    public function testUpdateRights()
+    {
+        $technician_id  = getItemByTypeName(Profile::class, 'Technician', true);
+        $super_admin_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+
+        $definition = $this->initAssetDefinition(
+            'test',
+            profiles: [$super_admin_id => ALLSTANDARDRIGHT]
+        );
+
+        $rightname = $definition->getAssetRightname();
+
+        // Validate that rights are properly defined at creation
+        $this->checkProfileRights(
+            $rightname,
+            [
+                $technician_id  => 0,
+                $super_admin_id => ALLSTANDARDRIGHT,
+            ]
+        );
+
+        // Update rightsfrom definition and ensure that rights are correctly created in the profilerights table
+        $definition->setProfileRights($technician_id, READ | CREATE | UPDATE);
+
+        $this->checkProfileRights(
+            $rightname,
+            [
+                $technician_id  => READ | CREATE | UPDATE,
+                $super_admin_id => ALLSTANDARDRIGHT,
+            ]
+        );
+
+        // Make the definition inactive and verify the rights are removed from the profilerights table
+        $definition->update([
+            'id' => $definition->getID(),
+            'is_active' => 0,
+        ]);
+
+        $this->array(getAllDataFromTable('glpi_profilerights', [
+            'profiles_id' => $super_admin_id,
+            'name' => $definition->getAssetRightname(),
+        ]))->size->isEqualTo(0);
+
+        // Make the definition active again and verify the rights are added back to the profilerights table
+        $definition->update([
+            'id' => $definition->getID(),
+            'is_active' => 1,
+        ]);
+
+        $this->checkProfileRights(
+            $rightname,
+            [
+                $technician_id  => READ | CREATE | UPDATE,
+                $super_admin_id => ALLSTANDARDRIGHT,
+            ]
+        );
+    }
+
+    /**
+     * Check that actual profile rights matches expected ones.
+     *
+     * @param string $rightname
+     * @param array $expected_profilerights
+     * @return void
+     */
+    private function checkProfileRights(string $rightname, array $expected_profilerights): void
+    {
+        $actual_profilerights = getAllDataFromTable('glpi_profilerights', ['name' => $rightname]);
+
+        $get_actual_profileright_for_profile = static function (int $profile_id) use ($actual_profilerights): ?array {
+            foreach ($actual_profilerights as $actual_profileright) {
+                if ($profile_id === $actual_profileright['profiles_id']) {
+                    unset($actual_profileright['id']);
+                    return $actual_profileright;
+                }
+            }
+            return null;
+        };
+
+        foreach ($expected_profilerights as $profile_id => $rights) {
+            $actual_profileright = $get_actual_profileright_for_profile($profile_id);
+            $this->array($actual_profileright)->isEqualTo(
+                [
+                    'profiles_id' => $profile_id,
+                    'name'        => $rightname,
+                    'rights'      => $rights,
+                ]
+            );
+        }
     }
 }

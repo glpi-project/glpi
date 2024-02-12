@@ -61,11 +61,8 @@ class HasNotepadCapacity extends CapacityTestCase
 
         // Capacity needs specific rights
         $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
-        $profiles_matrix = [
-            $superadmin_p_id => [
-                READNOTE   => 1,
-                UPDATENOTE => 1,
-            ],
+        $profiles = [
+            $superadmin_p_id => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE,
         ];
 
         $definition_1 = $this->initAssetDefinition(
@@ -73,13 +70,14 @@ class HasNotepadCapacity extends CapacityTestCase
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ],
-            profiles: $profiles_matrix
+            profiles: $profiles
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
-            ]
+            ],
+            profiles: $profiles
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
@@ -87,7 +85,7 @@ class HasNotepadCapacity extends CapacityTestCase
                 \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
             ],
-            profiles: $profiles_matrix
+            profiles: $profiles
         );
         $classname_3  = $definition_3->getAssetClassName();
 
@@ -262,10 +260,7 @@ class HasNotepadCapacity extends CapacityTestCase
         $updated = $definition->update([
             'id' => $definition->getID(),
             'profiles' => [
-                $superadmin_p_id => [
-                    READNOTE   => 1,
-                    UPDATENOTE => 0,
-                ],
+                $superadmin_p_id => ALLSTANDARDRIGHT | READNOTE,
             ],
         ]);
         $this->boolean($updated)->isTrue();
@@ -278,10 +273,7 @@ class HasNotepadCapacity extends CapacityTestCase
         $updated = $definition->update([
             'id' => $definition->getID(),
             'profiles' => [
-                $superadmin_p_id => [
-                    READNOTE   => 0,
-                    UPDATENOTE => 1,
-                ],
+                $superadmin_p_id => ALLSTANDARDRIGHT | UPDATENOTE,
             ],
         ]);
         $this->boolean($updated)->isTrue();

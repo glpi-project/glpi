@@ -53,7 +53,7 @@ final class AssetDefinitionManager
     /**
      * Definitions cache.
      */
-    private array $definitions_data;
+    private ?array $definitions_data;
 
     /**
      * List of available capacities.
@@ -335,9 +335,10 @@ final class AssetDefinitionManager
     /**
      * Get all the asset definitions.
      *
+     * @param bool $only_active
      * @return AssetDefinition[]
      */
-    private function getDefinitions(): array
+    public function getDefinitions(bool $only_active = false): array
     {
         if (!isset($this->definitions_data)) {
             $this->definitions_data = getAllDataFromTable(AssetDefinition::getTable());
@@ -345,6 +346,10 @@ final class AssetDefinitionManager
 
         $definitions = [];
         foreach ($this->definitions_data as $definition_data) {
+            if ($only_active && (bool)$definition_data['is_active'] !== true) {
+                continue;
+            }
+
             $system_name = $definition_data['system_name'];
             $definition = new AssetDefinition();
             $definition->getFromResultSet($definition_data);

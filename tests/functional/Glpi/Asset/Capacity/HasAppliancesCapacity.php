@@ -61,19 +61,11 @@ class HasAppliancesCapacity extends CapacityTestCase
 
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
-        $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
-        $profiles_matrix = [
-            $superadmin_p_id => [
-                READ   => 1,
-            ],
-        ];
-
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasAppliancesCapacity::class,
                 \Glpi\Asset\Capacity\HasNotepadCapacity::class,
-            ],
-            profiles: $profiles_matrix
+            ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
@@ -86,8 +78,7 @@ class HasAppliancesCapacity extends CapacityTestCase
             capacities: [
                 \Glpi\Asset\Capacity\HasAppliancesCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-            ],
-            profiles: $profiles_matrix
+            ]
         );
         $classname_3  = $definition_3->getAssetClassName();
 

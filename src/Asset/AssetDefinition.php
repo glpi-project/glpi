@@ -410,15 +410,12 @@ final class AssetDefinition extends CommonDBTM
             }
         }
 
-        if (in_array('is_active', $this->updates)) {
+        if (in_array('is_active', $this->updates, true)) {
             // Force menu refresh when active state change
             unset($_SESSION['menu']);
         }
 
-        if (
-            in_array('is_active', $this->updates)
-            || ($this->isActive() && in_array('profiles', $this->updates))
-        ) {
+        if (in_array('is_active', $this->updates, true) || in_array('profiles', $this->updates, true)) {
             $this->syncProfilesRights();
         }
     }
@@ -435,11 +432,31 @@ final class AssetDefinition extends CommonDBTM
 
         foreach (array_keys($profiles) as $profile_id) {
             foreach ($rights_to_remove as $right_value) {
-                unset($profiles[$profile_id][$right_value]);
+                $profiles[$profile_id] &= ~$right_value;
             }
         }
 
         $this->update(['id' => $this->getID(), 'profiles' => $profiles]);
+    }
+
+    /**
+     * Set rights for given profile.
+     *
+     * @param int $profiles_id
+     * @param int $rights
+     * @return void
+     */
+    public function setProfileRights(int $profiles_id, int $rights): void
+    {
+        $profiles = $this->getDecodedProfilesField();
+        $profiles[$profiles_id] = $rights;
+
+        $this->update(
+            [
+                'id'       => $this->getID(),
+                'profiles' => $profiles,
+            ]
+        );
     }
 
     public function cleanDBonPurge()
@@ -498,11 +515,9 @@ final class AssetDefinition extends CommonDBTM
     {
         if (!$this->isNewItem()) {
             $profiles = $this->getDecodedProfilesField();
-            foreach ($profiles as $rights_matrix) {
-                foreach ($rights_matrix as $enabled) {
-                    if ((bool)$enabled) {
-                        return true;
-                    }
+            foreach ($profiles as $rights) {
+                if ($rights > 0) {
+                    return true;
                 }
             }
         }
@@ -538,7 +553,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 1,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'system_name',
             'name'          => __('System name'),
             'datatype'      => 'itemlink',
@@ -547,7 +562,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 3,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'is_active',
             'name'          => __('Active'),
             'datatype'      => 'bool'
@@ -555,7 +570,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 4,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
@@ -564,7 +579,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 5,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
@@ -573,7 +588,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 6,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'icon',
             'name'          => __('Icon'),
             'datatype'      => 'specific',
@@ -582,7 +597,7 @@ final class AssetDefinition extends CommonDBTM
 
         $search_options[] = [
             'id'            => 7,
-            'table'         => $this->getTable(),
+            'table'         => self::getTable(),
             'field'         => 'comment',
             'name'          => __('Comments'),
             'datatype'      => 'text'
@@ -750,21 +765,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     private function getRightsForProfile(int $profile_id): int
     {
         $profiles_entries = $this->getDecodedProfilesField();
-
-        $rights = 0;
-
-        foreach ($profiles_entries as $key => $rights_matrix) {
-            if ((int)$key === $profile_id) {
-                foreach ($rights_matrix as $right_value => $is_enabled) {
-                    if ((bool)$is_enabled) {
-                        $rights += $right_value;
-                    }
-                }
-                break;
-            }
-        }
-
-        return $rights;
+        return $profiles_entries[$profile_id] ?? 0;
     }
 
     /**
@@ -823,6 +824,7 @@ TWIG, ['name' => $name, 'value' => $value]);
      * Return the decoded value of the `profiles` field.
      *
      * @return array
+     * @phpstan-return array<int, int>
      */
     private function getDecodedProfilesField(): array
     {
@@ -865,7 +867,7 @@ TWIG, ['name' => $name, 'value' => $value]);
             $available_profiles = array_column(iterator_to_array($profiles_iterator), 'id');
         }
 
-        foreach ($profiles as $profile_id => $rights_matrix) {
+        foreach ($profiles as $profile_id => $rights) {
             if (!is_int($profile_id) && !ctype_digit($profile_id)) {
                 $is_valid = false;
                 break;
@@ -874,14 +876,9 @@ TWIG, ['name' => $name, 'value' => $value]);
                 $is_valid = false;
                 break;
             }
-            foreach ($rights_matrix as $right_value => $is_enabled) {
-                if (
-                    !filter_var($right_value, FILTER_VALIDATE_INT)
-                    || filter_var($is_enabled, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) === null
-                ) {
-                    $is_valid = false;
-                    break;
-                }
+            if (!is_int($rights)) {
+                $is_valid = false;
+                break;
             }
         }
 

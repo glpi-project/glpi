@@ -317,8 +317,16 @@ class DbTestCase extends \GLPITestCase
     protected function initAssetDefinition(
         ?string $system_name = null,
         array $capacities = [],
-        array $profiles = [],
+        ?array $profiles = null,
     ): AssetDefinition {
+        if ($profiles === null) {
+            // Initialize with all standard rights for super admin profile
+            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
+            $profiles = [
+                $superadmin_p_id => ALLSTANDARDRIGHT,
+            ];
+        }
+
         $definition = $this->createItem(
             AssetDefinition::class,
             [
@@ -337,6 +345,10 @@ class DbTestCase extends \GLPITestCase
         $this->callPrivateMethod($manager, 'loadConcreteModelClass', $definition);
         $this->callPrivateMethod($manager, 'loadConcreteTypeClass', $definition);
         $this->callPrivateMethod($manager, 'boostrapConcreteClass', $definition);
+
+        // Clear definition cache
+        $rc = new ReflectionClass(\Glpi\Asset\AssetDefinitionManager::class);
+        $rc->getProperty('definitions_data')->setValue(\Glpi\Asset\AssetDefinitionManager::getInstance(), null);
 
         return $definition;
     }

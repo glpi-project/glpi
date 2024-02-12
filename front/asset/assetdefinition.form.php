@@ -77,6 +77,18 @@ if (isset($_POST['add'])) {
             $profile = new Profile();
             $profile->check((int)$profile_id, UPDATE);
         }
+
+        // Convert profiles input from the `components/checkbox_matrix.html.twig` format
+        // to the expected format.
+        foreach ($_POST['profiles'] as $profiles_id => $rights_matrix) {
+            $combined_rights = 0;
+            foreach ($rights_matrix as $right_value => $is_enabled) {
+                if ($is_enabled) {
+                    $combined_rights |= (int) $right_value;
+                }
+            }
+            $_POST['profiles'][$profiles_id] = $combined_rights;
+        }
     }
 
     if ($asset_definition->update($_POST)) {

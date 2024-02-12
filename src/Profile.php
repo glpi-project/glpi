@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
@@ -243,6 +244,16 @@ class Profile extends CommonDBTM
         global $DB;
 
         if (count($this->profileRight) > 0) {
+            // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
+            $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
+            foreach ($definitions as $definition) {
+                $asset_rightname = $definition->getAssetRightname();
+                if (array_key_exists($asset_rightname, $this->profileRight)) {
+                    $definition->setProfileRights($this->getID(), $this->profileRight[$asset_rightname]);
+                    unset($this->profileRight[$asset_rightname]);
+                }
+            }
+
             ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
             $this->profileRight = null;
         }
@@ -1172,6 +1183,12 @@ class Profile extends CommonDBTM
                     ]
                 ]
             ];
+
+            // Add rights for custom assets
+            $definitions = AssetDefinitionManager::getInstance()->getDefinitions(only_active: true);
+            foreach ($definitions as $definition) {
+                $all_rights['central']['assets']['custom_assets'][] = $fn_get_rights($definition->getAssetClassName(), 'central');
+            }
         }
 
         $result = $all_rights;
@@ -1386,6 +1403,15 @@ class Profile extends CommonDBTM
             'default_class' => 'tab_bg_2',
             'title'         => _n('Asset', 'Assets', Session::getPluralNumber())
         ]);
+
+        $custom_asset_rights = self::getRightsForForm('central', 'assets', 'custom_assets');
+        if (count($custom_asset_rights)) {
+            $this->displayRightsChoiceMatrix($custom_asset_rights, [
+                'canedit' => $canedit,
+                'default_class' => 'tab_bg_2',
+                'title' => _n('Custom asset', 'Custom assets', Session::getPluralNumber())
+            ]);
+        }
 
         if (
             $canedit

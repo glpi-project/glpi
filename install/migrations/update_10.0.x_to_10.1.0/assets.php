@@ -169,3 +169,37 @@ if (!$DB->tableExists('glpi_assets_assettypes')) {
 SQL;
     $DB->doQueryOrDie($query);
 }
+
+// Dev migration
+// Convert profile rights in glpi_assets_assetdefinitions from an array to OR'd integer like we use in regular glpi_profilerights table
+// TODO Remove before releasing GLPI 10.1 beta.
+$it = $DB->request([
+    'SELECT' => ['id', 'profiles'],
+    'FROM'   => 'glpi_assets_assetdefinitions'
+]);
+foreach ($it as $data) {
+    $profiles = json_decode($data['profiles'], true);
+    $changed = false;
+    if (is_array($profiles)) {
+        foreach ($profiles as $profile_id => $rights) {
+            if (is_array($rights)) {
+                $new_value = 0;
+                foreach ($rights as $right => $is_enabled) {
+                    if ($is_enabled) {
+                        $new_value |= (int)$right;
+                    }
+                }
+                $profiles[$profile_id] = $new_value;
+                $changed = true;
+            }
+        }
+    }
+    if ($changed) {
+        $DB->update('glpi_assets_assetdefinitions', [
+            'id'       => $data['id'],
+            'profiles' => json_encode($profiles)
+        ], [
+            'id' => $data['id']
+        ]);
+    }
+}
