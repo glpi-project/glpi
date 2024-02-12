@@ -3710,6 +3710,12 @@ HTML;
             );
         }
 
+        // If the `devices_in_menu` option changed, we should regenerate the menu (unless we are in debug mode where it is always regenerated)
+        if ($this->fields['name'] === 'devices_in_menu' && $_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
+            $CFG_GLPI['devices_in_menu'] = json_decode($this->fields['value']) ?? [];
+            Html::generateMenuSession(true);
+        }
+
         if (array_key_exists('value', $this->oldvalues)) {
             $newvalue = (string)$this->fields['value'];
             $oldvalue = (string)$this->oldvalues['value'];
