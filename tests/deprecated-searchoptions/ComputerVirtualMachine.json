@@ -45,19 +45,5 @@
             "empty"
         ],
         "uid": "ComputerVirtualMachine.ram"
-    },
-    "4": {
-        "name": "processor number",
-        "table": "glpi_computervirtualmachines",
-        "field": "vcpu",
-        "datatype": "string",
-        "nosearch": false,
-        "nodisplay": false,
-        "available_searchtypes": [
-            "contains",
-            "notcontains",
-            "empty"
-        ],
-        "uid": "ComputerVirtualMachine.vcpu"
     }
 }
