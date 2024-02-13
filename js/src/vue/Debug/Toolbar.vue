@@ -274,7 +274,7 @@
             // update the total counters
             data.forEach((query) => {
                 sql_data.total_requests += 1;
-                sql_data.total_duration += parseInt(query['time']);
+                sql_data.total_duration += query['time'];
             });
         });
 

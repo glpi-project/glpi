@@ -41,7 +41,7 @@
             // update the total counters
             data.forEach((query) => {
                 sql_data.total_requests += 1;
-                sql_data.total_duration += parseInt(query['time']);
+                sql_data.total_duration += query['time'];
             });
         });
 
@@ -150,7 +150,7 @@
                             </button>
                         </div>
                     </td>
-                    <td>{{ query.time }} ms</td>
+                    <td>{{ query.time.toFixed(1) }}&nbsp;ms</td>
                     <td>{{ query.rows }}</td>
                     <td>{{ query.warnings }}</td>
                     <td>{{ query.errors }}</td>
