@@ -294,7 +294,8 @@ class CoreController extends \HLAPITestCase
 
         $client->update([
             'id' => $client_id,
-            'grants' => ['authorization_code']
+            'grants' => ['authorization_code'],
+            'redirect_uri' => ["/api.php/oauth2/redirection"],
         ]);
 
         // get client ID and secret
