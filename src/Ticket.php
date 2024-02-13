@@ -5991,7 +5991,6 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
-        $conf        = new Entity();
         $inquest     = new TicketSatisfaction();
         $tot         = 0;
         $maxentity   = [];
@@ -6004,19 +6003,17 @@ JAVASCRIPT;
 
         foreach ($DB->request('glpi_entities') as $entity) {
             $rate   = Entity::getUsedConfig('inquest_config', $entity['id'], 'inquest_rate');
-            $parent = Entity::getUsedConfig('inquest_config', $entity['id'], 'entities_id');
 
             if ($rate > 0) {
                 $tabentities[$entity['id']] = $rate;
             }
         }
 
-        foreach ($tabentities as $entity => $rate) {
-            $parent        = Entity::getUsedConfig('inquest_config', $entity, 'entities_id');
-            $delay         = Entity::getUsedConfig('inquest_config', $entity, 'inquest_delay');
-            $duration      = Entity::getUsedConfig('inquest_config', $entity, 'inquest_duration');
-            $type          = Entity::getUsedConfig('inquest_config', $entity);
-            $max_closedate = Entity::getUsedConfig('inquest_config', $entity, 'max_closedate');
+        foreach ($tabentities as $entity_id => $rate) {
+            $delay         = Entity::getUsedConfig('inquest_config', $entity_id, 'inquest_delay');
+            $duration      = Entity::getUsedConfig('inquest_config', $entity_id, 'inquest_duration');
+            $type          = Entity::getUsedConfig('inquest_config', $entity_id);
+            $max_closedate = Entity::getUsedConfig('inquest_config', $entity_id, 'max_closedate');
 
             $table = self::getTable();
             $iterator = $DB->request([
@@ -6041,7 +6038,7 @@ JAVASCRIPT;
                     ]
                 ],
                 'WHERE'     => [
-                    "$table.entities_id"          => $entity,
+                    "$table.entities_id"          => $entity_id,
                     "$table.is_deleted"           => 0,
                     "$table.status"               => self::CLOSED,
                     "$table.closedate"            => ['>', $max_closedate],
@@ -6054,7 +6051,6 @@ JAVASCRIPT;
 
             $nb            = 0;
             $max_closedate = '';
-
             foreach ($iterator as $tick) {
                 $max_closedate = $tick['closedate'];
                 if (mt_rand(1, 100) <= $rate) {
@@ -6070,13 +6066,20 @@ JAVASCRIPT;
                 }
             }
 
-           // conservation de toutes les max_closedate des entites filles
-            if (
-                !empty($max_closedate)
-                && (!isset($maxentity[$parent])
-                 || ($max_closedate > $maxentity[$parent]))
-            ) {
-                $maxentity[$parent] = $max_closedate;
+            // keep max_closedate
+            if (!empty($max_closedate)) {
+                $entity = new Entity();
+                $entity->getFromDB($entity_id);
+                // If the inquest configuration is inherited, then the `max_closedate` value should be updated
+                // on the entity that hosts the configuration, otherwise, it have to be stored on current entity.
+                // It is necessary to ensure that `Entity::getUsedConfig('inquest_config', $entity_id, 'max_closedate')`
+                // will return the expected value.
+                $target_entity_id = $entity->fields['inquest_config'] === Entity::CONFIG_PARENT
+                    ? Entity::getUsedConfig('inquest_config', $entity_id, 'entities_id', 0)
+                    : $entity_id;
+                if (!array_key_exists($target_entity_id, $maxentity) || $max_closedate > $maxentity[$target_entity_id]) {
+                    $maxentity[$target_entity_id] = $max_closedate;
+                }
             }
 
             if ($nb) {
@@ -6084,17 +6087,17 @@ JAVASCRIPT;
                 $task->addVolume($nb);
                 $task->log(sprintf(
                     __('%1$s: %2$s'),
-                    Dropdown::getDropdownName('glpi_entities', $entity),
+                    Dropdown::getDropdownName('glpi_entities', $entity_id),
                     $nb
                 ));
             }
         }
 
-       // Sauvegarde du max_closedate pour ne pas tester les m??me tickets 2 fois
-        foreach ($maxentity as $parent => $maxdate) {
-            $conf->getFromDB($parent);
-            $conf->update(['id'            => $conf->fields['id'],
-                             //'entities_id'   => $parent,
+        // Save max_closedate to avoid testing the same tickets twice
+        foreach ($maxentity as $entity_id => $maxdate) {
+            $entity = new Entity();
+            $entity->update([
+                'id'            => $entity_id,
                 'max_closedate' => $maxdate
             ]);
         }
