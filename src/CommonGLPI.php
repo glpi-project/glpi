@@ -902,6 +902,7 @@ class CommonGLPI implements CommonGLPIInterface
 
         if (count($onglets)) {
             $tabpage = $this->getTabsURL();
+            $tabpage = Html::cleanParametersURL($tabpage);
             $tabs    = [];
 
             foreach ($onglets as $key => $val) {
