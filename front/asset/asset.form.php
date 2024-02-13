@@ -100,15 +100,15 @@ if (isset($_POST['add'])) {
         );
     }
     $asset->redirectToList();
-} elseif (isset($_POST['delete'])) {
-    $asset->check($_POST['id'], DELETE);
+} elseif (isset($_POST['purge'])) {
+    $asset->check($_POST['id'], PURGE);
     if ($asset->delete($_POST)) {
         Event::log(
             $_POST['id'],
             $asset::class,
             4,
             'inventory',
-            sprintf(__('%s deletes an item'), $_SESSION['glpiname'])
+            sprintf(__('%s purges an item'), $_SESSION["glpiname"])
         );
     }
     $asset->redirectToList();
@@ -127,9 +127,9 @@ if (isset($_POST['add'])) {
 } else {
     $id = (int)($_GET['id'] ?? null);
     $menus = ['assets', $asset::class];
-    $asset->displayFullPageForItem(
-        $id,
-        $menus,
-        [AssetDefinition::getForeignKeyField() => $asset::getDefinition()->getID()]
-    );
+    $asset::displayFullPageForItem($id, $menus, [
+        AssetDefinition::getForeignKeyField() => $asset::getDefinition()->getID(),
+        'withtemplate' => $_GET["withtemplate"] ?? '',
+        'formoptions'  => "data-track-changes=true",
+    ]);
 }
