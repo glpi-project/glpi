@@ -574,11 +574,12 @@ class User extends CommonDBTM
     /**
      * Retrieve a user from the database using it's dn.
      *
-     * @param string $user_dn dn of the user
+     * @param string $user_dn
+     * @param int $auths_id
      *
      * @return bool
      */
-    public function getFromDBbyDnAndAuth($user_dn, $auths_id): bool
+    public function getFromDBbyDnAndAuth(string $user_dn, int $auths_id): bool
     {
         /**
          * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
