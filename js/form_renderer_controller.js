@@ -43,6 +43,18 @@ class GlpiFormRendererController
     #target;
 
     /**
+     * Active section index
+     * @type {number}
+     */
+    #section_index;
+
+    /**
+     * Total number of sections
+     * @type {number}
+     */
+    #number_of_sections;
+
+    /**
      * Create a new GlpiFormRendererController instance for the given target.
      * The target must be a valid form.
      *
@@ -54,6 +66,12 @@ class GlpiFormRendererController
         if ($(this.#target).prop("tagName") != "FORM") {
             throw new Error("Target must be a valid form");
         }
+
+        // Init section data
+        this.#section_index = 0;
+        this.#number_of_sections = $(this.#target)
+            .find("[data-glpi-form-renderer-section]")
+            .length;
 
         // Init event handlers
         this.#initEventHandlers();
@@ -70,6 +88,16 @@ class GlpiFormRendererController
         $(this.#target)
             .find(`[${action_attribute}=submit]`)
             .on("click", () => this.#submitForm());
+
+        // Next section form action
+        $(this.#target)
+            .find(`[${action_attribute}=next-section]`)
+            .on("click", () => this.#goToNextSection());
+
+        // Previous section form action
+        $(this.#target)
+            .find(`[${action_attribute}=previous-section]`)
+            .on("click", () => this.#goToPreviousSection());
     }
 
     /**
@@ -95,6 +123,93 @@ class GlpiFormRendererController
         } catch (e) {
             // Failure event
             $(document).trigger('glpi-form-renderer-submit-failed', e);
+        }
+    }
+
+    /**
+     * Go to the next section of the form.
+     */
+    #goToNextSection() {
+        // Hide current section
+        $(this.#target)
+            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .addClass("d-none");
+
+        // Show next section
+        this.#section_index++;
+        $(this.#target)
+            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .removeClass("d-none");
+
+        // Update actions visibility
+        this.#updateActionsVisiblity();
+    }
+
+    /**
+     * Go to the previous section of the form.
+     */
+    #goToPreviousSection() {
+        // Hide current section
+        $(this.#target)
+            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .addClass("d-none");
+
+        // Show preview section
+        this.#section_index--;
+        $(this.#target)
+            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .removeClass("d-none");
+
+        // Update actions visibility
+        this.#updateActionsVisiblity();
+    }
+
+    /**
+     * Update the visibility of the actions buttons depending on the active
+     * section of the form.
+     */
+    #updateActionsVisiblity() {
+        if (this.#section_index == 0) {
+            // First section, show next button
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=submit]")
+                .addClass("d-none");
+
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=next-section]")
+                .removeClass("d-none");
+
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=previous-section]")
+                .addClass("d-none");
+
+        } else if (this.#section_index == (this.#number_of_sections - 1)) { // Minus 1 because section_index is 0-based
+            // Last section, show submit and previous button
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=submit]")
+                .removeClass("d-none");
+
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=next-section]")
+                .addClass("d-none");
+
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=previous-section]")
+                .removeClass("d-none");
+
+        } else {
+            // Any middle section, show next and previous button
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=submit]")
+                .addClass("d-none");
+
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=next-section]")
+                .removeClass("d-none");
+
+            $(this.#target)
+                .find("[data-glpi-form-renderer-action=previous-section]")
+                .removeClass("d-none");
         }
     }
 }

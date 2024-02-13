@@ -40,7 +40,6 @@ use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 
