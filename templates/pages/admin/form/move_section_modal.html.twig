@@ -1,0 +1,95 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Move section modal #}
+<div
+    data-glpi-form-editor-move-section-modal
+    class="modal modal-blur fade"
+    aria-modal="true"
+    role="dialog"
+>
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="mt-2">
+                    <h3> {{ __("Reorganize sections") }} </h3>
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="{{ __("Close") }}"
+                    ></button>
+                </div>
+            </div>
+
+            {# Items will be generated when the modal is open #}
+            <div
+                class="list-group list-group-flush"
+                data-glpi-form-editor-move-section-modal-items
+            ></div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    data-glpi-form-editor-on-click="reorder-sections"
+                    class="btn btn-primary"
+                >
+                    {{ __("Save") }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# Items template #}
+    <div data-glpi-form-editor-move-section-modal-item-template>
+        <div
+            class="list-group-item"
+            data-glpi-form-editor-move-section-modal-item-section-key="null"
+        >
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <i
+                        class="ti ti-grip-vertical cursor-grab"
+                        style="opacity: 0.6;"
+                        data-glpi-form-editor-section-handle
+                    ></i>
+                </div>
+                <div
+                    class="col text-truncate"
+                    data-glpi-form-editor-move-section-modal-item-section-name
+                >
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

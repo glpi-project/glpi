@@ -247,6 +247,16 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // Build the "move section modal" content
+            case "build-move-section-modal-content":
+                this.#buildMoveSectionModalContent();
+                break;
+
+            // Reorder the sections based on the "move section modal" content
+            case "reorder-sections":
+                this.#reorderSections();
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
@@ -818,8 +828,7 @@ class GlpiFormEditorController
     }
 
     /**
-     * Update section index and total number in the special section header
-     * "Section X of Y".
+     * Update "Section X of Y" labels
      */
     #updateSectionCountLabels() {
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
@@ -876,5 +885,104 @@ class GlpiFormEditorController
                 // Update state
                 this.#computeState();
             });
+    }
+
+    /**
+     * Build the "move section modal" content.
+     */
+    #buildMoveSectionModalContent() {
+        // Clear modal content
+        const modal_content = $(this.#target)
+            .find("[data-glpi-form-editor-move-section-modal-items]");
+
+        modal_content.children().remove();
+
+        // Find all sections and insert them into the modal
+        $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .each((index, section) => {
+                const name = this.#getItemInput($(section), "name");
+                const section_key = $(section).data("glpi-form-editor-key");
+
+                // Copy template
+                const copy = $("[data-glpi-form-editor-move-section-modal-item-template]")
+                    .clone();
+
+                // Set section index
+                copy
+                    .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
+                    .attr(
+                        "data-glpi-form-editor-move-section-modal-item-section-key",
+                        section_key
+                    );
+
+                // Set section name
+                copy
+                    .find("[data-glpi-form-editor-move-section-modal-item-section-name]")
+                    .html(name);
+
+                // Remove template tag
+                copy.removeAttr("data-glpi-form-editor-move-section-modal-item-template");
+
+                modal_content.append(copy);
+            });
+
+        sortable($("[data-glpi-form-editor-move-section-modal-items]"), {
+            // Drag and drop handle selector
+            handle: '[data-glpi-form-editor-section-handle]',
+
+            // Placeholder class
+            placeholderClass: 'glpi-form-editor-drag-section-placeholder',
+        });
+    }
+
+    /**
+     * Reorder the sections based on the "move section modal" content.
+     */
+    #reorderSections() {
+        // Close modal
+        $(this.#target)
+            .find("[data-glpi-form-editor-move-section-modal]")
+            .modal('hide');
+
+        $(this.#target)
+            .find("[data-glpi-form-editor-move-section-modal-items]")
+            .children()
+            .each((index, item) => {
+                // Find section key
+                const section_key = $(item)
+                    .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
+                    .data("glpi-form-editor-move-section-modal-item-section-key");
+
+                // Find section by index
+                const by_key_selector = `[data-glpi-form-editor-key=${section_key}]`;
+                const section = $(this.#target)
+                    .find(`[data-glpi-form-editor-section]${by_key_selector}`);
+
+                // Move section at the end of the form
+                // This will naturally sort all sections as there are moved one
+                // by one at the end
+                section
+                    .remove()
+                    .appendTo(
+                        $(this.#target).find("[data-glpi-form-editor-sections]")
+                    );
+            });
+
+        // Reinit tiynmce for all richtext inputs
+        $(this.#target)
+            .find("textarea")
+            .each((index, textarea) => {
+                const id = $(textarea).prop("id");
+                const editor = tinymce.get(id);
+
+                if (editor) {
+                    editor.destroy();
+                    tinymce.init(window.tinymce_editor_configs[id]);
+                }
+            });
+
+        // Relabel sections
+        this.#updateSectionCountLabels();
     }
 }
