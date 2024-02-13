@@ -190,6 +190,7 @@ class HasDomainsCapacity extends CapacityTestCase
             DisplayPreference::class,
             [
                 'itemtype' => $classname_1,
+                'num'      => 206, // Type
                 'users_id' => 0,
             ]
         );
@@ -197,6 +198,7 @@ class HasDomainsCapacity extends CapacityTestCase
             DisplayPreference::class,
             [
                 'itemtype' => $classname_2,
+                'num'      => 206, // Type
                 'users_id' => 0,
             ]
         );
