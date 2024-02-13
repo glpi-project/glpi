@@ -55,8 +55,15 @@
         data-active-status
     ></div>
     <div class="card-body">
-        {# Display question's title #}
         <div class="d-flex">
+            <i
+                class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
+                data-glpi-form-editor-question-handle
+                draggable="true"
+            ></i>
+        </div>
+        {# Display question's title #}
+        <div class="d-flex mt-n1">
             <input
                 class="form-control content-editable-h2"
                 type="text"
@@ -185,5 +192,10 @@
         type="hidden"
         name="forms_sections_id"
         value="{{ section is not null ? section.fields.id : 0 }}"
+    />
+    <input
+        type="hidden"
+        name="{{ rank }}"
+        value="{{ section is not null ? section.fields.rank : 0 }}"
     />
 </div>

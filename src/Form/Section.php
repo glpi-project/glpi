@@ -64,9 +64,10 @@ class Section extends CommonDBChild
             $this->questions = [];
 
             // Read from database
-            $questions_data = (new Question())->find([
-                self::getForeignKeyField() => $this->fields['id']
-            ]);
+            $questions_data = (new Question())->find(
+                [self::getForeignKeyField() => $this->fields['id']],
+                'rank ASC',
+            );
             foreach ($questions_data as $row) {
                 $question = new Question();
                 $question->getFromResultSet($row);

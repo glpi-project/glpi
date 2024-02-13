@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, glpi_toast_info */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, glpi_toast_info, sortable, tinymce */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -97,6 +97,11 @@ class GlpiFormEditorController
             .each((index, input) => {
                 this.#computeDynamicInputSize(input);
             });
+
+        // Enable sortable on questions
+        this.#enableSortable(
+            $(this.#target).find("[data-glpi-form-editor-sections]")
+        );
 
         // Compute base state (keep at the end)
         this.#computeState();
@@ -264,6 +269,7 @@ class GlpiFormEditorController
                 $(section).find("[data-glpi-form-editor-section-form-container]"),
                 s_index
             );
+            this.#setItemRank($(section), s_index);
             this.#remplaceEmptyIdByUuid($(section));
             this.#setKey($(section));
 
@@ -276,6 +282,7 @@ class GlpiFormEditorController
                     s_index,
                     q_index,
                 );
+                this.#setItemRank($(question), q_index);
                 this.#remplaceEmptyIdByUuid($(question));
                 this.#setParentSection($(question), $(section));
                 this.#setKey($(question));
@@ -316,6 +323,18 @@ class GlpiFormEditorController
                 this.#buildInputIndex(section_index, question_index) + `[${field}]`
             );
         });
+    }
+
+    /**
+     * Must not be called directly, use #computeState() instead.
+     *
+     * Set the rank of the given item
+     *
+     * @param {item} item   Section or question
+     * @param {number} rank Rank of the item
+     */
+    #setItemRank(item, rank) {
+        this.#setItemInput(item, "rank", rank);
     }
 
     /**
@@ -814,5 +833,48 @@ class GlpiFormEditorController
                     .replace("%2$d", sections.length)
             );
         });
+    }
+
+    /**
+     * Enable sortable on the questions of each section.
+     *
+     * @param {jQuery} sections jQuery collection of one or more sections
+     */
+    #enableSortable(sections) {
+        // Sortable instance must be unique for each section
+        sections
+            .each((index, section) => {
+                const questions_container = $(section)
+                    .find("[data-glpi-form-editor-section-questions]");
+
+                sortable(questions_container, {
+                    // Drag and drop handle selector
+                    handle: '[data-glpi-form-editor-question-handle]',
+
+                    // Accept from others sections
+                    acceptFrom: '[data-glpi-form-editor-section-questions]',
+
+                    // Placeholder class
+                    placeholderClass: 'glpi-form-editor-drag-question-placeholder mb-3',
+                });
+            });
+
+
+        sections
+            .find("[data-glpi-form-editor-section-questions]")
+            .on('sortupdate', (e) => {
+                // TinyMCE does no like being moved around and must be
+                // reinitialized by destroying the editor instance and
+                // recreating it
+                $(e.detail.item).find("textarea").each((index, textarea) => {
+                    const id = $(textarea).prop("id");
+                    const editor = tinymce.get(id);
+                    editor.destroy();
+                    tinymce.init(window.tinymce_editor_configs[id]);
+                });
+
+                // Update state
+                this.#computeState();
+            });
     }
 }
