@@ -2211,17 +2211,19 @@ class AuthLDAP extends DbTestCase
         // login the user to force a real synchronisation (and creation into DB)
         $this->login('brazil7', 'password', false);
         $users_id = \User::getIdByName('brazil7');
+        // Check that the use is not attached to the profile at creation
+        $rights = (new Profile_User())->find([
+            'users_id' => $users_id,
+            'profiles_id' => 4,
+        ]);
+
+        $this->array($rights)->hasSize(0);
 
         // Add group to user
         $this->createItem(Group_User::class, [
             'groups_id' => $group_id,
             'users_id'  => $users_id,
         ]);
-        $groups = (new Group_User())->find([
-            'groups_id' => $group_id,
-            'users_id'  => $users_id,
-        ]);
-        $this->array($groups)->hasSize(1);
 
         // Log in again to trigger rule
         $this->login('brazil7', 'password', false);
