@@ -2184,12 +2184,12 @@ class AuthLDAP extends DbTestCase
         $this->array($gus)->hasSize(1);
     }
 
-        /**
+    /**
      * Test if rules targeting ldap criteria are working
      *
      * @return void
      */
-    public function testRuleRightGroupCriteria()
+    public function testRuleRightGroupCriteria(): void
     {
 
         // create manual group
@@ -2211,7 +2211,7 @@ class AuthLDAP extends DbTestCase
         // login the user to force a real synchronisation (and creation into DB)
         $this->login('brazil7', 'password', false);
         $users_id = \User::getIdByName('brazil7');
-        // Check that the use is not attached to the profile at creation
+        // Check that the user is not attached to the profile at creation
         $rights = (new Profile_User())->find([
             'users_id' => $users_id,
             'profiles_id' => 4,
