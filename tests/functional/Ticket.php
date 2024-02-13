@@ -4926,15 +4926,15 @@ HTML
         $this->integer($it->count())->isEqualTo(1);
     }
 
-    public function testCronSurveyCreation()
+    public function testCronSurveyCreation(): void
     {
         $this->login();
 
-        $root_entity_id    = getItemByTypeName('Entity', '_test_root_entity', true);
+        $root_entity_id    = $this->getTestRootEntity(true);
         $child_1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
         $child_2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-        $now              = $_SESSION['glpi_currenttime'];
+        $now              = \Session::getCurrentTime();
         $twelve_hours_ago = date("Y-m-d H:i:s", strtotime('-12 hours'));
         $six_hours_ago    = date("Y-m-d H:i:s", strtotime('-4 hours'));
         $four_hours_ago   = date("Y-m-d H:i:s", strtotime('-4 hours'));
