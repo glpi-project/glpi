@@ -39,6 +39,7 @@ use CommonDBTM;
 use CommonITILActor;
 use CommonITILObject;
 use Computer;
+use CronTask;
 use DbTestCase;
 use Entity;
 use Glpi\Team\Team;
@@ -4927,49 +4928,138 @@ HTML
 
     public function testCronSurveyCreation()
     {
-        global $DB;
         $this->login();
-        // Since processing is too fast, we need to set the current time to a time before it was started.
-        $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s", strtotime('-2 second'));
-        $entity = new \Entity();
-        //create entity with inquest_rate > 0
-        $this->boolean($entity->update([
-            'id'                => 0,
-            'inquest_config'    => 1,
-            'inquest_rate'      => 100,
-            'inquest_delay'     => 0,
-            'max_closedate'     => $_SESSION['glpi_currenttime']
-        ]))->isTrue();
 
-        // Recover glpi_currentitme base value
-        $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+        $root_entity_id    = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child_1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
-       // create ticket closed for survey
-        $ticket = new \Ticket();
-        $tickets_id_1 = $ticket->add([
-            'name'        => "test survey 1",
-            'content'     => "test survey 1",
-            'entities_id' => 0,
-            'status'      => \CommonITILObject::CLOSED
-        ]);
-        $this->integer((int)$tickets_id_1)->isGreaterThan(0);
+        $now              = $_SESSION['glpi_currenttime'];
+        $twelve_hours_ago = date("Y-m-d H:i:s", strtotime('-12 hours'));
+        $six_hours_ago    = date("Y-m-d H:i:s", strtotime('-4 hours'));
+        $four_hours_ago   = date("Y-m-d H:i:s", strtotime('-4 hours'));
+        $two_hours_ago    = date("Y-m-d H:i:s", strtotime('-2 hours'));
 
+        $this->updateItem(
+            Entity::class,
+            0,
+            [
+                'inquest_config' => 1, // GLPI native survey
+                'inquest_rate'   => 100, // always generate a survey for closed tickets
+                'inquest_delay'  => 0, // instant survey generation
+            ]
+        );
+        $this->updateItem(
+            Entity::class,
+            $root_entity_id,
+            [
+                'inquest_config' => Entity::CONFIG_PARENT, // inherits
+            ]
+        );
+        $this->updateItem(
+            Entity::class,
+            $child_1_entity_id,
+            [
+                'inquest_config' => Entity::CONFIG_PARENT, // inherits
+            ]
+        );
+        $this->updateItem(
+            Entity::class,
+            $child_2_entity_id,
+            [
+                'inquest_config' => 1, // GLPI native survey
+                'inquest_rate'   => 100, // always generate a survey for closed tickets
+                'inquest_delay'  => 0, // instant survey generation
+            ]
+        );
+
+        foreach ([0, $root_entity_id, $child_1_entity_id, $child_2_entity_id] as $entity_id) {
+            // Ensure `max_closedate` is in the past
+            $this->updateItem(
+                Entity::class,
+                $entity_id,
+                [
+                    'max_closedate'  => $twelve_hours_ago,
+                ]
+            );
+        }
+
+        // Create a closed ticket on test root entity
+        $_SESSION['glpi_currenttime'] = $six_hours_ago;
+        $root_ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => "test root entity survey",
+                'content'     => "test root entity survey",
+                'entities_id' => $root_entity_id,
+                'status'      => CommonITILObject::CLOSED
+            ]
+        );
+
+        // Create a closed ticket on test child entity 1
+        $_SESSION['glpi_currenttime'] = $four_hours_ago;
+        $child_1_ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => "test child entity 1 survey",
+                'content'     => "test child entity 1 survey",
+                'entities_id' => $child_1_entity_id,
+                'status'      => CommonITILObject::CLOSED
+            ]
+        );
+
+        // Create a closed ticket on test child entity 2
+        $_SESSION['glpi_currenttime'] = $two_hours_ago;
+        $child_1_ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => "test child entity 2 survey",
+                'content'     => "test child entity 2 survey",
+                'entities_id' => $child_2_entity_id,
+                'status'      => CommonITILObject::CLOSED
+            ]
+        );
+
+        // Ensure no survey has been created yet
         $ticket_satisfaction = new \TicketSatisfaction();
-        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $tickets_id_1])))->isEqualTo(0);
+        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $root_ticket->getID()])))->isEqualTo(0);
+        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $child_1_ticket->getID()])))->isEqualTo(0);
 
-        // launch Cron for survey creation
-        $mode = - \CronTask::MODE_INTERNAL; // force
-        \CronTask::launch($mode, 1, 'createinquest');
+        // Launch cron to create surveys
+        CronTask::launch(
+            - CronTask::MODE_INTERNAL, // force
+            1,
+            'createinquest'
+        );
 
-        // Get current entity max_closedate
-        $this->boolean($entity->getFromDB(0))->isTrue();
+        // Ensure survey has been created
+        $ticket_satisfaction = new \TicketSatisfaction();
+        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $root_ticket->getID()])))->isEqualTo(1);
+        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $child_1_ticket->getID()])))->isEqualTo(1);
 
-        // check survey has been created
-        $this->integer(count($ticket_satisfaction->find(['tickets_id' => $tickets_id_1])))->isGreaterThan(0);
+        // Check `max_closedate` values in DB
+        $expected_db_values = [
+            0                  => $four_hours_ago,   // last ticket closedate from entities that inherits the config
+            $root_entity_id    => $twelve_hours_ago, // not updated as it inherits the config
+            $child_1_entity_id => $twelve_hours_ago, // not updated as it inherits the config
+            $child_2_entity_id => $two_hours_ago,    // last ticket closedate from self as it has its own config
+        ];
+        foreach ($expected_db_values as $entity_id => $date) {
+            $entity = new Entity();
+            $this->boolean($entity->getFromDB($entity_id))->isTrue();
+            $this->string($entity->fields['max_closedate'])->isEqualTo($date);
+        }
 
-        // check entity max_closedate has been updated
-        $this->boolean($ticket->getFromDB($tickets_id_1))->isTrue();
-        $this->string($entity->fields['max_closedate'])->isEqualTo($ticket->fields['closedate']);
+        // Check `max_closedate` returned by `Entity::getUsedConfig()`
+        $expected_config_values = [
+            0                  => $four_hours_ago, // last ticket closedate from entities that inherits the config
+            $root_entity_id    => $four_hours_ago, // inherited value
+            $child_1_entity_id => $four_hours_ago, // inherited value
+            $child_2_entity_id => $two_hours_ago,  // last ticket closedate from self as it has its own config
+        ];
+        foreach ($expected_config_values as $entity_id => $date) {
+            $this->string(Entity::getUsedConfig('inquest_config', $entity_id, 'max_closedate'))->isEqualTo($date);
+        }
     }
 
     public function testAddAssignWithoutUpdateRight()

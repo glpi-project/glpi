@@ -119,7 +119,7 @@ class DbTestCase extends \GLPITestCase
     {
         $input = Sanitizer::dbUnescapeRecursive($input); // slashes in input should not be stored in DB
 
-        $this->integer((int)$id)->isGreaterThan(0);
+        $this->integer($id)->isGreaterThan($object instanceof Entity ? -1 : 0);
         $this->boolean($object->getFromDB($id))->isTrue();
         $this->variable($object->getField('id'))->isEqualTo($id);
 
