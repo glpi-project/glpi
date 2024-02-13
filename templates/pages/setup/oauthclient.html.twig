@@ -119,6 +119,14 @@
                                     $(this).closest('.authorized-uri-field').remove();
                                 });
                                 const already_added_uris = {{ item.fields['redirect_uri']|default([])|json_encode|raw }};
+                                const global_uris = ['/api.php/oauth2/redirection', '/api.php/swagger-oauth-redirect'];
+                                global_uris.forEach((uri) => {
+                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
+                                    $('.authorized-uri-field input').last().val(uri);
+                                    // Remove delete button and disable input
+                                    $('.authorized-uri-field button[name="remove_header"]').remove();
+                                    $('.authorized-uri-field input').last().prop('readonly', true);
+                                });
                                 already_added_uris.forEach((uri) => {
                                     $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
                                     $('.authorized-uri-field input').last().val(uri);
