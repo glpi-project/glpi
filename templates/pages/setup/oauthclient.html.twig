@@ -125,7 +125,7 @@
                                     $('.authorized-uri-field input').last().val(uri);
                                     // Remove delete button and disable input
                                     $('.authorized-uri-field button[name="remove_header"]').remove();
-                                    $('.authorized-uri-field input').last().prop('readonly', true);
+                                    $('.authorized-uri-field input').last().prop('disabled', true);
                                 });
                                 already_added_uris.forEach((uri) => {
                                     $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
