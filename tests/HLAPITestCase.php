@@ -46,12 +46,31 @@ use Glpi\Http\Response;
 class HLAPITestCase extends \DbTestCase
 {
     private $bearer_token = null;
+    private $fake_score = null;
 
     public function afterTestMethod($method)
     {
         // kill session
         Session::destroy();
         parent::afterTestMethod($method);
+    }
+
+    public function getScore()
+    {
+        // if this method wasn't called from the \atoum\atoum\asserter\exception class, we can return the real score
+        // We only need to intercept the score when it's called from the exception class so we can modify the data
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        if (count($trace) < 2 || $trace[1]['class'] !== 'atoum\atoum\asserter\exception') {
+            return parent::getScore();
+        }
+        if ($this->fake_score === null) {
+            $real_score = parent::getScore();
+            if ($real_score === null) {
+                return null;
+            }
+            $this->fake_score = new HLAPITestScore($real_score);
+        }
+        return $this->fake_score;
     }
 
     protected function loginWeb(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
@@ -302,9 +321,9 @@ final class HLAPIResponseAsserter
     {
         // Status is 200 - 299
         $this->call_asserter->test
-            ->integer($this->response->getStatusCode())->isGreaterThanOrEqualTo(200);
+            ->integer($this->response->getStatusCode())->isGreaterThanOrEqualTo(200, 'Status code is not 2xx');
         $this->call_asserter->test
-            ->integer($this->response->getStatusCode())->isLessThan(300);
+            ->integer($this->response->getStatusCode())->isLessThan(300, 'Status code is not 2xx');
         return $this;
     }
 
@@ -315,9 +334,9 @@ final class HLAPIResponseAsserter
             ->integer($this->response->getStatusCode())->isEqualTo(401);
         $decoded_content = json_decode((string) $this->response->getBody(), true);
         $this->call_asserter->test
-            ->array($decoded_content)->hasKeys(['title', 'detail', 'status']);
+            ->array($decoded_content)->hasKeys(['title', 'detail', 'status'], 'Response is not a valid error response');
         $this->call_asserter->test
-            ->string($decoded_content['status'])->isEqualTo('ERROR_UNAUTHENTICATED');
+            ->string($decoded_content['status'])->isEqualTo('ERROR_UNAUTHENTICATED', 'Status property in response is not ERROR_UNAUTHENTICATED');
         return $this;
     }
 
@@ -328,9 +347,9 @@ final class HLAPIResponseAsserter
             ->integer($this->response->getStatusCode())->isEqualTo(404);
         $decoded_content = json_decode((string) $this->response->getBody(), true);
         $this->call_asserter->test
-            ->array($decoded_content)->hasKeys(['title', 'detail', 'status']);
+            ->array($decoded_content)->hasKeys(['title', 'detail', 'status'], 'Response is not a valid error response');
         $this->call_asserter->test
-            ->string($decoded_content['status'])->isEqualTo('ERROR_ITEM_NOT_FOUND');
+            ->string($decoded_content['status'])->isEqualTo('ERROR_ITEM_NOT_FOUND', 'Status property in response is not ERROR_ITEM_NOT_FOUND');
         return $this;
     }
 
@@ -344,7 +363,7 @@ final class HLAPIResponseAsserter
 
         // Verify the JSON content matches the OpenAPI schema
         $this->call_asserter->test
-            ->boolean(\Glpi\Api\HL\Doc\Schema::fromArray($schema)->isValid($content))->isTrue();
+            ->boolean(\Glpi\Api\HL\Doc\Schema::fromArray($schema)->isValid($content))->isTrue('Response does not validate against the schema');
         return $this;
     }
 }
@@ -374,19 +393,82 @@ final class HLAPIRouteAsserter
     public function isAuthRequired(): self
     {
         $this->call_asserter->test
-            ->boolean($this->routePath->getRouteSecurityLevel() !== Route::SECURITY_NONE)->isTrue();
+            ->boolean($this->routePath->getRouteSecurityLevel() !== Route::SECURITY_NONE)->isTrue('Route does not require authentication');
         return $this;
     }
 
     public function isAnonymousAllowed(): self
     {
         $this->call_asserter->test
-            ->boolean($this->routePath->getRouteSecurityLevel() === Route::SECURITY_NONE)->isTrue();
+            ->boolean($this->routePath->getRouteSecurityLevel() === Route::SECURITY_NONE)->isTrue('Route does not allow anonymous access');
         return $this;
     }
 
     public function get(): RoutePath
     {
         return $this->routePath;
+    }
+}
+
+// @codingStandardsIgnoreStart
+/**
+ * Proxy score class to modify the failure data to be able to have more details about the failures.
+ * By default, atoum reports assertion failures with the file, line, and message of the line in the test class where the assertion was called
+ * rather than where the asserter was actually called.
+ *
+ * This issue can present itself in several ways. First, if a test is in a parent, abstract class, the line for the failure will always be 0.
+ * If you use a helper method (like we do with the API tests), it will report the line in the test class that called the helper.
+ */
+class HLAPITestScore extends atoum\atoum\score {
+    protected $real_score;
+    public function __construct($real_score = null)
+    {
+        parent::__construct();
+        $this->real_score = $real_score;
+    }
+
+    public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
+    {
+        // Search stack trace for the frame after this function but before the atoum assert call
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        while (str_contains($trace[0]['file'], 'atoum')) {
+            array_shift($trace);
+        }
+        // remove one more frame because the asserts are technically part of the test class
+        array_shift($trace);
+        $frame = array_shift($trace);
+        // If the frame refers to a closure, we can use the next frame instead since the closure is probably some magic used by this helper
+        if (str_ends_with($frame['function'], '{closure}')) {
+            $frame = array_shift($trace);
+        }
+
+        $real_line = $frame['line'];
+        $real_class = $frame['class'];
+        $real_method = $frame['function'];
+
+        // Replace the $asserter string to display the desired info
+        $new_asserter = $real_class . '::' . $real_method . ' (line ' . $real_line . ')';
+        return $this->real_score->addFail($file, $class, $method, $line, $new_asserter, $reason, $case, $dataSetKey, $dataSetProvider);
+    }
+
+    // Redirect all others
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array([$this->real_score, $name], $arguments);
+    }
+
+    public function __get($name)
+    {
+        return $this->real_score->$name;
+    }
+
+    public function __set($name, $value)
+    {
+        $this->real_score->$name = $value;
+    }
+
+    public function __isset($name)
+    {
+        return isset($this->real_score->$name);
     }
 }
