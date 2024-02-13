@@ -16,7 +16,7 @@
     let total_sql_queries = 0;
     $.each(props.current_profile.sql['queries'], (i, query) => {
         total_sql_queries++;
-        total_sql_duration += parseFloat(query['time']);
+        total_sql_duration += query['time'];
     });
 </script>
 
@@ -39,7 +39,7 @@
                     <td>
                         SQL Requests: {{ total_sql_queries }}
                         <br>
-                        SQL Duration: {{ total_sql_duration }} ms
+                        SQL Duration: {{ total_sql_duration.toFixed(1) }} ms
                     </td>
                 </tr>
             </tbody>

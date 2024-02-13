@@ -140,7 +140,7 @@ final class Profile
         $this->additional_info[$widget][] = $data;
     }
 
-    public function addSQLQueryData(string $query, int $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
     {
         if ($this->disabled) {
             return;
