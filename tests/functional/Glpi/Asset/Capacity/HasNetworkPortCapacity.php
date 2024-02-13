@@ -102,6 +102,18 @@ class HasNetworkPortCapacity extends CapacityTestCase
             } else {
                 $this->array($item->defineAllTabs())->notHasKey('NetworkPort$1');
             }
+
+            // Check that the related search options are available
+            $so_keys = [
+                21, // MAC
+                87, // Instanciation type
+                88, // VLAN
+            ];
+            if ($has_capacity) {
+                $this->array($item->getOptions())->hasKeys($so_keys);
+            } else {
+                $this->array($item->getOptions())->notHasKeys($so_keys);
+            }
         }
     }
 
