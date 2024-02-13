@@ -442,12 +442,15 @@ class HLAPITestScore extends atoum\atoum\score {
             $frame = array_shift($trace);
         }
 
-        $real_line = $frame['line'];
-        $real_class = $frame['class'];
-        $real_method = $frame['function'];
+        $new_asserter = $asserter;
+        if ($frame !== null && isset($frame['line'], $frame['class'], $frame['function'])) {
+            $real_line = $frame['line'];
+            $real_class = $frame['class'];
+            $real_method = $frame['function'];
 
-        // Replace the $asserter string to display the desired info
-        $new_asserter = $real_class . '::' . $real_method . ' (line ' . $real_line . ')';
+            // Replace the $asserter string to display the desired info
+            $new_asserter = $real_class . '::' . $real_method . ' (line ' . $real_line . ')';
+        }
         return $this->real_score->addFail($file, $class, $method, $line, $new_asserter, $reason, $case, $dataSetKey, $dataSetProvider);
     }
 
