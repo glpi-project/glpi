@@ -113,12 +113,13 @@ final class OAuthClient extends CommonDBTM
         $input['identifier'] = self::getNewIDOrSecret();
         $input['secret'] = $key->encrypt(self::getNewIDOrSecret());
 
-        $input['grants'] = exportArrayToDB($input['grants'] ?? []);
-        $input['scopes'] = exportArrayToDB($input['scopes'] ?? []);
+        $input['grants'] = json_encode($input['grants'] ?? []);
+        $input['scopes'] = json_encode($input['scopes'] ?? []);
 
-        if (!isset($input['redirect_uri'])) {
-            $input['redirect_uri'] = '/api.php/oauth2/redirection';
+        if (empty($input['redirect_uri'])) {
+            $input['redirect_uri'] = ['/api.php/oauth2/redirection'];
         }
+        $input['redirect_uri'] = json_encode($input['redirect_uri']);
 
         return $input;
     }
@@ -130,11 +131,12 @@ final class OAuthClient extends CommonDBTM
             $input['secret'] = $key->encrypt($input['secret']);
         }
         if (isset($input['grants'])) {
-            $input['grants'] = exportArrayToDB($input['grants']);
+            $input['grants'] = json_encode($input['grants']);
         }
         if (isset($input['scopes'])) {
-            $input['scopes'] = exportArrayToDB($input['scopes']);
+            $input['scopes'] = json_encode($input['scopes']);
         }
+        $input['redirect_uri'] = json_encode($input['redirect_uri'] ?? []);
 
         return $input;
     }
@@ -146,11 +148,12 @@ final class OAuthClient extends CommonDBTM
             $this->fields['secret'] = $key->decrypt($this->fields['secret']);
         }
         if (isset($this->fields['grants'])) {
-            $this->fields['grants'] = importArrayFromDB($this->fields['grants']);
+            $this->fields['grants'] = json_decode($this->fields['grants'], true);
         }
         if (isset($this->fields['scopes'])) {
-            $this->fields['scopes'] = importArrayFromDB($this->fields['scopes']);
+            $this->fields['scopes'] = json_decode($this->fields['scopes'], true);
         }
+        $this->fields['redirect_uri'] = json_decode($this->fields['redirect_uri'], true);
     }
 
     public function post_getEmpty()

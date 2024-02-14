@@ -57,6 +57,7 @@ class ClientRepository implements ClientRepositoryInterface
             $client = new Client();
             $client->setIdentifier($clientIdentifier);
             $client->setName($iterator->current()['name']);
+            $client->setRedirectUri(json_decode($iterator->current()['redirect_uri'], true) ?? []);
             return $client;
         }
 

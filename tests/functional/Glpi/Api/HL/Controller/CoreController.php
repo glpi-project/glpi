@@ -294,7 +294,8 @@ class CoreController extends \HLAPITestCase
 
         $client->update([
             'id' => $client_id,
-            'grants' => ['authorization_code']
+            'grants' => ['authorization_code'],
+            'redirect_uri' => ["/api.php/oauth2/redirection"],
         ]);
 
         // get client ID and secret
@@ -312,7 +313,7 @@ class CoreController extends \HLAPITestCase
             'response_type' => 'code',
             'client_id' => $client_data['identifier'],
             'scope' => '',
-            'redirect_uri' => $client_data['redirect_uri'],
+            'redirect_uri' => json_decode($client_data['redirect_uri'])[0],
         ]);
 
         $this->api->call($request, function ($call) {

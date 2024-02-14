@@ -86,7 +86,7 @@ if (!$DB->tableExists('glpi_oauthclients')) {
         `name` varchar(255) NOT NULL DEFAULT '',
         `comment` text DEFAULT NULL,
         `secret` varchar(255) NOT NULL,
-        `redirect_uri` varchar(255) NOT NULL,
+        `redirect_uri` TEXT NOT NULL,
         `grants` text NOT NULL,
         `scopes` text NOT NULL,
         `is_active` tinyint NOT NULL DEFAULT '1',
@@ -97,6 +97,9 @@ if (!$DB->tableExists('glpi_oauthclients')) {
         KEY `is_active` (`is_active`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQueryOrDie($query, "10.1.0 add table glpi_oauthclients");
+} else {
+    // Dev migration for `redirect_uri` column from varchar(255) to TEXT
+    $migration->changeField('glpi_oauthclients', 'redirect_uri', 'redirect_uri', 'TEXT NOT NULL');
 }
 
 $migration->addRight('oauth_client', ALLSTANDARDRIGHT, ['config' => UPDATE]);

@@ -749,7 +749,7 @@ function loadDataset()
         ],
         'OAuthClient' => [
             [
-                'redirect_uri' => '/api.php/oauth2/redirection',
+                'redirect_uri' => ["/api.php/oauth2/redirection"],
                 'grants' => ['password', 'client_credentials', 'authorization_code'],
                 'scopes' => [],
                 'is_active' => 1,
