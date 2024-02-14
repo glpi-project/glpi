@@ -2403,11 +2403,13 @@ class AuthLDAP extends DbTestCase
             'groups_id' => $group_id,
             'users_id'  => $users_id,
         ]);
-        $groups = (new Group_User())->find([
-            'groups_id' => $group_id,
-            'users_id'  => $users_id,
+
+        // Check that the user is not attached to the profile at creation
+        $rights = (new Profile_User())->find([
+            'users_id' => $users_id,
+            'profiles_id' => 4,
         ]);
-        $this->array($groups)->hasSize(1);
+        $this->array($rights)->hasSize(0);
 
         // Log in again to trigger rule
         $this->login('brazil7', 'password', false);
