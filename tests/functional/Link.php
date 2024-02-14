@@ -279,13 +279,13 @@ TEXT,
             'link' => $content
         ]))->isFalse();
         $this->hasSessionMessages(ERROR, [
-            __('Invalid link or content')
+            __('Invalid twig template syntax')
         ]);
         $this->boolean($link->add([
             'data' => $content
         ]))->isFalse();
         $this->hasSessionMessages(ERROR, [
-            __('Invalid link or content')
+            __('Invalid twig template syntax')
         ]);
     }
 }

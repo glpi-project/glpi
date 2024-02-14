@@ -195,19 +195,15 @@ class TemplateRenderer
      *
      * @param string $template
      * @param array  $variables
-     * @param bool   $throw_on_error If false, exceptions/errors will be caught and handled by the error handler.
      *
      * @return string
      */
-    public function renderFromStringTemplate(string $template, array $variables = [], bool $throw_on_error = false): string
+    public function renderFromStringTemplate(string $template, array $variables = []): string
     {
         try {
             Profiler::getInstance()->start($template, Profiler::CATEGORY_TWIG);
             return $this->environment->createTemplate($template)->render($variables);
         } catch (\Twig\Error\Error $e) {
-            if ($throw_on_error) {
-                throw $e;
-            }
             ErrorHandler::getInstance()->handleTwigError($e);
         } finally {
             Profiler::getInstance()->stop($template);

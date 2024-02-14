@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\ContentTemplates\TemplateManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\URL;
 
@@ -64,7 +65,11 @@ class Link extends CommonDBTM
     public static function registerTag($tag)
     {
         if (!in_array($tag, self::$tags)) {
-            self::$tags[] = trim($tag, "[] \n\t");
+            if (preg_match('/\[.+\]/', $tag)) {
+                Toolbox::deprecated('Links tags should now correspond to a valid Twig variable identifier.');
+                $tag = trim($tag, '[]');
+            }
+            self::$tags[] = $tag;
         }
     }
 
@@ -139,7 +144,13 @@ class Link extends CommonDBTM
         ])), 'itemtype');
     }
 
-    private function getTagCompletions()
+    /**
+     * Return tags completion for the monaco editor.
+     *
+     * @return array
+     * @phpstan-return array<int, {name: string, type: string}>
+     */
+    private function getTagCompletions(): array
     {
         /**
          * @var \DBmysql $DB
@@ -165,20 +176,24 @@ class Link extends CommonDBTM
             }
             $itemtype_fields = [];
             foreach ($itemtypes as $itemtype) {
-                $itemtype_fields[$itemtype] = array_column($DB->listFields($itemtype::getTable()), 'Field');
+                if (!is_a($itemtype, CommonDBTM::class, true)) {
+                    continue;
+                }
+                $itemtype_fields[$itemtype] = array_diff(
+                    array_column($DB->listFields($itemtype::getTable()), 'Field'),
+                    $itemtype::$undisclosedFields
+                );
             }
             // Get all fields that exist for every itemtype
             if (count($itemtype_fields) > 0) {
                 $common_fields = array_intersect(...array_values($itemtype_fields));
-            } else {
-                $common_fields = [];
-            }
 
-            foreach ($common_fields as $field) {
-                $completions[] = [
-                    'name' => "item.$field",
-                    'type' => 'Variable',
-                ];
+                foreach ($common_fields as $field) {
+                    $completions[] = [
+                        'name' => "item.$field",
+                        'type' => 'Variable',
+                    ];
+                }
             }
         }
         return $completions;
@@ -398,13 +413,14 @@ class Link extends CommonDBTM
     /**
      * Generate link(s).
      *
-     * @param string        $link       original string content
-     * @param CommonDBTM    $item       item used to make replacements
-     * @param bool          $safe_url   indicates whether URL should be sanitized or not
+     * @param string        $link           original string content
+     * @param CommonDBTM    $item           item used to make replacements
+     * @param bool          $safe_url       indicates whether URL should be sanitized or not
+     * @param array         $custom_vars    custom variables that will be passed to link template renderer
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
      */
-    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true)
+    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $custom_vars = [])
     {
         /**
          * @var array $CFG_GLPI
@@ -462,11 +478,13 @@ class Link extends CommonDBTM
             $vars['DOMAINS'] = array_column(iterator_to_array($iterator), 'name');
         }
 
+        $vars = array_merge($vars, $custom_vars);
+
         // Render the common parts of the link (we will handle the IP and MAC later which could make several links)
         // We will replace the IP and MAC by twig placeholders again to preserve them
         $vars['IP'] = '{{ IP }}';
         $vars['MAC'] = '{{ MAC }}';
-        $common_link = TemplateRenderer::getInstance()->renderFromStringTemplate($link, $vars, true);
+        $common_link = TemplateManager::render($link, $vars, expect_html: false);
 
         $replace_IP  = strstr($common_link, "{{ IP }}");
         $replace_MAC = strstr($common_link, "{{ MAC }}");
@@ -478,10 +496,14 @@ class Link extends CommonDBTM
             // If IP or MAC tags present but there is no info, no links will be generated
             if (count($ipmac)) {
                 foreach ($ipmac as $key => $val) {
-                    $links[$key] = TemplateRenderer::getInstance()->renderFromStringTemplate($common_link, [
-                        'IP' => $val['ip'] ?? '',
-                        'MAC' => $val['mac'] ?? ''
-                    ]);
+                    $links[$key] = TemplateManager::render(
+                        $common_link,
+                        [
+                            'IP' => $val['ip'] ?? '',
+                            'MAC' => $val['mac'] ?? ''
+                        ],
+                        expect_html: false
+                    );
                 }
             }
         } else {
@@ -523,6 +545,7 @@ class Link extends CommonDBTM
         }
 
         $buttons_params = [
+            'item' => $item,
             'add_msg' => _x('button', 'Add'),
             'configure_msg' => sprintf(__('Configure %s links'), $item::getTypeName(1)),
             'show_add' => ManualLink::canCreate() && ($restrict_type === null || $restrict_type === ManualLink::class),
@@ -566,7 +589,7 @@ TWIG, $buttons_params);
                 $actions = '';
 
                 if ($manuallink->canUpdateItem()) {
-                    $actions .= '<a href="' . ManualLink::getFormURLWithID($row[$item->getIndexName()]) . '" title="' . _sx('button', 'Update') . '">';
+                    $actions .= '<a href="' . htmlspecialchars(ManualLink::getFormURLWithID($row[$item->getIndexName()])) . '" title="' . _sx('button', 'Update') . '">';
                     $actions .= '<i class="fas fa-edit"></i>';
                     $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
                     $actions .= '</a>';
@@ -777,61 +800,44 @@ TWIG, $buttons_params);
         return "ti ti-link";
     }
 
-    /**
-     * Validate that the provided link/content Twig template can be parsed. May not catch issues arising from runtime data.
-     * @param string $template
-     * @return bool
-     */
-    private function validateLinkOrContent(string $template)
-    {
-        try {
-            $fields = [
-                'id' => 1,
-                'name' => '',
-                'serial' => '',
-                'otherserial' => '',
-                'locations_id' => 1,
-                'networks_id' => 1,
-                'users_id' => 1,
-                'groups_id' => 1,
-                'realname' => '',
-                'firstname' => '',
-            ];
-            $fake_item = new class extends CommonDBTM {
-            };
-            $fake_item->fields = $fields;
-            self::generateLinkContents($template, $fake_item, false);
-        } catch (Throwable) {
-            Session::addMessageAfterRedirect(
-                __('Invalid link or content'),
-                false,
-                ERROR
-            );
-            return false;
-        }
-        return true;
-    }
-
     public function prepareInputForAdd($input)
     {
-        if (isset($input['link']) && !$this->validateLinkOrContent($input['link'])) {
+        if (!$this->validateTemplateFields($input)) {
             return false;
         }
-        if (isset($input['data']) && !$this->validateLinkOrContent($input['data'])) {
-            return false;
-        }
+
         return parent::prepareInputForAdd($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        if (isset($input['link']) && !$this->validateLinkOrContent($input['link'])) {
+        if (!$this->validateTemplateFields($input)) {
             return false;
         }
-        if (isset($input['data']) && !$this->validateLinkOrContent($input['data'])) {
-            return false;
-        }
+
         return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Validate template fields.
+     *
+     * @param array $input
+     * @return bool
+     */
+    private function validateTemplateFields(array $input): bool
+    {
+        $err_msg = null;
+        if (
+            (isset($input['link']) && !TemplateManager::validate($input['link'], $err_msg))
+            || (isset($input['data']) && !TemplateManager::validate($input['data'], $err_msg))
+        ) {
+            if ($err_msg !== null) {
+                Session::addMessageAfterRedirect($err_msg, false, ERROR);
+            }
+            return false;
+        }
+
+        return true;
     }
 
     public function post_addItem()

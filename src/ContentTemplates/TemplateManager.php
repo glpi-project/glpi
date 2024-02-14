@@ -56,29 +56,33 @@ class TemplateManager
     /**
      * Boiler plate code to render a template
      *
-     * @param string $content  Template content (html + twig)
-     * @param array $params    Variables to be exposed to the templating engine
+     * @param string    $content        Template content (html + twig)
+     * @param array     $params         Variables to be exposed to the templating engine
+     * @param bool      $expect_html    Is content expected to be HTML content ?
      *
      * @return string The rendered HTML
      */
     public static function render(
         string $content,
-        array $params
+        array $params,
+        bool $expect_html = true
     ): string {
-       // Init twig
+        // Init twig
         $loader = new ArrayLoader(['template' => $content]);
         $twig = new Environment($loader);
 
-       // Use sandbox extension to restrict code execution
+        // Use sandbox extension to restrict code execution
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
 
-       // Render the template
-        $html = $twig->render('template', $params);
+        // Render the template
+        $result = $twig->render('template', $params);
 
-       // Clean generated HTML to ensure both template and values are cleaned.
-        $html = RichText::getSafeHtml($html);
+        if ($expect_html) {
+            // Clean generated HTML to ensure both template and values are cleaned.
+            $result = RichText::getSafeHtml($result);
+        }
 
-        return $html;
+        return $result;
     }
 
     /**

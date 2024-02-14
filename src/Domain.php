@@ -782,17 +782,16 @@ class Domain extends CommonDBTM
         return $types;
     }
 
-    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true)
+    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $extra_data = [])
     {
-        if (strstr($link, "[DOMAIN]")) {
-            $link = str_replace("[DOMAIN]", $item->getName(), $link);
-            if ($safe_url) {
-                $link = URL::sanitizeURL($link) ?: '#';
-            }
-            return [$link];
-        }
-
-        return parent::generateLinkContents($link, $item, $safe_url);
+        return Link::generateLinkContents(
+            $link,
+            $item,
+            $safe_url,
+            [
+                'DOMAIN' =>  $item->getName(),
+            ]
+        );
     }
 
     public static function getUsed(array $used, $domaintype)

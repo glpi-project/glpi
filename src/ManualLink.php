@@ -140,7 +140,12 @@ class ManualLink extends CommonDBChild
         return $input;
     }
 
-    public static function getForItem(CommonDBTM $item): array
+    /**
+     * Return all manual links entries for given item.
+     * @param CommonDBTM $item
+     * @return array
+     */
+    public static function getForItem(CommonDBTM $item): iterable
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -152,7 +157,7 @@ class ManualLink extends CommonDBChild
             ],
             'ORDERBY'      => 'name'
         ]);
-        return iterator_to_array($iterator);
+        return $iterator;
     }
 
     /**

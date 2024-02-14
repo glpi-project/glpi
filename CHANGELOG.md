@@ -183,6 +183,8 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem::showManageForm()`
 - `KnowbaseItemTranslation::canBeTranslated()`
 - `KnowbaseItemTranslation::isKbTranslationActive()`
+- `Link::showForItem()`
+- `ManualLink::showForItem()`
 - `ReminderTranslation::canBeTranslated()`
 - `ReminderTranslation::isReminderTranslationActive()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
@@ -225,6 +227,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
+- `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `Netpoint` class
 - `Plugin::migrateItemType()`
