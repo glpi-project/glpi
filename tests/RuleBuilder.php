@@ -93,7 +93,7 @@ class RuleBuilder
         $this->criteria     = [];
         $this->actions      = [];
 
-        if ($this->rule_type === RuleTicket::class) {
+        if (is_a($this->rule_type, RuleCommonITILObject::class, true)) {
             $this->condition = RuleTicket::ONADD | RuleTicket::ONUPDATE;
         } else {
             $this->condition = 0;
