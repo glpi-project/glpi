@@ -2123,11 +2123,6 @@ class User extends CommonDBTM
                     $groups = array_merge($groups, array_column(Group_User::getUserGroups($searched_user->getID()), 'id'));
                 }
 
-                if ($this->fields['name'] == "brazil7") {
-                    var_dump($groups);
-                }
-
-
                 $this->fields = $rule->processAllRules($groups, $this->fields, [
                     'type'        => Auth::LDAP,
                     'ldap_server' => $ldap_method["id"],
