@@ -1409,12 +1409,12 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $restrict = [
                 'OR' => [
                     $restrict,
-                    [self::getTable() . '.is_private' => 0] + getEntitiesRestrictCriteria(self::getTable(), '', '', true)
+                    [self::getTable() . '.is_private' => 0]
                 ]
             ];
         }
 
-        $criteria['WHERE'] = $restrict;
+        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable(), '', '', true);
         return $criteria;
     }
 
