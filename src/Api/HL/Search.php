@@ -1125,6 +1125,9 @@ final class Search
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
+        if ($end > $results['total']) {
+            $end = $results['total'] - 1;
+        }
         return new JSONResponse($results['results'], $has_more ? 206 : 200, [
             'Content-Range' => $results['start'] . '-' . $end . '/' . $results['total'],
         ]);

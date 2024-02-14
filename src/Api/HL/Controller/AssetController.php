@@ -876,7 +876,7 @@ final class AssetController extends AbstractController
     }
 
     /**
-     * @param bool $classes_only If true, only the class names are returned. If false, the class name => localized name pairs are returned..
+     * @param bool $classes_only If true, only the class names are returned. If false, the class name => localized name pairs are returned.
      * @return array<class-string<CommonDBTM>, string>
      */
     public static function getAssetTypes(bool $classes_only = true): array

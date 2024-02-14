@@ -801,7 +801,7 @@ final class ITILController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}', methods: ['GET'], requirements: [
-        'subitem_type' => 'Followup|Task|Document|Solution|Validation'
+        'subitem_type' => 'Followup|Document|Solution|Validation'
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all timeline items of a specific type for a Ticket, Change or Problem by ID',
@@ -812,6 +812,9 @@ final class ITILController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_PATH,
                 'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
             ]
+        ],
+        responses: [
+            ['schema' => '{subitem_type}[]']
         ]
     )]
     public function getTimelineItems(Request $request): Response
@@ -821,6 +824,34 @@ final class ITILController extends AbstractController
         $friendly_subitem_type = $request->getAttribute('subitem_type');
 
         $timeline = $this->getITILTimelineItems($item, $request, [$friendly_subitem_type]);
+        $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
+        if ($single_result && $timeline === null) {
+            return self::getNotFoundErrorResponse();
+        }
+        return new JSONResponse($timeline);
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Timeline/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get all tasks for a Ticket, Change or Problem by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket, Change, or Problem',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ]
+        ],
+        responses: [
+            ['schema' => '{itemtype}Task[]']
+        ]
+    )]
+    public function getTimelineTasks(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+
+        $timeline = $this->getITILTimelineItems($item, $request, ['Task']);
         $single_result = $request->hasParameter('filter') && str_contains($request->getParameter('filter'), 'id==');
         if ($single_result && $timeline === null) {
             return self::getNotFoundErrorResponse();
@@ -874,7 +905,7 @@ final class ITILController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['GET'], requirements: [
-        'subitem_type' => 'Followup|Task|Document|Solution|Validation',
+        'subitem_type' => 'Followup|Document|Solution|Validation',
         'subitem_id' => '\d+'
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
@@ -886,6 +917,9 @@ final class ITILController extends AbstractController
                 'location' => Doc\Parameter::LOCATION_PATH,
                 'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
             ]
+        ],
+        responses: [
+            ['schema' => '{subitem_type}']
         ]
     )]
     public function getTimelineItem(Request $request): Response
@@ -897,8 +931,35 @@ final class ITILController extends AbstractController
         return $this->getTimelineItems($request);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['GET'], requirements: [
+        'subitem_id' => '\d+'
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get a task for a Ticket, Change or Problem by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket, Change, or Problem',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ]
+        ],
+        responses: [
+            ['schema' => '{itemtype}Task']
+        ]
+    )]
+    public function getTimelineTask(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';id==' . $request->getAttribute('subitem_id');
+        // Reuse existing logic from the getTimelineItems route
+        $request->setParameter('filter', $filters);
+        $request->setAttribute('subitem_type', 'Task');
+        return $this->getTimelineItems($request);
+    }
+
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}', methods: ['POST'], requirements: [
-        'subitem_type' => 'Followup|Task|Document|Solution|Validation'
+        'subitem_type' => 'Followup|Document|Solution|Validation'
     ])]
     #[Doc\Route(
         description: 'Create a timeline item for a Ticket, Change or Problem by ID',
@@ -908,8 +969,13 @@ final class ITILController extends AbstractController
                 'description' => 'The ID of the Ticket, Change, or Problem',
                 'location' => Doc\Parameter::LOCATION_PATH,
                 'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{subitem_type}',
             ]
-        ]
+        ],
     )]
     public function createTimelineItem(Request $request): Response
     {
@@ -930,8 +996,43 @@ final class ITILController extends AbstractController
         ]);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Task', methods: ['POST'])]
+    #[Doc\Route(
+        description: 'Create a task for a Ticket, Change or Problem by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket, Change, or Problem',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}Task',
+            ]
+        ],
+    )]
+    public function createTimelineTask(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+
+        $parameters = $request->getParameters();
+        $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, 'Task'));
+        $schema = $this->getKnownSubitemSchema($item, 'Task');
+        return Search::createBySchema($schema, $parameters, [self::class, 'getTimelineTask'], [
+            'mapped' => [
+                'itemtype' => $item::getType(),
+                'subitem_type' => 'Task',
+                'id' => $item->getID()
+            ],
+            'id' => 'subitem_id'
+        ]);
+    }
+
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['PATCH'], requirements: [
-        'subitem_type' => 'Followup|Task|Document|Solution|Validation',
+        'subitem_type' => 'Followup|Document|Solution|Validation',
         'subitem_id' => '\d+'
     ])]
     #[Doc\Route(
@@ -942,6 +1043,11 @@ final class ITILController extends AbstractController
                 'description' => 'The ID of the Ticket, Change, or Problem',
                 'location' => Doc\Parameter::LOCATION_PATH,
                 'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{subitem_type}',
             ]
         ]
     )]
@@ -962,8 +1068,43 @@ final class ITILController extends AbstractController
         return Search::updateBySchema($this->getKnownSubitemSchema($item, $subitem_type), $attributes, $parameters);
     }
 
+    #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['PATCH'], requirements: [
+        'subitem_id' => '\d+'
+    ])]
+    #[Doc\Route(
+        description: 'Update a task for a Ticket, Change or Problem by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket, Change, or Problem',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{itemtype}Task',
+            ]
+        ]
+    )]
+    public function updateTimelineTask(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+
+        $parameters = $request->getParameters();
+        $required_fields = $this->getRequiredTimelineItemFields($item, $request, 'Task');
+        // Required fields are used to link to the parent item. We cannot let them be changed
+        foreach ($required_fields as $field => $value) {
+            unset($parameters[$field]);
+        }
+        $attributes = $request->getAttributes();
+        $attributes['id'] = $request->getAttribute('subitem_id');
+        return Search::updateBySchema($this->getKnownSubitemSchema($item, 'Task'), $attributes, $parameters);
+    }
+
     #[Route(path: '/{itemtype}/{id}/Timeline/{subitem_type}/{subitem_id}', methods: ['DELETE'], requirements: [
-        'subitem_type' => 'Followup|Task|Document|Solution|Validation',
+        'subitem_type' => 'Followup|Document|Solution|Validation',
         'subitem_id' => '\d+'
     ])]
     #[Doc\Route(
@@ -985,6 +1126,29 @@ final class ITILController extends AbstractController
         $attributes = $request->getAttributes();
         $attributes['id'] = $request->getAttribute('subitem_id');
         return Search::deleteBySchema($this->getKnownSubitemSchema($item, $subitem_type), $attributes, $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Timeline/Task/{subitem_id}', methods: ['DELETE'], requirements: [
+        'subitem_id' => '\d+'
+    ])]
+    #[Doc\Route(
+        description: 'Delete a task for a Ticket, Change or Problem by ID',
+        parameters: [
+            [
+                'name' => 'id',
+                'description' => 'The ID of the Ticket, Change, or Problem',
+                'location' => Doc\Parameter::LOCATION_PATH,
+                'schema' => ['type' => Doc\Schema::TYPE_INTEGER]
+            ]
+        ]
+    )]
+    public function deleteTimelineTask(Request $request): Response
+    {
+        /** @var CommonITILObject $item */
+        $item = $request->getParameter('_item');
+        $attributes = $request->getAttributes();
+        $attributes['id'] = $request->getAttribute('subitem_id');
+        return Search::deleteBySchema($this->getKnownSubitemSchema($item, 'Task'), $attributes, $request->getParameters());
     }
 
     /**

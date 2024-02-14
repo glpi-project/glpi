@@ -78,63 +78,10 @@ class ComponentController extends \HLAPITestCase
      */
     public function testCRUD(string $type)
     {
-        $this->login('glpi', 'glpi');
-
-        $func_name = __FUNCTION__;
-
-        // Create component type
-        $request = new Request('POST', '/Components/' . $type);
-        $request->setParameter('designation', $type . $func_name);
-        $request->setParameter('entities_id', getItemByTypeName('Entity', '_test_root_entity', true));
-        $new_item_location = null;
-        $this->api->call($request, function ($call) use ($type, &$new_item_location) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->headers(function ($headers) use ($type, &$new_item_location) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Components/" . $type);
-                    $new_item_location = $headers['Location'];
-                });
-        });
-
-        // Get and verify
-        $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name, $type) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($func_name, $type) {
-                    $this->array($content)->hasKeys(['id', 'designation']);
-                    $this->integer($content['id'])->isGreaterThan(0);
-                    $this->string($content['designation'])->isEqualTo($type . $func_name);
-                });
-        });
-
-        // Update
-        $request = new Request('PATCH', $new_item_location);
-        $request->setParameter('designation', $type . $func_name . '2');
-        $this->api->call($request, function ($call) use ($func_name, $type) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($func_name, $type) {
-                    $this->checkSimpleContentExpect($content, ['fields' => ['designation' => $type . $func_name . '2']]);
-                });
-        });
-
-        // Delete
-        $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
-        });
-
-        // Verify item does not exist anymore
-        $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
-        });
+        $this->api->autoTestCRUD('/Components/' . $type, [
+            'designation' => $type . __FUNCTION__,
+            'entity' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
     }
 
     /**
@@ -148,7 +95,7 @@ class ComponentController extends \HLAPITestCase
 
         $func_name = __FUNCTION__;
 
-        //ignore SIMCard for now because sim cards not in a device are impossible to exist in this universe
+        //ignore SIMCard for now because sim cards not in a device are impossible to exist
         if ($type === 'SIMCard') {
             $this->boolean(true)->isTrue();
             return;

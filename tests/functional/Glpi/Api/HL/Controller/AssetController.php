@@ -110,6 +110,41 @@ class AssetController extends \HLAPITestCase
         });
     }
 
+    public function testAutoSearch()
+    {
+        $this->login();
+        $entity = $this->getTestRootEntity(true);
+        $dataset = [
+            [
+                'name' => 'testAutoSearch_1',
+                'entity' => $entity
+            ],
+            [
+                'name' => 'testAutoSearch_2',
+                'entity' => $entity
+            ],
+            [
+                'name' => 'testAutoSearch_3',
+                'entity' => $entity
+            ]
+        ];
+        $this->api->call(new Request('GET', '/Assets'), function ($call) use ($dataset) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($dataset) {
+                    $this->array($content)->size->isGreaterThanOrEqualTo(1);
+                    foreach ($content as $asset) {
+                        $to_skip = ['SoftwareLicense', 'Unmanaged'];
+                        if (in_array($asset['itemtype'], $to_skip, true)) {
+                            continue;
+                        }
+                        $this->api->autoTestSearch('/Assets/' . $asset['itemtype'], $dataset);
+                    }
+                });
+        });
+    }
+
     protected function getItemProvider()
     {
         return [
@@ -166,88 +201,7 @@ class AssetController extends \HLAPITestCase
      */
     public function testCreateUpdateDeleteItem(string $schema, array $fields)
     {
-        $this->login();
-
-        // Create
-        $request = new Request('POST', '/Assets/' . $schema);
-        foreach ($fields as $k => $v) {
-            $request->setParameter($k, $v);
-        }
-        $new_item_location = null;
-        $this->api->call($request, function ($call) use ($schema, &$new_item_location) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->headers(function ($headers) use ($schema, &$new_item_location) {
-                    $this->array($headers)->hasKey('Location');
-                    $this->string($headers['Location'])->startWith("/Assets/{$schema}/");
-                    $new_item_location = $headers['Location'];
-                });
-        });
-
-        // Get and verify
-        $this->api->call(new Request('GET', $new_item_location), function ($call) use ($fields) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($fields) {
-                    $to_check = $fields;
-                    if (array_key_exists('entity', $to_check)) {
-                        unset($to_check['entity']);
-                        $to_check['entity.id'] = $fields['entity'];
-                    }
-                    $this->checkSimpleContentExpect($content, ['fields' => $to_check]);
-                });
-        });
-
-        // Update
-        $request = new Request('PATCH', $new_item_location);
-        $request->setParameter('name', $fields['name'] . '_updated');
-        $can_be_trashed = false;
-        $this->api->call($request, function ($call) use ($fields, &$can_be_trashed) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($fields, &$can_be_trashed) {
-                    $this->checkSimpleContentExpect($content, ['fields' => ['name' => $fields['name'] . '_updated']]);
-                    $can_be_trashed = array_key_exists('is_deleted', $content);
-                });
-        });
-
-        // Delete
-        $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
-        });
-
-        if ($can_be_trashed) {
-            // Verify item still exists but has is_deleted=1
-            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($fields) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) use ($fields) {
-                        $this->boolean((bool) $content['is_deleted'])->isTrue();
-                    });
-            });
-
-            // Force delete
-            $request = new Request('DELETE', $new_item_location);
-            $request->setParameter('force', 1);
-            $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK();
-            });
-        }
-
-        // Verify item does not exist anymore
-        $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
-        });
+        $this->api->autoTestCRUD('/Assets/' . $schema, $fields);
     }
 
     public function testSearchAllAssets()

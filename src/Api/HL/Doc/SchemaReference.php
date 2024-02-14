@@ -49,7 +49,14 @@ final class SchemaReference implements \ArrayAccess
         return $this->ref;
     }
 
-    public static function resolveRef($ref, string $controller): ?array
+    /**
+     * @param array|string $ref The schema reference
+     * @param string $controller The controller that is calling this method
+     * @param array $attributes Attributes from the request, if we know them to help resolve placeholders in the ref.
+     *                          For example: /Assets/{itemtype} when the ref is "{itemtype}". The attributes array should contain an "itemtype" key.
+     * @return array|null
+     */
+    public static function resolveRef($ref, string $controller, array $attributes = []): ?array
     {
         $known_schemas = OpenAPIGenerator::getComponentSchemas();
         if (!is_string($ref) && $ref !== null) {
@@ -58,6 +65,10 @@ final class SchemaReference implements \ArrayAccess
 
         $is_ref_array = str_ends_with($ref, '[]');
         $ref_name = $is_ref_array ? substr($ref, 0, -2) : $ref;
+
+        foreach ($attributes as $key => $value) {
+            $ref_name = str_replace('{' . $key . '}', $value, $ref_name);
+        }
 
         $match = null;
         if (isset($known_schemas[$ref_name])) {
@@ -69,7 +80,7 @@ final class SchemaReference implements \ArrayAccess
                 if (str_contains($key, '-')) {
                     $key = substr($key, strpos($key, '-') + 1);
                 }
-                if (strcasecmp(trim($key), $ref_name)) {
+                if (strcasecmp(trim($key), $ref_name) === 0) {
                     $matches[] = $schema;
                 }
             }
