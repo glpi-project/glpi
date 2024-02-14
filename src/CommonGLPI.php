@@ -862,13 +862,6 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $cleaned_options = $options;
-        $tab_path = $this->getTabsURL();
-        $parse_url = parse_url($tab_path);
-        if (isset($parse_url['query'])) {
-            parse_str($parse_url['query'], $url_params);
-            $tab_path = Html::cleanParametersURL($tab_path);
-            $cleaned_options = array_merge($options, $url_params);
-        }
         unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
         $target         = $_SERVER['PHP_SELF'];
@@ -905,6 +898,13 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (count($onglets)) {
+            $tab_path = $this->getTabsURL();
+            $parse_url = parse_url($tab_path);
+            if (isset($parse_url['query'])) {
+                parse_str($parse_url['query'], $url_params);
+                $tab_path = Html::cleanParametersURL($tab_path);
+                $cleaned_options = array_merge($cleaned_options, $url_params);
+            }
             $tabs    = [];
 
             $tab_params = array_merge(
