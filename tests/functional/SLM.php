@@ -1411,22 +1411,22 @@ class SLM extends DbTestCase
                 }
 
                 // First OLA is added on creation
-                $builder = new RuleBuilder('Add first LA on creation');
+                $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONADD)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                     ->addCriteria('entities_id', Rule::PATTERN_IS, $entity)
                     ->addAction('assign', $la_fk_field, $la1->getID());
-                $this->createRule($builder, RuleTicket::class);
+                $this->createRule($builder);
 
                 // First OLA is added on update
-                $builder = new RuleBuilder('Add second LA on update');
+                $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONUPDATE)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                     ->addCriteria('urgency', Rule::PATTERN_IS, 5)
                     ->addAction('assign', $la_fk_field, $la2->getID());
-                $this->createRule($builder, RuleTicket::class);
+                $this->createRule($builder);
             }
         }
 
@@ -1625,13 +1625,13 @@ class SLM extends DbTestCase
             ]);
 
             // First OLA is added on creation
-            $builder = new RuleBuilder('Add first LA on creation');
+            $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONADD)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                 ->addCriteria('entities_id', Rule::PATTERN_IS, $entity)
                 ->addAction('assign', $la_fk_field, $la->getID());
-            $this->createRule($builder, RuleTicket::class);
+            $this->createRule($builder);
         }
 
         // Create a ticket
@@ -1766,13 +1766,13 @@ class SLM extends DbTestCase
             ]);
 
             // OLA is added on update
-            $builder = new RuleBuilder('Add second LA on update');
+            $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONUPDATE)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                 ->addCriteria('urgency', Rule::PATTERN_IS, 5)
                 ->addAction('assign', $la_fk_field, $la->getID());
-            $this->createRule($builder, RuleTicket::class);
+            $this->createRule($builder);
         }
 
         // Update ticket, triggering an LA change

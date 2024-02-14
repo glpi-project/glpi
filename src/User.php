@@ -578,6 +578,27 @@ class User extends CommonDBTM
     }
 
     /**
+     * Retrieve a user from the database using it's dn and auths_id.
+     *
+     * @param string $user_dn
+     * @param int $auths_id
+     *
+     * @return bool
+     */
+    public function getFromDBbyDnAndAuth(string $user_dn, int $auths_id): bool
+    {
+        /**
+         * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
+         * The 'user_dn_hash' field is a hashed version of the 'user_dn' field
+         * and is indexed in the database, making it faster to search.
+         */
+        return $this->getFromDBByCrit([
+            'user_dn_hash' => md5($user_dn),
+            'auths_id'     => $auths_id
+        ]);
+    }
+
+    /**
      * Get users ids matching the given email
      *
      * @param string $email     Email to search for
@@ -2094,6 +2115,12 @@ class User extends CommonDBTM
                     $groups = $this->fields["_groups"];
                 } else {
                     $groups = [];
+                }
+
+                // Take database groups into acount for user
+                $searched_user = new User();
+                if ($searched_user->getFromDBbyDnAndAuth($userdn, $ldap_method["id"])) {
+                    $groups = array_merge($groups, array_column(Group_User::getUserGroups($searched_user->getID()), 'id'));
                 }
 
                 $this->fields = $rule->processAllRules($groups, $this->fields, [

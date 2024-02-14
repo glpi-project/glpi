@@ -2617,12 +2617,12 @@ abstract class RuleCommonITILObject extends DbTestCase
             'is_recursive' => true,
         ]);
 
-        $builder = new RuleBuilder('Test global_validation criteria rule');
+        $builder = new RuleBuilder('Test global_validation criteria rule', $this->getTestedClass());
         $builder
             ->addCriteria('global_validation', Rule::PATTERN_IS, CommonITILValidation::WAITING)
             ->addCriteria('itilcategories_id', Rule::PATTERN_IS, $category1->getID())
             ->addAction('assign', 'urgency', $urgency_if_rule_triggered);
-        $this->createRule($builder, $this->getTestedClass());
+        $this->createRule($builder);
 
         // Create ITIL object with validation request
         $itil_object = $this->createItem($this->getITILObjectClass(), [
@@ -2681,16 +2681,16 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         // Create two rules
-        $builder = new RuleBuilder('Test category code criterion rule');
+        $builder = new RuleBuilder('Test category code criterion rule', $this->getTestedClass());
         $builder
             ->addCriteria('urgency', Rule::PATTERN_IS, 5)
             ->addAction('assign', 'itilcategories_id', $category->getID());
-        $this->createRule($builder, $this->getTestedClass());
+        $this->createRule($builder);
 
         $builder
             ->addCriteria('itilcategories_id_code', Rule::PATTERN_IS, $category->fields['code'])
             ->addAction('assign', 'locations_id', $location->getID());
-        $this->createRule($builder, $this->getTestedClass());
+        $this->createRule($builder);
 
         // Create a itil object with "Very high" urgency
         $itil_object = $this->createItem($this->getITILObjectClass(), [
@@ -2730,19 +2730,19 @@ abstract class RuleCommonITILObject extends DbTestCase
         ]);
 
         // Create two rules
-        $builder = new RuleBuilder('Test default profile criterion rule');
+        $builder = new RuleBuilder('Test default profile criterion rule', $this->getTestedClass());
         $builder
             ->addCriteria('profiles_id', Rule::PATTERN_IS, 4)
             ->addAction('assign', 'locations_id', $location->getID());
-        $this->createRule($builder, $this->getTestedClass());
+        $this->createRule($builder);
 
 
         // Create two rules
-        $builder = new RuleBuilder('Test default profile criterion rule on update');
+        $builder = new RuleBuilder('Test default profile criterion rule on update', $this->getTestedClass());
         $builder
             ->addCriteria('profiles_id', Rule::PATTERN_IS, 0)
             ->addAction('assign', 'locations_id', $location2->getID());
-        $this->createRule($builder, $this->getTestedClass());
+        $this->createRule($builder);
 
         //Load user jsmith123
         $user = new \User();
