@@ -175,27 +175,29 @@ class ItemVirtualMachine extends CommonDBChild
     /**
      * Show hosts for a virtualmachine
      *
-     * @param $comp   Computer object that represents the virtual machine
+     * @param $asset CommonDBTM object that represents the virtual machine
      *
      * @return void
      **/
-    public static function showForVirtualMachine(Computer $comp)
+    public static function showForVirtualMachine(CommonDBTM $asset)
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        $ID = $comp->fields['id'];
+        $ID = $asset->fields['id'];
 
-        if (!$comp->getFromDB($ID) || !$comp->can($ID, READ)) {
+        if (!in_array($asset->getType(), $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
         }
 
         echo "<div class='center'>";
 
-        if (isset($comp->fields['uuid']) && ($comp->fields['uuid'] != '')) {
+        if (isset($asset->fields['uuid']) && ($asset->fields['uuid'] != '')) {
             $hosts = getAllDataFromTable(
                 self::getTable(),
                 [
                     'RAW' => [
-                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($comp->fields['uuid'])
+                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($asset->fields['uuid'])
                     ]
                 ]
             );
@@ -387,14 +389,13 @@ class ItemVirtualMachine extends CommonDBChild
      **/
     public static function getUUIDRestrictCriteria($uuid)
     {
+        //More infos about uuid, please see wikipedia :
+        //http://en.wikipedia.org/wiki/Universally_unique_identifier
+        //Some uuid are not conform, so preprocessing is necessary
+        //A good uuid looks like : 550e8400-e29b-41d4-a716-446655440000
 
-       //More infos about uuid, please see wikipedia :
-       //http://en.wikipedia.org/wiki/Universally_unique_identifier
-       //Some uuid are not conform, so preprocessing is necessary
-       //A good uuid likes lik : 550e8400-e29b-41d4-a716-446655440000
-
-       //Case one : for example some uuid are like that :
-       //56 4d 77 d0 6b ef 3d da-4d 67 5c 80 a9 52 e2 c9
+        //Case one : for example some uuid are like that :
+        //56 4d 77 d0 6b ef 3d da-4d 67 5c 80 a9 52 e2 c9
         $pattern  = "/([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ";
         $pattern .= "([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ([\w]{2})-";
         $pattern .= "([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ([\w]{2})\ ";
@@ -403,8 +404,8 @@ class ItemVirtualMachine extends CommonDBChild
             $uuid = preg_replace($pattern, "$1$2$3$4-$5$6-$7$8-$9$10-$11$12$13$14$15$16", $uuid);
         }
 
-       //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
-       //On unix is flips first block of uuid and on windows flips 3 first blocks...
+        //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
+        //On unix is flips first block of uuid and on windows flips 3 first blocks...
         $in      = [strtolower($uuid)];
         $regexes = [
             "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/"                                        => "$4$3$2$1$5",
