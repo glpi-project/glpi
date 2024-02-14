@@ -1200,6 +1200,7 @@ class IPAddress extends CommonDBChild
                     ]
                 ]
             ];
+            $criteria['WHERE'] = $itemtype::getSystemSQLCriteria('ITEM');
             $queries[] = $criteria;
         }
 
