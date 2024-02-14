@@ -862,10 +862,16 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $cleaned_options = $options;
+        $tab_path = $this->getTabsURL();
+        $parse_url = parse_url($tab_path);
+        if (isset($parse_url['query'])) {
+            parse_str($parse_url['query'], $url_params);
+            $tab_path = Html::cleanParametersURL($tab_path);
+            $cleaned_options = array_merge($options, $url_params);
+        }
         unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
         $target         = $_SERVER['PHP_SELF'];
-        $extraparamhtml = "";
         $withtemplate   = "";
 
         // TODO - There should be a better option than checking whether or not
@@ -889,8 +895,6 @@ class CommonGLPI implements CommonGLPIInterface
 
             // prevent double sanitize, because the includes.php sanitize all data
             $cleaned_options = Sanitizer::unsanitize($cleaned_options);
-
-            $extraparamhtml = "&amp;" . Toolbox::append_params($cleaned_options, '&amp;');
         }
 
         $onglets     = $this->defineAllTabs($options);
@@ -901,15 +905,21 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (count($onglets)) {
-            $tabpage = $this->getTabsURL();
-            $tabpage = Html::cleanParametersURL($tabpage);
             $tabs    = [];
+
+            $tab_params = array_merge(
+                $cleaned_options,
+                [
+                    '_target' => $target,
+                    '_itemtype' => $this->getType(),
+                    'id' => $ID,
+                ]
+            );
 
             foreach ($onglets as $key => $val) {
                 $tabs[$key] = ['title'  => $val,
-                    'url'    => $tabpage,
-                    'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
-                                            "&amp;_glpi_tab=$key&amp;id=$ID$extraparamhtml"
+                    'url'    => $tab_path,
+                    'params' => Toolbox::append_params(['_glpi_tab' => $key] + $tab_params, '&amp;'),
                 ];
             }
 
@@ -920,9 +930,8 @@ class CommonGLPI implements CommonGLPIInterface
                 && (count($tabs) > 1)
             ) {
                 $tabs[-1] = ['title'  => __('All'),
-                    'url'    => $tabpage,
-                    'params' => "_target=$target&amp;_itemtype=" . $this->getType() .
-                                          "&amp;_glpi_tab=-1&amp;id=$ID$extraparamhtml"
+                    'url'    => $tab_path,
+                    'params' => Toolbox::append_params(['_glpi_tab' => '-1'] + $tab_params, '&amp;'),
                 ];
             }
 
