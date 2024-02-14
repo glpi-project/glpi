@@ -1081,7 +1081,9 @@ class Conf extends CommonGLPI
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            if ($prop == 'stale_agents_action' || $prop == 'stale_agents_status_condition') {
+            // don't take care of default values for these properties
+            // as they are already processed by exportArrayToDB
+            if (isset($values[$prop]) && ($prop == 'stale_agents_action' || $prop == 'stale_agents_status_condition')) {
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
