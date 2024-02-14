@@ -958,11 +958,14 @@ class Conf extends CommonGLPI
             foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
                 $condition['is_visible_' . strtolower($inv_type)] = 1;
             }
+
+
             State::dropdown(
                 [
-                    'name'      => 'previous_stale_agents_status[]',
-                    'value'     => importArrayFromDB($config['previous_stale_agents_status'] ?? json_encode([])),
+                    'name'      => 'stale_agents_status_condition[]',
+                    'value'     => importArrayFromDB($config['previous_stale_agents_status'] ?? json_encode(['all'])),
                     'multiple'  => true,
+                    'toadd'     => ['all' => __('All')],
                     'condition' => $condition,
                 ]
             );
@@ -1078,7 +1081,7 @@ class Conf extends CommonGLPI
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            if ($prop == 'stale_agents_action' || $prop == 'previous_stale_agents_status') {
+            if ($prop == 'stale_agents_action' || $prop == 'stale_agents_status_condition') {
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
@@ -1195,7 +1198,7 @@ class Conf extends CommonGLPI
             'stale_agents_delay'             => 0,
             'stale_agents_action'            => exportArrayToDB([0]),
             'stale_agents_status'            => 0,
-            'previous_stale_agents_status'   => exportArrayToDB([0]),
+            'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
         ];
     }

@@ -502,8 +502,8 @@ class Agent extends DbTestCase
         $this->integer($item->fields['states_id'])->isIdenticalTo($states_id);
 
         //create another new status
-        $states_id2 = $state->add(['name' => 'Stale2']);
-        $this->integer($states_id2)->isGreaterThan(0);
+        $state2 = $this->createItem(\State::class, ['name' => 'Stale2']);
+        $states_id2 = $state2->getID();
 
         //set last agent contact far ago
         $DB->update(
@@ -521,7 +521,7 @@ class Agent extends DbTestCase
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
                 ]),
-                'previous_stale_agents_status' => json_encode([
+                'stale_agents_status_condition' => json_encode([
                     $states_id
                 ]),
                 'stale_agents_status' => $states_id2
@@ -538,8 +538,8 @@ class Agent extends DbTestCase
         $this->integer($item->fields['states_id'])->isIdenticalTo($states_id2);
 
         //create another new status for test while previous status is empty (0)
-        $states_id3 = $state->add(['name' => 'Stale3']);
-        $this->integer($states_id3)->isGreaterThan(0);
+        $state3 = $this->createItem(\State::class, ['name' => 'Stale3']);
+        $states_id3 = $state3->getID();
 
         //define sale agents actions
         \Config::setConfigurationValues(
@@ -550,7 +550,7 @@ class Agent extends DbTestCase
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
                 ]),
-                'previous_stale_agents_status' => json_encode([0]),
+                'stale_agents_status_condition' => json_encode([0]), //all status
                 'stale_agents_status' => $states_id3
             ]
         );
@@ -565,8 +565,8 @@ class Agent extends DbTestCase
         $this->integer($item->fields['states_id'])->isIdenticalTo($states_id3);
 
         //create another new status for test while previous status is empty (0)
-        $states_id4 = $state->add(['name' => 'Stale4']);
-        $this->integer($states_id4)->isGreaterThan(0);
+        $state4 = $this->createItem(\State::class, ['name' => 'Stale4']);
+        $states_id4 = $state4->getID();
 
         //define sale agents actions
         \Config::setConfigurationValues(
@@ -577,7 +577,7 @@ class Agent extends DbTestCase
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
                 ]),
-                'previous_stale_agents_status' => json_encode([
+                'stale_agents_status_condition' => json_encode([
                     $states_id,
                     $states_id2,
                 ]),
@@ -603,7 +603,7 @@ class Agent extends DbTestCase
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
                 ]),
-                'previous_stale_agents_status' => json_encode([
+                'stale_agents_status_condition' => json_encode([
                     "aaaaaaa"
                 ]),
                 'stale_agents_status' => $states_id4

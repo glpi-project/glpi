@@ -881,19 +881,19 @@ class Agent extends CommonDBTM
                         break;
                     case Conf::STALE_AGENT_ACTION_STATUS:
                         if (isset($config['stale_agents_status']) && $item !== null) {
-                            $shouldUpdate = false;
+                            $should_update = false;
                             if (
-                                isset($config['previous_stale_agents_status'])
-                                && $config['previous_stale_agents_status'] != json_encode([0])
+                                isset($config['stale_agents_status_condition'])
+                                && $config['stale_agents_status_condition'] != json_encode(['all']) // all status
                             ) {
-                                $old_state_list = json_decode($config['previous_stale_agents_status']);
+                                $old_state_list = json_decode($config['stale_agents_status_condition']);
                                 if (in_array($item->fields['states_id'], $old_state_list)) {
-                                    $shouldUpdate = true;
+                                    $should_update = true;
                                 }
                             } else {
-                                $shouldUpdate = true;
+                                $should_update = true;
                             }
-                            if ($shouldUpdate) {
+                            if ($should_update) {
                                 //change status of agents linked assets
                                 $input = [
                                     'id'        => $item->fields['id'],
