@@ -550,7 +550,7 @@ class Agent extends DbTestCase
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
                     \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
                 ]),
-                'stale_agents_status_condition' => json_encode([0]), //all status
+                'stale_agents_status_condition' => json_encode(['all']), //all status
                 'stale_agents_status' => $states_id3
             ]
         );
