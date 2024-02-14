@@ -83,7 +83,7 @@ class SavedSearch extends DbTestCase
         // Check entity restriction
         $this->setEntity('_test_root_entity', true);
         $this->string(\SavedSearch::addVisibilityRestrict())
-            ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0' AND ((`glpi_savedsearches`.`entities_id` IN ({$_SESSION['glpiactiveentities_string']}) OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))))");
+            ->isIdenticalTo("((`glpi_savedsearches`.`is_private` = '1' AND `glpi_savedsearches`.`users_id` = '5') OR (`glpi_savedsearches`.`is_private` = '0')) AND ((`glpi_savedsearches`.`entities_id` IN ('1', '2', '3') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))");
     }
 
     public function testGetMine()
