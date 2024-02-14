@@ -37,6 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Http\Response;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\RequestOptions;
 
 class QueuedWebhook extends CommonDBChild
 {
@@ -186,7 +189,7 @@ class QueuedWebhook extends CommonDBChild
             $client = Toolbox::getGuzzleClient($guzzle_options);
             try {
                 $response = $client->request('POST', $webhook->fields['oauth_url'], [
-                    \GuzzleHttp\RequestOptions::FORM_PARAMS => [
+                    RequestOptions::FORM_PARAMS => [
                         'grant_type' => 'client_credentials',
                         'client_id' => $webhook->fields['clientid'],
                         'client_secret' => $webhook->fields['clientsecret'],
@@ -197,7 +200,7 @@ class QueuedWebhook extends CommonDBChild
                 if (isset($response['access_token'])) {
                     $bearer_token = $response['access_token'];
                 }
-            } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            } catch (GuzzleException $e) {
                 Toolbox::logInFile(
                     "webhook",
                     "OAuth authentication error for webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $e->getMessage()
@@ -217,15 +220,19 @@ class QueuedWebhook extends CommonDBChild
 
         try {
             $response = $client->request($queued_webhook->fields['http_method'], $queued_webhook->fields['url'], [
-                \GuzzleHttp\RequestOptions::HEADERS => $headers,
-                \GuzzleHttp\RequestOptions::BODY => $queued_webhook->fields['body'],
+                RequestOptions::HEADERS => $headers,
+                RequestOptions::BODY => $queued_webhook->fields['body'],
             ]);
-        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+        } catch (GuzzleException $e) {
             Toolbox::logInFile(
                 "webhook",
                 "Error sending webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $e->getMessage()
             );
-            $response = $e->getResponse();
+            if ($e instanceof RequestException) {
+                $response = $e->getResponse();
+            } else {
+                $response = null;
+            }
         }
         $input = [
             'id' => $ID,
