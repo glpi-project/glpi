@@ -109,7 +109,7 @@ final class ManagementController extends AbstractController
                     'label' => Database::getTypeName(1)
                 ],
                 Datacenter::class => [
-                    'schema_name' => 'Datacenter',
+                    'schema_name' => 'DataCenter',
                     'label' => Datacenter::getTypeName(1)
                 ],
                 Document::class => [
