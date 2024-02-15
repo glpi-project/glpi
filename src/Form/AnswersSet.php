@@ -81,9 +81,14 @@ final class AnswersSet extends CommonDBChild
             return false;
         }
 
+        $count = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $count = $this->countAnswers($item);
+        }
+
         return self::createTabEntry(
             self::getTypeName(),
-            $this->countAnswers($item),
+            $count,
         );
     }
 
