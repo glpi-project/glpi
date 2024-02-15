@@ -936,13 +936,9 @@ class Conf extends CommonGLPI
             //if action == action_status => show blocation else hide blocaction
             echo Html::scriptBlock("
                 function changestatus() {
-                    if ($('#dropdown_stale_agents_action$rand').val() != 0 && $('#dropdown_stale_agents_action$rand').val() != 2) {
-                        $('#bloc_status_action1').show();
-                        $('#bloc_status_action2').show();
-                    } else {
-                        $('#bloc_status_action1').hide();
-                        $('#bloc_status_action2').hide();
-                    }
+                    const display = $('#dropdown_stale_agents_action$rand').val().includes('" . self::STALE_AGENT_ACTION_STATUS . "') ;
+                    $('#bloc_status_action1').toggle(display);
+                    $('#bloc_status_action2').toggle(display);
                 }
                 changestatus();
             ");
