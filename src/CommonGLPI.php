@@ -898,17 +898,18 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         if (count($onglets)) {
-            $tab_path = $this->getTabsURL();
-            $parse_url = parse_url($tab_path);
-            if (isset($parse_url['query'])) {
-                parse_str($parse_url['query'], $url_params);
-                $tab_path = Html::cleanParametersURL($tab_path);
-                $cleaned_options = array_merge($cleaned_options, $url_params);
+            $tabs_url   = $this->getTabsURL();
+            $parsed_url = parse_url($tabs_url);
+            $tab_path   = $parsed_url['path'];
+            $tab_params = [];
+            if (array_key_exists('query', $parsed_url)) {
+                parse_str($parsed_url['query'], $tab_params);
             }
-            $tabs    = [];
+
+            $tab_params = array_merge($cleaned_options, $tab_params);
 
             $tab_params = array_merge(
-                $cleaned_options,
+                $tab_params,
                 [
                     '_target' => $target,
                     '_itemtype' => $this->getType(),
@@ -916,6 +917,7 @@ class CommonGLPI implements CommonGLPIInterface
                 ]
             );
 
+            $tabs = [];
             foreach ($onglets as $key => $val) {
                 $tabs[$key] = ['title'  => $val,
                     'url'    => $tab_path,
