@@ -77,7 +77,7 @@ export default class MonacoEditor {
 
         window.monaco.languages.registerCompletionItemProvider(new_lang_id, {
             triggerCharacters: trigger_characters[language] ?? [],
-            provideCompletionItems: function (model, position) {
+            provideCompletionItems: (model, position) => {
                 const word = model.getWordUntilPosition(position);
                 const range = {
                     startLineNumber: position.lineNumber,
@@ -124,6 +124,9 @@ export default class MonacoEditor {
                 return {
                     suggestions: ((range) => {
                         const suggestions = [];
+                        if (language === 'twig') {
+                            suggestions.push(...this.getTwigCompletions());
+                        }
                         // expand completions to monaco format
                         for (const completion of completions) {
                             suggestions.push({
@@ -165,6 +168,64 @@ export default class MonacoEditor {
                 }
             });
         }
+    }
+
+    getTwigCompletions() {
+        const keywords = [
+            // (opening) tags
+            'apply', 'autoescape', 'block', 'deprecated', 'do', 'embed', 'extends', 'flush', 'for', 'from', 'if',
+            'import', 'include', 'macro', 'sandbox', 'set', 'use', 'verbatim', 'with',
+            // closing tags
+            'endapply', 'endautoescape', 'endblock', 'endembed', 'endfor', 'endif', 'endmacro', 'endsandbox',
+            'endset', 'endwith',
+            // literals
+            'true', 'false', 'null'
+        ];
+        const operators = [
+            'in', 'is', 'and', 'or', 'not', 'b-and', 'b-xor', 'b-or', 'matches', 'starts with', 'ends with', 'has some', 'has every',
+        ];
+        const functions = ['min', 'max', 'random', 'range'];
+        // Like functions but occur after '|'
+        const filters = [
+            'abs', 'batch', 'capitalize', 'column', 'default', 'escape', 'filter', 'first', 'format', 'join',
+            'json_encode', 'keys', 'last', 'length', 'lower', 'map', 'merge', 'nl2br', 'raw', 'reduce', 'replace',
+            'reverse', 'round', 'slice', 'sort', 'split', 'striptags', 'title', 'trim', 'upper', 'url_encode'
+        ];
+        function getKeyword(name) {
+            return {
+                label: name,
+                kind: window.monaco.languages.CompletionItemKind['Keyword'],
+                insertText: name,
+            };
+        }
+        function getOperator(name) {
+            return {
+                label: name,
+                kind: window.monaco.languages.CompletionItemKind['Operator'],
+                insertText: name,
+            };
+        }
+        function getFunction(name) {
+            return {
+                label: name,
+                kind: window.monaco.languages.CompletionItemKind['Function'],
+                insertText: name,
+            };
+        }
+        const suggestions = [];
+        for (const keyword of keywords) {
+            suggestions.push(getKeyword(keyword));
+        }
+        for (const operator of operators) {
+            suggestions.push(getOperator(operator));
+        }
+        for (const func of functions) {
+            suggestions.push(getFunction(func));
+        }
+        for (const filter of filters) {
+            suggestions.push(getFunction(filter));
+        }
+        return suggestions;
     }
 }
 
