@@ -95,7 +95,7 @@ class Link extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showForItem($item);
+        self::showAllLinksForItem($item, self::class);
         return true;
     }
 

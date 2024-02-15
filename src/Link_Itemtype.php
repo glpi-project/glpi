@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-
 class Link_Itemtype extends CommonDBChild
 {
    // From CommonDbChild
