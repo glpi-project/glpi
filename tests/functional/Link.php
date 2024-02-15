@@ -132,6 +132,14 @@ class Link extends DbTestCase
             'name' => '10.10.13.13',
         ]);
 
+        $item_2 = $this->createItem(
+            \Computer::class,
+            [
+                'name'         => 'Test computer 2',
+                'entities_id'  => $_SESSION['glpiactive_entity'],
+            ]
+        );
+
         // Empty link
         yield [
             'link'     => '',
@@ -217,6 +225,12 @@ TEXT,
                 'ip' . $ip_1->getID() => 'Test computer aa:aa:aa:aa:aa:aa 10.10.13.12',
                 'ip' . $ip_2->getID() => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13'
             ],
+        ];
+        yield [
+            'link'     => '{{ NAME }} {{ MAC }} {{ IP }}',
+            'item'     => $item_2,
+            'safe_url' => false,
+            'expected' => [],
         ];
     }
 

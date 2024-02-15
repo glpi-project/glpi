@@ -456,23 +456,23 @@ class Link extends CommonDBTM
 
         $replace_IP  = strstr($common_link, "{{ IP }}");
         $replace_MAC = strstr($common_link, "{{ MAC }}");
-        $ipmac = self::getIPAndMACForItem($item, $replace_IP, $replace_MAC);
 
-        $links = [];
-        if (count($ipmac)) {
-            foreach ($ipmac as $key => $val) {
-                $links[$key] = TemplateRenderer::getInstance()->renderFromStringTemplate($common_link, [
-                    'IP' => $val['ip'] ?? '',
-                    'MAC' => $val['mac'] ?? ''
-                ]);
+        if ($replace_IP || $replace_MAC) {
+            $ipmac = self::getIPAndMACForItem($item, $replace_IP, $replace_MAC);
+
+            $links = [];
+            // If IP or MAC tags present but there is no info, no links will be generated
+            if (count($ipmac)) {
+                foreach ($ipmac as $key => $val) {
+                    $links[$key] = TemplateRenderer::getInstance()->renderFromStringTemplate($common_link, [
+                        'IP' => $val['ip'] ?? '',
+                        'MAC' => $val['mac'] ?? ''
+                    ]);
+                }
             }
         } else {
-            $links = [
-                TemplateRenderer::getInstance()->renderFromStringTemplate($common_link, [
-                    'IP' => '',
-                    'MAC' => ''
-                ])
-            ];
+            // IP and MAC not requested at all, so we only have one link
+            $links = [$common_link];
         }
 
         if ($safe_url) {
