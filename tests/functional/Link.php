@@ -99,6 +99,39 @@ class Link extends DbTestCase
             ]
         );
 
+        $networkport_1 = $this->createItem('NetworkPort', [
+            'name' => 'eth0',
+            'itemtype' => 'Computer',
+            'items_id' => $item->getID(),
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac' => 'aa:aa:aa:aa:aa:aa'
+        ]);
+        $networkport_2 = $this->createItem('NetworkPort', [
+            'name' => 'eth1',
+            'itemtype' => 'Computer',
+            'items_id' => $item->getID(),
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac' => 'bb:bb:bb:bb:bb:bb'
+        ]);
+        $networkname_1 = $this->createItem('NetworkName', [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkport_1->getID(),
+        ]);
+        $networkname_2 = $this->createItem('NetworkName', [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkport_2->getID(),
+        ]);
+        $ip_1 = $this->createItem('IPAddress', [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname_1->getID(),
+            'name' => '10.10.13.12',
+        ]);
+        $ip_2 = $this->createItem('IPAddress', [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname_2->getID(),
+            'name' => '10.10.13.13',
+        ]);
+
         // Empty link
         yield [
             'link'     => '',
@@ -175,6 +208,15 @@ TEXT,
             'item'     => $item,
             'safe_url' => false,
             'expected' => ['domain1.tld domain2.tld '],
+        ];
+        yield [
+            'link'     => '{{ NAME }} {{ MAC }} {{ IP }}',
+            'item'     => $item,
+            'safe_url' => false,
+            'expected' => [
+                'ip' . $ip_1->getID() => 'Test computer aa:aa:aa:aa:aa:aa 10.10.13.12',
+                'ip' . $ip_2->getID() => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13'
+            ],
         ];
     }
 
