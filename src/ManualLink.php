@@ -85,10 +85,7 @@ class ManualLink extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        self::showForItem($item);
-        Link::showForItem($item);
-
+        Link::showAllLinksForItem($item);
         return true;
     }
 
@@ -143,28 +140,10 @@ class ManualLink extends CommonDBChild
         return $input;
     }
 
-    /**
-     * Show manual links for an item.
-     *
-     * @return void
-     */
-    private static function showForItem(CommonDBTM $item): void
+    public static function getForItem(CommonDBTM $item): array
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        if (!self::canView() || $item->isNewItem()) {
-            return;
-        }
-
-        $canedit = $item->canUpdateItem();
-        $rand = mt_rand();
-        // Create a fake link to check rights.
-        // This is mandatory as CommonDBChild needs to know itemtype and items_id to compute rights.
-        $link = new self();
-        $link->fields['itemtype'] = $item->getType();
-        $link->fields['items_id'] = $item->fields[$item->getIndexName()];
-
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',
             'WHERE'        => [
@@ -173,54 +152,21 @@ class ManualLink extends CommonDBChild
             ],
             'ORDERBY'      => 'name'
         ]);
+        return iterator_to_array($iterator);
+    }
 
-        $entries = [];
-        foreach ($iterator as $row) {
-            $link->getFromResultSet($row);
-
-            $entry = [
-                'itemtype' => self::class,
-                'id' => $row['id'],
-                'name' => self::getLinkHtml($row),
-                'comment' => $row['comment'],
-            ];
-            $actions = '';
-
-            if ($link->canUpdateItem()) {
-                $actions .= '<a href="' . self::getFormURLWithID($row[$item->getIndexName()]) . '" title="' . _sx('button', 'Update') . '">';
-                $actions .= '<i class="fas fa-edit"></i>';
-                $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
-                $actions .= '</a>';
-            }
-            $entry['actions'] = $actions;
-            $entries[] = $entry;
-        }
-
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'is_tab' => true,
-            'nofilter' => true,
-            'nopager' => true,
-            'columns' => [
-                'name' => self::getTypeName(1),
-                'comment' => _n('Comment', 'Comments', 1),
-                'actions' => __('Actions')
-            ],
-            'formatters' => [
-                'name' => 'raw_html',
-                'actions' => 'raw_html',
-            ],
-            'entries' => $entries,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit,
-            'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
-                'specific_actions' => [
-                    'purge'  => _x('button', 'Delete permanently')
-                ]
-            ],
-        ]);
+    /**
+     * Show manual links for an item.
+     *
+     * @param CommonDBTM $item
+     * @return void
+     * @deprecated 10.1.0
+     * @see Link::showAllLinksForItem()
+     */
+    private static function showForItem(CommonDBTM $item): void
+    {
+        Toolbox::deprecated();
+        Link::showAllLinksForItem($item, self::class);
     }
 
     public static function rawSearchOptionsToAdd($itemtype = null)
@@ -273,7 +219,7 @@ class ManualLink extends CommonDBChild
      *
      * @return string
      */
-    private static function getLinkHtml(array $fields): string
+    public static function getLinkHtml(array $fields): string
     {
 
         if (empty($fields['url'])) {

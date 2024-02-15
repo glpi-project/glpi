@@ -487,41 +487,96 @@ class Link extends CommonDBTM
      *
      * @param CommonDBTM $item CommonDBTM object
      * @param integer $withtemplate  withtemplate param (default 0)
+     * @deprecated 10.1.0
+     * @see Link::showAllLinksForItem()
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        if (!self::canView()) {
-            return false;
-        }
+        Toolbox::deprecated();
+        self::showAllLinksForItem($item, self::class);
+    }
 
+    /**
+     * Show all external and manual links for an item
+     * @param CommonDBTM $item
+     * @param 'ManualLink'|'Link'|null $restrict_type Restrict to a specific type of link
+     * @return void
+     */
+    public static function showAllLinksForItem(CommonDBTM $item, ?string $restrict_type = null)
+    {
         if ($item->isNewID($item->getID())) {
-            return false;
+            return;
         }
 
-        $iterator = self::getLinksDataForItem($item);
-
-        if (self::canUpdate()) {
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        $buttons_params = [
+            'add_msg' => _x('button', 'Add'),
+            'configure_msg' => sprintf(__('Configure %s links'), $item::getTypeName(1)),
+            'show_add' => ManualLink::canCreate() && ($restrict_type === null || $restrict_type === ManualLink::class),
+            'show_configure' => self::canUpdate() && ($restrict_type === null || $restrict_type === self::class),
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center my-3">
-                    <a class="btn btn-primary" href="{{ 'Link'|itemtype_search_path }}">
-                        <i class="ti ti-settings me-2"></i>
-                        {{ configure_msg }}
-                    </a>
+                    {% if show_add %}
+                        <a class="btn btn-primary" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
+                            <i class="fas fa-plus me-2"></i>
+                            {{ add_msg }}
+                        </a>
+                    {% endif %}
+                    {% if show_configure %}
+                        <a class="btn btn-primary" href="{{ 'Link'|itemtype_search_path }}">
+                            <i class="ti ti-settings me-2"></i>
+                            {{ configure_msg }}
+                        </a>
+                    {% endif %}
                 </div>
-TWIG, ['configure_msg' => __('Configure')]);
-        }
-
+TWIG, $buttons_params);
 
         $entries = [];
-        foreach ($iterator as $data) {
-            $links = self::getAllLinksFor($item, $data);
 
-            foreach ($links as $link) {
-                $entries[] = [
-                    'itemtype' => self::class,
-                    'id' => $data['id'],
-                    'name' => $link,
+        if (($restrict_type === null || $restrict_type === ManualLink::class) && ManualLink::canView()) {
+            $manuallink = new ManualLink();
+
+            $manual_links = ManualLink::getForItem($item);
+            foreach ($manual_links as $row) {
+                $manuallink->getFromResultSet($row);
+
+                $entry = [
+                    'itemtype' => ManualLink::class,
+                    'id' => $row['id'],
+                    'name' => $row['name'],
+                    'link' => ManualLink::getLinkHtml($row),
+                    'comment' => $row['comment'],
+                    'type' => _n('Item', 'Items', 1)
                 ];
+                $actions = '';
+
+                if ($manuallink->canUpdateItem()) {
+                    $actions .= '<a href="' . ManualLink::getFormURLWithID($row[$item->getIndexName()]) . '" title="' . _sx('button', 'Update') . '">';
+                    $actions .= '<i class="fas fa-edit"></i>';
+                    $actions .= '<span class="sr-only">' . _x('button', 'Update') . '</span>';
+                    $actions .= '</a>';
+                }
+                $entry['actions'] = $actions;
+                $entries[] = $entry;
+            }
+        }
+
+        if (($restrict_type === null || $restrict_type === self::class) && self::canView()) {
+            $ext_links = self::getLinksDataForItem($item);
+            foreach ($ext_links as $data) {
+                $links = self::getAllLinksFor($item, $data);
+
+                foreach ($links as $link) {
+                    $entries[] = [
+                        'itemtype' => self::class,
+                        'id' => $data['id'],
+                        'name' => $link,
+                        'link' => $link,
+                        'type' => $item::getTypeName(Session::getPluralNumber()),
+                        'comment' => ''
+                    ];
+                }
             }
         }
 
@@ -531,10 +586,14 @@ TWIG, ['configure_msg' => __('Configure')]);
             'nopager' => true,
             'superheader' => '',
             'columns' => [
-                'name' => self::getTypeName(1),
+                'type' => __('Linked to'),
+                'link' => __('Link'),
+                'comment' => __('Comment'),
+                'actions' => __('Actions')
             ],
             'formatters' => [
-                'name' => 'raw_html',
+                'link' => 'raw_html',
+                'actions' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
