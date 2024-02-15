@@ -232,6 +232,12 @@ TEXT,
             'safe_url' => false,
             'expected' => [],
         ];
+        yield [
+            'link'     => '<script>alert(1);</script>',
+            'item'     => $item,
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
     }
 
     /**
