@@ -434,11 +434,13 @@ class Link extends CommonDBTM
                         'FKEY'   => [
                             $domain_table        => 'id',
                             $domain_item_table   => 'domains_id'
-                        ],
-                        'AND'    => ['itemtype' => $item->getType()]
+                        ]
                     ]
                 ],
-                'WHERE'     => ['items_id' => $item->getID()]
+                'WHERE'     => [
+                    'itemtype' => $item::class,
+                    'items_id' => $item->getID()
+                ]
             ]);
             if ($iterator->count()) {
                 $vars['DOMAIN'] = $iterator->current()['name'];
@@ -456,29 +458,23 @@ class Link extends CommonDBTM
         $replace_MAC = strstr($common_link, "{{ MAC }}");
         $ipmac = self::getIPAndMACForItem($item, $replace_IP, $replace_MAC);
 
-        // Render a JSON string that represents all the possible links (a way to use Twig to create an array)
-        $twig_params = [
-            'link' => $common_link,
-            'ipmac' => $ipmac,
-        ];
-
-        $json = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-        {
-            {% autoescape 'js' %}
-                {%- if ipmac|length == 0 -%}
-                    "0": "{{ link|replace({'{{ IP }}': ''})|replace({'{{ MAC }}': ''}) }}"
-                {%- else -%}
-                    {%- for key, val in ipmac -%}
-                        {%- if val.ip is not empty or val.mac is not empty -%}
-                            "{{ key }}": "{{ link|replace({'{{ IP }}': val.ip|default('')})|replace({'{{ MAC }}': val.mac|default('')}) }}"{{ loop.last ? '' : ',' }}
-                        {%- endif -%}
-                    {%- endfor -%}
-                {%- endif -%}
-            {% endautoescape %}
+        $links = [];
+        if (count($ipmac)) {
+            foreach ($ipmac as $key => $val) {
+                $links[$key] = TemplateRenderer::getInstance()->renderFromStringTemplate($common_link, [
+                    'IP' => $val['ip'] ?? '',
+                    'MAC' => $val['mac'] ?? ''
+                ]);
+            }
+        } else {
+            $links = [
+                TemplateRenderer::getInstance()->renderFromStringTemplate($common_link, [
+                    'IP' => '',
+                    'MAC' => ''
+                ])
+            ];
         }
-TWIG, $twig_params, true);
 
-        $links = json_decode($json, true);
         if ($safe_url) {
             $links = array_map(static fn ($l) => URL::sanitizeURL($l) ?: '#', $links);
         }

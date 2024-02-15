@@ -170,6 +170,12 @@ TEXT,
             'safe_url' => true,
             'expected' => ['#'],
         ];
+        yield [
+            'link'     => '{% for domain in DOMAINS %}{{ domain }} {% endfor %}',
+            'item'     => $item,
+            'safe_url' => false,
+            'expected' => ['domain1.tld domain2.tld '],
+        ];
     }
 
     /**
