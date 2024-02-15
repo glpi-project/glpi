@@ -916,7 +916,7 @@
     <script>
         $(() => {
             const editor_options = {{ options.single_line ? 'true' : 'false' }} ? window.GLPI.Monaco.getSingleLineEditorOptions() : {};
-            window.GLPI.Monaco.createEditor('{{ code_container_id }}', 'twig', '{{ value|raw }}', {{ options.completions|json_encode|raw }}, editor_options).then(() => {
+            window.GLPI.Monaco.createEditor('{{ code_container_id }}', 'twig', '{{ value|e('js') }}', {{ options.completions|json_encode|raw }}, editor_options).then(() => {
                 $('#{{ code_container_id }}').closest('form').on('formdata', (e) => {
                     const editors = window.monaco.editor.getEditors().filter((editor) => {
                         return editor._domElement.id === '{{ code_container_id }}';

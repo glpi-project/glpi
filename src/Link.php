@@ -158,7 +158,11 @@ class Link extends CommonDBTM
                 $itemtype_fields[$itemtype] = array_column($DB->listFields($itemtype::getTable()), 'Field');
             }
             // Get all fields that exist for every itemtype
-            $common_fields = array_intersect(...array_values($itemtype_fields));
+            if (count($itemtype_fields) > 0) {
+                $common_fields = array_intersect(...array_values($itemtype_fields));
+            } else {
+                $common_fields = [];
+            }
 
             foreach ($common_fields as $field) {
                 $completions[] = [
