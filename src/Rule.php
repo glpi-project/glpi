@@ -554,7 +554,7 @@ class Rule extends CommonDBTM
     /**
      * @since 0.84
      *
-     * @return string
+     * @return class-string<RuleCollection>
      **/
     public function getCollectionClassName()
     {
@@ -1986,9 +1986,43 @@ JS
         }
 
         // Before adding, add the ranking of the new rule
-        $input["ranking"] ??= $this->getNextRanking($input['sub_type']);
+        $input["_ranking"] ??= $this->getNextRanking($input['sub_type']);
+        unset($input['ranking']);
 
         return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $input = parent::prepareInputForUpdate($input);
+
+        if ($input !== false) {
+            if (isset($input['ranking'])) {
+                $input["_ranking"] = $input['ranking'];
+                unset($input['ranking']);
+            }
+        }
+        return $input;
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+        $this->handleRankChange();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+        $this->handleRankChange();
+    }
+
+    private function handleRankChange()
+    {
+        if (isset($this->input['_ranking']) && (int) $this->input['ranking'] !== (int) $this->fields['ranking']) {
+            $collection = $this->getCollectionClassName();
+            $collection::moveRule($this->fields['id'], 0, $this->input['_ranking']);
+        }
     }
 
     /**
