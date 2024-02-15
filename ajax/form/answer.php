@@ -64,7 +64,7 @@ if (!is_array($answers) || empty($answers)) {
 }
 
 // Try to save answers
-$handler = new AnswersHandler();
+$handler = AnswersHandler::getInstance();
 $answers_set = $handler->saveAnswers($form, $answers, Session::getLoginUserID());
 if (!$answers_set) {
     Response::sendError(500, __('Failed to save answers'));

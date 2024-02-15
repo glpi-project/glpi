@@ -38,14 +38,39 @@ namespace Glpi\Form\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
-use Session;
 
 /**
  * Helper class to handle raw answers data
- * TODO: singleton
  */
 class AnswersHandler
 {
+    /**
+     * Singleton instance
+     * @var AnswersHandler|null
+     */
+    public static ?AnswersHandler $instance = null;
+
+    /**
+     * Private constructor to prevent instantiation (singleton)
+     */
+    private function __construct()
+    {
+    }
+
+    /**
+     * Get the singleton instance
+     *
+     * @return AnswersHandler
+     */
+    public static function getInstance(): AnswersHandler
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
+
     /**
      * Saves the given answers of a given form into an AnswersSet object
      *

@@ -152,7 +152,7 @@ class AnswersSet extends CommonDBChild
         $this->getFromDB($id);
         $this->initForm($id, $options);
 
-        $answer_handler = new AnswersHandler();
+        $answer_handler = AnswersHandler::getInstance();
 
         // Render twig template
         $twig = TemplateRenderer::getInstance();
