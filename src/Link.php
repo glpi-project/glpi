@@ -103,7 +103,6 @@ class Link extends CommonDBTM
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Link_Itemtype', $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
 
         return $ong;
@@ -111,7 +110,6 @@ class Link extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Link_Itemtype::class,
@@ -130,12 +128,24 @@ class Link extends CommonDBTM
         return true;
     }
 
+    public function getLinkedItemtypes(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        return array_column(iterator_to_array($DB->request([
+            'SELECT' => ['itemtype'],
+            'FROM' => 'glpi_links_itemtypes',
+            'WHERE' => ['links_id' => $this->getID()]
+        ])), 'itemtype');
+    }
+
     private function getTagCompletions()
     {
         /**
          * @var \DBmysql $DB
+         * @var array $CFG_GLPI
          */
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         static $completions = null;
 
@@ -148,11 +158,11 @@ class Link extends CommonDBTM
                     'type' => 'Variable',
                 ];
             }
-            $itemtypes = array_column(iterator_to_array($DB->request([
-                'SELECT' => ['itemtype'],
-                'FROM'   => 'glpi_links_itemtypes',
-                'WHERE'  => ['links_id' => $this->getID()]
-            ])), 'itemtype');
+            if ($this->isNewItem()) {
+                $itemtypes = $CFG_GLPI['link_types'];
+            } else {
+                $itemtypes = $this->getLinkedItemtypes();
+            }
             $itemtype_fields = [];
             foreach ($itemtypes as $itemtype) {
                 $itemtype_fields[$itemtype] = array_column($DB->listFields($itemtype::getTable()), 'Field');
@@ -822,5 +832,48 @@ TWIG, $buttons_params);
             return false;
         }
         return parent::prepareInputForUpdate($input);
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        if (isset($this->input['itemtypes'])) {
+            $link_itemtype = new Link_Itemtype();
+            foreach ($this->input['itemtypes'] as $itemtype) {
+                $link_itemtype->add([
+                    'links_id' => $this->getID(),
+                    'itemtype' => $itemtype
+                ]);
+            }
+        }
+    }
+
+    public function post_updateItem($history = true)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        parent::post_updateItem($history);
+        if (isset($this->input['itemtypes'])) {
+            $existing_itemtypes = iterator_to_array($DB->request([
+                'FROM' => 'glpi_links_itemtypes',
+                'WHERE' => ['links_id' => $this->getID()]
+            ]));
+            $link_itemtype = new Link_Itemtype();
+            foreach ($existing_itemtypes as $existing_itemtype) {
+                if (!in_array($existing_itemtype['itemtype'], $this->input['itemtypes'], true)) {
+                    $link_itemtype->delete(['id' => $existing_itemtype['id']]);
+                }
+            }
+            foreach ($this->input['itemtypes'] as $itemtype) {
+                if (!in_array($itemtype, array_column($existing_itemtypes, 'itemtype'), true)) {
+                    $link_itemtype->add([
+                        'links_id' => $this->getID(),
+                        'itemtype' => $itemtype
+                    ]);
+                }
+            }
+        }
     }
 }

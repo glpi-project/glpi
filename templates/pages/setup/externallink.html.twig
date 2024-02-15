@@ -40,6 +40,14 @@
         label_class: 'col-xxl-2',
         input_class: 'col-xxl-10',
     }) }}
+    {{ fields.dropdownItemTypes('itemtypes', null, _n('Type', 'Types', get_plural_number()), {
+        types: config('link_types'),
+        multiple: true,
+        values: item.getLinkedItemtypes,
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+    }) }}
     {{ fields.codeField('link', item.fields['link'], __('Link or filename'), {
         single_line: true,
         language: 'twig',
