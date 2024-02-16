@@ -1985,8 +1985,9 @@ JS
             );
         }
 
-        // Before adding, add the ranking of the new rule
-        $input["_ranking"] ??= $this->getNextRanking($input['sub_type']);
+        // Before adding, add the ranking of the new rule to be handled via the moveRule method
+        $valid_ranking = isset($input['ranking']) && is_numeric($input['ranking']) && $input['ranking'] >= 0;
+        $input["_ranking"] = (int) ($valid_ranking ? $input['ranking'] : $this->getNextRanking($input['sub_type']));
         unset($input['ranking']);
 
         return $input;
@@ -1998,8 +1999,14 @@ JS
 
         if ($input !== false) {
             if (isset($input['ranking'])) {
+                // Could be set this way from the API.
+                // In this case, we should use moveRule rather than updating directly.
                 $input["_ranking"] = $input['ranking'];
                 unset($input['ranking']);
+            } else if (isset($input['_ranking'])) {
+                // Set this way from RuleCollection::moveRule to avoid infinite loop
+                $input['ranking'] = $input['_ranking'];
+                unset($input['_ranking']);
             }
         }
         return $input;
@@ -2008,7 +2015,7 @@ JS
     public function post_addItem()
     {
         parent::post_addItem();
-        $this->handleRankChange();
+        $this->handleRankChange(true);
     }
 
     public function post_updateItem($history = true)
@@ -2017,11 +2024,24 @@ JS
         $this->handleRankChange();
     }
 
-    private function handleRankChange()
+    /**
+     * Handles any rank change from the API or another source except {@link RuleCollection::moveRule()}
+     * by moving the rule rather than directly setting the rank to handle the other rules and avoid rules with the same rank.
+     * @return void
+     */
+    private function handleRankChange($new_rule = false)
     {
-        if (isset($this->input['_ranking']) && (int) $this->input['ranking'] !== (int) $this->fields['ranking']) {
-            $collection = $this->getCollectionClassName();
-            $collection::moveRule($this->fields['id'], 0, $this->input['_ranking']);
+        if (isset($this->input['_ranking'])) {
+            if ((int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
+                // No change in ranking, nothing to do.
+                return;
+            }
+            // Ensure we always use the right rule class in case the original object was instantiated as the base class 'Rule'.
+            $rule = new $this->fields['sub_type']();
+            $collection_class = $rule->getCollectionClassName();
+            $collection = new $collection_class();
+            $collection->moveRule($this->fields['id'], 0, $this->input['_ranking'], $new_rule);
+            $this->getFromDB($this->fields['id']);
         }
     }
 
@@ -2044,7 +2064,7 @@ JS
 
         if (count($iterator)) {
             $data = $iterator->current();
-            return $data["rank"] + 1;
+            return $data["rank"] === null ? 0 : $data['rank'] + 1;
         }
         return 0;
     }

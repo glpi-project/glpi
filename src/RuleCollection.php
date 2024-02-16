@@ -851,14 +851,14 @@ JAVASCRIPT;
      *
      * @return boolean
      **/
-    public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER)
+    public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER, $new_rule = false)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
         $ruleDescription = new Rule();
 
-       // Get actual ranking of Rule to move
+        // Get actual ranking of Rule to move
         $ruleDescription->getFromDB($ID);
         $old_rank = $ruleDescription->fields["ranking"];
 
@@ -870,13 +870,13 @@ JAVASCRIPT;
 
         if (is_numeric($type)) {
             $max_rank = $DB->request($max_ranking_criteria)->current()['maxi'];
-            $rank = max(1, min($max_rank, $type));
+            $rank = max(0, min($max_rank + 1, $type));
         } else {
             // Compute new ranking
             if ($ref_ID) { // Move after/before an existing rule
                 $ruleDescription->getFromDB($ref_ID);
                 $rank = $ruleDescription->fields["ranking"];
-            } else if ($type == self::MOVE_AFTER) {
+            } else if ($type === self::MOVE_AFTER) {
                 // Move after all
                 $result = $DB->request($max_ranking_criteria)->current();
                 $rank = $result['maxi'];
@@ -888,17 +888,18 @@ JAVASCRIPT;
 
         $rule   = $this->getRuleClass();
 
-        $result = false;
+        $result = is_numeric($type);
 
-       // Move others rules in the collection
-        if ($old_rank < $rank) {
-            if ($type == self::MOVE_BEFORE) {
+        // Move others rules in the collection
+        // If it is a new rule, there is no need to move any other rules back
+        if (!$new_rule && $old_rank < $rank) {
+            if ($type === self::MOVE_BEFORE) {
                 $rank--;
             }
 
-           // Move back all rules between old and new rank
+            // Move back all rules between old and new rank
             $iterator = $DB->request([
-                'SELECT' => ['id', 'ranking'],
+                'SELECT' => ['id', 'ranking AS _ranking'],
                 'FROM'   => 'glpi_rules',
                 'WHERE'  => [
                     'sub_type'  => $this->getRuleClassName(),
@@ -907,17 +908,17 @@ JAVASCRIPT;
                 ]
             ]);
             foreach ($iterator as $data) {
-                $data['ranking']--;
+                $data['_ranking']--;
                 $result = $rule->update($data);
             }
-        } else if ($old_rank > $rank) {
-            if ($type == self::MOVE_AFTER) {
+        } else if ($new_rule || $old_rank > $rank) {
+            if ($type === self::MOVE_AFTER) {
                 $rank++;
             }
 
-           // Move forward all rule  between old and new rank
+            // Move forward all rule  between old and new rank
             $iterator = $DB->request([
-                'SELECT' => ['id', 'ranking'],
+                'SELECT' => ['id', 'ranking AS _ranking'],
                 'FROM'   => 'glpi_rules',
                 'WHERE'  => [
                     'sub_type'  => $this->getRuleClassName(),
@@ -926,18 +927,18 @@ JAVASCRIPT;
                 ]
             ]);
             foreach ($iterator as $data) {
-                $data['ranking']++;
+                $data['_ranking']++;
                 $result = $rule->update($data);
             }
         } else { // $old_rank == $rank : nothing to do
             $result = false;
         }
 
-       // Move the rule
-        if ($result && ($old_rank != $rank)) {
+        // Move the rule
+        if ($result && ($old_rank !== $rank)) {
             $result = $rule->update([
                 'id'      => $ID,
-                'ranking' => $rank
+                '_ranking' => $rank
             ]);
         }
         return ($result ? true : false);
