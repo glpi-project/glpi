@@ -83,11 +83,14 @@ class DocumentExtension extends AbstractExtension
             }
         }
 
+        $defaultIcon = '/pics/timeline/file.png';
+        $icon = $defaultIcon;
+
         if (isset($CFG_GLPI['extension_icon'][$extension])) {
             $icon = '/pics/icones/' . $CFG_GLPI['extension_icon'][$extension];
         }
 
-        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
+        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : $defaultIcon);
     }
 
     /**
