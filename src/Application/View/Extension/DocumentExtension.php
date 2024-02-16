@@ -66,44 +66,28 @@ class DocumentExtension extends AbstractExtension
         global $CFG_GLPI, $DB;
 
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        $icon = sprintf('/pics/icones/%s-dist.png', $extension);
 
-        if (file_exists(GLPI_ROOT . $icon)) {
-            return $CFG_GLPI['root_doc'] . $icon;
-        }
-
-        // substitute for some common file types
-        $extensionIcons = [
-            'xlsx' => '/pics/icones/xls-dist.png',
-            'docx' => '/pics/icones/doc-dist.png',
-            'pptx' => '/pics/icones/ppt-dist.png',
-            'jpeg' => '/pics/icones/jpg-dist.png',
-        ];
-
-        if (file_exists(GLPI_ROOT . $extensionIcons[$extension] ?? '')) {
-            return $CFG_GLPI['root_doc'] . $extensionIcons[$extension];
-        }
-
-        // Database search if icon not found by direct name
-        $iterator = $DB->request([
-            'SELECT' => 'icon',
-            'FROM'   => 'glpi_documenttypes',
-            'WHERE'  => [
-                'ext'    => $extension,
-                'icon'   => ['<>', '']
-            ]
-        ]);
-
-        $icon = '/pics/timeline/file.png';
-
-        foreach ($iterator as $result) {
-            if (file_exists(GLPI_ROOT . '/pics/icones/' . $result['icon'])) {
-                $icon = '/pics/icones/' . $result['icon'];
-                break;
+        if (!isset($CFG_GLPI['extension_icon'])) {
+            $iterator = $DB->request([
+                'SELECT' => [
+                    'ext',
+                    'icon'
+                ],
+                'FROM' => 'glpi_documenttypes',
+                'WHERE' => [
+                    'icon' => ['<>', '']
+                ]
+            ]);
+            foreach ($iterator as $result) {
+                $CFG_GLPI['extension_icon'][$result['ext']] = $result['icon'];
             }
         }
 
-        return $CFG_GLPI['root_doc'] . $icon;
+        if (isset($CFG_GLPI['extension_icon'][$extension])) {
+            $icon = '/pics/icones/' . $CFG_GLPI['extension_icon'][$extension];
+        }
+
+        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
     }
 
     /**
