@@ -2290,7 +2290,8 @@ final class SQLProvider implements SearchProviderInterface
         array $joinparams = [],
         string $field = ''
     ): array {
-
+        /** @var \DBmysql $DB */
+        global $DB;
         // Rename table for meta left join
         $AS = "";
         $nt = $new_table;
@@ -2536,7 +2537,7 @@ final class SQLProvider implements SearchProviderInterface
                                         $nt => getForeignKeyFieldForTable($cleanrt) . '_1',
                                         [
                                             'OR' => [
-                                                "$rt.id" => $nt . '.' . getForeignKeyFieldForTable($cleanrt) . '_2'
+                                                new QueryExpression($DB::quoteName("$rt.id") . ' = ' . $DB::quoteName("$nt." . getForeignKeyFieldForTable($cleanrt) . '_2'))
                                             ]
                                         ]
                                     ]
@@ -2557,7 +2558,7 @@ final class SQLProvider implements SearchProviderInterface
                                         $rt => getForeignKeyFieldForTable($cleannt) . '_1',
                                         [
                                             'OR' => [
-                                                "$nt.id" => $rt . '.' . getForeignKeyFieldForTable($cleannt) . '_2'
+                                                new QueryExpression($DB::quoteName("$nt.id") . ' = ' . $DB::quoteName("$rt." . getForeignKeyFieldForTable($cleannt) . '_2'))
                                             ]
                                         ]
                                     ]
