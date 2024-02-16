@@ -882,7 +882,7 @@ JAVASCRIPT;
                 $rank = $result['maxi'];
             } else {
                 // Move before all
-                $rank = 1;
+                $rank = 0;
             }
         }
 

@@ -904,7 +904,7 @@ class Rule extends DbTestCase
         foreach ($rules as $data) {
             $this->integer($data['ranking'])->isEqualTo(
                 match ($data['id']) {
-                    $rules_id_1 => $ranking_start,
+                    $rules_id_1 => 0, // Before all makes it rank 0 always
                     $rules_id_2 => $ranking_start + 2,
                     $rules_id_3 => $ranking_start + 1,
                     $rules_id_4 => $ranking_start + 3
@@ -963,10 +963,12 @@ class Rule extends DbTestCase
     }
 }
 
+// @codingStandardsIgnoreStart
 class RuleTest extends \Rule
 {
 }
 
+// @codingStandardsIgnoreStart
 /** @used-by RuleTest */
 class RuleTestCollection extends \RuleCollection
 {

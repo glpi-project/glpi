@@ -2032,12 +2032,13 @@ JS
     private function handleRankChange($new_rule = false)
     {
         if (isset($this->input['_ranking'])) {
-            if ((int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
+            if (isset($this->fields['ranking']) && (int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
                 // No change in ranking, nothing to do.
                 return;
             }
             // Ensure we always use the right rule class in case the original object was instantiated as the base class 'Rule'.
-            $rule = new $this->fields['sub_type']();
+            $rule_class = $this->fields['sub_type'] ?? static::class;
+            $rule = new $rule_class();
             $collection_class = $rule->getCollectionClassName();
             $collection = new $collection_class();
             $collection->moveRule($this->fields['id'], 0, $this->input['_ranking'], $new_rule);
