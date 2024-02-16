@@ -65,6 +65,12 @@ class DocumentExtension extends AbstractExtension
         /** @var \DBmysql $DB */
         global $CFG_GLPI, $DB;
 
+        $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
+
+        if (file_exists(GLPI_ROOT . $icon)) {
+            return $CFG_GLPI['root_doc'] . $icon;
+        }
+
         $extention = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
         $iterator = $DB->request([
