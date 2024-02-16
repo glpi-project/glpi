@@ -42,6 +42,7 @@ use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
+use Override;
 
 /**
  * Helpdesk form
@@ -57,16 +58,19 @@ class Form extends CommonDBTM
      */
     protected ?array $sections = null;
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Form', 'Forms', $nb);
     }
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-forms";
     }
 
+    #[Override]
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
@@ -75,6 +79,7 @@ class Form extends CommonDBTM
         return $tabs;
     }
 
+    #[Override]
     public function showForm($id, array $options = [])
     {
         if (!empty($id)) {
@@ -98,6 +103,7 @@ class Form extends CommonDBTM
         return true;
     }
 
+    #[Override]
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
@@ -145,6 +151,7 @@ class Form extends CommonDBTM
         return $search_options;
     }
 
+    #[Override]
     public function post_addItem()
     {
         // Automatically create the first form section unless specified otherwise
@@ -153,6 +160,7 @@ class Form extends CommonDBTM
         }
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
         // Insert date_mod even if the framework would handle it by itself
@@ -163,6 +171,7 @@ class Form extends CommonDBTM
         return $input;
     }
 
+    #[Override]
     public function post_updateItem($history = 1)
     {
         /** @var \DBmysql $DB */
