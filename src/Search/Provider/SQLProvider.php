@@ -2532,11 +2532,11 @@ final class SQLProvider implements SearchProviderInterface
                             'LEFT JOIN' => [
                                 "$new_table$AS" => [
                                     'ON' => [
-                                        $nt => 'id',
-                                        $rt => getForeignKeyFieldForTable($cleanrt) . '_1',
+                                        $rt => 'id',
+                                        $nt => getForeignKeyFieldForTable($cleanrt) . '_1',
                                         [
                                             'OR' => [
-                                                "$nt.id" => $rt . '.' . getForeignKeyFieldForTable($cleanrt) . '_2'
+                                                "$rt.id" => $nt . '.' . getForeignKeyFieldForTable($cleanrt) . '_2'
                                             ]
                                         ]
                                     ]
