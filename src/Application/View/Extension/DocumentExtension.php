@@ -65,14 +65,22 @@ class DocumentExtension extends AbstractExtension
         /** @var \DBmysql $DB */
         global $CFG_GLPI, $DB;
 
-        $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
+        $extention = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $icon = sprintf('/pics/icones/%s-dist.png', $extention);
 
         if (file_exists(GLPI_ROOT . $icon)) {
             return $CFG_GLPI['root_doc'] . $icon;
         }
 
-        $extention = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        // If the file extension ends with 'x' (e.g. 'docx'), try to find an icon for the base extension (e.g. 'doc')
+        if (substr($extention, -1) === 'x') {
+            $icon = sprintf('/pics/icones/%s-dist.png', substr($extention, 0, -1));
+            if (file_exists(GLPI_ROOT . $icon)) {
+                return $CFG_GLPI['root_doc'] . $icon;
+            }
+        }
 
+        // Database search if icon not found by direct name
         $iterator = $DB->request([
             'SELECT' => 'icon',
             'FROM'   => 'glpi_documenttypes',
