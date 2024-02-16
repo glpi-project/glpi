@@ -191,9 +191,9 @@ final class RuleController extends AbstractController
                     'type' => Doc\Schema::TYPE_INTEGER
                 ],
                 'ranking' => [
+                    'description' => 'The order in which to evaluate this rule. Lower numbers are evaluated first. Changing the ranking of a rule may shift the rankings of other rules.',
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
-                    'x-readonly' => true, //TODO Implement handling rank changes
                 ],
                 'criteria' => [
                     'type' => Doc\Schema::TYPE_ARRAY,

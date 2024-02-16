@@ -553,4 +553,106 @@ class RuleController extends \HLAPITestCase
                 ->isNotFoundError();
         });
     }
+
+    public function testAddRuleSpecificRanking()
+    {
+        $this->login();
+        $request = new Request('POST', "/Rule/Collection/Ticket/Rule");
+        $request->setParameter('name', "testCRUDRulesRuleTicket");
+        $request->setParameter('entity', $this->getTestRootEntity(true));
+        $request->setParameter('ranking', 1);
+        $new_url = null;
+
+        // Create
+        $this->api->call($request, function ($call) use (&$new_url) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_url) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule");
+                    $new_url = $headers['Location'];
+                });
+        });
+        // Get and check ranking
+        $this->api->call(new Request('GET', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['name', 'ranking']);
+                    $this->string($content['name'])->isEqualTo("testCRUDRulesRuleTicket");
+                    $this->integer($content['ranking'])->isEqualTo(1);
+                });
+        });
+    }
+
+    public function testAddRuleInvalidRanking()
+    {
+        $this->login();
+        $request = new Request('POST', "/Rule/Collection/Ticket/Rule");
+        $request->setParameter('name', "testCRUDRulesRuleTicket");
+        $request->setParameter('entity', $this->getTestRootEntity(true));
+        $request->setParameter('ranking', -1);
+        $new_url = null;
+
+        // Create
+        $this->api->call($request, function ($call) use (&$new_url) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_url) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule");
+                    $new_url = $headers['Location'];
+                });
+        });
+
+        // Get and check ranking
+        $this->api->call(new Request('GET', $new_url), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['name', 'ranking']);
+                    $this->string($content['name'])->isEqualTo("testCRUDRulesRuleTicket");
+                    $this->integer($content['ranking'])->isNotEqualTo(-1);
+                });
+        });
+    }
+
+    public function testUpdateRuleSpecificRanking()
+    {
+        $this->login();
+        $request = new Request('POST', "/Rule/Collection/Ticket/Rule");
+        $request->setParameter('name', "testCRUDRulesRuleTicket");
+        $request->setParameter('entity', $this->getTestRootEntity(true));
+        $new_url = null;
+
+        // Create
+        $this->api->call($request, function ($call) use (&$new_url) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_url) {
+                    $this->array($headers)->hasKey('Location');
+                    $this->string($headers['Location'])->startWith("/Rule/Collection/Ticket/Rule");
+                    $new_url = $headers['Location'];
+                });
+        });
+
+        // Update ranking
+        $request = new Request('PATCH', $new_url);
+        $request->setParameter('ranking', 0);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasKeys(['name', 'ranking']);
+                    $this->string($content['name'])->isEqualTo("testCRUDRulesRuleTicket");
+                    $this->integer($content['ranking'])->isEqualTo(0);
+                });
+        });
+    }
 }
