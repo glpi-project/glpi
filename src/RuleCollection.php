@@ -869,8 +869,14 @@ JAVASCRIPT;
         ];
 
         if (is_numeric($type)) {
-            $max_rank = $DB->request($max_ranking_criteria)->current()['maxi'];
-            $rank = max(0, min($max_rank + 1, $type));
+            if ($new_rule) {
+                // The ranking for new rules should be more permissive. helps avoid issues during import when the rules
+                // may not be in the order of ranking and therefore earlier rules may be higher than the current max + 1 ranking.
+                $rank = max(0, $type);
+            } else {
+                $max_rank = $DB->request($max_ranking_criteria)->current()['maxi'];
+                $rank = max(0, min($max_rank + 1, $type));
+            }
         } else {
             // Compute new ranking
             if ($ref_ID) { // Move after/before an existing rule
