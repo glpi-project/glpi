@@ -62,11 +62,30 @@ class DocumentExtension extends AbstractExtension
     public function getDocumentIcon(string $filename): string
     {
         /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var \DBmysql $DB */
+        global $CFG_GLPI, $DB;
 
-        $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
+        $extention = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
+        $iterator = $DB->request([
+            'SELECT' => 'icon',
+            'FROM'   => 'glpi_documenttypes',
+            'WHERE'  => [
+                'ext'    => $extention,
+                'icon'   => ['<>', '']
+            ]
+        ]);
+
+        $icon = '/pics/timeline/file.png';
+
+        foreach ($iterator as $result) {
+            if (file_exists(GLPI_ROOT . '/pics/icones/' . $result['icon'])) {
+                $icon = '/pics/icones/' . $result['icon'];
+                break;
+            }
+        }
+
+        return $CFG_GLPI['root_doc'] . $icon;
     }
 
     /**
