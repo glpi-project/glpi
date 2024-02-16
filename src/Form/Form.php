@@ -197,17 +197,6 @@ class Form extends CommonDBTM
     }
 
     /**
-     * Update extra form data found in other tables (sections and questions)
-     *
-     * @return void
-     */
-    protected function updateExtraFormData(): void
-    {
-        $this->updateSections();
-        $this->updateQuestions();
-    }
-
-    /**
      * Get sections of this form
      *
      * @return Section[]
@@ -249,6 +238,17 @@ class Form extends CommonDBTM
             $questions = $questions + $section->getQuestions();
         }
         return $questions;
+    }
+
+    /**
+     * Update extra form data found in other tables (sections and questions)
+     *
+     * @return void
+     */
+    protected function updateExtraFormData(): void
+    {
+        $this->updateSections();
+        $this->updateQuestions();
     }
 
     /**
