@@ -1002,126 +1002,125 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $json = json_decode($json_str);
         $inventory = $this->doInventory($json);
 
-          //check created agent
-          $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
-          $agents = $DB->request(['FROM' => \Agent::getTable()]);
-          $this->integer(count($agents))->isIdenticalTo(1);
-          $agent = $agents->current();
-          $this->array($agent)
-              ->string['deviceid']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
-              ->string['name']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
-              ->string['itemtype']->isIdenticalTo('Computer')
-              ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
-              ->integer['items_id']->isGreaterThan(0);
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
+            ->string['name']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+            ->integer['items_id']->isGreaterThan(0);
 
-          //check created computer
-          $computers_id = $agent['items_id'];
-          $this->integer($computers_id)->isGreaterThan(0);
-          $computer = new \Computer();
-          $this->boolean($computer->getFromDB($computers_id))->isTrue();
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
 
-          //check created networkport
-          $networkport = new \NetworkPort();
+        //check created networkport
+        $networkport = new \NetworkPort();
 
-          // lo -> ethernet -> NetworkPortLocal
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'enp3s0',
-                  'instantiation_type' => 'NetworkPortEthernet'
-              ]
-          ))->isTrue();
+        // lo -> ethernet -> NetworkPortLocal
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'enp3s0',
+                'instantiation_type' => 'NetworkPortEthernet'
+            ]
+        ))->isTrue();
 
-          // lo -> loopback -> NetworkPortLocal
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'lo',
-                  'instantiation_type' => 'NetworkPortLocal'
-              ]
-          ))->isTrue();
+        // lo -> loopback -> NetworkPortLocal
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'lo',
+                'instantiation_type' => 'NetworkPortLocal'
+            ]
+        ))->isTrue();
 
-          // br-8f1b5a0d178c -> bridge -> NetworkPortEthernet (no NetworkPortBridge so use default NetworkPortEthernet )
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'br-8f1b5a0d178c',
-                  'instantiation_type' => 'NetworkPortEthernet'
-              ]
-          ))->isTrue();
+        // br-8f1b5a0d178c -> bridge -> NetworkPortEthernet (no NetworkPortBridge so use default NetworkPortEthernet )
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'br-8f1b5a0d178c',
+                'instantiation_type' => 'NetworkPortEthernet'
+            ]
+        ))->isTrue();
 
-          // Intel(R) WiFi Link 5100 AGN -> wifi -> NetworkPortWifi
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'Intel(R) WiFi Link 5100 AGN',
-                  'instantiation_type' => 'NetworkPortWifi'
-              ]
-          ))->isTrue();
+        // Intel(R) WiFi Link 5100 AGN -> wifi -> NetworkPortWifi
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'Intel(R) WiFi Link 5100 AGN',
+                'instantiation_type' => 'NetworkPortWifi'
+            ]
+        ))->isTrue();
 
-          // fibrechannel A -> fibrechannel -> NetworkPortFiberChannel
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'fibrechannel A',
-                  'instantiation_type' => 'NetworkPortFiberChannel'
-              ]
-          ))->isTrue();
+        // fibrechannel A -> fibrechannel -> NetworkPortFiberChannel
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'fibrechannel A',
+                'instantiation_type' => 'NetworkPortFiberChannel'
+            ]
+        ))->isTrue();
 
-          // bond0 -> aggregate -> NetworkPortAggregate
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'bond0',
-                  'instantiation_type' => 'NetworkPortAggregate'
-              ]
-          ))->isTrue();
+        // bond0 -> aggregate -> NetworkPortAggregate
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'bond0',
+                'instantiation_type' => 'NetworkPortAggregate'
+            ]
+        ))->isTrue();
 
-          // eth3 -> alias -> NetworkPortAlias
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'eth3',
-                  'instantiation_type' => 'NetworkPortAlias'
-              ]
-          ))->isTrue();
+        // eth3 -> alias -> NetworkPortAlias
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'eth3',
+                'instantiation_type' => 'NetworkPortAlias'
+            ]
+        ))->isTrue();
 
-          //Bluetooth -> bluetooth -> NetworkPortEthernet (no NetworkPortBluetooth so use default NetworkPortEthernet )
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'Bluetooth',
-                  'instantiation_type' => 'NetworkPortEthernet'
-              ]
-          ))->isTrue();
+        //Bluetooth -> bluetooth -> NetworkPortEthernet (no NetworkPortBluetooth so use default NetworkPortEthernet )
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'Bluetooth',
+                'instantiation_type' => 'NetworkPortEthernet'
+            ]
+        ))->isTrue();
 
+        //Infiniband -> infiniband -> NetworkPortEthernet (no NetworkPortInfiniband so use default NetworkPortEthernet )
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'Infiniband',
+                'instantiation_type' => 'NetworkPortEthernet'
+            ]
+        ))->isTrue();
 
-          //Infiniband -> infiniband -> NetworkPortEthernet (no NetworkPortInfiniband so use default NetworkPortEthernet )
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'Infiniband',
-                  'instantiation_type' => 'NetworkPortEthernet'
-              ]
-          ))->isTrue();
-
-          //Dialup -> dialup -> NetworkPortDialup
-          $this->boolean($networkport->getFromDbByCrit(
-              [
-                  'itemtype' => 'Computer',
-                  'items_id' => $computers_id,
-                  'name' => 'Dialup',
-                  'instantiation_type' => 'NetworkPortDialup'
-              ]
-          ))->isTrue();
+        //Dialup -> dialup -> NetworkPortDialup
+        $this->boolean($networkport->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'Dialup',
+                'instantiation_type' => 'NetworkPortDialup'
+            ]
+        ))->isTrue();
     }
 }
