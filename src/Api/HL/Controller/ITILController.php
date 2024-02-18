@@ -42,6 +42,7 @@ use CommonDBTM;
 use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
@@ -973,6 +974,13 @@ final class ITILController extends AbstractController
             [
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
+                'content_type' => 'application/json',
+                'schema' => '{subitem_type}',
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'content_type' => 'multipart/form-data',
                 'schema' => '{subitem_type}',
             ]
         ],
@@ -982,6 +990,23 @@ final class ITILController extends AbstractController
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
         $subitem_type = $request->getAttribute('subitem_type');
+
+        if ($subitem_type === 'Document') {
+            $uploads = $request->getUploadedFiles();
+            if (!isset($uploads['file'])) {
+                return self::getInvalidParametersErrorResponse();
+            }
+            $document_items_id = FileManager::uploadAsDocumentAndLink($item::class, $item->getID(), $uploads['file'], $request->getParameters());
+            if ($document_items_id === false) {
+                return self::getInvalidParametersErrorResponse();
+            }
+            return self::getCRUDCreateResponse($document_items_id, self::getAPIPathForRouteFunction(self::class, 'getTimelineItem', [
+                'itemtype' => $item::getType(),
+                'id' => $item->getID(),
+                'subitem_type' => 'Document',
+                'subitem_id' => $document_items_id
+            ]));
+        }
 
         $parameters = $request->getParameters();
         $parameters = array_merge($parameters, $this->getRequiredTimelineItemFields($item, $request, $subitem_type));

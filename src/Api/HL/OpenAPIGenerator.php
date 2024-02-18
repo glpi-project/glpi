@@ -88,11 +88,12 @@ final class OpenAPIGenerator
         $to_keep = $this->getPublicVendorExtensions();
         // Recursively walk through every key of the schema
         foreach ($schema as $key => &$value) {
-            // If the key is a vendor extension
-            // If the key is not a public vendor extension
             if (str_starts_with($key, 'x-') && !in_array($key, $to_keep, true)) {
                 // Remove the key from the schema
                 unset($schema[$key]);
+                if ($key === 'x-mapped-from') {
+                    $schema['x-readonly'] = true;
+                }
                 continue;
             }
             if ($parent_key === 'properties') {
@@ -252,10 +253,12 @@ EOT;
             $paths = array_merge_recursive($paths, $this->getPathSchemas($route_path));
         }
 
+        //FIXME Some request body schemas that use placeholder references that rely on path expansion are not being replaced.
+        //See ITILController::createTimelineItem
         $schema['paths'] = $this->expandGenericPaths($paths);
 
         // Clean vendor extensions
-        if ($_SESSION['glpi_use_mode'] !== \Session::DEBUG_MODE) {
+        if (($_SESSION['glpi_use_mode'] ?? \Session::NORMAL_MODE) !== \Session::DEBUG_MODE) {
             $schema = $this->cleanVendorExtensions($schema);
         }
 
