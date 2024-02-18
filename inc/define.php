@@ -593,7 +593,7 @@ $CFG_GLPI['javascript'] = [
         'plugin' => [
             'marketplace' => ['marketplace']
         ],
-        'config' => ['clipboard']
+        'config' => ['clipboard', 'tinymce']
     ],
     'admin'        => ['clipboard', 'sortable'],
     'preference'   => ['clipboard'],
