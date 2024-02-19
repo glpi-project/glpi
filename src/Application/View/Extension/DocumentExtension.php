@@ -44,6 +44,8 @@ use Twig\TwigFilter;
  */
 class DocumentExtension extends AbstractExtension
 {
+    static $extensionIcon = null;
+
     public function getFilters(): array
     {
         return [
@@ -67,7 +69,7 @@ class DocumentExtension extends AbstractExtension
 
         $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        if (!isset($CFG_GLPI['extension_icon'])) {
+        if (static::$extensionIcon === null) {
             $iterator = $DB->request([
                 'SELECT' => [
                     'ext',
@@ -79,15 +81,15 @@ class DocumentExtension extends AbstractExtension
                 ]
             ]);
             foreach ($iterator as $result) {
-                $CFG_GLPI['extension_icon'][$result['ext']] = $result['icon'];
+                static::$extensionIcon[$result['ext']] = $result['icon'];
             }
         }
 
         $defaultIcon = '/pics/timeline/file.png';
         $icon = $defaultIcon;
 
-        if (isset($CFG_GLPI['extension_icon'][$extension])) {
-            $icon = '/pics/icones/' . $CFG_GLPI['extension_icon'][$extension];
+        if (isset(static::$extensionIcon[$extension])) {
+            $icon = '/pics/icones/' . static::$extensionIcon[$extension];
         }
 
         return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : $defaultIcon);
