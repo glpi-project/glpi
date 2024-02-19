@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Override;
 
 /**
  * Section of a given helpdesk form
@@ -51,6 +52,13 @@ final class Section extends CommonDBChild
      * @var Question[]|null
      */
     protected ?array $questions = null;
+
+    #[Override]
+    public function post_getFromDB()
+    {
+        // Clear any lazy loaded data
+        $this->clearLazyLoadedData();
+    }
 
     /**
      * Get questions of this form
@@ -77,12 +85,6 @@ final class Section extends CommonDBChild
         }
 
         return $this->questions;
-    }
-
-    public function post_updateItem($history = 1)
-    {
-        // Clear any lazy loaded data
-        $this->clearLazyLoadedData();
     }
 
     /**
