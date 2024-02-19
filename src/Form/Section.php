@@ -61,7 +61,7 @@ final class Section extends CommonDBChild
     }
 
     /**
-     * Get questions of this form
+     * Get questions of this section
      *
      * @return Question[]
      */

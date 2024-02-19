@@ -570,7 +570,7 @@ class DbTestCase extends \GLPITestCase
      *
      * @param Form        $form         Given form
      * @param string      $section_name Section name to look for
-
+     *
      * @return int The ID of the section
      */
     public function getSectionId(
