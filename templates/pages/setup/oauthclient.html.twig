@@ -56,7 +56,10 @@
                                 values: item.fields['grants']|default(['authorization_code']),
                             }) }}
                             {% if not item.isNewItem() %}
-                                {{ fields.readOnlyField('identifier', item.fields['identifier'], __('Client ID')) }}
+                                {{ fields.textField('identifier', item.fields['identifier'], __('Client ID'), {
+                                    readonly: true,
+                                    is_copyable: true,
+                                }) }}
                             {% endif %}
                             {% if allowed_scopes is defined and allowed_scopes is not empty %}
                                 {{ fields.dropdownArrayField('scopes', null, allowed_scopes, __('Scopes'), {
