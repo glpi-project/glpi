@@ -34,7 +34,7 @@
  */
 
 /**
- * @deprecated 10.1.0
+ * @deprecated 11.0.0
  */
 class QuerySubQuery extends Glpi\DBAL\QuerySubQuery
 {

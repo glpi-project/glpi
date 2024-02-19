@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.1.0] unreleased
+## [11.0.0] unreleased
 
 ### Added
 - Business Rules for Changes

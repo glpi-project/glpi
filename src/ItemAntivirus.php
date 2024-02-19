@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 
 /**
- * @since 10.1
+ * @since 11.0
  */
 class ItemAntivirus extends CommonDBChild
 {

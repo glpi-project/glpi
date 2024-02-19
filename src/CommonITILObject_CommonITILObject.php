@@ -35,7 +35,7 @@
 
 /**
  * Links CommonITILObjects to other CommonITILObjects
- * @since 10.1.0
+ * @since 11.0.0
  */
 abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 {

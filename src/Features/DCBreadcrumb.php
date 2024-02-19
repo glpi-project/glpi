@@ -56,7 +56,7 @@ trait DCBreadcrumb
      *
      * @return array
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public function getDcBreadcrumb()
     {
@@ -137,7 +137,7 @@ trait DCBreadcrumb
      *
      * @return false|Enclosure
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public function isEnclosurePart($itemtype, $items_id, $getobj = false)
     {
@@ -171,7 +171,7 @@ trait DCBreadcrumb
      *
      * @return false|Rack
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public function isRackPart($itemtype, $items_id, $getobj = false)
     {
@@ -200,7 +200,7 @@ trait DCBreadcrumb
      *
      * @return array
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function getDcBreadcrumbSpecificValueToDisplay($items_id)
     {

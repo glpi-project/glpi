@@ -141,7 +141,7 @@ class Knowbase extends CommonGLPI
     /**
      * Show the knowbase browse view
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function showBrowseView()
     {
@@ -238,7 +238,7 @@ JAVASCRIPT;
      *
      * @return array
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function getTreeCategoryList()
     {
@@ -400,7 +400,7 @@ JAVASCRIPT;
     /**
      * Show the knowbase Manage view
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function showManageView()
     {

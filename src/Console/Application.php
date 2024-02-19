@@ -246,7 +246,7 @@ class Application extends BaseApplication
         $name = parent::getCommandName($input);
         if ($name !== null) {
             // strip `glpi:` prefix that was used before GLPI 10.0.6
-            // FIXME Deprecate usage of `glpi:` prefix in GLPI 10.1.
+            // FIXME Deprecate usage of `glpi:` prefix in GLPI 11.0.
             $name = preg_replace('/^glpi:/', '', $name);
         }
         return $name;

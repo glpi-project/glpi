@@ -118,7 +118,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * Params need to parsed before using Search::manageParams function
      *
-     * @since 10.1
+     * @since 11.0
      *
      * @param string $itemtype  Type to display the form
      * @param array  $params    Array of parameters may include sort, is_deleted, criteria, metacriteria
@@ -531,7 +531,7 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Display a sort-criteria field set, this function should be called by ajax/search.php
      *
-     * @since 10.1
+     * @since 11.0
      *
      * @param  array  $request @see displayCriteria method
      *
@@ -831,7 +831,7 @@ final class QueryBuilder implements SearchInputInterface
     /**
      * Remove the active saved search in session
      *
-     * @since 10.1
+     * @since 11.0
      *
      * @return void
      */

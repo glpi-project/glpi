@@ -121,7 +121,7 @@ final class StatusChecker
      * @return array|string An array or string with the result based on the $as_array parameter value.
      * @phpstan-return ($as_array is true ? array : string)
      * @since 10.0.0
-     * @FIXME Remove deprecated plain text output in GLPI 10.1.
+     * @FIXME Remove deprecated plain text output in GLPI 11.0.
      */
     public static function getServiceStatus(?string $service, $public_only = true, $as_array = true)
     {

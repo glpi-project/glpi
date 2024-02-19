@@ -5516,7 +5516,7 @@ JAVASCRIPT;
      * Get user ID from a field
      *
      * @since 0.84
-     * @since 10.1.0 Parameter `$escape` has been removed.
+     * @since 11.0.0 Parameter `$escape` has been removed.
      *
      * @param string $field Field name
      * @param string $value Field value
@@ -5653,7 +5653,7 @@ JAVASCRIPT;
      *
      * @return void
      *
-     * @since 10.1.0
+     * @since 11.0.0
      */
     public static function showPasswordInitChangeForm(string $token): void
     {
@@ -5670,7 +5670,7 @@ JAVASCRIPT;
      *
      * @return void
      *
-     * @since 10.1.0
+     * @since 11.0.0
      */
     public static function showPasswordForgetRequestForm(): void
     {

@@ -34,7 +34,7 @@
  */
 
 /// Readonly fields for change template class
-/// since version 10.1.0
+/// since version 11.0.0
 class ChangeTemplateReadonlyField extends ITILTemplateReadonlyField
 {
    // From CommonDBChild

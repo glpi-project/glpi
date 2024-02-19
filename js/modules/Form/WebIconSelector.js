@@ -35,7 +35,7 @@
  * Web icon selector component.
  * This class can handle both Tabler and FontAwesome icons.
  *
- * @since 10.1.0
+ * @since 11.0.0
  */
 export class WebIconSelector {
 

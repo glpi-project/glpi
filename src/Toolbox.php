@@ -211,7 +211,7 @@ class Toolbox
      *
      * @return boolean
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function seems_utf8($str)
     {
@@ -655,7 +655,7 @@ class Toolbox
      *
      * @return string|string[]
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function addslashes_deep($value)
     {
@@ -688,7 +688,7 @@ class Toolbox
      *
      * @return array|string stripslashes item
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function stripslashes_deep($value)
     {

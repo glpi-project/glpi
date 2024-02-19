@@ -598,7 +598,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return boolean true on success
      *
-     * @FIXME Deprecate this method in GLPI 10.1, it is not used.
+     * @FIXME Deprecate this method in GLPI 11.0, it is not used.
      **/
     public function resetConnections($ID)
     {

@@ -829,7 +829,7 @@ SQL,
                 ],
             ];
 
-            // Data produced by GLPI 10.1.
+            // Data produced by GLPI 11.0.
             yield [
                 'method'   => $method,
                 'row'      => [

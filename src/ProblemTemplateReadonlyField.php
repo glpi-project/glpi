@@ -34,7 +34,7 @@
  */
 
 /// Readonly fields for problem template class
-/// since version 10.1.0
+/// since version 11.0.0
 class ProblemTemplateReadonlyField extends ITILTemplateReadonlyField
 {
    // From CommonDBChild

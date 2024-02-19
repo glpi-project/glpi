@@ -1882,7 +1882,7 @@ JS
         $last = false,
         $display_entities = false,
         $active_condition = 0
-        // FIXME Uncomment this in GLPI 10.1
+        // FIXME Uncomment this in GLPI 11.0
         // bool $display_criterias = false,
         // bool $display_actions = false
     ) {
@@ -3462,8 +3462,8 @@ JS
      *
      * @return boolean
      *
-     * @FIXME Make it final in GLPI 10.1.
-     * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 10.1, they are actually not used or have no effect where they are used.
+     * @FIXME Make it final in GLPI 11.0.
+     * @FIXME Remove $reset, $with_plugins and $check parameters in GLPI 11.0, they are actually not used or have no effect where they are used.
      */
     public static function initRules($reset = true, $with_plugins = true, $check = false): bool
     {

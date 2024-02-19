@@ -145,7 +145,7 @@ class AuthLDAP extends CommonDBTM
     /**
      * List of TLS versions
      * @var array
-     * @since 10.1.0
+     * @since 11.0.0
      */
     const TLS_VERSIONS = [
         '1.0' => '1.0',

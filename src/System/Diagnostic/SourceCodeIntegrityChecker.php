@@ -46,7 +46,7 @@ use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
 
 /**
- * @since 10.1.0
+ * @since 11.0.0
  */
 class SourceCodeIntegrityChecker
 {

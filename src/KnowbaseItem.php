@@ -383,7 +383,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         // Support old "knowbaseitemcategories_id" input
-        // FIXME Deprecate it in GLPI 10.1
+        // FIXME Deprecate it in GLPI 11.0
         if (isset($this->input['knowbaseitemcategories_id'])) {
             $categories = $this->input['knowbaseitemcategories_id'];
             $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
@@ -868,7 +868,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         );
 
         // Support old "knowbaseitemcategories_id" input
-        // FIXME Deprecate it in GLPI 10.1
+        // FIXME Deprecate it in GLPI 11.0
         if (isset($this->input['knowbaseitemcategories_id'])) {
             $categories = $this->input['knowbaseitemcategories_id'];
             $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
@@ -1437,7 +1437,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @return void
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public function showManageForm($options)
     {

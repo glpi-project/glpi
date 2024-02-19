@@ -164,7 +164,7 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public function loadActors()
     {
-        // TODO 10.1 (breaking change): method should be protected instead of public
+        // TODO 11.0 (breaking change): method should be protected instead of public
 
         // Might not be 100% needed to clear cache here but lets be safe
         // This way, any direct call to loadActors is assured to return accurate data
@@ -217,7 +217,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             default:
                 // Log error and keep running
-                // TODO 10.1: throw exception instead
+                // TODO 11.0: throw exception instead
                 trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
                 return null;
         }
@@ -236,7 +236,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'groups':
             case 'suppliers':
                 // Log error and keep running
-                // TODO 10.1: throw exception instead
+                // TODO 11.0: throw exception instead
                 trigger_error("Readonly field: '$property_name'", E_USER_WARNING);
                 break;
 
@@ -268,7 +268,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             default:
                 // Log error and keep running
-                // TODO 10.1: throw exception instead
+                // TODO 11.0: throw exception instead
                 trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
                 return false;
         }
@@ -296,7 +296,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             default:
                 // Log error and keep running
-                // TODO 10.1: throw exception instead
+                // TODO 11.0: throw exception instead
                 trigger_error("Unknown field: '$property_name'", E_USER_WARNING);
                 break;
         }
@@ -1074,7 +1074,7 @@ abstract class CommonITILObject extends CommonDBTM
      * @param int $users_id
      * @return bool
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public function isValidator($users_id): bool
     {
@@ -1166,7 +1166,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return bool
      **/
-    // FIXME add params typehint in GLPI 10.1
+    // FIXME add params typehint in GLPI 11.0
     public function isGroup($type, $groups_id): bool
     {
         if (isset($this->groups[$type])) {
@@ -1969,7 +1969,7 @@ abstract class CommonITILObject extends CommonDBTM
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
-            // FIXME Deprecate this input key in GLPI 10.1.
+            // FIXME Deprecate this input key in GLPI 11.0.
             if (isset($input['_itil_requester']['_type'])) {
                 $input['_itil_requester'] = [
                     'type'                            => CommonITILActor::REQUESTER,
@@ -2040,7 +2040,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($input['_itil_observer'])) {
-            // FIXME Deprecate this input key in GLPI 10.1.
+            // FIXME Deprecate this input key in GLPI 11.0.
             if (isset($input['_itil_observer']['_type'])) {
                 $input['_itil_observer'] = [
                     'type'                            => CommonITILActor::OBSERVER,
@@ -2110,7 +2110,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($input['_itil_assign'])) {
-            // FIXME Deprecate this input key in GLPI 10.1.
+            // FIXME Deprecate this input key in GLPI 11.0.
             if (isset($input['_itil_assign']['_type'])) {
                 $input['_itil_assign'] = [
                     'type'                            => CommonITILActor::ASSIGN,
@@ -7081,7 +7081,7 @@ abstract class CommonITILObject extends CommonDBTM
                     }
                 }
                 break;
-            case 'Solution': // FIXME Remove it in GLPI 10.1, it may be still used in some edge cases in GLPI 10.0
+            case 'Solution': // FIXME Remove it in GLPI 11.0, it may be still used in some edge cases in GLPI 10.0
             case ITILSolution::class:
                 $pos = self::TIMELINE_RIGHT;
                 break;
@@ -9191,7 +9191,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function assign(array $input)
     {
-        // FIXME Deprecate this method in GLPI 10.1.
+        // FIXME Deprecate this method in GLPI 11.0.
         if (!in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))) {
             return $input;
         }
@@ -10440,7 +10440,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @param CommonITILObject $item The ITIL Object
      * @return void
-     * @since 10.1.0
+     * @since 11.0.0
      */
     final protected static function showSatisfactionTabContent(CommonITILObject $item): void
     {
@@ -10468,7 +10468,7 @@ abstract class CommonITILObject extends CommonDBTM
      * Must be called from {@link static::post_updateItem()}
      *
      * @return void
-     * @since 10.1.0
+     * @since 11.0.0
      */
     final protected function handleSatisfactionSurveyOnUpdate(): void
     {
@@ -10716,7 +10716,7 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($usertypes as $k => $t) {
             //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                // FIXME Deprecate these keys in GLPI 10.1.
+                // FIXME Deprecate these keys in GLPI 11.0.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])

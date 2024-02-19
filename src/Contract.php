@@ -1822,7 +1822,7 @@ class Contract extends CommonDBTM
     }
 
     /**
-     * @FIXME Rename method in GLPI 10.1. Method returns criteria to find NOT expired contracts.
+     * @FIXME Rename method in GLPI 11.0. Method returns criteria to find NOT expired contracts.
      */
     public static function getExpiredCriteria()
     {

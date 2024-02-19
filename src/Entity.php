@@ -1935,7 +1935,7 @@ class Entity extends CommonTreeDropdown
      *
      * @param Entity $entity The entity
      * @return void|false
-     * @since 10.1.0
+     * @since 11.0.0
      */
     public static function showSecurityOptions(Entity $entity)
     {
@@ -3410,7 +3410,7 @@ class Entity extends CommonTreeDropdown
      *
      * @return array
      *
-     * @FIXME Remove this method in GLPI 10.1.
+     * @FIXME Remove this method in GLPI 11.0.
      */
     public static function getDefaultContractValues($entities_id): array
     {

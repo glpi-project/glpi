@@ -787,7 +787,7 @@ JAVASCRIPT
      *
      * @return boolean true if item can be translated, false otherwise
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {
@@ -800,7 +800,7 @@ JAVASCRIPT
     /**
      * Is dropdown item translation functionality active
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      *
      * @return true if active, false if not
      **/

@@ -369,7 +369,7 @@ class Event extends CommonDBTM
      * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
      * @param string  $sort    order by clause occurences (eg: date) (defaut 'date')
      * @param integer $start   (default 0)
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function showList($target, $order = 'DESC', $sort = 'date', $start = 0)
     {

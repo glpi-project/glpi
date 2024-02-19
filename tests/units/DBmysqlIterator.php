@@ -1507,7 +1507,7 @@ SQL
             ]
         ];
 
-        // Data from GLPI 10.1+ (not autosanitized)
+        // Data from GLPI 11.0+ (not autosanitized)
         yield [
             'db_data' => [
                 'id'      => 1,

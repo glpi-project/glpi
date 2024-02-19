@@ -57,7 +57,7 @@ if (!$notification_exists) {
             'date_creation'   => new QueryExpression('NOW()'),
             'date_mod'        => new QueryExpression('NOW()')
         ],
-        '10.1 Add password initialization notification'
+        '11.0 Add password initialization notification'
     );
     $notification_id = $DB->insertId();
 
@@ -67,7 +67,7 @@ if (!$notification_exists) {
             'name' => 'Password Initialization',
             'itemtype' => 'User'
         ],
-        '10.1 Add password initialization template'
+        '11.0 Add password initialization template'
     );
 
     $notificationtemplate_id = $DB->insertId();
@@ -91,7 +91,7 @@ if (!$notification_exists) {
     &lt;p&gt;##lang.passwordinit.link## &lt;a title="##user.passwordiniturl##" href="##user.passwordiniturl##"&gt;##user.passwordiniturl##&lt;/a&gt;&lt;/p&gt;
     HTML,
         ],
-        '10.1 Add password initialization notification template translations'
+        '11.0 Add password initialization notification template translations'
     );
 
     $DB->insertOrDie(
@@ -101,7 +101,7 @@ if (!$notification_exists) {
             'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
             'notificationtemplates_id' => $notificationtemplate_id,
         ],
-        '10.1 Add password initialization notification template'
+        '11.0 Add password initialization notification template'
     );
 
     $DB->insertOrDie(
@@ -111,7 +111,7 @@ if (!$notification_exists) {
             'type'             => '1',
             'notifications_id' => $notification_id,
         ],
-        '10.1 Add password initialization target'
+        '11.0 Add password initialization target'
     );
 }
 /** /Password initialization notification */

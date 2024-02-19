@@ -42,22 +42,27 @@ $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-// Change Ticket recurent items
-// Add glpi_items_ticketrecurrents table for associated elements
-if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
-    $query = "CREATE TABLE `glpi_items_ticketrecurrents` (
+// Add ITILReminder table
+if (!$DB->tableExists('glpi_itilreminders')) {
+    $query = "CREATE TABLE `glpi_itilreminders` (
         `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
-        `itemtype` varchar(255) DEFAULT NULL,
+        `itemtype` varchar(100) NOT NULL,
         `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
-        `ticketrecurrents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+        `pendingreasons_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+        `name` varchar(255) DEFAULT NULL,
+        `content` text,
+        `date_mod` timestamp NULL DEFAULT NULL,
+        `date_creation` timestamp NULL DEFAULT NULL,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
-        KEY `items_id` (`items_id`),
-        KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->doQueryOrDie($query, "10.1.0 add table glpi_items_ticket");
+        KEY `item` (`itemtype`,`items_id`),
+        KEY `name` (`name`),
+        KEY `date_mod` (`date_mod`),
+        KEY `date_creation` (`date_creation`),
+        KEY `pendingreasons_id` (`pendingreasons_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
+    $DB->doQueryOrDie($query, '11.0 add table glpi_itilreminders');
+} else {
+    $migration->addField('glpi_itilreminders', 'name', 'varchar(255) DEFAULT NULL');
+    $migration->addField('glpi_itilreminders', 'content', 'text');
+    $migration->addKey('glpi_itilreminders', 'name', 'name');
 }
-
-// Add glpi_items_ticketrecurrents table for associated elements
-$migration->addField('glpi_ticketrecurrents', 'ticket_per_item', 'bool');
-$migration->addKey('glpi_ticketrecurrents', 'ticket_per_item');

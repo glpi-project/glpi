@@ -35,7 +35,7 @@
 
 /**
  * Manage ComputerVirtualMachine.
- * @deprecated 10.1.0 Use ItemVirtualMachine
+ * @deprecated 11.0.0 Use ItemVirtualMachine
  */
 class ComputerVirtualMachine extends ItemVirtualMachine
 {

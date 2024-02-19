@@ -738,7 +738,7 @@ HTML,
     }
 
     /**
-     * To be deleted after 10.1 release
+     * To be deleted after 11.0 release
      */
     public function testCreateWithCategoriesDeprecated()
     {

@@ -267,7 +267,7 @@ class Calendar extends CommonDropdown
      *
      * @return int timestamp of delay
      *
-     * @FIXME Remove `$include_inactive_time` parameter in GLPI 10.1. It does not seems to be used and makes no sense.
+     * @FIXME Remove `$include_inactive_time` parameter in GLPI 11.0. It does not seems to be used and makes no sense.
      */
     public function getActiveTimeBetween($start, $end, $include_inactive_time = false)
     {
@@ -408,7 +408,7 @@ class Calendar extends CommonDropdown
      **/
     public function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
     {
-        // TODO 10.1: parameter $work_in_day make calculation for duration exprimed
+        // TODO 11.0: parameter $work_in_day make calculation for duration exprimed
         // in days (e.g "+ 5 days") but we don't have anything for month.
         // +1 month will push the date 30 working day when it should get the next
         // valid calendar date at least one month away from the starting date.

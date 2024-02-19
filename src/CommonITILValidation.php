@@ -823,7 +823,7 @@ abstract class CommonITILValidation extends CommonDBChild
      * @param integer $items_id item ID
      * @param integer $status   status
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function getTicketStatusNumber($items_id, $status)
     {
@@ -855,7 +855,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return boolean
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function alreadyExists($items_id, $users_id)
     {
@@ -1720,8 +1720,8 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return string|int Output if $options['display'] is false, else return rand
      *
-     * @since 10.1.0 Deprecated usage of 'name' option
-     * @since 10.1.0 Deprecated usage of 'users_id_validate' option
+     * @since 11.0.0 Deprecated usage of 'name' option
+     * @since 11.0.0 Deprecated usage of 'users_id_validate' option
      **/
     public static function dropdownValidator(array $options = [])
     {

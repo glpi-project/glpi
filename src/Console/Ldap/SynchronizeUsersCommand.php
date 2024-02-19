@@ -51,7 +51,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Error code returned if LDAP connection failed.
      *
      * @var integer
-     * @FIXME Remove in GLPI 10.1.
+     * @FIXME Remove in GLPI 11.0.
      */
     const ERROR_LDAP_CONNECTION_FAILED = 1;
 
@@ -59,7 +59,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      * Error code returned if LDAP limit exceeded.
      *
      * @var integer
-     * @FIXME Remove in GLPI 10.1.
+     * @FIXME Remove in GLPI 11.0.
      */
     const ERROR_LDAP_LIMIT_EXCEEDED = 2;
 
