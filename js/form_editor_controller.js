@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, glpi_toast_info, sortable, tinymce */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -141,13 +141,6 @@ class GlpiFormEditorController
                 (e, original_event) => this.#handleTinyMCEClick(original_event)
             );
 
-        // Handle form preview successful submit
-        $(document)
-            .on(
-                'glpi-form-renderer-submit-success',
-                (e, data) => this.#handleFormPreviewSubmitSuccess(data)
-            );
-
         // Register handlers for each possible editor actions using custom
         // data attributes
         const events = ["click", "change", "input"];
@@ -182,11 +175,6 @@ class GlpiFormEditorController
      */
     #handleEditorAction(action, target) {
         switch (action) {
-            // Show the preview of the current form in a modal
-            case "show-preview":
-                this.#showPreview();
-                break;
-
             // Mark the target item as active
             case "set-active":
                 this.#setActiveItem(target);
@@ -445,16 +433,6 @@ class GlpiFormEditorController
     }
 
     /**
-     * Show the preview of the current form in a modal
-     */
-    #showPreview() {
-        const id = $(this.#target).find("input[name=id]").val();
-        $("#glpi_form_editor_preview_modal .modal-content").load(
-            CFG_GLPI.root_doc + "/ajax/form/form_renderer.php?id=" + id,
-        );
-    }
-
-    /**
      * Update UX to reflect the fact that the form is no longer a draft.
      */
     #removeDraftStatus() {
@@ -670,23 +648,6 @@ class GlpiFormEditorController
      */
     #computeDynamicInputSize(input) {
         $(input).css("width", getRealInputWidth(input, "1.2rem"));
-    }
-
-    /**
-     * Handle form preview successful submit.
-     * @param {Object} data Response data
-     */
-    #handleFormPreviewSubmitSuccess(data) {
-        // Close modal
-        $("#glpi_form_editor_preview_modal").modal('hide');
-
-        // Show toast with link to answers set
-        glpi_toast_info(
-            __("Item successfully created: %s").replace(
-                "%s",
-                data.link_to_created_item
-            )
-        );
     }
 
     /**

@@ -35,81 +35,144 @@
 {% set is_single_section_form = form.getSections()|length == 1 %}
 
 <form id="forms_form_answers" method="POST" action="{{ path("ajax/form/answer.php") }}">
-    <div class="modal-header">
-        <div class="mt-3">
-            <h5 class="modal-title mb-3" id="display_form_modal_label">
-                {{ form.fields.name }}
-            </h5>
 
-            <div class="text-muted">
-                {{ form.fields.header|safe_html }}
+    <div class="container container-narrow form-renderer">
+
+        {# Form header: title and description #}
+        <div
+            class="card mb-3"
+            data-glpi-form-renderer-form-header
+        >
+            <div class="card-status-top bg-primary"></div>
+
+            <div class="card-body">
+                <h1 class="form-title"> {{ form.fields.name }} </h1>
+
+                <div class="text-muted form-description">
+                    {{ form.fields.header|safe_html }}
+                </div>
             </div>
         </div>
-
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x("button", "Close") }}"></button>
-    </div>
-
-    <div class="modal-body">
 
         {% for section in form.getSections() %}
             {# Is this the first section of a form ? #}
             {% set is_first_section = loop.index0 == 0 %}
+            {% set section_index = loop.index0 %}
 
-            {# Show only the first section of a multi section forms #}
             <div
-                data-glpi-form-renderer-section="{{ loop.index0 }}"
-                class="{{ not is_single_section_form and not is_first_section ? "d-none" : "" }}"
+                class="{{ is_first_section and not is_single_section_form ? "" : "d-none" }}"
+                data-glpi-form-renderer-section="{{ section_index }}"
             >
-                <h2 class="mb-3">{{ section.fields.name }}</h2>
+                <div
+                    class="bg-primary px-2 py-1 rounded-top "
+                    style="width: fit-content;"
+                >
+                    {{ __("Step %d of %d")|format(loop.index, form.getSections()|length) }}
+                </div>
+                <div
+                    class="card mb-3"
+                >
+                    <div class="card-body">
 
-                {% for question in section.getQuestions() %}
-                    {# Compute question type  #}
-                    {% set question_type = question.getQuestionType() %}
+                        <h2>{{ section.fields.name }}</h2>
 
-                    {# Skip unknown types (may be a disabled plugin) #}
-                    {% if question_type is not null %}
-                        <div class="mb-3">
-                            <label class="form-label">
+                        <div class="text-muted section-description">
+                            {{ section.fields.description|safe_html }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for question in section.getQuestions() %}
+                {# Compute question type  #}
+                {% set question_type = question.getQuestionType() %}
+
+                {# Skip unknown types (may be a disabled plugin) #}
+                {% if question_type is not null %}
+                    <div
+                        class="card mb-3 {{ is_first_section ? "" : "d-none" }}"
+                        data-glpi-form-renderer-parent-section="{{ section_index }}"
+                    >
+                        <div class="card-body">
+                            <h3>
                                 {{ question.fields.name }}
                                 {% if question.fields.is_mandatory %}
                                     <span class="text-danger">*</span>
                                 {% endif %}
-                            </label>
-                            {{ question_type.renderEndUserTemplate(question)|raw }}
-                            <div class="form-text">{{ question.fields.description|safe_html }}</div>
+                            </h3>
+
+                            <div class="mb-2">
+                                {{ question_type.renderEndUserTemplate(question)|raw }}
+                            </div>
+
+                            <div class="text-muted question-description">
+                                {{ question.fields.description|safe_html }}
+                            </div>
                         </div>
-                    {% endif %}
-                {% endfor %}
-            </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+
         {% endfor %}
 
+        {# Form reference #}
         <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
-    </div>
 
-    <div class="modal-footer">
-        <button
-            type="button"
-            data-glpi-form-renderer-action="previous-section"
-            class="btn btn-ghost-secondary d-none"
-        >
-            {{ __("Back") }}
-        </button>
+        {# Actions #}
+        <div class="d-flex justify-content-end" data-glpi-form-renderer-actions>
+            <button
+                type="button"
+                data-glpi-form-renderer-action="previous-section"
+                class="btn btn-ghost-secondary d-none me-2"
+            >
+                {{ __("Back") }}
+            </button>
 
-        <button
-            type="button"
-            data-glpi-form-renderer-action="next-section"
-            class="btn btn-primary {{ is_single_section_form ? "d-none" : "" }}"
-        >
-            {{ __("Continue") }}
-        </button>
+            <button
+                type="button"
+                data-glpi-form-renderer-action="next-section"
+                class="btn btn-primary {{ is_single_section_form ? "d-none" : "" }}"
+            >
+                {{ __("Continue") }}
+            </button>
 
-        <button
-            type="button"
-            data-glpi-form-renderer-action="submit"
-            class="btn btn-primary {{ not is_single_section_form ? "d-none" : "" }}"
+            <button
+                type="button"
+                data-glpi-form-renderer-action="submit"
+                class="btn btn-primary {{ not is_single_section_form ? "d-none" : "" }}"
+            >
+                {{ __("Send form") }}
+            </button>
+        </div>
+
+        {# Final "success" confirmation #}
+        <div
+            class="empty d-none mt-5"
+            data-glpi-form-renderer-success
         >
-            {{ __("Send form") }}
-        </button>
+            <div class="empty-title d-flex align-items-center">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon text-green icon-lg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"></path>
+                    <path d="M9 12l2 2l4 -4"></path>
+                </svg>
+                <span class="ms-2"> {{ __("Form submitted") }} </span>
+            </div>
+            <p class="empty-subtitle text-secondary">
+                {{ __("Your form has been submitted successfully.") }}
+            </p>
+        </div>
     </div>
 </form>
 

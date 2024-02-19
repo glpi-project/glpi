@@ -176,19 +176,18 @@
         {# Preview form action #}
         {# Mostly useful to test forms ATM. Final UI/UX are not really thought out #}
         {# TODO: UI/UX #}
-        <button
+        <a
+            href="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
+            target="_blank"
             class="btn btn-ghost-secondary me-auto"
             type="button"
             name="preview"
             form="form-form"
             title="{{ __("Preview") }}"
-            data-bs-toggle="modal"
-            data-bs-target="#glpi_form_editor_preview_modal"
-            data-glpi-form-editor-on-click="show-preview"
         >
             <i class="ti ti-eye me-1"></i>
             <span class="d-none d-xl-block">{{ __("Preview") }}</span>
-        </button>
+        </a>
 
         {# Move to trashbin form action #}
         {% if item.canDelete() %}
@@ -331,18 +330,6 @@
 
     </div>
 {% endif %}
-
-{# Preview form modal #}
-<div
-    id="glpi_form_editor_preview_modal"
-    class="modal modal-blur fade"
-    aria-modal="true"
-    role="dialog"
->
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content"></div>
-    </div>
-</div>
 
 <script>
     new GlpiFormEditorController(

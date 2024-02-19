@@ -33,61 +33,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Renderer;
-
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
-use Html;
+use Glpi\Form\Renderer\FormRenderer;
+use Glpi\Http\Response;
+
+include('../../inc/includes.php');
 
 /**
- * Utility class used to easily render a form
+ * Endpoint used to display or preview a form.
  */
-final class FormRenderer
-{
-    /**
-     * Singleton instance.
-     */
-    protected static ?FormRenderer $instance = null;
 
-    /**
-     * Singleton constructor.
-     */
-    private function __construct()
-    {
-    }
+// For now form rendering is only used to preview a form by a technician
+Session::checkRight(Form::$rightname, READ);
 
-    /**
-     * Get the singleton instance.
-     *
-     * @return FormRenderer
-     */
-    public static function getInstance(): FormRenderer
-    {
-        if (!isset(static::$instance)) {
-            static::$instance = new self();
-        }
-
-        return static::$instance;
-    }
-
-    /**
-     * Render the given form.
-     *
-     * @param Form $form
-     *
-     * @return string
-     */
-    public function render(Form $form): string
-    {
-        // Load JS controller
-        $html = Html::script("js/form_renderer_controller.js");
-
-        // Load template
-        $twig = TemplateRenderer::getInstance();
-        $html .= $twig->render('pages/form_renderer.html.twig', [
-            'form' => $form,
-        ]);
-
-        return $html;
-    }
+// Mandatory parameter: id of the form to render
+$id = $_GET['id'] ?? 0;
+if (!$id) {
+    Response::sendError(400, __("Missing or invalid form's id"));
 }
+
+// Fetch form
+$form = Form::getById($id);
+if (!$form) {
+    Response::sendError(404, __("Form not found"));
+}
+
+// TODO: if displaying a form, check form access configuration (not yet implemented)
+// TODO: if previewing a form, check view rights on forms
+
+// Render the requested form
+Html::header(
+    $form->fields['name'],
+    '',
+    'admin',
+    Form::getType()
+);
+
+$form_renderer = FormRenderer::getInstance();
+echo $form_renderer->render($form);
+
+Html::footer();
