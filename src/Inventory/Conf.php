@@ -947,7 +947,7 @@ class Conf extends CommonGLPI
             //blocaction with status
             echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
             echo "<td>";
-            echo \State::createTabEntry(__('If the asset status is (all if empty)'), 0, \State::getType());
+            echo \State::createTabEntry(__('If the asset status is'), 0, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
             $condition = [];
@@ -959,7 +959,7 @@ class Conf extends CommonGLPI
             State::dropdown(
                 [
                     'name'      => 'stale_agents_status_condition[]',
-                    'value'     => importArrayFromDB($config['previous_stale_agents_status'] ?? json_encode(['all'])),
+                    'value'     => importArrayFromDB($config['stale_agents_status_condition'] ?? json_encode(['all'])),
                     'multiple'  => true,
                     'toadd'     => ['all' => __('All')],
                     'condition' => $condition,
@@ -1074,16 +1074,25 @@ class Conf extends CommonGLPI
                 WARNING
             );
         }
+
+        if (
+            array_key_exists('stale_agents_status_condition', $values)
+            && is_array($values['stale_agents_status_condition'])
+            && in_array('all', $values['stale_agents_status_condition'])
+        ) {
+            // keep only the "All" value
+            $values['stale_agents_status_condition'] = ['all'];
+        }
+
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            // don't take care of default values for these properties
-            // as they are already processed by exportArrayToDB
-            if (isset($values[$prop]) && ($prop == 'stale_agents_action' || $prop == 'stale_agents_status_condition')) {
+            if (is_array($to_process[$prop])) {
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
         $to_process = array_merge($to_process, $ext_configs);
+
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
         return true;
