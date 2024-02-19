@@ -211,7 +211,7 @@ class Inventory extends InventoryTestCase
             [
                 'logical_number' => 0,
                 'name' => 'lo',
-                'instantiation_type' => 'NetworkPortEthernet',
+                'instantiation_type' => 'NetworkPortLocal',
                 'mac' => '00:00:00:00:00:00',
                 'ifinternalstatus' => '1',
             ], [
