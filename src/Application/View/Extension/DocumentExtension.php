@@ -44,7 +44,7 @@ use Twig\TwigFilter;
  */
 class DocumentExtension extends AbstractExtension
 {
-    static $extensionIcon = null;
+    private static $extensionIcon = null;
 
     public function getFilters(): array
     {
