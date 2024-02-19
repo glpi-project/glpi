@@ -64,16 +64,6 @@ final class QuestionTypesManager
     }
 
     /**
-     * Get the default question type class
-     *
-     * @return string
-     */
-    public function getDefaultTypeClass(): string
-    {
-        return QuestionTypeShortAnswerText::class;
-    }
-
-    /**
      * Get the singleton instance
      *
      * @return QuestionTypesManager
@@ -85,6 +75,16 @@ final class QuestionTypesManager
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Get the default question type class
+     *
+     * @return string
+     */
+    public function getDefaultTypeClass(): string
+    {
+        return QuestionTypeShortAnswerText::class;
     }
 
     /**
