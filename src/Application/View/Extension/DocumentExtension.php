@@ -47,7 +47,7 @@ class DocumentExtension extends AbstractExtension
     /**
      * Static cache for user defined files extensions icons.
      */
-    private static array $extensionIcon = null;
+    private static $extensionIcon = null;
 
     public function getFilters(): array
     {
