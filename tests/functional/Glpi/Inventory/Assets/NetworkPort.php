@@ -1123,4 +1123,199 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             ]
         ))->isTrue();
     }
+
+
+    public function testInstantiationTypeUpdate()
+    {
+        global $DB;
+        $json_str = '
+        {
+            "action": "inventory",
+            "content": {
+                "accesslog": {
+                  "logdate": "2023-12-11 09:39:16"
+                },
+                "bios": {
+                  "assettag": "Asset-1234567890",
+                  "bdate": "2013-10-29",
+                  "bmanufacturer": "American Megatrends Inc.",
+                  "bversion": "1602",
+                  "mmanufacturer": "ASUSTeK COMPUTER INC.",
+                  "mmodel": "Z87-A",
+                  "msn": "131219362301208",
+                  "skunumber": "All",
+                  "smanufacturer": "ASUS",
+                  "smodel": "All Series"
+                },
+                "hardware": {
+                  "chassis_type": "Desktop",
+                  "datelastloggeduser": "Mon Dec 11 09:34",
+                  "defaultgateway": "192.168.1.1",
+                  "dns": "127.0.0.53",
+                  "lastloggeduser": "teclib",
+                  "memory": 32030,
+                  "name": "teclib-asus-desktop",
+                  "swap": 2047,
+                  "uuid": "31042c80-d7da-11dd-93d0-bcee7b8de946",
+                  "vmsystem": "Physical",
+                  "workgroup": "home"
+                },
+                "networks": [
+                  {
+                    "description": "lo",
+                    "ipaddress": "127.0.0.1",
+                    "ipmask": "255.0.0.0",
+                    "ipsubnet": "127.0.0.0",
+                    "mac": "00:00:00:00:00:00",
+                    "type": "ethernet",
+                    "status": "up",
+                    "virtualdev": true
+                  }
+                ],
+                "operatingsystem": {
+                    "arch": "x86_64",
+                    "boot_time": "2023-12-11 08:36:20",
+                    "dns_domain": "home",
+                    "fqdn": "teclib-asus-desktop.home",
+                    "full_name": "Ubuntu 22.04.3 LTS",
+                    "hostid": "007f0101",
+                    "install_date": "2023-09-11 08:40:42",
+                    "kernel_name": "linux",
+                    "kernel_version": "5.15.0-89-generic",
+                    "name": "Ubuntu",
+                    "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv\/aqNaZ6Xk6m",
+                    "timezone": {
+                        "name": "Europe\/Paris",
+                        "offset": "+0100"
+                    },
+                    "version": "22.04.3 LTS (Jammy Jellyfish)"
+                },
+                "versionclient": "GLPI-Agent_v1.4-1"
+            },
+            "deviceid": "teclib-asus-desktop-2022-09-20-16-43-09",
+            "itemtype": "Computer"
+        }';
+
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        //check created agent
+        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+        $this->array($agent)
+            ->string['deviceid']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
+            ->string['name']->isIdenticalTo('teclib-asus-desktop-2022-09-20-16-43-09')
+            ->string['itemtype']->isIdenticalTo('Computer')
+            ->integer['agenttypes_id']->isIdenticalTo($agenttype['id'])
+            ->integer['items_id']->isGreaterThan(0);
+
+        //check created computer
+        $computers_id = $agent['items_id'];
+        $this->integer($computers_id)->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($computers_id))->isTrue();
+
+        //check created networkport
+        $networkport1 = new \NetworkPort();
+
+
+        // lo -> ethernet -> NetworkPortEthernet
+        $this->boolean($networkport1->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'lo',
+                'instantiation_type' => 'NetworkPortEthernet'
+            ]
+        ))->isTrue();
+
+        global $DB;
+        $json_str = '
+        {
+            "action": "inventory",
+            "content": {
+                "accesslog": {
+                  "logdate": "2023-12-11 09:39:16"
+                },
+                "bios": {
+                  "assettag": "Asset-1234567890",
+                  "bdate": "2013-10-29",
+                  "bmanufacturer": "American Megatrends Inc.",
+                  "bversion": "1602",
+                  "mmanufacturer": "ASUSTeK COMPUTER INC.",
+                  "mmodel": "Z87-A",
+                  "msn": "131219362301208",
+                  "skunumber": "All",
+                  "smanufacturer": "ASUS",
+                  "smodel": "All Series"
+                },
+                "hardware": {
+                  "chassis_type": "Desktop",
+                  "datelastloggeduser": "Mon Dec 11 09:34",
+                  "defaultgateway": "192.168.1.1",
+                  "dns": "127.0.0.53",
+                  "lastloggeduser": "teclib",
+                  "memory": 32030,
+                  "name": "teclib-asus-desktop",
+                  "swap": 2047,
+                  "uuid": "31042c80-d7da-11dd-93d0-bcee7b8de946",
+                  "vmsystem": "Physical",
+                  "workgroup": "home"
+                },
+                "networks": [
+                  {
+                    "description": "lo",
+                    "ipaddress": "127.0.0.1",
+                    "ipmask": "255.0.0.0",
+                    "ipsubnet": "127.0.0.0",
+                    "mac": "00:00:00:00:00:00",
+                    "type": "loopback",
+                    "status": "up",
+                    "virtualdev": true
+                  }
+                ],
+                "operatingsystem": {
+                    "arch": "x86_64",
+                    "boot_time": "2023-12-11 08:36:20",
+                    "dns_domain": "home",
+                    "fqdn": "teclib-asus-desktop.home",
+                    "full_name": "Ubuntu 22.04.3 LTS",
+                    "hostid": "007f0101",
+                    "install_date": "2023-09-11 08:40:42",
+                    "kernel_name": "linux",
+                    "kernel_version": "5.15.0-89-generic",
+                    "name": "Ubuntu",
+                    "ssh_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICYWwKX1KRqEzIjEsWMQrFX5xDHjx8uTv\/aqNaZ6Xk6m",
+                    "timezone": {
+                        "name": "Europe\/Paris",
+                        "offset": "+0100"
+                    },
+                    "version": "22.04.3 LTS (Jammy Jellyfish)"
+                },
+                "versionclient": "GLPI-Agent_v1.4-1"
+            },
+            "deviceid": "teclib-asus-desktop-2022-09-20-16-43-09",
+            "itemtype": "Computer"
+        }';
+
+        $json = json_decode($json_str);
+        $this->doInventory($json);
+
+        //check created networkport
+        $networkport2 = new \NetworkPort();
+
+        // lo -> eloopback -> NetworkPortLocal
+        $this->boolean($networkport2->getFromDbByCrit(
+            [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'name' => 'lo',
+                'instantiation_type' => 'NetworkPortLocal'
+            ]
+        ))->isTrue();
+
+        $this->integer($networkport1->fields['id'])->isIdenticalTo($networkport2->fields['id']);
+    }
 }
