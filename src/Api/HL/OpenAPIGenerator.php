@@ -64,7 +64,7 @@ use Glpi\Api\HL\Doc\SchemaReference;
  *      parameters: PathParameterSchema[],
  *      requestBody?: RequestBodySchema,
  * }
- * @phpstan-type RequestBodySchema array{content: array{'application/json': array{schema: SchemaArray}}}
+ * @phpstan-type RequestBodySchema array{content: array{"application/json": array{schema: SchemaArray}}}
  */
 final class OpenAPIGenerator
 {
@@ -403,7 +403,12 @@ EOT;
                             );
                         }
                         // Remove the itemtype path parameter now that it is a static value
-                        unset($temp_expanded['parameters'][$placeholder]);
+                        foreach ($temp_expanded['parameters'] as $param_key => $param) {
+                            if ($param['name'] === $placeholder) {
+                                unset($temp_expanded['parameters'][$param_key]);
+                                break;
+                            }
+                        }
                     }
                     if (!isset($paths[$new_url][$method])) {
                         $expanded[$new_url][$method] = $temp_expanded;
