@@ -893,6 +893,12 @@ final class AssetController extends AbstractController
              * @var class-string<CommonDBTM> $type
              */
             foreach ($types as $type) {
+                if (str_contains($type, '\\')) {
+                    // No namespace support here. If we have core assets with namespaces, we'll need to add support for that.
+                    // Custom assets (which all have namespaces) will be handled with a different controller/endpoints.
+                    // Plugins can define their own endpoints for their custom assets and even use endpoint expansion like we do.
+                    continue;
+                }
                 $assets[$type] = $type::getTypeName(1);
             }
         }

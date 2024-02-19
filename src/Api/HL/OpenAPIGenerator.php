@@ -352,15 +352,12 @@ EOT;
     {
         $expanded = [];
         foreach ($paths as $path_url => $path) {
-            if (str_contains($path_url, 'Timeline')) {
-                $t = '';
-            }
             foreach ($path as $method => $route) {
                 $new_urls = [];
                 /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
                 $all_expansions = [];
                 foreach ($route['parameters'] as $param_key => $param) {
-                    if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
+                    if (isset($param['schema']['pattern']) && preg_match('/^[\w|]+$/', $param['schema']['pattern'])) {
                         $all_expansions[$param['name']] = explode('|', $param['schema']['pattern']);
                     }
                 }
