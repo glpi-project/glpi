@@ -71,10 +71,10 @@ class AnswersHandler extends DbTestCase
             'form'     => $form_1,
             'users_id' => $users_id,
             'answers'  => [
-                $this->getQuestionsId($form_1, "First name") => "John",
-                $this->getQuestionsId($form_1, "Last name") => "Doe",
-                $this->getQuestionsId($form_1, "Age") => 78,
-                $this->getQuestionsId($form_1, "Thoughts about GLPI") => "I love GLPI!!!"
+                $this->getQuestionId($form_1, "First name") => "John",
+                $this->getQuestionId($form_1, "Last name") => "Doe",
+                $this->getQuestionId($form_1, "Age") => 78,
+                $this->getQuestionId($form_1, "Thoughts about GLPI") => "I love GLPI!!!"
             ],
             'expected_set' => [
                 'forms_forms_id' => $form_1->getID(),
@@ -83,25 +83,25 @@ class AnswersHandler extends DbTestCase
                 'index'          => 1,
                 'answers'        => [
                     [
-                        'question' => $this->getQuestionsId($form_1, "First name"),
+                        'question' => $this->getQuestionId($form_1, "First name"),
                         'value'    => "John",
                         'label'    => "First name",
                         'type'     => QuestionTypeShortAnswerText::class,
                     ],
                     [
-                        'question' => $this->getQuestionsId($form_1, "Last name"),
+                        'question' => $this->getQuestionId($form_1, "Last name"),
                         'value'    => "Doe",
                         'label'    => "Last name",
                         'type'     => QuestionTypeShortAnswerText::class,
                     ],
                     [
-                        'question' => $this->getQuestionsId($form_1, "Age"),
+                        'question' => $this->getQuestionId($form_1, "Age"),
                         'value'    => 78,
                         'label'    => "Age",
                         'type'     => QuestionTypeShortAnswerNumber::class,
                     ],
                     [
-                        'question' => $this->getQuestionsId($form_1, "Thoughts about GLPI"),
+                        'question' => $this->getQuestionId($form_1, "Thoughts about GLPI"),
                         'value'    => "I love GLPI!!!",
                         'label'    => "Thoughts about GLPI",
                         'type'     => QuestionTypeLongAnswer::class,
@@ -115,10 +115,10 @@ class AnswersHandler extends DbTestCase
             'form'     => $form_1,
             'users_id' => $users_id,
             'answers'  => [
-                $this->getQuestionsId($form_1, "First name") => "John",
-                $this->getQuestionsId($form_1, "Last name") => "Smith",
-                $this->getQuestionsId($form_1, "Age") => 19,
-                $this->getQuestionsId($form_1, "Thoughts about GLPI") => "GLPI is incredible"
+                $this->getQuestionId($form_1, "First name") => "John",
+                $this->getQuestionId($form_1, "Last name") => "Smith",
+                $this->getQuestionId($form_1, "Age") => 19,
+                $this->getQuestionId($form_1, "Thoughts about GLPI") => "GLPI is incredible"
             ],
             'expected_set' => [
                 'forms_forms_id' => $form_1->getID(),
@@ -127,25 +127,25 @@ class AnswersHandler extends DbTestCase
                 'index'          => 2,           // Increased to #2
                 'answers'        => [
                     [
-                        'question' => $this->getQuestionsId($form_1, "First name"),
+                        'question' => $this->getQuestionId($form_1, "First name"),
                         'value'    => "John",
                         'label'    => "First name",
                         'type'     => QuestionTypeShortAnswerText::class,
                     ],
                     [
-                        'question' => $this->getQuestionsId($form_1, "Last name"),
+                        'question' => $this->getQuestionId($form_1, "Last name"),
                         'value'    => "Smith",
                         'label'    => "Last name",
                         'type'     => QuestionTypeShortAnswerText::class,
                     ],
                     [
-                        'question' => $this->getQuestionsId($form_1, "Age"),
+                        'question' => $this->getQuestionId($form_1, "Age"),
                         'value'    => 19,
                         'label'    => "Age",
                         'type'     => QuestionTypeShortAnswerNumber::class,
                     ],
                     [
-                        'question' => $this->getQuestionsId($form_1, "Thoughts about GLPI"),
+                        'question' => $this->getQuestionId($form_1, "Thoughts about GLPI"),
                         'value'    => "GLPI is incredible",
                         'label'    => "Thoughts about GLPI",
                         'type'     => QuestionTypeLongAnswer::class,
@@ -165,7 +165,7 @@ class AnswersHandler extends DbTestCase
             'form'     => $form_2,
             'users_id' => $users_id,
             'answers'  => [
-                $this->getQuestionsId($form_2, "Contact email") => "glpi@teclib.com",
+                $this->getQuestionId($form_2, "Contact email") => "glpi@teclib.com",
             ],
             'expected_set' => [
                 'forms_forms_id' => $form_2->getID(),
@@ -174,7 +174,7 @@ class AnswersHandler extends DbTestCase
                 'index'          => 1,
                 'answers'        => [
                     [
-                        'question' => $this->getQuestionsId($form_2, "Contact email"),
+                        'question' => $this->getQuestionId($form_2, "Contact email"),
                         'value'    => "glpi@teclib.com",
                         'label'    => "Contact email",
                         'type'     => QuestionTypeShortAnswerEmail::class,
@@ -235,9 +235,9 @@ class AnswersHandler extends DbTestCase
         // Register an answer
         $handler = \Glpi\Form\AnswersHandler\AnswersHandler::getInstance();
         $answers_set = $handler->saveAnswers($form_1, [
-            $this->getQuestionsId($form_1, "First name") => "Frédéric",
-            $this->getQuestionsId($form_1, "Last name") => "Chopin",
-            $this->getQuestionsId($form_1, "Age") => 39,
+            $this->getQuestionId($form_1, "First name") => "Frédéric",
+            $this->getQuestionId($form_1, "Last name") => "Chopin",
+            $this->getQuestionId($form_1, "Age") => 39,
         ], $users_id);
 
         // First test: ensure type is replaced by its matching class
@@ -245,19 +245,19 @@ class AnswersHandler extends DbTestCase
             'answers' => $answers_set->fields['answers'],
             'expected_prepared_answers' => [
                 [
-                    'question' => $this->getQuestionsId($form_1, "First name"),
+                    'question' => $this->getQuestionId($form_1, "First name"),
                     'value'    => "Frédéric",
                     'label'    => "First name",
                     'type'     => new QuestionTypeShortAnswerText(),
                 ],
                 [
-                    'question' => $this->getQuestionsId($form_1, "Last name"),
+                    'question' => $this->getQuestionId($form_1, "Last name"),
                     'value'    => "Chopin",
                     'label'    => "Last name",
                     'type'     => new QuestionTypeShortAnswerText(),
                 ],
                 [
-                    'question' => $this->getQuestionsId($form_1, "Age"),
+                    'question' => $this->getQuestionId($form_1, "Age"),
                     'value'    => 39,
                     'label'    => "Age",
                     'type'     => new QuestionTypeShortAnswerNumber(),
@@ -276,8 +276,8 @@ class AnswersHandler extends DbTestCase
         // Register an answer
         $handler = \Glpi\Form\AnswersHandler\AnswersHandler::getInstance();
         $answers_set = $handler->saveAnswers($form_2, [
-            $this->getQuestionsId($form_2, "Valid question") => "Valid answer",
-            $this->getQuestionsId($form_2, "Invalid question") => "Invalid answer",
+            $this->getQuestionId($form_2, "Valid question") => "Valid answer",
+            $this->getQuestionId($form_2, "Invalid question") => "Invalid answer",
         ], $users_id);
 
         // Second test, ensure invalid types are dropped
@@ -285,7 +285,7 @@ class AnswersHandler extends DbTestCase
             'answers' => $answers_set->fields['answers'],
             'expected_prepared_answers' => [
                 [
-                    'question' => $this->getQuestionsId($form_2, "Valid question"),
+                    'question' => $this->getQuestionId($form_2, "Valid question"),
                     'value'    => "Valid answer",
                     'label'    => "Valid question",
                     'type'     => new QuestionTypeShortAnswerText(),

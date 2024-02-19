@@ -517,7 +517,7 @@ class DbTestCase extends \GLPITestCase
      *
      * @return int The ID of the question
      */
-    public function getQuestionsId(
+    public function getQuestionId(
         Form $form,
         string $question_name,
         string $section_name = null,
