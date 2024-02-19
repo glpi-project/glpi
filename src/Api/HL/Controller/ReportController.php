@@ -401,6 +401,7 @@ class ReportController extends AbstractController
                 'name' => 'date_start',
                 'description' => 'The start date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -410,6 +411,7 @@ class ReportController extends AbstractController
                 'name' => 'date_end',
                 'description' => 'The end date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -463,6 +465,7 @@ class ReportController extends AbstractController
                 'name' => 'date_start',
                 'description' => 'The start date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -472,6 +475,7 @@ class ReportController extends AbstractController
                 'name' => 'date_end',
                 'description' => 'The end date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -581,6 +585,7 @@ class ReportController extends AbstractController
                 'name' => 'date_start',
                 'description' => 'The start date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -590,6 +595,7 @@ class ReportController extends AbstractController
                 'name' => 'date_end',
                 'description' => 'The end date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -644,6 +650,7 @@ class ReportController extends AbstractController
                 'name' => 'date_start',
                 'description' => 'The start date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
@@ -653,6 +660,7 @@ class ReportController extends AbstractController
                 'name' => 'date_end',
                 'description' => 'The end date of the statistics',
                 'location' => 'query',
+                'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE
