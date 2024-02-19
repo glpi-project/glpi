@@ -102,9 +102,9 @@ class QuestionTypesManager extends DbTestCase
         yield [
             QuestionTypeCategory::SHORT_ANSWER,
             [
+                new QuestionTypeShortAnswerText(),
                 new QuestionTypeShortAnswerEmail(),
                 new QuestionTypeShortAnswerNumber(),
-                new QuestionTypeShortAnswerText(),
             ]
         ];
 

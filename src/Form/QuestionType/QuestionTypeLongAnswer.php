@@ -132,4 +132,10 @@ TWIG;
     {
         return QuestionTypeCategory::LONG_ANSWER;
     }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
+    }
 }

@@ -152,5 +152,11 @@ final class QuestionTypesManager
                 $this->question_types[$classname] = new $classname();
             }
         }
+
+        // Sort question types by weight
+        uasort(
+            $this->question_types,
+            fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
+        );
     }
 }

@@ -51,4 +51,10 @@ class QuestionTypeShortAnswerEmail extends QuestionTypeShortAnswer
     {
         return _n('Email', 'Emails', Session::getPluralNumber());
     }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 20;
+    }
 }
