@@ -240,7 +240,7 @@ class ManualLink extends CommonDBChild
             $html .= '<i class="fa-lg fa-fw fa ' . htmlspecialchars($fields['icon']) . '"'
             . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
         }
-        $html .= !empty($fields['name']) ? $fields['name'] : $fields['url'];
+        $html .= htmlspecialchars(!empty($fields['name']) ? $fields['name'] : $fields['url']);
         $html .= '</a>';
 
         return $html;

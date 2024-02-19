@@ -678,15 +678,14 @@ TWIG, $buttons_params);
             $links = $item->generateLinkContents($params['link'], $item, true);
             $i     = 1;
             foreach ($links as $key => $val) {
-                $val     = htmlspecialchars($val); // encode special chars as value was generated from a raw pattern
                 $name    = ($names[$key] ?? reset($names));
-                $newlink = '<a href="' . $val . '"';
+                $newlink = '<a href="' . htmlspecialchars($val) . '"';
                 if ($params['open_window']) {
                     $newlink .= " target='_blank'";
                 }
                 $newlink          .= ">";
-                $linkname          = sprintf(__('%1$s #%2$s'), $name, $i);
-                $newlink          .= sprintf(__('%1$s: %2$s'), $linkname, $val);
+                $linkname          = htmlspecialchars(sprintf(__('%1$s #%2$s'), $name, $i));
+                $newlink          .= htmlspecialchars(sprintf(__('%1$s: %2$s'), $linkname, $val));
                 $newlink          .= "</a>";
                 $computedlinks[]   = $newlink;
                 $i++;
@@ -710,8 +709,8 @@ TWIG, $buttons_params);
                                  "&id=" . $item->getID() . "&rank=$key";
                 $newlink         = '<a href="' . htmlspecialchars($url) . '" target="_blank">';
                 $newlink        .= "<i class='fa-lg fa-fw fas fa-link me-2'></i>";
-                $linkname        = sprintf(__('%1$s #%2$s'), $name, $i);
-                $newlink        .= sprintf(__('%1$s: %2$s'), $linkname, $val);
+                $linkname        = htmlspecialchars(sprintf(__('%1$s #%2$s'), $name, $i));
+                $newlink        .= htmlspecialchars(sprintf(__('%1$s: %2$s'), $linkname, $val));
                 $newlink        .= "</a>";
                 $computedlinks[] = $newlink;
                 $i++;
