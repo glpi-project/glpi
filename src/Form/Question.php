@@ -37,6 +37,7 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use ReflectionClass;
 
 /**
  * Question of a given helpdesk form's section
@@ -55,7 +56,10 @@ final class Question extends CommonDBChild
     {
         $type = $this->fields['type'] ?? "";
 
-        if (!is_a($type, QuestionTypeInterface::class, true)) {
+        if (
+            !is_a($type, QuestionTypeInterface::class, true)
+            || (new ReflectionClass($type))->isAbstract()
+        ) {
             return null;
         }
 
