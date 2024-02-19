@@ -80,16 +80,17 @@
 
     {% set more_html %}
         {% if options.is_disclosable %}
-            <div class="btn btn-outline-secondary">
-                <i class="ti ti-eye disclose" onmousedown="showDisclosablePasswordField('{{ options.id }}')"
-                onmouseup="hideDisclosablePasswordField('{{ options.id }}')"
-                onmouseout="hideDisclosablePasswordField('{{ options.id }}')"></i>
+            <div class="btn btn-outline-secondary"
+                 onmousedown="showDisclosablePasswordField('{{ options.id }}')"
+                 onmouseup="hideDisclosablePasswordField('{{ options.id }}')"
+                 onmouseout="hideDisclosablePasswordField('{{ options.id }}')">
+                <i class="ti ti-eye disclose"></i>
             </div>
         {% endif %}
 
         {% if options.is_copyable %}
-            <div class="btn btn-outline-secondary">
-                <i class="ti ti-clipboard-copy disclose" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id }}')"></i>
+            <div class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id }}')">
+                <i class="ti ti-clipboard-copy disclose"></i>
             </div>
         {% endif %}
     {% endset %}
