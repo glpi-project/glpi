@@ -1023,7 +1023,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //check created networkport
         $networkport = new \NetworkPort();
 
-        // lo -> ethernet -> NetworkPortLocal
+        // lo -> ethernet -> NetworkPortEthernet
         $this->boolean($networkport->getFromDbByCrit(
             [
                 'itemtype' => 'Computer',
