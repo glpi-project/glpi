@@ -36,7 +36,7 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use DbTestCase;
-use FormBuilder;
+use Glpi\Tests\FormBuilder;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;

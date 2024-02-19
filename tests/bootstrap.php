@@ -105,7 +105,6 @@ set_exception_handler(null);
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
-include_once __DIR__ . '/FormBuilder.php';
 include_once __DIR__ . '/FrontBaseClass.php';
 include_once __DIR__ . '/HLAPITestCase.php';
 include_once __DIR__ . '/RuleBuilder.php';

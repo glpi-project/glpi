@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tests;
+
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
  */

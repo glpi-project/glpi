@@ -40,6 +40,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
+use Glpi\Tests\FormBuilder;
 
 class DbTestCase extends \GLPITestCase
 {
