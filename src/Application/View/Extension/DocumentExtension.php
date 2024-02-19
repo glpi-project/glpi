@@ -44,7 +44,10 @@ use Twig\TwigFilter;
  */
 class DocumentExtension extends AbstractExtension
 {
-    private static $extensionIcon = null;
+    /**
+     * Static cache for user defined files extensions icons.
+     */
+    private static array $extensionIcon = null;
 
     public function getFilters(): array
     {
