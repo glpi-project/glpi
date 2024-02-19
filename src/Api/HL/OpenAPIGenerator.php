@@ -54,7 +54,7 @@ use Glpi\Api\HL\Doc\SchemaReference;
  *      name: string,
  *      in: string,
  *      description: string,
- *      required: 'true'|'false',
+ *      required: true|false,
  *      schema?: mixed
  * }
  * @phpstan-type PathSchema array{
@@ -533,7 +533,7 @@ EOT;
             'name' => $route_param->getName(),
             'description' => $route_param->getDescription(),
             'in' => $route_param->getLocation(),
-            'required' => $route_param->getRequired() ? 'true' : 'false',
+            'required' => $route_param->getRequired(),
             'schema' => $schema
         ];
     }
