@@ -600,7 +600,7 @@ final class ITILController extends AbstractController
         return $subitem_schema;
     }
 
-    #[Route(path: '/{itemtype}/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/{itemtype}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search Tickets, Changes or Problems',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
@@ -635,7 +635,7 @@ final class ITILController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/{itemtype}/', methods: ['POST'])]
+    #[Route(path: '/{itemtype}', methods: ['POST'])]
     #[Doc\Route(
         description: 'Create a new Ticket, Change or Problem',
         parameters: [

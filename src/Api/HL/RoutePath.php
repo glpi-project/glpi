@@ -351,14 +351,14 @@ final class RoutePath
 
             // Merge requirements and tags
             $this->route->requirements = array_merge($controller_route->requirements, $this->route->requirements);
-            $this->route->tags = array_merge($controller_route->tags, $this->route->tags);
+            $this->route->tags = array_unique(array_merge($controller_route->tags, $this->route->tags));
 
             if ($controller_route->priority !== Route::DEFAULT_PRIORITY && $this->route->priority === Route::DEFAULT_PRIORITY) {
                 $this->setPriority($controller_route->priority);
             }
 
             // Merge middlewares
-            $this->route->middlewares = array_merge($controller_route->middlewares, $this->route->middlewares);
+            $this->route->middlewares = array_unique(array_merge($controller_route->middlewares, $this->route->middlewares));
 
             // None of the other properties have meaning when on a class
         }
