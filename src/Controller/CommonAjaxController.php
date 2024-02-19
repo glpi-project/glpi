@@ -335,7 +335,7 @@ class CommonAjaxController
     {
         if (!$this->item->checkIfExistOrNew($id)) {
             throw new \Glpi\Controller\RequestException(
-                403,
+                404,
                 __("Item not found.")
             );
         } elseif (!$this->item->can($id, $right, $input)) {

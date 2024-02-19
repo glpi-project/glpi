@@ -166,24 +166,30 @@ class Form extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $DB->beginTransaction();
+        // Tests will already be running inside a transaction, we can't create
+        // a new one in this case
+        if ($DB->inTransaction()) {
+            // Update questions and sections
+            $this->updateExtraFormData();
+        } else {
+            $DB->beginTransaction();
 
-        try {
-            // Update questions
-            $this->updateSections();
-            $this->updateQuestions();
-            $DB->commit();
-        } catch (\Throwable $e) {
-            // Do not keep half updated data
-            $DB->rollback();
+            try {
+                // Update questions and sections
+                $this->updateExtraFormData();
+                $DB->commit();
+            } catch (\Throwable $e) {
+                // Do not keep half updated data
+                $DB->rollback();
 
-            // Propagate exception to ensure the server return an error code
-            throw $e;
+                // Propagate exception to ensure the server return an error code
+                throw $e;
 
-            // TODO: succesfull update message is still shown in this case as
-            // the exception in thrown after the main form object was already
-            // updated. Maybe this process should be done before the actual
-            // update using the prepareInputForUpdate method instead.
+                // TODO: succesfull update message is still shown in this case as
+                // the exception in thrown after the main form object was already
+                // updated. Maybe this process should be done before the actual
+                // update using the prepareInputForUpdate method instead.
+            }
         }
 
         // Clear any lazy loaded data
@@ -232,6 +238,17 @@ class Form extends CommonDBTM
             $questions = $questions + $section->getQuestions();
         }
         return $questions;
+    }
+
+    /**
+     * Update extra form data found in other tables (sections and questions)
+     *
+     * @return void
+     */
+    protected function updateExtraFormData(): void
+    {
+        $this->updateSections();
+        $this->updateQuestions();
     }
 
     /**
