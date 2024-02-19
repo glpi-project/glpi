@@ -500,5 +500,123 @@ class Agent extends DbTestCase
         $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
         $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
         $this->integer($item->fields['states_id'])->isIdenticalTo($states_id);
+
+        //create another new status
+        $state2 = $this->createItem(\State::class, ['name' => 'Stale2']);
+        $states_id2 = $state2->getID();
+
+        //set last agent contact far ago
+        $DB->update(
+            \Agent::getTable(),
+            ['last_contact' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+            ['id' => $agent['id']]
+        );
+
+        //define stale agents actions
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'stale_agents_status_condition' => json_encode([
+                    $states_id
+                ]),
+                'stale_agents_status' => $states_id2
+            ]
+        );
+
+        //run crontask
+        $task = new \CronTask();
+        $this->integer(\Agent::cronCleanoldagents($task))->isIdenticalTo(1);
+
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id2);
+
+        //create another new status for test while previous status is empty (0)
+        $state3 = $this->createItem(\State::class, ['name' => 'Stale3']);
+        $states_id3 = $state3->getID();
+
+        //define sale agents actions
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'stale_agents_status_condition' => json_encode(['all']), //all status
+                'stale_agents_status' => $states_id3
+            ]
+        );
+
+        //run crontask
+        $task = new \CronTask();
+        $this->integer(\Agent::cronCleanoldagents($task))->isIdenticalTo(1);
+
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id3);
+
+        //create another new status for test while previous status is empty (0)
+        $state4 = $this->createItem(\State::class, ['name' => 'Stale4']);
+        $states_id4 = $state4->getID();
+
+        //define sale agents actions
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'stale_agents_status_condition' => json_encode([
+                    $states_id,
+                    $states_id2,
+                ]),
+                'stale_agents_status' => $states_id4
+            ]
+        );
+
+        //run crontask
+        $task = new \CronTask();
+        $this->integer(\Agent::cronCleanoldagents($task))->isIdenticalTo(1);
+
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id3);
+
+        //test with invalide status or undefined status
+        \Config::setConfigurationValues(
+            'inventory',
+            [
+                'stale_agents_delay' => 1,
+                'stale_agents_action' => exportArrayToDB([
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_STATUS,
+                    \Glpi\Inventory\Conf::STALE_AGENT_ACTION_TRASHBIN
+                ]),
+                'stale_agents_status_condition' => json_encode([
+                    "aaaaaaa"
+                ]),
+                'stale_agents_status' => $states_id4
+            ]
+        );
+
+        //run crontask
+        $task = new \CronTask();
+        $this->integer(\Agent::cronCleanoldagents($task))->isIdenticalTo(1);
+
+        //check item has been updated
+        $this->boolean($item->getFromDB($item->fields['id']))->isTrue();
+        $this->integer($item->fields['is_deleted'])->isIdenticalTo(1);
+        $this->integer($item->fields['states_id'])->isIdenticalTo($states_id3);
     }
 }

@@ -881,17 +881,31 @@ class Agent extends CommonDBTM
                         break;
                     case Conf::STALE_AGENT_ACTION_STATUS:
                         if (isset($config['stale_agents_status']) && $item !== null) {
-                            //change status of agents linked assets
-                            $input = [
-                                'id'        => $item->fields['id'],
-                                'states_id' => $config['stale_agents_status'],
-                                'is_dynamic' => 1
-                            ];
-                            if ($item->update($input)) {
-                                $task->addVolume(1);
-                                $total++;
+                            $should_update = false;
+                            if (
+                                isset($config['stale_agents_status_condition'])
+                                && $config['stale_agents_status_condition'] != json_encode(['all']) // all status
+                            ) {
+                                $old_state_list = json_decode($config['stale_agents_status_condition']);
+                                if (in_array($item->fields['states_id'], $old_state_list)) {
+                                    $should_update = true;
+                                }
                             } else {
-                                $errors++;
+                                $should_update = true;
+                            }
+                            if ($should_update) {
+                                //change status of agents linked assets
+                                $input = [
+                                    'id'        => $item->fields['id'],
+                                    'states_id' => $config['stale_agents_status'],
+                                    'is_dynamic' => 1
+                                ];
+                                if ($item->update($input)) {
+                                    $task->addVolume(1);
+                                    $total++;
+                                } else {
+                                    $errors++;
+                                }
                             }
                         }
                         break;

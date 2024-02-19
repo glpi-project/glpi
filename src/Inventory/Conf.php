@@ -935,38 +935,53 @@ class Conf extends CommonGLPI
             );
             //if action == action_status => show blocation else hide blocaction
             echo Html::scriptBlock("
-            function changestatus() {
-                if ($('#dropdown_stale_agents_action$rand').val() != 0) {
-                $('#blocaction1').show();
-                $('#blocaction2').show();
-                } else {
-                $('#blocaction1').hide();
-                $('#blocaction2').hide();
+                function changestatus() {
+                    const display = $('#dropdown_stale_agents_action$rand').val().includes('" . self::STALE_AGENT_ACTION_STATUS . "') ;
+                    $('#bloc_status_action1').toggle(display);
+                    $('#bloc_status_action2').toggle(display);
                 }
-            }
-            changestatus();
-
-        ");
+                changestatus();
+            ");
             echo "</td>";
             echo "</tr>";
             //blocaction with status
-            echo "<tr class='tab_bg_1'><td colspan=2></td>";
+            echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action1'><td colspan=2></td>";
             echo "<td>";
-            echo "<span id='blocaction1' style='display:none'>";
-            echo \State::createTabEntry(__('Change the status'), 0, \State::getType());
-            echo "</span>";
+            echo \State::createTabEntry(__('If the asset status is'), 0, \State::getType());
             echo "</td>";
             echo "<td width='20%'>";
-            echo "<span id='blocaction2' style='display:none'>";
+            $condition = [];
+            foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
+                $condition['is_visible_' . strtolower($inv_type)] = 1;
+            }
+
+
             State::dropdown(
                 [
-                    'name'   => 'stale_agents_status',
-                    'value'  => $config['stale_agents_status'] ?? -1,
-                    'entity' => $_SESSION['glpiactive_entity'],
-                    'toadd'  => [-1 => __('No change')]
+                    'name'      => 'stale_agents_status_condition[]',
+                    'value'     => importArrayFromDB($config['stale_agents_status_condition'] ?? json_encode(['all'])),
+                    'multiple'  => true,
+                    'toadd'     => ['all' => __('All')],
+                    'condition' => $condition,
                 ]
             );
-            echo "</span>";
+            echo "</td>";
+            echo "</tr>";
+
+            echo "<tr class='tab_bg_1' style='display:none' id='bloc_status_action2'><td colspan=2></td>";
+            echo "<td>";
+            echo \State::createTabEntry(__('Status to apply'), 0, \State::getType());
+            echo "</td>";
+            echo "<td width='20%'>";
+            State::dropdown(
+                [
+                    'name'      => 'stale_agents_status',
+                    'value'     => $config['stale_agents_status'],
+                    'entity'    => $_SESSION['glpiactive_entity'],
+                    'toadd'     => [-1 => __('No change')],
+                    'condition' => $condition,
+                ]
+            );
             echo "</td>";
             echo "</tr>";
 
@@ -1059,14 +1074,25 @@ class Conf extends CommonGLPI
                 WARNING
             );
         }
+
+        if (
+            array_key_exists('stale_agents_status_condition', $values)
+            && is_array($values['stale_agents_status_condition'])
+            && in_array('all', $values['stale_agents_status_condition'])
+        ) {
+            // keep only the "All" value
+            $values['stale_agents_status_condition'] = ['all'];
+        }
+
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
             $to_process[$prop] = $values[$prop] ?? $default_value;
-            if ($prop == 'stale_agents_action') {
+            if (is_array($to_process[$prop])) {
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
             }
         }
         $to_process = array_merge($to_process, $ext_configs);
+
         \Config::setConfigurationValues('inventory', $to_process);
         $this->currents = $to_process;
         return true;
@@ -1179,6 +1205,7 @@ class Conf extends CommonGLPI
             'stale_agents_delay'             => 0,
             'stale_agents_action'            => exportArrayToDB([0]),
             'stale_agents_status'            => 0,
+            'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
         ];
     }
