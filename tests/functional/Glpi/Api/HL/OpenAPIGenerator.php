@@ -39,6 +39,37 @@ use HLAPITestCase;
 
 class OpenAPIGenerator extends HLAPITestCase
 {
+    public function testExpandedEndpoints()
+    {
+        $this->login();
+        // Some expanded paths to spot-check
+        $to_check = [
+            '/Assistance/Ticket',
+            '/Assistance/Change',
+            '/Assistance/Problem',
+            '/Assistance/Ticket/{id}',
+            '/Assets/Computer',
+            '/Assets/Computer/{id}',
+            '/Assets/Monitor/{id}',
+        ];
+        $generator = new \Glpi\Api\HL\OpenAPIGenerator(\Glpi\Api\HL\Router::getInstance());
+        $openapi = $generator->getSchema();
+
+        foreach ($to_check as $path) {
+            $this->array($openapi['paths'])->hasKey($path);
+        }
+
+        // Check that the pre-expanded paths are not present
+        $to_check = [
+            '/Assistance/{itemtype}',
+            '/Assistance/{itemtype}/{id}',
+            '/Assets/{itemtype}',
+        ];
+        foreach ($to_check as $path) {
+            $this->array($openapi['paths'])->notHasKey($path);
+        }
+    }
+
     /**
      * Endpoints that get expanded (for example /Assistance/{itemtype} where 'itemtype' is known to be Ticket, Change or Problem)
      * should not list the 'itemtype' parameter in the documentation.
