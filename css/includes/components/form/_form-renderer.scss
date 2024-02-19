@@ -1,6 +1,4 @@
-<?php
-
-/**
+/*!
  * ---------------------------------------------------------------------
  *
  * GLPI - Gestionnaire Libre de Parc Informatique
@@ -33,34 +31,14 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Form\Form;
-use Glpi\Form\Renderer\FormRenderer;
-use Glpi\Http\Response;
+.form-renderer {
+    /* Keep a bit of space at the end */
+    margin-bottom: 200px;
 
-include('../../inc/includes.php');
-
-/**
- * AJAX endpoint used to display or preview a form.
- */
-
-// For now form rendering is only used to preview a form by a technician
-Session::checkRight(Form::$rightname, READ);
-
-// Mandatory parameter: id of the form to render
-$id = $_GET['id'] ?? 0;
-if (!$id) {
-    Response::sendError(400, __("Missing or invalid form's id"));
+    /* Remove margin from tinymce generated content last child */
+    .form-description, .section-description, .question-description {
+        p:last-child {
+            margin-bottom: 0 !important;
+        }
+    }
 }
-
-// Fetch form
-$form = Form::getById($id);
-if (!$form) {
-    Response::sendError(404, __("Form not found"));
-}
-
-// TODO: if displaying a form, check form access configuration (not yet implemented)
-// TODO: if previewing a form, check view rights on forms
-
-// Render the requested form
-$form_renderer = new FormRenderer();
-echo $form_renderer->render($form);

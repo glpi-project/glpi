@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+/* global glpi_toast_info */
+
 /**
  * Client code to handle users actions on the form_renderer template
  */
@@ -102,12 +104,6 @@ class GlpiFormRendererController
 
     /**
      * Submit the target form using an AJAX request.
-     *
-     * The event "glpi-form-renderer-submit-success" is triggered on success,
-     * with the response as argument.
-     *
-     * The event "glpi-form-renderer-submit-failed" is triggered on failure,
-     * with the error as argument.
      */
     async #submitForm() {
         // Form will be sumitted using an AJAX request instead
@@ -118,11 +114,31 @@ class GlpiFormRendererController
                 data: $(this.#target).serialize(),
             });
 
-            // Success event
-            $(document).trigger('glpi-form-renderer-submit-success', response);
+            // Show toast with link to answers set
+            glpi_toast_info(
+                __("Item successfully created: %s").replace(
+                    "%s",
+                    response.link_to_created_item
+                )
+            );
+
+            // Show final confirmation step
+            $(this.#target)
+                .find("[data-glpi-form-renderer-success]")
+                .removeClass("d-none");
+
+            // Hide everything else
+            $(this.#target)
+                .find(`
+                    [data-glpi-form-renderer-form-header],
+                    [data-glpi-form-renderer-section=${this.#section_index}],
+                    [data-glpi-form-renderer-parent-section=${this.#section_index}],
+                    [data-glpi-form-renderer-actions]
+                `)
+                .addClass("d-none");
+
         } catch (e) {
-            // Failure event
-            $(document).trigger('glpi-form-renderer-submit-failed', e);
+            // Failure (TODO)
         }
     }
 
@@ -130,15 +146,21 @@ class GlpiFormRendererController
      * Go to the next section of the form.
      */
     #goToNextSection() {
-        // Hide current section
+        // Hide current section and its questions
         $(this.#target)
-            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .find(`
+                [data-glpi-form-renderer-section=${this.#section_index}],
+                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+            `)
             .addClass("d-none");
 
-        // Show next section
+        // Show next section and its questions
         this.#section_index++;
         $(this.#target)
-            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .find(`
+                [data-glpi-form-renderer-section=${this.#section_index}],
+                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+            `)
             .removeClass("d-none");
 
         // Update actions visibility
@@ -149,15 +171,21 @@ class GlpiFormRendererController
      * Go to the previous section of the form.
      */
     #goToPreviousSection() {
-        // Hide current section
+        // Hide current section and its questions
         $(this.#target)
-            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .find(`
+                [data-glpi-form-renderer-section=${this.#section_index}],
+                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+            `)
             .addClass("d-none");
 
-        // Show preview section
+        // Show preview section and its questions
         this.#section_index--;
         $(this.#target)
-            .find(`[data-glpi-form-renderer-section=${this.#section_index}]`)
+            .find(`
+                [data-glpi-form-renderer-section=${this.#section_index}],
+                [data-glpi-form-renderer-parent-section=${this.#section_index}]
+            `)
             .removeClass("d-none");
 
         // Update actions visibility

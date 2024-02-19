@@ -84,9 +84,8 @@ class Form extends CommonDBTM
         }
         $this->initForm($id, $options);
 
-        // We will be editing and previewing forms from this page
+        // We will be editing forms from this page
         echo Html::script("js/form_editor_controller.js");
-        echo Html::script("js/form_renderer_controller.js");
 
         // Render twig template
         $twig = TemplateRenderer::getInstance();
