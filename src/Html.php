@@ -171,7 +171,7 @@ class Html
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function cleanInputText($string)
     {
@@ -225,7 +225,7 @@ class Html
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function cleanPostForTextArea($value)
     {
@@ -596,7 +596,7 @@ class Html
 
 
     /**
-     * @deprecated since version 10.1.0
+     * @deprecated since version 11.0.0
      */
     public static function displayAjaxMessageAfterRedirect()
     {
@@ -1872,7 +1872,7 @@ HTML;
     public static function ajaxFooter()
     {
         // Not currently used. Old debug stuff is now in the new debug bar.
-        // FIXME: Deprecate this in GLPI 10.1.
+        // FIXME: Deprecate this in GLPI 11.0.
     }
 
 
@@ -6643,7 +6643,7 @@ HTML;
      * Get all options for the menu fuzzy search
      * @return array
      * @phpstan-return array{url: string, title: string}
-     * @since 10.1.0
+     * @since 11.0.0
      */
     public static function getMenuFuzzySearchList(): array
     {
@@ -6971,7 +6971,7 @@ CSS;
      *
      * @return array
      *
-     * @TODO GLPI 10.1 Handle SCSS compiled directory in plugins.
+     * @TODO GLPI 11.0 Handle SCSS compiled directory in plugins.
      */
     public static function getScssCompilePath($file, string $root_dir = GLPI_ROOT)
     {

@@ -171,7 +171,7 @@ class Item_Kanban extends CommonDBRelation
 
     /**
      * Clear the state of a Kanban's columns for a specific item for the current user or globally.
-     * @since 10.1.0
+     * @since 11.0.0
      * @param string $itemtype Type of the item.
      * @param int $items_id ID of the item.
      * @return bool True if successful

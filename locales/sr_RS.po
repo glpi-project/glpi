@@ -26112,7 +26112,7 @@ msgstr "Ažuriraj beleške artikala"
 #: install/migrations/update_0.90.x_to_9.1.0.php:58
 #: install/migrations/update_10.0.8_to_10.0.9.php:55
 #: install/migrations/update_9.4.2_to_9.4.3.php:52
-#: install/migrations/update_10.0.x_to_10.1.0.php:55
+#: install/migrations/update_10.0.x_to_11.0.0.php:55
 #: install/migrations/update_9.1.0_to_9.1.1.php:54
 #: install/migrations/update_10.0.0_to_10.0.1.php:55
 #: install/migrations/update_9.5.4_to_9.5.5.php:52

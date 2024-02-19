@@ -125,7 +125,7 @@ class HTMLTableCell extends HTMLTableEntity
 
     public function __get(string $property)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         $value = null;
         switch ($property) {
             case 'numberOfLines':
@@ -145,7 +145,7 @@ class HTMLTableCell extends HTMLTableEntity
 
     public function __set(string $property, $value)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
             case 'numberOfLines':
             case 'start':

@@ -35,7 +35,7 @@
 
 /**
  * Manage ComputerAntivirus.
- * @deprecated 10.1.0 Use ItemAntivirus
+ * @deprecated 11.0.0 Use ItemAntivirus
  */
 class ComputerAntivirus extends ItemAntivirus
 {

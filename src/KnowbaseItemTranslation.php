@@ -372,7 +372,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     /**
      * Is kb item translation functionality active
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      *
      * @return true if active, false if not
      **/
@@ -393,7 +393,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      *
      * @return true if item can be translated, false otherwise
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {

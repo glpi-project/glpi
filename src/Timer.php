@@ -35,7 +35,7 @@
 
 /**
  *  Timer class for debug and some other cases
- * @deprecated 10.1.0
+ * @deprecated 11.0.0
  */
 class Timer
 {

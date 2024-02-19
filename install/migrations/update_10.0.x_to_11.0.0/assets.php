@@ -178,7 +178,7 @@ SQL;
 
 // Dev migration
 // Convert profile rights in glpi_assets_assetdefinitions from an array to OR'd integer like we use in regular glpi_profilerights table
-// TODO Remove before releasing GLPI 10.1 beta.
+// TODO Remove before releasing GLPI 11.0 beta.
 $it = $DB->request([
     'SELECT' => ['id', 'profiles'],
     'FROM'   => 'glpi_assets_assetdefinitions'

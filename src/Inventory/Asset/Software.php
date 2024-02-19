@@ -556,7 +556,7 @@ class Software extends InventoryAsset
      *
      * @return string
      *
-     * @FIXME Remove this method in GLPI 10.1.
+     * @FIXME Remove this method in GLPI 11.0.
      */
     protected function getCompareKey(array $parts): string
     {

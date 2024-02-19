@@ -1852,7 +1852,7 @@ class Ticket extends DbTestCase
     /**
      * @param $rights
      * @return void
-     * @deprecated 10.1.0 - Use changeTechRights() instead
+     * @deprecated 11.0.0 - Use changeTechRights() instead
      */
     public function changeTechRight($rights = 168967)
     {

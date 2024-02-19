@@ -63,7 +63,7 @@ class HTMLTableGroup extends HTMLTableBase
 
     public function __get(string $property)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         $value = null;
         switch ($property) {
             case 'ordered_headers':
@@ -82,7 +82,7 @@ class HTMLTableGroup extends HTMLTableBase
 
     public function __set(string $property, $value)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
             case 'ordered_headers':
                 $this->$property = $value;

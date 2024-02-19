@@ -293,7 +293,7 @@ class ReminderTranslation extends CommonDBChild
     /**
      * Is reminder translation functionality active
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      *
      * @return boolean
      **/
@@ -314,7 +314,7 @@ class ReminderTranslation extends CommonDBChild
      *
      * @return true if item can be translated, false otherwise
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {

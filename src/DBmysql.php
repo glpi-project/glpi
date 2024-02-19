@@ -1650,7 +1650,7 @@ class DBmysql
      *
      * @return mysqli_result|boolean Query result handler
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public function truncate($table)
     {
@@ -1671,7 +1671,7 @@ class DBmysql
      *
      * @return mysqli_result|boolean Query result handler
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public function truncateOrDie($table, $message = '')
     {

@@ -565,7 +565,7 @@ class Document extends CommonDBTM
         $link_params = '';
         if (is_string($linked_item)) {
             // Old behaviour.
-            // TODO: Deprecate it in GLPI 10.1.
+            // TODO: Deprecate it in GLPI 11.0.
             // Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.');
             $linked_item = null;
             $link_params = $linked_item;
@@ -1816,7 +1816,7 @@ class Document extends CommonDBTM
      *
      * @return string Image path on disk
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function getImage($path, $context, $mwidth = null, $mheight = null)
     {

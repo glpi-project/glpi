@@ -35,28 +35,29 @@
 
 /**
  * @var \DBmysql $DB
+ * @var \Migration $migration
  */
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-$table = 'glpi_stencils';
-
-// Add Stencil table
-if (!$DB->tableExists($table)) {
-    $query = "CREATE TABLE `$table` (
-        `id` int $default_key_sign NOT NULL AUTO_INCREMENT,
-        `itemtype` varchar(100) NOT NULL,
-        `items_id` int $default_key_sign NOT NULL DEFAULT '0',
-        `nb_zones` int NOT NULL DEFAULT '1',
-        `zones` JSON,
-        `date_mod` timestamp NULL DEFAULT NULL,
-        `date_creation` timestamp NULL DEFAULT NULL,
+// Change Ticket recurent items
+// Add glpi_items_ticketrecurrents table for associated elements
+if (!$DB->tableExists('glpi_items_ticketrecurrents')) {
+    $query = "CREATE TABLE `glpi_items_ticketrecurrents` (
+        `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+        `itemtype` varchar(255) DEFAULT NULL,
+        `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+        `ticketrecurrents_id` int {$default_key_sign} NOT NULL DEFAULT '0',
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`itemtype`,`items_id`),
-        KEY `date_mod` (`date_mod`),
-        KEY `date_creation` (`date_creation`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation ROW_FORMAT=DYNAMIC;";
-    $DB->doQueryOrDie($query, '10.1 add table $table');
+        UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
+        KEY `items_id` (`items_id`),
+        KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
+    $DB->doQueryOrDie($query, "11.0.0 add table glpi_items_ticket");
 }
+
+// Add glpi_items_ticketrecurrents table for associated elements
+$migration->addField('glpi_ticketrecurrents', 'ticket_per_item', 'bool');
+$migration->addKey('glpi_ticketrecurrents', 'ticket_per_item');

@@ -127,7 +127,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
      * @param boolean $check_view_rights check view rights
      *
      * @return array of linked tickets  array(id=>linktype)
-     * @deprecated 10.1.0 Use CommonITILObject_CommonITILObject::getLinkedTo()
+     * @deprecated 11.0.0 Use CommonITILObject_CommonITILObject::getLinkedTo()
      **/
     public static function getLinkedTicketsTo($ID, bool $check_view_rights = false)
     {
@@ -196,7 +196,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
      *
      * @return void
      *
-     * @deprecated 10.1
+     * @deprecated 11.0
      */
     public function checkParentSon(&$input)
     {
@@ -219,7 +219,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
      * @param integer $pid Parent ID
      *
      * @return integer
-     * @deprecated 10.1.0 Use CommonITILObject_CommonITILObject::countLinksByStatus()
+     * @deprecated 11.0.0 Use CommonITILObject_CommonITILObject::countLinksByStatus()
      */
     public static function countOpenChildren($pid)
     {
@@ -237,7 +237,7 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
      * @param ITILSolution|null $solution  Ticket's solution
      *
      * @return void
-     * @deprecated 10.1.0 Use {@link CommonITILObject_CommonITILObject::manageLinksOnChange()} instead using '_solution' and/or '_status' properties in $changes parameter
+     * @deprecated 11.0.0 Use {@link CommonITILObject_CommonITILObject::manageLinksOnChange()} instead using '_solution' and/or '_status' properties in $changes parameter
      **/
     public static function manageLinkedTicketsOnSolved($ID, $solution = null)
     {

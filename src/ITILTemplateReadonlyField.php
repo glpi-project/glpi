@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  *
  * Predefined fields for ITIL template class
  *
- * @since 10.1.0
+ * @since 11.0.0
  **/
 abstract class ITILTemplateReadonlyField extends ITILTemplateField
 {

@@ -464,7 +464,7 @@ class Search
     /**
      * Display a criteria field set, this function should be called by ajax/search.php
      *
-     * @since 10.1
+     * @since 11.0
      *
      * @param  array  $request we should have these keys of parameters:
      *                            - itemtype: main itemtype for criteria, sub one for metacriteria

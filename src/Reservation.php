@@ -314,7 +314,7 @@ class Reservation extends CommonDBChild
      *
      * @return void
      *
-     * @FIXME Deprecate/remove this method in GLPI 10.1.
+     * @FIXME Deprecate/remove this method in GLPI 11.0.
      **/
     public function displayError($type, $ID)
     {

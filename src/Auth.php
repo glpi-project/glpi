@@ -696,7 +696,7 @@ class Auth extends CommonGLPI
      *
      * @return string current identification error
      *
-     * @TODO Deprecate this in GLPI 10.1.
+     * @TODO Deprecate this in GLPI 11.0.
      */
     public function getErr()
     {

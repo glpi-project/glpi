@@ -58,7 +58,7 @@ class Sanitizer
      *
      * @return mixed
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function sanitize($value, bool $db_escape = false)
     {
@@ -98,7 +98,7 @@ class Sanitizer
      *
      * @return mixed
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function unsanitize($value, bool $db_unescape = true)
     {
@@ -131,7 +131,7 @@ class Sanitizer
      *
      * @return bool
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function isHtmlEncoded(string $value): bool
     {
@@ -161,7 +161,7 @@ class Sanitizer
      *
      * @return bool
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function isDbEscaped(string $value): bool
     {
@@ -241,7 +241,7 @@ class Sanitizer
      *
      * @return bool
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function isNsClassOrCallableIdentifier(string $value): bool
     {
@@ -264,7 +264,7 @@ class Sanitizer
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function getVerbatimValue(string $value): string
     {
@@ -280,7 +280,7 @@ class Sanitizer
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function encodeHtmlSpecialChars(string $value): string
     {
@@ -303,7 +303,7 @@ class Sanitizer
      *
      * @see self::encodeHtmlSpecialChars
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function encodeHtmlSpecialCharsRecursive(array $values): array
     {
@@ -330,7 +330,7 @@ class Sanitizer
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function decodeHtmlSpecialChars(string $value): string
     {
@@ -373,7 +373,7 @@ class Sanitizer
      *
      * @see self::decodeHtmlSpecialChars
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function decodeHtmlSpecialCharsRecursive(array $values): array
     {
@@ -400,7 +400,7 @@ class Sanitizer
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function dbEscape(string $value): string
     {
@@ -426,7 +426,7 @@ class Sanitizer
      *
      * @see self::dbEscape
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function dbEscapeRecursive(array $values): array
     {
@@ -454,7 +454,7 @@ class Sanitizer
      *
      * @return string
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function dbUnescape(string $value): string
     {
@@ -523,7 +523,7 @@ class Sanitizer
      *
      * @see self::dbUnescape
      *
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      */
     public static function dbUnescapeRecursive(array $values): array
     {

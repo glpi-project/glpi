@@ -1122,7 +1122,7 @@ class Migration
     /**
      * Remove configuration value(s) to current context; @see Migration::removeConfig()
      *
-     * @since 10.1.0
+     * @since 11.0.0
      *
      * @param array  $values  Value(s) to remove
      * @param ?string $context Context to remove on. Defaults to the context of this migration instance.

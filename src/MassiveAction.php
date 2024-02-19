@@ -427,7 +427,7 @@ class MassiveAction
 
     public function __get(string $property)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         $value = null;
         switch ($property) {
             case 'action':
@@ -471,7 +471,7 @@ class MassiveAction
 
     public function __set(string $property, $value)
     {
-        // TODO Deprecate access to variables in GLPI 10.1.
+        // TODO Deprecate access to variables in GLPI 11.0.
         switch ($property) {
             case 'display_progress_bars':
                 $this->$property = $value;

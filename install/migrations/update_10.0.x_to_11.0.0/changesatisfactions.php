@@ -56,7 +56,7 @@ if (!$DB->tableExists('glpi_changesatisfactions')) {
         PRIMARY KEY (`id`),
         UNIQUE KEY `changes_id` (`changes_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
-    $DB->doQueryOrDie($query, "10.1.0 add table glpi_changesatisfactions");
+    $DB->doQueryOrDie($query, "11.0.0 add table glpi_changesatisfactions");
 }
 
 // Register crontask

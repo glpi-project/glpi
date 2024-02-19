@@ -239,7 +239,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return mixed
      *
-     * @deprecated 10.1
+     * @deprecated 11.0
      */
     public function getVerbatimValue($string)
     {

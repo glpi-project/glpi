@@ -36,7 +36,7 @@
  */
 
 /**
- * @FIXME Merge this class with GLPIUploadHandler in GLPI 10.1.
+ * @FIXME Merge this class with GLPIUploadHandler in GLPI 11.0.
  *        It has been added in GLPI 10.0.10 to ensure that removal of `blueimp/jquery-file-upload` library would not
  *        result in any BC-break for plugins.
  */
