@@ -652,11 +652,11 @@ class MailCollector extends CommonDBTM
 
                             if (isset($tkt['changes_id'])) {
                                 $fup = new ITILFollowup();
-        
+
                                 $fup_input = $tkt;
                                 $fup_input['itemtype'] = Change::class;
                                 $fup_input['items_id'] = $fup_input['changes_id'];
-        
+
                                 $fup->add($fup_input);
                             } else if (!isset($tkt['tickets_id'])) {
                                  // New ticket case
