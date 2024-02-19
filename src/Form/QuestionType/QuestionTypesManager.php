@@ -90,11 +90,11 @@ final class QuestionTypesManager
     /**
      * Get all available question categories
      *
-     * @return iterable<QuestionTypesCategory>
+     * @return iterable<QuestionTypeCategory>
      */
     public function getCategories(): iterable
     {
-        return QuestionTypesCategory::cases();
+        return QuestionTypeCategory::cases();
     }
 
     /**
@@ -110,11 +110,11 @@ final class QuestionTypesManager
     /**
      * Get available types for a given parent category
      *
-     * @param QuestionTypesCategory $category Parent category
+     * @param QuestionTypeCategory $category Parent category
      *
      * @return QuestionTypeInterface[]
      */
-    public function getTypesForCategory(QuestionTypesCategory $category): array
+    public function getTypesForCategory(QuestionTypeCategory $category): array
     {
         return array_filter(
             $this->question_types,

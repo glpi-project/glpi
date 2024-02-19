@@ -38,7 +38,7 @@ namespace Glpi\Form\QuestionType;
 /**
  * List of valid question types categories
  */
-enum QuestionTypesCategory: string
+enum QuestionTypeCategory: string
 {
     /**
      * Questions that expect short single line answers (text, number, ...)

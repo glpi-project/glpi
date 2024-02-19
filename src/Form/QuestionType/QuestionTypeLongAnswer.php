@@ -128,8 +128,8 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypesCategory
+    public function getCategory(): QuestionTypeCategory
     {
-        return QuestionTypesCategory::LONG_ANSWER;
+        return QuestionTypeCategory::LONG_ANSWER;
     }
 }

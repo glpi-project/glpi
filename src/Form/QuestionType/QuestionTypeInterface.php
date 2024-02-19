@@ -84,7 +84,7 @@ interface QuestionTypeInterface
     /**
      * Get the category of this question type.
      *
-     * @return QuestionTypesCategory
+     * @return QuestionTypeCategory
      */
-    public function getCategory(): QuestionTypesCategory;
+    public function getCategory(): QuestionTypeCategory;
 }

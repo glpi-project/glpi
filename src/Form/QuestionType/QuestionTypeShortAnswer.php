@@ -114,8 +114,8 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypesCategory
+    public function getCategory(): QuestionTypeCategory
     {
-        return QuestionTypesCategory::SHORT_ANSWER;
+        return QuestionTypeCategory::SHORT_ANSWER;
     }
 }
