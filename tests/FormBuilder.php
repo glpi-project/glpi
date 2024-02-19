@@ -40,43 +40,36 @@ class FormBuilder
 {
     /**
      * Form name
-     * @property string $name
      */
     protected string $name;
 
     /**
      * Form entity
-     * @property int $name
      */
     protected int $entities_id;
 
     /**
      * Entity recursion
-     * @property int $is_recursive
      */
     protected int $is_recursive;
 
     /**
      * Is this form enabled ?
-     * @property bool $is_active
      */
     protected bool $is_active;
 
     /**
      * Form header
-     * @property string $header
      */
     protected string $header;
 
     /**
      * Is this form a draft ?
-     * @property bool $is_draft
      */
     protected bool $is_draft;
 
     /**
      * Form sections
-     * @property array $sections
      */
     protected array $sections;
 
