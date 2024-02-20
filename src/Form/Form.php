@@ -42,6 +42,7 @@ use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
+use Override;
 
 /**
  * Helpdesk form
@@ -57,16 +58,19 @@ final class Form extends CommonDBTM
      */
     protected ?array $sections = null;
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Form', 'Forms', $nb);
     }
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-forms";
     }
 
+    #[Override]
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
@@ -75,6 +79,7 @@ final class Form extends CommonDBTM
         return $tabs;
     }
 
+    #[Override]
     public function showForm($id, array $options = [])
     {
         if (!empty($id)) {
@@ -97,6 +102,7 @@ final class Form extends CommonDBTM
         return true;
     }
 
+    #[Override]
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
@@ -144,6 +150,14 @@ final class Form extends CommonDBTM
         return $search_options;
     }
 
+    #[Override]
+    public function post_getFromDB()
+    {
+        // Clear lazy loaded data
+        $this->clearLazyLoadedData();
+    }
+
+    #[Override]
     public function post_addItem()
     {
         // Automatically create the first form section unless specified otherwise
@@ -152,6 +166,7 @@ final class Form extends CommonDBTM
         }
     }
 
+    #[Override]
     public function prepareInputForUpdate($input)
     {
         // Insert date_mod even if the framework would handle it by itself
@@ -162,6 +177,7 @@ final class Form extends CommonDBTM
         return $input;
     }
 
+    #[Override]
     public function post_updateItem($history = 1)
     {
         /** @var \DBmysql $DB */
@@ -192,9 +208,6 @@ final class Form extends CommonDBTM
                 // update using the prepareInputForUpdate method instead.
             }
         }
-
-        // Clear any lazy loaded data
-        $this->clearLazyLoadedData();
     }
 
     /**
@@ -369,57 +382,55 @@ final class Form extends CommonDBTM
      */
     protected function updateQuestions(): void
     {
-        $questions_data_per_section = $this->input['_questions'] ?? [];
+        $questions = $this->input['_questions'] ?? [];
 
         // Keep track of questions found
         $found_questions = [];
 
         // Parse each submitted question
-        foreach ($questions_data_per_section as $questions_data) {
-            foreach ($questions_data as $question_data) {
-                $question = new Question();
+        foreach ($questions as $question_data) {
+            $question = new Question();
 
-                if ($question_data["_use_uuid_for_sections_id"]) {
-                    // This question was added to a newly created section
-                    // We need to find the correct section id using the temporary UUID
-                    $uuid = $question_data['forms_sections_id'];
-                    $question_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
-                }
-
-                // Newly created question, may need to be updated using temporary UUID instead of ID
-                if ($question_data['_use_uuid']) {
-                    $uuid = $question_data['id'];
-                    $question_data['id'] = $_SESSION['form_editor_questions_uuid'][$uuid] ?? 0;
-                } else {
-                    $uuid = null;
-                }
-
-                if ($question_data['id'] == 0) {
-                    // Add new question
-                    unset($question_data['id']);
-                    $id = $question->add($question_data);
-
-                    if (!$id) {
-                        trigger_error("Failed to add question", E_USER_WARNING);
-                        continue;
-                    }
-
-                    // Store temporary UUID -> ID mapping in session
-                    if ($uuid !== null) {
-                        $_SESSION['form_editor_questions_uuid'][$uuid] = $id;
-                    }
-                } else {
-                    // Update existing section
-                    $success = $question->update($question_data);
-                    if (!$success) {
-                        trigger_error("Failed to update question", E_USER_WARNING);
-                    }
-                    $id = $question->getID();
-                }
-
-                // Keep track of its id
-                $found_questions[] = $id;
+            if ($question_data["_use_uuid_for_sections_id"]) {
+                // This question was added to a newly created section
+                // We need to find the correct section id using the temporary UUID
+                $uuid = $question_data['forms_sections_id'];
+                $question_data['forms_sections_id'] = $_SESSION['form_editor_sections_uuid'][$uuid] ?? 0;
             }
+
+            // Newly created question, may need to be updated using temporary UUID instead of ID
+            if ($question_data['_use_uuid']) {
+                $uuid = $question_data['id'];
+                $question_data['id'] = $_SESSION['form_editor_questions_uuid'][$uuid] ?? 0;
+            } else {
+                $uuid = null;
+            }
+
+            if ($question_data['id'] == 0) {
+                // Add new question
+                unset($question_data['id']);
+                $id = $question->add($question_data);
+
+                if (!$id) {
+                    trigger_error("Failed to add question", E_USER_WARNING);
+                    continue;
+                }
+
+                // Store temporary UUID -> ID mapping in session
+                if ($uuid !== null) {
+                    $_SESSION['form_editor_questions_uuid'][$uuid] = $id;
+                }
+            } else {
+                // Update existing section
+                $success = $question->update($question_data);
+                if (!$success) {
+                    trigger_error("Failed to update question", E_USER_WARNING);
+                }
+                $id = $question->getID();
+            }
+
+            // Keep track of its id
+            $found_questions[] = $id;
         }
 
         // Safety check to avoid deleting all questions if some code run an update

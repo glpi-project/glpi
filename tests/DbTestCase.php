@@ -222,8 +222,10 @@ class DbTestCase extends \GLPITestCase
      * @param string $itemtype
      * @param array $input
      * @param array $skip_fields Fields that wont be checked after creation
+     *
+     * @return CommonDBTM The updated item
      */
-    protected function updateItem($itemtype, $id, $input, $skip_fields = [])
+    protected function updateItem($itemtype, $id, $input, $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input['id'] = $id;
@@ -236,6 +238,8 @@ class DbTestCase extends \GLPITestCase
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);
+
+        return $item;
     }
 
     /**
@@ -523,6 +527,10 @@ class DbTestCase extends \GLPITestCase
         string $question_name,
         string $section_name = null,
     ): int {
+        // Make sure form is up to date
+        $form->getFromDB($form->getID());
+
+        // Get questions
         $questions = $form->getQuestions();
 
         if ($section_name === null) {
@@ -555,5 +563,34 @@ class DbTestCase extends \GLPITestCase
             $question = array_pop($filtered_questions);
             return $question->getID();
         }
+    }
+
+    /**
+     * Helper method to access the ID of a section for a given form.
+     *
+     * @param Form        $form         Given form
+     * @param string      $section_name Section name to look for
+
+     * @return int The ID of the section
+     */
+    public function getSectionId(
+        Form $form,
+        string $section_name,
+    ): int {
+        // Make sure form is up to date
+        $form->getFromDB($form->getID());
+
+        // Get sections
+        $sections = $form->getSections();
+
+        // Search by name
+        $filtered_sections = array_filter(
+            $sections,
+            fn($section) => $section->fields['name'] === $section_name
+        );
+
+        $this->array($filtered_sections)->hasSize(1);
+        $section = array_pop($filtered_sections);
+        return $section->getID();
     }
 }

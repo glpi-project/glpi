@@ -259,12 +259,15 @@ class GlpiFormEditorController
      * Must be executed after each actions.
      */
     #computeState() {
+        let global_q_index = 0;
+
         // Find all sections
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
         sections.each((s_index, section) => {
             // Compute state for each sections
             this.#formatInputsNames(
                 $(section).find("[data-glpi-form-editor-section-form-container]"),
+                'section',
                 s_index
             );
             this.#setItemRank($(section), s_index);
@@ -277,13 +280,15 @@ class GlpiFormEditorController
                 // Compute state for each questions
                 this.#formatInputsNames(
                     $(question),
-                    s_index,
-                    q_index,
+                    'question',
+                    global_q_index,
                 );
                 this.#setItemRank($(question), q_index);
                 this.#remplaceEmptyIdByUuid($(question));
                 this.#setParentSection($(question), $(section));
                 this.#setKey($(question));
+
+                global_q_index++;
             });
         });
     }
@@ -294,13 +299,13 @@ class GlpiFormEditorController
      * Inputs names of questions and sections must be formatted to match the
      * expected format, which is:
      * - Sections: _sections[section_index][field]
-     * - Questions: _questions[section_index][question_index][field]
+     * - Questions: _questions[question_index][field]
      *
-     * @param {jQuery} item                Section or question form container
-     * @param {number} section_index       Section index
-     * @param {number|null} question_index Question index
+     * @param {jQuery} item       Section or question form container
+     * @param {string} type       Item type: "question" or "section"
+     * @param {number} item_index Item index
      */
-    #formatInputsNames(item, section_index, question_index = null) {
+    #formatInputsNames(item, type, item_index) {
         // Find all inputs for this section
         const inputs = item.find("input, select, textarea");
 
@@ -316,9 +321,21 @@ class GlpiFormEditorController
 
             // Format input name
             const field = $(input).data("glpi-form-editor-original-name");
+            let base_input_index = "";
+            if (type === "section") {
+                // The input is for the section itself
+                base_input_index = `_sections[${item_index}]`;
+            } else if (type === "question") {
+                // The input is for a question
+                base_input_index =  `_questions[${item_index}]`;
+            } else {
+                throw new Error(`Unknown item type: ${type}`);
+            }
+
+            // Update input name
             $(input).attr(
                 "name",
-                this.#buildInputIndex(section_index, question_index) + `[${field}]`
+                base_input_index + `[${field}]`
             );
         });
     }
@@ -599,22 +616,6 @@ class GlpiFormEditorController
         tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
 
         return copy;
-    }
-
-    /**
-     * Build the input name prefix for the given section/question.
-     * @param {number} section_index
-     * @param {number|null} question_index
-     * @returns {string}
-     */
-    #buildInputIndex(section_index, question_index = null) {
-        if (question_index === null) {
-            // The input is for the section itself
-            return `_sections[${section_index}]`;
-        } else {
-            // The input is for a question
-            return `_questions[${section_index}][${question_index}]`;
-        }
     }
 
     /**
