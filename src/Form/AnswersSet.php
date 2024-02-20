@@ -46,7 +46,7 @@ use User;
 /**
  * Answers set for a given helpdesk form
  */
-class AnswersSet extends CommonDBChild
+final class AnswersSet extends CommonDBChild
 {
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';

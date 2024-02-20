@@ -42,7 +42,7 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 /**
  * Helper class to handle raw answers data
  */
-class AnswersHandler
+final class AnswersHandler
 {
     /**
      * Singleton instance
