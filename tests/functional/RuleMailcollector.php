@@ -137,4 +137,85 @@ class RuleMailCollector extends DbTestCase
             ]
         );
     }
+
+    public function testExternalID()
+    {
+        $entity_id      = getItemByTypeName('Entity', '_test_child_1', true);
+        $normal_user_id = getItemByTypeName('User', 'normal', true);
+
+        $this->login();
+
+       // Delete all existing rule
+        $rule     = new Rule();
+        $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
+
+       // Create new group
+        $group = new Group();
+        $group_id = $group->add($group_input = [
+            'name' => 'group1',
+        ]);
+        $this->checkInput($group, $group_id, $group_input);
+
+       // Create rule
+        $rule     = new \RuleMailCollector();
+        $rule_id = $rule->add($rule_input = [
+            'name'         => 'test assign ExternalID based on subject',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleMailCollector',
+        ]);
+        $this->checkInput($rule, $rule_id, $rule_input);
+
+       // Create criteria to check if requester group matches a specific group
+        $criteria = new RuleCriteria();
+        $criteria_id = $criteria->add($criteria_input = [
+            'rules_id'  => $rule_id,
+            'criteria'  => 'subject',
+            'condition' => Rule::REGEX_MATCH,
+            'pattern'   => "/\b(great)\b/",
+        ]);
+        $this->checkInput($criteria, $criteria_id, $criteria_input);
+
+        // Create action to assign entity
+        $action   = new RuleAction();
+        $action_id = $action->add($action_input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $entity_id,
+        ]);
+        $this->checkInput($action, $action_id, $action_input);
+
+        // Create action to assign externalID
+        $action   = new RuleAction();
+        $action_id = $action->add($action_input = [
+            'rules_id'    => $rule_id,
+            'action_type' => 'regex_result',
+            'field'       => 'externalid',
+            'value'       => "#0",
+        ]);
+        $this->checkInput($action, $action_id, $action_input);
+
+
+
+        $rule_options['ticket']              = [];
+        $rule_options['headers']             = ['subject' => 'a great subject'];
+        $rule_options['mailcollector']       = 0;
+        $rule_options['_users_id_requester'] = $normal_user_id;
+
+        $rulecollection                      = new RuleMailCollectorCollection();
+        $output                              = $rulecollection->processAllRules(
+            [],
+            [],
+            $rule_options
+        );
+
+        $this->array($output)->isEqualTo(
+            [
+                'entities_id' => $entity_id,
+                '_ruleid'     => $rule_id,
+                'externalid' => 'great',
+            ]
+        );
+    }
 }
