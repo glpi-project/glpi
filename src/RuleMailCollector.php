@@ -45,7 +45,7 @@ class RuleMailCollector extends Rule
      **/
     public function maxActionsCount()
     {
-        return 1;
+        return 2;
     }
 
 
@@ -212,6 +212,10 @@ class RuleMailCollector extends Rule
         $actions['_refuse_email_with_response']['type']  = 'yesonly';
         $actions['_refuse_email_with_response']['table'] = '';
 
+        $actions['externalid']['name']             = __('External ID');
+        $actions['externalid']['type']             = 'text';
+        $actions['externalid']['force_actions']    = ['regex_result'];
+
         return $actions;
     }
 
@@ -308,20 +312,24 @@ class RuleMailCollector extends Rule
                                  $regex_result
                              );
                             if ($res != null) {
-                                switch ($action->fields["field"]) {
-                                    case "_affect_entity_by_domain":
-                                        $entity_found = Entity::getEntityIDByDomain($res);
-                                        break;
+                                if ($action->fields["field"] == 'externalid') {
+                                    $output[$action->fields["field"]] = $res;
+                                } else {
+                                    switch ($action->fields["field"]) {
+                                        case "_affect_entity_by_domain":
+                                            $entity_found = Entity::getEntityIDByDomain($res);
+                                            break;
 
-                                    case "_affect_entity_by_tag":
-                                          $entity_found = Entity::getEntityIDByTag($res);
-                                        break;
-                                }
+                                        case "_affect_entity_by_tag":
+                                              $entity_found = Entity::getEntityIDByTag($res);
+                                            break;
+                                    }
 
-                                //If an entity was found
-                                if ($entity_found > -1) {
-                                    $output['entities_id'] = $entity_found;
-                                    break;
+                                    //If an entity was found
+                                    if ($entity_found > -1) {
+                                        $output['entities_id'] = $entity_found;
+                                        break;
+                                    }
                                 }
                             }
                         }
