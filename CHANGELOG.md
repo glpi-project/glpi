@@ -56,6 +56,8 @@ The present file will list all changes made to the project; according to the
 - Followups, Tasks and Solutions now check the `canView()` method of the parent ITIL Object rather than just the "See my/See author" right of the parent item.
   This means they now take into account "See all", "See group", etc. rights for the global permission check.
   Permission checks at the item-level have not been changed.
+- External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
+- Itemtypes associated with External links are now in the main form rather than a separate tab.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -181,6 +183,8 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem::showManageForm()`
 - `KnowbaseItemTranslation::canBeTranslated()`
 - `KnowbaseItemTranslation::isKbTranslationActive()`
+- `Link::showForItem()`
+- `ManualLink::showForItem()`
 - `ReminderTranslation::canBeTranslated()`
 - `ReminderTranslation::isReminderTranslationActive()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
@@ -223,6 +227,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
+- `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `Netpoint` class
 - `Plugin::migrateItemType()`

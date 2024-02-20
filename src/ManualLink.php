@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 
 /**
@@ -84,94 +85,19 @@ class ManualLink extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        self::showForItem($item);
-        Link::showForItem($item);
-
+        Link::showAllLinksForItem($item);
         return true;
     }
 
     public function showForm($ID, array $options = [])
     {
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-
-        if ($this->isNewItem()) {
-            echo Html::hidden('itemtype', ['value' => $options['itemtype']]);
-            echo Html::hidden('items_id', ['value' => $options['items_id']]);
-        }
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Name');
-        echo '</td>';
-        echo '<td>';
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo '</td>';
-        echo '<td rowspan="4">';
-        echo __('Comments');
-        echo '</td>';
-        echo '<td rowspan="4">';
-        Html::textarea(
-            [
-                'name'  => 'comment',
-                'cols'  => 50,
-                'rows'  => 8,
-                'value' => $this->fields['comment'],
+        TemplateRenderer::getInstance()->display('pages/setup/manuallink.html.twig', [
+            'item' => $this,
+            'parent_item' => [
+                'itemtype' => $options['itemtype'] ?? null,
+                'items_id' => $options['items_id'] ?? null
             ]
-        );
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('URL');
-        echo '</td>';
-        echo '<td>';
-        echo Html::input('url', ['value' => $this->fields['url']]);
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Open in a new window');
-        echo '</td>';
-        echo '<td>';
-        Dropdown::showYesNo('open_window', $this->fields['open_window']);
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Icon');
-        echo '</td>';
-        echo '<td>';
-        $icon_selector_id = 'icon_' . mt_rand();
-        echo Html::select(
-            'icon',
-            [$this->fields['icon'] => $this->fields['icon']],
-            [
-                'id'       => $icon_selector_id,
-                'selected' => $this->fields['icon'],
-                'style'    => 'width:175px;'
-            ]
-        );
-        echo '</td>';
-        echo '</tr>';
-        //TODO Replace this with the WebIconSelector module via the dropdownWebIcons macro when this gets migrated to twig
-        echo Html::script('js/Forms/FaIconSelector.js');
-        echo Html::scriptBlock(<<<JAVASCRIPT
-         $(
-            function() {
-               var icon_selector = new GLPI.Forms.FaIconSelector(document.getElementById('{$icon_selector_id}'));
-               icon_selector.init();
-            }
-         );
-JAVASCRIPT
-        );
-
-        $this->showFormButtons($options);
+        ]);
 
         return true;
     }
@@ -215,19 +141,14 @@ JAVASCRIPT
     }
 
     /**
-     * Show manual links for an item.
-     *
-     * @return void
+     * Return all manual links entries for given item.
+     * @param CommonDBTM $item
+     * @return array
      */
-    private static function showForItem(CommonDBTM $item): void
+    public static function getForItem(CommonDBTM $item): iterable
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        if (!self::canView() || $item->isNewItem()) {
-            return;
-        }
-
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',
             'WHERE'        => [
@@ -236,75 +157,21 @@ JAVASCRIPT
             ],
             'ORDERBY'      => 'name'
         ]);
+        return $iterator;
+    }
 
-        echo '<div class="spaced">';
-        echo '<table class="tab_cadrehov">';
-        echo '<tr>';
-        echo '<th colspan="2">';
-        echo self::getTypeName(Session::getPluralNumber());
-        echo '</th>';
-        echo '<th class="right">';
-       // Create a fake link to check rights.
-       // This is mandatory as CommonDBChild needs to know itemtype and items_id to compute rights.
-        $link = new self();
-        $link->fields['itemtype'] = $item->getType();
-        $link->fields['items_id'] = $item->fields[$item->getIndexName()];
-        if ($link->canCreateItem()) {
-            $form_url = self::getFormURL() . '?itemtype=' . $item->getType() . '&items_id=' . $item->fields[$item->getIndexName()];
-            echo '<a class="btn btn-primary" href="' . $form_url . '">';
-            echo '<i class="fas fa-plus"></i>&nbsp;';
-            echo _x('button', 'Add');
-            echo '</a>';
-        }
-        echo '</th>';
-        echo '</tr>';
-
-        if (count($iterator)) {
-            foreach ($iterator as $row) {
-                $link->getFromResultSet($row);
-
-                echo '<tr class="tab_bg_2">';
-                echo '<td>';
-                echo self::getLinkHtml($row);
-                echo '</td>';
-                echo '<td>';
-                echo $row['comment'];
-                echo '</td>';
-                echo '<td class="right">';
-                if ($link->canUpdateItem()) {
-                    echo '<a class="pointer" href="' . self::getFormURLWithID($row[$item->getIndexName()]) . '" title="' . _sx('button', 'Update') . '">';
-                    echo '<i class="fas fa-edit"></i>&nbsp;';
-                    echo '<span class="sr-only">' . _x('button', 'Update') . '</span>';
-                    echo '</a>';
-                    echo '&nbsp;';
-                }
-                if ($link->canDeleteItem()) {
-                    echo '<form action="' . self::getFormURL() . '" method="post" style="display:inline-block;">';
-                    echo Html::hidden('id', ['value' =>  $row[$item->getIndexName()]]);
-                    echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-                    echo Html::hidden('delete', ['value' => 1]);
-                    $confirm_js = 'if (window.confirm(\'' . __s('You are about to delete this item. Do you confirm?') . '\')) { '
-                    . 'this.parentNode.submit();'
-                    . ' }';
-                    echo '<a class="pointer" href="#" onclick="' . $confirm_js . '" title="' . _sx('button', 'Delete') . '">';
-                    echo '<i class="fas fa-times"></i>&nbsp;';
-                    echo '<span class="sr-only">' . _x('button', 'Delete') . '</span>';
-                    echo '</a>';
-                    echo '</form>';
-                }
-                echo '</td>';
-                echo '</tr>';
-            }
-        } else {
-            echo '<tr class="tab_bg_2">';
-            echo '<td colspan="3">';
-            echo __('No link defined');
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '</table>';
-        echo '</div>';
+    /**
+     * Show manual links for an item.
+     *
+     * @param CommonDBTM $item
+     * @return void
+     * @deprecated 10.1.0
+     * @see Link::showAllLinksForItem()
+     */
+    private static function showForItem(CommonDBTM $item): void
+    {
+        Toolbox::deprecated();
+        Link::showAllLinksForItem($item, self::class);
     }
 
     public static function rawSearchOptionsToAdd($itemtype = null)
@@ -357,7 +224,7 @@ JAVASCRIPT
      *
      * @return string
      */
-    private static function getLinkHtml(array $fields): string
+    public static function getLinkHtml(array $fields): string
     {
 
         if (empty($fields['url'])) {
@@ -373,7 +240,7 @@ JAVASCRIPT
             $html .= '<i class="fa-lg fa-fw fa ' . htmlspecialchars($fields['icon']) . '"'
             . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
         }
-        $html .= !empty($fields['name']) ? $fields['name'] : $fields['url'];
+        $html .= htmlspecialchars(!empty($fields['name']) ? $fields['name'] : $fields['url']);
         $html .= '</a>';
 
         return $html;

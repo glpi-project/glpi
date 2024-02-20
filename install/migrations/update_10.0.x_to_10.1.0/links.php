@@ -33,40 +33,30 @@
  * ---------------------------------------------------------------------
  */
 
-class Link_Itemtype extends CommonDBChild
-{
-   // From CommonDbChild
-    public static $itemtype = 'Link';
-    public static $items_id = 'links_id';
+/**
+ * @var \DBmysql $DB
+ * @var \Migration $migration
+ */
 
-    /**
-     * @since 0.84
-     **/
-    public function getForbiddenStandardMassiveAction()
-    {
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
+$links = $DB->request([
+    'SELECT' => ['id', 'link', 'data'],
+    'FROM'   => 'glpi_links',
+]);
 
-    /**
-     *
-     * Remove all associations for an itemtype
-     *
-     * @since 0.85
-     *
-     * @param string $itemtype  itemtype for which all link associations must be removed
-     */
-    public static function deleteForItemtype($itemtype)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
+// Replace custom tags format with twig variable format
+$simple_tag_pattern = '/\[([A-Z_]+)\]/';
+$field_tag_pattern = '/\[FIELD:([a-z_]+)\]/';
 
-        $DB->delete(
-            self::getTable(),
-            [
-                'itemtype'  => ['LIKE', "%Plugin$itemtype%"]
-            ]
-        );
-    }
+foreach ($links as $link) {
+    $new_link = preg_replace($simple_tag_pattern, '{{ $1 }}', $link['link']);
+    $new_link = preg_replace($field_tag_pattern, '{{ item.$1 }}', $new_link);
+    $new_data = preg_replace($simple_tag_pattern, '{{ $1 }}', $link['data']);
+    $new_data = preg_replace($field_tag_pattern, '{{ item.$1 }}', $new_data);
+    $DB->update('glpi_links', [
+        'id'   => $link['id'],
+        'link' => $new_link,
+        'data' => $new_data,
+    ], [
+        'id' => $link['id'],
+    ]);
 }
