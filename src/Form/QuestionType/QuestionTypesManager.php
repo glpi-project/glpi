@@ -47,7 +47,7 @@ final class QuestionTypesManager
      * Singleton instance
      * @var QuestionTypesManager|null
      */
-    public static ?QuestionTypesManager $instance = null;
+    protected static ?QuestionTypesManager $instance = null;
 
     /**
      * Available question types

@@ -48,7 +48,7 @@ class AnswersHandler
      * Singleton instance
      * @var AnswersHandler|null
      */
-    public static ?AnswersHandler $instance = null;
+    protected static ?AnswersHandler $instance = null;
 
     /**
      * Private constructor to prevent instantiation (singleton)
