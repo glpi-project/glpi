@@ -547,6 +547,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 $data['validations'][] = $tmp;
             }
         }
+
+        $data['##ticket.externalid##'] = $item->fields['externalid'];
+
         return $data;
     }
 
@@ -579,6 +582,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                 __('OLA'),
                 __('Internal time to resolve')
             ),
+            'ticket.externalid'            => __('External ID'),
             'ticket.requesttype'           => RequestType::getTypeName(1),
             'ticket.itemtype'              => __('Item type'),
             'ticket.item.name'             => _n('Associated item', 'Associated items', 1),
