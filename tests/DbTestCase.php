@@ -37,6 +37,10 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
+use Glpi\Tests\FormBuilder;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -454,5 +458,102 @@ class DbTestCase extends \GLPITestCase
         );
 
         return $definition;
+    }
+
+    /**
+     * Helper method to help creating complex forms using the FormBuilder class.
+     *
+     * @param FormBuilder $builder RuleConfiguration
+     *
+     * @return Form Created form
+     */
+    protected function createForm(FormBuilder $builder): Form
+    {
+        // Create form
+        $form = $this->createItem(Form::class, [
+            'name'                  => $builder->getName(),
+            'entities_id'           => $builder->getEntitiesId(),
+            'is_recursive'          => $builder->getIsRecursive(),
+            'is_active'             => $builder->getIsActive(),
+            'header'                => $builder->getHeader(),
+            'is_draft'              => $builder->getIsDraft(),
+            '_do_not_init_sections' => true, // We will handle sections ourselves
+        ]);
+
+        foreach ($builder->getSections() as $section_data) {
+            // Create section
+            $section = $this->createItem(Section::class, [
+                'forms_forms_id' => $form->getID(),
+                'name'           => $section_data['name'],
+                'description'    => $section_data['description'],
+            ]);
+
+            // Create questions
+            foreach ($section_data['questions'] as $question_data) {
+                $this->createItem(Question::class, [
+                    'forms_sections_id' => $section->getID(),
+                    'name'              => $question_data['name'],
+                    'type'              => $question_data['type'],
+                    'is_mandatory'      => $question_data['is_mandatory'],
+                    'default_value'     => $question_data['default_value'],
+                    'extra_data'        => $question_data['extra_data'],
+                ]);
+            }
+        }
+
+        // Reload form
+        $form->getFromDB($form->getID());
+
+        return $form;
+    }
+
+    /**
+     * Helper method to access the ID of a question for a given form.
+     *
+     * @param Form        $form          Given form
+     * @param string      $question_name Question name to look for
+     * @param string|null $section_name  Optional section name, might be needed if
+     *                                   multiple sections have questions with the
+     *                                   same names.
+     *
+     * @return int The ID of the question
+     */
+    public function getQuestionId(
+        Form $form,
+        string $question_name,
+        string $section_name = null,
+    ): int {
+        $questions = $form->getQuestions();
+
+        if ($section_name === null) {
+            // Search by name
+            $filtered_questions = array_filter(
+                $questions,
+                fn($question) => $question->fields['name'] === $question_name
+            );
+
+            $this->array($filtered_questions)->hasSize(1);
+            $question = array_pop($filtered_questions);
+            return $question->getID();
+        } else {
+            // Find section
+            $sections = $form->getSections();
+            $filtered_sections = array_filter(
+                $sections,
+                fn($section) => $section->fields['name'] === $section_name
+            );
+            $this->array($filtered_sections)->hasSize(1);
+            $section = array_pop($filtered_sections);
+
+            // Search by name AND section
+            $filtered_questions = array_filter(
+                $questions,
+                fn($question) => $question->fields['name'] === $question_name
+                    && $question->fields['forms_sections_id'] === $section->getID()
+            );
+            $this->array($filtered_questions)->hasSize(1);
+            $question = array_pop($filtered_questions);
+            return $question->getID();
+        }
     }
 }

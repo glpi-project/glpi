@@ -147,8 +147,10 @@ class Form extends CommonDBTM
 
     public function post_addItem()
     {
-        // Automatically create the first form section
-        $this->createFirstSection();
+        // Automatically create the first form section unless specified otherwise
+        if (!isset($this->input['_do_not_init_sections'])) {
+            $this->createFirstSection();
+        }
     }
 
     public function prepareInputForUpdate($input)
