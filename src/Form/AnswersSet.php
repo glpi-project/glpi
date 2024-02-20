@@ -40,6 +40,7 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Log;
+use Override;
 use Search;
 use User;
 
@@ -51,16 +52,19 @@ final class AnswersSet extends CommonDBChild
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return __('Answers');
     }
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-circle-check";
     }
 
+    #[Override]
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
@@ -70,18 +74,25 @@ final class AnswersSet extends CommonDBChild
         return $tabs;
     }
 
+    #[Override]
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!($item instanceof Form)) {
             return false;
         }
 
+        $count = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $count = $this->countAnswers($item);
+        }
+
         return self::createTabEntry(
             self::getTypeName(),
-            $this->countAnswers($item),
+            $count,
         );
     }
 
+    #[Override]
     public static function displayTabContentForItem(
         CommonGLPI $item,
         $tabnum = 1,
@@ -100,11 +111,13 @@ final class AnswersSet extends CommonDBChild
         return true;
     }
 
+    #[Override]
     public function post_getFromDB()
     {
         $this->fields['answers'] = json_decode($this->fields['answers'], true);
     }
 
+    #[Override]
     public function rawSearchOptions()
     {
         $search_options = parent::rawSearchOptions();
@@ -129,24 +142,28 @@ final class AnswersSet extends CommonDBChild
         return $search_options;
     }
 
+    #[Override]
     public static function canUpdate()
     {
         // Answers set can't be updated from the UI
         return false;
     }
 
+    #[Override]
     public static function canCreate()
     {
         // Answers set can't be created from the UI
         return false;
     }
 
+    #[Override]
     public static function canDelete()
     {
         // Any form administrator may delete answers
         return Form::canUpdate();
     }
 
+    #[Override]
     public function showForm($id, array $options = [])
     {
         $this->getFromDB($id);
@@ -171,7 +188,7 @@ final class AnswersSet extends CommonDBChild
      *
      * @return int
      */
-    public function countAnswers(Form $form): int
+    protected function countAnswers(Form $form): int
     {
         return countElementsInTable(self::getTable(), [
             Form::getForeignKeyField() => $form->getID()
