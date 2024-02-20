@@ -102,9 +102,6 @@ class GlpiFormEditorController
         this.#enableSortable(
             $(this.#target).find("[data-glpi-form-editor-sections]")
         );
-
-        // Compute base state (keep at the end)
-        this.#computeState();
     }
 
     /**
@@ -140,6 +137,9 @@ class GlpiFormEditorController
                 'tinyMCEClick',
                 (e, original_event) => this.#handleTinyMCEClick(original_event)
             );
+
+        // Compute state before submitting the form
+        $(this.#target).on('submit', () => this.#computeState());
 
         // Register handlers for each possible editor actions using custom
         // data attributes
@@ -249,9 +249,6 @@ class GlpiFormEditorController
             default:
                 throw new Error(`Unknown action: ${action}`);
         }
-
-        // Compute input dynamic names and values (keep at the end)
-        this.#computeState();
     }
 
     /**
@@ -625,9 +622,23 @@ class GlpiFormEditorController
      * @returns {string|number}
      */
     #getItemInput(item, field) {
-        return item
-            .find(`input[data-glpi-form-editor-original-name=${field}]`)
-            .val();
+        // Input name before state was computed by #formatInputsNames()
+        let input = item.find(`input[name=${field}]`);
+        if (input.length > 0) {
+            return item
+                .find(`input[name=${field}]`)
+                .val();
+        }
+
+        // Input name after computation
+        input = item.find(`input[data-glpi-form-editor-original-name=${field}]`);
+        if (input.length > 0) {
+            return item
+                .find(`input[data-glpi-form-editor-original-name=${field}]`)
+                .val();
+        }
+
+        throw new Error(`Field not found: ${field}`);
     }
 
     /**
@@ -638,9 +649,23 @@ class GlpiFormEditorController
      * @returns {jQuery}
      */
     #setItemInput(item, field, value) {
-        return item
-            .find(`input[data-glpi-form-editor-original-name=${field}]`)
-            .val(value);
+        // Input name before state was computed by #formatInputsNames()
+        let input = item.find(`input[name=${field}]`);
+        if (input.length > 0) {
+            return item
+                .find(`input[name=${field}]`)
+                .val(value);
+        }
+
+        // Input name after computation
+        input = item.find(`input[data-glpi-form-editor-original-name=${field}]`);
+        if (input.length > 0) {
+            return item
+                .find(`input[data-glpi-form-editor-original-name=${field}]`)
+                .val(value);
+        }
+
+        throw new Error(`Field not found: ${field}`);
     }
 
     /**
@@ -843,9 +868,6 @@ class GlpiFormEditorController
                     editor.destroy();
                     tinymce.init(window.tinymce_editor_configs[id]);
                 });
-
-                // Update state
-                this.#computeState();
             });
     }
 
