@@ -50,4 +50,10 @@ final class QuestionTypeShortAnswerNumber extends QuestionTypeShortAnswer
     {
         return __("Number");
     }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 30;
+    }
 }

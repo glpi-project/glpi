@@ -64,16 +64,6 @@ final class QuestionTypesManager
     }
 
     /**
-     * Get the default question type class
-     *
-     * @return string
-     */
-    public function getDefaultTypeClass(): string
-    {
-        return QuestionTypeShortAnswerText::class;
-    }
-
-    /**
      * Get the singleton instance
      *
      * @return QuestionTypesManager
@@ -88,13 +78,23 @@ final class QuestionTypesManager
     }
 
     /**
+     * Get the default question type class
+     *
+     * @return string
+     */
+    public function getDefaultTypeClass(): string
+    {
+        return QuestionTypeShortAnswerText::class;
+    }
+
+    /**
      * Get all available question categories
      *
-     * @return iterable<QuestionTypesCategory>
+     * @return iterable<QuestionTypeCategory>
      */
     public function getCategories(): iterable
     {
-        return QuestionTypesCategory::cases();
+        return QuestionTypeCategory::cases();
     }
 
     /**
@@ -110,11 +110,11 @@ final class QuestionTypesManager
     /**
      * Get available types for a given parent category
      *
-     * @param QuestionTypesCategory $category Parent category
+     * @param QuestionTypeCategory $category Parent category
      *
      * @return QuestionTypeInterface[]
      */
-    public function getTypesForCategory(QuestionTypesCategory $category): array
+    public function getTypesForCategory(QuestionTypeCategory $category): array
     {
         return array_filter(
             $this->question_types,
@@ -152,5 +152,11 @@ final class QuestionTypesManager
                 $this->question_types[$classname] = new $classname();
             }
         }
+
+        // Sort question types by weight
+        uasort(
+            $this->question_types,
+            fn(QuestionTypeInterface $a, QuestionTypeInterface $b) => $a->getWeight() <=> $b->getWeight()
+        );
     }
 }

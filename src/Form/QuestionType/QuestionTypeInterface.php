@@ -84,7 +84,15 @@ interface QuestionTypeInterface
     /**
      * Get the category of this question type.
      *
-     * @return QuestionTypesCategory
+     * @return QuestionTypeCategory
      */
-    public function getCategory(): QuestionTypesCategory;
+    public function getCategory(): QuestionTypeCategory;
+
+    /**
+     * Get the weight of this question type.
+     * The weight is used to sort question types in a category.
+     *
+     * @return int
+     */
+    public function getWeight(): int;
 }
