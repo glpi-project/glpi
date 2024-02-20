@@ -36,9 +36,9 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
-use FormBuilder;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Tests\FormBuilder;
 
 class Section extends DbTestCase
 {
