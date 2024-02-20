@@ -36,11 +36,11 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
-use FormBuilder;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
+use Glpi\Tests\FormBuilder;
 
 class Form extends DbTestCase
 {
@@ -545,7 +545,7 @@ class Form extends DbTestCase
                 'id'         => $form->getID(),
                 '_questions' => [
                     [
-                        'id'                        => $this->getQuestionsId($form, 'Question 5'),
+                        'id'                        => $this->getQuestionId($form, 'Question 5'),
                         '_use_uuid'                 => false,
                         'forms_sections_id'         => $this->getSectionId($form, 'Section 4 (updated two times)'),
                         '_use_uuid_for_sections_id' => false,
