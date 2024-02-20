@@ -38,13 +38,13 @@ namespace tests\units\Glpi\Form;
 use CommonGLPI;
 use Computer;
 use DbTestCase;
-use FormBuilder;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Tests\FormBuilder;
 use Impact;
 use Ticket;
 
@@ -76,11 +76,11 @@ class AnswersSet extends DbTestCase
         );
 
         $answers_handler->saveAnswers($form_2, [
-            $this->getQuestionsId($form_2, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form_2, "Name") => "Pierre Paul Jacques"
         ], \Session::getLoginUserID());
 
         $answers_handler->saveAnswers($form_2, [
-            $this->getQuestionsId($form_2, "Name") => "Paul Pierre Jacques"
+            $this->getQuestionId($form_2, "Name") => "Paul Pierre Jacques"
         ], \Session::getLoginUserID());
 
         $_SESSION['glpishow_count_on_tabs'] = true;
@@ -142,15 +142,15 @@ class AnswersSet extends DbTestCase
         );
 
         $answers_handler->saveAnswers($form_2, [
-            $this->getQuestionsId($form_2, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form_2, "Name") => "Pierre Paul Jacques"
         ], \Session::getLoginUserID());
 
         $answers_handler->saveAnswers($form_2, [
-            $this->getQuestionsId($form_2, "Name") => "Paul Pierre Jacques"
+            $this->getQuestionId($form_2, "Name") => "Paul Pierre Jacques"
         ], \Session::getLoginUserID());
 
         $answers_handler->saveAnswers($form_2, [
-            $this->getQuestionsId($form_2, "Name") => "Jacques Paul Pierre"
+            $this->getQuestionId($form_2, "Name") => "Jacques Paul Pierre"
         ], \Session::getLoginUserID());
 
         yield [$form_2, true];
@@ -201,7 +201,7 @@ class AnswersSet extends DbTestCase
                 ->addQuestion("Name", QuestionTypeShortAnswerText::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
-            $this->getQuestionsId($form, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
         ], \Session::getLoginUserID());
 
         // Ensure JSON is decoded
@@ -236,10 +236,10 @@ class AnswersSet extends DbTestCase
                 ->addSection("Third section")
         );
         $answers_set = $answers_handler->saveAnswers($form, [
-            $this->getQuestionsId($form, "Name") => "Pierre Paul Jacques",
-            $this->getQuestionsId($form, "Age") => 20,
-            $this->getQuestionsId($form, "Email") => "pierre@paul.jacques",
-            $this->getQuestionsId($form, "Address") => "France",
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
+            $this->getQuestionId($form, "Age") => 20,
+            $this->getQuestionId($form, "Email") => "pierre@paul.jacques",
+            $this->getQuestionId($form, "Address") => "France",
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types
