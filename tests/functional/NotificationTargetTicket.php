@@ -50,6 +50,19 @@ class NotificationTargetTicket extends DbTestCase
         $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
         $notiftargetticket->getTags();
 
+        // basic test for ##ticket.externalid## tag
+        $expected = [
+            'tag'             => 'ticket.externalid',
+            'value'           => true,
+            'label'           => 'External ID',
+            'events'          => 0,
+            'foreach'         => false,
+            'lang'            => true,
+            'allowed_values'  => [],
+        ];
+        $this->array($notiftargetticket->tag_descriptions['lang']['##lang.ticket.externalid##'])
+         ->isIdenticalTo($expected);
+
        // basic test for ##task.categorycomment## tag
         $expected = [
             'tag'             => 'task.categorycomment',
@@ -81,6 +94,15 @@ class NotificationTargetTicket extends DbTestCase
         $this->array($notiftargetticket->tag_descriptions['tag']['##task.categoryid##'])
          ->isIdenticalTo($expected);
 
+        // advanced test for ##ticket.externalid## tag
+        $basic_options = [
+            'additionnaloption' => [
+                'usertype' => \NotificationTarget::GLPI_USER,
+            ]
+        ];
+        $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
+        $this->string($ret['##ticket.externalid##'])->isIdenticalTo("external_id");
+
        // advanced test for ##task.categorycomment## and ##task.categoryid## tags
        // test of the getDataForObject for default language en_GB
         $taskcat = getItemByTypeName('TaskCategory', '_subcat_1');
@@ -103,11 +125,6 @@ class NotificationTargetTicket extends DbTestCase
             ]
         ];
 
-        $basic_options = [
-            'additionnaloption' => [
-                'usertype' => \NotificationTarget::GLPI_USER,
-            ]
-        ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
 
         $this->array($ret['tasks'])->isIdenticalTo($expected);
