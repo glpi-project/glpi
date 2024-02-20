@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,6 @@
 
 use Glpi\Cache\CacheManager;
 
-/** @var array $_UPOST */
-global $_UPOST;
-
 include('../inc/includes.php');
 Session::checkRight("config", READ);
 
@@ -55,16 +52,6 @@ if (!empty($_POST["update_auth"])) {
     Html::back();
 }
 if (!empty($_POST["update"])) {
-    $context = array_key_exists('config_context', $_POST) ? $_POST['config_context'] : 'core';
-
-    $glpikey = new GLPIKey();
-    foreach (array_keys($_POST) as $field) {
-        if ($glpikey->isConfigSecured($context, $field)) {
-           // Field must not be altered, it will be encrypted and never displayed, so sanitize is not necessary.
-            $_POST[$field] = $_UPOST[$field];
-        }
-    }
-
     $config->update($_POST);
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }

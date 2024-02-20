@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * Template for followups
  * @since 9.5
  **/
 class ITILFollowupTemplate extends AbstractITILChildTemplate
 {
-   // From CommonDBTM
+    use Clonable;
+
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -57,6 +61,11 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
             [
                 'name'  => 'requesttypes_id',
                 'label' => __('Source of followup'),
+                'type'  => 'dropdownValue',
+                'list'  => true
+            ], [
+                'name'  => 'pendingreasons_id',
+                'label' => PendingReason::getTypeName(1),
                 'type'  => 'dropdownValue',
                 'list'  => true
             ], [
@@ -111,5 +120,10 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
     public static function getIcon()
     {
         return "fas fa-layer-group";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,14 +36,14 @@
 namespace Glpi\Features;
 
 use CommonDBTM;
+use CommonDropdown;
 use CommonITILObject;
 use CommonTreeDropdown;
-use DB;
 use DropdownTranslation;
 use Html;
 use ITILCategory;
-use QuerySubQuery;
-use QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryExpression;
 use Search;
 
 /**
@@ -62,10 +62,21 @@ trait TreeBrowse
         global $CFG_GLPI;
 
         $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
+
         $loading_txt = __s('Loading...');
-        $start       = (int)($_REQUEST['start'] ?? 0);
-        $browse      = (int)($_REQUEST['browse'] ?? 0);
-        $is_deleted  = (int)($_REQUEST['is_deleted'] ?? 0);
+        $start       = isset($params['start'])
+                            ? $params['start']
+                            : 0;
+        $browse      = isset($params['browse'])
+                            ? $params['browse']
+                            : 0;
+        $is_deleted  = isset($params['is_deleted'])
+                            ? $params['is_deleted']
+                            : 0;
+        $unpublished = isset($params['unpublished'])
+                            ? $params['unpublished']
+                            : 1;
+
         $criteria    = json_encode($params['criteria']);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
@@ -83,6 +94,7 @@ trait TreeBrowse
                 'start': $start,
                 'browse': $browse,
                 'is_deleted': $is_deleted,
+                'unpublished': $unpublished,
                 'criteria': $criteria
             });
         };
@@ -176,6 +188,7 @@ JAVASCRIPT;
         $cat_item     = new $cat_itemtype();
 
         $params['export_all'] = true;
+
         $data = Search::prepareDatasForSearch($itemtype, $params);
         Search::constructSQL($data);
         // This query is used to get the IDs of all results matching the search criteria
@@ -183,21 +196,53 @@ JAVASCRIPT;
         // We can remove all the SELECT fields and replace it with just the ID field
         $raw_select = $data['sql']['raw']['SELECT'];
         $replacement_select = 'SELECT DISTINCT ' . $itemtype::getTableField('id');
-        $sql = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+        $sql_id = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
         // Remove GROUP BY and ORDER BY clauses
-        $sql = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql);
+        $sql_id = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_id);
 
-        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql . ') AS id_criteria )');
+        $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )');
 
         $cat_table = $cat_itemtype::getTable();
         $cat_fk    = $cat_itemtype::getForeignKeyField();
+        $cat_join = $itemtype . '_' . $cat_itemtype;
+
+        if (class_exists($cat_join)) {
+            $cat_criteria = [1];
+            // If there is a category filter, apply this filter to the tree too
+            if (preg_match("/$cat_table/", $data['sql']['raw']['WHERE'])) {
+                // This query is used to get the IDs of all results matching the search criteria
+                // We can remove all the SELECT fields and replace it with just the ID field
+                $replacement_select = "SELECT DISTINCT " . $cat_join::getTableField($cat_fk);
+                $sql_cat = preg_replace('/^' . preg_quote($raw_select, '/') . '/', $replacement_select, $sql, 1);
+                // Remove GROUP BY and ORDER BY clauses
+                $sql_cat = str_replace([$data['sql']['raw']['GROUPBY'], $data['sql']['raw']['ORDER']], '', $sql_cat);
+
+                $cat_criteria = new QueryExpression($cat_join::getTableField($cat_fk) . ' IN ( SELECT * FROM (' . $sql_cat . ') AS cat_criteria )');
+            }
+
+            $join = [
+                $cat_join::getTable() => [
+                    'ON'  => [
+                        $cat_join::getTable() => $itemtype::getForeignKeyField(),
+                        $itemtype::getTable() => 'id'
+                    ],
+                    $cat_criteria,
+                ]
+            ];
+        } else {
+            $join = [];
+            $cat_join = $itemtype;
+        }
 
         $items_subquery = new QuerySubQuery(
             [
                 'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' AS cpt'],
                 'FROM'   => $itemtype::getTable(),
+                'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $itemtype::getTableField($cat_fk) => new QueryExpression($DB::quoteName($cat_itemtype::getTableField('id'))),
+                    $cat_join::getTableField($cat_fk) => new QueryExpression(
+                        $DB->quoteName($cat_itemtype::getTableField('id'))
+                    ),
                     $id_criteria
                 ]
             ],
@@ -226,8 +271,9 @@ JAVASCRIPT;
 
         $inst = new $cat_itemtype();
         $categories = [];
+        $parents = [];
         foreach ($cat_iterator as $category) {
-            if (DropdownTranslation::canBeTranslated($inst)) {
+            if ($category instanceof CommonDropdown && $category->maybeTranslated()) {
                 $tname = DropdownTranslation::getTranslatedValue(
                     $category['id'],
                     $inst->getType()
@@ -236,28 +282,36 @@ JAVASCRIPT;
                     $category['name'] = $tname;
                 }
             }
-            $categories[] = $category;
+            if (($category['items_count'] > 0) || (in_array($category['id'], $parents))) {
+                $parents[] = $category[$cat_fk];
+                $categories[] = $category;
+            }
         }
 
         // Without category
+        $join[$cat_table] = [
+            'ON' => [
+                $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
+                $cat_table => 'id'
+            ]
+        ];
         $no_cat_count = $DB->request(
             [
                 'SELECT' => ['COUNT DISTINCT' => $itemtype::getTableField('id') . ' as cpt'],
                 'FROM'   => $itemtype::getTable(),
+                'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $itemtype::getTableField($cat_fk) => 0,
+                    $cat_itemtype::getTableField('id') => null,
                     $id_criteria,
                 ]
             ]
         )->current();
-        if ($no_cat_count['cpt'] > 0) {
-            $categories[] = [
-                'id'          => -1,
-                'name'        => __s('Without Category'),
-                'items_count' => $no_cat_count['cpt'],
-                $cat_fk       => 0,
-            ];
-        }
+        $categories[] = [
+            'id'          => -1,
+            'name'        => __('Without Category'),
+            'items_count' => $no_cat_count['cpt'],
+            $cat_fk       => 0,
+        ];
 
         // construct flat data
         $nodes   = [];

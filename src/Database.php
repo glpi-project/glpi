@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -60,7 +60,7 @@ class Database extends CommonDBChild
          ->addStandardTab('Infocom', $ong, $options)
          ->addStandardTab('Document_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('Lock', $ong, $options)
@@ -163,6 +163,15 @@ class Database extends CommonDBChild
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => 2,
+            'table'              => self::getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
             'massiveaction'      => false,
         ];
 
@@ -391,7 +400,7 @@ class Database extends CommonDBChild
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb);
+            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
         }
         return '';
     }

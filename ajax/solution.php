@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -89,16 +89,13 @@ if ($apply_twig) {
    // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-    $content = $template->fields['content'];
-    if (DropdownTranslation::isDropdownTranslationActive()) {
-        $content = DropdownTranslation::getTranslatedValue(
-            $template->getID(),
-            $template->getType(),
-            'content',
-            $_SESSION['glpilanguage'],
-            $content
-        );
-    }
+    $content = DropdownTranslation::getTranslatedValue(
+        $template->getID(),
+        $template->getType(),
+        'content',
+        $_SESSION['glpilanguage'],
+        $template->fields['content']
+    );
     $template->fields['content'] = RichText::getSafeHtml($content);
 }
 

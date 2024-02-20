@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -71,6 +71,32 @@ if (isset($_POST["add"])) {
     } else {
         Html::redirect(ProjectTask::getFormURL() . "?projects_id=" . $task->fields['projects_id']);
     }
+} else if (isset($_POST["restore"])) {
+    $task->check($_POST["id"], DELETE);
+
+    $task->restore($_POST);
+    Event::log(
+        $_POST["id"],
+        "project",
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s restores a task'), $_SESSION["glpiname"])
+    );
+    Html::back();
+} else if (isset($_POST["delete"])) {
+    $task->check($_POST['id'], DELETE);
+    $task->delete($_POST);
+
+    Event::log(
+        $task->fields['projects_id'],
+        'project',
+        4,
+        "maintain",
+        //TRANS: %s is the user login
+        sprintf(__('%s delete a task'), $_SESSION["glpiname"])
+    );
+    Html::redirect(Project::getFormURLWithID($task->fields['projects_id']));
 } else if (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
     $task->delete($_POST, 1);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,12 +51,31 @@ class Reservation extends DbTestCase
             "name"        => "test",
             "entities_id" => $root,
         ]);
-        $this->createItem("ReservationItem", [
+        $reservation_item = $this->createItem("ReservationItem", [
             "itemtype"    => "Computer",
             "items_id"    => $computer->getID(),
             "is_active"   => true,
             "entities_id" => $root,
         ]);
+        // Nothing showing because we are not logged in
+        $this->array(\Reservation::getReservableItemtypes())->size->isEqualTo(0);
+
+        $this->login();
+        $this->array(\Reservation::getReservableItemtypes())->isEqualTo(["Computer"]);
+
+        \Session::changeActiveEntities(getItemByTypeName("Entity", "_test_child_1", true));
+        // Nothing showing because we are now in a child entity and the computer is not recursive
+        $this->array(\Reservation::getReservableItemtypes())->size->isEqualTo(0);
+
+        //Make computer recursive and check again
+        $this->boolean($computer->update([
+            'id' => $computer->getID(),
+            "is_recursive" => true,
+        ]))->isTrue();
+        $this->boolean($reservation_item->update([
+            'id' => $reservation_item->getID(),
+            "is_recursive" => true,
+        ]))->isTrue();
         $this->array(\Reservation::getReservableItemtypes())->isEqualTo(["Computer"]);
     }
 }

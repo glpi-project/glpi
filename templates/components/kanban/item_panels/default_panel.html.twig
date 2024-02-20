@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -34,12 +34,12 @@
 <div class="item-details-panel" data-itemtype="{{ itemtype }}" data-items_id="{{ item_fields.id }}">
    <div class="card d-flex flex-column h-100">
       <div class="card-header d-block">
-         <h5 class="card-title">
+         <h5 class="card-title d-flex justify-content-between w-100">
             <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
                <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
-               {{ item_fields.name|verbatim_value }}
+               {{ item_fields.name }}
             </a>
-            <button type="button" class="btn-link" onclick="$(this).closest('.item-details-panel').remove()"><i class="ti ti-x"></i></button>
+            <button type="button" class="btn-link"><i class="ti ti-x"></i></button>
          </h5>
          <h6 class="card-subtitle">
             {% if item_fields.is_milestone %}
@@ -82,9 +82,9 @@
                         {% for team_member in role_members %}
                            <li class="list-group-item d-flex justify-content-between p-2" data-itemtype="{{ team_member.itemtype }}"
                                data-items_id="{{ team_member.items_id }}"
-                               data-name="{{ team_member.display_name|default(team_member.name)|verbatim_value }}"
-                               data-firstname="{{ team_member.firstname|verbatim_value }}"
-                               data-realname="{{ team_member.realname|verbatim_value }}">
+                               data-name="{{ team_member.display_name|default(team_member.name) }}"
+                               data-firstname="{{ team_member.firstname }}"
+                               data-realname="{{ team_member.realname }}">
                               {# Contents added in Kanban JS #}
                            </li>
                         {% endfor %}

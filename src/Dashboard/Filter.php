@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -268,7 +268,7 @@ class Filter extends \CommonDBChild
          var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
          var selected    = dom_elem.find(':selected').val();
 
-         Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+         GLPI.Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
 
          $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
       };

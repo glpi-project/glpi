@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Glpi\Toolbox\Sanitizer;
 use Item_Devices;
 
 abstract class Device extends InventoryAsset
@@ -100,8 +99,7 @@ abstract class Device extends InventoryAsset
                 }
 
                 //create device or get existing device ID
-                $raw_input = $this->handleInput($val, $device);
-                $device_input = Sanitizer::dbEscapeRecursive($raw_input); // `handleInput` may copy unescaped values
+                $device_input = $this->handleInput($val, $device);
                 $device_id = $device->import($device_input + ['with_history' => false]);
 
                 $i_criteria = $itemdevice->getImportCriteria();
@@ -115,8 +113,8 @@ abstract class Device extends InventoryAsset
 
                 //populate compare criteria
                 foreach (array_keys($i_criteria) as $column) {
-                    if (isset($raw_input[$column])) {
-                        $i_input[$column] = $raw_input[$column];
+                    if (isset($device_input[$column])) {
+                        $i_input[$column] = $device_input[$column];
                     }
                 }
 
@@ -161,7 +159,7 @@ abstract class Device extends InventoryAsset
                             'items_id'           => $this->item->fields['id'],
                             'is_dynamic'         => 1
                         ] + $this->handleInput($val, $itemdevice);
-                        $itemdevice->update(Sanitizer::sanitize($itemdevice_data), true);
+                        $itemdevice->update($itemdevice_data, true);
                         unset($existing[$device_id][$key]);
                         break;
                     }
@@ -175,7 +173,7 @@ abstract class Device extends InventoryAsset
                         'items_id' => $this->item->fields['id'],
                         'is_dynamic' => 1
                     ] + $this->handleInput($val, $itemdevice);
-                    $itemdevice->add(Sanitizer::sanitize($itemdevice_data), [], false);
+                    $itemdevice->add($itemdevice_data, [], false);
                     $this->itemdeviceAdded($itemdevice, $val);
                 }
 

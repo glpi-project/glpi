@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /**
  * ITILCategory class
  **/
 class ITILCategory extends CommonTreeDropdown
 {
+    use Clonable;
+
    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
@@ -342,7 +346,7 @@ class ITILCategory extends CommonTreeDropdown
      * @since 9.5.0
      *
      * @param string $field
-     * @param mixed  $value must be addslashes
+     * @param mixed  $value
      **/
     private static function getITILCategoryIDByField($field, $value)
     {
@@ -400,6 +404,13 @@ class ITILCategory extends CommonTreeDropdown
             );
             return false;
         }
+        return $input;
+    }
+
+    public function prepareInputForClone($input)
+    {
+        // The code must be unique so we cannot clone it
+        unset($input['code']);
         return $input;
     }
 
@@ -526,5 +537,10 @@ class ITILCategory extends CommonTreeDropdown
         }
 
         echo "</table></div>";
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

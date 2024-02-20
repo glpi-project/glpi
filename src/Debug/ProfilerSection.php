@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,6 +51,11 @@ final class ProfilerSection
 
     private int $end;
 
+    /**
+     * @var array{start: int, end?: int}[] Array of start and end times of paises which will be removed from the final duration.
+     */
+    private array $pauses = [];
+
     public function __construct(string $category, string $name, $start, ?string $parent_id = null, ?string $id = null)
     {
         $this->id = $id ?? Uuid::uuid4()->toString();
@@ -62,6 +67,8 @@ final class ProfilerSection
 
     public function end($time): void
     {
+        // Force resume to complete the last pause.
+        $this->resume();
         $this->end = (int)$time;
     }
 
@@ -98,7 +105,15 @@ final class ProfilerSection
     public function getDuration(): int
     {
         $end = $this->end ?? (int)(microtime(true) * 1000);
-        return $end - $this->start;
+        $duration = $end - $this->start;
+
+        // Remove paused time from the total runtime.
+        foreach ($this->pauses as $pause) {
+            $pause_end = $pause['end'] ?? $end;
+            $duration -= $pause_end - $pause['start'];
+        }
+
+        return (int) $duration;
     }
 
     public function isFinished(): bool
@@ -115,6 +130,7 @@ final class ProfilerSection
             'name' => $this->name,
             'start' => $this->start,
             'end' => $this->end,
+            'duration' => $this->getDuration(),
         ];
     }
 
@@ -123,5 +139,31 @@ final class ProfilerSection
         $section = new self($array['category'], $array['name'], $array['start'], $array['parent_id'], $array['id']);
         $section->end($array['end']);
         return $section;
+    }
+
+    public function pause(): void
+    {
+        if (!$this->isPaused()) {
+            $this->pauses[] = ['start' => microtime(true) * 1000];
+        }
+    }
+
+    public function resume(): void
+    {
+        if (!$this->isPaused()) {
+            // Not paused. Ignore.
+            return;
+        }
+        $last_pause = array_key_last($this->pauses);
+        $this->pauses[$last_pause]['end'] = microtime(true) * 1000;
+    }
+
+    public function isPaused(): bool
+    {
+        if (!count($this->pauses)) {
+            return false;
+        }
+        $last_pause = end($this->pauses);
+        return count($last_pause) === 1;
     }
 }

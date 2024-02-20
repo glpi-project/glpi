@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,6 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
-use Glpi\Toolbox\Sanitizer;
 use ITILFollowup;
 use stdClass;
 use Ticket;
@@ -94,9 +93,8 @@ class Toolbox extends DbTestCase
                 'name'  => '00-logoteclib.png',
                 'expected'  => '00-logoteclib.png',
             ], [
-            // Space is missing between "France" and "très" due to a bug in laminas-mail
-                'name'  => '01-Screenshot-2018-4-12 Observatoire - Francetrès haut débit.png',
-                'expected'  => '01-screenshot-2018-4-12-observatoire-francetres-haut-debit.png',
+                'name'  => '01-Screenshot-2018-4-12 Observatoire - France très haut débit.png',
+                'expected'  => '01-screenshot-2018-4-12-observatoire-france-tres-haut-debit.png',
             ], [
                 'name'  => '01-test.JPG',
                 'expected'  => '01-test.JPG',
@@ -225,13 +223,7 @@ class Toolbox extends DbTestCase
             [
                 '{"Monitor":[6],"Computer":[35]}',
                 ['Monitor' => [6], 'Computer' => [35]]
-            ], [
-                '{\"Monitor\":[\"6\"],\"Computer\":[\"35\"]}',
-                ['Monitor' => ["6"], 'Computer' => ["35"]]
-            ], [
-                '{\"content\":\"&#60;p&#62;HTML !&#60;/p&#62;\"}',
-                ['content' => '<p>HTML !</p>']
-            ]
+            ],
         ];
     }
 
@@ -466,7 +458,7 @@ class Toolbox extends DbTestCase
      */
     public function testSeems_utf8($string, $utf)
     {
-        $this->boolean(\Toolbox::seems_utf8($string))->isIdenticalTo($utf);
+        $this->boolean(@\Toolbox::seems_utf8($string))->isIdenticalTo($utf);
     }
 
     public function testSaveAndDeletePicture()
@@ -511,7 +503,7 @@ class Toolbox extends DbTestCase
             ],
             [
                 'path' => 'xss\' onclick="alert(\'PWNED\')".jpg',
-                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/xss&apos; onclick=&quot;alert(&apos;PWNED&apos;)&quot;.jpg',
+                'url'  => $CFG_GLPI['root_doc'] . '/front/document.send.php?file=_pictures/xss&#039; onclick=&quot;alert(&#039;PWNED&#039;)&quot;.jpg',
             ],
         ];
     }
@@ -598,17 +590,6 @@ class Toolbox extends DbTestCase
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
         $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
 
-        // Processed data is expected to be sanitized, and expected result should remain sanitized
-        $this->string(
-            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id => ['tag' => $img_tag]])
-        )->isEqualTo(Sanitizer::sanitize($expected_result));
-
-        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
-        $this->string(
-            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id => ['tag' => $img_tag]])
-        )->isEqualTo(\Toolbox::addslashes_deep($expected_result));
-
-        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
         )->isEqualTo($expected_result);
@@ -736,17 +717,6 @@ class Toolbox extends DbTestCase
             $expected_result .= '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $doc['tag'] . '" width="10" src="' . $expected_url . '" /></a>';
         }
 
-        // Processed data is expected to be sanitized, and expected result should remain sanitized
-        $this->string(
-            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, $doc_data)
-        )->isEqualTo(Sanitizer::sanitize($expected_result));
-
-        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
-        $this->string(
-            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, $doc_data)
-        )->isEqualTo(\Toolbox::addslashes_deep($expected_result));
-
-        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, $doc_data)
         )->isEqualTo($expected_result);
@@ -792,24 +762,6 @@ class Toolbox extends DbTestCase
         $expected_url_2     .= '&items_id=' . $item->fields['id'];
         $expected_result_2 = '<a href="' . $expected_url_2 . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url_2 . '" /></a>';
 
-
-        // Processed data is expected to be sanitized, and expected result should remain sanitized
-        $this->string(
-            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id_1 => ['tag' => $img_tag]])
-        )->isEqualTo(Sanitizer::sanitize($expected_result_1));
-        $this->string(
-            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id_2 => ['tag' => $img_tag]])
-        )->isEqualTo(Sanitizer::sanitize($expected_result_2));
-
-        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
-        $this->string(
-            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id_1 => ['tag' => $img_tag]])
-        )->isEqualTo(\Toolbox::addslashes_deep($expected_result_1));
-        $this->string(
-            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id_2 => ['tag' => $img_tag]])
-        )->isEqualTo(\Toolbox::addslashes_deep($expected_result_2));
-
-        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id_1 => ['tag' => $img_tag]])
         )->isEqualTo($expected_result_1);
@@ -847,17 +799,6 @@ class Toolbox extends DbTestCase
         $expected_result  = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
         $expected_result .= $expected_result;
 
-        // Processed data is expected to be sanitized, and expected result should remain sanitized
-        $this->string(
-            \Toolbox::convertTagToImage(Sanitizer::sanitize($content_text), $item, [$doc_id => ['tag' => $img_tag]])
-        )->isEqualTo(Sanitizer::sanitize($expected_result));
-
-        // Processed data may also be escaped using Toolbox::addslashes_deep(), and expected result should be escaped too
-        $this->string(
-            \Toolbox::convertTagToImage(\Toolbox::addslashes_deep($content_text), $item, [$doc_id => ['tag' => $img_tag]])
-        )->isEqualTo(\Toolbox::addslashes_deep($expected_result));
-
-        // Processed data may also be not sanitized, and expected result should not be sanitized
         $this->string(
             \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]])
         )->isEqualTo($expected_result);
@@ -1046,8 +987,6 @@ class Toolbox extends DbTestCase
             ['https://localhost?test=true', true],
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
-            ['https://localhost?test=true&#38;othertest=false', true], /* sanitized URL, &#38; is & */
-            ['https://localhost?test=true&#39;othertest=false', false], /* any entity */
         ];
     }
 

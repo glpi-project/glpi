@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,6 +57,10 @@ class KnowbaseItemTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-language';
+    }
 
     public function defineTabs($options = [])
     {
@@ -94,12 +98,12 @@ class KnowbaseItemTranslation extends CommonDBChild
             }
         }
 
-        if (self::canBeTranslated($item)) {
+        if ($item instanceof KnowbaseItem) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';
@@ -128,7 +132,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                     $item->showForm($item->getID(), ['parent' => $item]);
                     break;
             }
-        } else if (self::canBeTranslated($item)) {
+        } else if ($item instanceof KnowbaseItem) {
             self::showTranslations($item);
         }
         return true;
@@ -368,14 +372,15 @@ class KnowbaseItemTranslation extends CommonDBChild
     /**
      * Is kb item translation functionality active
      *
+     * @deprecated 10.1.0
+     *
      * @return true if active, false if not
      **/
     public static function isKbTranslationActive()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        Toolbox::deprecated("KB translations are now always active");
 
-        return $CFG_GLPI['translate_kb'];
+        return true;
     }
 
 
@@ -387,12 +392,14 @@ class KnowbaseItemTranslation extends CommonDBChild
      * @param item the item to check
      *
      * @return true if item can be translated, false otherwise
+     *
+     * @deprecated 10.1.0
      **/
     public static function canBeTranslated(CommonGLPI $item)
     {
+        Toolbox::deprecated();
 
-        return (self::isKbTranslationActive()
-              && $item instanceof KnowbaseItem);
+        return $item instanceof KnowbaseItem;
     }
 
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,6 +51,11 @@ class SoftwareVersion extends CommonDBChild
     public static function getTypeName($nb = 0)
     {
         return _n('Version', 'Versions', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return Software::getIcon();
     }
 
 
@@ -401,12 +406,12 @@ class SoftwareVersion extends CommonDBChild
 
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Software':
+            switch (get_class($item)) {
+                case Software::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID()]);
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';

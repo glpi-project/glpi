@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Infocom class
@@ -148,7 +150,7 @@ class Infocom extends CommonDBChild
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
 
                 default:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -159,7 +161,7 @@ class Infocom extends CommonDBChild
                             ]
                         );
                     }
-                    return self::createTabEntry(__('Management'), $nb);
+                    return self::createTabEntry(__('Management'), $nb, $item::getType());
             }
         }
         return '';
@@ -520,17 +522,20 @@ class Infocom extends CommonDBChild
                     ]
                 ],
                 'WHERE'     => [
-                    new \QueryExpression(
+                    new QueryExpression(
                         '(' . $DB->quoteName('glpi_infocoms.alert') . ' & ' . pow(2, Alert::END) . ') > 0'
                     ),
                     "$table.entities_id"       => $entity,
                     "$table.warranty_duration" => ['>', 0],
                     'NOT'                      => ["$table.warranty_date" => null],
-                    new \QueryExpression(
-                        'DATEDIFF(ADDDATE(' . $DB->quoteName('glpi_infocoms.warranty_date') . ', INTERVAL (' .
-                        $DB->quoteName('glpi_infocoms.warranty_duration') . ') MONTH), CURDATE() ) <= ' .
-                        $DB->quoteValue($before)
-                    ),
+                    new QueryExpression(QueryFunction::dateDiff(
+                        expression1: QueryFunction::dateAdd(
+                            date: 'glpi_infocoms.warranty_date',
+                            interval: new QueryExpression($DB::quoteName('glpi_infocoms.warranty_duration')),
+                            interval_unit: 'MONTH'
+                        ),
+                        expression2: QueryFunction::curdate()
+                    ) . ' <= ' . $DB::quoteValue($before)),
                     'glpi_alerts.date'         => null
                 ]
             ]);
@@ -800,15 +805,44 @@ class Infocom extends CommonDBChild
         }
 
         if ($item->canView()) {
-            echo "<span data-bs-toggle='modal' data-bs-target='#infocom$itemtype$device_id' style='cursor:pointer'>
+            echo "<span class='infocom_link' style='cursor:pointer' data-itemtype='{$itemtype}' data-items_id='{$device_id}'>
                <img src=\"" . $CFG_GLPI["root_doc"] . "/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
-            Ajax::createIframeModalWindow(
-                'infocom' . $itemtype . $device_id,
-                Infocom::getFormURL() .
-                                          "?itemtype=$itemtype&items_id=$device_id",
-                ['height' => 600]
-            );
+            $form_url = Infocom::getFormURL();
+            $html = <<<HTML
+                <div id="infocom_display_modal" class="modal fade" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <h3></h3>
+                            </div>
+                            <div class="modal-body">
+                                <iframe id='iframeinfocom_display_modal' class="iframe hidden border-0 w-100" style="height: 600px"></iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+HTML;
+            $js = <<<JS
+                $(() => {
+                    if ($('#infocom_display_modal').length === 0) {
+                        $('body').append(`$html`);
+                        const modal_el = $('#infocom_display_modal');
+                        $(document).on('click', '.infocom_link', (e) => {
+                            modal_el.data('itemtype', e.currentTarget.getAttribute('data-itemtype'));
+                            modal_el.data('items_id', e.currentTarget.getAttribute('data-items_id'));
+                            modal_el.modal('show');
+                        });
+                        modal_el.on('shown.bs.modal', () => {
+                            $('#iframeinfocom_display_modal')
+                                .attr('src', '{$form_url}?itemtype=' + modal_el.data('itemtype') + '&items_id=' + modal_el.data('items_id'))
+                                .removeClass('hidden');
+                        });
+                    }
+                });
+JS;
+            echo Html::scriptBlock($js);
         }
     }
 
@@ -1922,6 +1956,6 @@ class Infocom extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-wallet";
+        return "ti ti-wallet";
     }
 }

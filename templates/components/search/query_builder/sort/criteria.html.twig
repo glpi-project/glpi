@@ -1,0 +1,88 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set rand = random() %}
+{% set dd_options = {
+    rand: rand,
+    full_width: true,
+    input_class: 'col-12',
+    full_width_adapt_column: false,
+    no_label: true,
+    mb: 'mb-0',
+} %}
+
+{% set order_dropdown_template %}
+    (option) => {
+        if (!option.id) {
+            return option.text;
+        }
+
+        let container = document.createElement('span');
+        if (option.id === 'ASC') {
+            container.innerHTML = '<i class="ti ti-sort-ascending me-1"></i>' + option.text;
+        } else if (option.id === 'DESC') {
+            container.innerHTML = '<i class="ti ti-sort-descending me-1"></i>' + option.text;
+        }
+
+        return container;
+    }
+{% endset %}
+<div class="list-group-item border-0 p-2" id="{{ rowid }}">
+    <div class="row g-1">
+        <div class="col-auto">
+            <button class="btn btn-sm btn-icon btn-ghost-secondary remove-order-criteria" type="button" data-rowid="{{ rowid }}"
+                    data-bs-toggle="tooltip" data-bs-placement="left" title="{{ __('Delete a sort') }}">
+                <i class="ti ti-square-rounded-minus" alt="-"></i>
+            </button>
+        </div>
+
+        <div class="col-auto">
+            {% set sort_value = order['soption_id'] ?? '' %}
+            {{ fields.dropdownArrayField("sort" ~ "[]", sort_value, values, '', dd_options|merge({
+                'used': used ?? []
+            })) }}
+        </div>
+
+        <div class="col-auto">
+            {{ fields.dropdownArrayField("order" ~ "[]", order['order'], {
+                'ASC': __('ASC'),
+                'DESC': __('DESC'),
+            }, '', dd_options|merge({
+                'templateResult': order_dropdown_template,
+                'templateSelection': order_dropdown_template,
+            })) }}
+        </div>
+    </div>
+</div>

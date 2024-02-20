@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -79,6 +79,12 @@
                <div>
                   <i class="fas fa-fw fa-mobile"></i>
                   <a href="tel:{{ user['mobile'] }}">{{ user['mobile'] }}</a>
+               </div>
+            {% endif %}
+            {% if user['registration_number']|length > 0 %}
+               <div>
+                  <i class="fas fa-fw fa-id-card-clip"></i>
+                  {{ user['registration_number'] }}
                </div>
             {% endif %}
             {% if user['locations_id'] > 0 %}

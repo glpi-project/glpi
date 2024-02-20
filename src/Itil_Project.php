@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -79,7 +79,7 @@ class Itil_Project extends CommonDBRelation
                             ]
                         );
                     }
-                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb);
+                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     break;
 
                 case Project::class:
@@ -88,7 +88,9 @@ class Itil_Project extends CommonDBRelation
                     }
                     $label = self::createTabEntry(
                         _n('Itil item', 'Itil items', Session::getPluralNumber()),
-                        $nb
+                        $nb,
+                        $item::getType(),
+                        Ticket::getIcon()
                     );
                     break;
             }

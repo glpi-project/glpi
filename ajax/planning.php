@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,8 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
-use Glpi\Toolbox\Sanitizer;
 
 include('../inc/includes.php');
 
@@ -82,7 +80,6 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
         $template = new PlanningExternalEventTemplate();
         $template->getFromDB($_POST[$key]);
 
-        $template->fields = Sanitizer::decodeHtmlSpecialCharsRecursive($template->fields);
         $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
         header("Content-Type: application/json; charset=UTF-8");
         echo json_encode($template->fields, JSON_NUMERIC_CHECK);

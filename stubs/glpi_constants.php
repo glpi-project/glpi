@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,6 +51,7 @@ define('GLPI_PICTURE_DIR', null);
 define('GLPI_PLUGIN_DOC_DIR', null);
 define('GLPI_RSS_DIR', null);
 define('GLPI_SESSION_DIR', null);
+define('GLPI_THEMES_DIR', null);
 define('GLPI_TMP_DIR', null);
 define('GLPI_UPLOAD_DIR', null);
 define('GLPI_VAR_DIR', null);
@@ -65,9 +66,11 @@ define('GLPI_STRICT_DEPRECATED', null);
 define('GLPI_AJAX_DASHBOARD', null);
 define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', null);
 define('GLPI_CALDAV_IMPORT_STATE', null);
+define('GLPI_CENTRAL_WARNINGS', null);
 define('GLPI_CSRF_EXPIRES', null);
 define('GLPI_CSRF_MAX_TOKENS', null);
 define('GLPI_DEMO_MODE', null);
+define('GLPI_DOCUMENTATION_ROOT_URL', null);
 define('GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE', null);
 define('GLPI_IDOR_EXPIRES', null);
 define('GLPI_INSTALL_MODE', null);
@@ -81,8 +84,7 @@ define('GLPI_NETWORK_MAIL', null);
 define('GLPI_NETWORK_SERVICES', null);
 define('GLPI_SERVERSIDE_URL_ALLOWLIST', null);
 define('GLPI_TELEMETRY_URI', null);
+define('GLPI_TEXT_MAXSIZE', null);
 define('GLPI_USE_CSRF_CHECK', null);
 define('GLPI_USE_IDOR_CHECK', null);
 define('GLPI_USER_AGENT_EXTRA_COMMENTS', null);
-define('GLPI_CENTRAL_WARNINGS', null);
-define('GLPI_TEXT_MAXSIZE', null);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\TemplateManager;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * ITILSolution Class
@@ -70,16 +69,23 @@ class ITILSolution extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countFor($item->getType(), $item->getID());
             }
-            return self::createTabEntry($title, $nb);
+            return self::createTabEntry($title, $nb, $item::getType());
         }
         return '';
     }
 
     public static function canView()
     {
-        return Session::haveRight('ticket', READ)
-             || Session::haveRight('change', READ)
-             || Session::haveRight('problem', READ);
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        $itil_types = $CFG_GLPI['itil_types'];
+        /** @var class-string<CommonITILObject> $type */
+        foreach ($itil_types as $type) {
+            if ($type::canView()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static function canUpdate()
@@ -204,7 +210,7 @@ class ITILSolution extends CommonDBChild
             }
             $input = array_replace(
                 [
-                    'content'           => Sanitizer::sanitize($template->getRenderedContent($parent_item)),
+                    'content'           => $template->getRenderedContent($parent_item),
                     'solutiontypes_id'  => $template->fields['solutiontypes_id'],
                     'status'            => CommonITILValidation::WAITING,
                 ],
@@ -223,7 +229,7 @@ class ITILSolution extends CommonDBChild
             if (isset($template_fields['content'])) {
                 $parent_item = new $input['itemtype']();
                 $parent_item->getFromDB($input['items_id']);
-                $template_fields['content'] = Sanitizer::sanitize($template->getRenderedContent($parent_item));
+                $template_fields['content'] = $template->getRenderedContent($parent_item);
             }
             $input = array_replace($template_fields, $input);
         }
@@ -279,7 +285,7 @@ class ITILSolution extends CommonDBChild
                 return false;
             }
 
-            $input['content'] = Sanitizer::sanitize($html);
+            $input['content'] = $html;
         }
 
         return $input;
@@ -303,7 +309,9 @@ class ITILSolution extends CommonDBChild
 
         // Add solution to duplicates
         if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
-            Ticket_Ticket::manageLinkedTicketsOnSolved($this->item->getID(), $this);
+            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->item->getID(), [
+                '_solution' => $this,
+            ]);
         }
 
         if (!isset($this->input['_linked_ticket'])) {
@@ -328,6 +336,14 @@ class ITILSolution extends CommonDBChild
                 'id'     => $this->item->getID(),
                 'status' => $status
             ]);
+        }
+
+        if (
+            $this->input["itemtype"] == 'Ticket'
+            && $_SESSION['glpiset_solution_tech']
+            && ($this->input['_disable_auto_assign'] ?? false) === false
+        ) {
+            Ticket::assignToMe($this->input["items_id"], $this->input["users_id"]);
         }
 
         parent::post_addItem();
@@ -377,7 +393,11 @@ class ITILSolution extends CommonDBChild
                 $statuses = self::getStatuses();
 
                 return (isset($statuses[$value]) ? $statuses[$value] : $value);
-            break;
+            case 'itemtype':
+                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                    return $values['itemtype']::getTypeName(1);
+                }
+                return $values['itemtype'];
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -399,7 +419,12 @@ class ITILSolution extends CommonDBChild
                 $options['display'] = false;
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, self::getStatuses(), $options);
-            break;
+            case 'itemtype':
+                return Dropdown::showFromArray($field, [
+                    'Ticket' => Ticket::getTypeName(1),
+                    'Change' => Change::getTypeName(1),
+                    'Problem' => Problem::getTypeName(1),
+                ], $options);
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -423,6 +448,65 @@ class ITILSolution extends CommonDBChild
     public static function getIcon()
     {
         return 'ti ti-check';
+    }
+
+    public function rawSearchOptions()
+    {
+
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'common',
+            'name'               => __('Characteristics')
+        ];
+
+        $tab[] = [
+            'id'                 => 1,
+            'table'              => self::getTable(),
+            'field'              => 'content',
+            'name'               => __('Description'),
+            'datatype'           => 'text',
+            'htmltext'           => true,
+        ];
+
+        $tab[] = [
+            'id'                 => 2,
+            'table'              => self::getTable(),
+            'field'              => 'id',
+            'name'               => __('ID'),
+            'datatype'           => 'number',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                 => 3,
+            'table'              => 'glpi_users',
+            'field'              => 'name',
+            'name'               => User::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'right'              => 'all'
+        ];
+
+        $tab[] = [
+            'id'                 => 4,
+            'table'              => self::getTable(),
+            'field'              => 'itemtype',
+            'name'               => __('Itemtype'),
+            'datatype'           => 'specific',
+            'searchtype'         => 'equals',
+            'massiveaction'      => false,
+        ];
+
+        $tab[] = [
+            'id'                => 5,
+            'table'             => SolutionType::getTable(),
+            'field'             => 'name',
+            'name'              => SolutionType::getTypeName(1),
+            'datatype'          => 'dropdown',
+            'searchtype'        => 'equals',
+        ];
+
+        return $tab;
     }
 
     /**

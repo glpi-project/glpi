@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,8 +44,8 @@ if (empty($_GET["id"])) {
 Session::checkLoginUser();
 
 // as _actors virtual field stores json, bypass automatic escaping
-if (isset($_UPOST['_actors'])) {
-    $_POST['_actors'] = json_decode($_UPOST['_actors'], true);
+if (isset($_POST['_actors'])) {
+    $_POST['_actors'] = json_decode($_POST['_actors'], true);
     $_REQUEST['_actors'] = $_POST['_actors'];
 }
 
@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
     Html::back();
 } else if (isset($_POST['addme_observer'])) {
     $change->check($_POST['changes_id'], READ);
-    $input = array_merge(Toolbox::addslashes_deep($change->fields), [
+    $input = array_merge($change->fields, [
         'id' => $_POST['changes_id'],
         '_itil_observer' => [
             '_type' => "user",
@@ -170,14 +170,14 @@ if (isset($_POST["add"])) {
             'documents_id' => $doc->getID()
         ]);
         foreach ($found_document_items as $item) {
-            $document_item->delete(Toolbox::addslashes_deep($item), true);
+            $document_item->delete($item, true);
         }
     }
     Html::back();
 } else if (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $change->check($id, READ);
-    $input = array_merge(Toolbox::addslashes_deep($change->fields), [
+    $input = array_merge($change->fields, [
         'id' => $id,
         '_itil_' . $_POST['actortype'] => [
             '_type' => "user",
@@ -205,7 +205,7 @@ if (isset($_POST["add"])) {
     }
 
     if (isset($_GET['id']) && ($_GET['id'] > 0)) {
-        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Ticket&item_items_id=' . $_GET['id'];
+        $url = KnowbaseItem::getFormURLWithParam($_GET) . '&_in_modal=1&item_itemtype=Change&item_items_id=' . $_GET['id'];
         if (strpos($url, '_to_kb=') !== false) {
             Ajax::createIframeModalWindow(
                 'savetokb',

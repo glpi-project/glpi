@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/rulecriteria.class.php */
 
@@ -809,10 +808,10 @@ class RuleCriteria extends DbTestCase
     public function testGetConditions()
     {
         $conditions = \RuleCriteria::getConditions('RuleDictionnarySoftware');
-        $this->array($conditions)->hasSize(10);
+        $this->array($conditions)->hasSize(14);
 
         $conditions = \RuleCriteria::getConditions('RuleTicket', 'locations_id');
-        $this->array($conditions)->hasSize(12);
+        $this->array($conditions)->hasSize(16);
     }
 
     public function testGetConditionByID()
@@ -911,154 +910,150 @@ class RuleCriteria extends DbTestCase
     protected function ruleCriteriaMatchProvider(): iterable
     {
         // Checks quotes, slashes and HTML special chars handling
-        foreach ([true, false] as $value_sanitized) {
-            foreach ([true, false] as $pattern_sanitized) {
-                yield [
-                    'condition' => \Rule::PATTERN_BEGIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("Besoin d'un") : "Besoin d'un",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_BEGIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_BEGIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\o") : "\o",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
-                ];
+        yield [
+            'condition' => \Rule::PATTERN_BEGIN,
+            'pattern'   => "Besoin d'un",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_BEGIN,
+            'pattern'   => "<R&D>",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_BEGIN,
+            'pattern'   => "\o",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
 
-                yield [
-                    'condition' => \Rule::PATTERN_END,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("d'un ordinateur") : "d'un ordinateur",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_END,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Test <R&D>") : "Test <R&D>",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_END,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/") : "/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
-                ];
+        yield [
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => "d'un ordinateur",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => "<R&D>",
+            'value'     => "Test <R&D>",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => "/",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
 
-                yield [
-                    'condition' => \Rule::PATTERN_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("d'un") : "d'un",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\\") : "\\",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
-                ];
+        yield [
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => "d'un",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => "<R&D>",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern'   => "\\",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
 
-                yield [
-                    'condition' => \Rule::PATTERN_NOT_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("d'un") : "d'un",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => false
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_NOT_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D>") : "<R&D>",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => false
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_NOT_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\\") : "\\",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => false
-                ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "d'un",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "<R&D>",
+            'value'     => "<R&D> Test",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "\\",
+            'value'     => "\o/",
+            'matches'   => false
+        ];
 
-                yield [
-                    'condition' => \Rule::PATTERN_IS,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_IS,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_NOT_CONTAIN,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => false
-                ];
+        yield [
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => "Besoin d'un ordinateur",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => "<R&D> Test",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_NOT_CONTAIN,
+            'pattern'   => "\o/",
+            'value'     => "\o/",
+            'matches'   => false
+        ];
 
-                yield [
-                    'condition' => \Rule::PATTERN_IS_NOT,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => false
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_IS_NOT,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => false
-                ];
-                yield [
-                    'condition' => \Rule::PATTERN_IS_NOT,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => false
-                ];
+        yield [
+            'condition' => \Rule::PATTERN_IS_NOT,
+            'pattern'   => "Besoin d'un ordinateur",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_IS_NOT,
+            'pattern'   => "<R&D> Test",
+            'value'     => "<R&D> Test",
+            'matches'   => false
+        ];
+        yield [
+            'condition' => \Rule::PATTERN_IS_NOT,
+            'pattern'   => "\o/",
+            'value'     => "\o/",
+            'matches'   => false
+        ];
 
-                yield [
-                    'condition' => \Rule::REGEX_MATCH,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/d'un/") : "/d'un/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("Besoin d'un ordinateur") : "Besoin d'un ordinateur",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::REGEX_MATCH,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/<R&D>/") : "/<R&D>/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("<R&D> Test") : "<R&D> Test",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::REGEX_MATCH,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/\\\.+\/$/") : "/\\\.+\/$/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("\o/") : "\o/",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::REGEX_MATCH,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/line1.*line2/") : "/line1.*line2/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("line1\nline2") : "line1\nline2",
-                    'matches'   => true
-                ];
-                yield [
-                    'condition' => \Rule::REGEX_MATCH,
-                    'pattern'   => $pattern_sanitized ? Sanitizer::sanitize("/line1.*line3/") : "/line1.*line3/",
-                    'value'     => $value_sanitized ? Sanitizer::sanitize("line1\n<p>line2<p>\nline3") : "line1\n<p>line2</p>\nline3",
-                    'matches'   => true
-                ];
-            }
-        }
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/d'un/",
+            'value'     => "Besoin d'un ordinateur",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/<R&D>/",
+            'value'     => "<R&D> Test",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/\\\.+\/$/",
+            'value'     => "\o/",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/line1.*line2/",
+            'value'     => "line1\nline2",
+            'matches'   => true
+        ];
+        yield [
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern'   => "/line1.*line3/",
+            'value'     => "line1\n<p>line2</p>\nline3",
+            'matches'   => true
+        ];
     }
 
     /**

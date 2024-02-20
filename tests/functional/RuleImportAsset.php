@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -109,7 +109,7 @@ class RuleImportAsset extends DbTestCase
             $DB->update(
                 'glpi_rules',
                 [
-                    'ranking' => new \QueryExpression($DB->quoteName('ranking') . ' + 2')
+                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2')
                 ],
                 [
                     'ranking'   => ['>', $r['ranking']],
@@ -1128,7 +1128,7 @@ class RuleImportAsset extends DbTestCase
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
         $fields['serial'] = '75F4BFC';
-        $this->integer((int)$computer->add(\Toolbox::addslashes_deep($fields)))->isGreaterThan(0);
+        $this->integer((int)$computer->add($fields))->isGreaterThan(0);
 
         $input = [
             'itemtype' => 'Computer',

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,7 +52,7 @@ class DomainRecord extends CommonDBChild
     {
         if ($item->getType() == 'Domain') {
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item));
+                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item), $item::getType());
             }
             return _n('Record', 'Records', Session::getPluralNumber());
         }
@@ -238,7 +238,7 @@ class DomainRecord extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
@@ -404,8 +404,8 @@ class DomainRecord extends CommonDBChild
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Data') . "</td>";
         echo "<td colspan='3'>";
-        echo "<input type='hidden' id='data_obj{$rand}' name='data_obj' value=\"" . Html::cleanInputText($this->fields["data_obj"]) . "\">";
-        echo "<input type='text' id='data{$rand}' name='data' value=\"" . Html::cleanInputText($this->fields["data"]) . "\" style='width: 95%'>";
+        echo "<input type='hidden' id='data_obj{$rand}' name='data_obj' value=\"" . htmlspecialchars($this->fields["data_obj"]) . "\">";
+        echo "<input type='text' id='data{$rand}' name='data' value=\"" . htmlspecialchars($this->fields["data"]) . "\" style='width: 95%'>";
         echo " <a href='#' title='" . __s('Open helper form') . "'>";
         echo "<i class='far fa-edit'></i>";
         echo "<span class='sr-only'>" . __('Open helper form') . "</span>";

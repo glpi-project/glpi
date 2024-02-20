@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,8 @@ namespace Glpi\CalDAV\Traits;
 
 use Glpi\CalDAV\Backend\Principal;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 
 /**
  * Trait used for CalDAV URI utilities, like generation and parsing.
@@ -194,7 +196,7 @@ trait CalDAVUriUtilTrait
          */
         global $CFG_GLPI, $DB;
 
-        $union = new \QueryUnion();
+        $union = new QueryUnion();
         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
             if (!is_a($itemtype, CalDAVCompatibleItemInterface::class, true)) {
                 continue;
@@ -204,7 +206,7 @@ trait CalDAVUriUtilTrait
                 [
                     'SELECT' => [
                         'id',
-                        new \QueryExpression(
+                        new QueryExpression(
                             $DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('itemtype')
                         ),
                     ],

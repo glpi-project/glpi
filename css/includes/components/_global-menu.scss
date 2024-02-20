@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,27 +31,27 @@
  * ---------------------------------------------------------------------
  */
 
-.navbar .navbar-toggler {
-    color: $mainmenu-fg;
-}
-
 .sidebar,
 .topbar {
-    background-color: $mainmenu-bg;
-    color: $mainmenu-fg;
+    background-color: var(--glpi-mainmenu-bg);
+    color: var(--glpi-mainmenu-fg);
     z-index: $zindex-fixed + 1; // +1 to be above breadcrumbs
 
+    .navbar-toggler {
+        color: var(--glpi-mainmenu-fg);
+    }
+
     .btn-ghost-secondary {
-        color: rgba($color: $mainmenu-fg, $alpha: 80%);
+        color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
     }
 
     .btn-outline-secondary {
-        color: rgba($color: $mainmenu-fg, $alpha: 80%);
-        border-color: rgba($color: $mainmenu-fg, $alpha: 80%);
+        color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+        border-color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
 
         &:hover {
-            background-color: rgba($color: $mainmenu-fg, $alpha: 80%);
-            color: rgba($color: $mainmenu-bg, $alpha: 80%);
+            background-color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
+            color: rgba($color: var(--glpi-mainmenu-bg), $alpha: 80%);
             border-color: transparent;
         }
     }
@@ -70,6 +70,8 @@
         border: 0;
         font-size: 1em;
         font-weight: 400;
+        margin-left: 1.5rem !important;
+        padding: 3px;
     }
 }
 
@@ -86,14 +88,15 @@
     #navbar-menu {
         .nav-item {
             .nav-link {
-                color: rgba($color: $mainmenu-fg, $alpha: 80%);
+                padding: 0 1.5rem !important;
+                color: rgba($color: var(--glpi-mainmenu-fg), $alpha: 80%);
                 border-left: 3px solid transparent;
                 border-radius: unset;
 
                 &.show,
                 &.active {
-                    border-left-color: rgba($color: $primary, $alpha: 30%);
-                    color: rgba($color: $primary, $alpha: 90%);
+                    border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 70%);
+                    color: color-mix(in srgb, var(--tblr-primary), transparent 10%);
                     font-weight: bold;
                 }
 
@@ -109,16 +112,17 @@
 
                         .dropdown-item {
                             border-left: 3px solid rgba($color: #000, $alpha: 50%);
+                            padding-left: 3.25rem; // FIXME: tabler 1.0.0-beta13 missing var $container-padding-x
 
                             &.active {
-                                border-left-color: rgba($color: $primary, $alpha: 30%);
+                                border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 30%);
                                 background-color: rgba($color: #000, $alpha: 10%);
                                 font-weight: bold;
                             }
 
                             &:hover {
-                                border-left-color: $primary;
-                                color: $primary;
+                                border-left-color: var(--tblr-primary);
+                                color: var(--tblr-primary);
                                 background-color: rgba($color: #000, $alpha: 20%);
                             }
                         }
@@ -132,8 +136,8 @@
 
             &:hover {
                 .nav-link {
-                    border-left-color: $primary;
-                    color: $primary;
+                    border-left-color: var(--tblr-primary);
+                    color: var(--tblr-primary);
                     background-color: rgba($color: #000, $alpha: 10%);
                 }
             }
@@ -166,7 +170,7 @@
             width: calc(100% + var(--tblr-gutter-x, 1.5rem) * 2);
 
             .glpi-logo {
-                background: url($logo_reduced) no-repeat;
+                background: var(--glpi-logo-reduced) no-repeat;
                 background-size: contain;
                 width: 40px;
                 height: 40px;
@@ -196,7 +200,7 @@
                 }
 
                 .dropdown-menu {
-                    box-shadow: $card-shadow-hover;
+                    box-shadow: color-mix(in srgb, var(--tblr-body-color), transparent 84%) 0 2px 16px 0;
 
                     &.show {
                         display: none;
@@ -226,11 +230,11 @@
                                 background: transparent;
                             }
 
-                            background-color: $mainmenu-fg;
-                            color: $mainmenu-bg;
+                            background-color: var(--glpi-mainmenu-fg);
+                            color: var(--glpi-mainmenu-bg);
                             top: 0;
                             left: calc(100% + 1px);
-                            border: 1px solid $mainmenu-bg;
+                            border: 1px solid var(--glpi-mainmenu-bg);
                             position: absolute;
                             z-index: 1050;
 
@@ -242,8 +246,8 @@
                                 border-left: 3px solid transparent;
 
                                 &.active {
-                                    background-color: lighten($mainmenu-bg, 55%);
-                                    border-left-color: $primary;
+                                    background-color: var(--glpi-mainmenu-active-bg);
+                                    border-left-color: var(--tblr-primary);
                                 }
                             }
                         }
@@ -264,7 +268,7 @@
                     }
 
                     &.active {
-                        background-color: lighten($mainmenu-bg, 5%);
+                        background-color: color-mix(in srgb, var(--glpi-mainmenu-bg), white 5%);
                     }
                 }
             }
@@ -292,7 +296,7 @@
 
     // fix z-index issues on responsive menu
     .sidebar {
-        z-index: $zindex-fixed;
+        z-index: var(--glpi-zindex-fixed);
 
         & ~ .navbar {
             z-index: inherit;

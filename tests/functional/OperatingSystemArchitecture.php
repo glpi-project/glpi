@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,7 +59,7 @@ class OperatingSystemArchitecture extends CommonDropdown
     protected function getTabs()
     {
         return [
-            'OperatingSystemArchitecture$main'  => 'Operating system architecture',
+            'OperatingSystemArchitecture$main'  => "<span><i class='ti ti-edit me-2'></i>Operating system architecture</span>",
         ];
     }
 

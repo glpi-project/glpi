@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,12 @@ namespace tests\units;
 
 use DbTestCase;
 use Psr\Log\LogLevel;
-use QueryExpression;
 
 // Generic test classe, to be extended for CommonDBTM Object
 
 class DBmysqlIterator extends DbTestCase
 {
+    /** @var \DBmysqlIterator */
     private $it;
 
     public function beforeTestMethod($method)
@@ -224,7 +224,7 @@ SQL
         $it = $this->it->execute('foo', ['FIELDS' => ['MAX' => 'bar AS cpt']]);
         $this->string($it->getSql())->isIdenticalTo('SELECT MAX(`bar`) AS `cpt` FROM `foo`');
 
-        $it = $this->it->execute('foo', ['FIELDS' => new \QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
+        $it = $this->it->execute('foo', ['FIELDS' => new \Glpi\DBAL\QueryExpression('IF(bar IS NOT NULL, 1, 0) AS baz')]);
         $this->string($it->getSql())->isIdenticalTo('SELECT IF(bar IS NOT NULL, 1, 0) AS baz FROM `foo`');
     }
 
@@ -239,7 +239,7 @@ SQL
         $this->it->buildQuery(['FIELDS' => 'bar', 'FROM' => ['foo', 'baz']]);
         $this->string($this->it->getSql())->isIdenticalTo('SELECT `bar` FROM `foo`, `baz`');
 
-        $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
+        $this->it->buildQuery(['FIELDS' => 'c', 'FROM' => new \Glpi\DBAL\QueryExpression("(SELECT CONCAT('foo', 'baz') as c) as t")]);
         $this->string($this->it->getSql())->isIdenticalTo("SELECT `c` FROM (SELECT CONCAT('foo', 'baz') as c) as t");
     }
 
@@ -288,16 +288,16 @@ SQL
         $it = $this->it->execute('foo', ['ORDER' => 'bar DESC, baz ASC']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` ORDER BY `bar` DESC, `baz` ASC');
 
-        $it = $this->it->execute('foo', ['ORDER' => new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
+        $it = $this->it->execute('foo', ['ORDER' => new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END")]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END");
 
-        $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
+        $it = $this->it->execute('foo', ['ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC");
 
-        $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
+        $it = $this->it->execute('foo', ['ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC, baz DESC']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
 
-        $it = $this->it->execute('foo', ['ORDER' => [new \QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
+        $it = $this->it->execute('foo', ['ORDER' => [new \Glpi\DBAL\QueryExpression("CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END"), 'bar ASC', 'baz DESC']]);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` ORDER BY CASE WHEN `foo` LIKE 'test%' THEN 0 ELSE 1 END, `bar` ASC, `baz` DESC");
 
         $this->exception(
@@ -486,7 +486,7 @@ SQL
             [
                 'LEFT JOIN' => [
                     [
-                        'TABLE'  => new \QuerySubQuery(['FROM' => 'bar'], 't2'),
+                        'TABLE'  => new \Glpi\DBAL\QuerySubQuery(['FROM' => 'bar'], 't2'),
                         'FKEY'   => [
                             't2'  => 'id',
                             'foo' => 'fk'
@@ -514,7 +514,7 @@ SQL
 
         // QueryExpression
         $expression = "LEFT JOIN xxxx";
-        $join = $this->it->analyseJoins(['LEFT JOIN' => [new QueryExpression($expression)]]);
+        $join = $this->it->analyseJoins(['LEFT JOIN' => [new \Glpi\DBAL\QueryExpression($expression)]]);
         $this->string($join)->isIdenticalTo($expression);
     }
 
@@ -594,13 +594,13 @@ SQL
         $it = $this->it->execute('foo', ['bar' => 'val']);
         $this->string($it->getSql())->isIdenticalTo("SELECT * FROM `foo` WHERE `bar` = 'val'");
 
-        $it = $this->it->execute('foo', ['bar' => new \QueryExpression('`field`')]);
+        $it = $this->it->execute('foo', ['bar' => new \Glpi\DBAL\QueryExpression('`field`')]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = `field`');
 
         $it = $this->it->execute('foo', ['bar' => '?']);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = \'?\'');
 
-        $it = $this->it->execute('foo', ['bar' => new \QueryParam()]);
+        $it = $this->it->execute('foo', ['bar' => new \Glpi\DBAL\QueryParam()]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE `bar` = ?');
 
         /*$it = $this->it->execute('foo', ['bar' => new \QueryParam('myparam')]);
@@ -842,10 +842,10 @@ SQL
 
     public function testExpression()
     {
-        $it = $this->it->execute('foo', [new \QueryExpression('a LIKE b')]);
+        $it = $this->it->execute('foo', [new \Glpi\DBAL\QueryExpression('a LIKE b')]);
         $this->string($it->getSql())->isIdenticalTo('SELECT * FROM `foo` WHERE a LIKE b');
 
-        $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \QueryExpression('1 AS `myfield`')]]);
+        $it = $this->it->execute('foo', ['FIELDS' => ['b' => 'bar', '`c`' => '`baz`', new \Glpi\DBAL\QueryExpression('1 AS `myfield`')]]);
         $this->string($it->getSql())->isIdenticalTo('SELECT `b`.`bar`, `c`.`baz`, 1 AS `myfield` FROM `foo`');
     }
 
@@ -854,7 +854,7 @@ SQL
         $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
         $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = 'f')";
 
-        $sub_query = new \QuerySubQuery($crit);
+        $sub_query = new \Glpi\DBAL\QuerySubQuery($crit);
         $this->string($sub_query->getQuery())->isIdenticalTo($raw_subq);
 
         $it = $this->it->execute('foo', ['bar' => $sub_query]);
@@ -869,7 +869,7 @@ SQL
         $this->string($it->getSql())
            ->isIdenticalTo("SELECT * FROM `foo` WHERE NOT (`bar` IN $raw_subq)");
 
-        $sub_query = new \QuerySubQuery($crit, 'thesubquery');
+        $sub_query = new \Glpi\DBAL\QuerySubQuery($crit, 'thesubquery');
         $this->string($sub_query->getQuery())->isIdenticalTo("$raw_subq AS `thesubquery`");
 
         $it = $this->it->execute('foo', ['bar' => $sub_query]);
@@ -890,24 +890,24 @@ SQL
             ['FROM' => 'table1'],
             ['FROM' => 'table2']
         ];
-        $union = new \QueryUnion($union_crit);
+        $union = new \Glpi\DBAL\QueryUnion($union_crit);
         $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, true);
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, true);
         $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, false, 'theunion');
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, false, 'theunion');
         $raw_query = 'SELECT * FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
         $it = $this->it->execute(['FROM' => $union]);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, false, 'theunion');
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, false, 'theunion');
         $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`)) AS `theunion`';
         $crit = [
             'SELECT'    => 'theunion.field',
@@ -917,7 +917,7 @@ SQL
         $it = $this->it->execute($crit);
         $this->string($it->getSql())->isIdenticalTo($raw_query);
 
-        $union = new \QueryUnion($union_crit, true);
+        $union = new \Glpi\DBAL\QueryUnion($union_crit, true);
         $union_raw_query = '((SELECT * FROM `table1`) UNION (SELECT * FROM `table2`))';
         $raw_query = 'SELECT DISTINCT `theunion`.`field` FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
         $crit = [
@@ -937,7 +937,7 @@ SQL
         $users_table = 'glpi_ticket_users';
         $groups_table = 'glpi_groups_tickets';
 
-        $subquery1 = new \QuerySubQuery([
+        $subquery1 = new \Glpi\DBAL\QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'tu.type AS type'
@@ -955,7 +955,7 @@ SQL
                 "tu.$fk" => 42
             ]
         ]);
-        $subquery2 = new \QuerySubQuery([
+        $subquery2 = new \Glpi\DBAL\QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
                 'gt.type AS type'
@@ -993,7 +993,7 @@ SQL
                      . " WHERE `gt`.`$fk` = '42')"
                      . ") AS `allactors`";
 
-        $union = new \QueryUnion([$subquery1, $subquery2], false, 'allactors');
+        $union = new \Glpi\DBAL\QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $it = $this->it->execute([
             'FIELDS'          => [
                 'users_id',
@@ -1159,7 +1159,7 @@ SQL
                 'NAME.id AS name_id',
                 'PORT.id AS port_id',
                 'ITEM.id AS item_id',
-                new \QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+                new \Glpi\DBAL\QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
             ]);
             $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
                 'glpi_networknames AS NAME'   => [
@@ -1196,8 +1196,8 @@ SQL
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             'NAME.id AS name_id',
             'PORT.id AS port_id',
-            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type')),
+            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1228,9 +1228,9 @@ SQL
         $criteria = $main_criteria;
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
             'NAME.id AS name_id',
-            new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type'))
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1248,15 +1248,15 @@ SQL
 
         $criteria = $main_criteria;
         $criteria['SELECT'] = array_merge($criteria['SELECT'], [
-            new \QueryExpression("NULL AS " . $DB->quoteName('name_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('port_id')),
-            new \QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('name_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
+            new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type'))
         ]);
         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
 
-        $union = new \QueryUnion($queries);
+        $union = new \Glpi\DBAL\QueryUnion($queries);
         $criteria = [
             'FROM'   => $union,
         ];
@@ -1267,10 +1267,10 @@ SQL
 
     public function testAnalyseCrit()
     {
-        $crit = [new \QuerySubQuery([
+        $crit = [new \Glpi\DBAL\QuerySubQuery([
             'SELECT' => ['COUNT' => ['users_id']],
             'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new \QueryExpression('glpi_groups.id')]
+            'WHERE'  => ['groups_id' => new \Glpi\DBAL\QueryExpression('glpi_groups.id')]
         ])
         ];
         $this->string($this->it->analyseCrit($crit))->isIdenticalTo("(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)");
@@ -1427,9 +1427,9 @@ SQL
     /**
      * Returns a fake users table that can be used to test iterator.
      *
-     * @return \QueryExpression
+     * @return \Glpi\DBAL\QueryExpression
      */
-    private function getUsersFakeTable(): \QueryExpression
+    private function getUsersFakeTable(): \Glpi\DBAL\QueryExpression
     {
         global $DB;
 
@@ -1440,6 +1440,116 @@ SQL
             sprintf($user_pattern, 6, $DB->quoteName('id'), $DB->quoteValue('acain'), $DB->quoteName('name')),
         ];
 
-        return new \QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+        return new \Glpi\DBAL\QueryExpression('(' . implode(' UNION ALL ', $users_table) . ') AS users');
+    }
+
+    public function testInCriteria()
+    {
+        global $DB;
+        $iterator = new \DBmysqlIterator($DB);
+        $to_sql_array = static function ($values) use ($DB) {
+            $str = '(';
+            foreach ($values as $value) {
+                $str .= $DB->quoteValue($value) . ', ';
+            }
+            return rtrim($str, ', ') . ')';
+        };
+
+        // Reguar IN
+        $criteria = [
+            'id' => [1, 2, 3]
+        ];
+        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id']);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+
+        // Explicit IN (array form)
+        $criteria = [
+            'id' => ['IN', [1, 2, 3]]
+        ];
+        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id'][1]);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+
+        // Explicit NOT IN (array form)
+        $criteria = [
+            'id' => ['NOT IN', [1, 2, 3]]
+        ];
+        $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
+        $this->string($iterator->analyseCrit($criteria))->isEqualTo($expected);
+    }
+
+    protected function resultProvider(): iterable
+    {
+        // Data from GLPI 9.5- (autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '&lt;p&gt;Test&lt;/p&gt;',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+
+        // Data from GLPI 10.0.x (autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&#38;B',
+                'content' => '&#60;p&#62;Test&#60;/p&#62;',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+
+        // Data from GLPI 10.1+ (not autosanitized)
+        yield [
+            'db_data' => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ],
+            'result'  => [
+                'id'      => 1,
+                'name'    => 'A&B',
+                'content' => '<p>Test</p>',
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider resultProvider
+     */
+    public function testAutoUnsanitize(array $db_data, array $result): void
+    {
+
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $this->calling($mysqli_result)->fetch_assoc = $db_data;
+        $this->calling($mysqli_result)->data_seek   = true;
+        $this->calling($mysqli_result)->free        = true;
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+        $this->calling($db)->doQuery = $mysqli_result;
+        $this->calling($db)->numrows = 1;
+
+        $iterator = $db->request(['FROM' => 'glpi_mocks']);
+
+        $this->array($iterator->current())->isEqualTo($result);
+    }
+
+    public function testRawFKeyCondition()
+    {
+        $this->string(
+            $this->it->analyseCrit([
+                'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+            ])
+        )->isEqualTo("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)");
     }
 }

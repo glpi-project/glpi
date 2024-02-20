@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,7 +78,7 @@ class Appliance extends CommonDBTM
          ->addStandardTab('Certificate_Item', $ong, $options)
          ->addStandardTab('Domain_Item', $ong, $options)
          ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Ticket', $ong, $options)
+         ->addStandardTab('Item_Ticket', $ong, $options)
          ->addStandardTab('Item_Problem', $ong, $options)
          ->addStandardTab('Change_Item', $ong, $options)
          ->addStandardTab('ManualLink', $ong, $options)
@@ -222,7 +222,7 @@ class Appliance extends CommonDBTM
             'id'            => '10',
             'table'         => ApplianceEnvironment::getTable(),
             'field'         => 'name',
-            'name'          => __('Environment'),
+            'name'          => _n('Environment', 'Environments', 1),
             'datatype'      => 'dropdown'
         ];
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,10 +72,6 @@ if (isset($_POST["test_rule"])) {
     unset($_POST["sub_type"]);
     $rule->getRuleWithCriteriasAndActions($rules_id, 1, 1);
 
-   // Need for RuleEngines
-    foreach ($_POST as $key => $val) {
-        $_POST[$key] = stripslashes($val);
-    }
    //Add rules specific POST fields to the param array
     $params = $rule->addSpecificParamsForPreview($params);
 

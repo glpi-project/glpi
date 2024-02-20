@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -111,9 +111,13 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($net_xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -159,9 +163,13 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         $converter = new \Glpi\Inventory\Converter();
         $source = json_decode($converter->convert($comp_xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($source);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {

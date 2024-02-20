@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\Clonable;
+
 /**
  * State Class
  **/
 class State extends CommonTreeDropdown
 {
+    use Clonable;
+
     public $can_be_translated       = true;
 
     public static $rightname               = 'state';
@@ -65,6 +71,13 @@ class State extends CommonTreeDropdown
     {
 
         $fields   = parent::getAdditionalFields();
+
+        $fields[] = [
+            'label' => __('Show items with this status in assistance'),
+            'name'  => 'is_helpdesk_visible',
+            'type'  => 'bool',
+        ];
+
         $fields[] = ['label' => __('Visibility'),
             'name'  => 'header',
             'list'  => false
@@ -77,18 +90,17 @@ class State extends CommonTreeDropdown
                 'list'  => true
             ];
         }
+
         return $fields;
     }
 
 
     /**
-     * Dropdown of states for behaviour config
+     * States for behavious config
      *
-     * @param $name            select name
      * @param $lib    string   to add for -1 value (default '')
-     * @param $value           default value (default 0)
-     **/
-    public static function dropdownBehaviour($name, $lib = "", $value = 0)
+     */
+    final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -97,6 +109,10 @@ class State extends CommonTreeDropdown
 
         if ($lib) {
             $elements["-1"] = $lib;
+        }
+
+        if ($is_inheritable) {
+            $elements["-2"] = __('Inheritance of the parent entity');
         }
 
         $iterator = $DB->request([
@@ -108,6 +124,20 @@ class State extends CommonTreeDropdown
         foreach ($iterator as $data) {
             $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
         }
+
+        return $elements;
+    }
+
+    /**
+     * Dropdown of states for behaviour config
+     *
+     * @param $name            select name
+     * @param $lib    string   to add for -1 value (default '')
+     * @param $value           default value (default 0)
+     **/
+    public static function dropdownBehaviour($name, $lib = "", $value = 0, $is_inheritable = false)
+    {
+        $elements = self::getBehaviours($lib, $is_inheritable);
         Dropdown::showFromArray($name, $elements, ['value' => $value]);
     }
 
@@ -258,6 +288,9 @@ class State extends CommonTreeDropdown
         foreach ($this->getvisibilityFields() as $field) {
             $this->fields[$field] = 1;
         }
+
+        $this->fields['is_helpdesk_visible'] = 1;
+
         return true;
     }
 
@@ -515,6 +548,14 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => '40',
+            'table'              => $this->getTable(),
+            'field'              => 'is_helpdesk_visible',
+            'name'               => __('Show items with this status in assistance'),
+            'datatype'           => 'bool'
+        ];
+
         return $tab;
     }
 
@@ -567,7 +608,7 @@ class State extends CommonTreeDropdown
         // Apply collate
         if (isset($where['name'])) {
             $collate = $DB->use_utf8mb4 ? "utf8mb4_bin" : "utf8_bin";
-            $where['name'] = new QueryExpression($DB->quoteValue(addslashes($where['name'])) . " COLLATE $collate");
+            $where['name'] = new QueryExpression($DB->quote($where['name']) . " COLLATE $collate");
         }
 
         $query = [
@@ -581,6 +622,8 @@ class State extends CommonTreeDropdown
 
     /**
      * Get visibility fields from conf
+     *
+     * @return array<string,string>
      */
     protected function getvisibilityFields(): array
     {
@@ -591,5 +634,29 @@ class State extends CommonTreeDropdown
             $fields[$type] = 'is_visible_' . strtolower($type);
         }
         return $fields;
+    }
+
+    /**
+     * Criteria to apply to assets dropdown when shown in assistance
+     *
+     * @return array
+     */
+    public static function getDisplayConditionForAssistance(): array
+    {
+        return [
+            'OR' =>  [
+                'states_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => State::getTable(),
+                    'WHERE'  => ['is_helpdesk_visible' => true]
+                ]),
+                ['states_id' => 0]
+            ]
+        ];
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

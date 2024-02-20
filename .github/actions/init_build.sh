@@ -6,7 +6,7 @@ set -e -u -x -o pipefail
 STABLE_REGEX="^[0-9]+\.[0-9]+\.[0-9]+$"
 PHP_MAJOR_VERSION="$(echo $PHP_VERSION | cut -d '.' -f 1,2 | sed 's/\.//')"
 CHECK_PLATFORM_REQS="false"
-if [[ "$PHP_VERSION" =~ $STABLE_REGEX && "$PHP_MAJOR_VERSION" -lt "82" ]]; then
+if [[ "$PHP_VERSION" =~ $STABLE_REGEX && "$PHP_MAJOR_VERSION" -lt "83" ]]; then
     CHECK_PLATFORM_REQS="true"
 fi
 

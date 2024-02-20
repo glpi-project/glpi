@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,10 @@
 
 namespace tests\units;
 
-use Glpi\Toolbox\Sanitizer;
+use DateTime;
+use DateInterval;
 use Profile_User;
-use QuerySubQuery;
+use Glpi\DBAL\QuerySubQuery;
 
 /* Test for inc/user.class.php */
 
@@ -346,6 +347,7 @@ class User extends \DbTestCase
        //add same user twice
         $input = ['name' => 'new_user'];
         $this->integer($user->add($input))->isGreaterThan(0);
+        $user = $this->newTestedInstance();
         $this->boolean($user->add($input))->isFalse(0);
         $this->hasSessionMessages(ERROR, ['Unable to add. The user already exists.']);
 
@@ -952,6 +954,7 @@ class User extends \DbTestCase
 
         return [
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 years', $time)),
                 'expiration_delay'                => -1,
                 'expiration_notice'               => -1,
@@ -960,6 +963,7 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
@@ -968,6 +972,7 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-10 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => 10,
@@ -976,10 +981,29 @@ class User extends \DbTestCase
                 'expected_has_password_expire'    => false,
             ],
             [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
                 'last_update'                     => date('Y-m-d H:i:s', strtotime('-20 days', $time)),
                 'expiration_delay'                => 15,
                 'expiration_notice'               => -1,
                 'expected_expiration_time'        => strtotime('-5 days', $time),
+                'expected_should_change_password' => true,
+                'expected_has_password_expire'    => true,
+            ],
+            [
+                'creation_date'                   => $_SESSION['glpi_currenttime'],
+                'last_update'                     => null,
+                'expiration_delay'                => 15,
+                'expiration_notice'               => -1,
+                'expected_expiration_time'        => strtotime('+15 days', strtotime($_SESSION['glpi_currenttime'])),
+                'expected_should_change_password' => false,
+                'expected_has_password_expire'    => false,
+            ],
+            [
+                'creation_date'                   => '2021-12-03 17:54:32',
+                'last_update'                     => null,
+                'expiration_delay'                => 15,
+                'expiration_notice'               => -1,
+                'expected_expiration_time'        => strtotime('2021-12-18 17:54:32'),
                 'expected_should_change_password' => true,
                 'expected_has_password_expire'    => true,
             ],
@@ -990,7 +1014,8 @@ class User extends \DbTestCase
      * @dataProvider passwordExpirationMethodsProvider
      */
     public function testPasswordExpirationMethods(
-        string $last_update,
+        string $creation_date,
+        ?string $last_update,
         int $expiration_delay,
         int $expiration_notice,
         $expected_expiration_time,
@@ -1003,9 +1028,10 @@ class User extends \DbTestCase
         $username = 'prepare_for_update_' . mt_rand();
         $user_id = $user->add(
             [
-                'name'      => $username,
-                'password'  => 'pass',
-                'password2' => 'pass'
+                'date_creation' => $creation_date,
+                'name'          => $username,
+                'password'      => 'pass',
+                'password2'     => 'pass'
             ]
         );
         $this->integer($user_id)->isGreaterThan(0);
@@ -1171,6 +1197,393 @@ class User extends \DbTestCase
         $DB->update(\User::getTable(), ['is_active' => 1], $user_crit); // reset users
     }
 
+    public function providerGetSubstitutes()
+    {
+        // remove all substitutes, if any
+        $validator_substitute = new \ValidatorSubstitute();
+        $testedClass = $this->getTestedClassName();
+        $validator_substitute->deleteByCriteria([
+            'users_id' => $testedClass::getIdByName('normal'),
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [],
+        ];
+
+        $this->login('normal', 'normal');
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('normal'),
+            'substitutes' => [$testedClass::getIdByName('glpi')],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi')],
+        ];
+
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('normal'),
+            'substitutes' => [$testedClass::getIdByName('glpi'), 3],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi'), 3],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetSubstitutes
+     *
+     * @param integer $input
+     * @param array $expected
+     * @return void
+     */
+    public function testGetSubstitutes(int $input, array $expected)
+    {
+        $instance = $this->newTestedInstance;
+        $instance->getFromDB($input);
+        $output = $instance->getSubstitutes($input);
+        $this->array($output)->isEqualTo($expected);
+    }
+
+    public function providerGetDelegators()
+    {
+        // remove all delegators, if any
+        $validator_substitute = new \ValidatorSubstitute();
+        $testedClass = $this->getTestedClassName();
+        $validator_substitute->deleteByCriteria([
+            'users_id_substitute' => $testedClass::getIdByName('normal'),
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [],
+        ];
+
+        $this->login('glpi', 'glpi');
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('glpi'),
+            'substitutes' => [$testedClass::getIdByName('normal')],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi')],
+        ];
+
+        $this->login('post-only', 'postonly');
+        $validator_substitute->updateSubstitutes([
+            'users_id' => $testedClass::getIdByName('post-only'),
+            'substitutes' => [$testedClass::getIdByName('normal')],
+        ]);
+        yield [
+            'input' => $testedClass::getIdByName('normal'),
+            'expected' => [$testedClass::getIdByName('glpi'), $testedClass::getIdByName('post-only')],
+        ];
+    }
+
+    /**
+     * @dataProvider providerGetDelegators
+     *
+     * @param integer $input
+     * @param array $expected
+     * @return void
+     */
+    public function testGetDelegators(int $input, array $expected)
+    {
+        $instance = $this->newTestedInstance;
+        $instance->getFromDB($input);
+        $output = $instance->getDelegators($input);
+        $this->array($output)->isEqualTo($expected);
+    }
+
+    public function providerIsSubstituteOf()
+    {
+        $validator_substitute = new \ValidatorSubstitute();
+        $testedClass = $this->getTestedClassName();
+        $validator_substitute->deleteByCriteria([
+            'users_id' => $testedClass::getIdByName('normal'),
+        ]);
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => false,
+            'expected'           => false,
+        ];
+
+        $validator_substitute->add([
+            'users_id' => $testedClass::getIdByName('normal'),
+            'users_id_substitute' => $testedClass::getIdByName('glpi'),
+        ]);
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => false,
+            'expected'           => true,
+        ];
+
+        $instance = $this->newTestedInstance;
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => '1999-01-01 12:00:00',
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => '',
+            'substitution_start_date' => (new DateTime())->add(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->add(new DateInterval('P2Y'))->format('Y-m-d H:i:s'),
+            'substitution_start_date' => (new DateTime())->add(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->sub(new DateInterval('P1Y'))->format('Y-m-d H:i:s'),
+            'substitution_start_date' => (new DateTime())->sub(new DateInterval('P2Y'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => false,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->add(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+            'substitution_start_date' => (new DateTime())->sub(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => true,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_start_date' => (new DateTime())->sub(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => true,
+        ];
+
+        $success = $instance->update([
+            'id' => $testedClass::getIdByName('normal'),
+            'substitution_end_date' => (new DateTime())->add(new DateInterval('P1M'))->format('Y-m-d H:i:s'),
+        ]);
+        $this->boolean($success)->isTrue();
+        yield [
+            'users_id'           => $testedClass::getIdByName('glpi'),
+            'users_id_delegator' => $testedClass::getIdByName('normal'),
+            'use_date_range'     => true,
+            'expected'           => true,
+        ];
+    }
+
+    /**
+     * @dataProvider providerIsSubstituteOf
+     *
+     * @param integer $users_id
+     * @param integer $users_id_delegator
+     * @param boolean $use_date_range
+     * @param [type] $expected
+     * @return void
+     */
+    public function testIsSubstituteOf(int $users_id, int $users_id_delegator, bool $use_date_range, $expected)
+    {
+        $instance = $this->newTestedInstance;
+        $instance->getFromDB($users_id);
+        $output = $instance->isSubstituteOf($users_id_delegator, $use_date_range);
+        $this->boolean($output)->isEqualTo($expected);
+    }
+
+    public function testGetUserByForgottenPasswordToken()
+    {
+        global $DB, $CFG_GLPI;
+
+        $user = new \User();
+        // Set the password_forget_token of TU_USER to some random hex string and set the password_forget_token_date to now - 5 days
+        $token = bin2hex(random_bytes(16));
+        $this->boolean(
+            $DB->update(
+                'glpi_users',
+                [
+                    'password_forget_token' => $token,
+                    'password_forget_token_date' => date('Y-m-d H:i:s', strtotime('-5 days')),
+                ],
+                [
+                    'id' => getItemByTypeName('User', TU_USER, true),
+                ]
+            )
+        )->isTrue();
+
+        // Set password_init_token_delay config option to 1 day
+        $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP;
+
+        $this->variable(\User::getUserByForgottenPasswordToken($token))->isNull();
+
+        // Set password_init_token_delay config option to 10 days
+        $CFG_GLPI['password_init_token_delay'] = DAY_TIMESTAMP * 10;
+
+        $this->variable(\User::getUserByForgottenPasswordToken($token))->isNotNull();
+    }
+
+    /**
+     * Data provider for testValidatePassword
+     *
+     * @return iterable
+     */
+    protected function testValidatePasswordProvider(): iterable
+    {
+        global $CFG_GLPI;
+
+        // Load test subject
+        $user = getItemByTypeName('User', TU_USER);
+
+        // Password security must be disabled by default
+        $this->boolean((bool)$CFG_GLPI['use_password_security'])->isFalse();
+        yield [$user, 'mypass'];
+
+        // Enable security
+        $CFG_GLPI['use_password_security'] = 1;
+        $this->integer((int)$CFG_GLPI['password_min_length'])->isIdenticalTo(8);
+        $this->integer((int)$CFG_GLPI['password_need_number'])->isIdenticalTo(1);
+        $this->integer((int)$CFG_GLPI['password_need_letter'])->isIdenticalTo(1);
+        $this->integer((int)$CFG_GLPI['password_need_caps'])->isIdenticalTo(1);
+        $this->integer((int)$CFG_GLPI['password_need_symbol'])->isIdenticalTo(1);
+        $errors = [
+            'Password too short!',
+            'Password must include at least a digit!',
+            'Password must include at least a lowercase letter!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, '', $errors];
+
+        // Increase password length
+        $errors = [
+            'Password must include at least a digit!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'mypassword', $errors];
+
+        // Reduce minimum length
+        $CFG_GLPI['password_min_length'] = strlen('mypass');
+        $errors = [
+            'Password must include at least a digit!',
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'mypass', $errors];
+        $CFG_GLPI['password_min_length'] = 8; //reset
+
+        // Add digit to password
+        $errors = [
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'my1password', $errors];
+
+        // Disable digit validation
+        $CFG_GLPI['password_need_number'] = 0;
+        $errors = [
+            'Password must include at least a uppercase letter!',
+            'Password must include at least a symbol!'
+        ];
+        yield [$user, 'mypassword', $errors];
+        $CFG_GLPI['password_need_number'] = 1; //reset
+
+        // Add uppercase letter to password
+        yield [$user, 'my1paSsword', ['Password must include at least a symbol!']];
+
+        // Disable uppercase validation
+        $CFG_GLPI['password_need_caps'] = 0;
+        yield [$user, 'my1password', ['Password must include at least a symbol!']];
+        $CFG_GLPI['password_need_caps'] = 1; //reset
+
+        // Add symbol to password
+        yield [$user, 'my1paSsw@rd'];
+
+        // Disable password validation
+        $CFG_GLPI['password_need_symbol'] = 0;
+        yield [$user, 'my1paSsword'];
+        $CFG_GLPI['password_need_symbol'] = 1; //reset
+
+        // Test password history setting
+        $this->login();
+        $CFG_GLPI['use_password_security'] = 0; // Disable others checks
+        $CFG_GLPI['non_reusable_passwords_count'] = 3; // Check last 3 password (current + previous 2)
+        $password1 = TU_PASS; // Current password
+        $password2 = "P@ssword2"; // First password change
+        $password3 = "P@ssword3"; // Second password change
+        $password4 = "P@ssword4"; // Not yet used password
+        $this->updateItem('User', $user->getID(), ['password' => $password2, 'password2' => $password2], ['password', 'password2']);
+        $this->updateItem('User', $user->getID(), ['password' => $password3, 'password2' => $password3], ['password', 'password2']);
+        $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
+
+        // Last 3 passwords should not work
+        yield [$user, $password1, ["Password was used too recently."]];
+        yield [$user, $password2, ["Password was used too recently."]];
+        yield [$user, $password3, ["Password was used too recently."]];
+
+        // Never used before password, should work
+        yield [$user, $password4];
+    }
+
+    /**
+     * Tests for $user->validatePassword()
+     *
+     * @dataprovider testValidatePasswordProvider
+     *
+     * @param User   $user     Test subject
+     * @param string $password Password to validate
+     * @param array  $errors   Expected errors
+     *
+     * @return void
+     */
+    public function testValidatePassword(
+        \User $user,
+        string $password,
+        array $errors = [],
+    ): void {
+        $expected = count($errors) === 0;
+        $password_errors = [];
+        $this->boolean($user->validatePassword($password, $password_errors))->isEqualTo($expected);
+        $this->array($password_errors)->isEqualto($errors);
+
+        return;
+    }
+
     /**
      * Tests if the last super admin user can be deleted or disabled
      *
@@ -1248,11 +1661,11 @@ class User extends \DbTestCase
 
         $itil_layout_1 = '{"collapsed":"true","expanded":"false","items":{"item-main":"false","actors":"false","items":"false","service-levels":"false","linked_tickets":"false"}}';
         $this->boolean(
-            $user->update(Sanitizer::dbEscapeRecursive([
+            $user->update([
                 'id' => $users_id,
                 'show_count_on_tabs' => '0',
                 'itil_layout' => $itil_layout_1,
-            ]))
+            ])
         )->isTrue();
 
         // pref should be updated even without logout/login
@@ -1272,11 +1685,11 @@ class User extends \DbTestCase
 
         $itil_layout_2 = '{"collapsed":"false","expanded":"true"}';
         $this->boolean(
-            $user->update(Sanitizer::dbEscapeRecursive([
+            $user->update([
                 'id' => $users_id,
                 'show_count_on_tabs' => '1',
                 'itil_layout' => $itil_layout_2,
-            ]))
+            ])
         )->isTrue();
 
         // pref should be updated even without logout/login
@@ -1292,5 +1705,90 @@ class User extends \DbTestCase
         $this->boolean($user->getFromDB($users_id))->isTrue();
         $this->variable($user->fields['show_count_on_tabs'])->isNull();
         $this->variable($user->fields['itil_layout'])->isEqualTo($itil_layout_2);
+    }
+
+    /**
+     * Test that user_dn_hash is correctly set on user creation and update
+     *
+     * @return void
+     */
+    public function testUserDnIsHashedOnAddAndUpdate(): void
+    {
+        // Create user whithout dn and check that user_dn_hash is not set
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__,
+        ]);
+        $this->variable($user->fields['user_dn'])->isNull();
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Create user with dn and check that user_dn_hash is set
+        $dn = 'user=' . __FUNCTION__ . '_created,dc=test,dc=glpi-project,dc=org';
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__ . '_created',
+            'user_dn'   => $dn
+        ]);
+        $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Update user dn and check that user_dn_hash is updated
+        $dn = 'user=' . __FUNCTION__ . '_updated,dc=test,dc=glpi-project,dc=org';
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => $dn
+        ]);
+        $user->getFromDB($user->getID());
+        $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
+
+        // Set user_dn to empty and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => ''
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+
+        // Set user_dn to null and check that user_dn_hash is set to null
+        $this->updateItem('User', $user->getID(), [
+            'user_dn'   => null
+        ]);
+        $user->getFromDB($user->getID());
+        $this->variable($user->fields['user_dn_hash'])->isNull();
+    }
+
+    /**
+     * Test that user_dn_hash is correctly used in getFromDBbyDn method
+     *
+     * @return void
+     */
+    public function testUserDnHashIsUsedInGetFromDBbyDn(): void
+    {
+        global $DB;
+
+        $retrievedUser = new \User();
+
+        // Get a user with a bad dn
+        $this->boolean($retrievedUser->getFromDBbyDn(__FUNCTION__))
+            ->isFalse();
+        $this->boolean($retrievedUser->isNewItem())->isTrue();
+
+        // Create a user with a dn
+        $dn = 'user=' . __FUNCTION__ . ',dc=test,dc=glpi-project,dc=org';
+        $user = $this->createItem('User', [
+            'name'      => __FUNCTION__,
+            'user_dn'   => $dn
+        ]);
+
+        // Retrieve the user using getFromDBbyDn method
+        $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->isNewItem())->isFalse();
+
+        // Unset user_dn to check that user_dn_hash is used
+        $DB->update(
+            \User::getTable(),
+            ['user_dn' => ''],
+            ['id' => $user->getID()]
+        );
+
+        // Retrieve the user using getFromDBbyDn and check if user_dn_hash is used
+        $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->isNewItem())->isFalse();
+        $this->string($retrievedUser->fields['user_dn'])->isEmpty();
     }
 }

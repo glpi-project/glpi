@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -80,8 +80,7 @@ interface RequirementInterface
      *
      * @return bool
      */
-    // TODO Uncomment this in GLPI 10.1
-    // public function isRecommendedForSecurity(): bool;
+    public function isRecommendedForSecurity(): bool;
 
     /**
      * Indicates if requirement is considered as out of context

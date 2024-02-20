@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -40,16 +40,13 @@
 
 {% set entity_id = 0 %}
 {% set entity_name = '' %}
-{% if item.isEntityAssign() %}
-   {% if item.getType() == 'Entity' and item.fields['id'] == 0 %}
-      {% set entity_id = null %}
-   {% else %}
-      {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
-   {% endif %}
-
-   {% if is_multi_entities_mode() %}
-      {% set entity_name = get_item_name('Entity', entity_id is not empty ? entity_id : null) %}
-   {% endif %}
+{% if item.getType() == 'Entity' %}
+    {% set entity_id = item.fields['id'] == 0 ? null : (params['entities_id'] ?? item.fields['entities_id'] ?? session('glpiactive_entity')) %}
+{% elseif item.isEntityAssign() %}
+    {% set entity_id = params['entities_id'] ?? item.getEntityID() ?? session('glpiactive_entity') %}
+{% endif %}
+{% if is_multi_entities_mode() %}
+    {% set entity_name = entity_id is not null ? get_item_name('Entity', entity_id) : null %}
 {% endif %}
 
 {% set no_header = no_header|default(false) %}

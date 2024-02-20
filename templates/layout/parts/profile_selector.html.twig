@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -36,14 +36,14 @@
 <div class="dropdown dropstart">
     <button class="dropdown-item dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="ti ti-user-check"></i>
-        {{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value }}
+        {{ (session('glpiactiveprofile')['name'] ?? '') }}
     </button>
     <div class="dropdown-menu" data-bs-popper="none">
         <span class="dropdown-header">{{ __('Profiles') }}</span>
         {% for profile_id, profile in session('glpiprofiles') %}
             <a class="dropdown-item {{ profile_id == (session('glpiactiveprofile')['id'] ?? 0) ? 'active' : '' }}" href="{{ index_path() }}?newprofile={{ profile_id }}">
                 <i class="ti ti-user-check"></i>
-                {{ profile['name']|verbatim_value }}
+                {{ profile['name'] }}
             </a>
         {% endfor %}
     </div>
@@ -54,8 +54,8 @@
     {% set target = path("front/helpdesk.public.php") %}
 {% endif %}
 
-{% set current_entity = session('glpiactive_entity_name')|verbatim_value %}
-{% set current_entity_short = session('glpiactive_entity_shortname')|verbatim_value %}
+{% set current_entity = session('glpiactive_entity_name') %}
+{% set current_entity_short = session('glpiactive_entity_shortname') %}
 {% if current_entity != current_entity_short %}
     {% set current_entity_short = '... > ' ~ current_entity_short %}
 {% endif %}
@@ -122,13 +122,17 @@
                 <tbody>
                 </tbody>
                 </table>
-                <div id="verticalScrollbar-{{ rand }}" style="height:100%;"></div>
+                <div id="verticalScrollbar-{{ rand }}" class="position-absolute overflow-auto" style="height:100%; width: 16px; top: 0; right: 0;">
+                    <div class="fake-scrollbar-inner" style="height: 100%; width: 100%;">
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script type="text/javascript">
     $(function() {
+        let block_fake_scrollbar_event = false;
         var initTree{{ rand }} = function() {
             if ($.ui.fancytree.getTree("#tree_entity{{ rand }}") !== null) {
                 return;
@@ -184,32 +188,13 @@
                     counter: false, // do not show counters when filtering entity tree
                 },
 
-                // load 3rd party scrollbar extension for viewport mode
-                preInit: function(event, data) {
-                    var tree = data.tree;
-
-                    tree.verticalScrollbar = new PlainScrollbar({
-                    alwaysVisible: true,
-                    arrows: true,
-                    orientation: "vertical",
-                    onSet: function(numberOfItems) {
-                        tree.setViewport({
-                            start: Math.round(numberOfItems.start),
-                        });
-                    },
-                    scrollbarElement: document.getElementById("verticalScrollbar-{{ rand }}"),
-                    });
-                },
-
                 // update scrollbar when viewport is updated
                 updateViewport: function(event, data) {
-                    var tree = data.tree;
-
-                    tree.verticalScrollbar.set({
-                    start: tree.viewport.start,
-                    total: tree.visibleNodeList.length,
-                    visible: tree.viewport.count,
-                    }, true);  // do not trigger `onSet`
+                    const fake_scrollbar = $("#verticalScrollbar-{{ rand }}");
+                    const item_height = $(data.tree.tbody).find('tr').height();
+                    block_fake_scrollbar_event = true;
+                    fake_scrollbar.find('.fake-scrollbar-inner').height(item_height * data.tree.visibleNodeList.length);
+                    fake_scrollbar.scrollTop(item_height * data.tree.viewport.start);
 
                     initTooltips();
                 },
@@ -220,6 +205,20 @@
                 },
             });
         };
+
+        //Sync viewport with fake scrollbar
+        $("#verticalScrollbar-{{ rand }}").on('scroll', function(e) {
+            if (block_fake_scrollbar_event) {
+                block_fake_scrollbar_event = false;
+                return;
+            }
+            const fake_scrollbar = $(e.target);
+            const item_height = fake_scrollbar.find('.fake-scrollbar-inner').height() / $.ui.fancytree.getTree("#tree_entity{{ rand }}").visibleNodeList.length;
+            const new_start = Math.round(fake_scrollbar.scrollTop() / item_height);
+            $.ui.fancytree.getTree("#tree_entity{{ rand }}").setViewport({
+                start: new_start,
+            });
+        });
 
       // init Entities tree only when user ask for it (when dropdown is opened)
         document.getElementById('entity-tree-dropdown-{{ rand }}')

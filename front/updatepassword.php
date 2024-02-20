@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+$SECURITY_STRATEGY = 'no_check';
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -76,18 +78,14 @@ if (array_key_exists('update', $_POST)) {
         ];
         if ($input['password'] === $input['current_password']) {
             $error_messages = [__('The new password must be different from current password')];
-        } else if ($input['password'] !== $input['password2']) {
+        } elseif ($input['password'] !== $input['password2']) {
             $error_messages = [__('The two passwords do not match')];
-        } else {
-            try {
-                Config::validatePassword($input['password'], false);
-                if ($user->update($input)) {
-                    $success = true;
-                } else {
-                    $error_messages = [__('An error occurred during password update')];
-                }
-            } catch (\Glpi\Exception\PasswordTooWeakException $exception) {
-                $error_messages = $exception->getMessages();
+        } elseif ($user->validatePassword($input['password'], $error_messages)) {
+            // Password validation was successfull
+            if ($user->update($input)) {
+                $success = true;
+            } else {
+                $error_messages = [__('An error occurred during password update')];
             }
         }
     }

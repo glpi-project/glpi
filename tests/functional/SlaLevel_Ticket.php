@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,19 +40,6 @@ use DbTestCase;
 
 class SlaLevel_Ticket extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
     /**
      * Create a SLM SLA TTO
      * to update ticket itilcategories_id if ticket is linked to a specific project
@@ -79,7 +66,7 @@ class SlaLevel_Ticket extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => 0, //24:24 7j/7j
         ]);
@@ -102,7 +89,7 @@ class SlaLevel_Ticket extends DbTestCase
 
         // prepare levels input for sla
         $slal1_in = [
-            'name'           => $this->method,
+            'name'           => __METHOD__,
             'execution_time' => 0, //TIME TO OWN
             'is_active'      => 1,
             'match'          => 'AND',
@@ -145,8 +132,8 @@ class SlaLevel_Ticket extends DbTestCase
         //$start_date = date("Y-m-d H:i:s", time() - 2 * HOUR_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             //'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method,
+            'name'    => __METHOD__,
+            'content' => __METHOD__,
             'slas_id_tto' => $sla1_id,
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);

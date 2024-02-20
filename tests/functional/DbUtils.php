@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -147,6 +147,7 @@ class DbUtils extends DbTestCase
         require_once __DIR__ . '/../fixtures/pluginfoobar.php';
         require_once __DIR__ . '/../fixtures/pluginfooservice.php';
         require_once __DIR__ . '/../fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../fixtures/pluginfoo_item_filter.php';
         require_once __DIR__ . '/../fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
         require_once __DIR__ . '/../fixtures/test_a_b.php';
 
@@ -163,16 +164,52 @@ class DbUtils extends DbTestCase
             ['glpi_plugin_foo_bazs', 'PluginFooBaz', false], // class not exists
             ['glpi_plugin_foo_services', 'PluginFooService', false], // not a CommonGLPI should not be valid
             ['glpi_plugin_foo_searches_items_filters', 'GlpiPlugin\Foo\Search\Item_Filter', true], // Multi-level namespace + CommonDBRelation
+            ['glpi_plugin_foo_items_filters', 'GlpiPlugin\Foo\Item_Filter', true], // Single level namespace + CommonDBRelation
             ['glpi_anothers_tests', 'Glpi\Another_Test', true], // Single level namespace + CommonDBRelation
             ['glpi_tests_as_bs', 'Glpi\Test\A_B', true], // Multi-level namespace + CommonDBRelation
             ['glpi_plugin_foo_as_bs_cs_ds_es_fs_gs_bars', 'GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar', true], // Long namespace
         ];
     }
 
+    protected function getTableForItemTypeProvider()
+    {
+        $table_types_mapping = array_map(
+            function ($entry) {
+                return array_slice($entry, 0, 2); // remove the useless `is_valid` param
+            },
+            $this->dataTableType()
+        );
+
+        $table_types_mapping[] = ['glpi_configs', \NotificationSetting::class];
+
+        $known_classes = $this->getClasses();
+
+        foreach ($known_classes as $known_class) {
+            if (is_a($known_class, \NotificationTarget::class, true)) {
+                // Classes that extends NotificationTarget are always using the `glpi_notificationtargets` table
+                $table_types_mapping[] = ['glpi_notificationtargets', $known_class];
+            }
+            if (is_a($known_class, \Rule::class, true) && !in_array($known_class, [\OlaLevel::class, \SlaLevel::class])) {
+                // Classes that extends Rule are always using the `glpi_rules` table
+                $table_types_mapping[] = ['glpi_rules', $known_class];
+            }
+            if (is_a($known_class, \RuleCollection::class, true)) {
+                // Classes that extends RuleCollection are always using the `glpi_rules` table
+                $table_types_mapping[] = ['glpi_rules', $known_class];
+            }
+        }
+
+        // specific cases of classes that extends Rule
+        $table_types_mapping[] = ['glpi_olalevels', \OlaLevel::class];
+        $table_types_mapping[] = ['glpi_slalevels', \SlaLevel::class];
+
+        return $table_types_mapping;
+    }
+
     /**
-     * @dataProvider dataTableType
+     * @dataProvider getTableForItemTypeProvider
      **/
-    public function testGetTableForItemType($table, $type, $is_valid_type)
+    public function testGetTableForItemType($table, $type)
     {
         $this
          ->if($this->newTestedInstance)
@@ -181,6 +218,17 @@ class DbUtils extends DbTestCase
 
        //keep testing old method from db.function
         $this->string(getTableForItemType($type))->isIdenticalTo($table);
+    }
+
+    /**
+     * @dataProvider dataTableType
+     **/
+    public function testGetExpectedTableNameForClass($table, $type, $is_valid_type)
+    {
+        $this
+         ->if($this->newTestedInstance)
+         ->then
+         ->string($this->testedInstance->getExpectedTableNameForClass($type))->isIdenticalTo($table);
     }
 
     /**
@@ -249,26 +297,6 @@ class DbUtils extends DbTestCase
         } else {
             $this->boolean(getItemForItemtype($itemtype))->isFalse();
         }
-    }
-
-    public function testGetItemForItemtypeSanitized()
-    {
-        require_once __DIR__ . '/../fixtures/pluginbarfoo.php';
-
-        $this
-         ->if($this->newTestedInstance)
-         ->when(function () {
-               $this->object($this->testedInstance->getItemForItemtype(addslashes('Glpi\Event')))->isInstanceOf('Glpi\Event');
-         })->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Unexpected sanitized itemtype "Glpi\\\\Event" encountered.')
-            ->exists()
-         ->when(function () {
-               $this->object($this->testedInstance->getItemForItemtype(addslashes('GlpiPlugin\Bar\Foo')))->isInstanceOf('GlpiPlugin\Bar\Foo');
-         })->error
-            ->withType(E_USER_WARNING)
-            ->withMessage('Unexpected sanitized itemtype "GlpiPlugin\\\\Bar\\\\Foo" encountered.')
-            ->exists();
     }
 
     public function testGetItemForItemtypeAbstract()
@@ -384,8 +412,8 @@ class DbUtils extends DbTestCase
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context'))->isGreaterThan(0)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_tickets', 'entities_id'))->isIdenticalTo(2)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(17)
-            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(20)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']))->isIdenticalTo(20)
+            ->integer($this->testedInstance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']))->isIdenticalTo(26)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']))->isIdenticalTo(1)
             ->integer($this->testedInstance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']))->isIdenticalTo(0);
 
@@ -602,14 +630,14 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'1\')');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('1')  ) ");
         $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'1\'))');
 
-       // Child
+        // Child
         $this->setEntity('_test_child_1', false);
 
         $this->string($this->testedInstance->getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
@@ -618,7 +646,7 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE `glpi_computers`.`entities_id` IN (\'2\')');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers'))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('2')  ) ");
         $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers'));
@@ -648,7 +676,7 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_computers` WHERE (`glpi_computers`.`entities_id` IN (\'3\') OR (`glpi_computers`.`is_recursive` = \'1\' AND `glpi_computers`.`entities_id` IN (\'0\', \'1\')))');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $this->string(getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true))
          ->isIdenticalTo("WHERE ( `glpi_computers`.`entities_id` IN ('3')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, 1)) ) ");
         $it->execute('glpi_computers', getEntitiesRestrictCriteria('glpi_computers', '', '', true));
@@ -660,7 +688,7 @@ class DbUtils extends DbTestCase
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE (`glpi_entities`.`id` IN (\'3\', \'0\', \'1\'))');
 
-       //keep testing old method from db.function
+        //keep testing old method from db.function
         $it->execute('glpi_entities', getEntitiesRestrictCriteria('glpi_entities', '', '', true));
         $this->string($it->getSql())
          ->isIdenticalTo('SELECT * FROM `glpi_entities` WHERE ((`glpi_entities`.`id` IN (\'3\', \'0\', \'1\')))');
@@ -826,21 +854,14 @@ class DbUtils extends DbTestCase
             $this->array($GLPI_CACHE->get($ckey_new_id2))->isIdenticalTo($expected);
         }
 
-       //test on multiple entities
+        // test on multiple entities
+        // getAncestorsOf was already called on $new_id and $new_id2 separately, so cache is already populated since we don't cache ancestors of multiple entities together anymore.
+        // Ex: getAncestorsOf('glpi_entities', [$new_id, $new_id2]) will populate ancestors_cache_glpi_entities_$new_id and ancestors_cache_glpi_entities_$new_id2
+        // but not ancestors_cache_glpi_entities_ . md5(implode('|', [$new_id, $new_id2]))
+        // We will ignore the $cache and $hit parameters here and just ensure the combined result is correct.
         $expected = [0 => 0, $ent0 => $ent0, $ent1 => $ent1, $ent2 => $ent2];
-        $ckey_new_all = 'ancestors_cache_glpi_entities_' . md5($new_id . '|' . $new_id2);
-        if ($cache === true && $hit === false) {
-            $this->boolean($GLPI_CACHE->has($ckey_new_all))->isFalse();
-        } else if ($cache === true && $hit === true) {
-            $this->array($GLPI_CACHE->get($ckey_new_all))->isIdenticalTo($expected);
-        }
-
         $ancestors = getAncestorsOf('glpi_entities', [$new_id, $new_id2]);
         $this->array($ancestors)->isIdenticalTo($expected);
-
-        if ($cache === true && $hit === false) {
-            $this->array($GLPI_CACHE->get($ckey_new_all))->isIdenticalTo($expected);
-        }
     }
 
     public function testGetAncestorsOf()
@@ -1305,11 +1326,11 @@ class DbUtils extends DbTestCase
         $this->array($result[0]['date'])
             ->hasSize(2)
             ->string[0]->isIdenticalTo('<=')
-            ->object[1]->isInstanceOf('\QueryExpression');
+            ->object[1]->isInstanceOf('\Glpi\DBAL\QueryExpression');
 
         $this->string(
             $result[0]['date'][1]->getValue()
-        )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+        )->isIdenticalTo("DATE_ADD('2018-11-09', INTERVAL 1 DAY)");
 
         $result = $this->testedInstance->getDateCriteria('date', '2018-11-08', '2018-11-09');
         $this->array($result)->hasSize(2);
@@ -1318,11 +1339,11 @@ class DbUtils extends DbTestCase
         $this->array($result[1]['date'])
             ->hasSize(2)
             ->string[0]->isIdenticalTo('<=')
-            ->object[1]->isInstanceOf('\QueryExpression');
+            ->object[1]->isInstanceOf('\Glpi\DBAL\QueryExpression');
 
         $this->string(
             $result[1]['date'][1]->getValue()
-        )->isIdenticalTo("ADDDATE('2018-11-09', INTERVAL 1 DAY)");
+        )->isIdenticalTo("DATE_ADD('2018-11-09', INTERVAL 1 DAY)");
 
         $result = null;
         $this->when(function () use (&$result) {
@@ -1356,51 +1377,6 @@ class DbUtils extends DbTestCase
                 'entities_id'  => -1, //default
                 'expected'     => 'Computer 1'
             ], [
-            //not a template
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => false,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => false, // is_template=false result in exiting before deprecation warning
-            ], [
-            //does not match pattern
-                'name'         => '&lt;abc&gt;',
-                'field'        => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '&lt;abc&gt;',
-                'deprecated'   => true,
-            ], [
-            //first added
-                'name'         => '&lt;####&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '0001',
-                'deprecated'   => true,
-            ], [
-            //existing
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => -1, // default
-                'expected'     => '_test_pc23',
-                'deprecated'   => true,
-            ], [
-            //not existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 0,
-                'expected'     => '_test_pc01',
-                'deprecated'   => true,
-            ], [
             // not existing on entity, with multibyte strings
                 'name'         => '<自動名稱測試_##>',
                 'field'       => 'name',
@@ -1417,49 +1393,13 @@ class DbUtils extends DbTestCase
                 'entities_id'  => 0,
                 'expected'     => '自動名稱—0001—測試'
             ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 1,
-                'expected'     => '_test_pc04',
-                'deprecated'   => true,
-            ], [
-            //existing on entity
-                'name'         => '&lt;_test_pc##&gt;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, new XSS clean output
-                'name'         => '&#60;_test_pc##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => '_test_pc14',
-                'deprecated'   => true,
-            ], [
-            // existing on entity, not sanitized
+            // existing on entity
                 'name'         => '<_test_pc##>',
                 'field'       => 'name',
                 'is_template'  => true,
                 'itemtype'     => 'Computer',
                 'entities_id'  => 2,
                 'expected'     => '_test_pc14'
-            ], [
-            // not existing on entity, new XSS clean output, and containing a special char
-                'name'         => '&#60;pc_&#60;_##&#62;',
-                'field'       => 'name',
-                'is_template'  => true,
-                'itemtype'     => 'Computer',
-                'entities_id'  => 2,
-                'expected'     => 'pc_&#60;_01',
-                'deprecated'   => true,
             ], [
             // not existing on entity, not sanitized, and containing a special char
                 'name'         => '<pc_>_##>',
@@ -1475,29 +1415,17 @@ class DbUtils extends DbTestCase
     /**
      * @dataProvider autoNameProvider
      */
-    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected, bool $deprecated = false)
+    public function testAutoName($name, $field, $is_template, $itemtype, $entities_id, $expected)
     {
         $this->newTestedInstance;
 
-        $call = function () use ($name, $field, $is_template, $itemtype, $entities_id) {
-            return $this->testedInstance->autoName(
-                $name,
-                $field,
-                $is_template,
-                $itemtype,
-                $entities_id
-            );
-        };
-        if (!$deprecated) {
-            $autoname = $call();
-        } else {
-            $autoname = null;
-            $this->when($autoname = $call())
-            ->error()
-               ->withType(E_USER_DEPRECATED)
-               ->withMessage('Handling of encoded/escaped value in autoName() is deprecated.')
-               ->exists();
-        }
+        $autoname = $this->testedInstance->autoName(
+            $name,
+            $field,
+            $is_template,
+            $itemtype,
+            $entities_id
+        );
         $this->string($autoname)->isIdenticalTo($expected);
     }
 
@@ -1532,6 +1460,10 @@ class DbUtils extends DbTestCase
             [
                 'itemtype' => 'glpiplugin\\foo\\models\\foo\\bar_item',
                 'expected' => 'GlpiPlugin\\Foo\\Models\\Foo\\Bar_Item',
+            ],
+            [
+                'itemtype' => 'glpiplugin\\foo\\relation_item',
+                'expected' => 'GlpiPlugin\\Foo\\Relation_Item',
             ],
          // Good case (should not be altered)
             [
@@ -1591,6 +1523,7 @@ class DbUtils extends DbTestCase
                                 ],
                             ],
                             'NamespacedBar.php' => '',
+                            'Relation_Item.php' => '',
                             'PluginFooBarItem.php' => '',
                         ],
                     ],

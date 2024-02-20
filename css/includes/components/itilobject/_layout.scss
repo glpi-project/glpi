@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,13 +59,13 @@
             height: calc(100% + 4px);
             position: relative;
             border: 0;
-            border-left: 1px solid $border-color;
+            border-left: 1px solid var(--tblr-border-color);
 
             .accordion-item {
                 background: none;
 
                 .accordion-button {
-                    background-color: $accordion-button-bg;
+                    background-color: var(--tblr-accordion-bg);
                 }
             }
 
@@ -134,8 +134,14 @@
                         display: none;
                     }
 
-                    .accordion-button::after {
-                        display: none;
+                    .accordion-button {
+                        &::after {
+                            display: none;
+                        }
+
+                        .btn {
+                            display: none;
+                        }
                     }
                 }
 

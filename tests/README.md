@@ -69,7 +69,7 @@ In `tests\units\Html::testConvDateTime`, you may need to double the backslashes 
 If you want to run the API tests suite, you need to run a development server:
 
 ```bash
-php -S localhost:8088 tests/router.php &>/dev/null &
+php -S localhost:8088 -t public tests/router.php &>/dev/null &
 ```
 
 Running `atoum` without any arguments will show you the possible options. Most important are:

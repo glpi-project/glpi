@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -266,5 +266,139 @@ class ProjectTask extends DbTestCase
         $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
         $this->integer($team[0]['items_id'])->isEqualTo(5);
         $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_MEMBER);
+    }
+
+    public function testTaskMustHaveLinkedProject()
+    {
+        // Create a project
+        $project = $this->createItem('Project', [
+            'name' => 'Project 1',
+        ]);
+
+        // Create a task
+        $task = $this->createItem('ProjectTask', [
+            'name' => 'Task 1',
+            'projects_id' => $project->getID(),
+        ]);
+
+        // Update the task with a projects_id at 0
+        $this->updateItem('ProjectTask', $task->getID(), [
+            'projects_id' => 0,
+        ], ['projects_id']);
+
+        // Reload task from DB
+        $task->getFromDB($task->getID());
+
+        // Check that the task is still linked to the project
+        $this->integer($task->fields['projects_id'])->isEqualTo($project->getID());
+
+        // Check if session has an error message
+        $this->hasSessionMessages(ERROR, ['A linked project is mandatory']);
+    }
+
+    public function testMoveTaskToAnotherProject()
+    {
+        // Create a project
+        $project1 = $this->createItem('Project', [
+            'name' => 'Project 1',
+        ]);
+
+        // Create a project task
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $project1->getID(),
+            'name'        => 'Task 1',
+        ]);
+
+        // Create a subtask
+        $subtask = $this->createItem('ProjectTask', [
+            'projects_id'     => $project1->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Subtask 1',
+        ]);
+
+        // Create a subtask of the subtask
+        $subtask2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project1->getID(),
+            'projecttasks_id' => $subtask->getID(),
+            'name'            => 'Subtask 2',
+        ]);
+
+        // Create another project
+        $project2 = $this->createItem('Project', [
+            'name' => 'Project 2',
+        ]);
+
+        // Move the task to another project
+        $this->updateItem('ProjectTask', $task->getID(), [
+            'projects_id' => $project2->getID(),
+        ]);
+
+        // Reload all items from DB
+        $task->getFromDB($task->getID());
+        $subtask->getFromDB($subtask->getID());
+        $subtask2->getFromDB($subtask2->getID());
+
+        // Check all tasks have been moved
+        $this->integer($task->fields['projects_id'])->isEqualTo($project2->getID());
+        $this->integer($subtask->fields['projects_id'])->isEqualTo($project2->getID());
+        $this->integer($subtask2->fields['projects_id'])->isEqualTo($project2->getID());
+    }
+
+    public function testCloneProjectTask()
+    {
+        // Create a project
+        $project = $this->createItem('Project', [
+            'name' => 'Project 1',
+        ]);
+
+        // Create a project task
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $project->getID(),
+            'name'        => 'Task 1',
+        ]);
+
+        // Create a subtask
+        $subtask = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Subtask 1',
+        ]);
+
+        // Create a subtask of the subtask
+        $subtask2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $subtask->getID(),
+            'name'            => 'Subtask 2',
+        ]);
+
+        // Clone the task
+        $clonedTaskId = $task->clone();
+        $clonedTask = \ProjectTask::getById($clonedTaskId);
+
+        // Check if the cloned task is in the same project with the same name
+        $this->integer($clonedTask->fields['projects_id'])->isEqualTo($project->getID());
+        $this->string($clonedTask->fields['name'])->isEqualTo($task->fields['name'] . ' (copy)');
+
+        // Check if the subtask has been cloned
+        $clonedSubtask = new \ProjectTask();
+        $clonedSubtask->getFromDBByCrit([
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $clonedTaskId,
+        ]);
+
+        $this->integer($clonedSubtask->getID())->isGreaterThan(0);
+        $this->integer($clonedSubtask->fields['projects_id'])->isEqualTo($project->getID());
+        $this->string($clonedSubtask->fields['name'])->isEqualTo($subtask->fields['name'] . ' (copy)');
+
+        // Check if the subtask of the subtask has been cloned
+        $clonedSubtask2 = new \ProjectTask();
+        $clonedSubtask2->getFromDBByCrit([
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $clonedSubtask->getID(),
+        ]);
+
+        $this->integer($clonedSubtask2->getID())->isGreaterThan(0);
+        $this->integer($clonedSubtask2->fields['projects_id'])->isEqualTo($project->getID());
+        $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
     }
 }

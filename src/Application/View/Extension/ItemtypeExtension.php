@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use CommonDBTM;
 use CommonDropdown;
 use CommonGLPI;
 use Dropdown;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -91,7 +90,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @param string $itemtype
      *
-     * @return CommonGLPI|null
+     * @return string|null
      */
     public function getItemtypeDropdown($itemtype, array $options = []): ?string
     {
@@ -183,14 +182,14 @@ class ItemtypeExtension extends AbstractExtension
         if (is_a($item, CommonDropdown::class, true)) {
             $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
             $name = Dropdown::getDropdownName($item::getTable(), $items_id, false, true, false, '');
-            return Sanitizer::getVerbatimValue($name);
+            return $name;
         }
 
         if (($instance = $this->getItemInstance($item, $id)) === null) {
             return null;
         }
 
-        return Sanitizer::getVerbatimValue($instance->getFriendlyName());
+        return $instance->getFriendlyName();
     }
 
     /**
@@ -207,7 +206,7 @@ class ItemtypeExtension extends AbstractExtension
         if (is_a($item, CommonDropdown::class, true)) {
             $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
             $texts = Dropdown::getDropdownName($item::getTable(), $items_id, true, true, false, '');
-            return Sanitizer::getVerbatimValue($texts['comment']);
+            return $texts['comment'];
         }
 
         if (($instance = $this->getItemInstance($item, $id)) === null) {
@@ -216,7 +215,7 @@ class ItemtypeExtension extends AbstractExtension
 
         $comment = $instance->isField('comment') ? $instance->fields['comment'] : null;
 
-        return $comment !== null ? Sanitizer::getVerbatimValue($comment) : null;
+        return $comment;
     }
 
     /**
@@ -259,7 +258,7 @@ class ItemtypeExtension extends AbstractExtension
             return null;
         }
 
-        if ($item instanceof CommonDBTM && ($id === null || $item->fields[$item->getIndexName()] === $id)) {
+        if ($item instanceof CommonDBTM && ($id === null || (isset($item->fields[$item->getIndexName()]) && $item->fields[$item->getIndexName()] === $id))) {
             return $item;
         }
 

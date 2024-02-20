@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,14 +49,6 @@ class TicketTask extends CommonITILTask
         return (Session::haveRight(self::$rightname, parent::ADDALLITEM)
               || Session::haveRight('ticket', Ticket::OWN));
     }
-
-
-    public static function canView()
-    {
-        return (Session::haveRightsOr(self::$rightname, [parent::SEEPUBLIC, parent::SEEPRIVATE])
-              || Session::haveRight('ticket', Ticket::OWN));
-    }
-
 
     public static function canUpdate()
     {

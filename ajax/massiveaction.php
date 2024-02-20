@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,8 +37,6 @@
  * @since 0.84
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -64,9 +62,7 @@ Html::openMassiveActionsForm();
 $params = ['action' => '__VALUE__'];
 $input  = $ma->getInput();
 foreach ($input as $key => $val) {
-    // Value will be sanitized again when massive action form will be submitted.
-    // It have to be unsanitized here to prevent double sanitization.
-    $params[$key] = Sanitizer::unsanitize($val);
+    $params[$key] = $val;
 }
 
 $actions = $params['actions'];

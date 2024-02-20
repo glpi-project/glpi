@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -65,11 +65,11 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $this->login();
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo('Templates <span class=\'badge\'>1</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>1</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo('Templates');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span>");
 
         $toadd = $n_nt->fields;
         unset($toadd['id']);
@@ -78,7 +78,7 @@ class Notification_NotificationTemplate extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $n_nt->getTabNameForItem($notif);
-        $this->string($name)->isIdenticalTo('Templates <span class=\'badge\'>2</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-template me-2'></i>Templates</span> <span class='badge glpi-badge'>2</span>");
     }
 
     public function testShowForNotification()
@@ -99,7 +99,11 @@ class Notification_NotificationTemplate extends DbTestCase
             function () use ($notif) {
                 \Notification_NotificationTemplate::showForNotification($notif);
             }
-        )->isIdenticalTo("<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title=\"1\">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title=\"Alert Tickets not closed\">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>");
+        )->isIdenticalTo(<<<HTML
+<div class='center firstbloc'><a class='btn btn-primary' href='/glpi/front/notification_notificationtemplate.form.php?notifications_id=1&amp;withtemplate=0'>Add a template</a></div>
+<div class='center'><table class='tab_cadre_fixehov'><tr><th>ID</th><th>Template</th><th>Mode</th></tr><tr class='tab_bg_2'><td><a  href='/glpi/front/notification_notificationtemplate.form.php?id=1'  title="1">1</a></td><td><a  href='/glpi/front/notificationtemplate.form.php?id=6'  title="Alert Tickets not closed">Alert Tickets not closed</a></td><td>Email</td></tr><tr><th>ID</th><th>Template</th><th>Mode</th></tr></table></div>
+HTML
+            );
     }
 
     public function testGetName()

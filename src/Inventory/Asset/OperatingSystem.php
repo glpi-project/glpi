@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Item_OperatingSystem;
 use RuleDictionnaryOperatingSystemArchitectureCollection;
 use RuleDictionnaryOperatingSystemCollection;
@@ -173,10 +172,10 @@ class OperatingSystem extends InventoryAsset
                 }
             }
             if ($same === false) {
-                $ios->update(Sanitizer::sanitize(['id' => $ios->getID()] + $input_os));
+                $ios->update(['id' => $ios->getID()] + $input_os);
             }
         } else {
-            $ios->add(Sanitizer::sanitize($input_os));
+            $ios->add($input_os);
         }
 
         $ioskey = 'operatingsystems_id' . $val->operatingsystems_id;

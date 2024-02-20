@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -89,10 +89,10 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                //Replay Type dictionnary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
-                    addslashes($data["name"]),
+                    $data["name"],
                     -1,
                     [],
-                    addslashes($data["comment"])
+                    $data["comment"]
                 );
                 if ($data['id'] != $ID) {
                      $tomove[$data['id']] = $ID;
@@ -203,16 +203,16 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
                // Model case
                 if (isset($data["manufacturer"])) {
-                    $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
+                    $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
                 }
 
                //Replay Type dictionnary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
-                    addslashes($data["name"]),
+                    $data["name"],
                     -1,
                     $data,
-                    addslashes($data["comment"])
+                    $data["comment"]
                 );
 
                 if ($data['id'] != $ID) {

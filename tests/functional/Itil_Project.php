@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,9 +83,10 @@ class Itil_Project extends DbTestCase
             )->isGreaterThan(0);
 
            // Count displayed in tab name should be equal to count of ITIL items linked to project
-            $this->integer(
-                (int)preg_replace('/[^\d]*(\d+)[^\d]*/', '$1', $itil_project->getTabNameForItem($project))
-            )->isEqualTo(count($items));
+            $item_count = count($items);
+            $this->string($itil_project->getTabNameForItem($project))->isIdenticalTo(
+                "<span><i class='ti ti-alert-circle me-2'></i>Itil items</span> <span class='badge glpi-badge'>{$item_count}</span>"
+            );
         }
 
        //add a task

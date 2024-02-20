@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -97,16 +97,88 @@
       ) }}
    </div>
 
-   {# display checkbox to use gradient palette or not #}
-   {% set gradient_displayed = edit and widget_def['gradient']|default(false) %}
-   <div class="gradient_field" {% if not gradient_displayed %}style="display: none;"{% endif %}>
-      {{ fields.checkboxField(
-         'use_gradient',
-         use_gradient,
-         __('Use gradient palette'),
-         field_options
-      ) }}
-   </div>
+   {% set palette_displayed = edit and widget_def['haspalette'] %}
+   {% set palette_disabled  = use_gradient %}
+   {% set palettes = call("Glpi\\Dashboard\\Palette::getAllPalettes") %}
+    <div class="palette_field" {% if not palette_displayed %}style="display: none;"{% endif %}>
+        {% set palette_field %}
+            {% set palette_field_id  = "palette_select" ~ random() %}
+            {% set gradient_field_id = "use_gradient" ~ random() %}
+
+            <select name="palette" id="{{ palette_field_id }}"
+                    {{ palette_disabled ? 'disabled="disabled"' : '' }}>
+            {% for palette_id, palette_codes in palettes %}
+                <option value="{{ palette_id }}" {% if palette_id == palette|default('tab10') %}selected{% endif %}>
+                    {{ palette_id }}
+            {% endfor %}
+            </select>
+
+            <script>
+                $(function() {
+                    const palettes = {{ palettes|json_encode|raw }};
+                    const palette_template = function(option) {
+                        const palette_codes = palettes[option.id] ?? [];
+                        let html = '<span class="palette_preview d-inline-flex rounded overflow-hidden m-1" \
+                            style="direction: ltr;">';
+                        for (const code of palette_codes) {
+                            html += '<span class="palette_preview_color flex-fill" \
+                            style="background-color: ' + code + '; height: 25px" \
+                            title="' + option.id + '"></span>';
+                        }
+                        html += '</span>';
+
+                        return $(html);
+                    };
+
+                    $('#{{ palette_field_id }}').select2({
+                        'width': '100%',
+                        'templateResult': palette_template,
+                        'templateSelection': palette_template,
+                        'minimumResultsForSearch': 'Infinity', // no search box
+                    });
+
+                    $('#{{ gradient_field_id }}').on('change', function() {
+                        const disabled = $(this).is(':checked');
+                        $('#{{ palette_field_id }}').prop('disabled', disabled);
+                    });
+                });
+            </script>
+        {% endset %}
+
+        {% set gradient_field %}
+            {# display checkbox to use gradient palette or not #}
+            {% set gradient_displayed = edit and widget_def['gradient']|default(false) %}
+            <div class="gradient_field" {% if not gradient_displayed %}style="display: none;"{% endif %}>
+                <div class="form-check">
+                    <input type="hidden" name="use_gradient" value="0" />
+                    <input type="checkbox"
+                           name="use_gradient"
+                           class="form-check-input"
+                           id="{{ gradient_field_id }}"
+                           {{ use_gradient == 1 ? 'checked' : '' }}
+                           value="1">
+                    <label class="form-check-label" for="{{ gradient_field_id }}">
+                        {{ __('Use gradient palette') }}
+                        <span class="form-help"
+                              data-bs-toggle="popover"
+                              data-bs-placement="top"
+                              data-bs-content="{{ __("generate a palette from the background color") }}">
+                            ?
+                        </span>
+                    </label>
+                </div>
+            </div>
+        {% endset %}
+
+        {{ fields.htmlField(
+            'palette',
+            palette_field,
+            __('Use palette'),
+            field_options|merge({
+                add_field_html: gradient_field
+            })
+        ) }}
+    </div>
 
    {# display checkbox to use point label or not #}
    {% set point_labels_displayed = edit and widget_def['pointlbl']|default(false) %}
@@ -115,6 +187,28 @@
          'point_labels',
          point_labels,
          __('Display value labels on points/bars'),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to display labels or not #}
+   {% set labels_displayed = edit and widget_def['labels']|default(false) %}
+   <div class="label_field" {% if not labels_displayed %}style="display: none;"{% endif %}>
+      {{ fields.checkboxField(
+         'labels',
+         labels,
+         __('Show labels on chart'),
+         field_options
+      ) }}
+   </div>
+
+   {# display checkbox to display legend or not #}
+   {% set legend_displayed = edit and widget_def['legend']|default(false) %}
+   <div class="label_field" {% if not legend_displayed %}style="display: none;"{% endif %}>
+      {{ fields.checkboxField(
+         'legend',
+         legend,
+         __('Show legend'),
          field_options
       ) }}
    </div>

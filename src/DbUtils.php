@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,10 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 
 /**
  * Database utilities
@@ -191,41 +194,59 @@ final class DbUtils
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Force singular for itemtype : States case
-        $itemtype = $this->getSingular($itemtype);
+        if (!isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
+            $table = is_a($itemtype, CommonDBTM::class, true)
+                ? $itemtype::getTable()
+                : $this->getExpectedTableNameForClass($itemtype);
 
-        if (isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
-            return $CFG_GLPI['glpitablesitemtype'][$itemtype];
-        } else {
-            $prefix = "glpi_";
-
-            if ($plug = isPluginItemType($itemtype)) {
-               /* PluginFooBar   => glpi_plugin_foos_bars */
-               /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
-                $prefix .= "plugin_" . strtolower($plug['plugin']) . "_";
-                $table   = strtolower($plug['class']);
-            } else {
-                $table = strtolower($itemtype);
-                if (substr($itemtype, 0, \strlen(NS_GLPI)) === NS_GLPI) {
-                    $table = substr($table, \strlen(NS_GLPI));
-                }
-            }
-            $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
-            if (strstr($table, '_')) {
-                $split = explode('_', $table);
-
-                foreach ($split as $key => $part) {
-                    $split[$key] = $this->getPlural($part);
-                }
-                $table = implode('_', $split);
-            } else {
-                $table = $this->getPlural($table);
-            }
-
-            $CFG_GLPI['glpitablesitemtype'][$itemtype]      = $prefix . $table;
-            $CFG_GLPI['glpiitemtypetables'][$prefix . $table] = $itemtype;
-            return $prefix . $table;
+            $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
+            $CFG_GLPI['glpiitemtypetables'][$table]    = $itemtype;
         }
+
+        return $CFG_GLPI['glpitablesitemtype'][$itemtype];
+    }
+
+    /**
+     * Returns expected table name for a given class.
+     * /!\ This method will only compute the expected table name and will not take into account any
+     * table name override made by the class itself.
+     *
+     * @param string $classname
+     * @return string
+     */
+    public function getExpectedTableNameForClass(string $classname): string
+    {
+        $dbu = new DbUtils();
+
+        // Force singular for itemtype : States case
+        $singular = $dbu->getSingular($classname);
+
+        $prefix = "glpi_";
+
+        if ($plug = isPluginItemType($singular)) {
+            /* PluginFooBar   => glpi_plugin_foos_bars */
+            /* GlpiPlugin\Foo\Bar => glpi_plugin_foos_bars */
+            $prefix .= "plugin_" . strtolower($plug['plugin']) . "_";
+            $table   = strtolower($plug['class']);
+        } else {
+            $table = strtolower($singular);
+            if (substr($singular, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+                $table = substr($table, \strlen(NS_GLPI));
+            }
+        }
+        $table = str_replace(['mock\\', '\\'], ['', '_'], $table);
+        if (strstr($table, '_')) {
+            $split = explode('_', $table);
+
+            foreach ($split as $key => $part) {
+                $split[$key] = $dbu->getPlural($part);
+            }
+            $table = implode('_', $split);
+        } else {
+            $table = $dbu->getPlural($table);
+        }
+
+        return $prefix . $table;
     }
 
 
@@ -299,7 +320,7 @@ final class DbUtils
                     // NOT Glpi\Namespace1\Namespace2\Item\Filter
                     // To avoid this, we can revert the last '_' and check if the itemtype exists
                     $check_alternative = $is_plugin
-                        ? substr_count($table, '_') > 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
+                        ? substr_count($table, '_') >= 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
                         : substr_count($table, '_') > 0 // for GLPI classes, always keep the first namespace level (Glpi\\)
                     ;
                     if ($check_alternative) {
@@ -320,10 +341,9 @@ final class DbUtils
                 }
             }
 
-            if ($itemtype !== null && $item = $this->getItemForItemtype($itemtype)) {
-                $itemtype                                   = get_class($item);
-                $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
-                $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
+            if ($itemtype !== null && ($classname = $this->getClassForItemtype($itemtype)) !== null) {
+                $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
+                $CFG_GLPI['glpitablesitemtype'][$classname] = $inittable;
                 return $itemtype;
             }
 
@@ -442,52 +462,58 @@ final class DbUtils
 
 
     /**
-     * Get new item objet for an itemtype
+     * Get class for an itemtype
      *
      * @param string $itemtype itemtype
      *
-     * @return object|false itemtype instance or false if class does not exists
+     * @return string|null
      */
-    public function getItemForItemtype($itemtype)
+    public function getClassForItemtype(string $itemtype): ?string
     {
         if (empty($itemtype)) {
-            return false;
+            return null;
         }
-
-       // If itemtype starts with "Glpi\" or "GlpiPlugin\" followed by a "\",
-       // then it is a namespaced itemtype that has been "sanitized".
-       // Strip slashes to get its actual value.
-        $sanitized_namespaced_pattern = '/^'
-         . '(' . preg_quote(NS_GLPI, '/') . '|' . preg_quote(NS_PLUG, '/') . ')' // start with GLPI core or plugin namespace
-         . preg_quote('\\', '/') // followed by an additionnal \
-         . '/';
-        if (preg_match($sanitized_namespaced_pattern, $itemtype)) {
-            trigger_error(sprintf('Unexpected sanitized itemtype "%s" encountered.', $itemtype), E_USER_WARNING);
-            $itemtype = stripslashes($itemtype);
-        }
-
-        $itemtype = $this->fixItemtypeCase($itemtype);
 
         if ($itemtype === 'Event') {
            //to avoid issues when pecl-event is installed...
             $itemtype = 'Glpi\\Event';
         }
 
-        if (!is_subclass_of($itemtype, CommonGLPI::class, true)) {
+        $classname = $this->fixItemtypeCase($itemtype);
+
+        if (!is_subclass_of($classname, CommonGLPI::class, true)) {
            // Only CommonGLPI sublasses are valid itemtypes
+            return null;
+        }
+
+        return $classname;
+    }
+
+
+    /**
+     * Get new item objet for an itemtype
+     *
+     * @param string $itemtype itemtype
+     *
+     * @return CommonDBTM|false itemtype instance or false if class does not exists
+     */
+    public function getItemForItemtype($itemtype)
+    {
+        $classname = $this->getClassForItemtype($itemtype);
+        if ($classname === null) {
             return false;
         }
 
-        $item_class = new ReflectionClass($itemtype);
+        $item_class = new ReflectionClass($classname);
         if ($item_class->isAbstract()) {
             trigger_error(
-                sprintf('Cannot instanciate "%s" as it is an abstract class.', $itemtype),
+                sprintf('Cannot instanciate "%s" as it is an abstract class.', $classname),
                 E_USER_WARNING
             );
             return false;
         }
 
-        return new $itemtype();
+        return new $classname();
     }
 
     /**
@@ -1021,9 +1047,11 @@ final class DbUtils
      * Get the ancestors of an item in a tree dropdown
      *
      * @param string       $table    Table name
-     * @param array|string $items_id The IDs of the items
+     * @param array|string|int $items_id The IDs of the items. If an array is passed, the result will be the union of the ancestors of each item.
+     * @phpstan-param non-empty-array<int>|int|numeric-string $items_id
      *
-     * @return array of IDs of the ancestors
+     * @return array Array of IDs of the ancestors. The keys and values should be identical. The result *may* include the IDs passed in the $items_id parameter.
+     * @todo Should this function really allow returning the requested ID in the result? Especially if only a single ID is requested?
      */
     public function getAncestorsOf($table, $items_id)
     {
@@ -1036,33 +1064,76 @@ final class DbUtils
         if ($items_id === null) {
             return [];
         }
-        $ckey = 'ancestors_cache_';
+
+        // We don't want to cache results for multiple items together. Default the cache key to null.
+        $ckey = null;
         if (is_array($items_id)) {
-            $ckey .= $table . '_' . md5(implode('|', $items_id));
-        } else {
-            $ckey .= $table . '_' . $items_id;
+            if (count($items_id) === 0) {
+                return [];
+            }
+            if (count($items_id) === 1) {
+                // An array with a single item can be destructured and is acceptable to use the cache directly
+                $items_id = (int) reset($items_id);
+            }
         }
 
-        $ancestors = $GLPI_CACHE->get($ckey);
-        if ($ancestors !== null) {
-            return $ancestors;
+        $lowest_valid_id = $table === 'glpi_entities' ? 0 : 1;
+        if (!is_array($items_id)) {
+            if ($items_id <= $lowest_valid_id) {
+                // Impossible for there to be any valid ancestors, so we already know the result
+                return [$items_id => $items_id];
+            }
+            // A single item can use the cache directly
+            $ckey = "ancestors_cache_{$table}_{$items_id}";
         }
 
-        $ancestors = [];
-
-       // IDs to be present in the final array
-        $parentIDfield = $this->getForeignKeyFieldForTable($table);
-        $use_cache     = $DB->fieldExists($table, "ancestors_cache");
+        /**
+         * @var array<int, int> $ancestors_by_id Temporary array to store ancestors by the IDs passed in the $items_id parameter.
+         */
+        $ancestors_by_id = [];
 
         if (!is_array($items_id)) {
-            $items_id = (array)$items_id;
+            $items_id = (array) $items_id;
         }
+        $ids_needed_to_fetch = array_map(static function ($id) {
+            return (int) $id;
+        }, $items_id);
+
+        if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
+            // If we only need to get ancestors for a single item, we can use the cached values if they exist
+            return $ancestors;
+        } else if ($ckey === null) {
+            // For multiple IDs, we need to check the cache for each ID
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static function ($id) use ($table) {
+                return "ancestors_cache_{$table}_{$id}";
+            }, $ids_needed_to_fetch));
+            foreach ($ids_needed_to_fetch as $id) {
+                if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
+                    $ancestors_by_id[$id] = $ancestors;
+                    unset($ids_needed_to_fetch[$id]);
+                }
+            }
+            // If we got everything from the cache, we can return the results now
+            if (count($ids_needed_to_fetch) === 0) {
+                $ancestors = [];
+                foreach ($ancestors_by_id as $ancestors_for_id) {
+                    foreach ($ancestors_for_id as $ai => $ancestor_id) {
+                        $ancestors[$ai] = $ancestor_id;
+                    }
+                }
+                return $ancestors;
+            }
+        }
+
+        // IDs to be present in the final array
+        $parentIDfield = $this->getForeignKeyFieldForTable($table);
+        $use_cache     = $DB->fieldExists($table, "ancestors_cache");
 
         if ($use_cache) {
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ancestors_cache', $parentIDfield],
                 'FROM'   => $table,
-                'WHERE'  => ['id' => $items_id]
+                'WHERE'  => ['id' => $ids_needed_to_fetch]
             ]);
 
             foreach ($iterator as $row) {
@@ -1070,25 +1141,22 @@ final class DbUtils
                     $rancestors = $row['ancestors_cache'];
                     $parent     = $row[$parentIDfield];
 
-                  // Return datas from cache in DB
+                    // Return datas from cache in DB
                     if (!empty($rancestors)) {
-                        $ancestors = array_replace($ancestors, $this->importArrayFromDB($rancestors));
+                        $ancestors_by_id[(int) $row['id']] = $this->importArrayFromDB($rancestors);
                     } else {
                         $loc_id_found = [];
-                     // Recursive solution for table with-cache
+                        // Recursive solution for table with-cache
                         if ($parent > 0) {
-                              $loc_id_found = $this->getAncestorsOf($table, $parent);
+                            $loc_id_found = $this->getAncestorsOf($table, $parent);
                         }
 
-                     // ID=0 only exists for Entities
-                        if (
-                            ($parent > 0)
-                            || ($table == 'glpi_entities')
-                        ) {
+                        // ID=0 only exists for Entities
+                        if ($parent >= $lowest_valid_id) {
                             $loc_id_found[$parent] = $parent;
                         }
 
-                     // Store cache datas in DB
+                        // Store cache datas in DB
                         $DB->update(
                             $table,
                             [
@@ -1099,14 +1167,14 @@ final class DbUtils
                             ]
                         );
 
-                        $ancestors = array_replace($ancestors, $loc_id_found);
+                        $ancestors_by_id[(int) $row['id']] = $loc_id_found;
                     }
                 }
             }
         } else {
-           // Get the ancestors
-           // iterative solution for table without cache
-            foreach ($items_id as $id) {
+            // Get the ancestors
+            // iterative solution for table without cache
+            foreach ($ids_needed_to_fetch as $id) {
                 $IDf = $id;
                 while ($IDf > 0) {
                     // Get next elements
@@ -1118,16 +1186,16 @@ final class DbUtils
 
                     if (count($iterator) > 0) {
                         $result = $iterator->current();
-                        $IDf = $result[$parentIDfield];
+                        $IDf = (int) $result[$parentIDfield];
                     } else {
                         $IDf = 0;
                     }
 
-                    if (
-                        !isset($ancestors[$IDf])
-                         && (($IDf > 0) || ($table == 'glpi_entities'))
-                    ) {
-                        $ancestors[$IDf] = $IDf;
+                    if (!isset($ancestors_by_id[$id][$IDf]) && $IDf >= $lowest_valid_id) {
+                        if (!isset($ancestors_by_id[$id])) {
+                            $ancestors_by_id[$id] = [];
+                        }
+                        $ancestors_by_id[$id][$IDf] = $IDf;
                     } else {
                         $IDf = 0;
                     }
@@ -1135,7 +1203,32 @@ final class DbUtils
             }
         }
 
-        $GLPI_CACHE->set($ckey, $ancestors);
+        if ($ckey !== null) {
+            // Save the results to the cache for the single requested item ID
+            $to_get = array_values($items_id)[0];
+            if (!isset($ancestors_by_id[$to_get])) {
+                $ancestors_by_id[$to_get] = [];
+            }
+            $GLPI_CACHE->set($ckey, $ancestors_by_id[$to_get]);
+        } else {
+            // Save the results to the cache for each requested item ID
+            $to_cache = [];
+            foreach ($ids_needed_to_fetch as $id) {
+                if (!isset($ancestors_by_id[$id])) {
+                    $ancestors_by_id[$id] = [];
+                }
+                $to_cache["ancestors_cache_{$table}_{$id}"] = $ancestors_by_id[$id];
+            }
+            $GLPI_CACHE->setMultiple($to_cache);
+        }
+
+        // Combine the results for all requested item IDs
+        $ancestors = [];
+        foreach ($ancestors_by_id as $id => $ancestors_for_id) {
+            foreach ($ancestors_for_id as $ai => $ancestor_id) {
+                $ancestors[$ai] = $ancestor_id;
+            }
+        }
 
         return $ancestors;
     }
@@ -1175,8 +1268,8 @@ final class DbUtils
         $name    = "";
         $comment = "";
 
-        $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+        $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1278,8 +1371,8 @@ final class DbUtils
         $name    = "";
         $comment = "";
 
-        $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-        $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+        $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+        $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
         $JOIN          = [];
         $JOINS         = [];
         if ($translate) {
@@ -1336,7 +1429,9 @@ final class DbUtils
                 [
                     "$table.address",
                     "$table.town",
-                    "$table.country"
+                    "$table.country",
+                    "$table.code",
+                    "$table.alias"
                 ]
             );
         }
@@ -1352,19 +1447,27 @@ final class DbUtils
                 $name = $result['completename'];
             }
 
-            $name = CommonTreeDropdown::sanitizeSeparatorInCompletename($name);
-
             if ($tooltip) {
                 $comment  = sprintf(
                     __('%1$s: %2$s') . "<br>",
                     "<span class='b'>" . __('Complete name') . "</span>",
-                    $name
+                    htmlspecialchars($name)
                 );
                 if ($table == Location::getTable()) {
-                     $acomment = '';
-                     $address = $result['address'];
-                     $town    = $result['town'];
-                     $country = $result['country'];
+                    $acomment = '';
+                    $address = $result['address'];
+                    $town    = $result['town'];
+                    $country = $result['country'];
+                    $code    = $result['code'];
+                    $alias   = $result['alias'];
+                    if (!empty($alias)) {
+                        $name = $alias;
+                        $comment .= "<span class='b'>" . __('Alias:') . "</span> " . $alias . "<br/>";
+                    }
+                    if (!empty($code)) {
+                        $name .= ' - ' . $code;
+                        $comment .= "<span class='b'>" . __('Code:') . "</span> " . $code . "<br/>";
+                    }
                     if (!empty($address)) {
                         $acomment .= $address;
                     }
@@ -1567,39 +1670,6 @@ final class DbUtils
 
 
     /**
-     * Compute all completenames of Dropdown Tree table
-     *
-     * @param string $table dropdown tree table to compute
-     *
-     * @return void
-     **/
-    public function regenerateTreeCompleteName($table)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => $table
-        ]);
-
-        foreach ($iterator as $data) {
-            list($name, $level) = $this->getTreeValueName($table, $data['id']);
-            $DB->update(
-                $table,
-                [
-                    'completename' => addslashes($name),
-                    'level'        => $level
-                ],
-                [
-                    'id' => $data['id']
-                ]
-            );
-        }
-    }
-
-
-    /**
      * Format a user name
      *
      * @param integer $ID           ID of the user.
@@ -1702,6 +1772,13 @@ final class DbUtils
             } else {
                 $user = $name;
             }
+        } else if ($ID === 'requester_manager') {
+            $name = __("Requester's manager");
+            if (isset($user['name'])) {
+                $user['name'] = $name;
+            } else {
+                $user = $name;
+            }
         } else if ($ID) {
             $iterator = $DB->request(
                 'glpi_users',
@@ -1745,13 +1822,14 @@ final class DbUtils
 
                     if ($anon_name === null) {
                         $user_params = array_merge($user_params, [
-                            'email'              => UserEmail::getDefaultForUser($ID),
-                            'phone'              => $data["phone"],
-                            'phone2'             => $data["phone2"],
-                            'mobile'             => $data["mobile"],
-                            'locations_id'       => $data['locations_id'],
-                            'usertitles_id'      => $data['usertitles_id'],
-                            'usercategories_id'  => $data['usercategories_id'],
+                            'email'               => UserEmail::getDefaultForUser($ID),
+                            'phone'               => $data["phone"],
+                            'phone2'              => $data["phone2"],
+                            'mobile'              => $data["mobile"],
+                            'locations_id'        => $data['locations_id'],
+                            'usertitles_id'       => $data['usertitles_id'],
+                            'usercategories_id'   => $data['usercategories_id'],
+                            'registration_number' => $data['registration_number'],
                         ]);
 
                         if (Session::haveRight('user', READ)) {
@@ -1797,12 +1875,6 @@ final class DbUtils
         }
 
         $base_name = $objectName;
-
-        $objectName = Sanitizer::decodeHtmlSpecialChars($objectName);
-        $was_sanitized = $objectName !== $base_name;
-        if ($was_sanitized) {
-            Toolbox::deprecated('Handling of encoded/escaped value in autoName() is deprecated.');
-        }
 
         $matches = [];
         if (preg_match('/^<[^#]*(#{1,10})[^#]*>$/', $objectName, $matches) !== 1) {
@@ -1874,26 +1946,28 @@ final class DbUtils
                     $criteria['WHERE']['entities_id'] = $entities_id;
                 }
 
-                $subqueries[] = new \QuerySubQuery($criteria);
+                $subqueries[] = new QuerySubQuery($criteria);
             }
 
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName('code') . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                    )
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring('code', $pos, $len),
+                        type: 'UNSIGNED',
+                        alias: 'no'
+                    ),
                 ],
-                'FROM'   => new \QueryUnion($subqueries, false, 'codes')
+                'FROM'   => new QueryUnion($subqueries, false, 'codes')
             ];
         } else {
             $table = $this->getTableForItemType($itemtype);
             $criteria = [
                 'SELECT' => [
-                    new \QueryExpression(
-                        "CAST(SUBSTRING(" . $DB->quoteName($field) . ", $pos, $len) AS " .
-                        "unsigned) AS " . $DB->quoteName('no')
-                    )
+                    QueryFunction::cast(
+                        expression: QueryFunction::substring($field, $pos, $len),
+                        type: 'UNSIGNED',
+                        alias: 'no'
+                    ),
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
@@ -1914,7 +1988,7 @@ final class DbUtils
             }
         }
 
-        $subquery = new \QuerySubQuery($criteria, 'Num');
+        $subquery = new QuerySubQuery($criteria, 'Num');
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'Num.no AS lastNo'],
             'FROM'   => $subquery
@@ -1940,10 +2014,6 @@ final class DbUtils
             ],
             $autoNum
         );
-
-        if ($was_sanitized) {
-            $objectName = Sanitizer::encodeHtmlSpecialChars($objectName);
-        }
 
         return $objectName;
     }
@@ -1991,9 +2061,7 @@ final class DbUtils
         }
 
         if (is_string($end) && preg_match($date_pattern, $end) === 1) {
-            $end_expr = new QueryExpression(
-                'ADDDATE(' . $DB->quoteValue($end) . ', INTERVAL 1 DAY)'
-            );
+            $end_expr = QueryFunction::dateAdd(date: new QueryExpression($DB::quoteValue($end)), interval: 1, interval_unit: 'DAY');
             $criteria[] = [$field => ['<=', $end_expr]];
         } elseif ($end !== null && $end !== '') {
             trigger_error(

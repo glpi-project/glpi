@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,6 @@ var Reservations = function() {
     this.rand        = '';
     this.dom_id      = '';
     this.calendar    = null;
-    this.license_key = null;
     this.currentv    = null;
     this.defaultDate = null;
     this.can_reserve = true;
@@ -52,7 +51,6 @@ var Reservations = function() {
         my.is_all       = config.is_all || true;
         my.rand         = config.rand || true;
         my.is_tab       = config.is_tab || false;
-        my.license_key  = config.license_key || '';
         my.dom_id       = "reservations_planning_"+my.rand;
         my.currentv     = config.currentv || 'dayGridMonth';
         my.defaultDate  = config.defaultDate || new Date();
@@ -64,7 +62,7 @@ var Reservations = function() {
 
     my.displayPlanning = function() {
         my.calendar = new FullCalendar.Calendar(document.getElementById(my.dom_id), {
-            schedulerLicenseKey: my.license_key,
+            schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             timeZone: 'UTC',
             nowIndicator: true,
             theme: true,

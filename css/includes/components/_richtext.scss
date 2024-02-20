@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -30,13 +30,14 @@
  *
  * ---------------------------------------------------------------------
  */
+:root:not([glpi-theme-dark="1"]) {
+    body.mce-content-body {
+        background: transparent;
+    }
+}
 
 body.mce-content-body {
     margin: 15px 10px;
-
-    @if not $is-dark {
-        background: transparent;
-    }
 
     [data-user-mention="true"] {
         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
@@ -48,9 +49,8 @@ body.mce-content-body {
 }
 
 .tox.tox-tinymce {
-    border: $input-border-width solid $input-border-color;
-
-    @include border-radius($input-border-radius, 0);
+    border: var(--tblr-border-width) solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
 }
 
 .rich_text_container {

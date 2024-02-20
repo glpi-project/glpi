@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,18 +34,20 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Disk Class
  **/
 class Item_Disk extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
 
-   // Encryption status
+    // Encryption status
     const ENCRYPTION_STATUS_NO = 0;
     const ENCRYPTION_STATUS_YES = 1;
     const ENCRYPTION_STATUS_PARTIALLY = 2;
@@ -55,24 +57,25 @@ class Item_Disk extends CommonDBChild
         return _n('Volume', 'Volumes', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'far fa-hdd';
+    }
+
     public function post_getEmpty()
     {
-
         $this->fields["totalsize"] = '0';
         $this->fields["freesize"]  = '0';
     }
-
 
     public function useDeletedToLockIfDynamic()
     {
         return false;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-       // can exists for template
+        // can exists for template
         if ($item::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -85,28 +88,24 @@ class Item_Disk extends CommonDBChild
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
 
-
     /**
-     * @param $item            CommonGLPI object
+     * @param CommonGLPI $item object
      * @param $tabnum          (default 1)
      * @param $withtemplate    (default 0)
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         self::showForItem($item, $withtemplate);
         return true;
     }
 
-
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab('Lock', $ong, $options);
@@ -118,8 +117,8 @@ class Item_Disk extends CommonDBChild
     /**
      * Print the version form
      *
-     * @param $ID        integer ID of the item
-     * @param $options   array
+     * @param integer $ID ID of the item
+     * @param array $options
      *     - target for the Form
      *     - itemtype type of the item for add process
      *     - items_id ID of the item for add process
@@ -210,11 +209,9 @@ class Item_Disk extends CommonDBChild
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $ID = $item->fields['id'];
         $itemtype = $item->getType();
+        $rand = mt_rand();
 
         if (
             !$item->getFromDB($ID)
@@ -228,100 +225,90 @@ class Item_Disk extends CommonDBChild
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
-            echo "<div class='center firstbloc'>" .
+            echo "<div class='mt-1 mb-3 text-center'>" .
                "<a class='btn btn-primary' href='" . self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&amp;withtemplate=" .
                   $withtemplate . "'>";
             echo __('Add a volume');
             echo "</a></div>\n";
         }
 
-        echo "<div class='center table-responsive'>";
-
         $iterator = self::getFromItem($item);
-        echo "<table class='tab_cadre_fixehov'>";
-        $colspan = 9;
-        echo "<tr class='noHover'><th colspan='$colspan'>" . self::getTypeName(count($iterator)) .
-            "</th></tr>";
 
-        if (count($iterator)) {
-            $header = "<tr><th>" . __('Name') . "</th>";
-            $header .= "<th>" . __('Automatic inventory') . "</th>";
-            $header .= "<th>" . __('Partition') . "</th>";
-            $header .= "<th>" . __('Mount point') . "</th>";
-            $header .= "<th>" . Filesystem::getTypeName(1) . "</th>";
-            $header .= "<th>" . __('Global size') . "</th>";
-            $header .= "<th>" . __('Free size') . "</th>";
-            $header .= "<th>" . __('Free percentage') . "</th>";
-            $header .= "<th>" . __('Encryption') . "</th>";
-            $header .= "</tr>";
-            echo $header;
-
-            Session::initNavigateListItems(
-                __CLASS__,
-                //TRANS : %1$s is the itemtype name,
-                           //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(
-                                              __('%1$s = %2$s'),
-                                              $item::getTypeName(1),
-                                              $item->getName()
-                                          )
-            );
-
-            $disk = new self();
-            foreach ($iterator as $data) {
-                $disk->getFromResultSet($data);
-                echo "<tr class='tab_bg_2" . (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'") . "'>";
-                echo "<td>" . $disk->getLink() . "</td>";
-                echo "<td>" . Dropdown::getYesNo($data['is_dynamic']) . "</td>";
-                echo "<td>" . $data['device'] . "</td>";
-                echo "<td>" . $data['mountpoint'] . "</td>";
-                echo "<td>" . $data['fsname'] . "</td>";
-                //TRANS: %s is a size
-                $tmp = Toolbox::getSize($data['totalsize'] * 1024 * 1024);
-                echo "<td>$tmp</td>";
-                $tmp = Toolbox::getSize($data['freesize'] * 1024 * 1024);
-                echo "<td>$tmp</td>";
-                echo "<td>";
-                $percent = 0;
-                if ($data['totalsize'] > 0) {
-                    $percent = round(100 * $data['freesize'] / $data['totalsize']);
-                }
-                $rand = mt_rand();
-                Html::progressBar("percent$rand", [
-                    'create'  => true,
-                    'percent' => $percent,
-                    'message' => "$percent %",
-                ]);
-                 echo "</td>";
-                 echo "<td class=\"center\">";
-
-                if ($data['encryption_status'] != self::ENCRYPTION_STATUS_NO) {
-                     $encryptionTooltip = "<strong>" . __('Partial encryption') . "</strong> : " .
-                        Dropdown::getYesNo($data['encryption_status'] == self::ENCRYPTION_STATUS_PARTIALLY) .
-                        "<br/>" .
-                        "<strong>" . __('Encryption tool') . "</strong> : " . $data['encryption_tool'] .
-                        "</br>" .
-                        "<strong>" . __('Encryption algorithm') . "</strong> : " .
-                        $data['encryption_algorithm'] . "</br>" .
-                        "<strong>" . __('Encryption type') . "</strong> : " . $data['encryption_type'] .
-                        "</br>";
-
-                     Html::showTooltip($encryptionTooltip, [
-                         'awesome-class' => "fas fa-lock"
-                     ]);
-                }
-
-                 echo "</td>";
-                 echo "</tr>";
-                 Session::addToNavigateListItems(__CLASS__, $data['id']);
+        $disk = new self();
+        $entries = [];
+        foreach ($iterator as $data) {
+            $disk->getFromResultSet($data);
+            $used = $data['totalsize'] - $data['freesize'];
+            $usedpercent = 0;
+            if ($data['totalsize'] > 0) {
+                $usedpercent = round(100 * $used / $data['totalsize']);
             }
-            echo $header;
-        } else {
-            echo "<tr class='tab_bg_2'><th colspan='$colspan'>" . __('No item found') . "</th></tr>";
+
+            $encryption_label = '';
+            if ($data['encryption_status'] !== self::ENCRYPTION_STATUS_NO) {
+                $twig_params = [
+                    'encryption_status' => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
+                    'encryption_tool' => $data['encryption_tool'],
+                    'encryption_algorithm' => $data['encryption_algorithm'],
+                    'encryption_type' => $data['encryption_type'],
+                ];
+                $encryptionTooltip = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                    <strong>{{ __('Partial encryption') }}</strong> : {{ encryption_status }}<br/>
+                    <strong>{{ __('Encryption tool') }}</strong> : {{ encryption_tool }}</br>
+                    <strong>{{ __('Encryption algorithm') }}</strong> : {{ encryption_algorithm }}</br>
+                    <strong>{{ __('Encryption type') }}</strong> : {{ encryption_type }}
+TWIG, $twig_params);
+
+                $encryption_label = Html::showTooltip($encryptionTooltip, [
+                    'awesome-class' => "fas fa-lock",
+                    'display' => false
+                ]);
+            }
+            $entries[] = [
+                'itemtype' => self::class,
+                'id' => $data['id'],
+                'name' => $disk->getLink(),
+                'is_dynamic' => Dropdown::getYesNo($data['is_dynamic']),
+                'device' => $data['device'],
+                'mountpoint' => $data['mountpoint'],
+                'fsname' => $data['fsname'],
+                'totalsize' => $data['totalsize'],
+                'freesize' => $data['freesize'],
+                'usedpercent' => $usedpercent,
+                'encryption_status' => $encryption_label,
+            ];
         }
 
-        echo "</table>";
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'is_dynamic' => __('Automatic inventory'),
+                'device' => __('Partition'),
+                'mountpoint' => __('Mount point'),
+                'fsname' => Filesystem::getTypeName(1),
+                'totalsize' => __('Global size'),
+                'freesize' => __('Free size'),
+                'usedpercent' => __('Used percentage'),
+                'encryption_status' => __('Encryption'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'totalsize' => 'bytesize',
+                'freesize' => 'bytesize',
+                'usedpercent' => 'progress',
+                'encryption_status' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
     }
 
     public function rawSearchOptions()
@@ -388,6 +375,8 @@ class Item_Disk extends CommonDBChild
 
     public static function rawSearchOptionsToAdd($itemtype)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
         $tab = [];
 
         $name = _n('Volume', 'Volumes', Session::getPluralNumber());
@@ -449,7 +438,11 @@ class Item_Disk extends CommonDBChild
             'datatype'           => 'progressbar',
             'width'              => 2,
          // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
-            'computation'        => 'LPAD(ROUND(100*TABLE.freesize/NULLIF(TABLE.totalsize, 0)), 3, 0)',
+            'computation'        => QueryFunction::lpad(
+                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif('TABLE.totalsize', new QueryExpression('0')))),
+                length: 3,
+                pad_string: '0'
+            ),
             'computationgroupby' => true,
             'unit'               => '%',
             'massiveaction'      => false,
@@ -576,6 +569,8 @@ class Item_Disk extends CommonDBChild
     /**
      * Get the correct label for each encryption status
      *
+     * @param integer $status The status
+     * @phpstan-param self::ENCRYPTION_STATUS_* $status
      * @return string The appropriate label
      */
     public static function getEncryptionStatus($status)
@@ -609,10 +604,7 @@ class Item_Disk extends CommonDBChild
      */
     public static function getEncryptionStatusDropdown($value = self::ENCRYPTION_STATUS_NO, $options = [])
     {
-        $name = 'encryption_status';
-        if (isset($options['name'])) {
-            $name = $options['name'];
-        }
+        $name = $options['name'] ?? 'encryption_status';
         $values = self::getAllEncryptionStatus();
 
         return Dropdown::showFromArray(

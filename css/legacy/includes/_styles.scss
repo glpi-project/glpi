@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -242,13 +242,8 @@
    .tab_cadre_fixehov,
    .tab_cadrehov,
    .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
-      background-color: var(--contrast-light);
-      color: var(--dark);
-
-      @include dark-mode {
-         background-color: var(--contrast-dark);
-         color: var(--light);
-      }
+      background-color: var(--tblr-bg-surface);
+      color: var(--tblr-body-color);
    }
 
    .tab_glpi {
@@ -316,7 +311,7 @@
    .tab_cadre_fixehov th, .tab_cadrehov th {
       background-color: #F8F8F8;
       color: #2E2E2E;
-      border-bottom: 1px solid $table_border;
+      border-bottom: 1px solid var(--tblr-border-color);
    }
 
    .tab_cadre_fixehov td, .tab_cadrehov td {
@@ -328,12 +323,12 @@
    }
 
    .tab_cadre td, .tab_cadre_fixehov td {
-      border-bottom: 1px solid $table_border;
+      border-bottom: 1px solid var(--tblr-border-color);
    }
 
    .tab_cadrehov {
       td {
-         border-bottom: 1px solid $table_border;
+         border-bottom: 1px solid var(--tblr-border-color);
       }
    }
 
@@ -347,10 +342,6 @@
    .tab_cadre_fixehov tr.rowHover,
    .tab_cadre_fixehov td.rowHover {
       background-color: #F3F3F3;
-
-      @include dark-mode {
-         background-color: #292929;
-      }
    }
 
    .tab_format {
@@ -389,11 +380,6 @@
 
       .tab_cadre_fixehov th, .tab_cadrehov th {
          background-color: #F1F0F0;
-
-         @include dark-mode {
-            background-color: var(--header-bg);
-            color: var(--header-fg);
-         }
       }
    }
 
@@ -407,8 +393,8 @@
       }
 
       &.subheader {
-         background-color: $header-bg;
-         color: $header-fg;
+         background-color: var(--glpi-form-header-bg);
+         color: var(--glpi-form-header-fg);
          text-align: center;
          font-weight: bold;
 
@@ -1131,23 +1117,6 @@
       }
    }
 
-   /* ################--------------- Log history filters ---------------#################### */
-
-   tr.log_history_filter_row {
-      > th {
-         vertical-align: top;
-      }
-
-      .select2-container {
-         min-width: 125px;
-      }
-
-      > th > input {
-         box-sizing: border-box;
-         min-height: 28px;
-      }
-   }
-
    td.diff {
       ins {
          color: green;
@@ -1182,14 +1151,8 @@
       width: 1%;
    }
 
-   .bookmark_record {
-      .active {
-         color: #fed175 !important;
-      }
-   }
-
    .fa {
-      &.bookmark_record, &.reset-search, &.fold-search {
+      &.bookmark_record, &.reset-search {
          font-size: 1.5em;
          color: #ccc !important;
 
@@ -1209,7 +1172,7 @@
          }
       }
 
-      &.reset-search:hover, &.bookmark_record.save:hover, &.fold-search:hover {
+      &.reset-search:hover, &.bookmark_record.save:hover {
          color: #999 !important;
       }
    }
@@ -1287,7 +1250,6 @@
 
    .massiveactions {
       padding: .5em;
-      width: 90%;
 
       input.submit {
          margin-top: .5em;
@@ -1354,7 +1316,7 @@
       }
    }
 
-   .disabled {
+   .disabled:not(.list-group-item) {
       color: red !important;
    }
 
@@ -1363,25 +1325,30 @@
    }
 
    /** Custom CSS form */
-   .custom_css_configuration td:not([colspan]) {
-      width: 50%;
-   }
-   .custom_css_configuration tbody,
-   .custom_css_configuration tr,
-   .custom_css_configuration td,
-   .custom_css_configuration .custom_css_container {
-      max-width: inherit; /* chain inherit "max-width" from table element to editor container */
-   }
-   .custom_css_configuration .custom_css_container {
-      width: 100%;
-   }
-   .custom_css_configuration .custom_css_container textarea {
-      box-sizing: border-box;
-      min-height: 250px;
-      width: 100%;
-   }
-   .custom_css_configuration .custom_css_container .CodeMirror.input-disabled {
-      background: rgb(235, 235, 228); /* default bg color for disabled inputs */
+   .custom_css_configuration {
+      td:not([colspan]) {
+         width: 50%;
+      }
+      .custom_css_container {
+         width: 100%;
+
+         textarea {
+            display:none;
+         }
+         .cm-editor {
+            height: 350px;
+            width: 100%;
+            border-color: var(--tblr-border-color);
+
+            .cm-scroller {
+               overflow: auto;
+            }
+         }
+
+         textarea[disabled] + .cm-editor {
+            background: rgb(235, 235, 228); /* default bg color for disabled inputs */
+         }
+      }
    }
 
    /** objectlock message */
@@ -1476,15 +1443,11 @@
    }
    /** /style for relations **/
 
-   /** Chartists styles fix **/
+   /** charts styles fix **/
    .chart {
       position: relative;
       text-align: center;
       margin-top: 1em;
-   }
-   .chartist-tooltip {
-      /* fix z-index isssue along with legend */
-      z-index: 11!important;
    }
 
    .dashboard.printer_barchart .g-chart .chart {
@@ -1530,4 +1493,34 @@ div.banner-need-update {
    font-weight: bold;
    padding: 10px;
    text-align: right;
+}
+
+:root[data-glpi-theme-dark="1"] {
+    #page, .qtip, .modal .modal-body {
+        .tab_cadre,
+        .tab_cadre_fixehov,
+        .tab_cadrehov,
+        .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, h2.header {
+            background-color: var(--tblr-dark);
+            color: var(--tblr-light);
+        }
+
+        .tab_cadrehov th.headHover,
+        .tab_cadre_fixehov th.headHover,
+        .tab_cadrehov td.columnHover,
+        .tab_cadre_fixehov td.columnHover,
+        .tab_cadrehov tr.rowHover,
+        .tab_cadrehov td.rowHover,
+        .tab_cadre_fixehov tr.rowHover,
+        .tab_cadre_fixehov td.rowHover {
+            background-color: #292929;
+        }
+
+        .central {
+            .tab_cadre_fixehov th, .tab_cadrehov th {
+                background-color: var(--glpi-form-header-bg);
+                color: var(--glpi-form-header-fg);
+            }
+        }
+    }
 }

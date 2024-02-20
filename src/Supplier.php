@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
 
 /**
@@ -286,7 +288,7 @@ class Supplier extends CommonDBTM
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
-            'computation'        => "CONCAT(" . $DB->quoteName("TABLE.$name1") . ", ' ', " . $DB->quoteName("TABLE.$name2") . ")",
+            'computation'        => QueryFunction::concat(["TABLE.{$name1}", new QueryExpression($DB::quoteValue(' ')), "TABLE.{$name2}"]),
             'computationgroupby' => true,
             'joinparams'         => [
                 'beforejoin'         => [

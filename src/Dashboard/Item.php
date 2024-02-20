@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 namespace Glpi\Dashboard;
+
+use Glpi\DBAL\QueryParam;
 
 class Item extends \CommonDBChild
 {
@@ -91,29 +93,26 @@ class Item extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, array $items = [])
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array $_UREQUEST
-         */
-        global $DB, $_UREQUEST;
+        /** @var \DBmysql $DB */
+        global $DB;
 
         $query_items = $DB->buildInsert(
             self::getTable(),
             [
-                'dashboards_dashboards_id' => new \QueryParam(),
-                'gridstack_id' => new \QueryParam(),
-                'card_id'      => new \QueryParam(),
-                'x'            => new \QueryParam(),
-                'y'            => new \QueryParam(),
-                'width'        => new \QueryParam(),
-                'height'       => new \QueryParam(),
-                'card_options' => new \QueryParam(),
+                'dashboards_dashboards_id' => new QueryParam(),
+                'gridstack_id' => new QueryParam(),
+                'card_id'      => new QueryParam(),
+                'x'            => new QueryParam(),
+                'y'            => new QueryParam(),
+                'width'        => new QueryParam(),
+                'height'       => new QueryParam(),
+                'card_options' => new QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query_items);
         foreach ($items as $item_key => $item) {
            // card_options should be unescaped as they will be json_encoded after
-            $card_options = $_UREQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
+            $card_options = $_REQUEST['items'][$item_key]['card_options'] ?? $item['card_options'] ?? [];
 
            // clean
             unset(

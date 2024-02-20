@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -434,9 +434,16 @@ abstract class CommonDBVisible extends CommonDBTM
      */
     protected function getShowVisibilityDropdownParams()
     {
-        return [
-            'type'  => '__VALUE__',
-            'right' => strtolower($this::getType()) . '_public'
+        $params = [
+            'type'          => '__VALUE__',
+            'right'         => strtolower($this::getType()) . '_public',
         ];
+        if (isset($this->fields['entities_id'])) {
+            $params['entity'] = $this->fields['entities_id'];
+        }
+        if (isset($this->fields['is_recursive'])) {
+            $params['is_recursive'] = $this->fields['is_recursive'];
+        }
+        return $params;
     }
 }

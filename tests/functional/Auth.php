@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -175,5 +175,23 @@ class Auth extends DbTestCase
         $this->boolean($is_logged)->isEqualTo(!$expected_lock);
         $this->boolean($user->getFromDB($user->fields['id']))->isTrue();
         $this->boolean((bool)$user->fields['is_active'])->isEqualTo(!$expected_lock);
+    }
+
+    protected function validateLoginProvider()
+    {
+        return [
+            [TU_USER, TU_PASS, false, '', true],
+            ['jsmith123', TU_PASS, false, '', true],
+            ['fake_user', 'fake_user', false, '', false],
+        ];
+    }
+
+    /**
+     * @dataProvider validateLoginProvider
+     */
+    public function testValidateLogin(string $login, string $password, bool $noauto, $login_auth, bool $expected)
+    {
+        $auth = new \Auth();
+        $this->boolean($auth->validateLogin($login, $password, $noauto, $login_auth))->isIdenticalTo($expected);
     }
 }

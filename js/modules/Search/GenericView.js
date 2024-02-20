@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -84,7 +84,7 @@ window.GLPI.Search.GenericView = class GenericView {
         const ajax_container = this.getResultsView().getAJAXContainer();
         const search_container = ajax_container.closest('.search-container');
 
-        $(search_container).on('click', 'a.bookmark_record.save', () => {
+        $(search_container).on('click', 'button[name="save_bookmark_record"]', () => {
             const modal = $('#savedsearch-modal');
             //move the modal to the body so it can be displayed above the rest of the page
             modal.appendTo('body');
@@ -100,7 +100,7 @@ window.GLPI.Search.GenericView = class GenericView {
             </div>
             `);
             const bs_modal = new bootstrap.Modal(modal.get(0), {show: false});
-            modal.on('show.bs.modal', () => {
+            modal.off('show.bs.modal').on('show.bs.modal', () => {
                 const params = JSON.parse(modal.attr('data-params'));
                 params['url'] = window.location.pathname + window.location.search;
                 modal.find('.modal-body').load(CFG_GLPI.root_doc + '/ajax/savedsearch.php', params);

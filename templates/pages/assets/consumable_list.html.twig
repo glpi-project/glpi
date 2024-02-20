@@ -1,0 +1,155 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="px-3 py-2 search-no-forced-height">
+    <form method="POST" action="{{ item.getFormURL() }}">
+        <h2 class="mb-4">
+            <span class="me-2">
+                {{ __("Total: %s, New: %s, Used: %s"|format(
+                    count_unused + count_used,
+                    count_unused,
+                    count_used
+                )) }}
+            </span>
+            {% if can_edit %}
+                <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}" />
+                {{ fields.dropdownNumberField(
+                    'to_add',
+                    1,
+                    '',
+                    {
+                        min: 1,
+                        max: 100,
+                        step: 1,
+                        include_field: false,
+                        width: '',
+                    }
+                ) }}
+                <input
+                    type="submit"
+                    name="add_several"
+                    value="{{ _x('button', 'Add consumables') }}"
+                    class='btn btn-primary'
+                />
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            {% endif %}
+        </h2>
+    </form>
+
+    {% if count_unused > 0 %}
+        <div class="unused-consumables mb-4">
+            <h3>{{ __("%s New consumables"|format(count_unused)) }}</h3>
+            {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
+                'criteria'          : criteria_unused,
+                'push_history'      : false,
+                'showmassiveactions': can_edit,
+                'hide_criteria'     : true,
+                'init_session_data' : true,
+            }]) %}
+        </div>
+    {% endif %}
+
+    {% if count_used > 0 %}
+        <div class="used-consumables mb-4">
+            <h3> {{ __("%s Used consumables"|format(count_used)) }} </h3>
+            {% do call('\\Glpi\\Search\\SearchEngine::show', [itemtype, {
+                'criteria'          : criteria_used,
+                'push_history'      : false,
+                'showmassiveactions': can_edit,
+                'hide_criteria'     : true,
+                'init_session_data' : true,
+            }]) %}
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    /* Hide "Use date" and "Give to" for unused consumables as they will have no
+     values for these fields */
+    .unused-consumables th[data-searchopt-id="5"],
+    .unused-consumables td[data-searchopt-content-id="5"],
+    .unused-consumables th[data-searchopt-id="6"],
+    .unused-consumables td[data-searchopt-content-id="6"]
+    {
+        display: none;
+    }
+
+    /* Hide "Consumable model" for all consumables as they all have the same
+     parent on this page*/
+    .unused-consumables th[data-searchopt-id="8"],
+    .unused-consumables td[data-searchopt-content-id="8"],
+    .used-consumables th[data-searchopt-id="8"],
+    .used-consumables td[data-searchopt-content-id="8"]
+    {
+        display: none;
+    }
+
+    /* Hack to display an icon as a column header */
+    .unused-consumables th[data-searchopt-id="7"],
+    .used-consumables th[data-searchopt-id="7"]
+    {
+        font-size: 0;
+    }
+    .unused-consumables th[data-searchopt-id="7"]::before,
+    .used-consumables th[data-searchopt-id="7"]::before
+    {
+        font-family: "tabler-icons" !important;
+        content: "\f65d";
+        font-size: 0.8rem;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 2; /* Easiest way to deal with vertical align here */
+    }
+
+</style>
+
+<script>
+    // Trigger search reload when infocom are updated
+    $('div.modal[id^="infocomConsumable"]').on('hide.bs.modal', () => {
+        // Try finding a fluid search instance
+        const search_display = $('.ajax-container.search-display-data');
+        try {
+            if (search_display.length === 1 && search_display.data('js_class') !== undefined) {
+                // Trigger a reload of just the results
+                search_display.data('js_class').view.refreshResults();
+            } else {
+                // There is no (or multiple) search results, reload the page
+                window.location.reload();
+            }
+        } catch (err) {
+            window.location.reload();
+        }
+    });
+</script>

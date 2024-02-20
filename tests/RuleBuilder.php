@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -74,19 +74,30 @@ class RuleBuilder
     protected array $actions;
 
     /**
+     * @property string $name Rule name
+     */
+    protected string $rule_type;
+
+    /**
      * @param string $name Rule name
      */
-    public function __construct(string $name)
+    public function __construct(string $name, ?string $rule_type = null)
     {
         $this->name = $name;
 
         // Default values
         $this->operator     = "AND";
-        $this->condition    = RuleTicket::ONADD | RuleTicket::ONUPDATE;
+        $this->rule_type    = $rule_type ?? RuleTicket::class;
         $this->is_recursive = true;
         $this->entities_id  = getItemByTypeName(Entity::class, '_test_root_entity', true);
         $this->criteria     = [];
         $this->actions      = [];
+
+        if (is_a($this->rule_type, RuleCommonITILObject::class, true)) {
+            $this->condition = RuleTicket::ONADD | RuleTicket::ONUPDATE;
+        } else {
+            $this->condition = 0;
+        }
     }
 
     /**
@@ -185,6 +196,15 @@ class RuleBuilder
         return $this;
     }
 
+    /**
+     * Get rule name
+     *
+     * @return string Rule name
+     */
+    public function getRuleType(): string
+    {
+        return $this->rule_type;
+    }
 
     /**
      * Get rule name

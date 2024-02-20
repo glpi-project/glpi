@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -313,7 +313,7 @@ class AuthMail extends CommonDBTM
             );
             if ($auth->auth_succeded) {
                  $auth->extauth      = 1;
-                 $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
+                 $auth->user_present = $auth->user->getFromDBbyName($login);
                  $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
                  //Update the authentication method for the current user
                  $auth->user->fields["authtype"] = Auth::MAIL;
@@ -363,7 +363,7 @@ class AuthMail extends CommonDBTM
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
+        /** @var CommonDBTM $item */
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
             $ong = [];
             $ong[1] = _sx('button', 'Test');    // test connexion
@@ -375,7 +375,7 @@ class AuthMail extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        /** @var AuthMail $item */
         switch ($tabnum) {
             case 1:
                 $item->showFormTestMail();

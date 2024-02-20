@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use Toolbox;
 /**
  * @since 10.0.0
  */
-class Response
+class Response extends \GuzzleHttp\Psr7\Response
 {
     /**
      * "application/json" content type.
@@ -85,5 +85,30 @@ class Response
         Toolbox::logDebug($message);
 
         die($output);
+    }
+
+    public function sendHeaders(): Response
+    {
+        if (headers_sent()) {
+            return $this;
+        }
+        $headers = $this->getHeaders();
+        foreach ($headers as $name => $values) {
+            header(sprintf('%s: %s', $name, implode(', ', $values)), true);
+        }
+        http_response_code($this->getStatusCode());
+        return $this;
+    }
+
+    public function sendContent(): Response
+    {
+        echo $this->getBody();
+        return $this;
+    }
+
+    public function send(): Response
+    {
+        return $this->sendHeaders()
+            ->sendContent();
     }
 }

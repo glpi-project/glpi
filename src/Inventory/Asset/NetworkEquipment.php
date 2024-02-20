@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -37,7 +37,6 @@
 namespace Glpi\Inventory\Asset;
 
 use Blacklist;
-use Glpi\Toolbox\Sanitizer;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
@@ -252,16 +251,16 @@ class NetworkEquipment extends MainAsset
         $netname = new NetworkName();
         if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
-                $netname->update(Sanitizer::sanitize([
+                $netname->update([
                     'id'     => $netname->getID(),
                     'name'   => $port->netname ?? $port->name
-                ]));
+                ]);
             }
         } else {
             $netname->add([
                 'itemtype'  => 'NetworkPort',
                 'items_id'  => $netports_id,
-                'name'      => addslashes($port->name)
+                'name'      => $port->name
             ]);
         }
     }

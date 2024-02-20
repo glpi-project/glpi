@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,75 +31,69 @@
  * ---------------------------------------------------------------------
  */
 
-@if $is-dark {
-    $picker-text-color: $light;
-    $picker-bg: $dark-mode-darken;
-} @else {
-    $picker-text-color: $dark;
-    $picker-bg: $card-bg;
-}
-
-$picker-color-accent: rgba($link-color, 0.5) !default;
-$date-hover-bg: rgba($picker-color-accent, 0.4);
-$date-selection-bg: rgba($picker-color-accent, 0.3);
-$date-selection-fg: $picker-text-color;
-$picker-border-color: $card-border-color;
-$picker-shadow-color: rgba($picker-text-color, 0.04);
-$picker-text-faded-color: rgba($picker-text-color, 0.3);
-
 /* stylelint-disable property-no-vendor-prefix */
 body {
     .flatpickr-calendar {
-        background: $picker-bg;
-        -webkit-box-shadow: 1px 0 0 $picker-shadow-color, -1px 0 0 $picker-shadow-color, 0 1px 0 $picker-shadow-color, 0 -1px 0 $picker-shadow-color, 0 3px 13px $picker-shadow-color;
-        box-shadow: 1px 0 0 $picker-shadow-color, -1px 0 0 $picker-shadow-color, 0 1px 0 $picker-shadow-color, 0 -1px 0 $picker-shadow-color, 0 3px 13px $picker-shadow-color;
+        --glpi-flatpickr-bg: var(--tblr-bg-surface);
+        --glpi-flatpickr-text-color: var(--tblr-body-color);
+        --glpi-flatpickr-accent-color: color-mix(in srgb, var(--tblr-link-color), transparent 50%);
+        --glpi-flatpickr-date-hover-bg: color-mix(in srgb, var(--glpi-flatpickr-accent-color), transparent 40%);
+        --glpi-flatpickr-date-selection-hover-bg: color-mix(in srgb, var(--glpi-flatpickr-accent-color), transparent 30%);
+        --glpi-flatpickr-date-selection-fg: var(--glpi-flatpickr-text-color);
+        --glpi-flatpickr-border-color: var(--tblr-border-color);
+        --glpi-flatpickr-shadow-color: color-mix(in srgb, var(--tblr-body-color), transparent 96%);
+        --glpi-flatpickr-faded-color: color-mix(in srgb, var(--tblr-body-color), transparent 70%);
+
+        background: var(--glpi-flatpickr-bg);
+        -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
+        box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
     }
 
     .flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n+2) .flatpickr-day.inRange:nth-child(7n+1) {
-        -webkit-box-shadow: -2px 0 0 $picker-shadow-color, 5px 0 0 $picker-shadow-color;
-        box-shadow: -2px 0 0 $picker-shadow-color, 5px 0 0 $picker-shadow-color;
+        -webkit-box-shadow: -2px 0 0 var(--glpi-flatpickr-shadow-color), 5px 0 0 var(--glpi-flatpickr-shadow-color);
+        box-shadow: -2px 0 0 var(--glpi-flatpickr-shadow-color), 5px 0 0 var(--glpi-flatpickr-shadow-color);
     }
 
     .flatpickr-calendar.hasTime .flatpickr-time {
-        border-top: 1px solid $picker-border-color;
+        border-top: 1px solid var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::before {
-        border-bottom-color: $picker-border-color;
+        border-bottom-color: var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowTop::after {
-        border-bottom-color: $picker-bg;
+        border-bottom-color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-calendar.arrowBottom::before {
-        border-top-color: $picker-border-color;
+        border-top-color: var(--glpi-flatpickr-border-color);
     }
 
     .flatpickr-calendar.arrowBottom::after {
-        border-top-color: $picker-bg;
+        border-top-color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-months .flatpickr-month {
-        background: $picker-bg;
-        color: $picker-text-color;
-        fill: $picker-text-color;
+        background: var(--glpi-flatpickr-bg);
+        color: var(--glpi-flatpickr-text-color);
+        fill: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-months .flatpickr-prev-month,
     .flatpickr-months .flatpickr-next-month {
-        color: $picker-text-color;
-        fill: $picker-text-color;
+        color: var(--glpi-flatpickr-text-color);
+        fill: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-months .flatpickr-prev-month:hover,
     .flatpickr-months .flatpickr-next-month:hover {
-        color: $picker-text-color;
+        color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-months .flatpickr-prev-month:hover svg,
     .flatpickr-months .flatpickr-next-month:hover svg {
-        fill: $picker-color-accent;
+        fill: var(--glpi-flatpickr-accent-color);
     }
 
     .numInputWrapper:hover {
@@ -111,15 +105,15 @@ body {
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowUp::after {
-        border-bottom-color: $picker-text-color;
+        border-bottom-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-current-month .numInputWrapper span.arrowDown::after {
-        border-top-color: $picker-text-color;
+        border-top-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months {
-        background: $picker-bg;
+        background: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months:hover {
@@ -127,21 +121,21 @@ body {
     }
 
     .flatpickr-current-month .flatpickr-monthDropdown-months .flatpickr-monthDropdown-month {
-        background-color: $picker-bg;
+        background-color: var(--glpi-flatpickr-bg);
     }
 
     span.flatpickr-weekday {
-        background: $picker-bg;
-        color: $picker-text-color;
+        background: var(--glpi-flatpickr-bg);
+        color: var(--glpi-flatpickr-text-color);
     }
 
     .dayContainer + .dayContainer {
-        -webkit-box-shadow: -1px 0 0 $picker-shadow-color;
-        box-shadow: -1px 0 0 $picker-shadow-color;
+        -webkit-box-shadow: -1px 0 0 var(--glpi-flatpickr-shadow-color);
+        box-shadow: -1px 0 0 var(--glpi-flatpickr-shadow-color);
     }
 
     .flatpickr-day {
-        color: $picker-text-color;
+        color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-day.inRange,
@@ -156,19 +150,19 @@ body {
     .flatpickr-day:focus,
     .flatpickr-day.prevMonthDay:focus,
     .flatpickr-day.nextMonthDay:focus {
-        background: $date-hover-bg;
-        border-color: $date-hover-bg;
+        background: var(--glpi-flatpickr-date-hover-bg);
+        border-color: var(--glpi-flatpickr-date-hover-bg);
     }
 
     .flatpickr-day.today {
-        border-color: $picker-text-color;
+        border-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-day.today:hover,
     .flatpickr-day.today:focus {
-        border-color: $picker-text-color;
-        background: $picker-text-color;
-        color: $picker-bg;
+        border-color: var(--glpi-flatpickr-text-color);
+        background: var(--glpi-flatpickr-text-color);
+        color: var(--glpi-flatpickr-bg);
     }
 
     .flatpickr-day.selected,
@@ -189,16 +183,16 @@ body {
     .flatpickr-day.selected.nextMonthDay,
     .flatpickr-day.startRange.nextMonthDay,
     .flatpickr-day.endRange.nextMonthDay {
-        background: $date-selection-bg;
-        color: $date-selection-fg;
-        border-color: $date-selection-bg;
+        background: var(--glpi-flatpickr-date-selection-hover-bg);
+        color: var(--glpi-flatpickr-date-selection-fg);
+        border-color: var(--glpi-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)),
     .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n+1)),
     .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n+1)) {
-        -webkit-box-shadow: -10px 0 0 $date-selection-bg;
-        box-shadow: -10px 0 0 $date-selection-bg;
+        -webkit-box-shadow: -10px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
+        box-shadow: -10px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-day.flatpickr-disabled,
@@ -208,44 +202,44 @@ body {
     .flatpickr-day.notAllowed,
     .flatpickr-day.notAllowed.prevMonthDay,
     .flatpickr-day.notAllowed.nextMonthDay {
-        color: $picker-text-faded-color;
+        color: var(--glpi-flatpickr-faded-color);
     }
 
     .flatpickr-day.inRange {
-        -webkit-box-shadow: -5px 0 0 $date-hover-bg, 5px 0 0 $date-hover-bg;
-        box-shadow: -5px 0 0 $date-hover-bg, 5px 0 0 $date-hover-bg;
+        -webkit-box-shadow: -5px 0 0 var(--glpi-flatpickr-date-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-hover-bg);
+        box-shadow: -5px 0 0 var(--glpi-flatpickr-date-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-hover-bg);
     }
 
     .flatpickr-day.week.selected {
-        -webkit-box-shadow: -5px 0 0 $date-selection-bg, 5px 0 0 $date-selection-bg;
-        box-shadow: -5px 0 0 $date-selection-bg, 5px 0 0 $date-selection-bg;
+        -webkit-box-shadow: -5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
+        box-shadow: -5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-weekwrapper .flatpickr-weeks {
-        -webkit-box-shadow: 1px 0 0 $picker-shadow-color;
-        box-shadow: 1px 0 0 $picker-shadow-color;
+        -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color);
+        box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color);
     }
 
     .flatpickr-weekwrapper span.flatpickr-day,
     .flatpickr-weekwrapper span.flatpickr-day:hover {
-        color: $picker-text-faded-color;
+        color: var(--glpi-flatpickr-faded-color);
     }
 
     .flatpickr-time .numInputWrapper span.arrowUp::after {
-        border-bottom-color: $picker-text-color;
+        border-bottom-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time .numInputWrapper span.arrowDown::after {
-        border-top-color: $picker-text-color;
+        border-top-color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time input {
-        color: $picker-text-color;
+        color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time .flatpickr-time-separator,
     .flatpickr-time .flatpickr-am-pm {
-        color: $picker-text-color;
+        color: var(--glpi-flatpickr-text-color);
     }
 
     .flatpickr-time input:hover,

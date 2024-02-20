@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -53,6 +53,8 @@ class View extends CommonGLPI
 
 
     public const COL_PAGE = 12;
+
+    protected static bool $offline_mode = false;
 
     /**
      * singleton return the current api instance
@@ -106,6 +108,9 @@ class View extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!Controller::isWebAllowed()) {
+            return '';
+        }
         if ($item->getType() == __CLASS__) {
             return [
                 self::createTabEntry(__("Installed")),
@@ -118,6 +123,9 @@ class View extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!Controller::isWebAllowed()) {
+            return false;
+        }
         if ($item->getType() == __CLASS__) {
             switch ($tabnum) {
                 case 0:
@@ -137,10 +145,15 @@ class View extends CommonGLPI
     /**
      * Check current registration status and display warning messages
      *
+     * @param bool $force Force re-check the registration status even if it was already checked
      * @return bool
      */
-    public static function checkRegistrationStatus()
+    public static function checkRegistrationStatus(bool $force = false)
     {
+        if (!$force && static::$offline_mode) {
+            return false;
+        }
+
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
@@ -192,6 +205,7 @@ class View extends CommonGLPI
             echo "</div>";
         }
 
+        static::$offline_mode = !$valid;
         return $valid;
     }
 
@@ -291,6 +305,11 @@ class View extends CommonGLPI
             $nb_plugins
         );
 
+        // Clear all output buffers
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+
         header("X-GLPI-Marketplace-Total: $nb_plugins");
         self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
     }
@@ -342,9 +361,12 @@ class View extends CommonGLPI
 
         $messages = '';
         if ($is_list_truncated) {
-            $msg = count($plugins) === 0
-                ? sprintf(__('Unable to fetch plugin list due to %s services website unavailability. Please try again later.'), 'GLPI Network')
-                : sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+            if (count($plugins) === 0) {
+                $msg = sprintf(__('Unable to fetch plugin list due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+            } else {
+                // Not completely offline. Do not treat as fully offline.
+                $msg = sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
+            }
             $messages = '<li class="warning"><i class="fa fa-exclamation-triangle fa-3x"></i>' . $msg . '</li>';
         }
 
@@ -368,6 +390,24 @@ class View extends CommonGLPI
                       . "</div>";
             }
 
+            if (static::$offline_mode && $tab !== 'installed') {
+                $marketplace  = <<<HTML
+                <div class='marketplace $tab' data-tab='{$tab}'>
+                    <div class='left-panel'></div>
+                    <div class='right-panel'>
+                        <div class='top-panel'>
+                            <div class='controls'></div>
+                        </div>
+                        <ul class='plugins'>
+                            {$messages}
+                            {$plugins_li}
+                        </ul>
+                    </div>
+                </div>
+HTML;
+                echo $marketplace;
+                return;
+            }
             $tags_list    = $tab != "installed"
                 ? "<div class='left-panel'>" . self::getTagsHtml() . "</div>"
                 : "";
@@ -538,7 +578,7 @@ JS;
                </a>"
              : "";
         $icon    = self::getPluginIcon($plugin);
-        $network = self::getNetworkInformations($plugin);
+        $network = !static::$offline_mode ? self::getNetworkInformations($plugin) : '';
 
         if ($tab === "discover") {
             $card = <<<HTML
@@ -651,14 +691,17 @@ HTML;
         $exists             = $plugin_inst->getFromDBbyDir($plugin_key);
         $is_installed       = $plugin_inst->isInstalled($plugin_key);
         $is_actived         = $plugin_inst->isActivated($plugin_key);
-        $mk_controller      = new Controller($plugin_key);
-        $web_update_version = $mk_controller->checkUpdate($plugin_inst);
-        $has_web_update     = $web_update_version !== false;
-        $is_available       = $mk_controller->isAvailable();
-        $can_be_overwritten = $mk_controller->canBeOverwritten();
-        $can_be_downloaded  = $mk_controller->canBeDownloaded();
-        $required_offers    = $mk_controller->getRequiredOffers();
-        $can_be_updated     = $has_web_update && $can_be_overwritten;
+
+        // The following block of buttons require the marketplace to be online
+        $mk_controller = !static::$offline_mode ? new Controller($plugin_key) : null;
+        $web_update_version = $mk_controller ? $mk_controller->checkUpdate($plugin_inst) : false;
+        $has_web_update = $web_update_version !== false;
+        $is_available = $mk_controller && $mk_controller->isAvailable();
+        $can_be_overwritten = $mk_controller && $mk_controller->canBeOverwritten();
+        $can_be_downloaded = $mk_controller && $mk_controller->canBeDownloaded();
+        $required_offers = $mk_controller ? $mk_controller->getRequiredOffers() : false;
+        $can_be_updated = $has_web_update && $can_be_overwritten;
+
         $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
         $must_be_cleaned   = $exists && !$plugin_inst->isLoadable($plugin_key);
         $has_local_install = $exists && !$must_be_cleaned && !$is_installed;
@@ -776,7 +819,7 @@ HTML;
             }
         }
 
-        if ($mk_controller->requiresHigherOffer()) {
+        if (!static::$offline_mode && $mk_controller->requiresHigherOffer()) {
             $warning = sprintf(
                 __s("You need a superior GLPI-Network offer to access to this plugin (%s)"),
                 implode(', ', $required_offers)

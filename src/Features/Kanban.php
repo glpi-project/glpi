@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -170,7 +170,14 @@ trait Kanban
     public function getKanbanUrlWithID(int $items_id, bool $full = true): string
     {
         $tabs = $this->defineTabs();
-        $tab_id = array_search(__('Kanban'), $tabs);
+        $tab_id = null;
+        // search each value for one that contains "Kanban"
+        foreach ($tabs as $id => $tab) {
+            if (str_contains($tab, __('Kanban'))) {
+                $tab_id = $id;
+                break;
+            }
+        }
         if (false === $tab_id || is_null($tab_id)) {
             Response::sendError(400, "Itemtype does not have a Kanban tab!", Response::CONTENT_TYPE_TEXT_HTML);
         }

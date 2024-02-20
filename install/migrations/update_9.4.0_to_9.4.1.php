@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -145,12 +145,12 @@ function update940to941()
                     'FROM'      => $itil_element_table,
                     'WHERE'     => [
                         'itemtype' => $itil_type,
-                        'content'  => ['REGEXP', $DB->escape($missing_param_pattern)],
+                        'content'  => ['REGEXP', $missing_param_pattern],
                     ]
                 ]
             );
             foreach ($elements_to_fix as $data) {
-                 $data['content'] = $DB->escape($fix_content_fct($data['content'], $data['items_id'], $itil_fkey));
+                 $data['content'] = $fix_content_fct($data['content'], $data['items_id'], $itil_fkey);
                  $DB->updateOrDie($itil_element_table, $data, ['id' => $data['id']]);
             }
         }
@@ -161,12 +161,12 @@ function update940to941()
                 'SELECT'    => ['id', $itil_fkey, 'content'],
                 'FROM'      => $task_table,
                 'WHERE'     => [
-                    'content'  => ['REGEXP', $DB->escape($missing_param_pattern)],
+                    'content'  => ['REGEXP', $missing_param_pattern],
                 ]
             ]
         );
         foreach ($tasks_to_fix as $data) {
-            $data['content'] = $DB->escape($fix_content_fct($data['content'], $data[$itil_fkey], $itil_fkey));
+            $data['content'] = $fix_content_fct($data['content'], $data[$itil_fkey], $itil_fkey);
             $DB->updateOrDie($task_table, $data, ['id' => $data['id']]);
         }
     }

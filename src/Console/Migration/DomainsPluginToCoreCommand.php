@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -145,13 +145,11 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
             $domaintype = $this->storeItem(
                 Domain::class,
                 $core_type_id,
-                Toolbox::addslashes_deep(
-                    [
-                        'name'         => $type_data['name'],
-                        'entities_id'  => $type_data['entities_id'],
-                        'comment'      => $type_data['comment'],
-                    ]
-                ),
+                [
+                    'name'         => $type_data['name'],
+                    'entities_id'  => $type_data['entities_id'],
+                    'comment'      => $type_data['comment'],
+                ],
                 $progress_bar
             );
 
@@ -221,22 +219,20 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
             $domain = $this->storeItem(
                 Domain::class,
                 $core_domain_id,
-                Toolbox::addslashes_deep(
-                    [
-                        'name'                  => $domain_data['name'],
-                        'entities_id'           => $domain_data['entities_id'],
-                        'is_recursive'          => $domain_data['is_recursive'],
-                        'domaintypes_id'        => $mapped_type !== null ? $mapped_type->getID() : 0,
-                        'date_domaincreation'   => $domain_data['date_creation'],
-                        'date_expiration'       => $domain_data['date_expiration'],
-                        'users_id_tech'         => $domain_data['users_id_tech'],
-                        'groups_id_tech'        => $domain_data['groups_id_tech'],
-                        //suppliers_id handled in infocom
-                        'comment'               => $domain_data['comment'],
-                        'date_mod'              => $domain_data['date_mod'],
-                        'is_deleted'            => $domain_data['is_deleted']
-                    ]
-                ),
+                [
+                    'name'                  => $domain_data['name'],
+                    'entities_id'           => $domain_data['entities_id'],
+                    'is_recursive'          => $domain_data['is_recursive'],
+                    'domaintypes_id'        => $mapped_type !== null ? $mapped_type->getID() : 0,
+                    'date_domaincreation'   => $domain_data['date_creation'],
+                    'date_expiration'       => $domain_data['date_expiration'],
+                    'users_id_tech'         => $domain_data['users_id_tech'],
+                    'groups_id_tech'        => $domain_data['groups_id_tech'],
+                    //suppliers_id handled in infocom
+                    'comment'               => $domain_data['comment'],
+                    'date_mod'              => $domain_data['date_mod'],
+                    'is_deleted'            => $domain_data['is_deleted']
+                ],
                 $progress_bar
             );
 
@@ -320,12 +316,12 @@ class DomainsPluginToCoreCommand extends AbstractPluginToCoreCommand
                  continue;
             }
 
-            $item_input = Toolbox::addslashes_deep([
+            $item_input = [
                 'domains_id'            => $domains_id,
                 'itemtype'              => $relation_data['itemtype'],
                 'items_id'              => $relation_data['items_id'],
                 'domainrelations_id'    => 0
-            ]);
+            ];
 
             $item = new Domain_Item();
             if ($item->add($item_input) === false) {

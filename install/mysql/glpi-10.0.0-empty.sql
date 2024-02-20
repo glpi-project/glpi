@@ -5,7 +5,7 @@
 --
 -- http://glpi-project.org
 --
--- @copyright 2015-2023 Teclib' and contributors.
+-- @copyright 2015-2024 Teclib' and contributors.
 -- @copyright 2003-2014 by the INDEPNET Development Team.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
@@ -7051,6 +7051,7 @@ CREATE TABLE `glpi_ticketrecurrents` (
   `next_creation_date` timestamp NULL DEFAULT NULL,
   `calendars_id` int unsigned NOT NULL DEFAULT '0',
   `end_date` timestamp NULL DEFAULT NULL,
+  `ticket_per_item` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -7058,7 +7059,8 @@ CREATE TABLE `glpi_ticketrecurrents` (
   KEY `is_active` (`is_active`),
   KEY `tickettemplates_id` (`tickettemplates_id`),
   KEY `next_creation_date` (`next_creation_date`),
-  KEY `calendars_id` (`calendars_id`)
+  KEY `calendars_id` (`calendars_id`),
+  KEY `ticket_per_item` (`ticket_per_item`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -9195,6 +9197,19 @@ CREATE TABLE `glpi_snmpcredentials` (
    KEY `name` (`name`),
    KEY `snmpversion` (`snmpversion`),
    KEY `is_deleted` (`is_deleted`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+
+DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;
+CREATE TABLE `glpi_items_ticketrecurrents` (
+   `id` int unsigned NOT NULL AUTO_INCREMENT,
+   `itemtype` varchar(255) DEFAULT NULL,
+   `items_id` int unsigned NOT NULL DEFAULT '0',
+   `ticketrecurrents_id` int unsigned NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`ticketrecurrents_id`),
+   KEY `items_id` (`items_id`),
+   KEY `ticketrecurrents_id` (`ticketrecurrents_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

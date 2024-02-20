@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,22 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 if (!defined('GLPI_ROOT')) {
     include('../inc/includes.php');
 }
 
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
-// Need REQUEST to manage initial walues and posted ones
-if (isset($_REQUEST['basedn'])) {
-    $_REQUEST['basedn'] = Sanitizer::unsanitize($_REQUEST['basedn']);
-}
-if (isset($_REQUEST['ldap_filter'])) {
-    $_REQUEST['ldap_filter'] = Sanitizer::unsanitize($_REQUEST['ldap_filter']);
-}
-
+// Need REQUEST to manage initial values and posted ones
 AuthLDAP::manageValuesInSession($_REQUEST);
 
 if (isset($_SESSION['ldap_import']['_in_modal']) && $_SESSION['ldap_import']['_in_modal']) {

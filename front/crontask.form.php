@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,11 +39,12 @@
 
 include('../inc/includes.php');
 
-Session::checkRight("config", UPDATE);
+Session::checkRight("config", READ);
 
 $crontask = new CronTask();
 
 if (isset($_POST['execute'])) {
+    Session::checkRight("config", UPDATE);
     if (is_numeric($_POST['execute'])) {
        // Execute button from list.
         $name = CronTask::launch(CronTask::MODE_INTERNAL, intval($_POST['execute']));

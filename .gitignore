@@ -1,10 +1,5 @@
-/config/cache.php
-/config/config_db*
-/config/glpi.key
-/config/glpicrypt.key
-/config/local_define.php
-/tests/config_db*
-/tests/cache.php
+/config/*
+!/config/.gitkeep
 /marketplace/*
 !/marketplace/.gitkeep
 /plugins/*
@@ -27,13 +22,10 @@ phpunit.xml
 /tests/coverage-*/
 /tests/files/
 /tests/.env
-/tests/glpicrypt.key
-/config/based_config.php
-/config/config.php
-/config/define.php
 /nbproject
 .composer.hash
 /**/*.min.css
+!/css/standalone/tinymce_empty_skin/*.min.css
 /css_compiled/
 /css/compiled/
 /css/lib/

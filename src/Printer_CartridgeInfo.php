@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 class Printer_CartridgeInfo extends CommonDBChild
 {
@@ -130,5 +132,129 @@ HTML;
             echo "</tr>";
         }
         echo "</table>";
+    }
+
+    public static function rawSearchOptionsToAdd()
+    {
+        $tab = [];
+
+        $tab[] = [
+            'id' => strtolower(self::getType()),
+            'name' => self::getTypeName(1)
+        ];
+
+        $tab[] = [
+            'id'                => 1400,
+            'table'             => self::getTable(),
+            'field'             => "_virtual_toner_percent",
+            'name'              => __('Toner percentage'),
+            'datatype'          => 'specific',
+            'massiveaction'     => false,
+            'nosearch'          => true,
+            'joinparams'        => [
+                'jointype' => 'child'
+            ],
+            'additionalfields'  => ['property', 'value'],
+            'forcegroupby'      => true,
+            'aggregate'         => true,
+            'searchtype'        => ['contains'],
+            'nosort'            => true
+        ];
+
+        $tab[] = [
+            'id'                => 1401,
+            'table'             => self::getTable(),
+            'field'             => "_virtual_drum_percent",
+            'name'              => __('Drum percentage'),
+            'datatype'          => 'specific',
+            'massiveaction'     => false,
+            'nosearch'          => true,
+            'joinparams'        => [
+                'jointype' => 'child'
+            ],
+            'additionalfields'  => ['property', 'value'],
+            'forcegroupby'      => true,
+            'aggregate'         => true,
+            'searchtype'        => ['contains'],
+            'nosort'            => true
+        ];
+
+        return $tab;
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    /**
+     * Create a badge for a specific type of cartridge information
+     *
+     * @param array $data
+     * @param string $type
+     */
+    private static function createCartridgeInformationBadge($data, $type): ?string
+    {
+        $color_aliases = [
+            'magenta'   => 'purple',
+        ];
+        $color_translations = [
+            'black'         => __('Black'),
+            'cyan'          => __('Cyan'),
+            'magenta'       => __('Magenta'),
+            'yellow'        => __('Yellow'),
+        ];
+
+        if (
+            is_array($data)
+            && isset($data['property'])
+            && isset($data['value'])
+            && str_starts_with($data['property'], $type)
+        ) {
+            $color = str_replace($type, '', $data['property']);
+            $templateContent = <<<TWIG
+                <span class="badge bg-{{ color }} text-{{ color }}-fg fw-bold">
+                    {{ color_translated }} : {{ status }}
+                </span>
+TWIG;
+
+            return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
+                'color_translated' => $color_translations[$color] ?? ucwords($color),
+                'color' => $color_aliases[$color] ?? $color,
+                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value']
+            ]);
+        }
+
+        return null;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        $printer = new Printer();
+        if (str_starts_with($field, '_virtual_')) {
+            $type = preg_match('/_virtual_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $badges = array_filter(array_map(
+                function ($data) use ($type) {
+                    return self::createCartridgeInformationBadge($data, $type);
+                },
+                $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)]
+            ));
+
+            if ($badges) {
+                $templateContent = <<<TWIG
+                    <div class="d-flex flex-wrap gap-1">
+                        {% for badge in badges %}
+                            {{ badge|raw }}
+                        {% endfor %}
+                    </div>
+TWIG;
+
+                return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
+                    'badges' => $badges
+                ]);
+            }
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 }

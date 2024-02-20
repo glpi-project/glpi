@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,26 +41,18 @@
     }
 
     .select2-selection {
-        background-color: $input-bg;
-        border: $input-border-width solid $input-border-color;
-
-        @include border-radius($input-border-radius);
-        @include box-shadow($input-box-shadow);
-        @include transition($input-transition);
-
-        @include dark-mode {
-            & {
-                background-color: $dark-mode-darken;
-                border-color: $input-border;
-            }
-        }
+        background-color: var(--tblr-bg-forms);
+        border: var(--tblr-border-width) solid var(--tblr-border-color);
+        border-radius: var(--tblr-border-radius);
+        box-shadow: var(--tblr-box-shadow);
+        transition: $input-transition;
 
         .select2-selection__rendered input[type="search"] {
-            color: $input-color;
+            color: var(--tblr-body-color);
         }
 
         &.select2-selection--single {
-            @include font-size($input-font-size);
+            @include font-size(var(--tblr-body-font-size));
 
             height: $input-height;
             position: relative; // fix arrow position
@@ -73,6 +65,8 @@
                 line-height: $input-height;
                 direction: rtl; // ellipsis on left
                 text-align: left;
+                color: var(--tblr-body-color);
+                border-color: var(--tblr-border-color);
 
                 &::before {
                     content: "\200E"; // left-to-right mark: be sure that content is displayed in ltr way
@@ -80,13 +74,6 @@
 
                 > * {
                     unicode-bidi: plaintext; // preserve text direction
-                }
-
-                @include dark-mode {
-                    & {
-                        color: $dark-mode-text;
-                        border-color: $input-border;
-                    }
                 }
             }
 
@@ -102,10 +89,6 @@
                         margin-top: -4px;
                     }
                 }
-
-                .select2-selection__rendered {
-                    line-height: $input-height-sm;
-                }
             }
 
             .form-select-lg + & {
@@ -120,15 +103,11 @@
                         margin-top: -1px;
                     }
                 }
-
-                .select2-selection__rendered {
-                    line-height: $input-height-lg;
-                }
             }
         }
 
         &.select2-selection--multiple {
-            @include font-size($input-font-size * 0.875);
+            @include font-size($input-font-size-sm);
 
             min-height: $input-height;
 
@@ -146,37 +125,21 @@
 
             .select2-selection__rendered {
                 .select2-selection__choice {
-                    background-color: $light;
-                    border: $input-border-width solid $input-border-color;
-
-                    @include border-radius($input-border-radius-sm);
-
+                    background-color: var(--tblr-active-bg);
+                    border: var(--tblr-border-width) solid var(--tblr-border-color);
+                    border-radius: var(--tblr-border-radius-sm);
                     padding: 1px 3px;
                     margin: 3px 3px 0 0;
                     max-width: 100%;
                     white-space: normal;
 
-                    @include dark-mode {
-                        & {
-                            background-color: $dark;
-                            border-color: $input-border;
-                        }
-                    }
-
                     .select2-selection__choice__remove {
-                        color: $dark;
+                        color: var(--tblr-dark);
                         font-weight: bold;
                         margin: 0 0 0 3px;
 
                         &:hover {
-                            color: $black;
-                        }
-
-                        @include dark-mode {
-                            &,
-                            &:hover {
-                                color: $light;
-                            }
+                            color: var(--tblr-black);
                         }
                     }
                 }
@@ -190,27 +153,22 @@
     }
 
     &.select2-container--disabled .select2-selection {
-        background-color: $input-disabled-bg;
-        border-color: $input-border-color;
+        background-color: var(--tblr-disabled-color);
+        border-color: var(--tblr-border-color);
         box-shadow: none;
         cursor: not-allowed;
 
         .select2-selection__rendered {
-            color: $text-muted;
+            color: var(--tblr-muted);
         }
     }
 
     .select2-dropdown {
-        border-color: $input-border-color;
+        border-color: var(--tblr-border-color);
         border-radius: 0;
+        background-color: var(--tblr-bg-forms);
 
         @include font-size($input-font-size);
-
-        @include dark-mode {
-            & {
-                background-color: $dark;
-            }
-        }
 
         &.select-dropdown-sm {
             @include font-size($input-font-size-sm);
@@ -222,29 +180,22 @@
 
         &.select2-dropdown--below {
             border-top: none;
-
-            @include border-bottom-radius($input-border-radius);
+            border-bottom-left-radius: var(--tblr-border-radius);
+            border-bottom-right-radius: var(--tblr-border-radius);
         }
 
         &.select2-dropdown--above {
-            border-top: 1px solid $input-border-color;
-
-            @include border-top-radius($input-border-radius);
+            border-top: 1px solid var(--tblr-border-color);
+            border-top-left-radius: var(--tblr-border-radius);
+            border-top-right-radius: var(--tblr-border-radius);
         }
 
         .select2-search {
             .select2-search__field {
-                border: $input-border-width solid $input-border-color;
-
-                @include border-radius($input-border-radius);
-
-                @include dark-mode {
-                    & {
-                        background-color: $dark-mode-darken;
-                        color: $dark-mode-text;
-                        border-color: $input-border;
-                    }
-                }
+                border: var(--tblr-border-width) solid var(--tblr-border-color);
+                background-color: var(--tblr-bg-forms);
+                color: var(--tblr-body-color);
+                border-radius: var(--tblr-border-radius);
             }
         }
 
@@ -252,26 +203,12 @@
             .select2-results__options {
                 .select2-results__option {
                     &[aria-selected="true"]:not(.select2-results__option--highlighted) {
-                        background-color: darken($light, 5%);
-
-                        @include dark-mode {
-                            & {
-                                background-color: lighten($dark, 5%);
-                            }
-                        }
+                        background-color: color-mix(in srgb, var(--tblr-bg-surface), black 5%);
                     }
 
                     &.select2-results__option--highlighted {
-                        background-color: $primary;
-                        color: $light;
-
-                        @include dark-mode {
-                            & {
-                                background-color: $dark-mode-darken;
-                                color: $dark-mode-text;
-                                border-color: $input-border;
-                            }
-                        }
+                        background-color: var(--tblr-primary);
+                        color: var(--tblr-primary-fg);
                     }
 
                     &[role="group"] {
@@ -306,19 +243,9 @@
             }
         }
     }
-
-    & ~ .btn.btn-outline-secondary {
-        border: $input-border-width solid $input-border-color;
-
-        @include dark-mode {
-            & {
-                border-color: $input-border;
-            }
-        }
-    }
 }
 
 // fix z-index issue for select2 dropdown container with a boostrap modal
 .modal-backdrop ~ .select2-container--open {
-    z-index: $zindex-modal + 1;
+    z-index: calc(var(--glpi-zindex-modal) + 1);
 }

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,13 +32,44 @@
  */
 
 .documentation {
-    background-color: white;
+    background-color: var(--tblr-bg-surface);
     max-width: 700px;
     margin: 0 auto;
     padding: 10px 20px;
 
-    h1 {
-        color: #300000;
+    .table-of-contents {
+        margin: 0;
+        padding: 0;
+        background-color: var(--glpi-mainmenu-bg);
+        color: var(--glpi-mainmenu-fg);
+        font-size: var(--tblr-dropdown-font-size);
+
+        li {
+            margin: 0;
+            list-style: none;
+            padding: 2px 0 2px 5px;
+            border: none;
+
+            a {
+                font-size: 1.25rem;
+                font-weight: 600;
+                color: inherit;
+                border-bottom: 1px solid var(--tblr-border-color);
+            }
+
+            ul {
+                li {
+                    list-style: disc;
+
+                    a {
+                        font-weight: normal;
+                        font-size: 1rem;
+                        border-bottom: none;
+                        color: inherit;
+                   }
+                }
+            }
+        }
     }
 
     > ul:nth-child(2) {
@@ -51,9 +82,8 @@
     }
 
     h2 {
-        color: #940000;
         margin-top: 70px;
-        border-bottom: 1px solid #a87a7a;
+        border-bottom: 1px solid var(--tblr-border-color);
     }
 
     li {
@@ -62,7 +92,7 @@
     }
 
     > ul > li > ul > li {
-        border-left: 1px solid grey;
+        border-left: 1px solid var(--tblr-border-color);
 
         > ul > li {
             list-style-type: disc;
@@ -71,7 +101,7 @@
     }
 
     pre {
-        border: 1px solid #ccc;
+        border: 1px solid var(--tblr-border-color);
         border-radius: 4px;
         font-size: 13px;
     }
@@ -110,21 +140,17 @@
 }
 
 @include media-breakpoint-up(sm) {
-    .documentation #summary,
-    .documentation .summary {
+    .documentation .table-of-contents {
         position: fixed;
-        top: 40px;
-        left: 15px;
+        top: 0;
+        left: 0;
+        padding-top: 40px;
+        padding-left: 15px;
+        padding-right: 15px;
         margin-top: 0;
-
-        + ul {
-            width: 200px;
-            position: fixed;
-            top: 70px;
-            left: 10px;
-            bottom: 0;
-            overflow: auto;
-        }
+        width: 15rem;
+        bottom: 0;
+        overflow: auto;
     }
 }
 

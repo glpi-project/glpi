@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,11 @@
  */
 abstract class NotificationSetting extends CommonDBTM
 {
+    public const ATTACH_INHERIT           = -2;   // Inherit from global config
+    public const ATTACH_NO_DOCUMENT       = 0;    // No document
+    public const ATTACH_ALL_DOCUMENTS     = 1;    // All documents
+    public const ATTACH_FROM_TRIGGER_ONLY = 2;    // Only documents related to the item that triggers the event
+
     public $table           = 'glpi_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';

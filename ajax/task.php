@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -110,6 +110,16 @@ if ($template->fields['taskcategories_id']) {
     }
 }
 
+if ($template->fields['pendingreasons_id'] ?? 0 > 0) {
+    $pendingReason = new PendingReason();
+    if ($pendingReason->getFromDB($template->fields['pendingreasons_id'])) {
+        $template->fields = array_merge($template->fields, [
+            'pendingreasons_name'         => $pendingReason->fields['name'],
+            'followup_frequency'          => $pendingReason->fields['followup_frequency'],
+            'followups_before_resolution' => $pendingReason->fields['followups_before_resolution'],
+        ]);
+    }
+}
 
 // Return json response with the template fields
 echo json_encode($template->fields);

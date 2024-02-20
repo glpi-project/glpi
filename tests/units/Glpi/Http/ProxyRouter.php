@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -233,7 +233,6 @@ class ProxyRouter extends \GLPITestCase
             '/install/install.php',
             '/install/update.php',
             '/apirest.php',
-            '/apixmlrpc.php',
             '/caldav.php',
             '/index.php',
             '/status.php',
@@ -254,7 +253,7 @@ class ProxyRouter extends \GLPITestCase
             '/src/Computer.php',
             '/tests/bootstrap.php',
             '/tools/psr4.php',
-            '/vendor/htmlawed/htmlawed/htmLawed.php',
+            '/vendor/donatj/phpuseragentparser/tests/bootstrap.php',
         ];
         $allowed_glpi_static_paths = [
             '/css/lib/fontsource/inter/files/inter-latin-100-normal.woff2',

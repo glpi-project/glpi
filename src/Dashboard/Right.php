@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 namespace Glpi\Dashboard;
+
+use Glpi\DBAL\QueryParam;
 
 class Right extends \CommonDBChild
 {
@@ -93,9 +95,9 @@ class Right extends \CommonDBChild
         $query_rights = $DB->buildInsert(
             self::getTable(),
             [
-                'dashboards_dashboards_id' => new \QueryParam(),
-                'itemtype' => new \QueryParam(),
-                'items_id' => new \QueryParam(),
+                'dashboards_dashboards_id' => new QueryParam(),
+                'itemtype' => new QueryParam(),
+                'items_id' => new QueryParam(),
             ]
         );
         $stmt = $DB->prepare($query_rights);

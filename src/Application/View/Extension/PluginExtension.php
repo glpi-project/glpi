@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,6 +49,7 @@ class PluginExtension extends AbstractExtension
         return [
             new TwigFunction('call_plugin_hook', [$this, 'callPluginHook']),
             new TwigFunction('call_plugin_hook_func', [$this, 'callPluginHookFunction']),
+            new TwigFunction('call_plugin_one_hook', [$this, 'callPluginOneHook']),
             new TwigFunction('get_plugin_web_dir', [$this, 'getPluginWebDir']),
         ];
     }
@@ -83,6 +84,15 @@ class PluginExtension extends AbstractExtension
     public function callPluginHookFunction(string $name, $params = null, bool $return_result = false)
     {
         $result = Plugin::doHookFunction($name, $params);
+
+        if ($return_result) {
+            return $result;
+        }
+    }
+
+    public function callPluginOneHook(string $plugin, string $name, $params = null, bool $return_result = false)
+    {
+        $result = Plugin::doOneHook($plugin, $name, $params);
 
         if ($return_result) {
             return $result;

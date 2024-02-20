@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,20 +47,6 @@ use Ticket;
 
 class SLM extends DbTestCase
 {
-    private $method;
-
-    public function beforeTestMethod($method)
-    {
-        parent::beforeTestMethod($method);
-       //to handle GLPI barbarian replacements.
-        $this->method = str_replace(
-            ['\\', 'beforeTestMethod'],
-            ['', $method],
-            __METHOD__
-        );
-    }
-
-
     /**
      * Create a full SLM with all level filled (slm/sla/ola/levels/action/criterias)
      * And Delete IT to check clean os sons objects
@@ -88,7 +74,7 @@ class SLM extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
@@ -124,7 +110,7 @@ class SLM extends DbTestCase
 
        // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->method,
+            'name'           => __METHOD__,
             'execution_time' => -DAY_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -188,7 +174,7 @@ class SLM extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -200,7 +186,7 @@ class SLM extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->method
+            'pattern'   => __METHOD__
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -234,8 +220,8 @@ class SLM extends DbTestCase
         $start_date = date("Y-m-d H:i:s", time() - 4 * DAY_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method
+            'name'    => __METHOD__,
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
@@ -248,13 +234,13 @@ class SLM extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->method
+            'content' => __METHOD__
         ]);
         $ticket->update([
             'id'   => $tickets_id_2,
-            'name' => $this->method
+            'name' => __METHOD__
         ]);
-        $ticket_input_2['name'] = $this->method;
+        $ticket_input_2['name'] = __METHOD__;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
         $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
@@ -302,7 +288,7 @@ class SLM extends DbTestCase
 
         $slm    = new \SLM();
         $slm_id = $slm->add($slm_in = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'comment'      => $this->getUniqueString(),
             'calendars_id' => $cal_id,
         ]);
@@ -338,7 +324,7 @@ class SLM extends DbTestCase
 
        // prepare levels input for each ola/sla
         $slal1_in = $slal2_in = $olal1_in = $olal2_in = [
-            'name'           => $this->method,
+            'name'           => __METHOD__,
             'execution_time' => -MONTH_TIMESTAMP,
             'is_active'      => 1,
             'match'          => 'AND',
@@ -402,7 +388,7 @@ class SLM extends DbTestCase
         $ruleaction = new \RuleAction();
 
         $ruletid = $ruleticket->add($ruleinput = [
-            'name'         => $this->method,
+            'name'         => __METHOD__,
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => 'RuleTicket',
@@ -414,7 +400,7 @@ class SLM extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => 2,
-            'pattern'   => $this->method
+            'pattern'   => __METHOD__
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
@@ -448,8 +434,8 @@ class SLM extends DbTestCase
         $start_date = date("Y-m-d H:i:s", time() - 4 * MONTH_TIMESTAMP);
         $tickets_id = $ticket->add($ticket_input = [
             'date'    => $start_date,
-            'name'    => $this->method,
-            'content' => $this->method
+            'name'    => __METHOD__,
+            'content' => __METHOD__
         ]);
         $this->checkInput($ticket, $tickets_id, $ticket_input);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
@@ -462,7 +448,7 @@ class SLM extends DbTestCase
         $ticket = new \Ticket();
         $tickets_id_2 = $ticket->add($ticket_input_2 = [
             'name'    => "to be updated",
-            'content' => $this->method
+            'content' => __METHOD__
         ]);
        //SLA/OLA  TTR/TTO not already set
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo(0);
@@ -472,9 +458,9 @@ class SLM extends DbTestCase
 
         $ticket->update([
             'id'   => $tickets_id_2,
-            'name' => $this->method
+            'name' => __METHOD__
         ]);
-        $ticket_input_2['name'] = $this->method;
+        $ticket_input_2['name'] = __METHOD__;
         $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
         $this->integer((int)$ticket->getField('slas_id_tto'))->isEqualTo($sla1_id);
         $this->integer((int)$ticket->getField('slas_id_ttr'))->isEqualTo($sla2_id);
@@ -1425,7 +1411,7 @@ class SLM extends DbTestCase
                 }
 
                 // First OLA is added on creation
-                $builder = new RuleBuilder('Add first LA on creation');
+                $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONADD)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1434,7 +1420,7 @@ class SLM extends DbTestCase
                 $this->createRule($builder);
 
                 // First OLA is added on update
-                $builder = new RuleBuilder('Add second LA on update');
+                $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
                 $builder->setEntity($entity)
                     ->setCondtion(RuleTicket::ONUPDATE)
                     ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
@@ -1569,5 +1555,263 @@ class SLM extends DbTestCase
                 array_unique(array_column($sa_levels_ticket, 'date'))
             )->isEqualTo(['2034-08-16 16:00:00']);
         }
+    }
+
+    /**
+     * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar
+     *
+     * @return void
+     */
+    public function testLaChangeCalendar(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $test_ticket_name = "Test ticket with multiple LA assignation " . mt_rand();
+
+        // OLA change are recomputed from the current date so we need to set
+        // glpi_currenttime to get predictable results
+        $_SESSION['glpi_currenttime'] = '2034-08-16 13:00:00';
+
+        // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
+        $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__ . ' 1']);
+        for ($i = 1; $i <= 5; $i++) {
+            $this->createItem(
+                \CalendarSegment::class,
+                [
+                    'calendars_id' => $calendar->getID(),
+                    'day'          => $i,
+                    'begin'        => '08:00:00',
+                    'end'          => '19:00:00',
+                ]
+            );
+        }
+
+        // Create test SLM
+        $slm = $this->createItem(\SLM::class, [
+            'name'                => 'SLM',
+            'entities_id'         => $entity,
+            'is_recursive'        => true,
+            'use_ticket_calendar' => false,
+            'calendars_id'        => $calendar->getID(),
+        ]);
+
+        // Create rules to set SLA on ticket creation
+        $la_class = \SLA::class;
+        $la = new $la_class();
+        foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+            list($la_date_field, $la_fk_field) = $la->getFieldNames($la_type);
+
+            // Create two LA with one escalation level
+            $la = $this->createItem($la_class, [
+                'name'                => "$la_class $la_type",
+                'entities_id'         => $entity,
+                'is_recursive'        => true,
+                'type'                => $la_type,
+                'number_time'         => 4,
+                'calendars_id'        => $calendar->getID(),
+                'definition_time'     => 'hour',
+                'end_of_working_day'  => false,
+                'slms_id'             => $slm->getID(),
+                'use_ticket_calendar' => false,
+            ]);
+            $this->createItem($la->getLevelClass(), [
+                'name'                          => $la->fields['name'] . ' level',
+                $la_class::getForeignKeyField() => $la->getID(),
+                'execution_time'                => - HOUR_TIMESTAMP,
+                'is_active'                     => true,
+                'entities_id'                   => $entity,
+                'is_recursive'                  => true,
+                'match'                         => 'AND',
+            ]);
+
+            // First OLA is added on creation
+            $builder = new RuleBuilder('Add first LA on creation', RuleTicket::class);
+            $builder->setEntity($entity)
+                ->setCondtion(RuleTicket::ONADD)
+                ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
+                ->addCriteria('entities_id', Rule::PATTERN_IS, $entity)
+                ->addAction('assign', $la_fk_field, $la->getID());
+            $this->createRule($builder);
+        }
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'entities_id' => $entity,
+            'name'        => $test_ticket_name,
+            'content'     => '',
+        ]);
+
+        // Check that TTO and TTR are set as expected
+        $la = new $la_class();
+        $level_class = $la->getLevelClass();
+        $expected_la_levels = [];
+
+        foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+            list($la_date_field, $la_fk_field) = $la->getFieldNames($la_type);
+
+            // Check that the correct LA is assigned to the ticket
+            $expected_la = getItemByTypeName($la_class, "$la_class $la_type", true);
+            $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type level", true);
+            $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+
+            // Check that the target date is correct (+ 4 hours)
+            $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:00:00');
+        }
+
+        // Check that all escalations levels are sets
+        $level_ticket_class = $la->getLevelTicketClass();
+        $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()]);
+        $this->array($sa_levels_ticket)->hasSize(2); // One TTO and one TTR
+
+        // Check that they match the expected la levels
+        $this->array(
+            array_column($sa_levels_ticket, $level_class::getForeignKeyField())
+        )->isEqualTo($expected_la_levels);
+
+        // Check that they match the expected date (- 1 hour)
+        $this->array(
+            array_unique(array_column($sa_levels_ticket, 'date'))
+        )->isEqualTo(['2034-08-16 16:00:00']);
+
+        // Put ticket on waiting for 10 minutes
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            'status' => \Ticket::WAITING,
+        ]);
+        $_SESSION['glpi_currenttime'] = '2034-08-16 13:10:00';
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            'status' => \Ticket::INCOMING,
+        ]);
+        $ticket->getFromDB($ticket->getID());
+
+        // Check that TTO and TTR have been modified as expected
+        $la = new $la_class();
+        $level_class = $la->getLevelClass();
+        $expected_la_levels = [];
+
+        $la_type = \SLM::TTR;
+        list($la_date_field, $la_fk_field) = $la->getFieldNames($la_type);
+
+        // Check that the correct LA is assigned to the ticket
+        $expected_la = getItemByTypeName($la_class, "$la_class $la_type", true);
+        $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type level", true);
+        $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+
+        // Check that the target date is correct (+ 4 hours)
+        $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-16 17:10:00');
+
+        // Check that all escalations levels are sets
+        $level_ticket_class = $la->getLevelTicketClass();
+        $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
+        $this->array($sa_levels_ticket)->hasSize(1);
+
+        // Check that they match the expected la levels
+        $this->array(
+            array_column($sa_levels_ticket, $level_class::getForeignKeyField())
+        )->isEqualTo($expected_la_levels);
+
+        // Check that they match the expected date (- 1 hour)
+        $this->array(
+            array_unique(array_column($sa_levels_ticket, 'date'))
+        )->isEqualTo(['2034-08-16 16:10:00']);
+
+        // Create a second calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
+        $calendar2 = $this->createItem(\Calendar::class, ['name' => __FUNCTION__ . ' 2']);
+        for ($i = 1; $i <= 5; $i++) {
+            $this->createItem(
+                \CalendarSegment::class,
+                [
+                    'calendars_id' => $calendar2->getID(),
+                    'day'          => $i,
+                    'begin'        => '08:00:00',
+                    'end'          => '19:00:00',
+                ]
+            );
+        }
+
+        // Create a new SLM with the second calendar
+        $slm2 = $this->createItem(\SLM::class, [
+            'name'                => 'SLM 2',
+            'entities_id'         => $entity,
+            'is_recursive'        => true,
+            'use_ticket_calendar' => false,
+            'calendars_id'        => $calendar2->getID(),
+        ]);
+
+        // Create rules to set full SLA on ticket update
+        foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+            $la = new $la_class();
+            list($la_date_field, $la_fk_field) = $la->getFieldNames($la_type);
+
+            // Create two LA with one escalation level
+            $la = $this->createItem($la_class, [
+                'name'                => "$la_class $la_type 2",
+                'entities_id'         => $entity,
+                'is_recursive'        => true,
+                'type'                => $la_type,
+                'number_time'         => 6,
+                'calendars_id'        => $calendar2->getID(),
+                'definition_time'     => 'hour',
+                'end_of_working_day'  => false,
+                'slms_id'             => $slm2->getID(),
+                'use_ticket_calendar' => false,
+            ]);
+            $this->createItem($la->getLevelClass(), [
+                'name'                          => $la->fields['name'] . ' level',
+                $la_class::getForeignKeyField() => $la->getID(),
+                'execution_time'                => - HOUR_TIMESTAMP,
+                'is_active'                     => true,
+                'entities_id'                   => $entity,
+                'is_recursive'                  => true,
+                'match'                         => 'AND',
+            ]);
+
+            // OLA is added on update
+            $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
+            $builder->setEntity($entity)
+                ->setCondtion(RuleTicket::ONUPDATE)
+                ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
+                ->addCriteria('urgency', Rule::PATTERN_IS, 5)
+                ->addAction('assign', $la_fk_field, $la->getID());
+            $this->createRule($builder);
+        }
+
+        // Update ticket, triggering an LA change
+        $this->updateItem(Ticket::class, $ticket->getID(), [
+            'urgency' => 5,
+            'name' => $test_ticket_name, // Name is not updated but we need to be in the input for the rule
+        ]);
+        $ticket->getFromDB($ticket->getID());
+
+        // Check that TTO and TTR have been modified as expected
+        $la = new $la_class();
+        $level_class = $la->getLevelClass();
+        $expected_la_levels = [];
+
+        foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+            list($la_date_field, $la_fk_field) = $la->getFieldNames($la_type);
+
+            // Check that the correct LA is assigned to the ticket
+            $expected_la = getItemByTypeName($la_class, "$la_class $la_type 2", true);
+            $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 2 level", true);
+            $this->integer($ticket->fields[$la_fk_field])->isEqualTo($expected_la);
+
+            // Check that the target date is correct (+ 6 hours)
+            $this->string($ticket->fields[$la_date_field])->isEqualTo('2034-08-17 08:10:00');
+        }
+
+        // Check that all escalations levels are sets
+        $level_ticket_class = $la->getLevelTicketClass();
+        $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
+        $this->array($sa_levels_ticket)->hasSize(2);
+
+        // Check that they match the expected la levels
+        $this->array(
+            array_column($sa_levels_ticket, $level_class::getForeignKeyField())
+        )->isEqualTo($expected_la_levels);
+
+        // Check that they match the expected date (- 1 hour)1
+        $this->array(
+            array_unique(array_column($sa_levels_ticket, 'date'))
+        )->isEqualTo(['2034-08-16 18:10:00']);
     }
 }

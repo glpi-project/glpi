@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -81,7 +81,13 @@ if (isset($_GET['id'])) {
 $ajax = isset($_REQUEST['ajax']) ? true : false;
 
 if ($ajax) {
-    $ira->display($params);
+    $item = new Item_Rack();
+    $id = $params['id'] ?? 0;
+    if ($id > 0 && !$item->getFromDB($params['id'])) {
+        Html::displayNotFoundError();
+        return;
+    }
+    $item->showForm($id, $params);
 } else {
     $menus = ["assets", "rack"];
     Item_Rack::displayFullPageForItem($params['id'] ?? 0, $menus, $params);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,6 @@ use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\Toolbox\Sanitizer;
 use Group;
 use ITILCategory;
 use Session;
@@ -74,10 +73,10 @@ abstract class CommonITILObjectParameters extends AbstractParameters
             new ObjectParameter(new EntityParameters()),
             new ObjectParameter(new ITILCategoryParameters()),
             new ArrayParameter("requesters.users", new UserParameters(), _n('Requester', 'Requesters', Session::getPluralNumber())),
-            new ArrayParameter("observers.users", new UserParameters(), _n('Watcher', 'Watchers', Session::getPluralNumber())),
+            new ArrayParameter("observers.users", new UserParameters(), _n('Observer', 'Observers', Session::getPluralNumber())),
             new ArrayParameter("assignees.users", new UserParameters(), _n('Assignee', 'Assignees', Session::getPluralNumber())),
             new ArrayParameter("requesters.groups", new GroupParameters(), _n('Requester group', 'Requester groups', Session::getPluralNumber())),
-            new ArrayParameter("observers.groups", new GroupParameters(), _n('Watcher group', 'Watcher groups', Session::getPluralNumber())),
+            new ArrayParameter("observers.groups", new GroupParameters(), _n('Observer group', 'Observer groups', Session::getPluralNumber())),
             new ArrayParameter("assignees.groups", new GroupParameters(), _n('Assigned group', 'Assigned groups', Session::getPluralNumber())),
             new ArrayParameter("assignees.suppliers", new SupplierParameters(), _n('Assigned supplier', 'Assigned suppliers', Session::getPluralNumber())),
         ];
@@ -87,8 +86,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
     {
         /** @var CommonITILObject $commonitil  */
 
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($commonitil->fields);
+        $fields = $commonitil->fields;
 
        // Base values from ticket property
         $values = [

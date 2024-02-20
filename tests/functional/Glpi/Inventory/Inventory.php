@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -4489,7 +4489,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(6);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
@@ -4506,7 +4506,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
         //check created vms
         $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         //change config to import vms as computers
         $this->login();
@@ -4529,7 +4529,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //one does not have an uuid, so no computer is created.
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
         //check created vms
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         //partial inventory: postgres vm has been stopped
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_2_partial_vms.json'));
@@ -4537,25 +4537,25 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         //check nothing has changed
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers + $count_vms - 1);
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
         $iterator = $DB->request([
             'SELECT' => [
-                \ComputerVirtualMachine::getTable() . '.id',
-                \ComputerVirtualMachine::getTable() . '.name AS vm_name',
+                \ItemVirtualMachine::getTable() . '.id',
+                \ItemVirtualMachine::getTable() . '.name AS vm_name',
                 \VirtualMachineState::getTable() . '.name AS state_name',
             ],
-            'FROM' => \ComputerVirtualMachine::getTable(),
+            'FROM' => \ItemVirtualMachine::getTable(),
             'INNER JOIN' => [
                 \VirtualMachineState::getTable() => [
                     'ON' => [
                         \VirtualMachineState::getTable() => 'id',
-                        \ComputerVirtualMachine::getTable() => 'virtualmachinestates_id'
+                        \ItemVirtualMachine::getTable() => 'virtualmachinestates_id'
                     ]
                 ]
             ],
             'WHERE' => [
-                \ComputerVirtualMachine::getTable() . '.name' => 'db',
+                \ItemVirtualMachine::getTable() . '.name' => 'db',
                 \VirtualMachineState::getTable() . '.name' => 'off'
             ]
         ]);
@@ -4571,7 +4571,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(1);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
         $inventory = $this->doInventory($json);
 
@@ -4600,10 +4600,10 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->integer(countElementsInTable(\Computer::getTable()))->isIdenticalTo($nb_computers);
         //check created vms
         $nb_vms += $count_vms;
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($nb_vms);
 
-        $cvms = new \ComputerVirtualMachine();
-        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $cvms = new \ItemVirtualMachine();
+        $this->boolean($cvms->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
 
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
@@ -4621,7 +4621,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->doInventory($json);
 
-        $this->boolean($cvms->getFromDBByCrit(['computers_id' => $computers_id]))->isTrue();
+        $this->boolean($cvms->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $computers_id]))->isTrue();
 
         $this->array($cvms->fields)
             ->string['name']->isIdenticalTo('glpi-10-rc1')
@@ -4638,7 +4638,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $count_vms = count($json->content->virtualmachines);
         $this->integer($count_vms)->isIdenticalTo(6);
 
-        $nb_vms = countElementsInTable(\ComputerVirtualMachine::getTable());
+        $nb_vms = countElementsInTable(\ItemVirtualMachine::getTable());
         $nb_computers = countElementsInTable(\Computer::getTable());
 
         //change config to import vms as computers
@@ -4714,7 +4714,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         global $DB;
 
         //check created vms
-        $this->integer(countElementsInTable(\ComputerVirtualMachine::getTable()))->isIdenticalTo($count_vms);
+        $this->integer(countElementsInTable(\ItemVirtualMachine::getTable()))->isIdenticalTo($count_vms);
 
         //check we add main computer and one computer per vm
         //one does not have an uuid, so no computer is created.

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -99,6 +99,47 @@ class Link extends DbTestCase
             ]
         );
 
+        $networkport_1 = $this->createItem('NetworkPort', [
+            'name' => 'eth0',
+            'itemtype' => 'Computer',
+            'items_id' => $item->getID(),
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac' => 'aa:aa:aa:aa:aa:aa'
+        ]);
+        $networkport_2 = $this->createItem('NetworkPort', [
+            'name' => 'eth1',
+            'itemtype' => 'Computer',
+            'items_id' => $item->getID(),
+            'instantiation_type' => 'NetworkPortEthernet',
+            'mac' => 'bb:bb:bb:bb:bb:bb'
+        ]);
+        $networkname_1 = $this->createItem('NetworkName', [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkport_1->getID(),
+        ]);
+        $networkname_2 = $this->createItem('NetworkName', [
+            'itemtype' => 'NetworkPort',
+            'items_id' => $networkport_2->getID(),
+        ]);
+        $ip_1 = $this->createItem('IPAddress', [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname_1->getID(),
+            'name' => '10.10.13.12',
+        ]);
+        $ip_2 = $this->createItem('IPAddress', [
+            'itemtype' => 'NetworkName',
+            'items_id' => $networkname_2->getID(),
+            'name' => '10.10.13.13',
+        ]);
+
+        $item_2 = $this->createItem(
+            \Computer::class,
+            [
+                'name'         => 'Test computer 2',
+                'entities_id'  => $_SESSION['glpiactive_entity'],
+            ]
+        );
+
         // Empty link
         yield [
             'link'     => '',
@@ -116,7 +157,7 @@ class Link extends DbTestCase
         foreach ([true, false] as $safe_url) {
             // Link that is actually a title (it is a normal usage!)
             yield [
-                'link'     => '[LOCATION] > [SERIAL] ([USER])',
+                'link'     => '{{ LOCATION }} > {{ SERIAL }} ({{ USER }})',
                 'item'     => $item,
                 'safe_url' => $safe_url,
                 'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6 (glpi)'],
@@ -125,12 +166,12 @@ class Link extends DbTestCase
             // Link that is actually a long text (it is a normal usage!)
             yield [
                 'link'     => <<<TEXT
-id:       [ID]
-name:     [NAME]
-serial:   [SERIAL]/[OTHERSERIAL]
-location: [LOCATION] ([LOCATIONID])
-domain:   [DOMAIN] ([NETWORK])
-owner:    [USER]/[GROUP]
+id:       {{ ID }}
+name:     {{ NAME }}
+serial:   {{ SERIAL }}/{{ OTHERSERIAL }}
+location: {{ LOCATION }} ({{ LOCATIONID }})
+domain:   {{ DOMAIN }} ({{ NETWORK }})
+owner:    {{ USER }}/{{ GROUP }}
 TEXT,
                 'item'     => $item,
                 'safe_url' => $safe_url,
@@ -150,7 +191,7 @@ TEXT,
 
             // Valid http link
             yield [
-                'link'     => 'https://[LOGIN]@[DOMAIN]/[FIELD:uuid]/',
+                'link'     => 'https://{{ LOGIN }}@{{ DOMAIN }}/{{ item.uuid }}/',
                 'item'     => $item,
                 'safe_url' => $safe_url,
                 'expected' => ['https://_test_user@domain1.tld/c938f085-4192-4473-a566-46734bbaf6ad/'],
@@ -159,13 +200,40 @@ TEXT,
 
         // Javascript link
         yield [
-            'link'     => 'javascript:alert(1);" title="[NAME]"',
+            'link'     => 'javascript:alert(1);" title="{{ NAME }}"',
             'item'     => $item,
             'safe_url' => false,
             'expected' => ['javascript:alert(1);" title="Test computer"'],
         ];
         yield [
-            'link'     => 'javascript:alert(1);" title="[NAME]"',
+            'link'     => 'javascript:alert(1);" title="{{ NAME }}"',
+            'item'     => $item,
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+        yield [
+            'link'     => '{% for domain in DOMAINS %}{{ domain }} {% endfor %}',
+            'item'     => $item,
+            'safe_url' => false,
+            'expected' => ['domain1.tld domain2.tld '],
+        ];
+        yield [
+            'link'     => '{{ NAME }} {{ MAC }} {{ IP }}',
+            'item'     => $item,
+            'safe_url' => false,
+            'expected' => [
+                'ip' . $ip_1->getID() => 'Test computer aa:aa:aa:aa:aa:aa 10.10.13.12',
+                'ip' . $ip_2->getID() => 'Test computer bb:bb:bb:bb:bb:bb 10.10.13.13'
+            ],
+        ];
+        yield [
+            'link'     => '{{ NAME }} {{ MAC }} {{ IP }}',
+            'item'     => $item_2,
+            'safe_url' => false,
+            'expected' => [],
+        ];
+        yield [
+            'link'     => '<script>alert(1);</script>',
             'item'     => $item,
             'safe_url' => true,
             'expected' => ['#'],
@@ -190,5 +258,34 @@ TEXT,
             $this->array($this->testedInstance->generateLinkContents($link, $item))
                 ->isEqualTo($expected);
         }
+    }
+
+    protected function invalidLinkContentsProvider()
+    {
+        return [
+            ['{{'],
+            ['{% if ID'],
+            ['{% if ID %}']
+        ];
+    }
+
+    /**
+     * @dataProvider invalidLinkContentsProvider
+     */
+    public function testInvalidLinkContents($content)
+    {
+        $link = new \Link();
+        $this->boolean($link->add([
+            'link' => $content
+        ]))->isFalse();
+        $this->hasSessionMessages(ERROR, [
+            __('Invalid twig template syntax')
+        ]);
+        $this->boolean($link->add([
+            'data' => $content
+        ]))->isFalse();
+        $this->hasSessionMessages(ERROR, [
+            __('Invalid twig template syntax')
+        ]);
     }
 }

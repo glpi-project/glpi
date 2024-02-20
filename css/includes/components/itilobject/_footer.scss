@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@
         left: 0;
         right: 0;
         bottom: 8px;
-        z-index: $zindex-fixed;
+        z-index: var(--glpi-zindex-fixed);
     }
 
     .answer-action {
@@ -50,23 +50,23 @@
     }
 
     .action-task {
-        background-color: $timeline-task-bg;
-        color: $timeline-task-fg;
+        background-color: var(--glpi-timeline-task-bg);
+        color: var(--glpi-timeline-task-fg);
     }
 
     .action-solution {
-        background-color: $timeline-sol-bg;
-        color: $timeline-sol-fg;
+        background-color: var(--glpi-timeline-solution-bg);
+        color: var(--glpi-timeline-solution-fg);
     }
 
     .action-validation {
-        background-color: $timeline-itilc-bg;
-        color: $timeline-itilc-fg;
+        background-color: var(--glpi-timeline-itil-content-bg);
+        color: var(--glpi-timeline-itil-content-fg);
     }
 
     .action-document {
-        background-color: $timeline-doc-bg;
-        color: $timeline-doc-fg;
+        background-color: var(--glpi-timeline-document-bg);
+        color: var(--glpi-timeline-document-fg);
     }
 
     #debugajax {
@@ -76,11 +76,11 @@
     }
 
     .buttons-bar {
-        background-color: $itil-secondary-bg;
+        background-color: var(--glpi-itil-secondary-bg);
 
         .form-buttons {
             background-color: inherit;
-            border-left: 1px solid $card-border-color;
+            border-left: 1px solid var(--tblr-border-color);
 
             @include media-breakpoint-down(md) {
                 border-left: 0 !important;

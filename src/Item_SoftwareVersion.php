@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 
 class Item_SoftwareVersion extends CommonDBRelation
 {
@@ -1141,7 +1144,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . SoftwareCategory::getTypeName(1) . "</th>";
             $header_end .= "<th>" . __('Valid license') . "</th>";
             $header_end .= "<th>
-                <button class='btn btn-sm show_log_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
+                <button class='btn btn-sm show_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
                     <i class='fas fa-filter'></i>
                     <span class='d-none d-xl-block'>" . __('Filter') . "</span>
                 </button></th>";
@@ -1149,7 +1152,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo $header_begin . $header_top . $header_end;
 
             if ($is_filtered) {
-                echo "<tr class='log_history_filter_row'>
+                echo "<tr class='filter_row'>
                     <td>
                         <input type='hidden' name='filters[active]' value='1'>
                     </td>
@@ -1297,7 +1300,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                         [
                             'AND' => [
                                 'glpi_softwarelicenses.softwareversions_id_use' => 0,
-                                'glpi_softwarelicenses.softwareversions_id_buy' => new \QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
+                                'glpi_softwarelicenses.softwareversions_id_buy' => new QueryExpression(DBmysql::quoteName('glpi_softwareversions.id')),
                             ]
                         ]
                     ]
@@ -1613,7 +1616,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSoftware($item->getID());
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 }
                 break;
 
@@ -1625,7 +1628,8 @@ class Item_SoftwareVersion extends CommonDBRelation
                     return [1 => __('Summary'),
                         2 => self::createTabEntry(
                             self::getTypeName(Session::getPluralNumber()),
-                            $nb
+                            $nb,
+                            $item::getType()
                         )
                     ];
                 }
@@ -1637,7 +1641,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);
                     }
-                    return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Software::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 }
                 break;
         }

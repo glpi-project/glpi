@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,12 @@ window.GLPI.Search = window.GLPI.Search || {};
 
 window.GLPI.Search.ResultsView = class ResultsView {
 
-    constructor(element_id, view_class) {
+    constructor(element_id, view_class, push_history = true, forced_params = {}) {
         this.element_id = element_id;
 
         if (this.getElement()) {
             this.getAJAXContainer().data('js_class', this);
-            this.view = new view_class(this.element_id);
+            this.view = new view_class(this.element_id, push_history, forced_params);
         }
     }
 

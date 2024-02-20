@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -192,6 +192,55 @@ class Profile extends DbTestCase
        // check self-service rights is still here
         foreach ($ss_rights as $right => $value) {
             $this->integer(($profile->fields['ticket'] & $right))->isEqualTo($right);
+        }
+    }
+
+    public function testClone()
+    {
+        global $DB;
+
+        // Get default "Admin" profile
+        $profile = new \Profile();
+        $this->boolean($profile->getFromDB(3))->isTrue();
+
+        // Clone it
+        $cloned_profile = new \Profile();
+        $clone_profiles_id = $profile->clone([
+            'name' => __FUNCTION__,
+        ]);
+        $this->integer($clone_profiles_id)->isGreaterThan(0);
+        $this->boolean($cloned_profile->getFromDB($clone_profiles_id))->isTrue();
+
+        // Verify the original profile still references the source profile
+        $this->integer($profile->fields['id'])->isEqualTo(3);
+
+        // Some fields in the Profile itself to check that they are cloned
+        $core_fields = ['interface', 'helpdesk_hardware', 'helpdesk_item_type'];
+        foreach ($core_fields as $field) {
+            if ($field === 'helpdesk_item_type') {
+                $this->array(importArrayFromDB($cloned_profile->fields[$field]))->isEqualTo(importArrayFromDB($profile->fields[$field]));
+            } else {
+                $this->variable($cloned_profile->fields[$field])->isEqualTo($profile->fields[$field]);
+            }
+        }
+
+        $rights_iterator = $DB->request([
+            'SELECT' => ['profiles_id', 'name', 'rights'],
+            'FROM'   => \ProfileRight::getTable(),
+            'WHERE'  => ['profiles_id' => [3, $clone_profiles_id]],
+        ]);
+        // Check that all rights with profiles_id 3 exist with the clone ID as well
+        $rights = [
+            3 => [],
+            $clone_profiles_id => [],
+        ];
+        foreach ($rights_iterator as $right) {
+            $rights[$right['profiles_id']][$right['name']] = $right['rights'];
+        }
+        $this->integer(count($rights[$clone_profiles_id]))->isEqualTo(count($rights[3]));
+
+        foreach ($rights[3] as $right => $value) {
+            $this->integer($rights[$clone_profiles_id][$right])->isEqualTo($value);
         }
     }
 

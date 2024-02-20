@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Requirement\PhpSupportedVersion;
-use Glpi\System\Requirement\SafeDocumentRoot;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
 
 /**
@@ -88,7 +87,7 @@ class Central extends CommonGLPI
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
 
-        if ($item->getType() == __CLASS__) {
+        if ($item instanceof self) {
             switch ($tabnum) {
                 case 0:
                     $item->showGlobalDashboard();
@@ -152,7 +151,7 @@ class Central extends CommonGLPI
         if (Contract::canView()) {
             $grid_items[] = Contract::showCentral(false);
         }
-        if (Session::haveRight("logs", READ)) {
+        if (Session::haveRight(Log::$rightname, READ)) {
            //Show last add events
             $grid_items[] = Event::showForUser($_SESSION["glpiname"], false);
         }
@@ -457,11 +456,8 @@ class Central extends CommonGLPI
 
         $user = new User();
         $user->getFromDB(Session::getLoginUserID());
-        if ($user->fields['authtype'] == Auth::DB_GLPI && $user->shouldChangePassword()) {
-            $expiration_msg = sprintf(
-                __('Your password will expire on %s.'),
-                Html::convDateTime(date('Y-m-d H:i:s', $user->getPasswordExpirationTime()))
-            );
+        $expiration_msg = $user->getPasswordExpirationMessage();
+        if ($expiration_msg !== null) {
             $messages['warnings'][] = $expiration_msg
              . ' '
              . '<a href="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">'
@@ -501,30 +497,51 @@ class Central extends CommonGLPI
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
             }
-            /*
-             * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
-             * This condition is here only to prevent having this message displayed after installation of plugins that
-             * may not have yet handle the switch to utf8mb4.
-             */
-            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables(true)->count()) > 0) {
+            if (($non_utf8mb4_count = $DB->getNonUtf8mb4Tables()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%1$s tables are using the deprecated utf8mb3 storage charset.'), $non_utf8mb4_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:utf8mb4');
             }
-            /*
-             * FIXME: Remove `$exclude_plugins = true` condition in GLPI 10.1.
-             * This condition is here only to prevent having this message displayed after installation of plugins that
-             * may not have yet handle the switch to unsigned keys.
-             */
-            if (($signed_keys_col_count = $DB->getSignedKeysColumns(true)->count()) > 0) {
+            if (($signed_keys_col_count = $DB->getSignedKeysColumns()->count()) > 0) {
                 $messages['warnings'][] = sprintf(__('%d primary or foreign keys columns are using signed integers.'), $signed_keys_col_count)
                 . ' '
                 . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:unsigned_keys');
             }
 
+            /*
+             * Check if there are pending reasons items and the notification is not active
+             * If so, display a warning message
+             */
+            $notification = new \Notification();
+            if (
+                \Config::getConfigurationValue('core', 'use_notifications')
+                && countElementsInTable('glpi_pendingreasons_items') > 0
+                && !count($notification->find([
+                    'itemtype' => 'Ticket',
+                    'event'     => 'auto_reminder',
+                    'is_active'  => true,
+                ]))
+            ) {
+                $criteria = [
+                    'criteria' => [
+                        0 => [
+                            'link' => 'AND',
+                            'field' => 2,
+                            'searchtype' => 'equals',
+                            'value' => 'Ticket$#$auto_reminder'
+                        ]
+                    ]
+                ];
+                $link = '<a href="' . Notification::getSearchURL() . '?' . Toolbox::append_params($criteria) . '">' . __('notification') . '</a>';
+
+                $messages['warnings'][] = sprintf(
+                    __('You have defined pending reasons without any respective active %s.'),
+                    $link
+                );
+            }
+
             $security_requirements = [
                 new PhpSupportedVersion(),
-                new SafeDocumentRoot(),
                 new SessionsSecurityConfiguration(),
             ];
             foreach ($security_requirements as $requirement) {

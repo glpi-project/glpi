@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,6 @@
 
 namespace tests\units;
 
-use Glpi\Toolbox\Sanitizer;
-use Symfony\Component\BrowserKit\HttpBrowser;
-
 class Computer extends \FrontBaseClass
 {
     public function testComputerCreate()
@@ -62,6 +59,6 @@ class Computer extends \FrontBaseClass
 
         $computer = new \Computer();
         $this->boolean($computer->getFromDBByCrit(['uuid' => 'thetestuuidtoremove']))->isTrue();
-        $this->string(Sanitizer::unsanitize($computer->fields['name'], false))->isIdenticalTo('A test > computer & name');
+        $this->string($computer->fields['name'])->isIdenticalTo('A test > computer & name');
     }
 }

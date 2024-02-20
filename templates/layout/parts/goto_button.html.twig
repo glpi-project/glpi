@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -32,12 +32,13 @@
  #}
 
 {% if get_current_interface() == 'central' %}
-    {% set shortcut = __('Ctrl+Alt+G') %}
-    {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
-        {% set shortcut = __('Option+Command+G') %}
-    {% endif %}
+   {% set rand = random() %}
+   {% set shortcut = __('Ctrl+Alt+G') %}
+   {% if platform == constant("donatj\\UserAgent\\Platforms::MACINTOSH") %}
+      {% set shortcut = __('Option+Command+G') %}
+   {% endif %}
 
-   <button class="btn btn-icon btn-sm btn-ghost-secondary trigger-fuzzy justify-content-start mb-md-2 ps-1"
+   <button class="btn btn-sm btn-ghost-secondary trigger-fuzzy justify-content-start mb-md-2"
            title="{{ shortcut }}"
            data-bs-toggle="tooltip"
            data-bs-placement="right">
@@ -46,4 +47,10 @@
          {{ __('Find menu') }}
       </span>
    </button>
+   <div id="fuzzy-search-modal"></div>
+   <script type="module">
+       if (document.querySelector('#fuzzy-search-modal').__vue_app__ === undefined) {
+           window.Vue.createApp(window.Vue.components['FuzzySearch/Modal'].component).mount('#fuzzy-search-modal');
+       }
+   </script>
 {% endif %}

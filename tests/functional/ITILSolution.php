@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,6 @@ namespace tests\units;
 
 use CommonITILObject;
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Ticket;
 
 /* Test for inc/itilsolution.class.php */
@@ -88,7 +87,7 @@ class ITILSolution extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $ticket::getType(),
                 'items_id'  => $ticket->getID(),
-                'content'   => 'Current friendly ticket\r\nis solved!'
+                'content'   => "Current friendly ticket\r\nis solved!"
             ])
         );
        //reload from DB
@@ -191,7 +190,7 @@ class ITILSolution extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id'  => $problem->getID(),
-                'content'   => 'Current friendly problem\r\nis solved!'
+                'content'   => "Current friendly problem\r\nis solved!"
             ])
         );
        //reload from DB
@@ -225,7 +224,7 @@ class ITILSolution extends DbTestCase
             (int)$solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id'  => $change->getID(),
-                'content'   => 'Current friendly change\r\nis solved!'
+                'content'   => "Current friendly change\r\nis solved!"
             ])
         );
        //reload from DB
@@ -267,7 +266,7 @@ class ITILSolution extends DbTestCase
             (int)$link->add([
                 'tickets_id_1' => $duplicated,
                 'tickets_id_2' => $duplicate,
-                'link'         => \Ticket_Ticket::DUPLICATE_WITH
+                'link'         => \CommonITILObject_CommonITILObject::DUPLICATE_WITH
             ])
         )->isGreaterThan(0);
 
@@ -352,11 +351,10 @@ class ITILSolution extends DbTestCase
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
             'name'    => 'a solution',
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (add)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.00000000" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -381,11 +379,10 @@ HTML
         copy(__DIR__ . '/../fixtures/uploads/bar.png', GLPI_TMP_DIR . '/' . $filename);
         $success = $instance->update([
             'id' => $instance->getID(),
-            'content' => Sanitizer::sanitize(<<<HTML
+            'content' => <<<HTML
 <p>Test with a ' (update)</p>
 <p><img id="3e29dffe-0237ea21-5e5e7034b1d1a1.33333333" src="data:image/png;base64,{$base64Image}" width="12" height="12"></p>
-HTML
-            ),
+HTML,
             '_filename' => [
                 $filename,
             ],
@@ -458,7 +455,7 @@ HTML
         ]);
         $this->integer($solutions_id)->isGreaterThan(0);
 
-        $this->string($solution->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->string($solution->fields['content'])->isEqualTo('<p>test template</p>');
 
         //Reset ticket status
         $ticket->update([

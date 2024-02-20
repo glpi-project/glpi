@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,10 +34,13 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Project Class
@@ -163,8 +166,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                             ]
                         );
                     }
-                    $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
-                    $ong[3] = __('Kanban');
+                    $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    $ong[3] = self::createTabEntry(__('Kanban'));
                     return $ong;
             }
         }
@@ -283,6 +286,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $this->input = $this->addFiles($this->input, [
+            'force_update'  => true,
+            'name'          => 'content',
+        ]);
+
         if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
            // Auto-calculate was toggled. Force recalculation of this and parents
             self::recalculatePercentDone($this->getID());
@@ -310,6 +318,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        $this->input = $this->addFiles($this->input, [
+            'force_update'  => true,
+            'name'          => 'content',
+        ]);
 
        // Update parent percent_done
         if (isset($this->fields['projects_id']) && $this->fields['projects_id'] > 0) {
@@ -577,7 +590,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'content',
             'name'               => __('Description'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
+            'htmltext'           => true
         ];
 
         $tab[] = [
@@ -785,7 +799,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     ],
                 ],
             ],
-            'computation'        => '(SUM(' . $DB->quoteName('TABLE.cost') . '))',
+            'computation'        => QueryFunction::sum('TABLE.cost'),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
@@ -1590,7 +1604,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name',
             [
                 'value' => autoName(
-                    Sanitizer::decodeHtmlSpecialChars($this->fields['name']),
+                    $this->fields['name'],
                     'name',
                     $from_template,
                     $this->getType(),
@@ -1731,11 +1745,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         );
         echo "</td></tr>\n";
 
+        $rand = mt_rand();
+
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Description') . "</td>";
         echo "<td colspan='3'>";
-        echo "<textarea id='content' name='content' cols='90' rows='6'>" . $this->fields["content"] .
-           "</textarea>";
+        Html::textarea([
+            'name' => 'content',
+            'value' => RichText::getSafeHtml($this->fields['content'], true),
+            'rows' => 6,
+            'cols' => 90,
+            'editor_id' => 'content' . $rand,
+            'enable_richtext' => true,
+            'enable_fileupload' => false
+        ]);
         echo "</td>";
         echo "</tr>\n";
 
@@ -2043,7 +2066,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $required_project_fields = [
             'id', 'name', 'content', 'plan_start_date', 'plan_end_date', 'real_start_date',
-            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id', 'is_deleted'
+            'real_end_date', 'percent_done', 'projects_id', 'projectstates_id', 'is_deleted',
+            'date_creation'
         ];
         $request = [
             'SELECT' => [
@@ -2268,7 +2292,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $itemtype = $item['_itemtype'];
             $card = [
                 'id'              => "{$itemtype}-{$item['id']}",
-                'title'           => '<span class="pointer">' . $item['name'] . '</span>',
+                'title'           => $item['name'],
                 'title_tooltip'   => Html::resume_text(RichText::getTextFromHtml($item['content'] ?? "", false, true), 100),
             ];
 
@@ -2330,7 +2354,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $card['_form_link'] = $itemtype::getFormUrlWithID($item['id']);
             $card['_metadata'] = [];
             $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
-                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted'
+                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted', 'date_creation'
             ];
             foreach ($metadata_values as $metadata_value) {
                 if (isset($item[$metadata_value])) {
@@ -2350,14 +2374,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $columns[$item['projectstates_id']]['items'][] = $card;
         }
 
-       // If no specific columns were asked for, drop empty columns.
-       // If specific columns were asked for, such as when loading a user's Kanban view, we must preserve them.
-       // We always preserve the 'No Status' column.
         foreach ($columns as $column_id => $column) {
-            if (
-                $column_id !== 0 && !in_array($column_id, $column_ids) &&
-                (!isset($column['items']) || !count($column['items']))
-            ) {
+            if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             }
         }
@@ -2483,7 +2501,23 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
                 'type'   => 'raw',
-                'value'  => Project::dropdown(['display' => false, 'width' => '90%'])
+                'value'  => Project::dropdown([
+                    'display' => false,
+                    'width' => '90%',
+                    'condition' => [
+                        'LEFT JOIN' => [
+                            ProjectState::getTable() => [
+                                'ON' => [
+                                    ProjectState::getTable() => 'id',
+                                    self::getTable() => 'projectstates_id'
+                                ]
+                            ]
+                        ],
+                        'WHERE' => [
+                            'is_finished'   => false
+                        ]
+                    ]
+                ])
             ];
         }
         $column_field = [
@@ -2652,7 +2686,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             return false;
         }
 
-        $query1 = new \QuerySubQuery([
+        $query1 = new QuerySubQuery([
             'SELECT' => [
                 'percent_done'
             ],
@@ -2662,7 +2696,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'is_deleted'   => 0
             ]
         ]);
-        $query2 = new \QuerySubQuery([
+        $query2 = new QuerySubQuery([
             'SELECT' => [
                 'percent_done'
             ],
@@ -2674,7 +2708,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $union = new QueryUnion([$query1, $query2], false, 'all_items');
         $iterator = $DB->request([
             'SELECT' => [
-                new QueryExpression('CAST(AVG(' . $DB->quoteName('percent_done') . ') AS UNSIGNED) AS percent_done')
+                QueryFunction::cast(
+                    expression: QueryFunction::avg('percent_done'),
+                    type: 'UNSIGNED',
+                    alias: 'percent_done'
+                )
             ],
             'FROM'   => $union
         ]);

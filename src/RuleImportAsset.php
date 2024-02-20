@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -34,8 +34,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
-
 class RuleImportAsset extends Rule
 {
     const RULE_ACTION_LINK_OR_IMPORT    = 0;
@@ -51,7 +49,6 @@ class RuleImportAsset extends Rule
     const LINK_RESULT_LINK              = 2;
 
     public $restrict_matching = Rule::AND_MATCHING;
-    public $can_sort          = true;
 
     public static $rightname         = 'rule_import';
 
@@ -510,7 +507,7 @@ class RuleImportAsset extends Rule
             $it_criteria = [
                 'SELECT' => ["$itemtable.id"],
                 'FROM'   => $itemtable, //to fill
-                'WHERE'  => [] //to fill
+                'WHERE'  => $item->getSystemSQLCriteria(), //to fill
             ];
 
             if ($this->link_criteria_port) {
@@ -520,7 +517,7 @@ class RuleImportAsset extends Rule
                 $this->handleOneJoinPerCriteria($item, $it_criteria);
             }
 
-            $this->handleFieldsCriteria($item, $it_criteria, Sanitizer::sanitize($input));
+            $this->handleFieldsCriteria($item, $it_criteria, $input);
 
             if (isset($PLUGIN_HOOKS['use_rules'])) {
                 foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
@@ -827,10 +824,10 @@ class RuleImportAsset extends Rule
 
                 case 'model':
                     $modelclass = $itemtype . 'Model';
-                    $options    = ['manufacturer' => addslashes($input['manufacturer'])];
+                    $options    = ['manufacturer' => $input['manufacturer']];
                     $mid        = Dropdown::importExternal(
                         $modelclass,
-                        addslashes($input['model']),
+                        $input['model'],
                         -1,
                         $options,
                         '',
@@ -842,7 +839,7 @@ class RuleImportAsset extends Rule
                 case 'manufacturer':
                     $mid = Dropdown::importExternal(
                         'Manufacturer',
-                        addslashes($input['manufacturer']),
+                        $input['manufacturer'],
                         -1,
                         [],
                         '',

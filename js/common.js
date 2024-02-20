@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -668,30 +668,32 @@ var stopEvent = function(event) {
     event.stopPropagation();
 };
 
-/**
- * Back to top implementation
- */
-if ($('#backtotop').length) {
-    var scrollTrigger = 100, // px
-        backToTop = function () {
-            var scrollTop = $(window).scrollTop();
-            if (scrollTop > scrollTrigger) {
-                $('#backtotop').addClass('d-md-block');
-            } else {
-                $('#backtotop').removeClass('d-md-block');
-            }
-        };
-    backToTop();
-    $(window).on('scroll', function () {
+$(() => {
+    /**
+     * Back to top implementation
+     */
+    if ($('#backtotop').length) {
+        var scrollTrigger = 100, // px
+            backToTop = function () {
+                var scrollTop = $(window).scrollTop();
+                if (scrollTop > scrollTrigger) {
+                    $('#backtotop').addClass('d-md-block');
+                } else {
+                    $('#backtotop').removeClass('d-md-block');
+                }
+            };
         backToTop();
-    });
-    $('#backtotop').on('click', function (e) {
-        e.preventDefault();
-        $('html,body').animate({
-            scrollTop: 0
-        }, 700);
-    });
-}
+        $(window).on('scroll', function () {
+            backToTop();
+        });
+        $('#backtotop').on('click', function (e) {
+            e.preventDefault();
+            $('html,body').animate({
+                scrollTop: 0
+            }, 700);
+        });
+    }
+});
 
 /**
  * Returns element height, including margins
@@ -1137,7 +1139,11 @@ $(document).ready(function() {
         }
     });
 
-    $(document).on('submit', 'form', function() {
+    $(document).on('submit', 'form', (e) => {
+        // if the submitter has a data-block-on-unsaved attribute, do not clear the unsaved changes flag
+        if ($(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
+            return;
+        }
         window.glpiUnsavedFormChanges = false;
     });
 });
@@ -1442,13 +1448,52 @@ function blockFormSubmit(form, e) {
     form.attr('data-submitted', 'true');
 }
 
+window.validateFormWithBootstrap = function (event) {
+    const form = $(event.target).closest('form');
+    const valid = form[0].checkValidity();
+
+    if (form.hasClass('needs-validation')) {
+        if (!valid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        form.addClass('was-validated');
+    }
+
+    return valid;
+};
+
 $(() => {
     $(document.body).on('submit', 'form[data-submit-once]', (e) => {
+        if (!window.validateFormWithBootstrap(e)) {
+            return false;
+        }
+
         const form = $(e.target).closest('form');
         if (form.attr('data-submitted') === 'true') {
             e.preventDefault();
             return false;
         } else {
+            let submitter = null;
+            if (e.originalEvent && e.originalEvent.submitter) {
+                submitter = $(e.originalEvent.submitter);
+            }
+            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
+                // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
+                // We fall back to a timed block
+                const block = function(e) {
+                    e.preventDefault();
+                };
+                submitter.on('click', block);
+                submitter.data('original_html', submitter.html());
+                submitter.html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>`);
+                window.setTimeout(() => {
+                    submitter.off('click', block);
+                    submitter.html(submitter.data('original_html'));
+                }, 100);
+                return;
+            }
             blockFormSubmit(form, e);
         }
     });
@@ -1507,14 +1552,19 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    showDisclosablePasswordField(item);
+    const is_password_input = $("#" + item).prop("type") === "password";
+    if (is_password_input) {
+        showDisclosablePasswordField(item);
+    }
     $("#" + item).select();
     try {
         document.execCommand("copy");
     } catch (e) {
         alert("Copy to clipboard failed'");
     }
-    hideDisclosablePasswordField(item);
+    if (is_password_input) {
+        hideDisclosablePasswordField(item);
+    }
 }
 
 /**
@@ -1579,6 +1629,30 @@ function initSortableTable(element_id) {
     element.find('thead th').each((index, header) => {
         $(header).on('click', () => {
             sort_table(index);
+        });
+    });
+}
+
+/**
+ * Wait for an element to be available in the DOM
+ * @param {string} selector The selector to wait for
+ */
+function waitForElement(selector) {
+    return new Promise(resolve => {
+        if (document.querySelector(selector)) {
+            return resolve(document.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(() => {
+            if (document.querySelector(selector)) {
+                resolve(document.querySelector(selector));
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     });
 }

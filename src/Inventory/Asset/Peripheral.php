@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Computer_Item;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
@@ -164,12 +163,12 @@ class Peripheral extends InventoryAsset
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $handled_input = $this->handleInput($val, $peripheral) + ['entities_id' => $this->entities_id];
-                    $items_id = $peripheral->add(Sanitizer::sanitize($handled_input), [], false);
+                    $items_id = $peripheral->add($handled_input, [], false);
                 } else {
                     $items_id = $data['found_inventories'][0];
                     $peripheral->getFromDB($items_id);
                     $handled_input = $this->handleInput($val, $peripheral);
-                    $peripheral->update(Sanitizer::sanitize(['id' => $items_id] + $handled_input), false);
+                    $peripheral->update(['id' => $items_id] + $handled_input, false);
                 }
 
                 $peripherals[] = $items_id;

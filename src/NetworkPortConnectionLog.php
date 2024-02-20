@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,7 +72,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
         if ($item->getType() == 'NetworkPort') {
             $cnt = countElementsInTable([static::getTable()], $this->getCriteria($item));
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt);
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
         }
         return $array_ret;
     }
@@ -171,5 +171,10 @@ class NetworkPortConnectionLog extends CommonDBChild
             echo "</tr>";
         }
         echo "</tbody>";
+    }
+
+    public static function getIcon()
+    {
+        return 'ti ti-history';
     }
 }

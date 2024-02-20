@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -31,9 +31,12 @@
  # ---------------------------------------------------------------------
  #}
 
+{% do call('Toolbox::deprecated', ['Use "components/itilobject/linked_itilobjects.html.twig" instead.']) %}
+
+
 <input type="hidden" name="_link[tickets_id_1]" value="{{ item.fields['id'] }}" />
 
-{% set linked_tickets = ticket_ticket.getLinkedTicketsTo(item.fields['id']) %}
+{% set linked_tickets = linked_tickets|default(ticket_ticket.getLinkedTicketsTo(item.fields['id'], true)) %}
 {% if linked_tickets|length %}
 <div class="card">
    <div class="list-group list-group-flush list-group-hoverable">
@@ -51,8 +54,8 @@
             <div class="col text-truncate">
                <a href="{{ 'Ticket'|itemtype_form_path(linked['tickets_id']) }}" class="col-9 overflow-hidden text-nowrap">
                   {{ new_ticket.getStatusIcon(new_ticket.fields['status'])|raw }}
-                  <span title="{{ new_ticket.fields['name']|verbatim_value }}" data-bs-toggle="tooltip">
-                     {{ new_ticket.fields['name']|verbatim_value }}
+                  <span title="{{ new_ticket.fields['name'] }}" data-bs-toggle="tooltip">
+                     {{ new_ticket.fields['name'] }}
                   </span>
                   ({{ new_ticket.fields['id'] }})
                </a>

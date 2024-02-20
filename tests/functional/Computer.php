@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -56,7 +56,7 @@ class Computer extends DbTestCase
         unset($fields['date_creation']);
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
-        $this->integer((int)$computer->add(\Toolbox::addslashes_deep($fields)))->isGreaterThan(0);
+        $this->integer((int)$computer->add($fields))->isGreaterThan(0);
         return $computer;
     }
 
@@ -68,14 +68,13 @@ class Computer extends DbTestCase
         unset($pfields['date_creation']);
         unset($pfields['date_mod']);
         $pfields['name'] = $this->getUniqueString();
-        $this->integer((int)$printer->add(\Toolbox::addslashes_deep($pfields)))->isGreaterThan(0);
+        $this->integer((int)$printer->add($pfields))->isGreaterThan(0);
         return $printer;
     }
 
     public function testUpdate()
     {
-        global $CFG_GLPI;
-        $saveconf = $CFG_GLPI;
+        $this->login();
 
         $computer = $this->getNewComputer();
         $printer  = $this->getNewPrinter();
@@ -89,11 +88,16 @@ class Computer extends DbTestCase
         $this->integer((int)$link->add($in))->isGreaterThan(0);
 
        // Change the computer
-        $CFG_GLPI['is_contact_autoupdate']  = 1;
-        $CFG_GLPI['is_user_autoupdate']     = 1;
-        $CFG_GLPI['is_group_autoupdate']    = 1;
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 1,
+            'is_user_autoupdate'     => 1,
+            'is_group_autoupdate'    => 1,
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]))->isTrue();
         $in = ['id'           => $computer->getField('id'),
             'contact'      => $this->getUniqueString(),
             'contact_num'  => $this->getUniqueString(),
@@ -102,7 +106,7 @@ class Computer extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->boolean($computer->update(\Toolbox::addslashes_deep($in)))->isTrue();
+        $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in['id']);
@@ -110,7 +114,7 @@ class Computer extends DbTestCase
            // Check the computer new values
             $this->variable($computer->getField($k))->isEqualTo($v);
            // Check the printer and test propagation occurs
-            $this->variable($printer->getField($k))->isEqualTo($v);
+            $this->variable($printer->getField($k))->isEqualTo($v, $k);
         }
 
        //reset values
@@ -134,11 +138,15 @@ class Computer extends DbTestCase
         }
 
        // Change the computer again
-        $CFG_GLPI['is_contact_autoupdate']  = 0;
-        $CFG_GLPI['is_user_autoupdate']     = 0;
-        $CFG_GLPI['is_group_autoupdate']    = 0;
-        $CFG_GLPI['state_autoupdate_mode']  = 0;
-        $CFG_GLPI['is_location_autoupdate'] = 0;
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 0,
+            'is_user_autoupdate'     => 0,
+            'is_group_autoupdate'    => 0,
+            'state_autoupdate_mode'  => 0,
+            'is_location_autoupdate' => 0,
+        ]))->isTrue();
+        $this->login();
         $in2 = ['id'          => $computer->getField('id'),
             'contact'      => $this->getUniqueString(),
             'contact_num'  => $this->getUniqueString(),
@@ -147,7 +155,7 @@ class Computer extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->boolean($computer->update(\Toolbox::addslashes_deep($in2)))->isTrue();
+        $this->boolean($computer->update($in2))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in2['id']);
@@ -160,7 +168,6 @@ class Computer extends DbTestCase
 
        // Restore configuration
         $computer = $this->getNewComputer();
-        $CFG_GLPI = $saveconf;
 
        //update devices
         $cpu = new \DeviceProcessor();
@@ -187,8 +194,11 @@ class Computer extends DbTestCase
         $this->integer((int)$linkid)->isGreaterThan(0);
 
        // Change the computer
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]))->isTrue();
         $in = ['id'           => $computer->getField('id'),
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
@@ -221,8 +231,11 @@ class Computer extends DbTestCase
         }
 
        // Change the computer again
-        $CFG_GLPI['state_autoupdate_mode']  = 0;
-        $CFG_GLPI['is_location_autoupdate'] = 0;
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'state_autoupdate_mode'  => 0,
+            'is_location_autoupdate' => 0,
+        ]))->isTrue();
         $in2 = ['id'          => $computer->getField('id'),
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
@@ -237,9 +250,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation DOES NOT occurs
             $this->variable($link->getField($k))->isEqualTo($in[$k]);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     /**
@@ -249,16 +259,20 @@ class Computer extends DbTestCase
      */
     public function testCreateLinks()
     {
-        global $CFG_GLPI;
+        $this->login();
 
         $computer = $this->getNewComputer();
-        $saveconf = $CFG_GLPI;
 
-        $CFG_GLPI['is_contact_autoupdate']  = 1;
-        $CFG_GLPI['is_user_autoupdate']     = 1;
-        $CFG_GLPI['is_group_autoupdate']    = 1;
-        $CFG_GLPI['state_autoupdate_mode']  = -1;
-        $CFG_GLPI['is_location_autoupdate'] = 1;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            'id' => $entity->fields['id'],
+            'is_contact_autoupdate'  => 1,
+            'is_user_autoupdate'     => 1,
+            'is_group_autoupdate'    => 1,
+            'state_autoupdate_mode'  => -1,
+            'is_location_autoupdate' => 1,
+        ]))->isTrue();
 
        // Change the computer
         $in = ['id'           => $computer->getField('id'),
@@ -269,7 +283,7 @@ class Computer extends DbTestCase
             'states_id'    => $this->getUniqueInteger(),
             'locations_id' => $this->getUniqueInteger(),
         ];
-        $this->boolean($computer->update(\Toolbox::addslashes_deep($in)))->isTrue();
+        $this->boolean($computer->update($in))->isTrue();
         $this->boolean($computer->getFromDB($computer->getID()))->isTrue();
 
         $printer = new \Printer();
@@ -332,9 +346,6 @@ class Computer extends DbTestCase
            // Check the printer and test propagation occurs
             $this->variable($link->getField($k))->isEqualTo($v);
         }
-
-       // Restore configuration
-        $CFG_GLPI = $saveconf;
     }
 
     public function testGetFromIter()
@@ -453,8 +464,8 @@ class Computer extends DbTestCase
         )->isGreaterThan(0);
 
         //add antivirus
-        $antivirus = new \ComputerAntivirus();
-        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'computers_id' => $id]);
+        $antivirus = new \ItemAntivirus();
+        $antivirus_id = (int)$antivirus->add(['name' => 'Test link antivirus', 'itemtype' => 'Computer', 'items_id' => $id]);
         $this->integer($antivirus_id)->isGreaterThan(0);
 
        //clone!
@@ -509,7 +520,7 @@ class Computer extends DbTestCase
         }
 
         //check antivirus
-        $this->boolean($antivirus->getFromDBByCrit(['computers_id' => $clonedComputer->fields['id']]))->isTrue();
+        $this->boolean($antivirus->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $clonedComputer->fields['id']]))->isTrue();
 
        //check processor has been cloned
         $this->boolean($link->getFromDBByCrit(['itemtype' => 'Computer', 'items_id' => $added]))->isTrue();

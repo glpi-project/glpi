@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -580,14 +580,12 @@ class Inventory
             switch ($key) {
                 case 'accesslog': //not used
                 case 'autoupdatesystems_id': //set on host, ignore - not present in specs
-                case 'envs': //not used
                 case 'local_groups': //not used
                 case 'local_users': //not used
                 case 'physical_volumes': //not used
                 case 'volume_groups': //not used
                 case 'logical_volumes': //not used
                 case 'ports': //not used
-                case 'processes': //not used
                 case 'slots': //not used
                 case 'versionclient': //not used
                 case 'versionprovider': //not provided see doInventory
@@ -658,6 +656,12 @@ class Inventory
                     break;
                 case 'virtualmachines':
                     $assettype = '\Glpi\Inventory\Asset\VirtualMachine';
+                    break;
+                case 'processes':
+                    $assettype = '\Glpi\Inventory\Asset\Process';
+                    break;
+                case 'envs':
+                    $assettype = '\Glpi\Inventory\Asset\Environment';
                     break;
                 case 'sensors':
                     $assettype = '\Glpi\Inventory\Asset\Sensor';

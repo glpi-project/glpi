@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Http\Response;
 
 /**
  * Document class
@@ -245,27 +246,12 @@ class Document extends CommonDBTM
             && ($item = getItemForItemtype($input["itemtype"]))
             && ($input["items_id"] > 0)
         ) {
-            $typename = $item->getTypeName(1);
-            $name     = NOT_AVAILABLE;
-
-            if ($item->getFromDB($input["items_id"])) {
-                $name = $item->getNameID();
-            }
-           //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
-            $input["name"] = addslashes(Html::resume_text(
-                sprintf(
-                    __('%1$s: %2$s'),
-                    Document::getTypeName(1),
-                    sprintf(__('%1$s - %2$s'), $typename, $name)
-                ),
-                200
-            ));
             $create_from_item = true;
         }
 
         $upload_ok = false;
         if (isset($input["_filename"]) && !(empty($input["_filename"]) == 1)) {
-            $upload_ok = $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+            $upload_ok = $this->moveDocument($input, array_shift($input["_filename"]));
         } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
            // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -360,9 +346,11 @@ class Document extends CommonDBTM
             ]);
 
             if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
-                $itilobject = new $this->input["itemtype"]();
-                $itilobject->getFromDB($this->input["items_id"]);
-                $this->updateParentStatus($itilobject, $this->input);
+                $main_item = new $this->input["itemtype"]();
+                $main_item->getFromDB($this->input["items_id"]);
+                NotificationEvent::raiseEvent('add_document', $main_item);
+
+                $this->updateParentStatus($main_item, $this->input);
             }
 
             Event::log(
@@ -401,7 +389,7 @@ class Document extends CommonDBTM
 
         if (isset($input['current_filepath'])) {
             if (isset($input["_filename"]) && !empty($input["_filename"]) == 1) {
-                $this->moveDocument($input, stripslashes(array_shift($input["_filename"])));
+                $this->moveDocument($input, array_shift($input["_filename"]));
             } else if (isset($input["upload_file"]) && !empty($input["upload_file"])) {
                // Move doc from upload dir
                 $this->moveUploadedDocument($input, $input["upload_file"]);
@@ -545,15 +533,17 @@ class Document extends CommonDBTM
     /**
      * Send a document to navigator
      *
-     * @param string $context Context to resize image, if any
+     * @param bool   $return_response
+     * @return Response|void
+     * @phpstan-return $return_response ? Response : void
      **/
-    public function send($context = null)
+    public function send(bool $return_response = false)
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
-        if ($context !== null) {
-            $file = self::getImage($file, $context);
+        $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
+        if ($response !== null) {
+            return $response;
         }
-        Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime']);
     }
 
 
@@ -1274,7 +1264,7 @@ class Document extends CommonDBTM
         }
 
        // For display
-        $input['filename'] = addslashes($filename);
+        $input['filename'] = $filename;
        // Storage path
         $input['filepath'] = $new_path;
        // Checksum
@@ -1382,7 +1372,7 @@ class Document extends CommonDBTM
         }
 
        // For display
-        $input['filename'] = addslashes($filename);
+        $input['filename'] = $filename;
        // Storage path
         $input['filepath'] = $new_path;
        // Checksum
@@ -1475,7 +1465,7 @@ class Document extends CommonDBTM
         if (self::renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR . "/" . $path)) {
             Session::addMessageAfterRedirect(__('The file is valid. Upload is successful.'));
            // For display
-            $input['filename'] = addslashes($FILEDESC['name']);
+            $input['filename'] = $FILEDESC['name'];
            // Storage path
             $input['filepath'] = $path;
            // Checksum
@@ -1631,7 +1621,7 @@ class Document extends CommonDBTM
         ]);
 
         foreach ($iterator as $data) {
-            if (preg_match(Sanitizer::unsanitize($data['ext']) . "i", $ext, $results) > 0) {
+            if (preg_match($data['ext'] . "i", $ext, $results) > 0) {
                 return Toolbox::strtoupper($ext);
             }
         }
@@ -1825,9 +1815,13 @@ class Document extends CommonDBTM
      * @param integer $mheight Maximal height
      *
      * @return string Image path on disk
+     *
+     * @deprecated 10.1.0
      */
     public static function getImage($path, $context, $mwidth = null, $mheight = null)
     {
+        Toolbox::deprecated();
+
         if ($mwidth === null || $mheight === null) {
             switch ($context) {
                 case 'mail':
@@ -1843,40 +1837,56 @@ class Document extends CommonDBTM
             }
         }
 
-       //let's see if original image needs resize
+        return self::getResizedImagePath($path, $mwidth, $mheight);
+    }
+
+    /**
+     * Get resized image path.
+     *
+     * @since 10.0.1
+     *
+     * @param string  $path
+     * @param integer $width
+     * @param integer $height
+     *
+     * @return string
+     */
+    public static function getResizedImagePath(string $path, int $width, int $height): string
+    {
+        // let's see if original image needs resize
         $img_infos  = getimagesize($path);
-        if (!($img_infos[0] > $mwidth) && !($img_infos[1] > $mheight)) {
-           //no resize needed
+        if (!($img_infos[0] > $width) && !($img_infos[1] > $height)) {
+            // no resize needed, source image is smaller than requested width/height
             return $path;
         }
 
         $infos = pathinfo($path);
-       // output images with possible transparency to png, other to jpg
+        // output images with possible transparency to png, other to jpg
         $extension = in_array(strtolower($infos['extension']), ['png', 'gif']) ? 'png' : 'jpg';
         $context_path = sprintf(
             '%1$s_%2$s-%3$s.%4$s',
             $infos['dirname'] . '/' . $infos['filename'],
-            $mwidth,
-            $mheight,
+            $width,
+            $height,
             $extension
         );
 
-       //let's check if file already exists
+        // let's check if file already exists
         if (file_exists($context_path)) {
             return $context_path;
         }
 
-       //do resize
+        // do resize
         $result = Toolbox::resizePicture(
             $path,
             $context_path,
-            $mwidth,
-            $mheight,
+            $width,
+            $height,
             0,
             0,
             0,
             0,
-            ($mwidth > $mheight ? $mwidth : $mheight)
+            ($width > $height ? $width : $height)
         );
         return ($result ? $context_path : $path);
     }

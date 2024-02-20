@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -284,5 +284,76 @@ class Domain extends DbTestCase
 
         $result = $domain->cronDomainsAlert($crontask);
         $this->integer($result)->isEqualTo(0); // 0 = nothing to do (alerts were already sent)
+    }
+
+    protected function linkContentProvider(): iterable
+    {
+        $this->login();
+
+        // Create computer
+        $item = $this->createItem(
+            \Domain::class,
+            [
+                'name'         => 'domain.tld',
+                'entities_id'  => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Empty link
+        yield [
+            'link'     => '',
+            'item'     => $item,
+            'safe_url' => false,
+            'expected' => [''],
+        ];
+        yield [
+            'link'     => '',
+            'item'     => $item,
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+
+        foreach ([true, false] as $safe_url) {
+            yield [
+                'link'     => 'https://{{ LOGIN }}@{{ DOMAIN }}/',
+                'item'     => $item,
+                'safe_url' => $safe_url,
+                'expected' => ['https://_test_user@domain.tld/'],
+            ];
+        }
+
+        // Javascript link
+        yield [
+            'link'     => 'javascript:alert(1);" title="{{ DOMAIN }}"',
+            'item'     => $item,
+            'safe_url' => false,
+            'expected' => ['javascript:alert(1);" title="domain.tld"'],
+        ];
+        yield [
+            'link'     => 'javascript:alert(1);" title="{{ DOMAIN }}"',
+            'item'     => $item,
+            'safe_url' => true,
+            'expected' => ['#'],
+        ];
+    }
+
+    /**
+     * @dataProvider linkContentProvider
+     */
+    public function testGenerateLinkContents(
+        string $link,
+        \CommonDBTM $item,
+        bool $safe_url,
+        array $expected
+    ): void {
+        $this->newTestedInstance();
+        $this->array($this->testedInstance->generateLinkContents($link, $item, $safe_url))
+            ->isEqualTo($expected);
+
+        // Validates that default is to generate safe URLs
+        if ($safe_url) {
+            $this->array($this->testedInstance->generateLinkContents($link, $item))
+                ->isEqualTo($expected);
+        }
     }
 }

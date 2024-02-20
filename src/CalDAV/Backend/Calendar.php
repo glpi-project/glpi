@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,6 @@ namespace Glpi\CalDAV\Backend;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Node\Property;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
-use Glpi\Toolbox\Sanitizer;
 use Ramsey\Uuid\Uuid;
 use Sabre\CalDAV\Backend\AbstractBackend;
 use Sabre\CalDAV\Xml\Property\SupportedCalendarComponentSet;
@@ -344,8 +343,6 @@ class Calendar extends AbstractBackend
             $input['uuid'] = Uuid::uuid4();
         }
 
-        $input = Sanitizer::sanitize($input);
-
         if ($item->isNewItem()) {
            // Auto set entities_id if exists and not set
             if (
@@ -406,8 +403,6 @@ class Calendar extends AbstractBackend
             'items_id' => $items_id,
             'data'     => $calendarData,
         ];
-
-        $input = \Toolbox::addslashes_deep($input);
 
         if ($vobject->isNewItem()) {
             return $vobject->add($input);

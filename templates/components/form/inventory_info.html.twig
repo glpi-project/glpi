@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -69,17 +69,17 @@
 
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ __('Useragent') }}</label>
-            <span>{{ agent.fields['useragent']|verbatim_value }}</span>
+            <span>{{ agent.fields['useragent'] }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ __('Inventory tag') }}</label>
-            <span>{{ agent.fields['tag']|verbatim_value }}</span>
+            <span>{{ agent.fields['tag'] }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
             <label class="form-label" >{{ __('Public contact address') }}</label>
-            <span>{{ agent.fields['remote_addr']|verbatim_value }}</span>
+            <span>{{ agent.fields['remote_addr'] }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">

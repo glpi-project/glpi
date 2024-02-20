@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -53,7 +53,6 @@ var GLPIPlanning  = {
                 'dayGrid', 'interaction', 'list', 'timeGrid',
                 'resourceTimeline', 'rrule', 'bootstrap'
             ],
-            license_key: "",
             resources: [],
             now: null,
             can_create: false,
@@ -96,7 +95,7 @@ var GLPIPlanning  = {
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
             maxTime:     CFG_GLPI.planning_end,
-            schedulerLicenseKey: options.license_key,
+            schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             resourceAreaWidth: '15%',
             editable: true, // we can drag / resize items
             droppable: false, // we cant drop external items by default
@@ -591,19 +590,25 @@ var GLPIPlanning  = {
                 var start = info.start;
                 var end = info.end;
 
-                glpi_ajax_dialog({
-                    url: CFG_GLPI.root_doc+"/ajax/planning.php",
-                    params: {
-                        action: 'add_event_fromselect',
-                        begin:  start.toISOString(),
-                        end:    end.toISOString(),
-                        res_itemtype: itemtype,
-                        res_items_id: items_id,
-                    },
-                    dialogclass: 'modal-lg',
-                    title: __('Add an event'),
-                    bs_focus: false
-                });
+                if ($('div.modal.planning-modal').length === 0) {
+                    glpi_ajax_dialog({
+                        url: CFG_GLPI.root_doc + "/ajax/planning.php",
+                        params: {
+                            action: 'add_event_fromselect',
+                            begin: start.toISOString(),
+                            end: end.toISOString(),
+                            res_itemtype: itemtype,
+                            res_items_id: items_id,
+                        },
+                        dialogclass: 'modal-lg planning-modal',
+                        title: __('Add an event'),
+                        bs_focus: false
+                    });
+                    GLPIPlanning.calendar.setOption('selectable', false);
+                    window.setTimeout(function() {
+                        GLPIPlanning.calendar.setOption('selectable', true);
+                    }, 500);
+                }
 
                 GLPIPlanning.calendar.unselect();
             }

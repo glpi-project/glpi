@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
 
 /**
  * @var \DBmysql $DB
@@ -54,8 +54,8 @@ if (!$notification_exists) {
             'comment'         => '',
             'is_recursive'    => 1,
             'is_active'       => 1,
-            'date_creation'   => new \QueryExpression('NOW()'),
-            'date_mod'        => new \QueryExpression('NOW()')
+            'date_creation'   => new QueryExpression('NOW()'),
+            'date_mod'        => new QueryExpression('NOW()')
         ],
         '10.0 Add user mention notification'
     );
@@ -85,22 +85,3 @@ if (!$notification_exists) {
     );
 }
 /** /User mention notification */
-
-/** Fix non encoded notifications */
-$notifications = getAllDataFromTable('glpi_notificationtemplatetranslations');
-foreach ($notifications as $notification) {
-    if ($notification['content_html'] !== null && preg_match('/(<|>|(&(?!#?[a-z0-9]+;)))/i', $notification['content_html']) === 1) {
-        $migration->addPostQuery(
-            $DB->buildUpdate(
-                'glpi_notificationtemplatetranslations',
-                [
-                    'content_html' => Sanitizer::sanitize($notification['content_html']),
-                ],
-                [
-                    'id' => $notification['id'],
-                ]
-            )
-        );
-    }
-}
-/** Fix non encoded notifications */

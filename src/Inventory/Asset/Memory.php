@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -49,7 +49,8 @@ class Memory extends Device
             'type'         => 'devicememorytypes_id',
             'manufacturer' => 'manufacturers_id',
             'serialnumber' => 'serial',
-            'numslots'     => 'busID'
+            'numslots'     => 'busID',
+            'model'        => 'devicememorymodels_id'
         ];
 
         foreach ($this->data as $k => &$val) {
@@ -82,6 +83,14 @@ class Memory extends Device
             ) {
                 $designation = $val->type;
             }
+
+            if (property_exists($val, 'frequence')) {
+                $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
+                if ($designation != '') {
+                    $designation .= ' - ' . $val->frequence;
+                }
+            }
+
             if (property_exists($val, 'description')) {
                 if ($designation != '') {
                     $designation .= ' - ';
@@ -91,10 +100,6 @@ class Memory extends Device
 
             if ($designation != '') {
                 $val->designation = $designation;
-            }
-
-            if (property_exists($val, 'frequence')) {
-                $val->frequence = str_replace([' MHz', ' MT/s'], '', $val->frequence);
             }
 
             $val->is_dynamic = 1;

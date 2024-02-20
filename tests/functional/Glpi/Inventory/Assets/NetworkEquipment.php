@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -371,9 +371,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch(es) into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -491,9 +495,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -574,9 +582,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -638,9 +650,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -754,9 +770,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -855,9 +875,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -960,9 +984,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1052,9 +1080,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1171,9 +1203,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1314,9 +1350,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1459,9 +1499,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1596,9 +1640,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1724,9 +1772,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         if ($inventory->inError()) {
             foreach ($inventory->getErrors() as $error) {
@@ -1852,9 +1904,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Import the switch into GLPI
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);
@@ -1987,9 +2043,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
         //$json = json_decode($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);
@@ -2203,9 +2263,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);
@@ -2323,9 +2387,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);
@@ -2439,9 +2507,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);
@@ -2591,9 +2663,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $converter = new \Glpi\Inventory\Converter();
         $data = json_decode($converter->convert($xml_source));
 
-        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $entity = new \Entity();
+        $entity->getFromDB(0);
+        $this->boolean($entity->update([
+            "id" => $entity->fields['id'],
+            "is_contact_autoupdate" => 0,
+        ]))->isTrue();
         $inventory = new \Glpi\Inventory\Inventory($data);
-        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
 
         $this->boolean($inventory->inError())->isFalse();
         $this->array($inventory->getErrors())->isIdenticalTo([]);

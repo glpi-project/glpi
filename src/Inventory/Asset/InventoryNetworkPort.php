@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,14 +38,13 @@ namespace Glpi\Inventory\Asset;
 
 use DBmysqlIterator;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use IPNetwork;
 use Item_DeviceNetworkCard;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
-use QueryParam;
+use Glpi\DBAL\QueryParam;
 use Unmanaged;
 
 trait InventoryNetworkPort
@@ -145,7 +144,7 @@ trait InventoryNetworkPort
         $criteria = [
             'FROM'   => NetworkPort::getTable(),
             'WHERE'  => [
-                'itemtype'  => 'Unmanaged',
+                'itemtype'  => new QueryParam(),
                 'mac'       => new QueryParam()
             ]
         ];
@@ -158,8 +157,8 @@ trait InventoryNetworkPort
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
                 $stmt->bind_param(
-                    's',
-                    $port->mac
+                    'ss',
+                    ...([Unmanaged::class, $port->mac])
                 );
                 $DB->executeStatement($stmt);
                 $results = $stmt->get_result();
@@ -175,7 +174,7 @@ trait InventoryNetworkPort
                          'name'            => $port->name,
                      ];
 
-                     $networkport->update(Sanitizer::sanitize($input));
+                     $networkport->update($input);
                      $unmanaged->delete(['id' => $unmanageds_id], true);
                 }
             }
@@ -208,7 +207,7 @@ trait InventoryNetworkPort
                     'COUNT'  => 'cnt',
                     'FROM'   => IPNetwork::getTable(),
                     'WHERE'  => [
-                        'entities_id'  => $this->entities_id,
+                        'entities_id'  => new QueryParam(),
                         'address'      => new QueryParam(),
                         'netmask'      => new QueryParam(),
                         'gateway'      => new QueryParam(),
@@ -223,12 +222,18 @@ trait InventoryNetworkPort
             }
             $stmt = $this->ipnetwork_stmt;
 
-            $stmt->bind_param(
-                'sss',
+            $res = $stmt->bind_param(
+                'ssss',
+                $this->entities_id,
                 $port->subnet,
                 $port->netmask,
                 $port->gateway
             );
+            if (false === $res) {
+                $msg = "Error binding params";
+                throw new \RuntimeException($msg);
+            }
+
             $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
@@ -243,7 +248,7 @@ trait InventoryNetworkPort
                      'entities_id'  => $this->entities_id,
                      '_no_message'  => true //to prevent 'Network already defined in visible entities' message on add
                  ];
-                 $ipnetwork->add(Sanitizer::sanitize($input));
+                 $ipnetwork->add($input);
             }
         }
     }
@@ -279,7 +284,7 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
-        $netports_id = $networkport->add(Sanitizer::sanitize($input));
+        $netports_id = $networkport->add($input);
         return $netports_id;
     }
 
@@ -306,7 +311,7 @@ trait InventoryNetworkPort
             $input['name'] = $name;
         }
 
-        $netname_id = $networkname->add(Sanitizer::sanitize($input));
+        $netname_id = $networkname->add($input);
         return $netname_id;
     }
 
@@ -328,7 +333,7 @@ trait InventoryNetworkPort
                 'name'         => $ip,
                 'is_dynamic'   => 1
             ];
-            $ipaddress->add(Sanitizer::sanitize($input));
+            $ipaddress->add($input);
         }
     }
 
@@ -345,7 +350,7 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
@@ -407,7 +412,7 @@ trait InventoryNetworkPort
                 if (count($criteria)) {
                     $criteria['id'] = $keydb;
                     $criteria['is_dynamic'] = 1;
-                    $networkport->update(Sanitizer::sanitize($criteria));
+                    $networkport->update($criteria);
                 }
 
                 //check for instantiation_type switch for NetworkPort
@@ -577,8 +582,8 @@ trait InventoryNetworkPort
                     'SELECT' => 'id',
                     'FROM'   => Item_DeviceNetworkCard::getTable(),
                     'WHERE'  => [
-                        'itemtype'  => $this->itemtype,
-                        'items_id'  => $this->items_id,
+                        'itemtype'  => new QueryParam(),
+                        'items_id'  => new QueryParam(),
                         'mac'       => new QueryParam()
                     ]
                 ];
@@ -591,7 +596,9 @@ trait InventoryNetworkPort
 
             $stmt = $this->idevice_stmt;
             $stmt->bind_param(
-                's',
+                'sss',
+                $this->itemtype,
+                $this->items_id,
                 $data->mac
             );
             $DB->executeStatement($stmt);
@@ -605,9 +612,9 @@ trait InventoryNetworkPort
 
        //store instance
         if ($instance->isNewItem()) {
-            $instance->add(Sanitizer::sanitize($input));
+            $instance->add($input);
         } else {
-            $instance->update(Sanitizer::sanitize($input));
+            $instance->update($input);
         }
     }
 

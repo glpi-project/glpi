@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,7 @@
     .fc-popover,
     .fc-list-view,
     .fc-list-heading td {
-        border-color: $table_border;
+        border-color: var(--tblr-border-color);
     }
 
     .fc-list-empty {
@@ -50,18 +50,18 @@
     }
 
     td.fc-today {
-        background: $table-active-bg;
+        background: rgba(var(--tblr-emphasis-color-rgb), 0.1);
     }
 
     .fc-divider,
     .fc-popover .fc-header,
     .fc-list-heading td {
-        background: $table-head-bg;
-        color: $table-head-color;
+        background: var(--tblr-bg-surface-tertiary);
+        color: var(--tblr-secondary);
     }
 
     .fc-list-item:hover td {
-        background: $table-hover-bg;
-        color: $table-hover-color;
+        background: rgba(var(--tblr-emphasis-color-rgb), 0.075);
+        color: inherit;
     }
 }

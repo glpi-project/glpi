@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,122 +33,437 @@
  * ---------------------------------------------------------------------
  */
 
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use Glpi\Application\ErrorHandler;
 use Glpi\Mail\SMTP\OauthConfig;
-use PHPMailer\PHPMailer\OAuth;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
+use League\OAuth2\Client\Grant\RefreshToken;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 
-/** GLPIPhpMailer class
+/** GLPI Mailer class
  *
  * @since 0.85
  **/
-class GLPIMailer extends PHPMailer
+class GLPIMailer
 {
     /**
-     * Constructor
-     *
-     **/
-    public function __construct()
+     * Transport instance.
+     * @var TransportInterface
+     */
+    private TransportInterface $transport;
+
+    /**
+     * Email instance.
+     * @var Email
+     */
+    private Email $email;
+
+    /**
+     * Errors that may have occured during email sending.
+     * @var string|null
+     */
+    private ?string $error;
+
+    /**
+     * Debug log.
+     * @var string|null
+     */
+    private ?string $debug;
+
+    public function __construct(?TransportInterface $transport = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->WordWrap           = 80;
+        $this->transport = $transport ?? Transport::fromDsn(self::buildDsn(true));
 
-        $this->CharSet            = "utf-8";
-
-        $this->Encoding           = self::ENCODING_QUOTED_PRINTABLE;
-
-       // Comes from config
-        $this->SetLanguage("en", Config::getLibraryDir("PHPMailer") . "/language/");
-
-        if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-            $this->Mailer = "smtp";
-            $this->Host   = $CFG_GLPI['smtp_host'] . ':' . $CFG_GLPI['smtp_port'];
-
-            if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPOAUTH) {
-                $this->SMTPSecure = 'tls';
-                $this->SMTPAuth = true;
-                $this->AuthType = 'XOAUTH2';
-                $provider = OauthConfig::getInstance()->getSmtpOauthProvider();
-                if ($provider !== null) {
-                    $client_id     = $CFG_GLPI['smtp_oauth_client_id'];
-                    $client_secret = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_client_secret']);
-                    $refresh_token = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token']);
-
-                    $this->setOAuth(
-                        new OAuth(
-                            [
-                                'provider'     => $provider,
-                                'clientId'     => $client_id,
-                                'clientSecret' => $client_secret,
-                                'refreshToken' => $refresh_token,
-                                'userName'     => $CFG_GLPI['smtp_username'],
-                            ]
-                        )
-                    );
-                }
-            } else {
-                if ($CFG_GLPI['smtp_username'] != '') {
-                    $this->SMTPAuth = true;
-                    $this->Username = $CFG_GLPI['smtp_username'];
-                    $this->Password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
-                }
-
-                if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL) {
-                    $this->SMTPSecure = "ssl";
-                } else if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS) {
-                    $this->SMTPSecure = "tls";
-                } else {
-                   // Don't automatically enable encryption if the GLPI config doesn't specify it
-                    $this->SMTPAutoTLS = false;
-                }
-
-                if (!$CFG_GLPI['smtp_check_certificate']) {
-                    $this->SMTPOptions = ['ssl' => ['verify_peer'       => false,
-                        'verify_peer_name'  => false,
-                        'allow_self_signed' => true
-                    ]
-                    ];
-                }
-            }
-            if ($CFG_GLPI['smtp_sender'] != '') {
-                $this->Sender = $CFG_GLPI['smtp_sender'];
-            }
+        if (method_exists($this->transport, 'getStream')) {
+            $stream = $this->transport->getStream();
+            $stream->setTimeout(10);
         }
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            $this->SMTPDebug = SMTP::DEBUG_CONNECTION;
-            $this->Debugoutput = function ($message, $level) {
-                Toolbox::logInFile(
-                    'mail-debug',
-                    "$level - $message\n"
-                );
-            };
+        if (
+            (int)$CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH
+            && $this->transport instanceof EsmtpTransport
+        ) {
+            // Prevent usage of other methods to speed-up authentication process
+            // see https://github.com/symfony/symfony/pull/49900
+            $this->transport->setAuthenticators([new XOAuth2Authenticator()]);
+        }
+
+        $this->email = new Email();
+        if (!empty($CFG_GLPI['smtp_sender'])) {
+            $this->email->sender($CFG_GLPI['smtp_sender']);
         }
     }
 
-    public static function validateAddress($address, $patternselect = "pcre8")
+    /**
+     * Return DSN string built using SMTP configuration.
+     *
+     * @param bool $with_clear_password   Indicates whether the password should be present as clear text or redacted.
+     *
+     * @return string
+     */
+    final public static function buildDsn(bool $with_clear_password): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $dsn = 'native://default';
+
+        if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
+            $password = '********';
+            if ($with_clear_password) {
+                if ((int)$CFG_GLPI['smtp_mode'] === MAIL_SMTPOAUTH) {
+                    $provider = OauthConfig::getInstance()->getSmtpOauthProvider();
+                    $refresh_token = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token']);
+                    if ($provider !== null && $refresh_token !== '') {
+                        $token = $provider->getAccessToken(
+                            new RefreshToken(),
+                            [
+                                'refresh_token' => $refresh_token,
+                            ]
+                        );
+                        $password = $token->getToken();
+                    }
+                } else {
+                    $password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);
+                }
+            }
+            $dsn = sprintf(
+                '%s://%s%s:%s',
+                (in_array($CFG_GLPI['smtp_mode'], [MAIL_SMTPS, MAIL_SMTPSSL, MAIL_SMTPTLS]) ? 'smtps' : 'smtp'),
+                ($CFG_GLPI['smtp_username'] != '' ? sprintf(
+                    '%s:%s@',
+                    urlencode($CFG_GLPI['smtp_username']),
+                    $with_clear_password ? urlencode($password) : '********'
+                ) : ''),
+                $CFG_GLPI['smtp_host'],
+                $CFG_GLPI['smtp_port']
+            );
+
+            if (!$CFG_GLPI['smtp_check_certificate']) {
+                $dsn .= '?verify_peer=0';
+            }
+        }
+
+        return $dsn;
+    }
+
+    /**
+     * Check validity of an email address.
+     *
+     * @param string $address
+     *
+     * @return bool
+     */
+    public static function validateAddress($address)
     {
         if (empty($address)) {
             return false;
         }
-        $isValid = parent::validateAddress($address, $patternselect);
-        if (!$isValid && str_ends_with($address, '@localhost')) {
-           //since phpmailer6, @localhost address are no longer valid...
-            $isValid = parent::ValidateAddress($address . '.me');
-        }
-        return $isValid;
+
+        $validator = new EmailValidator();
+        return $validator->isValid($address, new RFCValidation());
     }
 
-    public function setLanguage($langcode = 'en', $lang_path = '')
+    /**
+     * Get email instance.
+     *
+     * @return Email
+     */
+    public function getEmail(): Email
     {
-        if ($lang_path == '') {
-            $local_path = dirname(Config::getLibraryDir('PHPMailer\PHPMailer\PHPMailer'))  . '/language/';
-            if (is_dir($local_path)) {
-                $lang_path = $local_path;
-            }
+        return $this->email;
+    }
+
+    /**
+     * Send email.
+     *
+     * @return bool
+     */
+    public function send()
+    {
+        $text_body = $this->email->getTextBody();
+        if (is_string($text_body)) {
+            $this->email->text($this->normalizeLineBreaks($text_body));
         }
-        return parent::setLanguage($langcode, $lang_path);
+        $html_body = $this->email->getHtmlBody();
+        if (is_string($html_body)) {
+            $this->email->html($this->normalizeLineBreaks($html_body));
+        }
+
+        $this->debug = null;
+        try {
+            $this->error = null;
+            $this->email->ensureValidity();
+            $sent_message = $this->transport->send($this->email);
+            $this->debug = $sent_message->getDebug();
+            return true;
+        } catch (\Symfony\Component\Mailer\Exception\TransportExceptionInterface $e) {
+            $this->error = $e->getMessage();
+            $this->debug = $e->getDebug();
+        } catch (\LogicException $e) {
+            $this->error = $e->getMessage();
+        } catch (\Throwable $e) {
+            $this->error = $e->getMessage();
+            ErrorHandler::getInstance()->handleException($e, true);
+        }
+
+        if ($this->error !== null) {
+            Toolbox::logInFile('mail-error', $this->error . "\n");
+        }
+
+        return false;
+    }
+
+    /**
+     * Get message related to sending error.
+     *
+     * @return string|null
+     */
+    public function getError(): ?string
+    {
+        return $this->error;
+    }
+
+    /**
+     * Get debug log.
+     *
+     * @return string|null
+     */
+    public function getDebug(): ?string
+    {
+        return $this->debug;
+    }
+
+    /**
+     * Normalize line-breaks to CRLF.
+     * According to RFC2045, this is the expected line-break format in message bodies.
+     *
+     * @param string $text
+     * @return string
+     */
+    private function normalizeLineBreaks(string $text): string
+    {
+        // 1. Convert all line breaks to "\n"
+        // 2. Convert all line breaks to CRLF
+        // Using 2 steps is mandatory to not convert "\r\n" to "\r\r\n".
+        $text = preg_replace('/\r\n|\r/', "\n", $text);
+        $text = preg_replace('/\n/', "\r\n", $text);
+
+        return $text;
+    }
+
+
+    public function __get(string $property)
+    {
+        $value = null;
+        $deprecation = true;
+        switch ($property) {
+            case 'Subject':
+                $value = $this->email->getSubject() ?? '';
+                break;
+            case 'Body':
+                $value = $this->email->getHtmlBody() ?? $this->email->getTextBody() ?? '';
+                break;
+            case 'AltBody':
+                $value = $this->email->getTextBody() ?? '';
+                break;
+            case 'MessageID':
+                $value = $this->email->getHeaders()->get('Message-Id')->getBodyAsString() ?? '';
+                break;
+            case 'From':
+                $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getAddress() ?? '';
+                break;
+            case 'FromName':
+                $value = $this->email->getHeaders()->get('From')->getAddresses()[0]->getName() ?? '';
+                break;
+            case 'Sender':
+                $value = $this->email->getHeaders()->get('Sender')->getBodyAsString() ?? '';
+                break;
+            case 'MessageDate':
+                $value = $this->email->getHeaders()->get('Date')->getBodyAsString() ?? '';
+                break;
+            case 'ErrorInfo':
+                $value = $this->error ?? '';
+                break;
+            default:
+                trigger_error(
+                    sprintf('Undefined property %s::$%s', __CLASS__, $property),
+                    E_USER_WARNING
+                );
+                $deprecation = false;
+                break;
+        }
+
+        if ($deprecation) {
+            Toolbox::deprecated();
+        }
+
+        return $value;
+    }
+
+    public function __set(string $property, $value)
+    {
+        $deprecation = true;
+        switch ($property) {
+            case 'Subject':
+                $this->email->subject((string)$value);
+                break;
+            case 'Body':
+                $this->email->html((string)$value);
+                break;
+            case 'AltBody':
+                $this->email->text((string)$value);
+                break;
+            case 'MessageID':
+                $this->email->getHeaders()->remove('Message-Id');
+                $this->email->getHeaders()->addHeader('Message-Id', preg_replace('/^<(.*)>$/', '$1', (string)$value));
+                break;
+            case 'From':
+                $this->email->from((string)$value);
+                break;
+            case 'FromName':
+                $header = $this->email->getHeaders()->get('From');
+                if ($header === null || count($header->getAddresses()) === 0) {
+                    trigger_error(
+                        sprintf('Unable to define "FromName" property when "From" property is not defined.'),
+                        E_USER_WARNING
+                    );
+                } else {
+                    $this->email->from(new Address($header->getAddresses()[0]->getAddress(), (string)$value));
+                }
+                break;
+            case 'Sender':
+                $this->email->sender((string)$value);
+                break;
+            case 'MessageDate':
+                $this->email->date(new DateTime((string) $value));
+                break;
+            case 'ErrorInfo':
+                $this->error = (string)$value;
+                break;
+            default:
+                trigger_error(
+                    sprintf('Undefined property %s::$%s', __CLASS__, $property),
+                    E_USER_WARNING
+                );
+                $deprecation = false;
+                break;
+        }
+
+        if ($deprecation) {
+            Toolbox::deprecated(sprintf('Usage of property %s::$%s is deprecated', __CLASS__, $property));
+        }
+    }
+
+    public function __call(string $method, array $arguments)
+    {
+        $lcmethod = strtolower($method); // PHP methods are not case sensitive
+
+        switch ($lcmethod) {
+            case 'addcustomheader':
+                // public function addCustomHeader($name, $value = null)
+                $name  = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $value = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
+                if (null === $value && strpos($name, ':') !== false) {
+                    list($name, $value) = explode(':', $name, 2);
+                }
+                if ($name !== null && $value !== null) {
+                    $this->email->getHeaders()->addTextHeader($name, $value);
+                }
+                break;
+            case 'addembeddedimage':
+                // public function addEmbeddedImage($path, $cid, $name = '', $encoding = self::ENCODING_BASE64, $type = '', $disposition = 'inline')
+                $path = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $name = array_key_exists(2, $arguments) && is_string($arguments[2]) ? $arguments[2] : null;
+                if ($path !== null) {
+                    $this->email->embedFromPath($path, $name);
+                }
+                break;
+            case 'addattachment':
+                // public function addAttachment($path, $name = '', $encoding = self::ENCODING_BASE64, $type = '', $disposition = 'attachment')
+                $path = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $name = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
+                if ($path !== null) {
+                    $this->email->attachFromPath($path, $name);
+                }
+                break;
+            case 'addaddress':
+            case 'addcc':
+            case 'addbcc':
+            case 'addreplyto':
+            case 'setfrom':
+                // public function addAddress($address, $name = '')
+                // public function addCC($address, $name = '')
+                // public function addBCC($address, $name = '')
+                // public function addReplyTo($address, $name = '')
+                // public function setFrom($address, $name = '', $auto = true)
+                $address = array_key_exists(0, $arguments) && is_string($arguments[0]) ? $arguments[0] : null;
+                $name    = array_key_exists(1, $arguments) && is_string($arguments[1]) ? $arguments[1] : null;
+                if ($address !== null) {
+                    $address_obj = new Address($address, $name);
+                    switch ($lcmethod) {
+                        case 'addaddress':
+                            $this->email->addTo($address_obj);
+                            break;
+                        case 'addcc':
+                            $this->email->addCc($address_obj);
+                            break;
+                        case 'addbcc':
+                            $this->email->addBcc($address_obj);
+                            break;
+                        case 'addreplyto':
+                            $this->email->addReplyTo($address_obj);
+                            break;
+                        case 'setfrom':
+                            $this->email->from($address_obj);
+                            break;
+                    }
+                }
+                break;
+            case 'clearaddresses':
+                // public function clearAddresses()
+                $this->email->getHeaders()->remove('To');
+                break;
+            case 'clearccs':
+                // public function clearCCs()
+                $this->email->getHeaders()->remove('Cc');
+                break;
+            case 'clearbccs':
+                // public function clearBCCs()
+                $this->email->getHeaders()->remove('Bcc');
+                break;
+            case 'clearreplytos':
+                // public function clearReplyTos()
+                $this->email->getHeaders()->remove('Reply-To');
+                break;
+            case 'ishtml':
+                // public function isHTML($isHtml = true)
+                // Do nothing as any automatic handling would be hazardous
+                break;
+            default:
+                // Trigger fatal error to block execution.
+                // As we cannot know which return value type is expected, it is safer to to ensure
+                // that caller will not continue execution using a void return value.
+                throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
+                break;
+        }
+
+        Toolbox::deprecated(sprintf('Usage of method %s::%s() is deprecated', __CLASS__, $method));
+    }
+
+    public static function __callstatic(string $method, array $arguments)
+    {
+        // Trigger fatal error to block execution.
+        // As we cannot know which return value type is expected, it is safer to to ensure
+        // that caller will not continue execution using a void return value.
+        throw new \RuntimeException(sprintf('Call to undefined method %s::%s()', __CLASS__, $method));
     }
 }

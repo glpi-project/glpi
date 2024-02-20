@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 class Telemetry extends CommonGLPI
 {
@@ -124,7 +127,12 @@ class Telemetry extends CommonGLPI
         $dbinfos = $DB->getInfo();
 
         $size_res = $DB->request([
-            'SELECT' => new \QueryExpression("ROUND(SUM(data_length + index_length) / 1024 / 1024, 1) AS dbsize"),
+            'SELECT' => [
+                QueryFunction::round(
+                    expression: new QueryExpression(QueryFunction::sum(new QueryExpression('data_length + index_length')) . ' / 1024 / 1024'),
+                    alias: 'dbsize',
+                )
+            ],
             'FROM'   => 'information_schema.tables',
             'WHERE'  => ['table_schema' => $DB->dbdefault]
         ])->current();

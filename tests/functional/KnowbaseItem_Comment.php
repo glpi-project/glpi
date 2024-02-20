@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -141,15 +141,15 @@ class KnowbaseItem_Comment extends DbTestCase
         $kbcom = new \KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span> <span class='badge glpi-badge'>5</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Comments <span class=\'badge\'>5</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span> <span class='badge glpi-badge'>5</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Comments');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span>");
 
         // Change knowbase rights to be empty
         $_SESSION['glpiactiveprofile']['knowbase'] = 0;
@@ -158,8 +158,8 @@ class KnowbaseItem_Comment extends DbTestCase
 
         // Add comment and read right
         $_SESSION['glpiactiveprofile']['knowbase'] = READ | \KnowbaseItem::COMMENTS;
-        // Tab name should be filled (start with "Comments")
-        $this->string($kbcom->getTabNameForItem($kb1))->matches('/^Comments/');
+        // Tab name should be filled
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-message-circle me-2'></i>Comments</span>");
     }
 
     public function testDisplayComments()

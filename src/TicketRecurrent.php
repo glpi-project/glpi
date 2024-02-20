@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -86,5 +86,42 @@ class TicketRecurrent extends CommonITILRecurrent
         }
 
         return $input;
+    }
+
+
+    public function defineTabs($options = [])
+    {
+        $ong = parent::defineTabs($options);
+        $this->addStandardTab('Item_TicketRecurrent', $ong, $options);
+        return $ong;
+    }
+
+    public static function getItemLinkClass(): ?string
+    {
+        return Item_TicketRecurrent::class;
+    }
+
+    public function getAdditionalFields()
+    {
+        $tab = parent::getAdditionalFields();
+        $tab[] = [
+            'name'  => 'ticket_per_item',
+            'label' => __('Create a ticket per linked element'),
+            'type'  => 'bool',
+            'list'  => false
+        ];
+        return $tab;
+    }
+
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_TicketRecurrent::class,
+            ]
+        );
+
+        parent::cleanDBonPurge();
     }
 }

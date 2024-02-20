@@ -1,0 +1,218 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% set params  = params ?? [] %}
+
+{% block form_fields %}
+   {% block more_fields %}
+      {{ fields.largeTitle(__('Autofill dates for financial and administrative information')) }}
+      {{ fields.dropdownArrayField('autofill_buy_date', item.fields['autofill_buy_date'], status_options, __('Date of purchase'), {
+         add_field_html: inheritance_labels['autofill_buy_date']|default(null)
+      }) }}
+      {#  using '+' instead of merge filter because there are some numeric keys and that causes the merge filter to change the existing keys #}
+      {% set status_options = status_options + {
+         (constant('Infocom::COPY_BUY_DATE')): __('Copy the date of purchase'),
+      } %}
+      {{ fields.dropdownArrayField('autofill_order_date', item.fields['autofill_order_date'], status_options, __('Order date'), {
+         add_field_html: inheritance_labels['autofill_order_date']|default(null)
+      }) }}
+      {% set status_options = status_options + {
+         (constant('Infocom::COPY_ORDER_DATE')): __('Copy the order date'),
+      } %}
+      {{ fields.dropdownArrayField('autofill_delivery_date', item.fields['autofill_delivery_date'], status_options, __('Delivery date'), {
+         add_field_html: inheritance_labels['autofill_delivery_date']|default(null)
+      }) }}
+      {% set status_options = status_options + {
+         (constant('Infocom::COPY_DELIVERY_DATE')): __('Copy the delivery date'),
+      } %}
+      {{ fields.dropdownArrayField('autofill_use_date', item.fields['autofill_use_date'], status_options, __('Startup date'), {
+         add_field_html: inheritance_labels['autofill_use_date']|default(null)
+      }) }}
+      {{ fields.dropdownArrayField('autofill_warranty_date', item.fields['autofill_warranty_date'], warranty_options, __('Start date of warranty'), {
+         add_field_html: inheritance_labels['autofill_warranty_date']|default(null)
+      }) }}
+      {{ fields.dropdownArrayField('autofill_decommission_date', item.fields['autofill_decommission_date'], decom_options, __('Decommission date'), {
+         add_field_html: inheritance_labels['autofill_decommission_date']|default(null)
+      }) }}
+
+      {{ fields.largeTitle('Software'|itemtype_name) }}
+      {% set to_add = {
+         (constant('Entity::CONFIG_NEVER')): __('No change of entity')
+      } %}
+      {% if item.fields['id'] > 0 %}
+         {% set to_add = to_add|merge({
+            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+         }) %}
+      {% endif %}
+      {{ fields.dropdownField(
+         'Entity',
+         'entities_id_software',
+         item.fields['entities_id_software'],
+         __('Entity for software creation'),
+         {
+            toadd: to_add,
+            entity: entities,
+            comments: false,
+            add_field_html: inheritance_labels['entities_id_software']|default(null)
+         }
+      ) }}
+
+      {{ fields.largeTitle(__('Transfer')) }}
+      {% set to_add = {
+           (constant('Entity::CONFIG_NEVER')): __('No automatic transfer')
+      } %}
+      {% if item.fields['id'] > 0 %}
+         {% set to_add = to_add|merge({
+            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+         }) %}
+      {% endif %}
+      {{ fields.dropdownField(
+         'Transfer',
+         'transfers_id',
+         item.fields['transfers_id'],
+         __('Model for automatic entity transfer on inventories'),
+         {
+            toadd: to_add,
+            add_field_html: inheritance_labels['transfers_id']|default(null),
+            display_emptychoice: false
+         }
+      ) }}
+
+      {{ fields.largeTitle(__('Automatic inventory')) }}
+      {{ fields.textField('agent_base_url', item.fields['agent_base_url'], __('Agent base URL'), {
+         add_field_html: inheritance_labels['agent_base_url']|default(null)
+      }) }}
+
+      {{ fields.largeTitle(__('Automatically update of the elements related to the computers')) }}
+      {{ fields.smallTitle(__('Unit management')) }}
+      {% set matrix_columns = {
+         'contact': __('Alternate username'),
+         'user': 'User'|itemtype_name(1),
+         'group': 'Group'|itemtype_name(1),
+         'location': 'Location'|itemtype_name(1),
+         'status': __('Status')
+      } %}
+      {% set connect_opts = {
+         0: __('Do not copy'),
+         1: __('Copy')
+      } %}
+      {% set disconnect_opts = {
+         0: __('Do not delete'),
+         1: __('Delete')
+      } %}
+      {% if item.fields['id'] > 0 %}
+         {% set connect_opts = connect_opts + {
+            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+         } %}
+         {% set disconnect_opts = disconnect_opts + {
+            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+         } %}
+      {% endif %}
+
+      <table class="table table-borderless table-sm">
+         <thead>
+            <tr>
+               <th></th>
+               {% for col in matrix_columns %}
+                  <th>{{ col }}</th>
+               {% endfor %}
+            </tr>
+         </thead>
+         <tbody>
+            <tr>
+               <td>{{ __('When connecting or updating') }}</td>
+               {% for k, col in matrix_columns %}
+                  <td>
+                     {% if k == 'status' %}
+                        {% set dropdown %}
+                           {{ call('State::dropdownBehaviour', [
+                              'state_autoupdate_mode',
+                              __('Copy computer status'),
+                              item.fields['state_autoupdate_mode'],
+                              item.fields['id'] > 0
+                           ]) }}
+                        {% endset %}
+                        {{ fields.htmlField('state_autoupdate_mode', dropdown, '', {
+                           no_label: true,
+                           add_field_html: inheritance_labels['state_autoupdate_mode']|default(null),
+                           full_width: true,
+                           wrapper_class: ''
+                        }) }}
+                     {% else %}
+                        {% set field_name = 'is_' ~ k ~ '_autoupdate' %}
+                        {{ fields.dropdownArrayField(field_name, item.fields[field_name], connect_opts, '', {
+                           no_label: true,
+                           add_field_html: inheritance_labels[field_name]|default(null),
+                           full_width: true
+                        }) }}
+                     {% endif %}
+                  </td>
+               {% endfor %}
+            </tr>
+            <tr>
+               <td>{{ __('When disconnecting') }}</td>
+               {% for k, col in matrix_columns %}
+                  <td>
+                     {% if k == 'status' %}
+                        {% set dropdown %}
+                           {{ call('State::dropdownBehaviour', [
+                              'state_autoclean_mode',
+                              __('Clear status'),
+                              item.fields['state_autoclean_mode'],
+                              item.fields['id'] > 0
+                           ]) }}
+                        {% endset %}
+                        {{ fields.htmlField('state_autoclean_mode', dropdown, '', {
+                           no_label: true,
+                           add_field_html: inheritance_labels['state_autoclean_mode']|default(null),
+                           full_width: true,
+                           wrapper_class: ''
+                        }) }}
+                     {% else %}
+                        {% set field_name = 'is_' ~ k ~ '_autoclean' %}
+                        {{ fields.dropdownArrayField(field_name, item.fields[field_name], disconnect_opts, '', {
+                           no_label: true,
+                           add_field_html: inheritance_labels[field_name]|default(null),
+                           full_width: true
+                        }) }}
+                     {% endif %}
+                  </td>
+               {% endfor %}
+            </tr>
+         </tbody>
+      </table>
+
+   {% endblock %}
+{% endblock %}

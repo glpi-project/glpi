@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
 
 /**
  * Document_Item Class
@@ -204,14 +206,10 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
-
-    /**
-     * @TODO Remove `_do_update_ticket` handling in GLPI 10.1, it is not used anymore.
-     */
     public function post_addItem()
     {
 
-        if ($this->fields['itemtype'] == 'Ticket' && ($this->input['_do_update_ticket'] ?? true)) {
+        if ($this->fields['itemtype'] == 'Ticket') {
             $ticket = new Ticket();
             $input  = [
                 'id'              => $this->fields['items_id'],
@@ -229,7 +227,6 @@ class Document_Item extends CommonDBRelation
         }
         parent::post_addItem();
     }
-
 
     /**
      * @since 0.83
@@ -255,11 +252,9 @@ class Document_Item extends CommonDBRelation
             $doc->getFromDB($this->fields['documents_id']);
             if (!empty($doc->fields['tag'])) {
                 $ticket->getFromDB($this->fields['items_id']);
-                $input['content'] = Toolbox::addslashes_deep(
-                    Toolbox::cleanTagOrImage(
-                        $ticket->fields['content'],
-                        [$doc->fields['tag']]
-                    )
+                $input['content'] = Toolbox::cleanTagOrImage(
+                    $ticket->fields['content'],
+                    [$doc->fields['tag']]
                 );
             }
 
@@ -284,10 +279,11 @@ class Document_Item extends CommonDBRelation
                     'Associated item',
                     'Associated items',
                     Session::getPluralNumber()
-                ), $nbdoc);
+                ), $nbdoc, $item::getType(), 'ti ti-package');
                 $ong[2] = self::createTabEntry(
                     Document::getTypeName(Session::getPluralNumber()),
-                    $nbitem
+                    $nbitem,
+                    $item::getType()
                 );
                 return $ong;
 
@@ -304,7 +300,8 @@ class Document_Item extends CommonDBRelation
                     }
                     return self::createTabEntry(
                         Document::getTypeName(Session::getPluralNumber()),
-                        $nbitem
+                        $nbitem,
+                        $item::getType()
                     );
                 }
         }
@@ -440,7 +437,7 @@ class Document_Item extends CommonDBRelation
                         || $item instanceof CommonITILValidation
                     ) {
                         $linkname_extra = "(" . CommonITILTask::getTypeName(1) . ")";
-                        $itemtype = $item->getItilObjectItemType();
+                        $itemtype = $item::getItilObjectItemType();
                         $item = new $itemtype();
                         $item->getFromDB($data[$item->getForeignKeyField()]);
                         $data['id'] = $item->fields['id'];
@@ -463,6 +460,8 @@ class Document_Item extends CommonDBRelation
                     if ($item instanceof CommonDevice) {
                         $linkname = $data["designation"];
                     } else if ($item instanceof Item_Devices) {
+                        $linkname = $data["itemtype"];
+                    } else if ($item instanceof Notepad) {
                         $linkname = $data["itemtype"];
                     } else {
                         $linkname = $data[$item::getNameField()];

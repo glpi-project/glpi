@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -126,7 +126,7 @@ class Antivirus extends AbstractInventoryAsset
             function () use ($asset) {
                 $asset->prepare();
             }
-        )->message->contains('Antivirus are handled for computers only.');
+        )->message->contains('Antivirus are not handled for Printer');
     }
 
     public function testHandle()
@@ -135,8 +135,8 @@ class Antivirus extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
        //first, check there are no AV linked to this computer
-        $avc = new \ComputerAntivirus();
-        $this->boolean($avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+        $avc = new \ItemAntivirus();
+        $this->boolean($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isFalse('An antivirus is already linked to computer!');
 
        //convert data
@@ -160,7 +160,7 @@ class Antivirus extends AbstractInventoryAsset
         $manufacturers_id = $cmanuf['id'];
 
         $asset->handle();
-        $this->boolean($avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+        $this->boolean($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isTrue('Antivirus has not been linked to computer :(');
 
         $this->integer($avc->fields['manufacturers_id'])->isIdenticalTo($manufacturers_id);
@@ -173,8 +173,8 @@ class Antivirus extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
        //first, check there are no AV linked to this computer
-        $avc = new \ComputerAntivirus();
-        $this->boolean($avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]))
+        $avc = new \ItemAntivirus();
+        $this->boolean($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))
            ->isTrue('No antivirus linked to computer!');
 
         $expected = $this->assetProvider()[0];
@@ -196,7 +196,7 @@ class Antivirus extends AbstractInventoryAsset
 
         $asset->handleLinks();
         $asset->handle();
-        $this->boolean($avc->getFromDbByCrit(['computers_id' => $computer->fields['id']]))->isTrue();
+        $this->boolean($avc->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer->fields['id']]))->isTrue();
 
         $this->string($avc->fields['antivirus_version'])->isIdenticalTo('4.5.12.0');
     }
@@ -204,7 +204,7 @@ class Antivirus extends AbstractInventoryAsset
     public function testInventoryUpdate()
     {
         $computer = new \Computer();
-        $antivirus = new \ComputerAntivirus();
+        $antivirus = new \ItemAntivirus();
 
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -247,7 +247,8 @@ class Antivirus extends AbstractInventoryAsset
         $this->integer($computers_id)->isGreaterThan(0);
 
         $antivirus_1_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Kaspersky Endpoint Security 10 for Windows',
             'antivirus_version' => '2021 21.3.10.391',
             'is_active' => 1
@@ -255,7 +256,8 @@ class Antivirus extends AbstractInventoryAsset
         $this->integer($antivirus_1_id)->isGreaterThan(0);
 
         $antivirus_2_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Microsoft Security Essentials',
             'antivirus_version' => '4.3.216.0',
             'is_active' => 1
@@ -263,14 +265,15 @@ class Antivirus extends AbstractInventoryAsset
         $this->integer($antivirus_2_id)->isGreaterThan(0);
 
         $antivirus_3_id = $antivirus->add([
-            'computers_id' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
             'name' => 'Avast Antivirus',
             'antivirus_version' => '19',
             'is_active' => 1
         ]);
         $this->integer($antivirus_3_id)->isGreaterThan(0);
 
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($results))->isIdenticalTo(3);
         foreach ($results as $result) {
             $this->variable($result['is_dynamic'])->isEqualTo(0);
@@ -280,11 +283,11 @@ class Antivirus extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
        //we still have 3 antivirus linked to the computer
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($results))->isIdenticalTo(3);
 
        //antivirus present in the inventory source are now dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($results))->isIdenticalTo(2);
 
         $this->boolean($antivirus->getFromDB($antivirus_1_id))->isTrue();
@@ -294,7 +297,7 @@ class Antivirus extends AbstractInventoryAsset
         $this->integer($antivirus->fields['is_dynamic'])->isIdenticalTo(1);
 
        //antivirus not present in the inventory is still not dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->integer(count($results))->isIdenticalTo(1);
 
         $this->boolean($antivirus->getFromDB($antivirus_3_id))->isTrue();
@@ -328,11 +331,11 @@ class Antivirus extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
        //we now have 2 antivirus only
-        $results = $antivirus->find(['computers_id' => $computers_id]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->integer(count($results))->isIdenticalTo(2);
 
        //antivirus present in the inventory source are still dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 1]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->integer(count($results))->isIdenticalTo(1);
 
         $this->boolean($antivirus->getFromDB($antivirus_1_id))->isTrue();
@@ -342,7 +345,7 @@ class Antivirus extends AbstractInventoryAsset
         $this->boolean($antivirus->getFromDB($antivirus_2_id))->isFalse();
 
        //antivirus not present in the inventory is still not dynamic
-        $results = $antivirus->find(['computers_id' => $computers_id, 'is_dynamic' => 0]);
+        $results = $antivirus->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->integer(count($results))->isIdenticalTo(1);
 
         $this->boolean($antivirus->getFromDB($antivirus_3_id))->isTrue();

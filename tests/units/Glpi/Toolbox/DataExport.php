@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,8 +34,6 @@
  */
 
 namespace tests\units\Glpi\Toolbox;
-
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Test class for src/Glpi/Toolbox/dataexport.class.php
@@ -67,7 +65,7 @@ HTML,
 
         // Ticket title column
         yield [
-            'value'           => Sanitizer::encodeHtmlSpecialChars(<<<HTML
+            'value'           => <<<HTML
 <a id="Ticket1" href="/front/ticket.form.php?id=1" data-hasqtip="0">Ticket title</a>
 <div id="contentTicket1" class="invisible"><div class="content"><p>Ticket content ...</p></div></div>
 <script type="text/javascript">
@@ -79,15 +77,15 @@ $(function(){\$('#Ticket1').qtip({
 
 //]]>
 </script>
-HTML),
+HTML,
             'expected_result' => 'Ticket title',
         ];
 
         // Ticket status
         yield [
-            'value'           => Sanitizer::encodeHtmlSpecialChars(<<<HTML
+            'value'           => <<<HTML
 <i class="itilstatus far fa-circle assigned me-1" title="" data-bs-toggle="tooltip" data-bs-original-title="Processing (assigned)" aria-label="Processing (assigned)"></i>&nbsp;Processing (assigned)</span>
-HTML),
+HTML,
             'expected_result' => 'Processing (assigned)',
         ];
     }

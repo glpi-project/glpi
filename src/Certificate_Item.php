@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -83,13 +83,11 @@ class Certificate_Item extends CommonDBRelation
                 $item->getType() == 'Certificate'
                 && count(Certificate::getTypes(false))
             ) {
+                $nb = 0;
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    return self::createTabEntry(
-                        _n('Associated item', 'Associated items', Session::getPluralNumber()),
-                        self::countForMainItem($item)
-                    );
+                    $nb = self::countForMainItem($item);
                 }
-                return _n('Associated item', 'Associated items', Session::getPluralNumber());
+                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
             } else if (
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()

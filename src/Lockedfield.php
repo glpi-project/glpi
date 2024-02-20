@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Search\SearchOption;
 
 /**
  *  Locked fields for inventory
@@ -375,7 +376,8 @@ class Lockedfield extends CommonDBTM
             'locations_id',
             'networks_id',
             'manufacturers_id',
-            'uuid'
+            'uuid',
+            'comment'
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
@@ -384,7 +386,7 @@ class Lockedfield extends CommonDBTM
         }
 
         foreach ($itemtypes as $itemtype) {
-            $search_options = Search::getOptions($itemtype);
+            $search_options = SearchOption::getOptionsForItemtype($itemtype);
             $fields = $std_fields;
             $fields[] = strtolower($itemtype) . 'models_id'; //model relation field
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field

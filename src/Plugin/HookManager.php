@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Plugin;
 
+use Toolbox;
+
 class HookManager
 {
     protected string $plugin;
@@ -49,6 +51,8 @@ class HookManager
      */
     public function enableCSRF(): void
     {
+        Toolbox::deprecated();
+
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 

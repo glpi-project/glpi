@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Search\SearchOption;
+
 include('../inc/includes.php');
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -56,7 +58,7 @@ if (isset($_POST['inline']) && $_POST['inline']) {
 }
 $submitname = _sx('button', 'Post');
 if (isset($_POST['submitname']) && $_POST['submitname']) {
-    $submitname = stripslashes($_POST['submitname']);
+    $submitname = $_POST['submitname'];
 }
 
 
@@ -64,7 +66,7 @@ if (
     isset($_POST["itemtype"])
     && isset($_POST["id_field"]) && $_POST["id_field"]
 ) {
-    $search = Search::getOptions($_POST["itemtype"]);
+    $search = SearchOption::getOptionsForItemtype($_POST["itemtype"]);
     if (!isset($search[$_POST["id_field"]])) {
         exit();
     }

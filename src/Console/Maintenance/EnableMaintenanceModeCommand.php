@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,6 @@ namespace Glpi\Console\Maintenance;
 
 use Config;
 use Glpi\Console\AbstractCommand;
-use Glpi\Toolbox\Sanitizer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -71,7 +70,7 @@ class EnableMaintenanceModeCommand extends AbstractCommand
             'maintenance_mode' => '1'
         ];
         if ($input->hasOption('text') && $input->getOption('text') !== null) {
-            $values['maintenance_text'] = Sanitizer::sanitize($input->getOption('text'));
+            $values['maintenance_text'] = $input->getOption('text');
         }
         $config = new Config();
         $config->setConfigurationValues('core', $values);

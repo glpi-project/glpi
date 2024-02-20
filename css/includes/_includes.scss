@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,11 @@
 
 $is-dark: false !default;
 
+@import "tabler_compat";
 @import "base";
 @import "mixins/badges_fixes";
-@import "global-variables";
 @import "highcontrast";
+@import "components/autocomplete";
 @import "components/asset-form";
 @import "components/buttons-group";
 @import "components/documentation";
@@ -46,10 +47,11 @@ $is-dark: false !default;
 @import "components/floating-buttons";
 @import "components/fuzzy";
 @import "components/global-menu";
-@import "components/kanban";
+@import "components/log_viewer";
 @import "components/browser_tree";
 @import "components/mini-tabs";
 @import "components/networkport";
+@import "components/notes";
 @import "components/pictures";
 @import "components/racks";
 @import "components/richtext";
@@ -58,7 +60,9 @@ $is-dark: false !default;
 @import "components/scrollbars";
 @import "components/search_input";
 @import "components/select2";
+@import "components/sortable";
 @import "components/tabs";
+@import "components/tinymce";
 @import "components/itilobject/footer";
 @import "components/itilobject/layout";
 @import "components/itilobject/timeline";
@@ -66,7 +70,6 @@ $is-dark: false !default;
 @import "components/itilobject/dates_timelines";
 @import "components/itilobject/status";
 @import "components/setup/dropdowns_list";
-@import "components/chartist/chartist";
 @import "pages/search";
 @import "../legacy/includes/inputs";
 @import "../legacy/includes/styles";

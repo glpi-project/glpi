@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -66,6 +66,15 @@ if (isset($_POST["add"])) {
     $extevent->redirectToList();
 } else if (isset($_POST["purge_instance"])) {
     $extevent->check($_POST["id"], PURGE);
+    $extevent->deleteInstance((int) $_POST["id"], $_POST['day']);
+    $extevent->redirectToList();
+} else if (isset($_POST["save_instance"])) {
+    $input = $_POST;
+    unset($input['id']);
+    unset($input['rrule']);
+    $input['plan']['begin'] = $_POST['day'] . date(" H:i:s", strtotime($_POST['plan']['begin']));
+    $extevent->check(-1, CREATE, $input);
+    $extevent->add($input);
     $extevent->deleteInstance((int) $_POST["id"], $_POST['day']);
     $extevent->redirectToList();
 } else if (isset($_POST["update"])) {

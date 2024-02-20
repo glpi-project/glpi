@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,8 @@
 
 include('../inc/includes.php');
 
-/**
- * @var \DBmysql $DB
- * @var array $_UPOST
- */
-global $DB, $_UPOST;
+/** @var \DBmysql $DB */
+global $DB;
 
 $dropdown = new Entity();
 
@@ -48,11 +45,6 @@ if (isset($_GET['id']) && ($_GET['id'] == 0)) {
     $options = ['canedit' => true,
         'candel'  => false
     ];
-}
-
-if (array_key_exists('custom_css_code', $_POST)) {
-    // Prevent sanitize process to alter '<', '>' and '&' chars.
-    $_POST['custom_css_code'] = $DB->escape($_UPOST['custom_css_code']);
 }
 
 include(GLPI_ROOT . "/front/dropdown.common.form.php");

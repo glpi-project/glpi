@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\URL;
 
 /// Class Domain
@@ -57,6 +58,7 @@ class Domain extends CommonDBTM
             Domain_Item::class,
             Infocom::class,
             Item_Ticket::class,
+            Item_TicketRecurrent::class,
             Item_Problem::class,
             Change_Item::class,
             Contract_Item::class,
@@ -297,7 +299,7 @@ class Domain extends CommonDBTM
         $this->addStandardTab('DomainRecord', $ong, $options);
         $this->addStandardTab('Domain_Item', $ong, $options);
         $this->addStandardTab('Infocom', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
@@ -421,6 +423,19 @@ class Domain extends CommonDBTM
 
         switch ($ma->getAction()) {
             case 'add_item':
+                Dropdown::show(
+                    'DomainRelation',
+                    [
+                        'name'   => "domainrelations_id",
+                        'value'  => DomainRelation::BELONGS,
+                        'display_emptychoice'   => false
+                    ]
+                );
+                self::dropdownDomains([]);
+                echo "&nbsp;" .
+                 Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
+                return true;
+            case 'remove_domain':
                 self::dropdownDomains([]);
                 echo "&nbsp;" .
                  Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
@@ -457,25 +472,56 @@ class Domain extends CommonDBTM
         $domain_item = new Domain_Item();
 
         switch ($ma->getAction()) {
-            case "add_item":
+            case 'add_item':
                 $input = $ma->getInput();
+                if (!isset($input['domains_id'])) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::NO_ACTION);
+                    return;
+                }
                 foreach ($ids as $id) {
                     $input = ['domains_id' => $input['domains_id'],
                         'items_id'                  => $id,
-                        'itemtype'                  => $item->getType()
+                        'itemtype'                  => $item->getType(),
+                        'domainrelations_id'        => $input['domainrelations_id']
                     ];
                     if ($domain_item->can(-1, UPDATE, $input)) {
-                        if ($domain_item->add($input)) {
-                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        if ($domain_item->getFromDBByCrit($input)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
                         } else {
-                             $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                            if ($domain_item->add($input)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            }
                         }
-                    } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     }
                 }
                 return;
-
+            case 'remove_domain':
+                $input = $ma->getInput();
+                $nolink = true;
+                foreach ($ids as $id) {
+                    $domain_item = new Domain_Item();
+                    foreach (
+                        $domain_item->find([
+                            'domains_id' => $input['domains_id'],
+                            'items_id'   => $id,
+                            'itemtype'   => $item->getType()
+                        ]) as $data
+                    ) {
+                        $purge = !$data['is_dynamic']; // dynamic relations should be preserved for inventory lock feature (dynamic + deleted = locked)
+                        if ($domain_item->delete($data, $purge)) {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        }
+                        $nolink = false;
+                    }
+                    if ($nolink) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                    }
+                }
+                return;
             case 'install':
                 $input = $ma->getInput();
                 foreach ($ids as $key) {
@@ -513,8 +559,8 @@ class Domain extends CommonDBTM
                     foreach (array_keys($ids) as $key) {
                         $item->getFromDB($key);
                         unset($item->fields["id"]);
-                        $item->fields["name"]    = addslashes($item->fields["name"]);
-                        $item->fields["comment"] = addslashes($item->fields["comment"]);
+                        $item->fields["name"]    = $item->fields["name"];
+                        $item->fields["comment"] = $item->fields["comment"];
                         $item->fields["entities_id"] = $input['entities_id'];
                         if ($item->add($item->fields)) {
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
@@ -736,22 +782,16 @@ class Domain extends CommonDBTM
         return $types;
     }
 
-    /**
-     * @FIXME Uncomment $safe_url parameter declaration in GLPI 10.1.
-     */
-    public static function generateLinkContents($link, CommonDBTM $item/*, bool $safe_url = true*/)
+    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $extra_data = [])
     {
-        $safe_url = func_num_args() === 3 ? func_get_arg(2) : true;
-
-        if (strstr($link, "[DOMAIN]")) {
-            $link = str_replace("[DOMAIN]", $item->getName(), $link);
-            if ($safe_url) {
-                $link = URL::sanitizeURL($link) ?: '#';
-            }
-            return [$link];
-        }
-
-        return parent::generateLinkContents($link, $item, $safe_url);
+        return Link::generateLinkContents(
+            $link,
+            $item,
+            $safe_url,
+            [
+                'DOMAIN' =>  $item->getName(),
+            ]
+        );
     }
 
     public static function getUsed(array $used, $domaintype)

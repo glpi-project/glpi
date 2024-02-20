@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -91,7 +91,7 @@ class CommandLoader implements CommandLoaderInterface
         $this->plugin          = $plugin;
     }
 
-    public function get($name)
+    public function get(string $name): Command
     {
         $commands = $this->getCommands();
 
@@ -102,14 +102,14 @@ class CommandLoader implements CommandLoaderInterface
         return $commands[$name];
     }
 
-    public function has($name)
+    public function has(string $name): bool
     {
         $commands = $this->getCommands();
 
         return array_key_exists($name, $commands);
     }
 
-    public function getNames()
+    public function getNames(): array
     {
         $commands = $this->getCommands();
 
@@ -169,17 +169,35 @@ class CommandLoader implements CommandLoaderInterface
                 continue;
             }
 
-            $class = $this->getCommandClassnameFromFile(
+            $command = $this->getCommandFromFile(
                 $file,
                 $basedir,
                 ['', NS_GLPI]
             );
 
-            if (null === $class) {
+            if (null === $command) {
                  continue;
             }
 
-            $this->registerCommand(new $class());
+            $names = [$command->getName(), ...$command->getAliases()];
+            foreach ($names as $name) {
+                foreach (['tools', 'plugins'] as $protected_namespaces) {
+                    if (preg_match('/^' . $protected_namespaces . ':/', $name) === 1) {
+                        // Do not register commands that are using a protected pattern
+                        trigger_error(
+                            sprintf(
+                                'GLPI command `%s` must be moved outside the protected `%s` namespace.',
+                                $name,
+                                $protected_namespaces
+                            ),
+                            E_USER_WARNING
+                        );
+                        continue 2;
+                    }
+                }
+            }
+
+            $this->registerCommand($command);
         }
     }
 
@@ -225,6 +243,8 @@ class CommandLoader implements CommandLoaderInterface
                     continue;
                 }
 
+                $plugin_dirname = $plugin_directory->getFilename();
+
                 $plugin_files = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($plugin_basedir),
                     RecursiveIteratorIterator::SELF_FIRST
@@ -236,25 +256,46 @@ class CommandLoader implements CommandLoaderInterface
                         continue;
                     }
 
-                     // Prefixes can be:
-                     // - GlpiPlugin\Myplugin if class is namespaced
-                     // - PluginMyplugin if class is not namespaced nor PSR-4 compliant
-                     // - empty if class is not namespaced but PSR-4 compliant
-                     $class = $this->getCommandClassnameFromFile(
-                         $file,
-                         $plugin_basedir,
-                         [
-                             NS_PLUG . ucfirst($plugin_directory->getFilename()) . '\\',
-                             'Plugin' . ucfirst($plugin_directory->getFilename()),
-                             '',
-                         ]
-                     );
+                    // Prefixes can be:
+                    // - GlpiPlugin\Myplugin if class is namespaced
+                    // - PluginMyplugin if class is not namespaced nor PSR-4 compliant
+                    // - empty if class is not namespaced but PSR-4 compliant
+                    $command = $this->getCommandFromFile(
+                        $file,
+                        $plugin_basedir,
+                        [
+                            NS_PLUG . ucfirst($plugin_dirname) . '\\',
+                            'Plugin' . ucfirst($plugin_dirname),
+                            '',
+                        ]
+                    );
 
-                    if (null === $class) {
-                          continue;
+                    if (null === $command) {
+                         continue;
                     }
 
-                     $this->registerCommand(new $class());
+                    $expected_pattern = '/^'
+                        . 'plugins:'            // starts with `plugins:` prefix
+                        . $plugin_dirname       // followed by plugin key (directory name)
+                        . '(:[^:]+)+'           // followed by, at least, another command name part
+                        . '$/';
+                    $names = [$command->getName(), ...$command->getAliases()];
+                    foreach ($names as $name) {
+                        if (preg_match($expected_pattern, $name) !== 1) {
+                            // Do not register commands that are not using the expected prefix
+                            trigger_error(
+                                sprintf(
+                                    'Plugin command `%s` must be moved in the `plugins:%s` namespace.',
+                                    $name,
+                                    $plugin_dirname
+                                ),
+                                E_USER_WARNING
+                            );
+                            continue 2;
+                        }
+                    }
+
+                    $this->registerCommand($command);
                 }
             }
 
@@ -283,16 +324,35 @@ class CommandLoader implements CommandLoaderInterface
                 continue;
             }
 
-            $class = $this->getCommandClassnameFromFile(
+            $command = $this->getCommandFromFile(
                 $file,
                 $basedir
             );
 
-            if (null === $class) {
-                continue;
+            if (null === $command) {
+                 continue;
             }
 
-            $this->registerCommand(new $class());
+            $expected_pattern = '/^'
+                . 'tools'               // starts with `tools:` prefix
+                . '(:[^:]+)+'           // followed by, at least, another command name part
+                . '$/';
+            $names = [$command->getName(), ...$command->getAliases()];
+            foreach ($names as $name) {
+                if (preg_match($expected_pattern, $name) !== 1) {
+                    // Do not register commands that are not using the expected prefix
+                    trigger_error(
+                        sprintf(
+                            'Tools command `%s` must be moved in the `tools` namespace.',
+                            $name
+                        ),
+                        E_USER_WARNING
+                    );
+                    continue 2;
+                }
+            }
+
+            $this->registerCommand($command);
         }
     }
 
@@ -315,15 +375,15 @@ class CommandLoader implements CommandLoaderInterface
     }
 
     /**
-     * Return classname of command contained in file, if file contains one.
+     * Return class instance of command contained in file, if file contains one.
      *
      * @param SplFileInfo $file      File to inspect
      * @param string      $basedir   Directory containing classes (eg GLPI_ROOT . '/inc')
      * @param array       $prefixes  Possible prefixes to add to classname (eg 'PluginExample', 'GlpiPlugin\Example')
      *
-     * @return null|string
+     * @return null|Command
      */
-    private function getCommandClassnameFromFile(SplFileInfo $file, $basedir, array $prefixes = [])
+    private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
     {
 
        // Check if file is readable
@@ -362,7 +422,7 @@ class CommandLoader implements CommandLoaderInterface
 
             $reflectionClass = new ReflectionClass($classname_to_check);
             if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
-                return $classname_to_check;
+                return new $classname_to_check();
             }
         }
 

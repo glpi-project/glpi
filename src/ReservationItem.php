@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * ReservationItem Class
@@ -121,8 +125,8 @@ class ReservationItem extends CommonDBChild
     /**
      * Retrieve an item from the database for a specific item
      *
-     * @param $itemtype   type of the item
-     * @param $ID         ID of the item
+     * @param class-string<CommonDBTM> $itemtype Type of the item
+     * @param int $ID ID of the item
      *
      * @return true if succeed else false
      **/
@@ -293,6 +297,23 @@ class ReservationItem extends CommonDBChild
         return $tab;
     }
 
+    public static function rawSearchOptionsToAdd($itemtype = null)
+    {
+        return [
+            [
+                'id'                 => '81',
+                'table'              => 'glpi_reservationitems',
+                'name'               => __('Reservable'),
+                'field'              => 'is_active',
+                'joinparams'         => [
+                    'jointype' => 'itemtype_item'
+                ],
+                'datatype'           => 'bool',
+                'massiveaction'      => false
+            ]
+        ];
+    }
+
 
     /**
      * @param $item   CommonDBTM object
@@ -367,7 +388,7 @@ class ReservationItem extends CommonDBChild
                 'add',
                 "<i class='fas fa-check'></i>&nbsp;" . __('Authorize reservations'),
                 ['items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                     'entities_id'  => $item->getEntityID(),
                     'is_recursive' => $item->isRecursive(),
                 ]
@@ -398,26 +419,13 @@ class ReservationItem extends CommonDBChild
                 }
             }
 
-            echo "<div class='center'><form method='post' name=form action='" . $this->getFormURL() . "'>";
-            echo "<input type='hidden' name='id' value='$ID'>";
-            echo "<table class='tab_cadre'>";
-            echo "<tr><th colspan='2'>" . __s('Modify the comment') . "</th></tr>";
-
-           // Ajouter le nom du materiel
-            echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
-            echo "<td class='b'>" . sprintf(__('%1$s - %2$s'), $type, $name) . "</td></tr>\n";
-
-            echo "<tr class='tab_bg_1'><td>" . __('Comments') . "</td>";
-            echo "<td><textarea name='comment' cols='30' rows='10' >" . $r->fields["comment"];
-            echo "</textarea></td></tr>\n";
-
-            echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-            echo "</td></tr>\n";
-
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            $options['candel'] = false;
+            $this->initForm($ID, $options);
+            TemplateRenderer::getInstance()->display('components/form/reservationitem_comment.html.twig', [
+                'item'      => $r,
+                'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
+                'params'    => $options,
+            ]);
             return true;
         }
         return false;
@@ -600,7 +608,7 @@ class ReservationItem extends CommonDBChild
             $itemtable = getTableForItemType($itemtype);
             $itemname  = $item->getNameField();
 
-            $otherserial = new \QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
+            $otherserial = new QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
             if ($item->isField('otherserial')) {
                 $otherserial = "$itemtable.otherserial AS otherserial";
             }
@@ -813,8 +821,11 @@ class ReservationItem extends CommonDBChild
                 ],
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
-                    new QueryExpression('(UNIX_TIMESTAMP(' . $DB->quoteName('glpi_reservations.end') . ') - ' . $secs . ') < UNIX_TIMESTAMP()'),
-                    'glpi_reservations.begin'  => ['<', new \QueryExpression('NOW()')],
+                    new QueryExpression(
+                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs .
+                            ' < ' . QueryFunction::unixTimestamp()
+                    ),
+                    'glpi_reservations.begin'  => ['<', QueryFunction::now()],
                     'glpi_alerts.date'         => null
                 ]
             ];
@@ -1090,6 +1101,7 @@ class ReservationItem extends CommonDBChild
     private static function getAvailableItemsCriteria(string $itemtype): array
     {
         $reservation_table = ReservationItem::getTable();
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item_table = $itemtype::getTable();
 
@@ -1109,6 +1121,10 @@ class ReservationItem extends CommonDBChild
                 "$item_table.is_deleted"  => 0,
             ]
         ];
+
+        if ($item->isEntityAssign()) {
+            $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table, '', '', true);
+        }
 
         if ($item->maybeTemplate()) {
             $criteria['WHERE']["$item_table.is_template"] = 0;

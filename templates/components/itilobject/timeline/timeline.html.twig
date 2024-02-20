@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -57,6 +57,8 @@
       {% set is_current_user = users_id == session('glpiID') %}
       {% set anonym_user = (get_current_interface() == 'helpdesk' and not is_current_user and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED')) %}
 
+      {% set is_private_class = is_private ? "private-item" : "" %}
+
       {% set can_edit_i  = entry_i['can_edit'] %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
@@ -105,14 +107,14 @@
       {% set user_cache = user_cache|merge({("_" ~ users_id): entry_user}) %}
 
       {% set anchor = entry['type'] ~ '_' ~ entry_i['id'] %}
-      <div id="{{ anchor }}" class="timeline-item mb-3 {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
+      <div id="{{ anchor }}" class="timeline-item mb-3 {{ is_private_class }} {{ itiltype }} {{ state_class }} {{ entry['class'] }} {{ 'right' in item_position ? 'ms-auto' : '' }}"
             data-itemtype="{{ entry['type'] }}" data-items-id="{{ entry_i['id'] }}"
             {% if entry['item_action'] is defined %}data-item-action="{{ entry['item_action'] }}"{% endif %}>
 
          {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_SHOW_ITEM'), {'item': entry_object, 'options': {'parent': item, 'rand': entry_rand}}) }}
 
          <div class="row">
-            <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto ms-0 order-sm-last' : '' }}">
+            <div class="col-auto todo-list-state {{ 'left' in item_position ? 'ms-auto order-sm-last' : '' }}">
                {% if entry_i['state'] is constant('Planning::TODO') %}
                   {% if can_edit_i %}
                      <span class="state state_1" onclick="change_task_state({{ entry_i['id'] }}, this)" title="{{ __('To do') }}"></span>
@@ -132,10 +134,9 @@
                {% set avatar_rand = random() %}
                {# log entries have no users_id #}
                {% if entry_user is not null %}
-                  {% set user_fields = entry_user.fields|merge({
-                      user_name: entry_user.getFriendlyName()|verbatim_value,
-                      email: entry_user.getDefaultEmail()
-                  }) %}
+                  {% set user_fields = entry_user.fields %}
+                  {% set user_fields = user_fields|merge({user_name: entry_user.getFriendlyName()}) %}
+                  {% set user_fields = user_fields|merge({email: entry_user.getDefaultEmail()}) %}
                   <span id="timeline-avatar{{ avatar_rand }}">
                      {{ include('components/user/picture.html.twig', {
                         'users_id': users_id,
@@ -174,7 +175,11 @@
                         {% endif %}
                      {% else %}
                         <div class="read-only-content">
-                           {{ entry_i['content']|safe_html }}
+                            {% if entry_i['is_content_safe'] %}
+                                {{ entry_i['content']|raw }}
+                            {% else %}
+                                {{ entry_i['content']|safe_html }}
+                            {% endif %}
                         </div>
                      {% endif %}
                      <div class="edit-content collapse">
@@ -258,4 +263,25 @@ $(function() {
       $("#right-actions").show();
    });
 });
+
+// Align ITILReminder
+let result = document.evaluate(
+   '//div[contains(@class, "timeline-header")][contains(@id, "ITILReminder_")]',
+   document,
+   null,
+   XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+   null
+);
+
+for (let i = 0; i < result.snapshotLength; i++) {
+   let node = result.snapshotItem(i);
+   let width = (i > 0 ? Math.max(result.snapshotItem(i - 1).offsetWidth, node.offsetWidth) : node.offsetWidth) + 1;
+   node.style.setProperty('width', 'var(--itilautobump-header-badge-width)');
+   node.style.setProperty('flex-direction', 'row-reverse');
+   document.documentElement.style.setProperty('--itilautobump-header-badge-width', width + 'px');
+}
+
+function toggleTimelinePrivate(checked, check_element) {
+    $(check_element).closest('.timeline-item').toggleClass('private-item', checked);
+}
 </script>

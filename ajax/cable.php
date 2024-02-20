@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -91,8 +91,8 @@ switch ($action) {
             (isset($_GET['itemtype']) && class_exists($_GET['itemtype']))
             && isset($_GET['items_id']) && $_GET['items_id'] > 0
         ) {
-            if (method_exists($_GET['itemtype'], 'getDcBreadcrumbSpecificValueToDisplay')) {
-                echo $_GET['itemtype']::getDcBreadcrumbSpecificValueToDisplay($_GET['items_id']);
+            if (method_exists($_GET['itemtype'], 'renderDcBreadcrumb')) {
+                echo $_GET['itemtype']::renderDcBreadcrumb($_GET['items_id']);
             }
         } else {
             echo "";

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /// Class Manufacturer
 /// @todo study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown
 {
+    use Clonable;
+
     public $can_be_translated = false;
 
 
@@ -134,9 +138,9 @@ class Manufacturer extends CommonDropdown
 
 
     /**
-     * @param null|string $old_name  Old name (need to be addslashes)
+     * @param null|string $old_name  Old name
      *
-     * @return null|string new addslashes name
+     * @return null|string new name
      **/
     public static function processName($old_name)
     {
@@ -148,7 +152,7 @@ class Manufacturer extends CommonDropdown
         $rulecollection = new RuleDictionnaryManufacturerCollection();
         $output         = [];
         $output         = $rulecollection->processAllRules(
-            ["name" => stripslashes($old_name)],
+            ["name" => $old_name],
             $output,
             []
         );
@@ -224,5 +228,10 @@ class Manufacturer extends CommonDropdown
                 $father
             );
         }
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

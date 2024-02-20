@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /**
  * Cron task creating recurrent tickets and changes
@@ -76,30 +79,50 @@ class CommonITILRecurrentCron extends CommonDBTM
             $iterator = $DB->request([
                 'FROM'   => $itemtype::getTable(),
                 'WHERE'  => [
-                    'next_creation_date' => ['<', new \QueryExpression('NOW()')],
+                    'next_creation_date' => ['<', QueryFunction::now()],
                     'is_active'          => 1,
                     'OR'                 => [
                         ['end_date' => null],
-                        ['end_date' => ['>', new \QueryExpression('NOW()')]]
+                        ['end_date' => ['>', QueryFunction::now()]]
                     ]
                 ]
             ]);
 
             foreach ($iterator as $data) {
-                /** @var CommonITILRecurrent */
+                /** @var CommonITILRecurrent $item */
                 $item = new $itemtype();
                 $item->fields = $data;
+                // get items
+                $related_items = $item->getRelatedElements();
 
-                if ($item->createItem()) {
-                    $total++;
+                if ($item->fields['ticket_per_item']) {
+                    foreach ($related_items as $related_itemtype => $related_items_ids) {
+                        foreach ($related_items_ids as $related_item_id) {
+                            if ($item->createItem([$related_itemtype => [$related_item_id]])) {
+                                $total++;
+                            } else {
+                                //TRANS: %s is a name
+                                $task->log(
+                                    sprintf(
+                                        __('Failed to create recurrent item %s'),
+                                        $data['name']
+                                    )
+                                );
+                            }
+                        }
+                    }
                 } else {
-                 //TRANS: %s is a name
-                    $task->log(
-                        sprintf(
-                            __('Failed to create recurrent item %s'),
-                            $data['name']
-                        )
-                    );
+                    if ($item->createItem($related_items)) {
+                        $total++;
+                    } else {
+                        //TRANS: %s is a name
+                        $task->log(
+                            sprintf(
+                                __('Failed to create recurrent item %s'),
+                                $data['name']
+                            )
+                        );
+                    }
                 }
             }
         }

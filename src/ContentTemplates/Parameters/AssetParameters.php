@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use CommonDBTM;
 use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * Parameters for "Assets" items (Computer, Monitor, ...).
@@ -78,9 +77,7 @@ class AssetParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $asset): array
     {
-
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($asset->fields);
+        $fields = $asset->fields;
 
         $values = [
             'id'       => $fields['id'],

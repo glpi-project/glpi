@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\RichText\RichText;
 
 /**
  * Reservation Class
@@ -65,7 +68,7 @@ class Reservation extends CommonDBChild
             !$withtemplate
             && Session::haveRight("reservation", READ)
         ) {
-            return self::getTypeName(Session::getPluralNumber());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
         }
         return '';
     }
@@ -343,6 +346,11 @@ class Reservation extends CommonDBChild
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
+    public function canCreateItem()
+    {
+        return self::canCreate();
+    }
+
 
     /**
      * @since 0.84
@@ -429,12 +437,6 @@ class Reservation extends CommonDBChild
 
         $rand = mt_rand();
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         $is_all = $ID === 0 ? "true" : "false";
         if ($ID > 0) {
             $m = new ReservationItem();
@@ -487,7 +489,6 @@ class Reservation extends CommonDBChild
             id: $ID,
             is_all: $is_all,
             rand: $rand,
-            license_key: '$scheduler_key',
             can_reserve: $can_reserve,
          });
          reservation.displayPlanning();
@@ -714,37 +715,11 @@ JAVASCRIPT;
             }
         }
 
-        echo "<div class='center'><form method='post' name=form action='" . Reservation::getFormURL() . "'>";
-
-        if (!empty($ID)) {
-            echo "<input type='hidden' name='id' value='$ID'>";
-        }
-
-        echo "<table class='tab_cadre' width='100%'>";
-        echo "<tr><th colspan='2'>" . __('Reserve an item') . "</th></tr>\n";
-
-       // Add Hardware name
         $r = new ReservationItem();
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Item', 'Items', 1) . "</td>";
-        echo "<td>";
-
-        $temp_item  = $options['item'];
-        $first_item = array_pop($temp_item);
-        if (count($options['item']) == 1 && $first_item == 0) {
-           // only one id = 0, display an item dropdown
-            Dropdown::showSelectItemFromItemtypes([
-                'items_id_name'   => 'items[]',
-                'itemtypes'       => self::getReservableItemtypes(),
-                'entity_restrict' => Session::getActiveEntity(),
-                'checkright'      => false,
-                'ajax_page'       => $CFG_GLPI['root_doc'] . '/ajax/reservable_items.php'
-            ]);
-            echo "<span id='item_dropdown'>";
-        } else {
-           // existing item(s)
-            foreach ($options['item'] as $itemID) {
-                $r->getFromDB($itemID);
+        $items = [];
+        foreach ($options['item'] as $itemID) {
+            // existing item(s)
+            if ($r->getFromDB($itemID)) {
                 $type = $r->fields["itemtype"];
                 $name = NOT_AVAILABLE;
                 $item = null;
@@ -759,143 +734,42 @@ JAVASCRIPT;
                     }
                 }
 
-                echo "<span class='b'>" . sprintf(__('%1$s - %2$s'), $type, $name) . "</span><br>";
-                echo "<input type='hidden' name='items[$itemID]' value='$itemID'>";
+                $items[] = [
+                    'id'        => $itemID,
+                    'type_name' => sprintf(__('%1$s - %2$s'), $type, $name),
+                    'comment'   => $r->fields['comment'] ?? '',
+                ];
             }
         }
 
-        echo "</td></tr>";
-
         $uid = (empty($ID) ? Session::getLoginUserID() : $resa->fields['users_id']);
-        echo "<tr class='tab_bg_2'><td>" . __('By') . "</td>";
-        echo "<td>";
+        $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
 
-        $entities_id   = Session::getActiveEntity();
-        $is_recursive  = Session::getIsActiveEntityRecursive();
-        if (isset($item)) {
-            $entities_id  = $item->getEntityID();
-            $is_recursive = $item->isRecursive();
-        }
-        if (
-            !Session::haveRight("reservation", UPDATE)
-            || !Session::haveAccessToEntity($entities_id)
-        ) {
-            echo "<input type='hidden' name='users_id' value='" . $uid . "'>";
-            echo getUserName($uid);
-        } else {
-            User::dropdown([
-                'value'        => $uid,
-                'entity'       => $entities_id,
-                'entity_sons'  => $is_recursive,
-                'right'        => 'all'
-            ]);
-        }
-        echo "</td></tr>\n";
-        echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td>";
-        Html::showDateTimeField("resa[begin]", [
-            'value'      => $resa->fields["begin"],
-            'maybeempty' => false
-        ]);
-        echo "</td></tr>";
+        $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntity();
+        $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
+
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
                        * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
-        echo "<tr class='tab_bg_2'><td>" . __('Duration') . "</td><td>";
-        $rand = Dropdown::showTimeStamp("resa[_duration]", [
-            'min'        => 0,
-            'max'        => 24 * HOUR_TIMESTAMP,
-            'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
-        ]);
-        echo "<br><div id='date_end$rand'></div>";
-        $params = [
-            'duration'     => '__VALUE__',
-            'end'          => $resa->fields["end"],
-            'name'         => "resa[end]"
-        ];
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_resa[_duration]$rand",
-            "date_end$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/planningend.php",
-            $params
-        );
 
         if ($default_delay == 0) {
-            $params['duration'] = 0;
-            Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"] . "/ajax/planningend.php", $params);
-        }
-        Alert::displayLastAlert('Reservation', $ID);
-        echo "</td></tr>";
-
-        if (empty($ID)) {
-            echo "<tr class='tab_bg_2'><td>" . __('Repetition') . "</td>";
-            echo "<td>";
-            $rand = Dropdown::showFromArray('periodicity[type]', [
-                ''      => _x('periodicity', 'None'),
-                'day'   => _x('periodicity', 'Daily'),
-                'week'  => _x('periodicity', 'Weekly'),
-                'month' => _x('periodicity', 'Monthly')
-            ]);
-            $field_id = Html::cleanId("dropdown_periodicity[type]$rand");
-
-            Ajax::updateItemOnSelectEvent(
-                $field_id,
-                "resaperiodcontent$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/resaperiod.php",
-                [
-                    'type'     => '__VALUE__',
-                    'end'      => $resa->fields["end"]
-                ]
-            );
-            echo "<br><div id='resaperiodcontent$rand'></div>";
-
-            echo "</td></tr>";
+            $options['duration'] = 0;
         }
 
-        echo "<tr class='tab_bg_2'><td>" . __('Comments') . "</td>";
-        echo "<td><textarea name='comment' rows='8' class='form-control'>" . $resa->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
+        $options['canedit'] = ($resa->fields["users_id"] == Session::getLoginUserID())
+                             || Session::haveRight(static::$rightname, UPDATE);
+        $options['candel'] = ($resa->fields["users_id"] == Session::getLoginUserID())
+                             || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE]);
 
-        if (empty($ID)) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2' class='top center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-        } else {
-            if (
-                ($resa->fields["users_id"] == Session::getLoginUserID())
-                || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE])
-            ) {
-                echo "<tr class='tab_bg_2'>";
-                if (
-                    ($resa->fields["users_id"] == Session::getLoginUserID())
-                    || Session::haveRight(static::$rightname, PURGE)
-                ) {
-                    echo "<td class='top center'>";
-                    echo "<input type='submit' name='purge' value=\"" . _sx('button', 'Delete permanently') . "\"
-                      class='btn btn-primary'>";
-                    if ($resa->fields["group"] > 0) {
-                        echo "<br><input type='checkbox' name='_delete_group'>&nbsp;" .
-                             __s('Delete all repetition');
-                    }
-                    echo "</td>";
-                }
-                if (
-                    ($resa->fields["users_id"] == Session::getLoginUserID())
-                    || Session::haveRight(static::$rightname, UPDATE)
-                ) {
-                    echo "<td class='top center'>";
-                    echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\"
-                     class='btn btn-primary'>";
-                    echo "</td>";
-                }
-                echo "</tr>";
-            }
-        }
-        echo "</table>";
-        Html::closeForm();
-        echo "</div>";
-
+        $resa->initForm($ID, $resa->fields);
+        TemplateRenderer::getInstance()->display('components/form/reservation.html.twig', [
+            'item'              => $resa,
+            'items'             => $items,
+            'itemtypes'         => self::getReservableItemtypes(),
+            'default_delay'     => $default_delay,
+            'params'            => $options,
+            'canedit'           => $canedit,
+        ]);
         return true;
     }
 
@@ -1030,12 +904,6 @@ JAVASCRIPT;
             return false;
         }
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         echo "<div class='firstbloc'>";
         ReservationItem::showActivationFormForItem($item);
 
@@ -1066,7 +934,6 @@ JAVASCRIPT;
             rand: $rand,
             currentv: 'listFull',
             defaultDate: '$defaultDate',
-            license_key: '$scheduler_key',
          });
          reservation.displayPlanning();
       });
@@ -1287,5 +1154,112 @@ JAVASCRIPT;
     public static function getIcon()
     {
         return "ti ti-calendar-event";
+    }
+
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $action_prefix = 'Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
+            $actions[$action_prefix . 'enable'] = __('Authorize reservations');
+            $actions[$action_prefix . 'disable'] = __('Prohibit reservations');
+            $actions[$action_prefix . 'available'] = __('Make available for reservations');
+            $actions[$action_prefix . 'unavailable'] = __('Make unavailable for reservations');
+        }
+    }
+
+    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    {
+        $input = $ma->getInput();
+
+        switch ($ma->getAction()) {
+            case 'enable':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Authorize reservations') . "'>";
+                return true;
+            case 'disable':
+                echo '<div class="alert alert-warning">';
+                echo __('Are you sure you want to return this non-reservable item?');
+                echo '<br>';
+                echo "<span class='fw-bold'>" . __('That will remove all the reservations in progress.') . "</span>";
+                echo '</div>';
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Prohibit reservations') . "'>";
+                return true;
+            case 'available':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Make available for reservations') . "'>";
+                return true;
+            case 'unavailable':
+                echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
+                    __('Make unavailable for reservations') . "'>";
+                return true;
+        }
+        return parent::showMassiveActionsSubForm($ma);
+    }
+
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    {
+        if (!ReservationItem::canUpdate()) {
+            return false;
+        }
+        $reservation_item = new ReservationItem();
+
+        switch ($ma->getAction()) {
+            case 'enable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        // Treat as OK
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $result = $reservation_item->add([
+                            'itemtype' => $item->getType(),
+                            'items_id' => $id,
+                            'is_active' => 1
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    }
+                }
+                break;
+            case 'disable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+            case 'available':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->update([
+                            'id' => $reservation_item->getID(),
+                            'is_active' => 1
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+            case 'unavailable':
+                foreach ($ids as $id) {
+                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                        $result = $reservation_item->update([
+                            'id' => $reservation_item->getID(),
+                            'is_active' => 0
+                        ]);
+                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    }
+                }
+                break;
+        }
+        parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 }

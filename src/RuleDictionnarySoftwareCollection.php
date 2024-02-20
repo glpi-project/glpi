@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -199,7 +199,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                         'SELECT' => 'id',
                         'FROM'   => 'glpi_softwares',
                         'WHERE'  => [
-                            'name'               => addslashes($input['name']),
+                            'name'               => $input['name'],
                             'manufacturers_id'   => $input['manufacturers_id']
                         ]
                     ]);
@@ -351,13 +351,11 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             if (isset($res_rule["name"])) {
                 $new_name = $res_rule["name"];
             } else {
-                $new_name = addslashes($name);
+                $new_name = $name;
             }
 
             if (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"]) {
                 $manufacturer = $res_rule["manufacturer"];
-            } else {
-                $manufacturer = addslashes($manufacturer);
             }
 
            //New software not already present in this entity
@@ -401,7 +399,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         ]);
 
         foreach ($iterator as $version) {
-            $input["version"] = addslashes($version["name"]);
+            $input["version"] = $version["name"];
             $old_version_name = $input["version"];
 
             if (isset($res_rule['version_append']) && $res_rule['version_append'] != '') {

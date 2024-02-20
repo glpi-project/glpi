@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,6 +72,7 @@ class Line extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
@@ -216,9 +217,27 @@ class Line extends CommonDBTM
         return $tab;
     }
 
-
     public static function getIcon()
     {
         return "ti ti-phone-calling";
+    }
+
+    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = 0, CommonDBTM $checkitem = null)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
+
+        $action_prefix = 'Item_Line' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        if (in_array($itemtype, $CFG_GLPI['line_types'], true)) {
+            $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
+                _x('button', 'Add a line');
+            $actions[$action_prefix . 'remove'] = _x('button', 'Remove a line');
+        }
+        if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
+            $actions[$action_prefix . 'add_item']    = _x('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = _x('button', 'Remove an item');
+        }
     }
 }

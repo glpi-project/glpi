@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\Clonable;
+
 /// Class DeviceBatteryModel
 abstract class CommonDeviceModel extends CommonDropdown
 {
+    use Clonable;
+
     public static function getTypeName($nb = 0)
     {
         return _n('Device model', 'Device models', $nb);
@@ -70,5 +74,10 @@ abstract class CommonDeviceModel extends CommonDropdown
         $model_class  = get_called_class();
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

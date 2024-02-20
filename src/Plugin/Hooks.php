@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 namespace Glpi\Plugin;
+
+use Glpi\Api\HL as HL_API;
 
 class Hooks
 {
@@ -63,7 +65,6 @@ class Hooks
 
    // Function hooks with parameters and output
     const DISPLAY_LOCKED_FIELDS         = 'display_locked_fields';
-    const MIGRATE_TYPES                 = 'migratetypes';
     const POST_KANBAN_CONTENT           = 'post_kanban_content';
     const PRE_KANBAN_CONTENT            = 'pre_kanban_content';
     const KANBAN_ITEM_METADATA          = 'kanban_item_metadata';
@@ -75,6 +76,7 @@ class Hooks
     const UNLOCK_FIELDS                 = 'unlock_fields';
     const UNDISCLOSED_CONFIG_VALUE      = 'undiscloseConfigValue';
     const FILTER_ACTORS                 = 'filter_actors';
+    const DEFAULT_DISPLAY_PREFS         = 'default_display_prefs';
 
    // Item hooks expecting an 'item' parameter
     const ADD_RECIPIENT_TO_TARGET   = 'add_recipient_to_target';
@@ -104,9 +106,11 @@ class Hooks
     const POST_ITEM_FORM          = 'post_item_form';
     const POST_SHOW_ITEM          = 'post_show_item';
     const POST_SHOW_TAB           = 'post_show_tab';
+    const POST_ITEM_LIST          = 'post_item_list';
     const PRE_ITEM_FORM           = 'pre_item_form';
     const PRE_SHOW_ITEM           = 'pre_show_item';
     const PRE_SHOW_TAB            = 'pre_show_tab';
+    const PRE_ITEM_LIST           = 'pre_item_list';
     const TIMELINE_ACTIONS        = 'timeline_actions';  // (keys: item, rand)
     const TIMELINE_ANSWER_ACTIONS = 'timeline_answer_actions';  // (keys: item)
     const SHOW_IN_TIMELINE        = 'show_in_timeline';  // (keys: item)
@@ -141,9 +145,32 @@ class Hooks
     const HELPDESK_MENU_ENTRY_ICON = 'helpdesk_menu_entry_icon';
 
     // Dashboard hooks
-    const DASHBOARD_CARDS   = 'dashboard_cards';
-    const DASHBOARD_FILTERS = 'dashboard_filters';
-    const DASHBOARD_TYPES   = 'dashboard_types';
+    const DASHBOARD_CARDS    = 'dashboard_cards';
+    const DASHBOARD_FILTERS  = 'dashboard_filters';
+    const DASHBOARD_PALETTES = 'dashboard_palettes';
+    const DASHBOARD_TYPES    = 'dashboard_types';
+
+    // HL API hooks
+    /**
+     * The hook function to call to redefine schemas.
+     * Each time a controller's schemas are retrieved, the hook is called with a $data parameter.
+     * The $data parameter will contain the Controller class name in the 'controller' key and an array of schemas in the 'schemas' key.
+     * The function should return the modified $data array.
+     * The controller value should not be changed as it would result in undefined behavior.
+     */
+    const REDEFINE_API_SCHEMAS          = 'redefine_api_schemas';
+    /**
+     * This hook should provide an array of the plugin's API controller class names.
+     */
+    const API_CONTROLLERS               = 'api_controllers';
+    /**
+     * This hook should provide an array of arrays containing a 'middlware' value that is the class name.
+     * The middleware classes should extend {@link HL_API\Middleware\AbstractMiddleware} and
+     * implement either {@link HL_API\Middleware\RequestMiddlewareInterface{ or {@link HL_API\Middleware\ResponseMiddlewareInterface}.
+     * The arrays may also contain values for 'priority' and 'condition' where priority is an integer (higher is more important) and condition is a callable.
+     * If a condition is provided, that callable will be called with the current controller as a parameter and it must return true for the middleware to be used, or false to not be.
+     */
+    const API_MIDDLEWARE                = 'api_middleware';
 
     /**
      * Get file hooks
@@ -172,7 +199,6 @@ class Hooks
             self::DISPLAY_LOGIN,
             self::DISPLAY_CENTRAL,
             self::INIT_SESSION,
-            self::MIGRATE_TYPES,
             self::POST_KANBAN_CONTENT,
             self::PRE_KANBAN_CONTENT,
             self::POST_INIT,

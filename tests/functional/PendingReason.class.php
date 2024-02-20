@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,39 +54,108 @@ class PendingReason extends DbTestCase
             [
             // Case 1: no auto bump
                 'fields' => [
-                    'followup_frequency'          => 0,
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency' => 0,
+                    ],
                 ],
                 'expected' => false
             ],
             [
             // Case 2: max bump reached
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 2,
-                    'bump_count'                  => 2,
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 2,
+                        'bump_count'                  => 2,
+                    ]
                 ],
                 'expected' => false
             ],
             [
             // Case 3: first bump
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 2,
-                    'bump_count'                  => 0,
-                    'last_bump_date'              => '2021-02-25 12:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 2,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2021-02-25 12:00:00',
+                    ]
                 ],
                 'expected' => date('2021-02-25 12:01:00')
             ],
             [
             // Case 4: second or more bump
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 7,
-                    'bump_count'                  => 5,
-                    'last_bump_date'              => '2021-02-25 13:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 7,
+                        'bump_count'                  => 5,
+                        'last_bump_date'              => '2021-02-25 13:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 13:01:00'
             ],
+            [
+            // Case 5: first with weekend
+                'fields' => [
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => 7,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2023-04-07 13:00:00',
+                    ]
+                ],
+                'expected' => '2023-04-10 13:00:00'
+            ],
+            [
+            // Case 6: first with xmas holidays
+                'fields' => [
+                    'calendar_holiday' => [
+                        'calendars_id' => 1,
+                        'holidays_id'  => 1,
+                    ],
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => 7,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2018-12-28 13:00:00',
+                    ]
+                ],
+                'expected' => '2019-01-07 13:00:00',
+            ],
+            [
+            // Case 7: no followup
+                'fields' => [
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => -1,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2018-12-28 13:00:00',
+                    ]
+                ],
+                'expected' => false,
+            ]
         ];
     }
 
@@ -95,8 +164,15 @@ class PendingReason extends DbTestCase
      */
     public function testGetNextFollowupDate(array $fields, $expected)
     {
+        if (isset($fields['calendar_holiday'])) {
+            $this->createItem('Calendar_Holiday', $fields['calendar_holiday']);
+        }
+
+        $pending_reason = $this->createItem('PendingReason', $fields['pendingreason']);
+        $fields['pendingreason_item']['pendingreasons_id'] = $pending_reason->getID();
+
         $pending_reason_item = new \PendingReason_Item();
-        $pending_reason_item->fields = $fields;
+        $pending_reason_item->fields = $fields['pendingreason_item'];
 
         $this->variable($expected)->isEqualTo($pending_reason_item->getNextFollowupDate());
     }
@@ -107,78 +183,167 @@ class PendingReason extends DbTestCase
             [
             // Case 1: no auto bump
                 'fields' => [
-                    'followup_frequency'          => 0,
-                    'followups_before_resolution' => 2,
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 0,
+                        'followups_before_resolution' => 2,
+                    ]
                 ],
                 'expected' => false
             ],
             [
             // Case 2: no auto solve
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 0,
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 0,
+                    ]
                 ],
                 'expected' => false
             ],
             [
             // Case 3: 0/5 bump occurred yet
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 5,
-                    'bump_count'                  => 0,
-                    'last_bump_date'              => '2021-02-25 14:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 5,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2021-02-25 14:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 14:06:00'
             ],
             [
             // Case 4: 1/5 bump occurred
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 5,
-                    'bump_count'                  => 1,
-                    'last_bump_date'              => '2021-02-25 15:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 5,
+                        'bump_count'                  => 1,
+                        'last_bump_date'              => '2021-02-25 15:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 15:05:00'
             ],
             [
             // Case 5: 2/5 bump occurred
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 5,
-                    'bump_count'                  => 2,
-                    'last_bump_date'              => '2021-02-25 16:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 5,
+                        'bump_count'                  => 2,
+                        'last_bump_date'              => '2021-02-25 16:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 16:04:00'
             ],
             [
             // Case 5: 3/5 bump occurred
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 5,
-                    'bump_count'                  => 3,
-                    'last_bump_date'              => '2021-02-25 17:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 5,
+                        'bump_count'                  => 3,
+                        'last_bump_date'              => '2021-02-25 17:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 17:03:00'
             ],
             [
             // Case 5: 4/5 bump occurred
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 5,
-                    'bump_count'                  => 4,
-                    'last_bump_date'              => '2021-02-25 18:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 5,
+                        'bump_count'                  => 4,
+                        'last_bump_date'              => '2021-02-25 18:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 18:02:00'
             ],
             [
             // Case 5: 5/5 bump occurred
                 'fields' => [
-                    'followup_frequency'          => 60,
-                    'followups_before_resolution' => 5,
-                    'bump_count'                  => 5,
-                    'last_bump_date'              => '2021-02-25 19:00:00',
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 60,
+                        'followups_before_resolution' => 5,
+                        'bump_count'                  => 5,
+                        'last_bump_date'              => '2021-02-25 19:00:00',
+                    ]
                 ],
                 'expected' => '2021-02-25 19:01:00'
+            ],
+            [
+            // Case 6: 0/8 bump occured with weekend between
+                'fields' => [
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => 8,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2023-04-07 13:00:00',
+                    ]
+                ],
+                'expected' => '2023-04-20 13:00:00'
+            ],
+            // Case 7: 0/8 bump occured with xmas holidays between
+            [
+                'fields' => [
+                    'calendar_holiday' => [
+                        'calendars_id' => 1,
+                        'holidays_id'  => 1,
+                    ],
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => 8,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2018-12-21 13:00:00',
+                    ]
+                ],
+                'expected' => '2019-01-10 13:00:00',
+            ],
+            [
+            // Case 8: no bumps before resolution
+                'fields' => [
+                    'pendingreason' => [
+                        'calendars_id' => 1,
+                    ],
+                    'pendingreason_item' => [
+                        'followup_frequency'          => 86400,
+                        'followups_before_resolution' => -1,
+                        'bump_count'                  => 0,
+                        'last_bump_date'              => '2023-05-12 19:00:00',
+                    ],
+                ],
+                'expected' => '2023-05-15 19:00:00',
             ],
         ];
     }
@@ -188,8 +353,15 @@ class PendingReason extends DbTestCase
      */
     public function testGetAutoResolvedate(array $fields, $expected)
     {
+        if (isset($fields['calendar_holiday'])) {
+            $this->createItem('Calendar_Holiday', $fields['calendar_holiday']);
+        }
+
+        $pending_reason = $this->createItem('PendingReason', $fields['pendingreason']);
+        $fields['pendingreason_item']['pendingreasons_id'] = $pending_reason->getID();
+
         $pending_reason_item = new \PendingReason_Item();
-        $pending_reason_item->fields = $fields;
+        $pending_reason_item->fields = $fields['pendingreason_item'];
 
         $this->variable($expected)->isEqualTo($pending_reason_item->getAutoResolvedate());
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,7 @@ class GLPIMailer extends DbTestCase
             [".test.test@localhost.dot", false],
             ["test.test.@localhost.dot", false],
             ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", true],
-            ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", false],
+            ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@localhost.dot", true],
 
          // Test domain part
             ["user", false],
@@ -66,7 +66,7 @@ class GLPIMailer extends DbTestCase
             ["user@-local-host", false],
             ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", true],
             ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", false],
-            ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true],
+            ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false],
             ["abcd'efgh@example.com", true],
         ];
     }
@@ -81,16 +81,36 @@ class GLPIMailer extends DbTestCase
         $this->boolean($mailer->validateAddress($address))->isEqualTo($is_valid);
     }
 
-    public function testPhpMailerLang()
+    public function testBuildDsn()
     {
+        global $CFG_GLPI;
+
+        //backup configuration
+        $bkp_mode = $CFG_GLPI['smtp_mode'];
+        $bkp_host = $CFG_GLPI['smtp_host'];
+        $bkp_port = $CFG_GLPI['smtp_port'];
+        $bkp_user = $CFG_GLPI['smtp_username'];
+        $bkp_pass = $CFG_GLPI['smtp_passwd'];
+        $bkp_check_certif = $CFG_GLPI['smtp_check_certificate'];
+
         $mailer = new \GLPIMailer();
+        $this->string($mailer::buildDsn(true))->isIdenticalTo('native://default');
+        $this->string($mailer::buildDsn(false))->isIdenticalTo('native://default');
 
-        $mailer->setLanguage();
-        $tr = $mailer->getTranslations();
-        $this->string($tr['empty_message'])->isIdenticalTo('Message body empty');
+        $CFG_GLPI['smtp_mode'] = MAIL_SMTP;
+        $CFG_GLPI['smtp_port'] = 123;
+        $CFG_GLPI['smtp_host'] = 'myhost.com';
+        $CFG_GLPI['smtp_username'] = 'myuser';
+        $CFG_GLPI['smtp_passwd'] = (new \GLPIKey())->encrypt('mypass');
+        $this->string($mailer::buildDsn(true))->isIdenticalTo('smtp://myuser:mypass@myhost.com:123');
+        $this->string($mailer::buildDsn(false))->isIdenticalTo('smtp://myuser:********@myhost.com:123');
 
-        $mailer->setLanguage('fr');
-        $tr = $mailer->getTranslations();
-        $this->string($tr['empty_message'])->isIdenticalTo('Corps du message vide.');
+        //reset values
+        $CFG_GLPI['smtp_mode'] = $bkp_mode;
+        $CFG_GLPI['smtp_host'] = $bkp_host;
+        $CFG_GLPI['smtp_port'] = $bkp_port;
+        $CFG_GLPI['smtp_username'] = $bkp_user;
+        $CFG_GLPI['smtp_passwd'] = $bkp_pass;
+        $CFG_GLPI['smtp_check_certificate'] = $bkp_check_certif;
     }
 }

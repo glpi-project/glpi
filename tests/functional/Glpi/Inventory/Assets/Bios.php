@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -175,7 +175,7 @@ class Bios extends AbstractInventoryAsset
         //create manually a computer, with a bios
         $computers_id = $computer->add([
             'name'   => 'pc002',
-            'serial' => addslashes("ggheb7'ne7"),
+            'serial' => "ggheb7'ne7",
             'entities_id' => 0
         ]);
         $this->integer($computers_id)->isGreaterThan(0);

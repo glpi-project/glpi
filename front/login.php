@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Toolbox\Sanitizer;
 
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
@@ -49,14 +48,16 @@ include('../inc/includes.php');
 
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
-    if (!is_writable(GLPI_SESSION_DIR)) {
+    if (!Session::canWriteSessionFiles()) {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
     } else {
         Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=1");
     }
 }
 
-$_POST = array_map('stripslashes', $_POST);
+if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
+    $_POST['totp_code'] = implode('', $_POST['totp_code']);
+}
 
 //Do login and checks
 //$user_present = 1;
@@ -66,7 +67,7 @@ if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
     $login = '';
 }
 if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = Sanitizer::unsanitize($_POST[$_SESSION['pwdfield']]);
+    $password = $_POST[$_SESSION['pwdfield']];
 } else {
     $password = '';
 }
@@ -91,7 +92,17 @@ $auth = new Auth();
 
 
 // now we can continue with the process...
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth)) {
+if (isset($_REQUEST['totp_cancel'])) {
+    session_destroy();
+    Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
+}
+$mfa_params = [];
+if (!empty($_POST['totp_code'])) {
+    $mfa_params['totp_code'] = $_POST['totp_code'];
+} else if (!empty($_POST['backup_code'])) {
+    $mfa_params['backup_code'] = $_POST['backup_code'];
+}
+if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
     Auth::redirectIfAuthenticated();
 } else {
     http_response_code(401);

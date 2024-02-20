@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ include('../../inc/includes.php');
 
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Http\Response;
-use Michelf\MarkdownExtra;
+use Glpi\Toolbox\MarkdownRenderer;
 
 // Check mandatory parameter
 $preset = $_GET['preset'] ?? null;
@@ -51,11 +51,8 @@ echo "<div id='page'>";
 echo "<div class='documentation documentation-large'>";
 
 // Parse markdown
-$md = new MarkdownExtra();
-$md->header_id_func = function ($headerName) {
-    return Toolbox::slugify($headerName, '');
-};
-echo $md->transform(TemplateManager::generateMarkdownDocumentation($preset));
+$md = new MarkdownRenderer();
+echo $md->render(TemplateManager::generateMarkdownDocumentation($preset));
 
 echo "</div>";
 echo "</div>";

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 use Glpi\Inventory\Conf;
 use Glpi\Socket;
-use Glpi\Toolbox\Sanitizer;
 
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
@@ -194,16 +193,6 @@ $empty_data_builder = new class
             'printers_management_restrict' => Config::NO_MANAGEMENT,
             'use_log_in_files' => '1',
             'time_offset' => '0',
-            'is_contact_autoupdate' => '1',
-            'is_user_autoupdate' => '1',
-            'is_group_autoupdate' => '1',
-            'is_location_autoupdate' => '1',
-            'state_autoupdate_mode' => '0',
-            'is_contact_autoclean' => '0',
-            'is_user_autoclean' => '0',
-            'is_group_autoclean' => '0',
-            'is_location_autoclean' => '0',
-            'state_autoclean_mode' => '0',
             'use_flat_dropdowntree' => '0',
             'use_flat_dropdowntree_on_search_result' => '1',
             'use_autoname_by_entity' => '1',
@@ -223,7 +212,9 @@ $empty_data_builder = new class
             'priority_matrix' => '{"1":{"1":1,"2":1,"3":2,"4":2,"5":2},"2":{"1":1,"2":2,"3":2,"4":3,"5":3},"3":{"1":2,"2":2,"3":3,"4":4,"5":4},"4":{"1":2,"2":3,"3":4,"4":4,"5":5},"5":{"1":2,"2":3,"3":4,"4":5,"5":5}}',
             'urgency_mask' => '62',
             'impact_mask' => '62',
-            'user_deleted_ldap' => '0',
+            'user_deleted_ldap_user' => '0',
+            'user_deleted_ldap_groups' => '0',
+            'user_deleted_ldap_authorizations' => '0',
             'user_restored_ldap' => '0',
             'auto_create_infocoms' => '0',
             'use_slave_for_search' => '0',
@@ -232,6 +223,8 @@ $empty_data_builder = new class
             'show_count_on_tabs' => '1',
             'refresh_views' => '0',
             'set_default_tech' => '1',
+            'set_followup_tech' => '0',
+            'set_solution_tech' => '0',
             'allow_search_view' => '2',
             'allow_search_all' => '0',
             'allow_search_global' => '1',
@@ -268,9 +261,6 @@ $empty_data_builder = new class
             'registration_number_ssofield' => '',
             'ssovariables_id' => '0',
             'ssologout_url' => '',
-            'translate_kb' => '0',
-            'translate_dropdowns' => '0',
-            'translate_reminders' => '0',
             'pdffont' => 'dejavusans',
             'keep_devices_when_purging_item' => '0',
             'maintenance_mode' => '0',
@@ -281,7 +271,6 @@ $empty_data_builder = new class
             'palette' => 'auror',
             'page_layout' => 'vertical',
             'fold_menu' => '0',
-            'fold_search' => '0',
             'savedsearches_pinned' => '0',
             'timeline_order' => 'natural',
             'itil_layout' => '',
@@ -298,7 +287,6 @@ $empty_data_builder = new class
             'enable_api' => '0',
             'enable_api_login_credentials' => '0',
             'enable_api_login_external_token' => '1',
-            'url_base_api' => 'http://localhost/glpi/api',
             'login_remember_time' => '604800',
             'login_remember_default' => '1',
             'use_notifications' => '0',
@@ -306,6 +294,7 @@ $empty_data_builder = new class
             'notifications_ajax_check_interval' => '5',
             'notifications_ajax_sound' => null,
             'notifications_ajax_icon_url' => '/pics/glpi.png',
+            'notifications_ajax_expiration_delay' => '7',
             'dbversion' => 'FILLED AT INSTALL',
             'smtp_max_retries' => '5',
             'smtp_sender' => null,
@@ -341,6 +330,7 @@ $empty_data_builder = new class
             'password_expiration_delay' => '-1',
             'password_expiration_notice' => '-1',
             'password_expiration_lock_delay' => '-1',
+            'password_init_token_delay' => '86400',
             'default_dashboard_central' => 'central',
             'default_dashboard_assets' => 'assets',
             'default_dashboard_helpdesk' => 'assistance',
@@ -351,9 +341,15 @@ $empty_data_builder = new class
             'planning_work_days' => exportArrayToDB([0, 1, 2, 3, 4, 5, 6]),
             'system_user' => self::USER_SYSTEM,
             'support_legacy_data' => 0, // New installation should not support legacy data
+            'toast_location' => 'bottom-right',
             'initialized_rules_collections' => '[]',
             'timeline_action_btn_layout' => 0,
             'timeline_date_format' => 0,
+            '2fa_enforced' => 0,
+            '2fa_grace_date_start' => null,
+            '2fa_grace_days' => 0,
+            'is_notif_enable_default' => 1,
+            'show_search_form' => 0,
         ];
 
         $tables['glpi_configs'] = [];
@@ -378,352 +374,422 @@ $empty_data_builder = new class
                 'id' => 2,
                 'itemtype' => 'CartridgeItem',
                 'name' => 'cartridge',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => 10,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 3,
                 'itemtype' => 'ConsumableItem',
                 'name' => 'consumable',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => 10,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 4,
                 'itemtype' => 'SoftwareLicense',
                 'name' => 'software',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 5,
                 'itemtype' => 'Contract',
                 'name' => 'contract',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 6,
                 'itemtype' => 'Infocom',
                 'name' => 'infocom',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 7,
                 'itemtype' => 'CronTask',
                 'name' => 'logs',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => '30',
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 9,
                 'itemtype' => 'MailCollector',
                 'name' => 'mailgate',
-                'frequency' => '600',
+                'frequency' => 10 * MINUTE_TIMESTAMP,
                 'param' => '10',
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 10,
                 'itemtype' => 'DBconnection',
                 'name' => 'checkdbreplicate',
-                'frequency' => '300',
+                'frequency' => 5 * MINUTE_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 11,
                 'itemtype' => 'CronTask',
                 'name' => 'checkupdate',
-                'frequency' => '604800',
+                'frequency' => WEEK_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 12,
                 'itemtype' => 'CronTask',
                 'name' => 'session',
-                'frequency' => '86400',
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 13,
                 'itemtype' => 'CronTask',
                 'name' => 'graph',
-                'frequency' => 3600,
+                'frequency' => HOUR_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 14,
                 'itemtype' => 'ReservationItem',
                 'name' => 'reservation',
-                'frequency' => 3600,
+                'frequency' => HOUR_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 15,
                 'itemtype' => 'Ticket',
                 'name' => 'closeticket',
-                'frequency' => 43200,
+                'frequency' => 12 * HOUR_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 16,
                 'itemtype' => 'Ticket',
                 'name' => 'alertnotclosed',
-                'frequency' => 43200,
+                'frequency' => 12 * HOUR_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 17,
                 'itemtype' => 'SlaLevel_Ticket',
                 'name' => 'slaticket',
-                'frequency' => 300,
+                'frequency' => 5 * MINUTE_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 18,
                 'itemtype' => 'Ticket',
                 'name' => 'createinquest',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 19,
                 'itemtype' => 'CronTask',
                 'name' => 'watcher',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 20,
                 'itemtype' => 'CommonITILRecurrentCron',
                 'name' => 'RecurrentItems',
-                'frequency' => 3600,
+                'frequency' => HOUR_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 21,
                 'itemtype' => 'PlanningRecall',
                 'name' => 'planningrecall',
-                'frequency' => 300,
+                'frequency' => 5 * MINUTE_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 22,
                 'itemtype' => 'QueuedNotification',
                 'name' => 'queuednotification',
-                'frequency' => 60,
+                'frequency' => MINUTE_TIMESTAMP,
                 'param' => 50,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 23,
                 'itemtype' => 'QueuedNotification',
                 'name' => 'queuednotificationclean',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => 30,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 24,
                 'itemtype' => 'CronTask',
                 'name' => 'temp',
-                'frequency' => 3600,
+                'frequency' => HOUR_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 25,
                 'itemtype' => 'MailCollector',
                 'name' => 'mailgateerror',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 26,
                 'itemtype' => 'CronTask',
                 'name' => 'circularlogs',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => 4,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 27,
                 'itemtype' => 'ObjectLock',
                 'name' => 'unlockobject',
-                'frequency' => 86400,
+                'frequency' => HOUR_TIMESTAMP,
                 'param' => 4,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 28,
                 'itemtype' => 'SavedSearch',
                 'name' => 'countAll',
-                'frequency' => 604800,
+                'frequency' => WEEK_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 29,
                 'itemtype' => 'SavedSearch_Alert',
                 'name' => 'savedsearchesalerts',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 30,
                 'itemtype' => 'Telemetry',
                 'name' => 'telemetry',
-                'frequency' => 2592000,
+                'frequency' => MONTH_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 31,
                 'itemtype' => 'Certificate',
                 'name' => 'certificate',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 32,
                 'itemtype' => 'OlaLevel_Ticket',
                 'name' => 'olaticket',
-                'frequency' => 300,
+                'frequency' => 5 * MINUTE_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 33,
                 'itemtype' => 'PurgeLogs',
                 'name' => 'PurgeLogs',
-                'frequency' => 604800,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => 24,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 34,
                 'itemtype' => 'Ticket',
                 'name' => 'purgeticket',
-                'frequency' => 604800,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 35,
                 'itemtype' => 'Document',
                 'name' => 'cleanorphans',
-                'frequency' => 604800,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 36,
                 'itemtype' => 'User',
                 'name' => 'passwordexpiration',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => 100,
                 'state' => CronTask::STATE_DISABLE,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 37,
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
                 'name' => 'checkAllUpdates',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 38,
                 'itemtype' => CleanSoftwareCron::getType(),
@@ -734,16 +800,44 @@ $empty_data_builder = new class
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 300,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 39,
                 'itemtype' => 'Domain',
                 'name' => 'DomainsAlert',
-                'frequency' => 86400,
+                'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 40,
+                'itemtype' => 'Glpi\Inventory\Inventory',
+                'name' => 'cleantemp',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
+            ], [
+                'id' => 41,
+                'itemtype' => 'Glpi\Inventory\Inventory',
+                'name' => 'cleanorphans',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ], [
                 'id' => 42,
                 'itemtype' => PendingReasonCron::getType(),
@@ -754,26 +848,8 @@ $empty_data_builder = new class
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 60,
-            ], [
-                'id' => 40,
-                'itemtype' => 'Glpi\Inventory\Inventory',
-                'name' => 'cleantemp',
-                'frequency' => 86400,
-                'param' => null,
-                'state' => CronTask::STATE_DISABLE,
-                'mode' => CronTask::MODE_EXTERNAL,
-                'lastrun' => null,
-                'logs_lifetime' => 30,
-            ], [
-                'id' => 41,
-                'itemtype' => 'Glpi\Inventory\Inventory',
-                'name' => 'cleanorphans',
-                'frequency' => 604800,
-                'param' => null,
-                'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_EXTERNAL,
-                'lastrun' => null,
-                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
             ], [
                 'id' => 43,
                 'itemtype' => 'Agent',
@@ -784,6 +860,56 @@ $empty_data_builder = new class
                 'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
+            ], [
+                'id' => 44,
+                'itemtype' => 'Change',
+                'name' => 'createinquest',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 45,
+                'itemtype' => 'QueuedNotification',
+                'name' => 'queuednotificationcleanstaleajax',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_DISABLE,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
+            ], [
+                'id' => 46,
+                'itemtype' => 'QueuedWebhook',
+                'name' => 'queuedwebhook',
+                'frequency' => MINUTE_TIMESTAMP,
+                'param' => 50,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 47,
+                'itemtype' => 'QueuedWebhook',
+                'name' => 'queuedwebhookclean',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => 30,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 6,
             ],
         ];
 
@@ -1243,8 +1369,24 @@ $empty_data_builder = new class
                 'rank' => '3',
             ], [
                 'itemtype' => 'CronTask',
-                'num' => '7',
+                'num' => '5',
                 'rank' => '4',
+            ], [
+                'itemtype' => 'CronTask',
+                'num' => '6',
+                'rank' => '5',
+            ], [
+                'itemtype' => 'CronTask',
+                'num' => '17',
+                'rank' => '6',
+            ], [
+                'itemtype' => 'CronTask',
+                'num' => '18',
+                'rank' => '7',
+            ], [
+                'itemtype' => 'CronTask',
+                'num' => '7',
+                'rank' => '8',
             ], [
                 'itemtype' => 'RequestType',
                 'num' => '14',
@@ -1793,7 +1935,31 @@ $empty_data_builder = new class
                 'itemtype' => 'Plugin',
                 'num' => '8',
                 'rank' => '7',
-            ]
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '155',
+                'rank' => '1',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '156',
+                'rank' => '2',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '157',
+                'rank' => '3',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '158',
+                'rank' => '4',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '159',
+                'rank' => '5',
+            ], [
+                'itemtype' => 'Glpi\Event',
+                'num' => '160',
+                'rank' => '6',
+            ],
         ];
 
         $ADDTODISPLAYPREF['Cluster'] = [31, 19];
@@ -1810,6 +1976,10 @@ $empty_data_builder = new class
         $ADDTODISPLAYPREF['Database'] = [2, 3, 6, 9, 10];
         $ADDTODISPLAYPREF[Socket::class] = [5, 6, 9, 8, 7];
         $ADDTODISPLAYPREF['Cable'] = [4, 31, 6, 15, 24, 8, 10, 13, 14];
+        $ADDTODISPLAYPREF[KnowbaseItem::class] = [79, 131, 13];
+        $ADDTODISPLAYPREF[Webhook::class] = [3, 4, 5];
+        $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
+        $ADDTODISPLAYPREF[Consumable::class] = [2, 8, 3, 4, 5, 6, 7];
 
         foreach ($ADDTODISPLAYPREF as $type => $options) {
             $rank = 1;
@@ -2214,6 +2384,9 @@ $empty_data_builder = new class
                 'inquest_config' => 1,
                 'inquest_rate' => 0,
                 'inquest_delay' => 0,
+                'inquest_max_rate' => 5,
+                'inquest_default_rate' => 3,
+                'inquest_mandatory_comment' => 0,
                 'autofill_warranty_date' => 0,
                 'autofill_use_date' => 0,
                 'autofill_buy_date' => 0,
@@ -2239,6 +2412,24 @@ $empty_data_builder = new class
                 'display_users_initials' => 1,
                 'contracts_strategy_default' => 0,
                 'transfers_strategy' => 0,
+                'approval_reminder_repeat_interval' => 0,
+                'inquest_config_change' => 1,
+                'inquest_rate_change' => 0,
+                'inquest_delay_change' => 0,
+                'inquest_max_rate_change' => 5,
+                'inquest_default_rate_change' => 3,
+                'inquest_mandatory_comment_change' => 0,
+                '2fa_enforcement_strategy' => 0, // Not enforced at entity level (optional)
+                'is_contact_autoupdate' => '1',
+                'is_user_autoupdate' => '1',
+                'is_group_autoupdate' => '1',
+                'is_location_autoupdate' => '1',
+                'state_autoupdate_mode' => '0',
+                'is_contact_autoclean' => '0',
+                'is_user_autoclean' => '0',
+                'is_group_autoclean' => '0',
+                'is_location_autoclean' => '0',
+                'state_autoclean_mode' => '0',
             ],
         ];
 
@@ -2858,7 +3049,7 @@ $empty_data_builder = new class
             ], [
                 'id' => 71,
                 'name' => 'Check plugin updates',
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
                 'event' => 'checkpluginsupdate',
                 'is_recursive' => 1,
                 'is_active' => 1,
@@ -2869,6 +3060,76 @@ $empty_data_builder = new class
                 'event' => 'user_mention',
                 'is_recursive' => 1,
                 'is_active' => 1,
+            ], [
+                'id' => 73,
+                'name' => 'Password Initialization',
+                'itemtype' => 'User',
+                'event' => 'passwordinit',
+                'is_recursive' => 1,
+                'is_active' => 1,
+            ], [
+                'id'           => 74,
+                'name'         => 'Change Satisfaction',
+                'itemtype'     => 'Change',
+                'event'        => 'satisfaction',
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ], [
+                'id'           => 75,
+                'name'         => 'Change Satisfaction Answer',
+                'itemtype'     => 'Change',
+                'event'        => 'replysatisfaction',
+                'is_recursive' => 1,
+                'is_active'    => 1,
+            ], [
+                'id'           => 76,
+                'name'         => 'Automatic reminder',
+                'itemtype'     => 'Ticket',
+                'event'        => 'auto_reminder',
+                'is_recursive' => 1,
+                'is_active'    => 0,
+            ], [
+                'id'           => 77,
+                'name'         => 'New document',
+                'itemtype'     => 'Ticket',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
+            ], [
+                'id'           => 78,
+                'name'         => 'New document',
+                'itemtype'     => 'Change',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
+            ], [
+                'id'           => 79,
+                'name'         => 'New document',
+                'itemtype'     => 'Problem',
+                'event'        => 'add_document',
+                'is_recursive' => 0,
+                'is_active'    => 0,
+            ], [
+                'id' => 80,
+                'name' => 'New knowledge base item',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'new',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ], [
+                'id' => 81,
+                'name' => 'Delete knowledge base item',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'delete',
+                'is_recursive' => 1,
+                'is_active' => 0,
+            ], [
+                'id' => 82,
+                'name' => 'Update knowledge base item',
+                'itemtype' => 'KnowbaseItem',
+                'event' => 'update',
+                'is_recursive' => 1,
+                'is_active' => 0,
             ],
         ];
 
@@ -3233,6 +3494,56 @@ $empty_data_builder = new class
                 'notifications_id' => '72',
                 'mode' => 'mailing',
                 'notificationtemplates_id' => 4,
+            ], [
+                'id' => 73,
+                'notifications_id' => '73',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 29,
+            ], [
+                'id'                       => 74,
+                'notifications_id'         => '74',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 30,
+            ], [
+                'id'                       => 75,
+                'notifications_id'         => '75',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 30,
+            ], [
+                'id'                       => 76,
+                'notifications_id'         => '76',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 31,
+            ], [
+                'id'                       => 77,
+                'notifications_id'         => '77',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 4,
+            ], [
+                'id'                       => 78,
+                'notifications_id'         => '78',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 19,
+            ], [
+                'id'                       => 79,
+                'notifications_id'         => '79',
+                'mode'                     => 'mailing',
+                'notificationtemplates_id' => 17,
+            ], [
+                'id' => 80,
+                'notifications_id' => '80',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 32,
+            ], [
+                'id' => 81,
+                'notifications_id' => '81',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 32,
+            ], [
+                'id' => 82,
+                'notifications_id' => '82',
+                'mode' => 'mailing',
+                'notificationtemplates_id' => 32,
             ],
         ];
 
@@ -3309,7 +3620,7 @@ $empty_data_builder = new class
                 'notifications_id' => '19',
             ], [
                 'id' => '15',
-                'items_id' => '14',
+                'items_id' => '40',
                 'type' => '1',
                 'notifications_id' => '12',
             ], [
@@ -3594,7 +3905,7 @@ $empty_data_builder = new class
                 'notifications_id' => '36',
             ], [
                 'id' => '73',
-                'items_id' => '14',
+                'items_id' => '40',
                 'type' => '1',
                 'notifications_id' => '37',
             ], [
@@ -3927,7 +4238,87 @@ $empty_data_builder = new class
                 'items_id' => '39',
                 'type' => '1',
                 'notifications_id' => '72',
-            ],
+            ], [
+                'id' => '141',
+                'items_id' => '19',
+                'type' => '1',
+                'notifications_id' => '73',
+            ], [
+                'id'               => '142',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '74',
+            ], [
+                'id'               => '143',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '75',
+            ], [
+                'id'               => '144',
+                'items_id'         => '2',
+                'type'             => '1',
+                'notifications_id' => '75',
+            ], [
+                'id'               => '145',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '76',
+            ], [
+                'id'               => '146',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '76',
+            ], [
+                'id'               => '147',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '76',
+            ], [
+                'id'               => '148',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '149',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '150',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '77',
+            ], [
+                'id'               => '151',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '78',
+            ], [
+                'id'               => '152',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '78',
+            ], [
+                'id'               => '153',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '78',
+            ], [
+                'id'               => '154',
+                'items_id'         => '3',
+                'type'             => '1',
+                'notifications_id' => '79',
+            ], [
+                'id'               => '155',
+                'items_id'         => '1',
+                'type'             => '1',
+                'notifications_id' => '79',
+            ], [
+                'id'               => '156',
+                'items_id'         => '21',
+                'type'             => '1',
+                'notifications_id' => '79',
+            ]
         ];
 
         $tables['glpi_notificationtemplates'] = [
@@ -4042,7 +4433,23 @@ $empty_data_builder = new class
             ], [
                 'id' => '28',
                 'name' => 'Plugin updates',
-                'itemtype' => 'Glpi\\Marketplace\\Controller',
+                'itemtype' => 'Glpi\Marketplace\Controller',
+            ], [
+                'id' => '29',
+                'name' => 'Password Initialization',
+                'itemtype' => 'User',
+            ], [
+                'id'       => '30',
+                'name'     => 'Change Satisfaction',
+                'itemtype' => 'Change',
+            ], [
+                'id'       => '31',
+                'name'     => 'Automatic reminder',
+                'itemtype' => 'Ticket',
+            ], [
+                'id'        => '32',
+                'name'      => 'Knowledge base item',
+                'itemtype'  => 'KnowbaseItem',
             ],
         ];
 
@@ -4902,7 +5309,99 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;ul&gt;##FOREACHplugins##
 &lt;li&gt;##plugin.name## :##plugin.old_version## -&gt; ##plugin.version##&lt;/li&gt;
 ##ENDFOREACHplugins##&lt;/ul&gt;
-&lt;p&gt;##lang.marketplace.url## : &lt;a title="##lang.marketplace.url##" href="##marketplace.url##" target="_blank" rel="noopener"&gt;##marketplace.url##&lt;/a&gt;&lt;/p&gt;'
+&lt;p&gt;##lang.marketplace.url## : &lt;a title="##lang.marketplace.url##" href="##marketplace.url##" target="_blank" rel="noopener"&gt;##marketplace.url##&lt;/a&gt;&lt;/p&gt;',
+            ], [
+                'id' => '29',
+                'notificationtemplates_id' => '29',
+                'language' => '',
+                'subject' => '##user.action##',
+                'content_text' => '##user.realname## ##user.firstname##
+
+##lang.passwordinit.information##
+
+##lang.passwordinit.link## ##user.passwordiniturl##',
+                'content_html' => '&lt;p&gt;&lt;strong&gt;##user.realname## ##user.firstname##&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;##lang.passwordinit.information##&lt;/p&gt;
+&lt;p&gt;##lang.passwordinit.link## &lt;a title="##user.passwordiniturl##" href="##user.passwordiniturl##"&gt;##user.passwordiniturl##&lt;/a&gt;&lt;/p&gt;',
+            ], [
+                'id'                       => '30',
+                'notificationtemplates_id' => '30',
+                'language'                 => '',
+                'subject'                  => '##change.action## ##change.title##',
+                'content_text'             => '##lang.change.title## : ##change.title##
+##lang.change.closedate## : ##change.closedate##
+##lang.satisfaction.text## ##change.urlsatisfaction##',
+                'content_html'             => '&lt;p&gt;##lang.change.title## : ##change.title##&lt;/p&gt;
+&lt;p&gt;##lang.change.closedate## : ##change.closedate##&lt;/p&gt;
+&lt;p&gt;##lang.satisfaction.text## &lt;a href="##change.urlsatisfaction##"&gt;##change.urlsatisfaction##&lt;/a&gt;&lt;/p&gt;',
+            ], [
+                'id'                       => '31',
+                'notificationtemplates_id' => '31',
+                'language'                 => '',
+                'subject'                  => '##ticket.action## ##ticket.name##',
+                'content_text'             => '##lang.ticket.title##: ##ticket.title##
+
+##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##
+##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##
+##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##
+##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##
+
+##lang.ticket.reminder.text##: ##ticket.reminder.text##',
+                'content_html'             => '&lt;p&gt;##lang.ticket.title##: ##ticket.title##&lt;/p&gt;
+                    &lt;p&gt;##lang.ticket.reminder.bumpcounter##: ##ticket.reminder.bumpcounter##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.bumpremaining##: ##ticket.reminder.bumpremaining##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.bumptotal##: ##ticket.reminder.bumptotal##&lt;/a&gt;&lt;br /&gt;
+                    ##lang.ticket.reminder.deadline##: ##ticket.reminder.deadline##&lt;/p&gt;
+                    &lt;p&gt;##lang.ticket.reminder.text##: ##ticket.reminder.text##&lt;/p&gt;',
+            ], [
+                'id' => '32',
+                'notificationtemplates_id' => '32',
+                'language' => '',
+                'subject' => '##knowbaseitem.action## - ##knowbaseitem.subject##',
+                'content_text' => '##lang.knowbaseitem.url## : ##knowbaseitem.url##
+
+##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+
+##lang.knowbaseitem.content## : ##knowbaseitem.content##
+
+##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+
+##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##
+
+##FOREACHdocuments##
+  ##lang.document.downloadurl## : ##document.downloadurl##
+  ##lang.document.filename## : ##document.filename##
+  ##lang.document.heading## : ##document.heading##
+  ##lang.document.id## : ##document.id##
+  ##lang.document.name## : ##document.name##
+  ##lang.document.url## : ##document.url##
+  ##lang.document.weblink## : ##document.weblink##
+##ENDFOREACHdocuments##
+
+##FOREACHtargets##
+  ##lang.target.itemtype## : ##target.type##
+  ##lang.target.name## : ##target.name##
+  ##lang.target.url## : ##target.url##
+##ENDFOREACHtargets##',
+                'content_html' => '&lt;p&gt;##lang.knowbaseitem.subject## : ##knowbaseitem.subject##
+&lt;br&gt;##lang.knowbaseitem.categories## : ##knowbaseitem.categories##
+&lt;br&gt;##lang.knowbaseitem.is_faq## ##knowbaseitem.is_faq##
+&lt;br&gt;##lang.knowbaseitem.begin_date## : ##knowbaseitem.begin_date##
+&lt;br&gt;##lang.knowbaseitem.end_date## : ##knowbaseitem.end_date##
+&lt;br&gt;##lang.knowbaseitem.numberofdocuments## : ##knowbaseitem.numberofdocuments##&lt;/p&gt;
+##FOREACHdocuments## &lt;p&gt;##lang.document.downloadurl## : ##document.downloadurl##&lt;/p&gt;
+&lt;p&gt;##lang.document.filename## : ##document.filename##&lt;/p&gt;
+&lt;p&gt;##lang.document.heading## : ##document.heading##&lt;/p&gt;
+&lt;p&gt;##lang.document.id## : ##document.id##&lt;/p&gt;
+&lt;p&gt;##lang.document.name## : ##document.name##&lt;/p&gt;
+&lt;p&gt;##lang.document.url## : ##document.url##&lt;/p&gt;
+&lt;p&gt;##lang.document.weblink## : ##document.weblink##&lt;/p&gt; ##ENDFOREACHdocuments##&lt;/p&gt;
+##FOREACHtargets## &lt;p&gt;##lang.target.itemtype## : ##target.type##&lt;/p&gt;
+&lt;p&gt;##lang.target.name## : ##target.name##&lt;/p&gt;
+&lt;p&gt;##lang.target.url## : ##target.url##&lt;/p&gt; ##ENDFOREACHtargets##'
             ],
         ];
 
@@ -5350,7 +5849,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'ticket',
-                'rights' => READ | CREATE | DELETE | PURGE | Ticket::READALL | Ticket::READASSIGN | Ticket::OWN | Ticket::SURVEY,
+                'rights' => READ | CREATE | DELETE | PURGE | Ticket::READALL | Ticket::READASSIGN | Ticket::OWN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'followup',
@@ -5442,7 +5941,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'problem',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cable_management',
@@ -5647,7 +6146,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | Ticket::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'followup',
@@ -5661,11 +6160,11 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'projecttask',
-                'rights' => ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE,
+                'rights' => DELETE | PURGE | ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'projecttask',
-                'rights' => ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE,
+                'rights' => DELETE | PURGE | ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'projecttask',
@@ -5907,7 +6406,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'user',
-                'rights' => ALLSTANDARDRIGHT | UNLOCK | User::IMPORTEXTAUTHUSERS | User::READAUTHENT | User::UPDATEAUTHENT,
+                'rights' => ALLSTANDARDRIGHT | UNLOCK | User::IMPORTEXTAUTHUSERS | User::READAUTHENT | User::UPDATEAUTHENT | User::IMPERSONATE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'group',
@@ -5944,7 +6443,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | Ticket::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'followup',
@@ -6034,7 +6533,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'slm',
-                'rights' => READ | UPDATE | CREATE | PURGE,
+                'rights' => READ | UPDATE | CREATE | PURGE | SLM::RIGHT_ASSIGN,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_dictionnary_printer',
@@ -6242,7 +6741,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'ticket',
-                'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::ASSIGN | Ticket::SURVEY,
+                'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::ASSIGN | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'followup',
@@ -6528,7 +7027,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticket',
                 'rights' => Ticket::READMY | UPDATE | CREATE | Ticket::READALL | Ticket::READGROUP
-                    | Ticket::OWN | Ticket::SURVEY,
+                    | Ticket::OWN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'followup',
@@ -6610,7 +7109,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'slm',
-                'rights' => READ,
+                'rights' => READ | SLM::RIGHT_ASSIGN,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'rule_dictionnary_printer',
@@ -6618,7 +7117,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'problem',
-                'rights' => Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
+                'rights' => ALLSTANDARDRIGHT | Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'knowbasecategory',
@@ -6650,7 +7149,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'change',
-                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Change::READALL,
+                'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'ticketvalidation',
@@ -6819,7 +7318,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticket',
                 'rights' => ALLSTANDARDRIGHT | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::ASSIGN
-                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | Ticket::SURVEY,
+                    | Ticket::STEAL | Ticket::OWN | Ticket::CHANGEPRIORITY | CommonITILObject::SURVEY | Ticket::READNEWTICKET,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'followup',
@@ -6933,7 +7432,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'change',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'ticketvalidation',
@@ -6961,7 +7460,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'change',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'changevalidation',
@@ -7089,7 +7588,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'problem',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'profile',
@@ -7097,7 +7596,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'project',
-                'rights' => Change::READMY | READNOTE | Change::READALL,
+                'rights' => Change::READMY | READNOTE | Change::READALL | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'projecttask',
@@ -7201,7 +7700,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticket',
-                'rights' => Ticket::READMY | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | Ticket::SURVEY,
+                'rights' => Ticket::READMY | Ticket::READALL | Ticket::READGROUP | Ticket::READASSIGN | CommonITILObject::SURVEY,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'ticketcost',
@@ -7738,6 +8237,30 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'database',
                 'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'rule_change',
+                'rights' => READ | UPDATE | CREATE | PURGE | RuleCommonITILObject::PARENT,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'rule_change',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'rule_change',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'rule_problem',
+                'rights' => READ | UPDATE | CREATE | PURGE | RuleCommonITILObject::PARENT,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'rule_problem',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'rule_problem',
+                'rights' => READ,
             ],
             [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
@@ -7978,6 +8501,46 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'unmanaged',
                 'rights' => self::RIGHT_NONE,
 
+            ],
+            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'oauth_client',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'oauth_client',
+                'rights' => self::RIGHT_NONE,
             ],
         ];
 
@@ -8442,7 +9005,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         $tables[DomainRecordType::getTable()] = DomainRecordType::getDefaults();
         $tables[DomainRelation::getTable()] = DomainRelation::getDefaults();
-        $tables[NetworkPortType::getTable()] = Sanitizer::encodeHtmlSpecialCharsRecursive(NetworkPortType::getDefaults());
+        $tables[NetworkPortType::getTable()] = NetworkPortType::getDefaults();
 
         $tables['glpi_agenttypes'] = [
             [

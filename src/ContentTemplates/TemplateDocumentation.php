@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -87,15 +87,7 @@ class TemplateDocumentation
         $header->addH1(sprintf(__("Available variables (%s)"), $this->context));
         $content .= $header->getMarkdown();
 
-       // Build summary
-        $summary = new MarkdownBuilder();
-        $summary->addH2(_x("Documentation", "Summary"), "summary");
-        foreach ($this->summary as $section_title) {
-            $summary->addSummaryEntry($section_title);
-        }
-        $content .= $summary->getMarkdown();
-
-       // Build main content
+        // Build main content
         foreach ($this->sections as $section) {
             $content .= $section->getMarkdown();
         }

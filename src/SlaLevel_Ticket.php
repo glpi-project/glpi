@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /// Class SLALevel
 class SlaLevel_Ticket extends CommonDBTM
@@ -185,7 +188,7 @@ class SlaLevel_Ticket extends CommonDBTM
                 ]
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date' => ['<', new \QueryExpression('NOW()')]
+                'glpi_slalevels_tickets.date' => ['<', QueryFunction::now()]
             ]
         ]);
 
@@ -344,7 +347,7 @@ class SlaLevel_Ticket extends CommonDBTM
                 ]
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date'       => ['<', new \QueryExpression('NOW()')],
+                'glpi_slalevels_tickets.date'       => ['<', QueryFunction::now()],
                 'glpi_slalevels_tickets.tickets_id' => $tickets_id,
                 'glpi_slas.type'                    => $slaType
             ]

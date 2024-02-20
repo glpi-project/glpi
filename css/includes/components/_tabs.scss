@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,22 +37,22 @@
 
 .card-tabs {
     #tabspanel {
-        border-right: 1px solid $border-color;
+        border-right: 1px solid var(--glpi-tabs-border-color);
     }
 
     #tabspanel.nav-tabs {
         .nav-link {
-            background: $tabs-bg;
-            color: $tabs-fg;
-            border-color: $tabs-border;
+            background: var(--glpi-tabs-bg);
+            color: var(--glpi-tabs-fg);
+            border-color: var(--glpi-tabs-border-color);
             border-right-width: 0;
 
             &.active {
                 border-right: 1px solid transparent !important;
                 margin-right : -1px; // Hack for border overlap
-                background: $tabs-active-bg;
-                color: $tabs-active-fg;
-                border-color: $tabs-active-border;
+                background: var(--glpi-tabs-active-bg);
+                color: var(--glpi-tabs-active-fg);
+                border-color: var(--glpi-tabs-active-border-color);
                 font-weight: bold;
 
                 .badge {
@@ -62,15 +62,13 @@
 
             .badge {
                 margin-left: 5px;
-                background-color: $badge-bg;
-                color: $badge-fg;
             }
         }
     }
 
     &.vertical {
         .nav-link {
-            border-bottom: $card-border-width solid $card-border-color;
+            border-bottom: 1px solid var(--glpi-tabs-border-color);
 
             &.active {
                 border-left-width: 5px;
@@ -80,12 +78,22 @@
     }
 
     &.horizontal {
-        .nav-link {
-            border-bottom-width: 1px;
-            border-bottom-style: solid;
+        #tabspanel.nav-tabs {
+            .nav-link {
+                border-bottom-width: 1px;
+                border-bottom-style: solid;
 
-            &.active {
-                border-bottom-color: transparent !important;
+                &:last-of-type {
+                    border-right-width: 1px;
+
+                    &.active {
+                        border-right-color: var(--glpi-tabs-border-color) !important;
+                    }
+                }
+
+                &.active {
+                    border-bottom-color: transparent !important;
+                }
             }
         }
     }

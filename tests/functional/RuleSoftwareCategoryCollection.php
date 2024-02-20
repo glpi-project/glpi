@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -78,7 +78,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase
             '_system_category' => 'dev'
         ];
         $result = $categoryCollection->processAllRules(null, null, $input);
-        $this->array($result)->isIdenticalTo(["_no_rule_matches" => '1']);
+        $this->array($result)->isIdenticalTo(["_no_rule_matches" => true]);
     }
 
     public function testRuleMatchImport()
@@ -111,7 +111,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo([
             "_import_category" => '1',
-            "_ruleid"          => (string) $myrule['id']
+            "_ruleid"          => $myrule['id']
         ]);
 
        //Set default rule as disabled, as it was before
@@ -179,7 +179,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo([
             "softwarecategories_id" => "$categories_id",
-            "_ruleid"               => "$rules_id"
+            "_ruleid"               => $rules_id
         ]);
     }
 
@@ -253,7 +253,7 @@ class RuleSoftwareCategoryCollection extends DbTestCase
         $result = $categoryCollection->processAllRules(null, null, $input);
         $this->array($result)->isIdenticalTo([
             "_ignore_import" => '1',
-            "_ruleid"        => "$rules_id"
+            "_ruleid"        => $rules_id
         ]);
     }
 }

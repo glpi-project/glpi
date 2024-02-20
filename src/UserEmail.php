@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,8 +32,6 @@
  *
  * ---------------------------------------------------------------------
  */
-
-use Glpi\Toolbox\Sanitizer;
 
 /**
  * UserEmail class
@@ -221,7 +219,7 @@ class UserEmail extends CommonDBChild
             !$user->can($users_id, READ)
             && ($users_id != Session::getLoginUserID())
         ) {
-            return false;
+            return;
         }
         $canedit = ($user->can($users_id, UPDATE) || ($users_id == Session::getLoginUserID()));
 
@@ -279,7 +277,7 @@ class UserEmail extends CommonDBChild
      */
     private function checkInputEmailValidity(array $input): bool
     {
-        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress(Sanitizer::unsanitize($input['email']));
+        return isset($input['email']) && !empty($input['email']) && GLPIMailer::validateAddress($input['email']);
     }
 
 

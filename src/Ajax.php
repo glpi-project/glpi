@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -169,6 +169,10 @@ class Ajax
         }
         $url .= (strstr($url, '?') ? '&' :  '?') . '_in_modal=1';
 
+        if (isset($options['extradata'])) {
+            $url .= (strstr($url, '?') ? '&' :  '?') . Toolbox::append_params($options['extradata'], '&');
+        }
+
         $rand = mt_rand();
 
         $html = <<<HTML
@@ -319,6 +323,10 @@ JAVASCRIPT;
                 $nav_width      = "";
             }
 
+            if (($options['in_modal'] ?? false)) {
+                $border = "border-0";
+            }
+
             echo "<div class='d-flex card-tabs $flex_container $orientation'>";
             echo "<ul class='nav nav-tabs $flex_tab' id='$tabdiv_id' $nav_width role='tablist'>";
             $html_tabs = "";
@@ -334,21 +342,35 @@ JAVASCRIPT;
                 $display_class = "d-none";
             }
 
-            foreach ($tabs as $val) {
+            foreach ($tabs as $tab_key => $val) {
                 $target = str_replace('\\', '_', $val['id']);
-                $html_tabs .= "<li class='nav-item $navitemml'>
-               <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab' title='" . strip_tags($val['title']) . "' ";
-                $html_tabs .= " href='" . $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '') . "' data-bs-target='#{$target}'>";
-                $html_tabs .= $val['title'] . "</a></li>";
-
-                $html_sele .= "<option value='$i' " . ($active_id == $target ? "selected" : "") . ">
-               {$val['title']}
-            </option>";
+                $href = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
+                $selected = $active_id == $target ? 'selected' : '';
+                $title = $val['title'];
+                $title_clean = strip_tags($title);
+                if ($tab_key !== -1) {
+                    $html_tabs .= <<<HTML
+                        <li class='nav-item $navitemml'>
+                            <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
+                                title='{$title_clean}' href='{$href}' data-bs-target='#{$target}'>{$title}</a>
+                        </li>
+HTML;
+                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                } else {
+                    // All tabs
+                    $html_tabs .= <<<HTML
+                        <li class='nav-item $navitemml'>
+                            <a class='nav-link justify-content-between $navlinkp $display_class' data-bs-toggle='tab'
+                                title='{$title_clean}' href='#' data-show-all-tabs="true">{$title}</a>
+                        </li>
+HTML;
+                    $html_sele .= "<option value='$i' {$selected}>{$val['title']}</option>";
+                }
                 $i++;
             }
             echo $html_tabs;
             echo "</ul>";
-            echo "<select class='form-select border-2 border-secondary rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
+            echo "<select class='form-select border-2 rounded-0 rounded-top d-md-none mb-2' id='$tabdiv_id-select'>$html_sele</select>";
 
             echo "<div class='tab-content p-2 flex-grow-1 card $border' style='min-height: 150px'>";
             foreach ($tabs as $val) {
@@ -357,21 +379,24 @@ JAVASCRIPT;
             }
             echo  "</div>"; // .tab-content
             echo "</div>"; // .container-fluid
-            $js = "
+
+            $json_type = json_encode($type);
+            $withtemplate = (int)($_GET['withtemplate'] ?? 0);
+            $js = <<<JS
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
-            const href_url_params = new URLSearchParams($(tablink).prop('href'));
             var url = tablink.attr('href');
             var target = tablink.attr('data-bs-target');
+            const href_url_params = new URLSearchParams(url);
 
             const updateCurrentTab = () => {
                 $.get(
                   '{$CFG_GLPI['root_doc']}/ajax/updatecurrenttab.php',
                   {
-                     itemtype: '" . addslashes($type) . "',
+                     itemtype: $json_type,
                      id: '$ID',
                      tab_key: href_url_params.get('_glpi_tab'),
-                     withtemplate: " . (int)($_GET['withtemplate'] ?? 0) . "
+                     withtemplate: $withtemplate
                   }
                ).done(function() {
                     // try to restore the scroll on a specific anchor
@@ -416,6 +441,13 @@ JAVASCRIPT;
             // Restore href
             active_link.attr('href', currenthref);
          };
+         
+         const loadAllTabs = () => {
+             const tabs = $('#$tabdiv_id a[data-bs-toggle=\"tab\"]');
+             tabs.each((index, tab) => {
+                loadTabContents($(tab));
+             });
+         }
 
          $(function() {
             // Keep track of the first load which will be the tab stored in the
@@ -426,7 +458,16 @@ JAVASCRIPT;
 
             $('a[data-bs-toggle=\"tab\"]').on('shown.bs.tab', function(e) {
                e.preventDefault();
-               loadTabContents($(this), false, !first_load);
+               if ($(this).attr('data-show-all-tabs') === 'true') {
+                  loadAllTabs();
+                  // show all tabs by adding active and show classes to all tabs
+                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
+               } else {
+                  // Remove active and show classes from all tabs except the one that is clicked
+                  let clicked_tab = $(this).attr('data-bs-target');
+                  $('#$tabdiv_id').parent().find('.tab-pane:not(' + clicked_tab + ')').removeClass('active show');
+                  loadTabContents($(this), false, !first_load);
+               }
             });
 
             // load initial tab
@@ -438,7 +479,7 @@ JAVASCRIPT;
                $('#$tabdiv_id li a').eq($(this).val()).tab('show');
             });
          });
-         ";
+JS;
 
             echo Html::scriptBlock($js);
         }
@@ -770,9 +811,9 @@ JAVASCRIPT;
 
                 $out .= $key . ":";
                 $regs = [];
-                if (!is_array($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
+                if (is_string($val) && preg_match('/^__VALUE(\d+)__$/', $val, $regs)) {
                     $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve[$regs[1]])) . ".val()";
-                } else if (!is_array($val) && $val === "__VALUE__") {
+                } else if (is_string($val) && $val === "__VALUE__") {
                     $out .=  Html::jsGetElementbyID(Html::cleanId($toobserve)) . ".val()";
                 } else {
                     $out .=  json_encode($val);

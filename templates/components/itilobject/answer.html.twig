@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -31,18 +31,21 @@
  # ---------------------------------------------------------------------
  #}
 
-<div id="new-itilobject-form" class="ms-auto ps-3">
+<div id="new-itilobject-form" class="d-flex">
    {% for timeline_itemtype in timeline_itemtypes %}
       {% set show_kb_sol = load_kb_sol > 0 and timeline_itemtype.type == 'ITILSolution' %}
-      <div class="timeline-item mb-3  {{ timeline_itemtype.type }} collapse {{ show_kb_sol ? 'show' : '' }}"
+      {% set is_private = timeline_itemtype.item.fields['is_private'] ?? false %}
+      {% set is_private_class = is_private ? "private-item" : "" %}
+      <div class="timeline-item mb-1 ms-auto {{ is_private_class }} {{ timeline_itemtype.type }} collapse {{ show_kb_sol ? 'show' : '' }}"
         id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
          <div class="row">
-            <div class="col-auto order-last d-none d-md-block">
+            <div class="col-auto todo-list-state"></div>
+            <div class="col-auto d-flex flex-column user-part ms-0 order-sm-last">
                {{ include('components/user/picture.html.twig', {'users_id': session('glpiID')}, with_context = false) }}
             </div>
-            <div class="col">
-               <div class="row timeline-content t-right card mt-4">
-                  <div class="card-body">
+            <div class="col-12 col-sm d-flex flex-column content-part">
+               <div class="timeline-content t-right card mt-2">
+                  <div class="card-body px-1 px-xxl-3">
                      <div class="clearfix">
                         <button class="btn btn-sm btn-ghost-secondary float-end mb-1 close-itil-answer"
                               data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">

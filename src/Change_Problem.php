@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  *
  * Relation between Changes and Problems
  **/
-class Change_Problem extends CommonDBRelation
+class Change_Problem extends CommonITILObject_CommonITILObject
 {
    // From CommonDBRelation
     public static $itemtype_1   = 'Change';
@@ -50,16 +50,6 @@ class Change_Problem extends CommonDBRelation
 
     public static $itemtype_2   = 'Problem';
     public static $items_id_2   = 'problems_id';
-
-
-
-    public function getForbiddenStandardMassiveAction()
-    {
-
-        $forbidden   = parent::getForbiddenStandardMassiveAction();
-        $forbidden[] = 'update';
-        return $forbidden;
-    }
 
 
     public static function getTypeName($nb = 0)
@@ -73,24 +63,24 @@ class Change_Problem extends CommonDBRelation
 
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'Change':
+            switch (get_class($item)) {
+                case Change::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_changes_problems',
                             ['changes_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Problem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
 
-                case 'Problem':
+                case Problem::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_changes_problems',
                             ['problems_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb);
+                    return self::createTabEntry(Change::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
         return '';
@@ -160,12 +150,15 @@ class Change_Problem extends CommonDBRelation
             $used[$data['id']]    = $data['id'];
         }
 
+        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
                 'link_itemtype' => __CLASS__,
                 'source_itemtype' => Problem::class,
                 'source_items_id' => $ID,
+                'link_types' => $link_types,
                 'target_itemtype' => Change::class,
                 'dropdown_options' => [
                     'entity'      => $problem->getEntityID(),
@@ -272,12 +265,15 @@ class Change_Problem extends CommonDBRelation
             $used[$data['id']]     = $data['id'];
         }
 
+        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
                 'link_itemtype' => __CLASS__,
                 'source_itemtype' => Change::class,
                 'source_items_id' => $ID,
+                'link_types' => $link_types,
                 'target_itemtype' => Problem::class,
                 'dropdown_options' => [
                     'entity'      => $change->getEntityID(),
@@ -333,24 +329,5 @@ class Change_Problem extends CommonDBRelation
             Html::closeForm();
         }
         echo "</div>";
-    }
-
-    public function post_addItem()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
-
-        if ($donotif) {
-            $problem = new Problem();
-            $change  = new Change();
-            if ($problem->getFromDB($this->input["problems_id"]) && $change->getFromDB($this->input["changes_id"])) {
-                NotificationEvent::raiseEvent("update", $problem);
-                NotificationEvent::raiseEvent('update', $change);
-            }
-        }
-
-        parent::post_addItem();
     }
 }

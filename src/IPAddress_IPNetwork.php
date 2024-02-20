@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
 
 /**
  * Class IPAddress_IPNetwork : Connection between IPAddress and IPNetwork
@@ -75,7 +77,7 @@ class IPAddress_IPNetwork extends CommonDBRelation
        // Then, look each IP address contained inside current Network
         $iterator = $DB->request([
             'SELECT' => [
-                new \QueryExpression($DB->quoteValue($ipnetworks_id) . ' AS ' . $DB->quoteName('ipnetworks_id')),
+                new QueryExpression($DB->quoteValue($ipnetworks_id) . ' AS ' . $DB->quoteName('ipnetworks_id')),
                 'id AS ipaddresses_id'
             ],
             'FROM'   => 'glpi_ipaddresses',

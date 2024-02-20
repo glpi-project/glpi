@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,4 +40,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-echo Html::fuzzySearch($_REQUEST['action']);
+try {
+    echo json_encode(Html::getMenuFuzzySearchList(), JSON_THROW_ON_ERROR);
+} catch (JsonException $e) {
+    die(500);
+}

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -56,6 +56,7 @@ class ChangeTemplate extends ITILTemplate
             ChangeTemplateHiddenField::class,
             ChangeTemplateMandatoryField::class,
             ChangeTemplatePredefinedField::class,
+            ChangeTemplateReadonlyField::class,
         ];
     }
 
@@ -63,6 +64,7 @@ class ChangeTemplate extends ITILTemplate
     {
         $change = new Change();
         return [
+            $change->getSearchOptionIDByField('field', 'time_to_resolve', 'glpi_changes') => 'time_to_resolve',
             $change->getSearchOptionIDByField('field', 'impactcontent', 'glpi_changes')      => 'impactcontent',
             $change->getSearchOptionIDByField('field', 'controlistcontent', 'glpi_changes')  => 'controlistcontent',
             $change->getSearchOptionIDByField('field', 'rolloutplancontent', 'glpi_changes') => 'rolloutplancontent',

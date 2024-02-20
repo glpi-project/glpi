@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -313,14 +313,14 @@ class Unmanaged extends CommonDBTM
         //do not keep Unmanaged ID
         unset($asset_data['id']);
 
-        $assets_id = $asset->add(Toolbox::addslashes_deep($asset_data));
+        $assets_id = $asset->add($asset_data);
 
         foreach ($iterator_np as $row) {
             $row += [
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $netport->update(Toolbox::addslashes_deep($row));
+            $netport->update($row);
         }
 
         foreach ($iterator_rml as $row) {
@@ -328,7 +328,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $rulematch->update(Toolbox::addslashes_deep($row));
+            $rulematch->update($row);
         }
 
         foreach ($iterator_lf as $row) {
@@ -336,7 +336,7 @@ class Unmanaged extends CommonDBTM
                 'items_id' => $assets_id,
                 'itemtype' => $itemtype
             ];
-            $lockfield->update(Toolbox::addslashes_deep($row));
+            $lockfield->update($row);
         }
         $this->deleteFromDB(1);
     }

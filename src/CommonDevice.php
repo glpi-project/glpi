@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryFunction;
 
 /**
  * CommonDevice Class
@@ -218,7 +220,11 @@ abstract class CommonDevice extends CommonDropdown
             [
                 'SELECT'    => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . DBmysql::quoteName('items_id') . ') AS ids'),
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'      => $linktable,
                 'WHERE'     => [
@@ -422,9 +428,13 @@ abstract class CommonDevice extends CommonDropdown
         }
 
         if (static::canView()) {
-            $content = $this->getLink();
+            $content = $this->getLink([
+                'icon' => $this->getIcon()
+            ]);
         } else {
-            $content = $this->getName();
+            $content = $this->getName([
+                'icon' => $this->getIcon()
+            ]);
         }
 
         if ($options['canedit']) {
@@ -498,6 +508,20 @@ abstract class CommonDevice extends CommonDropdown
                         ];
                         break;
                 }
+            }
+        }
+
+        $model_fk = getForeignKeyFieldForItemType(static::class . 'Model');
+        if ($DB->fieldExists(static::getTable(), $model_fk)) {
+            if (isset($input[$model_fk])) {
+                $where[$model_fk] = $input[$model_fk];
+            } else {
+                $where[] = [
+                    'OR' => [
+                        [$model_fk => null],
+                        [$model_fk => 0]
+                    ]
+                ];
             }
         }
 

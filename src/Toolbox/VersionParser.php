@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,27 +48,11 @@ class VersionParser
      *
      * @param string $version
      * @param bool $keep_stability_flag
-     * @param bool $fix_old_glpi_versions
      *
      * @return string
      */
-    public static function getNormalizedVersion(
-        string $version,
-        bool $keep_stability_flag = true,
-        bool $fix_old_glpi_versions = false
-    ): string {
-
-        if ($fix_old_glpi_versions) {
-            $mapping = [
-                '0.80.61' => '0.80.6.1', // 0.80.61 is a fix of 0.80.6
-                '0.83.31' => '0.83.3.1', // 0.83.31 is a fix of 0.83.3
-                '0.83.91' => '0.83.9.1', // 0.83.91 is a fix of 0.83.9
-            ];
-            if (array_key_exists($version, $mapping)) {
-                $version = $mapping[$version];
-            }
-        }
-
+    public static function getNormalizedVersion(string $version, bool $keep_stability_flag = true): string
+    {
         $version_pattern = implode(
             '',
             [

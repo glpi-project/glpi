@@ -8,6 +8,24 @@ else
   ATOUM_ADDITIONNAL_OPTIONS="--no-code-coverage";
 fi
 
+# Get additional test arguments from -f, -d and -m options.
+SCOPE="-d tests/units"
+METHODS=""
+while getopts ":d:f:m:" OPTNAME; do
+  case $OPTNAME in
+    d|f)
+      SCOPE="-${OPTNAME} ${OPTARG}"
+      ;;
+    m)
+      METHODS="-m ${OPTARG}"
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
 vendor/bin/atoum \
   -p 'php -d memory_limit=512M' \
   --debug \
@@ -18,6 +36,7 @@ vendor/bin/atoum \
   --fail-if-skipped-methods \
   $ATOUM_ADDITIONNAL_OPTIONS \
   --max-children-number 10 \
-  -d tests/units
+  $SCOPE \
+  $METHODS
 
 unset COVERAGE_DIR

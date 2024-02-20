@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+use Glpi\Http\Response;
+
+/** @var CommonDBTM|null $obj */
+
+if (!($obj instanceof CommonDBTM)) {
+    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+}
+
+if (isset($_POST["my_items"]) && !empty($_POST["my_items"])) {
+    $splitter = explode("_", $_POST["my_items"]);
+    if (count($splitter) == 2) {
+        $_POST["itemtype"] = $splitter[0];
+        $_POST["items_id"] = $splitter[1];
+    }
+}
+
+if (
+    isset($_POST['itemtype'])
+    && isset($_POST['items_id']) && ($_POST['items_id'] > 0)
+) {
+   // Security
+    if (!class_exists($_POST['itemtype'])) {
+        exit();
+    }
+
+    $days   = 3;
+    $data   = $obj->getActiveOrSolvedLastDaysForItem(
+        $_POST['itemtype'],
+        $_POST['items_id'],
+        $days
+    );
+
+    $nb = count($data);
+    $badge_helper = sprintf(
+        _n(
+            '%s ticket in progress or recently solved on this item.',
+            '%s tickets in progress or recently solved on this item.',
+            $nb
+        ),
+        $nb
+    );
+    echo "<span class='badge badge-secondary' title='$badge_helper'>$nb</span>";
+
+    if ($nb) {
+        $content = '';
+        foreach ($data as $title) {
+            $content .= $title . '<br>';
+        }
+        echo '&nbsp;';
+        Html::showToolTip($content);
+    }
+}

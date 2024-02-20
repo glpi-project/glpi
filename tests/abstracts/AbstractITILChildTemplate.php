@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -59,7 +59,7 @@ TPL;
         $this->string($template->getRenderedContent($change))
          ->isEqualTo(<<<HTML
 Itemtype: Change
-<a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id={$change->fields['id']}" title="test change">test change</a>
+<a href="{$CFG_GLPI['root_doc']}/front/change.form.php?id&#61;{$change->fields['id']}" title="test change">test change</a>
 HTML
         );
 
@@ -71,7 +71,7 @@ HTML
         $this->string($template->getRenderedContent($problem))
          ->isEqualTo(<<<HTML
 Itemtype: Problem
-<a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id={$problem->fields['id']}" title="test problem">test problem</a>
+<a href="{$CFG_GLPI['root_doc']}/front/problem.form.php?id&#61;{$problem->fields['id']}" title="test problem">test problem</a>
 HTML
         );
 
@@ -83,7 +83,7 @@ HTML
         $this->string($template->getRenderedContent($ticket))
          ->isEqualTo(<<<HTML
 Itemtype: Ticket
-<a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id={$ticket->fields['id']}" title="test ticket">test ticket</a>
+<a href="{$CFG_GLPI['root_doc']}/front/ticket.form.php?id&#61;{$ticket->fields['id']}" title="test ticket">test ticket</a>
 HTML
         );
     }

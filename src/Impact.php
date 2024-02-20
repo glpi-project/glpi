@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -68,6 +68,11 @@ class Impact extends CommonGLPI
         return __('Impact analysis');
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-affiliate';
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var \DBmysql $DB */
@@ -122,7 +127,7 @@ class Impact extends CommonGLPI
             ]));
         }
 
-        return self::createTabEntry(__("Impact analysis"), $total);
+        return self::createTabEntry(__("Impact analysis"), $total, $item::getType());
     }
 
     public static function displayTabContentForItem(

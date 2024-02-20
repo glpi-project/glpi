@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Blacklist;
 use CommonDBTM;
-use Glpi\Toolbox\Sanitizer;
 use IPAddress;
 use Printer as GPrinter;
 use PrinterLog;
@@ -242,7 +241,7 @@ class Printer extends NetworkEquipment
                    // add printer
                     $val->entities_id = $entities_id;
                     $val->is_dynamic = 1;
-                    $items_id = $printer->add(Sanitizer::sanitize($this->handleInput($val, $printer)));
+                    $items_id = $printer->add($this->handleInput($val, $printer));
                 } else {
                     $items_id = $data['found_inventories'][0];
                 }
@@ -354,9 +353,9 @@ class Printer extends NetworkEquipment
         $metrics = new PrinterLog();
         if ($metrics->getFromDBByCrit($unicity_input)) {
             $input['id'] = $metrics->fields['id'];
-            $metrics->update(Sanitizer::sanitize($input), false);
+            $metrics->update($input, false);
         } else {
-            $metrics->add(Sanitizer::sanitize($input), [], false);
+            $metrics->add($input, [], false);
         }
     }
 
@@ -380,7 +379,7 @@ class Printer extends NetworkEquipment
                     $tmp['mainitemtype'] = $item::getType();
                     $tmp['is_dynamic']   = 1;
                     $tmp['name']         = $ipadress->getTextual();
-                    if ($ipadress->getFromDBByCrit(Sanitizer::sanitize($tmp))) {
+                    if ($ipadress->getFromDBByCrit($tmp)) {
                         return false;
                     }
                     return true;

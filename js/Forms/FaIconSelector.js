@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ GLPI.Forms = GLPI.Forms || {};
  * Font-Awesome icon selector component.
  *
  * @since 10.0.0
+ * @deprecated 10.1.0 Use `modules/Form/WebIconSelector.js` instead.
  */
 GLPI.Forms.FaIconSelector = class {
 

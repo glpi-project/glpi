@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,7 +72,7 @@ function update951to952()
     $docs_input = [];
     foreach ($itemtypes as $itemtype => $field) {
         // Check ticket and child items (followups, tasks, solutions) contents
-        $regexPattern = 'document\\\.send\\\.php\\\?docid=[0-9]+';
+        $regexPattern = 'document\.send\.php\?docid=[0-9]+';
         $user_field = is_a($itemtype, CommonITILObject::class, true) ? 'users_id_recipient' : 'users_id';
         $result = $DB->request([
             'SELECT' => ['id', $field, $user_field],

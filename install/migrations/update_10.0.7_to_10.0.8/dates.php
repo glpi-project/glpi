@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
 
 /**
  * @var \DBmysql $DB
@@ -88,7 +90,7 @@ foreach ($columns_iterator as $column) {
         case 'timestamp':
             // Min value has is "1970-01-01 00:00:01" in UTC, so if we try to use this value in a timezone with a positive offset
             // following error will be trigerred: "Incorrect datetime value: '1970-01-01 00:00:01' for column ..."
-            $min_value = new \QueryExpression(
+            $min_value = new QueryExpression(
                 sprintf(
                     'CONVERT_TZ(%s, %s, (SELECT @@SESSION.time_zone))',
                     $DB->quoteValue('1970-01-01 00:00:01'),

@@ -7,7 +7,7 @@
 #
 # http://glpi-project.org
 #
-# @copyright 2015-2023 Teclib' and contributors.
+# @copyright 2015-2024 Teclib' and contributors.
 # @copyright 2003-2014 by the INDEPNET Development Team.
 # @licence   https://www.gnu.org/licenses/gpl-3.0.html
 #
@@ -59,6 +59,8 @@ TESTS_SUITES=(
 ALL=false
 HELP=false
 BUILD=false
+INTERACTIVE=false
+
 while [[ $# -gt 0 ]]; do
   if [[ $1 == "--"* ]]; then
     ## Remove -- prefix, replace - by _ and uppercase all
@@ -71,9 +73,12 @@ done
 
 # Flag to indicate wether services containers are usefull
 USE_SERVICES_CONTAINERS=0
+SELECTED_SCOPE="default"
+SELECTED_METHODS="all"
 
 # Extract list of tests suites to run
-TESTS_TO_RUN=()
+SELECTED_TESTS_TO_RUN=()
+
 if [[ $# -gt 0 ]]; then
   ARGS=("$@")
 
@@ -81,7 +86,7 @@ if [[ $# -gt 0 ]]; then
     INDEX=0
     for VALID_KEY in "${TESTS_SUITES[@]}"; do
       if [[ "$VALID_KEY" == "$KEY" ]]; then
-        TESTS_TO_RUN[$INDEX]=$KEY
+        SELECTED_TESTS_TO_RUN[$INDEX]=$KEY
         continue 2 # Go to next arg
       fi
       INDEX+=1
@@ -92,30 +97,32 @@ if [[ $# -gt 0 ]]; then
   # Ensure install test is executed if something else than "lint" or "javascript" is executed.
   # This is mandatory as database is initialized by this test suite.
   # Also, check wether services containes are usefull.
-  for TEST_SUITE in "${TESTS_TO_RUN[@]}"; do
+  for TEST_SUITE in "${SELECTED_TESTS_TO_RUN[@]}"; do
     if [[ ! " lint javascript " =~ " ${TEST_SUITE} " ]]; then
-      if [[ ! "${TESTS_TO_RUN[@]}" =~ "install" ]]; then
-        TESTS_TO_RUN=("install" "${TESTS_TO_RUN[@]}")
-      fi
       USE_SERVICES_CONTAINERS=1
       break
     fi
   done
 elif [[ "$ALL" = true ]]; then
-  TESTS_TO_RUN=("${TESTS_SUITES[@]}")
+  SELECTED_TESTS_TO_RUN=("${TESTS_SUITES[@]}")
 
   # Remove specific lint test, because of global "lint" test suite
-  for TEST in "${!TESTS_TO_RUN[@]}"; do
-    if [[ "${TESTS_TO_RUN[TEST]}" =~ ^lint_.+ ]]; then
-      unset 'TESTS_TO_RUN[TEST]'
+  for TEST in "${!SELECTED_TESTS_TO_RUN[@]}"; do
+    if [[ "${SELECTED_TESTS_TO_RUN[TEST]}" =~ ^lint_.+ ]]; then
+      unset 'SELECTED_TESTS_TO_RUN[TEST]'
     fi
   done
 
   USE_SERVICES_CONTAINERS=1
 fi
 
+# If running in interactive mode, always use services containers
+if [[ "$INTERACTIVE" = true ]]; then
+  USE_SERVICES_CONTAINERS=1
+fi
+
 # Display help if user asks for it, or if it does not provide which test suite has to be executed
-if [[ "$HELP" = true || ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
+if [[ "$HELP" = true || ( ${#SELECTED_TESTS_TO_RUN[@]} -eq 0 && "$INTERACTIVE" = false ) ]]; then
   cat << EOF
 This command runs the tests in an environment similar to what is done by CI.
 
@@ -125,10 +132,12 @@ Examples:
  - run_tests.sh --all
  - run_tests.sh --build ldap imap
  - run_tests.sh lint
+ - run_tests.sh --interactive
 
 Available options:
  --all      run all tests suites
  --build    build dependencies and translation files before running test suites
+ --interactive run tests in interactive mode
 
 Available tests suites:
  - lint
@@ -156,6 +165,8 @@ if [[ ! -x "$(command -v docker)" || ! -x "$(command -v docker-compose)" ]]; the
   exit 1
 fi
 
+LAST_EXIT_CODE=0
+
 # Import variables from .env file this file exists
 APP_CONTAINER_HOME=""
 DB_IMAGE=""
@@ -168,8 +179,8 @@ fi
 # Define variables (some may be defined in .env file)
 APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 [[ ! -z "$APP_CONTAINER_HOME" ]] || APP_CONTAINER_HOME=$(mktemp -d -t glpi-tests-home-XXXXXXXXXX)
-[[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.1
-[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:7.4
+[[ ! -z "$DB_IMAGE" ]] || DB_IMAGE=githubactions-mysql:8.0
+[[ ! -z "$PHP_IMAGE" ]] || PHP_IMAGE=githubactions-php:8.3
 
 # Backup configuration files
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
@@ -185,19 +196,38 @@ export APP_CONTAINER_HOME
 export DB_IMAGE
 export PHP_IMAGE
 export UPDATE_FILES_ACL
-cd $WORKING_DIR # Ensure docker-compose will look for .env in current directory
+
 $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
 # Install dependencies if required
 [[ "$BUILD" = false ]] || docker-compose exec -T app .github/actions/init_build.sh
 
-# Run tests
-LAST_EXIT_CODE=0
-for TEST_SUITE in "${TESTS_TO_RUN[@]}";
-do
-  echo -e "\n\e[1;30;43m Running \"$TEST_SUITE\" test suite \e[0m"
-  case $TEST_SUITE in
+INSTALL_TESTS_RUN=false
+
+run_single_test () {
+  local TEST_TO_RUN=$1
+  local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
+  if [[ $INSTALL_TESTS_RUN == false && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
+    echo "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
+    # Run install test suite before any other test suite
+    run_single_test "install"
+  fi
+
+  local TEST_ARGS=""
+  if ! [[ "$SCOPE" == "" || "$SCOPE" == "default" ]]; then
+    if [[ -f "${APPLICATION_ROOT}/${SCOPE}" ]]; then
+      TEST_ARGS="-f ${SCOPE}"
+    else
+      TEST_ARGS="-d ${SCOPE}"
+    fi
+  fi
+  if ! [[ "$METHODS" = "" || "$METHODS" == "all" ]]; then
+    TEST_ARGS="${TEST_ARGS} -m ${METHODS}"
+  fi
+
+  echo -e "\n\e[1;30;43m Running \"$TEST_TO_RUN\" test suite \e[0m"
+  case $TEST_TO_RUN in
     "lint")
       # Misc lint (licence headers and locales) is not executed here as their output is not configurable yet
       # and it would be a pain to handle rolling back of their changes.
@@ -229,18 +259,18 @@ do
       || LAST_EXIT_CODE=$?
       ;;
     "update")
-         $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
+         $APPLICATION_ROOT/.github/actions/init_initialize-0.85.5-db.sh \
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
       && docker-compose exec -T app .github/actions/test_update-from-older-version.sh \
       && docker-compose exec -T app .github/actions/test_update-from-9.5.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "units")
-         docker-compose exec -T app .github/actions/test_tests-units.sh \
+         docker-compose exec -T app .github/actions/test_tests-units.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker-compose exec -T app .github/actions/test_tests-functional.sh \
+         docker-compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")
@@ -266,20 +296,124 @@ do
       || LAST_EXIT_CODE=$?
       ;;
   esac
-
   if [[ $LAST_EXIT_CODE -ne 0 ]]; then
-    echo -e "\e[1;39;41m Tests \"$TEST_SUITE\" failed \e[0m\n"
-    break
+    echo -e "\e[1;39;41m Tests \"$TEST_TO_RUN\" failed \e[0m\n"
   else
-    echo -e "\e[1;30;42m Tests \"$TEST_SUITE\" passed \e[0m\n"
+    echo -e "\e[1;30;42m Tests \"$TEST_TO_RUN\" passed \e[0m\n"
+    if [[ $TEST_TO_RUN == "install" ]]; then
+      INSTALL_TESTS_RUN=true
+    fi
   fi
-done
+}
 
-# Restore configuration files
-rm -f $APPLICATION_ROOT/tests/config/*
-find "$BACKUP_DIR" -mindepth 1 -exec mv -f {} $APPLICATION_ROOT/tests/config \;
+run_tests () {
+  LAST_EXIT_CODE=0
+  # If no tests are selected, display the info
+  if [[ ${#TESTS_TO_RUN[@]} -eq 0 ]]; then
+    show_info
+  else
+    for TEST_SUITE in "${TESTS_TO_RUN[@]}";
+    do
+      run_single_test $TEST_SUITE
+    done
+  fi
+}
 
-# Stop containers
-$APPLICATION_ROOT/.github/actions/teardown_containers-cleanup.sh
+show_info () {
+  # If no tests are selected, display a message with information about how to select tests
+  if [[ ${#SELECTED_TESTS_TO_RUN[@]} -eq 0 ]]; then
+    echo "Selected actions: none"
+    echo "No actions selected. You can select actions by using the 'set action' command."
+  else
+    echo "Selected actions: ${SELECTED_TESTS_TO_RUN[@]}"
+  fi
+  echo "Selected scope: ${SELECTED_SCOPE}"
+  echo "Selected methods: ${SELECTED_METHODS}"
+  echo "" #empty line
+}
 
-exit $LAST_EXIT_CODE
+cleanup_and_exit () {
+  # Restore configuration files
+  rm -f $APPLICATION_ROOT/tests/config/*
+  find "$BACKUP_DIR" -mindepth 1 -exec mv -f {} $APPLICATION_ROOT/tests/config \;
+
+  # Stop containers
+  $APPLICATION_ROOT/.github/actions/teardown_containers-cleanup.sh
+
+  exit $LAST_EXIT_CODE
+}
+
+# Add ctrl+c handler to cleanup and exit gracefully
+trap cleanup_and_exit INT
+
+if [[ "$INTERACTIVE" = false ]]; then
+  # Do not automatically run tests if in interactive mode
+  TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
+  SCOPE=$SELECTED_SCOPE
+  METHODS=$SELECTED_METHODS
+  run_tests
+else
+  echo "GLPI Tests (Interactive mode)"
+  echo "" #empty line
+fi
+
+if [[ "$INTERACTIVE" = true ]]; then
+  CHOICE=""
+  while [[ "$CHOICE" != "exit" ]]; do
+    TESTS_TO_RUN=("${SELECTED_TESTS_TO_RUN[@]}")
+    SCOPE=$SELECTED_SCOPE
+    METHODS=$SELECTED_METHODS
+    show_info
+    read -e -r -p "GLPI Tests > " CHOICE
+    if [[ "$CHOICE" = run* ]]; then
+      # If actions were specified after the run choice, use them instead of the ones selected
+      if [[ "$CHOICE" != "run" ]]; then
+        RUN_OPTS=(${CHOICE#run })
+        # TESTS_TO_RUN is the first argument. It should be a single word without spaces.
+        # The second argument, if it exists, is the scope. If it doesn't exist, the scope is the selected one.
+        TESTS_TO_RUN=(${RUN_OPTS[0]})
+        if [[ ${#RUN_OPTS[@]} -gt 1 ]]; then
+          SCOPE=${RUN_OPTS[1]}
+        else
+          SCOPE="default"
+        fi
+        # The third argument, if it exists, is the methods pattern. If it doesn't exist, the methods pattern is the selected one.
+        if [[ ${#RUN_OPTS[@]} -gt 2 ]]; then
+          METHODS=${RUN_OPTS[2]}
+        else
+          METHODS="all"
+        fi
+      fi
+      run_tests
+    elif [[ "$CHOICE" = "help" ]]; then
+      cat << EOF
+Available commands:
+  - run [action] [scope]: Run the currently selected actions or run the single specified action with the specified scope (defaults to the selected scope).
+  - set action [actions]: Change the currently selected actions.
+  - set scope [scope]: Change the currently selected scope. The scope affects which file or directory the tests are run on (if supported by the test).
+  - set methods [methods]: Change the currently selected methods pattern. This affects which tests methods are run (if supported by the test).
+  - info: Display information about the currently selected actions, scope and methods pattern.
+  - exit: Stop the containers and exit.
+  - help: See this list of commands.
+EOF
+    elif [[ "$CHOICE" = set[[:space:]]action* ]]; then
+      SELECTED_TESTS_TO_RUN=(${CHOICE#set[[:space:]]action })
+    elif [[ "$CHOICE" = set[[:space:]]scope* ]]; then
+      SELECTED_SCOPE=${CHOICE#set[[:space:]]scope }
+      if [[ ! "$SELECTED_SCOPE" =~ ^tests/ && "$SELECTED_SCOPE" != "default" && "$SELECTED_SCOPE" != "" ]]; then
+        SELECTED_SCOPE="tests/$SELECTED_SCOPE"
+      fi
+    elif [[ "$CHOICE" = set[[:space:]]methods* ]]; then
+      SELECTED_METHODS=${CHOICE#set[[:space:]]methods }
+    elif [[ "$CHOICE" = "info" ]]; then
+      show_info
+    elif [[ "$CHOICE" = "exit" ]]; then
+      cleanup_and_exit
+    else
+      echo -e "\e[1;39;41m Invalid command \e[0m"
+    fi
+    CHOICE=""
+  done
+fi
+
+cleanup_and_exit

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Stat\StatData;
+use Glpi\Application\View\TemplateRenderer;
+use Laminas\Json\Expr as Json_Expr;
+use Laminas\Json\Json;
 
 /**
  *  Stat class
@@ -80,22 +84,27 @@ class Stat extends CommonGLPI
 
         switch ($type) {
             case "technicien":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedTechBetween($date1, $date2);
                 break;
 
             case "technicien_followup":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedTechTaskBetween($date1, $date2);
                 break;
 
             case "suppliers_id_assign":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedSupplierBetween($date1, $date2);
                 break;
 
             case "user":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedAuthorBetween($date1, $date2);
                 break;
 
             case "users_id_recipient":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedRecipientBetween($date1, $date2);
                 break;
 
@@ -202,38 +211,47 @@ class Stat extends CommonGLPI
                 break;
 
             case "group":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedGroupBetween($date1, $date2);
                 break;
 
             case "groups_id_assign":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedAssignGroupBetween($date1, $date2);
                 break;
 
             case "priority":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedPriorityBetween($date1, $date2);
                 break;
 
             case "urgency":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedUrgencyBetween($date1, $date2);
                 break;
 
             case "impact":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedImpactBetween($date1, $date2);
                 break;
 
             case "requesttypes_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedRequestTypeBetween($date1, $date2);
                 break;
 
             case "solutiontypes_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedSolutionTypeBetween($date1, $date2);
                 break;
 
             case "usertitles_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, true);
                 break;
 
             case "usercategories_id":
+                /** @var CommonITILObject $item */
                 $val = $item->getUsedUserTitleOrTypeBetween($date1, $date2, false);
                 break;
 
@@ -422,7 +440,7 @@ class Stat extends CommonGLPI
         }
 
         if ($output_type == Search::HTML_OUTPUT) { // HTML display
-            echo "<div class ='center'>";
+            echo "<div class ='card table-card center'>";
         }
 
         if (is_array($value)) {
@@ -465,11 +483,18 @@ class Stat extends CommonGLPI
                     && strstr($type, '_tree')
                     && $value2
                 ) {
-                   // HTML display
-                    $link = $_SERVER['PHP_SELF'] .
-                       "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type" .
-                       "&amp;value2=0";
-                    $link = "<a href='$link'>" . __('Back') . "</a>";
+                    // HTML display
+                    $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                        [
+                            'date1'    => $date1,
+                            'date2'    => $date2,
+                            'itemtype' => $itemtype,
+                            'type'     => $type,
+                            'value2'   => 0,
+                        ],
+                        '&amp;'
+                    );
+                    $link = "<a href='$url'>" . __('Back') . "</a>";
                     echo Search::showHeaderItem($output_type, $link, $header_num);
                 } else {
                     echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
@@ -617,11 +642,18 @@ class Stat extends CommonGLPI
                     && strstr($type, '_tree')
                     && ($value[$i]['id'] != $value2)
                 ) {
-                   // HTML display
-                    $link = $_SERVER['PHP_SELF'] .
-                       "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type" .
-                       "&amp;value2=" . $value[$i]['id'];
-                    $link = "<a href='$link'>" . $value[$i]['link'] . "</a>";
+                    // HTML display
+                    $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                        [
+                            'date1'    => $date1,
+                            'date2'    => $date2,
+                            'itemtype' => $itemtype,
+                            'type'     => $type,
+                            'value2'  => $value[$i]['id'],
+                        ],
+                        '&amp;'
+                    );
+                    $link = "<a href='$url'>" . $value[$i]['link'] . "</a>";
                     echo Search::showItem($output_type, $link, $item_num, $row_num);
                 } else {
                     echo Search::showItem($output_type, $value[$i]['link'], $item_num, $row_num);
@@ -630,9 +662,17 @@ class Stat extends CommonGLPI
                 if ($output_type == Search::HTML_OUTPUT) { // HTML display
                     $link = "";
                     if ($value[$i]['id'] > 0) {
-                        $link = "<a href='stat.graph.php?id=" . $value[$i]['id'] .
-                            "&amp;date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type" .
-                            (!empty($value2) ? "&amp;champ=$value2" : "") . "'>" .
+                        $url = 'stat.graph.php?' . Toolbox::append_params(
+                            [
+                                'date1'    => $date1,
+                                'date2'    => $date2,
+                                'itemtype' => $itemtype,
+                                'type'     => $type,
+                                'champ'    => $value2,
+                            ],
+                            '&amp;'
+                        );
+                        $link = "<a href='$url'>" .
                           "<img src='" . $CFG_GLPI["root_doc"] . "/pics/stats_item.png' alt=''>" .
                           "</a>";
                     }
@@ -735,7 +775,18 @@ class Stat extends CommonGLPI
                     if ($nb_answersatisfaction > 0) {
                         $avgsatisfaction = round(array_sum($satisfaction) / $nb_answersatisfaction, 1);
                         if ($output_type == Search::HTML_OUTPUT) {
-                            $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
+                            // Display using the max number of stars defined in the root entity
+                            $max_rate = Entity::getUsedConfig(
+                                'inquest_config',
+                                0,
+                                'inquest_max_rate' . TicketSatisfaction::getConfigSufix()
+                            );
+                            if (!$max_rate) {
+                                $max_rate = 5;
+                            }
+                            // Scale satisfaction accordingly
+                            $avgsatisfaction = $avgsatisfaction * ($max_rate / 5);
+                            $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
                         }
                     } else {
                         $avgsatisfaction = '&nbsp;';
@@ -934,6 +985,7 @@ class Stat extends CommonGLPI
         if (!$item = getItemForItemtype($itemtype)) {
             return;
         }
+        /** @var CommonITILObject $item */
         $table          = $item->getTable();
         $fkfield        = $item->getForeignKeyField();
 
@@ -1149,7 +1201,7 @@ class Stat extends CommonGLPI
                             $devtable         => 'items_id', [
                                 'AND' => [
                                     "$devtable.itemtype" => Computer::class,
-                                    "$devtable.$fkname"  => $value
+                                    "$devtable.$fkname" => $value
                                 ]
                             ]
                         ]
@@ -1489,7 +1541,7 @@ class Stat extends CommonGLPI
                 $criteria = [
                     'SELECT'    => [
                         $date_unix,
-                        'AVG'  => "glpi_ticketsatisfactions.satisfaction AS total_visites"
+                        'AVG'  => "glpi_ticketsatisfactions.satisfaction_scaled_to_5 AS total_visites"
                     ],
                     'FROM'      => $table,
                     'WHERE'     => $WHERE,
@@ -1543,10 +1595,10 @@ class Stat extends CommonGLPI
     }
 
     /**
-     * @param $target
-     * @param $date1
-     * @param $date2
-     * @param $start
+     * @param string $target
+     * @param string $date1
+     * @param string $date2
+     * @param int $start
      **/
     public static function showItems($target, $date1, $date2, $start)
     {
@@ -1609,8 +1661,15 @@ class Stat extends CommonGLPI
                     $start,
                     $numrows,
                     $target,
-                    "date1=" . $date1 . "&amp;date2=" . $date2 .
-                                 "&amp;type=hardwares&amp;start=$start",
+                    Toolbox::append_params(
+                        [
+                            'date1'     => $date1,
+                            'date2'     => $date2,
+                            'type'      => 'hardwares',
+                            'start'     => $start,
+                        ],
+                        '&amp;'
+                    ),
                     'Stat'
                 );
                 echo "<div class='center'>";
@@ -1734,11 +1793,6 @@ class Stat extends CommonGLPI
             $stat_list["Change"]["Change_Change"]["file"]   = "stat.tracking.php?itemtype=Change";
         }
 
-       //Affichage du tableau de presentation des stats
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . __('Select statistics to be displayed') . "</th></tr>";
-        echo "<tr class='tab_bg_1'><td class='center'>";
-
         $values   = [$CFG_GLPI["root_doc"] . '/front/stat.php' => Dropdown::EMPTY_VALUE];
 
         $selected = -1;
@@ -1787,16 +1841,10 @@ class Stat extends CommonGLPI
             }
         }
 
-        Dropdown::showFromArray(
-            'statmenu',
-            $values,
-            ['on_change' => "window.location.href=this.options[this.selectedIndex].value",
-                'value'     => $selected
-            ]
-        );
-        echo "</td>";
-        echo "</tr>";
-        echo "</table>";
+        TemplateRenderer::getInstance()->display('pages/assistance/stats/title.html.twig', [
+            'values'   => $values,
+            'selected' => $selected
+        ]);
     }
 
 
@@ -1854,12 +1902,13 @@ class Stat extends CommonGLPI
         ?string $csv_link = null
     ) {
         $param = [
-            'width'   => 900,
+            'width'   => 800,
             'height'  => 300,
             'tooltip' => true,
             'legend'  => true,
             'animate' => true,
-            'csv'     => true
+            'csv'     => true,
+            'img'     => true
         ];
 
         if (is_array($options) && count($options)) {
@@ -1870,84 +1919,107 @@ class Stat extends CommonGLPI
 
         $slug = str_replace('-', '_', Toolbox::slugify($title));
         $this->checkEmptyLabels($labels);
-        $out = "<h2 class='center'>$title";
-        if ($param['csv'] && $csv_link) {
-            $out .= " <a href='$csv_link' title='" . __s('CSV') . "' class='pointer fa fa-file-alt export-stat'><span class='sr-only'>" . __('CSV') . "</span></a>";
-        }
-        $out .= "</h2>";
-        $out .= "<div id='$slug' class='chart'></div>";
-        Html::requireJs('charts');
-        $out .= "<script type='text/javascript'>
-                  $(function() {
-                     var chart_$slug = new Chartist.Line('#$slug', {
-                        labels: ['" . implode('\', \'', Toolbox::addslashes_deep($labels))  . "'],
-                        series: [";
 
-        $first = true;
+        $chart_options = [
+            'title' => ['text' => $title],
+            'tooltip' => [
+                'trigger'      => 'axis',
+                'appendToBody' => true,
+            ],
+            'grid' => [
+                'left'         => '3%',
+                'right'        => '4%',
+                'bottom'       => '3%',
+                'containLabel' => true,
+            ],
+            'toolbox' => [
+                'show'    => true,
+                'feature' => []
+            ],
+            'legend' => [
+                'show' => true,
+            ],
+            'xAxis' => [
+                'type'        => 'category',
+                'data'        => $labels,
+                'boundaryGap' => false,
+            ],
+            'yAxis' => [
+                'type' => 'value',
+            ],
+            'series' => [],
+        ];
+
         foreach ($series as $serie) {
-            if ($first === true) {
-                $first = false;
-            } else {
-                $out .= ",\n";
-            }
-            $serieData = implode(', ', $serie['data']);
-            if (isset($serie['name'])) {
-                $serieLabel = Toolbox::addslashes_deep($serie['name']);
-                $out .= "{'name': '$serieLabel', 'data': [$serieData]}";
-            } else {
-                $out .= "[$serieData]";
-            }
+            $chart_options['series'][] = [
+                'type' => 'line',
+                'areaStyle' => [
+                    'opacity' => 0.3,
+                ],
+                'name' => $serie['name'],
+                'data' => array_values($serie['data']),
+                'smooth'          => 0.4,
+                'lineStyle'       => [
+                    'width'  => 4
+                ],
+                'symbol'          => new Json_Expr(<<<JAVASCRIPT
+                    function(value) {
+                        return value > 0 ? 'circle': 'none';
+                    }
+JAVASCRIPT
+                ),
+                'symbolSize'      => 8,
+                'legendHoverLink' => true,
+            ];
         }
 
-        $out .= "
-                        ]
-                     }, {
-                        low: 0,
-                        showArea: true,
-                        width: '{$param['width']}',
-                        height: '{$param['height']}',
-                        fullWidth: true,
-                        lineSmooth: Chartist.Interpolation.simple({
-                           divisor: 10,
-                           fillHoles: false
-                        }),
-                        axisX: {
-                           labelOffset: {
-                              x: -" . mb_strlen($labels[0]) * 7  . "
-                           }
-                        }";
-
-        if ($param['legend'] === true || $param['tooltip'] === true) {
-            $out .= ", plugins: [";
-            if ($param['legend'] === true) {
-                $out .= "Chartist.plugins.legend()";
-            }
-            if ($param['tooltip'] === true) {
-                $out .= ($param['legend'] === true ? ',' : '') . "Chartist.plugins.tooltip()";
-            }
-            $out .= "]";
+        if ($param['csv'] && $csv_link) {
+            $chart_options['toolbox']['feature']['myCsvExport'] = [
+                'icon'    => 'path://M14,3v4a1,1,0,0,0,1,1h4 M17,21h-10a2,2,0,0,1,-2,-2v-14a2,2,0,0,1,2,-2h7l5,5v11a2,2,0,0,1,-2,2z M12,17v-6 M9.5,14.5l2.5,2.5l2.5,-2.5',
+                'title'   => __('Export to CSV'),
+                'onclick' => new Json_Expr(<<<JAVASCRIPT
+                    function () {
+                        location.href = '$csv_link';
+                    }
+JAVASCRIPT
+                ),
+            ];
         }
 
-        $out .= "});";
-
-        if ($param['animate'] === true) {
-                  $out .= "
-                     chart_$slug.on('draw', function(data) {
-                        if(data.type === 'line' || data.type === 'area') {
-                           data.element.animate({
-                              d: {
-                                 begin: 300 * data.index,
-                                 dur: 500,
-                                 from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                                 to: data.path.clone().stringify(),
-                                 easing: Chartist.Svg.Easing.easeOutQuint
-                              }
-                           });
-                        }
-                     });
-                  });";
+        if ($param['img']) {
+            $chart_options['toolbox']['feature']['saveAsImage'] = [
+                'icon'  => 'path://M15,8L15.01,8 M7,4h10s3,0,3,3v10s0,3,-3,3h-10s-3,0,-3,-3v-10s0,-3,3,-3 M4,15l4,-4a3,5,0,0,1,3,0l5,5 M14,14l1,-1a3,5,0,0,1,3,0l2,2',
+                'title' => __('Save as image'),
+            ];
         }
-        $out .= "</script>";
+
+        $height = $param['height'] . "px";
+        $width  = $param['width'] . "px";
+        $html = <<<HTML
+        <div class="card mb-3 d-inline-flex">
+            <div class="card-body">
+                <div class="chart" id='$slug' ></div>
+            </div>
+        </div>
+
+        <style>
+        #$slug {
+            width: $width;
+            height: $height;
+        }
+        </style>
+HTML;
+
+        $chart_options_json = Json::encode($chart_options, false, ['enableJsonExprFinder' => true]);
+        $js = <<<JAVASCRIPT
+        $(function () {
+            var myChart = echarts.init($('#{$slug}')[0]);
+            myChart.setOption($chart_options_json);
+        });
+JAVASCRIPT;
+        $js = Html::scriptBlock($js);
+
+        $out = $html . $js;
 
         if ($display) {
             echo $out;
@@ -2011,83 +2083,91 @@ class Stat extends CommonGLPI
 
         $slug = str_replace('-', '_', Toolbox::slugify($title));
         $this->checkEmptyLabels($labels);
-        $out = "<h2 class='center'>$title";
-        if ($param['csv']) {
-            $options['title'] = $title;
 
-            if ($csv_link) {
-                $out .= " <a href='$csv_link' title='" . __s('CSV') . "' class='pointer fa fa-file-alt export-stat'><span class='sr-only'>" . __('CSV') . "</span></a>";
-            }
-        }
-        $out .= "</h2>";
-        $out .= "<div id='$slug' class='chart'></div>";
-        $out .= "<script type='text/javascript'>
-                  $(function() {
-                     var $slug = new Chartist.Pie('#$slug', {
-                        labels: ['" . implode('\', \'', Toolbox::addslashes_deep($labels))  . "'],
-                        series: [";
+        $chart_options = [
+            'title' => [
+                'text' => $title,
+                'left' => 'center'
+            ],
+            'tooltip' => [
+                'trigger'      => 'item',
+                'appendToBody' => true,
+            ],
+            'toolbox' => [
+                'show'    => true,
+                'feature' => [
+                    'myCsvExport'    => [
+                        'icon'    => 'path://M14,3v4a1,1,0,0,0,1,1h4 M17,21h-10a2,2,0,0,1,-2,-2v-14a2,2,0,0,1,2,-2h7l5,5v11a2,2,0,0,1,-2,2z M12,17v-6 M9.5,14.5l2.5,2.5l2.5,-2.5',
+                        'title'   => __('Export to CSV'),
+                        'onclick' => new Json_Expr(<<<JAVASCRIPT
+                            function () {
+                                location.href = '$csv_link';
+                            }
+JAVASCRIPT
+                        ),
+                    ],
+                    'saveAsImage' => [
+                        'icon'  => 'path://M15,8L15.01,8 M7,4h10s3,0,3,3v10s0,3,-3,3h-10s-3,0,-3,-3v-10s0,-3,3,-3 M4,15l4,-4a3,5,0,0,1,3,0l5,5 M14,14l1,-1a3,5,0,0,1,3,0l2,2',
+                        'title' => __('Save as image'),
+                    ]
+                ],
+            ],
+            'series' => [
+                [
+                    'type'              => 'pie',
+                    'avoidLabelOverlap' => true,
+                    'data'              => [],
+                    'radius'            => ['35%', '60%'],
+                    'itemStyle'         => [
+                        'borderRadius' => 2,
+                        'borderColor'  => 'rgba(255, 255, 255, 0.5)',
+                        'borderWidth'  => 2,
+                    ],
+                    'selectedMode'      => 'single',
+                    'selectedOffset'    => 10,
+                    'startAngle'        => 180,
+                    'label'             => [
+                        'show' => count($labels) < 10,
+                    ],
+                    'labelLine'         => [
+                        'showAbove' => true,
+                    ],
+                ]
+            ]
+        ];
 
-        $first = true;
         foreach ($series as $serie) {
-            if ($first === true) {
-                $first = false;
-            } else {
-                $out .= ",\n";
-            }
-
-            $serieLabel = Toolbox::addslashes_deep($serie['name']);
-            $serieData = $serie['data'];
-            $out .= "{'meta': '$serieLabel', 'value': '$serieData'}";
+            $chart_options['series'][0]['data'][] = [
+                'name' => $serie['name'],
+                'value' => $serie['data'],
+            ];
         }
 
-        $out .= "
-                        ]
-                     }, {
-                        donut: true,
-                        showLabel: false,
-                        height: 300,
-                        width: 300,
-                        plugins: [
-                           Chartist.plugins.legend(),
-                           Chartist.plugins.tooltip()
-                        ]
-                     });
+        $html = <<<HTML
+        <div class="card d-inline-flex mx-auto mb-1">
+            <div class="card-body">
+                <div id='$slug' class='chart'></div>
+            </div>
+        </div>
 
-                     $slug.on('draw', function(data) {
-                        if(data.type === 'slice') {
-                           // Get the total path length in order to use for dash array animation
-                           var pathLength = data.element._node.getTotalLength();
+        <style>
+        #$slug {
+            width: 475px;
+            height: 300px;
+        }
+        </style>
+HTML;
 
-                           // Set a dasharray that matches the path length as prerequisite to animate dashoffset
-                           data.element.attr({
-                              'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
-                           });
+        $chart_options_json = Json::encode($chart_options, false, ['enableJsonExprFinder' => true]);
+        $js = <<<JAVASCRIPT
+        $(function () {
+            var myChart = echarts.init($('#{$slug}')[0]);
+            myChart.setOption($chart_options_json);
+        });
+JAVASCRIPT;
+        $js = Html::scriptBlock($js);
 
-                           // Create animation definition while also assigning an ID to the animation for later sync usage
-                           var animationDefinition = {
-                              'stroke-dashoffset': {
-                                 id: 'anim' + data.index,
-                                 dur: 300,
-                                 from: -pathLength + 'px',
-                                 to:  '0px',
-                                 easing: Chartist.Svg.Easing.easeOutQuint,
-                                 // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
-                                 fill: 'freeze'
-                              }
-                           };
-
-                           // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
-                           data.element.attr({
-                              'stroke-dashoffset': -pathLength + 'px'
-                           });
-
-                           // We can't use guided mode as the animations need to rely on setting begin manually
-                           // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
-                           data.element.animate(animationDefinition, false);
-                        }
-                     });
-                  });
-              </script>";
+        $out = $html . $js;
 
         if ($display) {
             echo $out;
@@ -2108,34 +2188,11 @@ class Stat extends CommonGLPI
      */
     public function displaySearchForm($itemtype, $date1, $date2, $display = true)
     {
-        $out = "<form method='get' name='form' action='stat.global.php'><div class='center'>";
-       // Keep it at first parameter
-        $out .= "<input type='hidden' name='itemtype' value='$itemtype'>";
-
-        $out .= "<table class='tab_cadre'>";
-        $out .= "<tr class='tab_bg_2'><td class='right'>" . __('Start date') . "</td><td>";
-        $out .= Html::showDateField(
-            'date1',
-            [
-                'value'   => $date1,
-                'display' => false
-            ]
-        );
-        $out .= "</td><td rowspan='2' class='center'>";
-        $out .= "<input type='submit' class='btn btn-primary' value='" . __s('Display report') . "'></td></tr>";
-
-        $out .= "<tr class='tab_bg_2'><td class='right'>" . __('End date') . "</td><td>";
-        $out .= Html::showDateField(
-            'date2',
-            [
-                'value'   => $date2,
-                'display' => false
-            ]
-        );
-        $out .= "</td></tr>";
-        $out .= "</table></div>";
-       // form using GET method : CRSF not needed
-        $out .= Html::closeForm(false);
+        $out = TemplateRenderer::getInstance()->render('pages/assistance/stats/global_form.html.twig', [
+            'itemtype' => $itemtype,
+            'date1'    => $date1,
+            'date2'    => $date2,
+        ]);
 
         if ($display) {
             echo $out;

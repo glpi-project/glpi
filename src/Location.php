@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,12 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
+use Glpi\Features\Clonable;
 use Glpi\Socket;
 
 /// Location class
 class Location extends CommonTreeDropdown
 {
     use MapGeolocation;
+    use Clonable;
 
    // From CommonDBTM
     public $dohistory          = true;
@@ -53,6 +57,16 @@ class Location extends CommonTreeDropdown
 
         return [
             [
+                'name'  => 'code',
+                'label' => __('Code'),
+                'type'  => 'text',
+                'list'  => true
+            ], [
+                'name'  => 'alias',
+                'label' => __('Alias'),
+                'type'  => 'text',
+                'list'  => true
+            ], [
                 'name'  => $this->getForeignKeyField(),
                 'label' => __('As child of'),
                 'type'  => 'parent',
@@ -176,6 +190,24 @@ class Location extends CommonTreeDropdown
             'table'              => 'glpi_locations',
             'field'              => 'country',
             'name'               => __('Country'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '106',
+            'table'              => 'glpi_locations',
+            'field'              => 'code',
+            'name'               => __('Location code'),
+            'massiveaction'      => false,
+            'datatype'           => 'string'
+        ];
+
+        $tab[] = [
+            'id'                 => '107',
+            'table'              => 'glpi_locations',
+            'field'              => 'alias',
+            'name'               => __('Location alias'),
             'massiveaction'      => false,
             'datatype'           => 'string'
         ];
@@ -342,6 +374,22 @@ class Location extends CommonTreeDropdown
             'datatype'           => 'string',
         ];
 
+        $tab[] = [
+            'id'                 => '106',
+            'table'              => 'glpi_locations',
+            'field'              => 'code',
+            'name'               => __('Location code'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '107',
+            'table'              => 'glpi_locations',
+            'field'              => 'alias',
+            'name'               => __('Location alias'),
+            'datatype'           => 'string',
+        ];
+
         return $tab;
     }
 
@@ -399,6 +447,23 @@ class Location extends CommonTreeDropdown
         return true;
     }
 
+    /**
+     * get item location
+     *
+     * @param CommonDBTM  $item
+     *
+     * @return Location|null
+     **/
+    final public static function getFromItem(CommonDBTM $item): ?Location
+    {
+        if ($item->maybeLocated()) {
+            $loc = new self();
+            if ($loc->getFromDB($item->fields['locations_id'])) {
+                return $loc;
+            }
+        }
+        return null;
+    }
 
     /**
      * Print the HTML array of items for a location
@@ -433,12 +498,12 @@ class Location extends CommonTreeDropdown
             $itemtype_criteria = [
                 'SELECT' => [
                     "$table.id",
-                    new \QueryExpression($DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('type')),
+                    new QueryExpression($DB->quoteValue($itemtype) . ' AS ' . $DB->quoteName('type')),
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
                     "$table.locations_id"   => $locations_id,
-                ]
+                ] + $item->getSystemSQLCriteria()
             ];
             if ($item->maybeDeleted()) {
                 $itemtype_criteria['WHERE']['is_deleted'] = 0;
@@ -450,7 +515,7 @@ class Location extends CommonTreeDropdown
 
             $queries[] = $itemtype_criteria;
         }
-        $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new \QueryUnion($queries)];
+        $criteria = count($queries) === 1 ? $queries[0] : ['FROM' => new QueryUnion($queries)];
 
         $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
         $criteria['START'] = $start;
@@ -545,5 +610,10 @@ class Location extends CommonTreeDropdown
             $input['altitude'] = $parent->fields['altitude'];
         }
         return $input;
+    }
+
+    public function getCloneRelations(): array
+    {
+        return [];
     }
 }

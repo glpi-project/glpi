@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,9 +34,12 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Features\DCBreadcrumb;
 use Glpi\Plugin\Hooks;
 use Glpi\SocketModel;
-use Glpi\Toolbox\Sanitizer;
 
 class Dropdown
 {
@@ -184,10 +187,22 @@ class Dropdown
         }
 
         if ($params['readonly']) {
-            return '<span class="form-control" readonly'
+            $output = '';
+            if ($params["multiple"]) {
+                $field_name = $params['name'] . "[]";
+                $values = $params['values'];
+            } else {
+                $field_name = $params['name'];
+                $values = [$params['value']];
+            }
+            foreach ($values as $value) {
+                $output .= "<input type='hidden' name='" . $field_name . "' value='$value'>";
+            }
+            $output .= '<span class="form-control" readonly'
                 . ($params['width'] ? ' style="width: ' . $params["width"] . '"' : '') . '>'
                 . ($params['multiple'] ? implode(', ', $names) : $name)
                 . '</span>';
+            return $output;
         }
 
        // Manage entity_sons
@@ -210,12 +225,6 @@ class Dropdown
            // Put condition in session and replace it by its key
            // This is made to prevent passing to many parameters when calling the ajax script
             $params['condition'] = static::addNewCondition($params['condition']);
-        }
-
-        if ($params['multiple']) {
-            $names = Sanitizer::unsanitize($names);
-        } else {
-            $name = Sanitizer::unsanitize($name);
         }
 
         $p = [
@@ -360,7 +369,8 @@ class Dropdown
             }
 
             if ($params['display_dc_position']) {
-                if ($rack = $item->isRackPart($itemtype, $params['value'], true)) {
+                /** @var DCBreadcrumb $item */
+                if ($rack = $item->getParentRack()) {
                     $dc_icon = "<span id='" . $breadcrumb_id . "' title='" . __s('Display on datacenter') . "'>";
                     $dc_icon .= "&nbsp;<a class='fas fa-crosshairs' href='" . $rack->getLinkURL() . "'></a>";
                     $dc_icon .= "</span>";
@@ -477,13 +487,13 @@ class Dropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        $item = getItemForItemtype(getItemTypeForTable($table));
+        $itemtype = getItemTypeForTable($table);
 
-        if (!is_object($item)) {
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
             return $default;
         }
 
-        if ($item instanceof CommonTreeDropdown) {
+        if (is_a($itemtype, CommonTreeDropdown::class, true)) {
             return getTreeValueCompleteName($table, $id, $withcomment, $translate, $tooltip, $default);
         }
 
@@ -491,8 +501,8 @@ class Dropdown
         $comment = "";
 
         if ($id) {
-            $SELECTNAME    = new \QueryExpression("'' AS " . $DB->quoteName('transname'));
-            $SELECTCOMMENT = new \QueryExpression("'' AS " . $DB->quoteName('transcomment'));
+            $SELECTNAME    = new QueryExpression("'' AS " . $DB->quoteName('transname'));
+            $SELECTCOMMENT = new QueryExpression("'' AS " . $DB->quoteName('transcomment'));
             $JOIN          = [];
             $JOINS         = [];
             if ($translate) {
@@ -555,7 +565,7 @@ class Dropdown
                 if ($translate && !empty($data['transname'])) {
                     $name = $data['transname'];
                 } else {
-                    $name = $data[$item->getNameField()];
+                    $name = $data[$itemtype::getNameField()];
                 }
                 if (isset($data["comment"])) {
                     if ($translate && !empty($data['transcomment'])) {
@@ -923,16 +933,13 @@ JAVASCRIPT;
         }
     }
 
-
     /**
-     * Dropdown for GMT selection
+     * Get possible values for a "GMT Dropdown"
      *
-     * @param string $name   select name
-     * @param mixed  $value  default value (default '')
-     **/
-    public static function showGMT($name, $value = '')
+     * @return array
+     */
+    public static function getGMTValues(): array
     {
-
         $elements = [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
             '+1', '+2', '+3', '+3.5', '+4', '+4.5', '+5', '+5.5', '+6', '+6.5', '+7',
             '+8', '+9', '+9.5', '+10', '+11', '+12', '+13'
@@ -950,10 +957,22 @@ JAVASCRIPT;
                     )
                 );
             } else {
-                $display_value                   = __('GMT');
                 $values[$element * HOUR_TIMESTAMP] = __('GMT');
             }
         }
+
+        return $values;
+    }
+
+    /**
+     * Dropdown for GMT selection
+     *
+     * @param string $name   select name
+     * @param mixed  $value  default value (default '')
+     **/
+    public static function showGMT($name, $value = '')
+    {
+        $values = self::getGMTValues();
         Dropdown::showFromArray($name, $values, ['value' => $value]);
     }
 
@@ -1088,7 +1107,8 @@ JAVASCRIPT;
                     'State' => null,
                     'Manufacturer' => null,
                     'Blacklist' => null,
-                    'BlacklistedMailContent' => null
+                    'BlacklistedMailContent' => null,
+                    'DefaultFilter' => null,
                 ],
 
                 __('Assistance') => [
@@ -1097,6 +1117,7 @@ JAVASCRIPT;
                     'TaskTemplate' => null,
                     'SolutionType' => null,
                     'SolutionTemplate' => null,
+                    'ITILValidationTemplate' => null,
                     'RequestType' => null,
                     'ITILFollowupTemplate' => null,
                     'ProjectState' => null,
@@ -1137,7 +1158,7 @@ JAVASCRIPT;
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null
-                ],
+                ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetTypesClassesNames(), null),
 
                 _n('Model', 'Models', Session::getPluralNumber()) => [
                     'ComputerModel' => null,
@@ -1167,7 +1188,7 @@ JAVASCRIPT;
                     'EnclosureModel' => null,
                     'PDUModel' => null,
                     'PassiveDCEquipmentModel' => null,
-                ],
+                ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetModelsClassesNames(), null),
 
                 _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                     'VirtualMachineType' => null,
@@ -1605,6 +1626,7 @@ JAVASCRIPT;
      *    - showItemSpecificity : given an item, the AJAX file to open if there is special
      *                            treatment. For instance, select a Item_Device* for CommonDevice
      *    - emptylabel          : Empty choice's label (default self::EMPTY_VALUE)
+     *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default true)
      *    - used                : array / Already used items ID: not to display in dropdown (default empty)
      *    - display             : true : display directly, false return the html
      *
@@ -1615,21 +1637,24 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $params = [];
-        $params['itemtype_name']          = 'itemtype';
-        $params['items_id_name']          = 'items_id';
-        $params['itemtypes']              = '';
-        $params['default_itemtype']       = 0;
-        $params['entity_restrict']        = -1;
-        $params['onlyglobal']             = false;
-        $params['checkright']             = false;
-        $params['showItemSpecificity']    = '';
-        $params['emptylabel']             = self::EMPTY_VALUE;
-        $params['used']                   = [];
-        $params['ajax_page']              = $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php";
-        $params['display']                = true;
-        $params['rand']                   = mt_rand();
-        $params['itemtype_track_changes'] = false;
+        $params = [
+            'itemtype_name'             => 'itemtype',
+            'items_id_name'             => 'items_id',
+            'itemtypes'                 => '',
+            'default_itemtype'          => 0,
+            'default_items_id'          => -1,
+            'entity_restrict'           => -1,
+            'onlyglobal'                => false,
+            'checkright'                => false,
+            'showItemSpecificity'       => '',
+            'emptylabel'                => self::EMPTY_VALUE,
+            'display_emptychoice'       => true,
+            'used'                      => [],
+            'ajax_page'                 => $CFG_GLPI["root_doc"] . "/ajax/dropdownAllItems.php",
+            'display'                   => true,
+            'rand'                      => mt_rand(),
+            'itemtype_track_changes'    => false,
+        ];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1638,12 +1663,13 @@ JAVASCRIPT;
         }
 
         $select = self::showItemType($params['itemtypes'], [
-            'checkright'    => $params['checkright'],
-            'name'          => $params['itemtype_name'],
-            'emptylabel'    => $params['emptylabel'],
-            'display'       => $params['display'],
-            'rand'          => $params['rand'],
-            'track_changes' => $params['itemtype_track_changes'],
+            'checkright'          => $params['checkright'],
+            'name'                => $params['itemtype_name'],
+            'emptylabel'          => $params['emptylabel'],
+            'display_emptychoice' => $params['display_emptychoice'],
+            'display'             => $params['display'],
+            'rand'                => $params['rand'],
+            'track_changes'       => $params['itemtype_track_changes'],
         ]);
 
         $p_ajax = [
@@ -1660,6 +1686,15 @@ JAVASCRIPT;
         }
         if ($params['used']) {
             $p_ajax['used'] = $params['used'];
+        }
+        if (!empty($params['default_itemtype']) && $params['default_items_id'] > 0) {
+            $p_ajax["value"] = $params['default_items_id'];
+            // If default itemtype is a CommonDBTM
+            if (is_subclass_of($params['default_itemtype'], 'CommonDBTM', true)) {
+                $item = new $params['default_itemtype']();
+                $item->getFromDB($params['default_items_id']);
+                $p_ajax["valuename"] = $item->getName();
+            }
         }
 
         $field_id = Html::cleanId("dropdown_" . $params['itemtype_name'] . $params['rand']);
@@ -1883,6 +1918,8 @@ JAVASCRIPT;
      *    - inhours         : only show timestamp in hours not in days
      *    - display         : boolean / display or return string
      *    - width           : string / display width of the item
+     *    - allow_max_change: boolean / allow to change max value according to max($params['value'], $params['max']) (default true).
+     *                        If false and the value is greater than the max, the value will be adjusted based on the step and then added to the dropdown as an extra option.
      **/
     public static function showTimeStamp($myname, $options = [])
     {
@@ -1902,6 +1939,9 @@ JAVASCRIPT;
         $params['display_emptychoice'] = true;
         $params['width']               = '';
         $params['class']               = 'form-select';
+        $params['allow_max_change']    = true;
+        $params['readonly']            = false;
+        $params['disabled']            = false;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -1916,7 +1956,9 @@ JAVASCRIPT;
             $params['min'] = $params['step'];
         }
 
-        $params['max'] = max($params['value'], $params['max']);
+        if ($params['allow_max_change']) {
+            $params['max'] = max($params['value'], $params['max']);
+        }
 
        // Floor with MINUTE_TIMESTAMP for rounded purpose
         if (empty($params['value'])) {
@@ -1930,6 +1972,10 @@ JAVASCRIPT;
         } else if (!in_array($params['value'], $params['toadd'])) {
            // Round to a valid step except if value is already valid (defined in values to add)
             $params['value'] = floor(($params['value']) / $params['step']) * $params['step'];
+        }
+
+        if (!$params['allow_max_change'] && $params['value'] > $params['max']) {
+            $params['toadd'][] = $params['value'];
         }
 
         // Generate array keys
@@ -2005,6 +2051,8 @@ JAVASCRIPT;
             'rand'                => $params['rand'],
             'emptylabel'          => $params['emptylabel'],
             'class'               => $params['class'],
+            'readonly'            => $params['readonly'],
+            'disabled'            => $params['disabled'],
         ]);
     }
 
@@ -2154,6 +2202,10 @@ JAVASCRIPT;
             $output .= '<span class="form-control" readonly style="width: ' . $param["width"] . '">' . implode(', ', $to_display) . '</span>';
         } else {
             $output  .= "<select name='$field_name' id='$field_id'";
+
+            if ($param['width'] !== '') {
+                $output .= " style='width: " . $param['width'] . "'";
+            }
 
             if ($param['tooltip']) {
                 $output .= ' title="' . Html::entities_deep($param['tooltip']) . '"';
@@ -2320,10 +2372,11 @@ JAVASCRIPT;
      *
      * @param string  $name   select name
      * @param integer $value  default value (default 0)
+     * @param array   $options
      *
      * @return void
      **/
-    public static function showFrequency($name, $value = 0)
+    public static function showFrequency($name, $value = 0, $options = [])
     {
 
         $tab = [];
@@ -2349,7 +2402,9 @@ JAVASCRIPT;
         $tab[WEEK_TIMESTAMP]  = __('Each week');
         $tab[MONTH_TIMESTAMP] = __('Each month');
 
-        Dropdown::showFromArray($name, $tab, ['value' => $value]);
+        Dropdown::showFromArray($name, $tab, $options + [
+            'value' => $value
+        ]);
     }
 
     /**
@@ -2669,7 +2724,7 @@ JAVASCRIPT;
             $post['emptylabel'] = Dropdown::EMPTY_VALUE;
         }
 
-        $where = [];
+        $where = $item->getSystemSQLCriteria();
 
         if ($item->maybeDeleted()) {
             $where["$table.is_deleted"] = 0;
@@ -2710,7 +2765,14 @@ JAVASCRIPT;
             if (isset($post['condition']['WHERE'])) {
                 $where = array_merge($where, $post['condition']['WHERE']);
             } else {
-                $where = array_merge($where, $post['condition']);
+                foreach ($post['condition'] as $key => $value) {
+                    if (!is_numeric($key) && !str_contains($key, '.')) {
+                        // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
+                        $where["$table.$key"] = $value;
+                    } else {
+                        $where[$key] = $value;
+                    }
+                }
             }
         }
 
@@ -2733,16 +2795,21 @@ JAVASCRIPT;
                 $where["$table.id"] = $one_item;
             } else {
                 if (!empty($post['searchText'])) {
-                    $raw_search     = Search::makeTextSearchValue($post['searchText']);
-                    $encoded_search = Sanitizer::encodeHtmlSpecialChars($raw_search);
+                    $search = Search::makeTextSearchValue($post['searchText']);
 
                     $swhere = [
-                        ["$table.completename" => ['LIKE', $raw_search]],
-                        ["$table.completename" => ['LIKE', $encoded_search]],
+                        "OR" => [
+                            "$table.completename" => ['LIKE', $search]
+                        ]
                     ];
+                    if ($item->isField('code')) {
+                        $swhere["OR"]["$table.code"] = ['LIKE', $search];
+                    }
+                    if ($item->isField('alias')) {
+                        $swhere["OR"]["$table.alias"] = ['LIKE', $search];
+                    }
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
-                        $swhere[] = ["namet.value" => ['LIKE', $raw_search]];
-                        $swhere[] = ["namet.value" => ['LIKE', $encoded_search]];
+                        $swhere["namet.value"] = ['LIKE', $search];
                     }
 
                     if (
@@ -2755,8 +2822,7 @@ JAVASCRIPT;
                    // search also in displaywith columns
                     if ($displaywith && count($post['displaywith'])) {
                         foreach ($post['displaywith'] as $with) {
-                            $swhere[] = ["$table.$with" => ['LIKE', $raw_search]];
-                            $swhere[] = ["$table.$with" => ['LIKE', $encoded_search]];
+                            $swhere["$table.$with"] = ['LIKE', $search];
                         }
                     }
 
@@ -2813,7 +2879,13 @@ JAVASCRIPT;
                 }
 
                 if ($multi) {
-                    array_unshift($order, "$table.entities_id");
+                    $ljoin['glpi_entities'] = [
+                        'ON' => [
+                            'glpi_entities' => 'id',
+                            $table          => 'entities_id'
+                        ]
+                    ];
+                    array_unshift($order, "glpi_entities.completename");
                 }
             }
 
@@ -2901,7 +2973,7 @@ JAVASCRIPT;
                     foreach ($toadd as $key => $val) {
                         $datas[] = [
                             'id' => $key,
-                            'text' => stripslashes($val)
+                            'text' => $val
                         ];
                     }
                 }
@@ -2955,8 +3027,6 @@ JAVASCRIPT;
                             $outputval = $data['completename'];
                         }
 
-                        $outputval = CommonTreeDropdown::sanitizeSeparatorInCompletename($outputval);
-
                         $level = 0;
                     } else { // Need to check if parent is the good one
                         // Do not do if only get one item
@@ -2975,8 +3045,6 @@ JAVASCRIPT;
                                         // Do not do for first item for next page load
                                         if (!$firstitem) {
                                             $title = $item->fields['completename'];
-
-                                            $title = CommonTreeDropdown::sanitizeSeparatorInCompletename($title);
 
                                             $selection_text = $title;
 
@@ -3046,7 +3114,14 @@ JAVASCRIPT;
                             $title = $data['completename'];
                         }
 
-                        $title = CommonTreeDropdown::sanitizeSeparatorInCompletename($title);
+                        if (isset($data['alias']) && !empty($data['alias'])) {
+                            $outputval = $data['alias'];
+                            $title     = $data['alias'];
+                        }
+                        if (isset($data['code']) && !empty($data['code'])) {
+                            $outputval .= ' - ' . $data['code'];
+                            $title     .= ' - ' . $data['code'];
+                        }
 
                         $selection_text = $title;
 
@@ -3128,13 +3203,8 @@ JAVASCRIPT;
             }
 
             if (!empty($post['searchText'])) {
-                $raw_search     = Search::makeTextSearchValue($post['searchText']);
-                $encoded_search = Sanitizer::encodeHtmlSpecialChars($raw_search);
-
-                $orwhere = [
-                    ["$table.$field" => ['LIKE', $raw_search]],
-                    ["$table.$field" => ['LIKE', $encoded_search]],
-                ];
+                $search = Search::makeTextSearchValue($post['searchText']);
+                $orwhere = ["$table.$field" => ['LIKE', $search]];
 
                 if (
                     $_SESSION['glpiis_ids_visible']
@@ -3144,24 +3214,20 @@ JAVASCRIPT;
                 }
 
                 if ($item instanceof CommonDCModelDropdown) {
-                    $orwhere[] = [$table . '.product_number' => ['LIKE', $raw_search]];
-                    $orwhere[] = [$table . '.product_number' => ['LIKE', $encoded_search]];
+                    $orwhere[$table . '.product_number'] = ['LIKE', $search];
                 }
 
                 if (Session::haveTranslations($post['itemtype'], $field)) {
-                    $orwhere[] = ['namet.value' => ['LIKE', $raw_search]];
-                    $orwhere[] = ['namet.value' => ['LIKE', $encoded_search]];
+                    $orwhere['namet.value'] = ['LIKE', $search];
                 }
                 if ($post['itemtype'] == "SoftwareLicense") {
-                    $orwhere[] = ['glpi_softwares.name' => ['LIKE', $raw_search]];
-                    $orwhere[] = ['glpi_softwares.name' => ['LIKE', $encoded_search]];
+                    $orwhere['glpi_softwares.name'] = ['LIKE', $search];
                 }
 
                // search also in displaywith columns
                 if ($displaywith && count($post['displaywith'])) {
                     foreach ($post['displaywith'] as $with) {
-                        $orwhere[] = ["$table.$with" => ['LIKE', $raw_search]];
-                        $orwhere[] = ["$table.$with" => ['LIKE', $encoded_search]];
+                        $orwhere["$table.$with"] = ['LIKE', $search];
                     }
                 }
 
@@ -3206,9 +3272,13 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => [
                             "$table.entities_id",
-                            new \QueryExpression(
-                                "CONCAT(IFNULL(" . $DB->quoteName('name') . ",''),' ',IFNULL(" .
-                                $DB->quoteName('firstname') . ",'')) AS " . $DB->quoteName($field)
+                            QueryFunction::concat(
+                                params: [
+                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
+                                    new QueryExpression($DB::quoteValue(' ')),
+                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue('')))
+                                ],
+                                alias:$field
                             ),
                             "$table.comment",
                             "$table.id"
@@ -3221,7 +3291,10 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => [
                             "$table.*",
-                            new \QueryExpression("CONCAT(glpi_softwares.name,' - ',glpi_softwarelicenses.name) AS $field")
+                            QueryFunction::concat(
+                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                alias: $field
+                            ),
                         ],
                         'FROM'   => $table,
                         'LEFT JOIN' => [
@@ -3271,6 +3344,24 @@ JAVASCRIPT;
                        /*if (isset($visibility['WHERE'])) {
                          $where = $visibility['WHERE'];
                        }*/
+                    }
+                    break;
+
+                case Ticket::class:
+                    $criteria = [
+                        'SELECT' => array_merge(["$table.*"], $addselect),
+                        'FROM'   => $table,
+                    ];
+                    if (count($ljoin)) {
+                        $criteria['LEFT JOIN'] = $ljoin;
+                    }
+                    if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
+                        $unused_ref = [];
+                        $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
+                        if (!empty($joins_str)) {
+                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        }
+                        $where[] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
                     }
                     break;
 
@@ -3330,7 +3421,7 @@ JAVASCRIPT;
                     foreach ($toadd as $key => $val) {
                         $datas[] = [
                             'id' => $key,
-                            'text' => stripslashes($val)
+                            'text' => $val
                         ];
                     }
                 }
@@ -3432,7 +3523,7 @@ JAVASCRIPT;
             }
         }
 
-        $ret['results'] = Sanitizer::unsanitize($datas);
+        $ret['results'] = $datas;
         $ret['count']   = $count;
 
         return ($json === true) ? json_encode($ret) : $ret;
@@ -3491,15 +3582,11 @@ JAVASCRIPT;
         }
 
         if (isset($post['searchText']) && (strlen($post['searchText']) > 0)) {
-            $raw_search     = Search::makeTextSearchValue($post['searchText']);
-            $encoded_search = Sanitizer::encodeHtmlSpecialChars($raw_search);
+            $search = Search::makeTextSearchValue($post['searchText']);
             $where['OR'] = [
-                ["$table.name"        => ['LIKE', $raw_search]],
-                ["$table.name"        => ['LIKE', $encoded_search]],
-                ["$table.otherserial" => ['LIKE', $raw_search]],
-                ["$table.otherserial" => ['LIKE', $encoded_search]],
-                ["$table.serial"      => ['LIKE', $raw_search]],
-                ["$table.serial"      => ['LIKE', $encoded_search]],
+                "$table.name"        => ['LIKE', $search],
+                "$table.otherserial" => ['LIKE', $search],
+                "$table.serial"      => ['LIKE', $search]
             ];
         }
 
@@ -3682,7 +3769,7 @@ JAVASCRIPT;
             return;
         }
 
-        $where = [];
+        $where = [$post['itemtype']::getSystemSQLCriteria()];
         if (isset($post['used']) && !empty($post['used'])) {
             $where['NOT'] = ['id' => $post['used']];
         }
@@ -3693,6 +3780,10 @@ JAVASCRIPT;
 
         if ($item->maybeTemplate()) {
             $where['is_template'] = 0;
+        }
+
+        if ($item->isField('states_id')) {
+            $where[] = State::getDisplayConditionForAssistance();
         }
 
         if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
@@ -3846,7 +3937,7 @@ JAVASCRIPT;
             if (count($toadd)) {
                 foreach ($toadd as $key => $val) {
                     $data[] = ['id' => $key,
-                        'text' => (string)stripslashes($val)
+                        'text' => (string)$val
                     ];
                 }
             }
@@ -3905,7 +3996,7 @@ JAVASCRIPT;
                 }
                 $data[] = [
                     'id' => $value,
-                    'text' => (string)stripslashes($txt)
+                    'text' => (string)$txt
                 ];
                 $count++;
             }

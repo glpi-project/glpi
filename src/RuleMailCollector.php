@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,8 +38,6 @@ class RuleMailCollector extends Rule
 {
    // From Rule
     public static $rightname = 'rule_mailcollector';
-    public $orderby   = "name";
-    public $can_sort  = true;
 
 
     /**
@@ -312,11 +310,11 @@ class RuleMailCollector extends Rule
                             if ($res != null) {
                                 switch ($action->fields["field"]) {
                                     case "_affect_entity_by_domain":
-                                        $entity_found = Entity::getEntityIDByDomain(addslashes($res));
+                                        $entity_found = Entity::getEntityIDByDomain($res);
                                         break;
 
                                     case "_affect_entity_by_tag":
-                                          $entity_found = Entity::getEntityIDByTag(addslashes($res));
+                                          $entity_found = Entity::getEntityIDByTag($res);
                                         break;
                                 }
 

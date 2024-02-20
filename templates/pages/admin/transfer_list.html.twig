@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% set transfer_list = transfer_list|default({}) %}
+{% set rand = random() %}
+
+<div class="asset">
+   {% if transfer_list|length > 0 %}
+      <div class="alert alert-info">
+         {{ __('You can continue to add elements to be transferred or execute the transfer now.') }}
+         <br>
+         {{ __('Think of making a backup before transfering items.') }}
+      </div>
+      {{ fields.dropdownField('Transfer', 'id', 0, __('Transfer mode'), {
+         rand: rand,
+         comments: false,
+         toupdate: {
+            value_fieldname: 'id',
+            to_update: 'transfer_form',
+            url: config('root_doc') ~ '/ajax/transfers.php',
+         }
+      }) }}
+      <div id="transfer_form">
+         <form action="{{ config('root_doc') ~ '/front/transfer.action.php' }}" method="post">
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            {{ inputs.button('clear', __('Clear the list of elements to be transferred'), 'submit', 'clear') }}
+         </form>
+      </div>
+      <table class="table table-striped">
+         <thead>
+            <tr>
+               <th colspan="4">{{ __('Items to transfer') }}</th>
+            </tr>
+            <tr>
+               <th>{{ _n('Type', 'Types', 1) }}</th>
+               <th>{{ 'Entity'|itemtype_name }}</th>
+               <th>{{ __('ID') }}</th>
+               <th>{{ __('Name') }}</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for itemtype, items in transfer_list %}
+               {% for item in items %}
+                  <tr>
+                     <td>{{ itemtype|itemtype_name }}</td>
+                     <td>{{ item['locname'] }}</td>
+                     <td>{{ item['id'] }}</td>
+                     <td>{{ item['name']|default('(' ~ item['id'] ~ ')') }}</td>
+                  </tr>
+               {% endfor %}
+            {% endfor %}
+         </tbody>
+      </table>
+      {% do call('Ajax::updateItemOnSelectEvent', [
+         "dropdown_id" ~ rand,
+         "transfer_form",
+         config('root_doc') ~ '/ajax/transfers.php',
+         {
+            "id": "__VALUE__"
+         }
+      ]) %}
+   {% else %}
+      <div class="alert alert-danger">
+         {{ __('No selected element or badly defined operation') }}
+      </div>
+   {% endif %}
+</div>

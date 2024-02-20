@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -41,8 +41,8 @@
                data-bs-toggle="dropdown" data-bs-auto-close="outside">
                {% if not anonymous %}
                   <div class="pe-2 d-none d-xl-block">
-                     <div>{{ (session('glpiactiveprofile')['name'] ?? '')|verbatim_value|u.truncate(35, '...') }}</div>
-                     {% set entity_completename = session('glpiactive_entity_name')|verbatim_value %}
+                     <div>{{ (session('glpiactiveprofile')['name'] ?? '')|u.truncate(35, '...') }}</div>
+                     {% set entity_completename = session('glpiactive_entity_name') %}
                      <div class="mt-1 small text-muted" title="{{ entity_completename }}"
                           data-bs-toggle="tooltip" data-bs-placement="bottom">
                         {{ entity_completename|truncate_left }}
@@ -102,7 +102,7 @@
                <div class="dropdown-divider"></div>
 
                <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
-                  <i class="ti fa-fw ti-adjustments-alt"></i>
+                  <i class="fas fa-user-cog"></i>
                   {{ __('My settings') }}
                </a>
                <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">

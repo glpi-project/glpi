@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,14 +36,14 @@
 namespace Glpi\Tests\Log;
 
 use Monolog\Handler\TestHandler as BaseTestHandler;
-use Monolog\Logger;
+use Monolog\Level;
 
 class TestHandler extends BaseTestHandler
 {
     public function dropFromRecords(string $message, int $level): void
     {
         foreach ($this->records as $index => $record) {
-            if (Logger::toMonologLevel($record['level']) === $level && $record['message'] === $message) {
+            if ($record['level'] === $level && $record['message'] === $message) {
                 unset($this->records[$index]);
                 break;
             }

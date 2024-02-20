@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -32,7 +32,6 @@
  #}
 
 {% extends 'components/itilobject/timeline/form_timeline_item.html.twig' %}
-{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set params = {'parent': item}|merge(params|default({})) %}
 
@@ -99,7 +98,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set merged_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
                      </span>
                   {% endset %}
@@ -111,7 +110,7 @@
                <span class="badge bg-blue-lt">
                   <i class="fas fa-code-branch me-1"></i>
                   {% set promoted_badge %}
-                     <span class="badge ms-2 me-n2">
+                     <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
                      </span>
                   {% endset %}
@@ -129,7 +128,7 @@
                {'action':     'change_task_state',
                   'tasks_id':   tasks_id,
                   'parenttype': '{{ item.getType() }}',
-                  '{{ item.getForeignKeyField() }}': {{ item.fields['id'] }}
+                  '{{ item.getForeignKeyField() }}': {{ item.fields.id }}
                })
                .done(function(response) {
                   $(target).closest('.timeline-item').find('.state')
@@ -153,313 +152,7 @@
          }
       </script>
    {% else %}
-      <div class="itiltask">
-         <form name="asset_form" style="width: 100%;" class="d-flex flex-column" method="post"
-               action="{{ subitem.getFormURL() }}"  enctype="multipart/form-data" data-track-changes="true" data-submit-once {{ formoptions|raw }}>
-            <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
-            <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
-            {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
-
-            <div class="row mx-n3 mx-xxl-auto">
-               <div class="col-12 col-xl-7 col-xxl-8">
-                  {{ fields.textareaField(
-                     'content',
-                     subitem.fields['content'],
-                     '',
-                     {
-                        'full_width': true,
-                        'no_label': true,
-                        'enable_richtext': true,
-                        'enable_fileupload': true,
-                        'enable_mentions': true,
-                        'entities_id': item.fields['entities_id'],
-                        'rand': rand,
-                     }
-                  ) }}
-               </div>
-               <div class="col-12 col-xl-5 col-xxl-4 order-first order-md-last pe-0 pe-xxl-auto">
-                  <div class="row">
-
-                     {% set task_template_lbl %}
-                        <i class="fas fa-reply fa-fw me-1"
-                           title="{{ _n('Task template', 'Task templates', get_plural_number()) }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownField(
-                        'TaskTemplate',
-                        'tasktemplates_id',
-                        subitem.fields['tasktemplates_id'],
-                        task_template_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'on_change': 'itiltasktemplate_update' ~ rand ~ '(this.value)',
-                           'entity': item.fields['entities_id'],
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {% set task_date_lbl %}
-                        <i class="fas fa-calendar fa-fw me-1"
-                           title="{{ _n('Date', 'Dates', 1) }}"></i>
-                     {% endset %}
-                     {{ fields.datetimeField(
-                        'date',
-                        subitem.fields['date'],
-                        task_date_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {# Category #}
-                     {% set task_category_lbl %}
-                        <i class="fas fa-tag fa-fw me-1" title="{{ _n('Category', 'Categories', 1) }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownField(
-                        'TaskCategory',
-                        'taskcategories_id',
-                        subitem.fields['taskcategories_id'],
-                        task_category_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'entity': item.fields['entities_id'],
-                           'condition': {
-                              'is_active': 1,
-                           },
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {# Status #}
-                     {% set task_state_lbl %}
-                        <i class="fas fa-tasks fa-fw me-1" title="{{ __('Status') }}"></i>
-                     {% endset %}
-
-                     {% set task_state %}
-                        {% do call('Planning::dropdownState', ['state', subitem.fields['state'], true, {'rand': rand}]) %}
-                     {% endset %}
-
-                     {{ fields.htmlField(
-                        'state',
-                        task_state,
-                        task_state_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {% set task_private_lbl %}
-                        <i class="ti ti-lock fa-fw me-1" title="{{ __('Private') }}"></i>
-                     {% endset %}
-                     {{ fields.sliderField(
-                        'is_private',
-                        subitem.fields['is_private'],
-                        task_private_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {% if can_read_kb and kb_id_toload > 0 %}
-                        {% set link_kb_lbl %}
-                           <i class="fas fa-link fa-fw me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Link to knowledge base entry #%id')|replace({'%id': kb_id_toload}) }}"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           'kb_linked_id',
-                           1,
-                           link_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                              'yes_value': kb_id_toload,
-                           }
-                        ) }}
-                     {% endif %}
-
-                     {% if candedit and can_update_kb and not nokb %}
-                        {% set task_to_kb_lbl %}
-                           <i class="far fa-save fa-fw me-1" title="{{ __('Save and add to the knowledge base') }}"
-                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
-                        {% endset %}
-                        {{ fields.sliderField(
-                           '_task_to_kb',
-                           0,
-                           task_to_kb_lbl,
-                           {
-                              'full_width': true,
-                              'icon_label': true,
-                              'rand': rand,
-                           }
-                        ) }}
-                     {% endif %}
-
-                     {# Duration #}
-                     {% set task_actiontime_lbl %}
-                        <i class="fas fa-stopwatch fa-fw me-1" title="{{ __('Duration') }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
-                        'full_width': true,
-                        'icon_label': true,
-                        'rand': rand,
-                        'min': 0,
-                        'max': 8 * constant('HOUR_TIMESTAMP'),
-                        'addfirstminutes': true,
-                        'inhours': true,
-                        'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
-                     }) }}
-
-                     {# User #}
-                     {% set task_user_lbl %}
-                        <i class="fas fa-user fa-fw me-1" title="{{ 'User'|itemtype_name }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownField(
-                        'User',
-                        'users_id_tech',
-                        subitem.fields['users_id_tech']|default(session('glpiID')),
-                        task_user_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'entity': item.fields['entities_id'],
-                           'right': 'own_ticket',
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     {# Group #}
-                     {% set task_group_lbl %}
-                        <i class="fas fa-users fa-fw me-1" title="{{ 'Group'|itemtype_name }}"></i>
-                     {% endset %}
-                     {{ fields.dropdownField(
-                        'Group',
-                        'groups_id_tech',
-                        subitem.fields['groups_id_tech'],
-                        task_group_lbl,
-                        {
-                           'full_width': true,
-                           'icon_label': true,
-                           'entity': item.fields['entities_id'],
-                           'condition': {'is_task': 1},
-                           'rand': rand,
-                        }
-                     ) }}
-
-                     <script type="text/javascript">
-                        function showPlanUpdate{{ rand }}(e) {
-                           $('#plan{{ rand }}').hide();
-                           $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
-                              action: "add_event_classic_form",
-                              form: "followups", // Was followups for tasks before. Can't find where this is used.
-                              entity: {{ item.fields['entities_id'] }},
-                              rand_user: {{ random() }},
-                              rand_group: {{ random() }},
-                              itemtype: "{{ subitem.type }}",
-                              items_id: {{ subitem.fields['id']|default(-1) }},
-                              parent_itemtype: "{{ item.getType() }}",
-                              parent_items_id: {{ item.fields['id'] }},
-                              parent_fk_field: "{{ item.getForeignKeyField() }}",
-                              begin: "{{ subitem.fields['begin'] }}",
-                              end: "{{ subitem.fields['end'] }}",
-                           });
-                        }
-                     </script>
-                     <div class="col-12">
-                        {% if subitem.can(subitem.fields['id'], constant('UPDATE')) and subitem.fields['begin'] %}
-                           <script type="text/javascript">
-                              showPlanUpdate{{ rand }}();
-                           </script>
-                           <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
-                                 onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
-                              <i class="fas ti ti-calendar-off"></i>
-                              <span>{{ __('Unplan') }}</span>
-                           </button>
-                        {% else %}
-                           <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
-                              <i class="fas fa-calendar"></i>
-                              <span>{{ __('Plan this task') }}</span>
-                           </button>
-                        {% endif %}
-                        <div id="viewplan{{ rand }}"></div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-
-            {% set pending_reasons %}
-               {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
-               {% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
-                  <span
-                     class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
-                     id="pending-reasons-control-{{ rand }}"
-                  >
-                     <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
-                           data-bs-toggle="tooltip" data-bs-placement="top" role="button">
-                        <i class="fas fa-pause me-2"></i>
-                        <label class="form-check form-switch mt-2">
-                           <input type="hidden"   name="pending" value="0" />
-                           <input type="checkbox" name="pending" value="1" class="form-check-input"
-                                 id="enable-pending-reasons-{{ rand }}"
-                                 role="button"
-                                 {{ item.fields['status'] == constant('CommonITILObject::WAITING') ? 'checked' : '' }}
-                                 data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
-                        </label>
-                     </span>
-
-                     {% if not has_pending_reason %}
-                        <div
-                           class="collapse ps-2 py-1 flex-fill {{ show_pending_reasons_actions ? 'show' : '' }}"
-                           aria-expanded="{{ show_pending_reasons_actions ? 'true' : 'false' }}"
-                           id="pending-reasons-setup-{{ rand }}"
-                        >
-                           {{ include('components/itilobject/timeline/pending_reasons.html.twig') }}
-                        </div>
-                     {% endif %}
-                  </span>
-               {% endif %}
-            {% endset %}
-
-            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
-            {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
-            <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
-               {% if subitem.fields['id'] <= 0 %}
-                  {# Do not enable flex wrapping when creating a new item as the pending form will be merged with the add button in an input group #}
-                  <div class="input-group flex-nowrap">
-                     <button class="btn btn-primary" type="submit" name="add">
-                        <i class="fas fa-plus"></i>
-                        <span>{{ _x('button', 'Add') }}</span>
-                     </button>
-                     {{ pending_reasons|raw }}
-                  </div>
-               {% else %}
-                  <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
-                  <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class="far fa-save"></i>
-                     <span>{{ _x('button', 'Save') }}</span>
-                  </button>
-
-                  {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
-                     <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                             onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
-                        <i class="fas fa-trash-alt"></i>
-                        <span>{{ _x('button', 'Delete permanently') }}</span>
-                     </button>
-                  {% endif %}
-                  {{ pending_reasons|raw }}
-               {% endif %}
-            </div>
-
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-         </form>
-      </div>
+      {% include('components/itilobject/timeline/form_task_main_form.html.twig') %}
 
       <script type="text/javascript">
          function itiltasktemplate_update{{ rand }}(value) {
@@ -515,6 +208,31 @@
                if (data.groups_id_tech !== undefined) {
                    // Set group
                    $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
+               }
+
+               // set predefined pending reason
+               $("#enable-pending-reasons-{{ rand }}")
+                  .prop("checked", data.pendingreasons_id > 0);
+               if (data.pendingreasons_id > 0) {
+                  $("#pending-reasons-setup-{{ rand }}")
+                     .collapse('show');
+
+                  //need to create new DOM option, because SELECT is remotely-sourced (AJAX)
+                  //see : https://select2.org/programmatic-control/add-select-clear-items#preselecting-options-in-an-remotely-sourced-ajax-select2
+                  var newOption = new Option(data.pendingreasons_name, data.pendingreasons_id, true, true);
+                  $("#dropdown_pendingreasons_id{{ rand }}")
+                     .append(newOption)
+                     .trigger('change');
+               } else if (
+                  $("#dropdown_pendingreasons_id{{ rand }}").val() > 0
+                     && $("#pending-reasons-setup-{{ rand }}").hasClass('show')
+               ) {
+                  $("#pending-reasons-setup-{{ rand }}")
+                     .collapse('hide');
+
+                  $("#dropdown_pendingreasons_id{{ rand }}")
+                     .val(0)
+                     .trigger('change');
                }
             });
          }

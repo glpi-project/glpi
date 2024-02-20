@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,9 +57,13 @@ class Sanitizer
      * @param bool  $db_escape
      *
      * @return mixed
+     *
+     * @deprecated 10.1.0
      */
-    public static function sanitize($value, bool $db_escape = true)
+    public static function sanitize($value, bool $db_escape = false)
     {
+        \Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map(
                 function ($val) use ($db_escape) {
@@ -93,9 +97,13 @@ class Sanitizer
      * @param bool  $db_unescape
      *
      * @return mixed
+     *
+     * @deprecated 10.1.0
      */
     public static function unsanitize($value, bool $db_unescape = true)
     {
+        \Toolbox::deprecated();
+
         if (is_array($value)) {
             return array_map(
                 function ($val) {
@@ -122,9 +130,13 @@ class Sanitizer
      * @param string $value
      *
      * @return bool
+     *
+     * @deprecated 10.1.0
      */
     public static function isHtmlEncoded(string $value): bool
     {
+        \Toolbox::deprecated();
+
        // A value is Html Encoded if it does not contains
        // - `<`;
        // - `>`;
@@ -148,9 +160,13 @@ class Sanitizer
      * @param string $value
      *
      * @return bool
+     *
+     * @deprecated 10.1.0
      */
     public static function isDbEscaped(string $value): bool
     {
+        \Toolbox::deprecated();
+
         $value_length = strlen($value);
 
        // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
@@ -224,9 +240,13 @@ class Sanitizer
      * @param string $value
      *
      * @return bool
+     *
+     * @deprecated 10.1.0
      */
     public static function isNsClassOrCallableIdentifier(string $value): bool
     {
+        \Toolbox::deprecated();
+
         $class_match = [];
 
         return preg_match(
@@ -243,10 +263,14 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function getVerbatimValue(string $value): string
     {
-        return Sanitizer::unsanitize($value);
+        \Toolbox::deprecated();
+
+        return self::unsanitize($value);
     }
 
     /**
@@ -255,9 +279,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function encodeHtmlSpecialChars(string $value): string
     {
+        \Toolbox::deprecated();
+
         if (self::isHtmlEncoded($value)) {
             return $value;
         }
@@ -274,9 +302,13 @@ class Sanitizer
      * @return array
      *
      * @see self::encodeHtmlSpecialChars
+     *
+     * @deprecated 10.1.0
      */
     public static function encodeHtmlSpecialCharsRecursive(array $values): array
     {
+        \Toolbox::deprecated();
+
         return array_map(
             function ($value) {
                 if (is_array($value)) {
@@ -297,9 +329,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function decodeHtmlSpecialChars(string $value): string
     {
+        \Toolbox::deprecated();
+
         if (!self::isHtmlEncoded($value)) {
             return $value;
         }
@@ -336,9 +372,13 @@ class Sanitizer
      * @return array
      *
      * @see self::decodeHtmlSpecialChars
+     *
+     * @deprecated 10.1.0
      */
     public static function decodeHtmlSpecialCharsRecursive(array $values): array
     {
+        \Toolbox::deprecated();
+
         return array_map(
             function ($value) {
                 if (is_array($value)) {
@@ -359,9 +399,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function dbEscape(string $value): string
     {
+        \Toolbox::deprecated();
+
         if (str_contains($value, '\\') && self::isDbEscaped($value)) {
             // Value is already escaped, do not escape it again.
             // Nota: use `str_contains` to speedup check.
@@ -381,9 +425,13 @@ class Sanitizer
      * @return array
      *
      * @see self::dbEscape
+     *
+     * @deprecated 10.1.0
      */
     public static function dbEscapeRecursive(array $values): array
     {
+        \Toolbox::deprecated();
+
         return array_map(
             function ($value) {
                 if (is_array($value)) {
@@ -405,9 +453,13 @@ class Sanitizer
      * @param string $value
      *
      * @return string
+     *
+     * @deprecated 10.1.0
      */
     public static function dbUnescape(string $value): string
     {
+        \Toolbox::deprecated();
+
        // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
         if (!(str_contains($value, '\\') && self::isDbEscaped($value))) {
@@ -470,9 +522,13 @@ class Sanitizer
      * @return array
      *
      * @see self::dbUnescape
+     *
+     * @deprecated 10.1.0
      */
     public static function dbUnescapeRecursive(array $values): array
     {
+        \Toolbox::deprecated();
+
         return array_map(
             function ($value) {
                 if (is_array($value)) {

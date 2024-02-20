@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -94,7 +94,7 @@ class Item_OperatingSystem extends DbTestCase
         $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
         $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("Operating systems <span class='badge'>1</span>");
+         ->isIdenticalTo("<span><i class='ti ti-edit me-2'></i>Operating systems</span> <span class='badge glpi-badge'>1</span>");
         $this->integer(
             (int)\Item_OperatingSystem::countForItem($computer)
         )->isIdenticalTo(1);
@@ -125,7 +125,7 @@ class Item_OperatingSystem extends DbTestCase
         $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
         $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("Operating systems <span class='badge'>2</span>");
+         ->isIdenticalTo("<span><i class='ti ti-edit me-2'></i>Operating systems</span> <span class='badge glpi-badge'>2</span>");
         $this->integer(
             (int)\Item_OperatingSystem::countForItem($computer)
         )->isIdenticalTo(2);

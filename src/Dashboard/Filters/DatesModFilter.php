@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -109,7 +109,7 @@ class DatesModFilter extends AbstractFilter
                 // don't trigger when only the first date is selected
                 var nb_dates = selectedDates.length;
                 if (nb_dates == 0 || nb_dates == 2) {
-                    Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
+                    GLPI.Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
                     $(instance.input).closest("fieldset").addClass("filled");
                 }
             };

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,10 +42,8 @@ if (strpos($_SERVER['PHP_SELF'], "ruleactionvalue.php")) {
     die("Sorry. You can't access this file directly");
 }
 
-use Glpi\Toolbox\Sanitizer;
-
 Session::checkLoginUser();
 
 $ra = new RuleAction();
 
-$ra->displayActionSelectPattern(Sanitizer::dbUnescapeRecursive($_POST));
+$ra->displayActionSelectPattern($_POST);

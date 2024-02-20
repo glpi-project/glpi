@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use NotificationTargetCertificate;
 
 /* Test for inc/notificationmailing.class.php .class.php */
 
@@ -109,7 +110,94 @@ class NotificationMailing extends DbTestCase
              'messageid'                => null,
              'documents'                => '',
              'mode'                     => 'mailing',
-             'event'                    => 'test_notification'
+             'event'                    => 'test_notification',
+             'attach_documents'         => 0,
+             'itemtype_trigger'         => null,
+             'items_id_trigger'         => 0,
          ]);
+    }
+
+
+    public function testDisabledNotification()
+    {
+        //setup
+        $this->login();
+
+        $user = new \User();
+        $this->boolean((bool)$user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->variable($user->fields['is_notif_enable_default'])->isNull(); //default value from user table
+        $this->boolean((bool)$user->isUserNotificationEnable())->isTrue(); //like default configuration
+
+        //should be sent
+        $notification_target = new \NotificationTargetUser();
+        $this->boolean($notification_target->validateSendTo("passwordexpires", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //should be sent
+        $notification_target = new \NotificationTargetTicket();
+        $this->boolean($notification_target->validateSendTo("new", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //should be sent
+        $notification_target = new \NotificationTargetCertificate();
+        $this->boolean($notification_target->validateSendTo("alert", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //should be sent
+        $notification_target = new \NotificationTargetProject();
+        $this->boolean($notification_target->validateSendTo("new", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //should be sent
+        $notification_target = new \NotificationTargetReservation();
+        $this->boolean($notification_target->validateSendTo("new", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //update user to explicitly refuse notification
+        $this->boolean($user->update([
+            'id' => \Session::getLoginUserID(),
+            'is_notif_enable_default' => '0'
+        ], true))->isTrue();
+
+        //check computed value
+        $this->boolean($user->getFromDB(\Session::getLoginUserID()))->isTrue();
+        $this->boolean((bool)$user->fields['is_notif_enable_default'])->isFalse();
+        $this->boolean($user->isUserNotificationEnable())->isFalse();
+
+        //Notification from NotificationTargetUser must be sent
+        $notification_target = new \NotificationTargetUser();
+        $this->boolean($notification_target->validateSendTo("passwordexpires", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //Notification from NotificationTargetUser managed by `use_notification` property of actors
+        //this sue case should by return true
+        $notification_target = new \NotificationTargetTicket();
+        $this->boolean($notification_target->validateSendTo("new", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isTrue();
+
+        //should not be sent
+        $notification_target = new \NotificationTargetCertificate();
+        $this->boolean($notification_target->validateSendTo("alert", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isFalse();
+
+        //should not be sent
+        $notification_target = new \NotificationTargetProject();
+        $this->boolean($notification_target->validateSendTo("new", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isFalse();
+
+        //should not be sent
+        $notification_target = new \NotificationTargetReservation();
+        $this->boolean($notification_target->validateSendTo("new", [
+            "users_id" => \Session::getLoginUserID()
+        ], true))->isFalse();
     }
 }

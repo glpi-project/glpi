@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,7 +54,7 @@ class PhpVersion extends \GLPITestCase
         $this->array($this->testedInstance->getValidationMessages())
          ->isEqualTo(
              [
-                 'PHP version must be between 20.7.0 and 20.8.0 (exclusive).'
+                 'PHP version must be between 20.7 and 20.8.'
              ]
          );
     }

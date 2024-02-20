@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2023 Teclib' and contributors.
+ # @copyright 2015-2024 Teclib' and contributors.
  # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
@@ -100,36 +100,6 @@
         'use_public_faq',
         config['use_public_faq'],
         __('Allow FAQ anonymous access'),
-        field_options
-    ) }}
-
-</div>
-
-<div class="hr-text">
-    <i class="ti ti-language"></i>
-    <span>{{ __('Translations') }}</span>
-</div>
-
-<div class="row ps-4">
-
-    {{ fields.checkboxField(
-        'translate_dropdowns',
-        config['translate_dropdowns'],
-        __("Translation of dropdowns"),
-        field_options
-    ) }}
-
-    {{ fields.checkboxField(
-        'translate_kb',
-        config['translate_kb'],
-        __("Knowledge base translation"),
-        field_options
-    ) }}
-
-    {{ fields.checkboxField(
-        'translate_reminders',
-        config['translate_reminders'],
-        __("Translation of reminders"),
         field_options
     ) }}
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -82,6 +82,7 @@ function header_html($etape)
     echo Html::script("js/glpi_dialog.js");
 
     // CSS
+    echo Html::scss("css/tabler", [], true);
     echo Html::css('public/lib/base.css');
     echo Html::scss("css/install", [], true);
     echo "</head>";
@@ -318,6 +319,7 @@ function step4($databasename, $newdatabasename)
                 false
             );
             if ($success) {
+                echo "<p>" . __('Initializing database tables and default data...') . "</p>";
                 Toolbox::createSchema($_SESSION["glpilanguage"]);
                 echo "<p>" . __('OK - database was initialized') . "</p>";
 
@@ -345,9 +347,10 @@ function step4($databasename, $newdatabasename)
                 false
             );
             if ($success) {
-                 Toolbox::createSchema($_SESSION["glpilanguage"]);
-                 echo "<p>" . __('OK - database was initialized') . "</p>";
-                 $next_form();
+                echo "<p>" . __('Initializing database tables and default data...') . "</p>";
+                Toolbox::createSchema($_SESSION["glpilanguage"]);
+                echo "<p>" . __('OK - database was initialized') . "</p>";
+                $next_form();
             } else { // can't create config_db file
                 echo "<p>" . __('Impossible to write the database setup file') . "</p>";
                 $prev_form($host, $user, $password);
@@ -374,6 +377,7 @@ function step4($databasename, $newdatabasename)
                 }
 
                 if ($success) {
+                    echo "<p>" . __('Initializing database tables and default data...') . "</p>";
                     Toolbox::createSchema($_SESSION["glpilanguage"]);
                     echo "<p>" . __('OK - database was initialized') . "</p>";
                     $next_form();
@@ -440,7 +444,7 @@ function step8()
     $url_base = str_replace("/install/install.php", "", $_SERVER['HTTP_REFERER']);
     $DB->update(
         'glpi_configs',
-        ['value' => $DB->escape($url_base)],
+        ['value' => $url_base],
         [
             'context'   => 'core',
             'name'      => 'url_base'
@@ -450,7 +454,7 @@ function step8()
     $url_base_api = "$url_base/apirest.php/";
     $DB->update(
         'glpi_configs',
-        ['value' => $DB->escape($url_base_api)],
+        ['value' => $url_base_api],
         [
             'context'   => 'core',
             'name'      => 'url_base_api'
@@ -567,9 +571,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
    // DB clean
     if (isset($_POST["db_pass"])) {
-        $_POST["db_pass"] = stripslashes($_POST["db_pass"]);
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
-        $_POST["db_pass"] = stripslashes($_POST["db_pass"]);
     }
 
     switch ($_POST["install"]) {

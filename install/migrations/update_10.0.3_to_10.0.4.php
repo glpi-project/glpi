@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -72,25 +72,21 @@ function update1003to1004()
                 [
                     'rank'      => $rank++
                 ],
-                Toolbox::addslashes_deep(
-                    [
-                        'users_id'  => "0",
-                        'itemtype'  => $type,
-                        'num'       => $newval,
-                    ]
-                )
+                [
+                    'users_id'  => "0",
+                    'itemtype'  => $type,
+                    'num'       => $newval,
+                ]
             );
         }
     }
     foreach ($DELFROMDISPLAYPREF as $type => $tab) {
         $DB->deleteOrDie(
             'glpi_displaypreferences',
-            Toolbox::addslashes_deep(
-                [
-                    'itemtype'  => $type,
-                    'num'       => $tab
-                ]
-            )
+            [
+                'itemtype'  => $type,
+                'num'       => $tab
+            ]
         );
     }
 

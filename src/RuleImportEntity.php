@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -40,7 +40,6 @@ class RuleImportEntity extends Rule
 {
    // From Rule
     public static $rightname = 'rule_import';
-    public $can_sort  = true;
 
     public function getTitle()
     {
@@ -81,7 +80,7 @@ class RuleImportEntity extends Rule
                             }
                             if ($res != null) {
                                  //Get the entity associated with the TAG
-                                 $target_entity = Entity::getEntityIDByTag(addslashes($res));
+                                 $target_entity = Entity::getEntityIDByTag($res);
                                 if ($target_entity != '') {
                                     $output["entities_id"] = $target_entity;
                                 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -61,6 +61,8 @@ class Phone extends CommonDBTM
             Item_Devices::class,
             Infocom::class,
             Item_Disk::class,
+            Item_Process::class,
+            Item_Environment::class,
             Item_SoftwareVersion::class,
             Item_SoftwareLicense::class,
             Contract_Item::class,
@@ -68,7 +70,8 @@ class Phone extends CommonDBTM
             NetworkPort::class,
             Computer_Item::class,
             KnowbaseItem_Item::class,
-            Item_RemoteManagement::class
+            Item_RemoteManagement::class,
+            ItemAntivirus::class,
         ];
     }
 
@@ -98,7 +101,10 @@ class Phone extends CommonDBTM
         $this->addImpactTab($ong, $options);
         $this->addStandardTab('Item_OperatingSystem', $ong, $options);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
+        $this->addStandardTab('Item_Process', $ong, $options);
+        $this->addStandardTab('Item_Environment', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
@@ -107,8 +113,9 @@ class Phone extends CommonDBTM
         $this->addStandardTab('Infocom', $ong, $options);
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
+        $this->addStandardTab('ItemAntivirus', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
@@ -134,6 +141,16 @@ class Phone extends CommonDBTM
         unset($input['withtemplate']);
 
         return $input;
+    }
+
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Item_Environment::class,
+                Item_Process::class,
+            ]
+        );
     }
 
 
@@ -457,7 +474,11 @@ class Phone extends CommonDBTM
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, ItemAntivirus::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
+
+        $tab = array_merge($tab, Item_RemoteManagement::rawSearchOptionsToAdd(self::class));
 
         return $tab;
     }

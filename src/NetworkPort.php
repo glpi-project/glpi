@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -790,6 +790,11 @@ class NetworkPort extends CommonDBChild
 
         Plugin::doHook(Hooks::DISPLAY_NETPORT_LIST_BEFORE, ['item' => $item]);
 
+        $stencil = NetworkEquipmentModelStencil::getStencilFromItem($item);
+        if ($stencil) {
+            $stencil->displayStencil();
+        }
+
         $search_config_top    = '';
         if (
             Session::haveRightsOr('search_config', [
@@ -1404,6 +1409,11 @@ class NetworkPort extends CommonDBChild
         echo Html::input('name', ['value' => $this->fields['name']]);
         echo "</td></tr>\n";
 
+        echo "<tr class='tab_bg_1'><td>" . __('Alias') . "</td>\n";
+        echo "<td>";
+        echo Html::input('ifalias', ['value' => $this->fields['ifalias']]);
+        echo "</td></tr>\n";
+
         $instantiation = $this->getInstantiation();
         if ($instantiation !== false) {
             echo "<tr class='tab_bg_1'><th colspan='4'>" . $instantiation->getTypeName(1) . "</th></tr>\n";
@@ -1778,7 +1788,7 @@ class NetworkPort extends CommonDBChild
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
-                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb);
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
             }
         }
 
@@ -1788,7 +1798,7 @@ class NetworkPort extends CommonDBChild
                 ['networkports_id_alias' => $item->getField('id')]
             );
             if ($nbAlias > 0) {
-                $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias);
+                $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias, $item::getType());
             } else {
                 $aliases = '';
             }
@@ -1799,7 +1809,8 @@ class NetworkPort extends CommonDBChild
             if ($nbAggregates > 0) {
                 $aggregates = self::createTabEntry(
                     NetworkPortAggregate::getTypeName(Session::getPluralNumber()),
-                    $nbAggregates
+                    $nbAggregates,
+                    $item::getType()
                 );
             } else {
                 $aggregates = '';

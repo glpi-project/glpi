@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,5 +39,20 @@ class NetworkEquipmentModel extends CommonDCModelDropdown
     public static function getTypeName($nb = 0)
     {
         return _n('Networking equipment model', 'Networking equipment models', $nb);
+    }
+
+    public function defineTabs($options = [])
+    {
+        $ong = parent::defineTabs($options);
+
+        // Add stencil tab if there is at least one picture field defined
+        foreach ((new NetworkEquipmentModelStencil())->getPicturesFields() as $picture_field) {
+            if (!empty($this->getItemtypeOrModelPicture($picture_field))) {
+                $this->addStandardTab('NetworkEquipmentModelStencil', $ong, $options);
+                break;
+            }
+        }
+
+        return $ong;
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,8 +36,11 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
+use Glpi\OAuth\Server;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
+
+define('GLPI_ENVIRONMENT_TYPE', 'development');
 
 ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstraping are always displayed
 error_reporting(E_ALL);
@@ -102,8 +105,8 @@ set_exception_handler(null);
 include_once __DIR__ . '/GLPITestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
-include_once __DIR__ . '/APIBaseClass.php';
 include_once __DIR__ . '/FrontBaseClass.php';
+include_once __DIR__ . '/HLAPITestCase.php';
 include_once __DIR__ . '/RuleBuilder.php';
 include_once __DIR__ . '/InventoryTestCase.php';
 include_once __DIR__ . '/functional/CommonITILRecurrent.php';
@@ -256,6 +259,12 @@ function loadDataset()
             ], [
                 'name'           => '_test_phone_2',
                 'entities_id' => '_test_root_entity',
+            ], [
+                'name'           => 'PHONE-LNE-1',
+                'entities_id' => '_test_root_entity',
+            ], [
+                'name'           => 'PHONE-LNE-2',
+                'entities_id' => '_test_root_entity',
             ],
         ], 'User' => [
             [
@@ -319,8 +328,8 @@ function loadDataset()
             [
                 'is_recursive' => 1,
                 'taskcategories_id' => '_cat_1',
-                'name'         => 'R&#38;D', // sanitized value for "R&D"
-                'completename' => '_cat_1 > R&#38;D',
+                'name'         => 'R&D',
+                'completename' => '_cat_1 > R&D',
                 'comment'      => 'Comment for sub-category _subcat_2',
                 'level'        => 2,
             ],
@@ -395,6 +404,22 @@ function loadDataset()
             [
                 'name'         => '_location02',
                 'comment'      => 'Comment for location _sublocation02'
+            ],
+            [
+                'name'         => '_location02 > _sublocation02',
+                'comment'      => 'Comment for location _sublocation02',
+                'code'         => 'code_sublocation02'
+            ],
+            [
+                'name'         => '_location02 > _sublocation03',
+                'comment'      => 'Comment for location _sublocation03',
+                'alias'        => 'alias_sublocation03'
+            ],
+            [
+                'name'         => '_location02 > _sublocation04',
+                'comment'      => 'Comment for location _sublocation04',
+                'code'         => 'code_sublocation04',
+                'alias'        => 'alias_sublocation04'
             ],
             [
                 'name'         => '_location01_subentity',
@@ -714,7 +739,24 @@ function loadDataset()
                 'version'      => '1.0.0',
                 'state'        => 1,
             ]
+        ], 'Change' => [
+            [
+                'name'           => '_change01',
+                'content'        => 'Content for ticket _change01',
+                'users_id_recipient' => TU_USER,
+                'entities_id'    => '_test_root_entity'
+            ],
         ],
+        'OAuthClient' => [
+            [
+                'redirect_uri' => ["/api.php/oauth2/redirection"],
+                'grants' => ['password', 'client_credentials', 'authorization_code'],
+                'scopes' => [],
+                'is_active' => 1,
+                'is_confidential' => 1,
+                'name' => 'Test OAuth Client',
+            ]
+        ]
     ];
 
    // To bypass various right checks
@@ -821,3 +863,8 @@ function getItemByTypeName($type, $name, $onlyid = false)
 }
 
 loadDataset();
+
+$tu_oauth_client = new OAuthClient();
+$tu_oauth_client->getFromDBByCrit(['name' => 'Test OAuth Client']);
+define('TU_OAUTH_CLIENT_ID', $tu_oauth_client->fields['identifier']);
+define('TU_OAUTH_CLIENT_SECRET', $tu_oauth_client->fields['secret']);

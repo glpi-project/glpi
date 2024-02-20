@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -188,12 +188,12 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
                 // read the fields to save
                 $object_state = [];
                 foreach ($fields as $field) {
-                    $object_state[$field] = $DB->escape($item->fields[$field]);
+                    $object_state[$field] = $item->fields[$field];
                 }
 
                 // Build the SQL query
                 $dump_content .= $DB->buildUpdate(
-                    $itemtype::getTable(),
+                    $item::getTable(),
                     $object_state,
                     ['id' => $item_id],
                 ) . ';' . PHP_EOL;
@@ -223,19 +223,20 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     private function fixItems(): void
     {
         foreach ($this->invalid_items as $itemtype => $items) {
+            /* @var \CommonDBTM $item */
+            $item = new $itemtype();
+
             $this->outputMessage(
-                '<comment>' . sprintf(__('Fixing %s...'), $itemtype::getTypeName(Session::getPluralNumber())) . '</comment>',
+                '<comment>' . sprintf(__('Fixing %s...'), $item::getTypeName(Session::getPluralNumber())) . '</comment>',
             );
-            $progress_message = function (array $fields, int $id) use ($itemtype) {
-                return sprintf(__('Fixing %s with ID %s...'), $itemtype::getTypeName(1), $id);
+            $progress_message = function (array $fields, int $id) use ($item) {
+                return sprintf(__('Fixing %s with ID %s...'), $item::getTypeName(1), $id);
             };
 
             foreach ($this->iterate($items, $progress_message) as $item_id => $fields) {
-                /* @var \CommonDBTM $item */
-                $item = new $itemtype();
                 if (!$item->getFromDB($item_id)) {
                     $this->outputMessage(
-                        '<error>' . sprintf(__('Unable to fix %s with ID %s.'), $itemtype::getTypeName(1), $item_id) . '</error>',
+                        '<error>' . sprintf(__('Unable to fix %s with ID %s.'), $item::getTypeName(1), $item_id) . '</error>',
                         OutputInterface::VERBOSITY_QUIET
                     );
                     $this->failed_items_count++;
@@ -264,7 +265,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         $update = [];
         foreach ($fields as $field) {
             $update[$field] = $this->fixOneField($item, $field);
-            $update[$field] = $DB->escape($update[$field]);
+            $update[$field] = $update[$field];
         }
 
         $success = $DB->update(
@@ -414,7 +415,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $searches[] = [
-                $field => ['REGEXP', $DB->escape('(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)')]
+                $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)']
             ];
         }
 

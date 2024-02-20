@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -213,8 +213,8 @@ class ITILTemplate extends DbTestCase
                     5 => 'Technician',
                     8 => 'Technician group',
                     6 => 'Assigned to a supplier',
-                    66 => 'Watcher',
-                    65 => 'Watcher group',
+                    66 => 'Observer',
+                    65 => 'Observer group',
                     7 => 'Category',
                     13 => 'Associated elements',
                     -2 => 'Approval request',
@@ -248,12 +248,13 @@ class ITILTemplate extends DbTestCase
                     5 => 'Technician',
                     8 => 'Technician group',
                     6 => 'Assigned to a supplier',
-                    66 => 'Watcher',
-                    65 => 'Watcher group',
+                    66 => 'Observer',
+                    65 => 'Observer group',
                     7 => 'Category',
                     13 => 'Associated elements',
                     -2 => 'Approval request',
                     142 => 'Documents',
+                    18 => 'Time to resolve',
                     83 => 'Location',
                     60 => 'Analysis impact',
                     61 => 'Control list',
@@ -278,8 +279,8 @@ class ITILTemplate extends DbTestCase
                     5 => 'Technician',
                     8 => 'Technician group',
                     6 => 'Assigned to a supplier',
-                    66 => 'Watcher',
-                    65 => 'Watcher group',
+                    66 => 'Observer',
+                    65 => 'Observer group',
                     7 => 'Category',
                     13 => 'Associated elements',
                     -2 => 'Approval request',
@@ -319,8 +320,8 @@ class ITILTemplate extends DbTestCase
         switch ($itiltype) {
             case 'Ticket':
                 $expected = [
-                    1 => 'Standard interface',
-                    2 => 'Simplified interface'
+                    1 => 'Preview (Standard interface)',
+                    2 => 'Preview (Simplified interface)'
                 ];
                 break;
             default:

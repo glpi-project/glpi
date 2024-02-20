@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 namespace Glpi\System;
 
-use Glpi\System\Requirement\DataDirectoriesProtectedPath;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\Requirement\DirectoriesWriteAccess;
@@ -50,7 +49,6 @@ use Glpi\System\Requirement\MemoryLimit;
 use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
-use Glpi\System\Requirement\SafeDocumentRoot;
 use Glpi\System\Requirement\SeLinux;
 use Glpi\System\Requirement\SessionsConfiguration;
 use Glpi\System\Requirement\SessionsSecurityConfiguration;
@@ -72,6 +70,7 @@ class RequirementsManager
         $requirements = [];
 
         $requirements[] = new PhpVersion(GLPI_MIN_PHP, GLPI_MAX_PHP);
+        $requirements[] = new IntegerSize();
 
         $requirements[] = new SessionsConfiguration();
 
@@ -121,6 +120,11 @@ class RequirementsManager
             false,
             __('Enable usage of ChaCha20-Poly1305 encryption required by GLPI. This is provided by libsodium 1.0.12 and newer.')
         );
+        $requirements[] = new Extension(
+            'openssl',
+            false,
+            __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
+        );
 
         if ($db instanceof \DBmysql) {
             $requirements[] = new DbEngine($db);
@@ -148,13 +152,7 @@ class RequirementsManager
 
         $requirements[] = new PhpSupportedVersion();
 
-        $safe_doc_root_requirement = new SafeDocumentRoot();
-        $requirements[] = $safe_doc_root_requirement;
-        if (!$safe_doc_root_requirement->isValidated()) {
-            $requirements[] = new DataDirectoriesProtectedPath(Variables::getDataDirectoriesConstants());
-        }
         $requirements[] = new SessionsSecurityConfiguration();
-        $requirements[] = new IntegerSize();
         $requirements[] = new Extension(
             'exif',
             true,

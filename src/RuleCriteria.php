@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\Application\View\TemplateRenderer;
 
-/// Criteria Rule class
+/**
+ * Criteria Rule class
+ */
 class RuleCriteria extends CommonDBChild
 {
    // From CommonDBChild
@@ -89,6 +91,11 @@ class RuleCriteria extends CommonDBChild
     public static function getTypeName($nb = 0)
     {
         return _n('Criterion', 'Criteria', $nb);
+    }
+
+    public static function getIcon()
+    {
+        return "ti ti-list-check";
     }
 
     protected function computeFriendlyName()
@@ -335,7 +342,7 @@ class RuleCriteria extends CommonDBChild
      * Try to match a defined rule
      *
      * @param RuleCriteria &$criterion         RuleCriteria object
-     * @param string       $field              the field to match
+     * @param ?string      $field              the field to match
      * @param array        &$criterias_results
      * @param array        &$regex_result
      *
@@ -343,16 +350,11 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result)
     {
+        $field = $field ?? '';
 
         $condition = $criterion->fields['condition'];
         $pattern   = $criterion->fields['pattern'];
         $criteria  = $criterion->fields['criteria'];
-
-        // Permit use of `<`, `&` and `>` and prevent issues with quotes.
-        $raw_pattern = $pattern;
-        $pattern     = Sanitizer::unsanitize($pattern);
-        $field       = Sanitizer::unsanitize($field);
-
        //If pattern is wildcard, don't check the rule and return true
        //or if the condition is "already present in GLPI" : will be processed later
         if (
@@ -362,6 +364,7 @@ class RuleCriteria extends CommonDBChild
             return true;
         }
 
+        $pattern_raw = $pattern;
         $pattern = trim($pattern);
 
         switch ($condition) {
@@ -376,7 +379,7 @@ class RuleCriteria extends CommonDBChild
                    // Special case (used only by UNIQUE_PROFILE, for now)
                    // $pattern is an ID
                     if (in_array($pattern, $field)) {
-                        $criterias_results[$criteria] = $raw_pattern;
+                        $criterias_results[$criteria] = $pattern_raw;
                         return true;
                     }
                 } else {
@@ -384,7 +387,7 @@ class RuleCriteria extends CommonDBChild
                     $field                        = Toolbox::strtolower($field);
                     $pattern                      = Toolbox::strtolower($pattern);
                     if ($field == $pattern) {
-                        $criterias_results[$criteria] = $raw_pattern;
+                        $criterias_results[$criteria] = $pattern_raw;
                         return true;
                     }
                 }
@@ -395,14 +398,14 @@ class RuleCriteria extends CommonDBChild
                 $field   = Toolbox::strtolower($field);
                 $pattern = Toolbox::strtolower($pattern);
                 if ($field != $pattern) {
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
 
             case Rule::PATTERN_UNDER:
                 $table  = getTableNameForForeignKeyField($criteria);
-                $values = Sanitizer::unsanitize(getSonsOf($table, $pattern));
+                $values = getSonsOf($table, $pattern);
                 if (isset($values[$field])) {
                     return true;
                 }
@@ -410,7 +413,7 @@ class RuleCriteria extends CommonDBChild
 
             case Rule::PATTERN_NOT_UNDER:
                 $table  = getTableNameForForeignKeyField($criteria);
-                $values = Sanitizer::unsanitize(getSonsOf($table, $pattern));
+                $values = getSonsOf($table, $pattern);
                 if (isset($values[$field])) {
                     return false;
                 }
@@ -422,7 +425,7 @@ class RuleCriteria extends CommonDBChild
                 }
 
                 if (str_ends_with(mb_strtolower($field), mb_strtolower($pattern))) {
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -433,7 +436,7 @@ class RuleCriteria extends CommonDBChild
                 }
                 $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value == 0)) {
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -444,7 +447,7 @@ class RuleCriteria extends CommonDBChild
                 }
                 $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if (($value !== false) && ($value >= 0)) {
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -453,9 +456,9 @@ class RuleCriteria extends CommonDBChild
                 if (empty($pattern)) {
                     return false;
                 }
-                $value = mb_stripos($field ?? '', $pattern, 0, 'UTF-8');
+                $value = mb_stripos($field, $pattern, 0, 'UTF-8');
                 if ($value === false) {
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -479,7 +482,7 @@ class RuleCriteria extends CommonDBChild
                         }
                     }
                     $regex_result[]               = $res;
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -492,7 +495,7 @@ class RuleCriteria extends CommonDBChild
                         E_USER_WARNING
                     );
                 } elseif ($match_result === 0) {
-                    $criterias_results[$criteria] = $raw_pattern;
+                    $criterias_results[$criteria] = $pattern_raw;
                     return true;
                 }
                 return false;
@@ -512,7 +515,7 @@ class RuleCriteria extends CommonDBChild
 
                 if (is_array($field)) {
                     foreach ($field as $ip) {
-                        if (isset($ip) && $ip != '') {
+                        if ($ip != '') {
                             $ip = ip2long($ip);
                             if (($ip & $mask) == $subnet) {
                                 return ($condition == Rule::PATTERN_CIDR) ? true : false;
@@ -520,7 +523,7 @@ class RuleCriteria extends CommonDBChild
                         }
                     }
                 } else {
-                    if (isset($field) && $field != '') {
+                    if ($field != '') {
                         $ip = ip2long($field);
                         if (
                             $condition == Rule::PATTERN_CIDR && ($ip & $mask) == $subnet
@@ -530,6 +533,33 @@ class RuleCriteria extends CommonDBChild
                         }
                     }
                 }
+                break;
+
+            case Rule::PATTERN_DATE_IS_NOT_EQUAL:
+            case Rule::PATTERN_DATE_IS_EQUAL:
+                $target_date = Html::computeGenericDateTimeSearch($pattern);
+
+                if (
+                    $target_date != $pattern
+                    && !str_contains("MINUTE", $pattern)
+                    && !str_contains("HOUR", $pattern)
+                ) {
+                    // We are using a dynamic date with a precision of at least
+                    // one day (e.g. 2 days ago).
+                    // In this case we must compare using date instead of datetime
+                    $field = substr($field, 0, 10);
+                    $target_date = substr($target_date, 0, 10);
+                }
+
+                return $condition == Rule::PATTERN_DATE_IS_EQUAL
+                    ? $field == $target_date
+                    : $field != $target_date;
+
+            case Rule::PATTERN_DATE_IS_BEFORE:
+                return $field < Html::computeGenericDateTimeSearch($pattern);
+
+            case Rule::PATTERN_DATE_IS_AFTER:
+                return $field > Html::computeGenericDateTimeSearch($pattern);
         }
         return false;
     }
@@ -563,17 +593,22 @@ class RuleCriteria extends CommonDBChild
      **/
     public static function getConditions($itemtype, $criterion = '')
     {
+
         $criteria =  [
-            Rule::PATTERN_IS              => __('is'),
-            Rule::PATTERN_IS_NOT          => __('is not'),
-            Rule::PATTERN_CONTAIN         => __('contains'),
-            Rule::PATTERN_NOT_CONTAIN     => __('does not contain'),
-            Rule::PATTERN_BEGIN           => __('starting with'),
-            Rule::PATTERN_END             => __('finished by'),
-            Rule::REGEX_MATCH             => __('regular expression matches'),
-            Rule::REGEX_NOT_MATCH         => __('regular expression does not match'),
-            Rule::PATTERN_EXISTS          => __('exists'),
-            Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist')
+            Rule::PATTERN_IS                => __('is'),
+            Rule::PATTERN_IS_NOT            => __('is not'),
+            Rule::PATTERN_CONTAIN           => __('contains'),
+            Rule::PATTERN_NOT_CONTAIN       => __('does not contain'),
+            Rule::PATTERN_BEGIN             => __('starting with'),
+            Rule::PATTERN_END               => __('finished by'),
+            Rule::REGEX_MATCH               => __('regular expression matches'),
+            Rule::REGEX_NOT_MATCH           => __('regular expression does not match'),
+            Rule::PATTERN_EXISTS            => __('exists'),
+            Rule::PATTERN_DOES_NOT_EXISTS   => __('does not exist'),
+            Rule::PATTERN_DATE_IS_BEFORE    => __('before'),
+            Rule::PATTERN_DATE_IS_AFTER     => __('after'),
+            Rule::PATTERN_DATE_IS_EQUAL     => __('is'),
+            Rule::PATTERN_DATE_IS_NOT_EQUAL => __('is not'),
         ];
 
         if (in_array($criterion, ['ip', 'subnet'])) {
@@ -641,85 +676,39 @@ class RuleCriteria extends CommonDBChild
     }
 
 
-    /** form for rule criteria
+    /**
+     * Show the form to add or update a criterion
      *
-     * @since 0.85
-     *
-     * @param integer $ID      Id of the criteria
-     * @param array   $options possible options:
-     *     - rule Object : the rule
+     * @param integer $ID ID of the criteria
+     * @param array $options Extra options
+     * @phpstan-param array{parent: Rule} $options
      *
      * @return boolean
-     **/
+     * @since 0.85
+     */
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-       // Yllen: you always have parent for criteria
+        // Yllen: you always have parent for criteria
         $rule = $options['parent'];
 
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options[static::$items_id] = $rule->getField('id');
 
-           //force itemtype of parent
+            //force itemtype of parent
             static::$itemtype = get_class($rule);
 
             $this->check(-1, CREATE, $options);
         }
-        $this->showFormHeader($options);
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td class='center'>" . _n('Criterion', 'Criteria', 1) . "</td><td colspan='3'>";
-        echo "<input type='hidden' name='" . $rule->getRuleIdField() . "' value='" .
-             $this->fields[$rule->getRuleIdField()] . "'>";
-
-        $rand   = $rule->dropdownCriteria(['value' => $this->fields['criteria']]);
-        $params = ['criteria' => '__VALUE__',
-            'rand'     => $rand,
-            'sub_type' => $rule->getType()
-        ];
-
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_criteria$rand",
-            "criteria_span",
-            $CFG_GLPI["root_doc"] . "/ajax/rulecriteria.php",
-            $params
-        );
-
-        if (isset($this->fields['criteria']) && !empty($this->fields['criteria'])) {
-            $params['criteria']  = $this->fields['criteria'];
-            $params['condition'] = $this->fields['condition'];
-            $params['pattern']   = $this->fields['pattern'];
-            echo "<script type='text/javascript' >\n";
-            echo "$(function() {";
-            Ajax::updateItemJsCode(
-                "criteria_span",
-                $CFG_GLPI["root_doc"] . "/ajax/rulecriteria.php",
-                $params
-            );
-            echo '});</script>';
-        }
-
-        if ($rule->specific_parameters) {
-            $itemtype = get_class($rule) . 'Parameter';
-            echo "<span title=\"" . __s('Add a criterion') . "\" class='fa fa-plus pointer' " .
-                  " data-bs-toggle='modal' data-bs-target='#addcriterion$rand'>" .
-                  "<span class='sr-only'>" . __s('Add a criterion') . "</span></span>";
-            Ajax::createIframeModalWindow(
-                'addcriterion' . $rand,
-                $itemtype::getFormURL(),
-                ['reloadonclose' => true]
-            );
-        }
-
-        echo "</td></tr>";
-        echo "<tr><td colspan='4'><span id='criteria_span'>\n";
-        echo "</span></td></tr>\n";
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/admin/rules/criteria.html.twig', [
+            'rule' => $rule,
+            'rules_id_field' => static::$items_id,
+            'item' => $this,
+            'rand' => mt_rand()
+        ]);
 
         return true;
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
+use Glpi\DBAL\QueryFunction;
 use Glpi\RichText\RichText;
-use Glpi\Toolbox\Sanitizer;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -746,12 +747,6 @@ JAVASCRIPT;
 
         self::initSessionForCurrentUser();
 
-       // scheduler feature key
-       // schedular part of fullcalendar is distributed with opensource licence (GLPv3)
-       // but this licence is incompatible with GLPI (GPLv2)
-       // see https://fullcalendar.io/license
-        $scheduler_key = Plugin::doHookFunction('planning_scheduler_key');
-
         echo "<div" . ($fullview ? " id='planning_container'" : "") . " class='d-flex flex-wrap flex-sm-nowrap'>";
 
        // define options for current page
@@ -762,7 +757,6 @@ JAVASCRIPT;
             $options = [
                 'full_view'    => true,
                 'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
-                'license_key'  => $scheduler_key,
                 'resources'    => self::getTimelineResources(),
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
@@ -1052,14 +1046,18 @@ JAVASCRIPT;
         if ($filter_data['type'] == 'user') {
             $uID = $actor[1];
             $user = new User();
-            $user->getFromDB($actor[1]);
-            $title = $user->getName();
-            $caldav_item_url = self::getCaldavBaseCalendarUrl($user);
+            $user_exists = $user->getFromDB($actor[1]);
+            $title = $user->getName(); // Will return N/A if it doesn't exist anymore
+            if ($user_exists) {
+                $caldav_item_url = self::getCaldavBaseCalendarUrl($user);
+            }
         } else if ($filter_data['type'] == 'group_users') {
             $group = new Group();
-            $group->getFromDB($actor[1]);
-            $title = $group->getName();
-            $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            $group_exists = $group->getFromDB($actor[1]);
+            $title = $group->getName(); // Will return N/A if it doesn't exist anymore
+            if ($group_exists) {
+                $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            }
             $enabled = $disabled = 0;
             foreach ($filter_data['users'] as $user) {
                 if ($user['display']) {
@@ -1075,9 +1073,11 @@ JAVASCRIPT;
         } else if ($filter_data['type'] == 'group') {
             $gID = $actor[1];
             $group = new Group();
-            $group->getFromDB($actor[1]);
-            $title = $group->getName();
-            $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            $group_exists = $group->getFromDB($actor[1]);
+            $title = $group->getName(); // Will return N/A if it doesn't exist anymore
+            if ($group_exists) {
+                $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
+            }
         } else if ($filter_data['type'] == 'external') {
             $title = $filter_data['name'];
         } else if ($filter_data['type'] == 'event_filter') {
@@ -1117,8 +1117,7 @@ JAVASCRIPT;
 
         echo "<label for='$filter_key'>";
         echo $title;
-        $raw_url = Sanitizer::decodeHtmlSpecialChars($filter_data['url'] ?? '');
-        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($raw_url)) {
+        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($filter_data['url'] ?? '')) {
             $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
             echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
         }
@@ -1154,7 +1153,7 @@ JAVASCRIPT;
             if ($params['show_delete']) {
                 echo "<li class='delete_planning dropdown-item' value='$filter_key'>" . __("Delete") . "</li>";
             }
-            if ($filter_data['type'] != 'group_users' && $filter_data['type'] != 'external') {
+            if ($caldav_item_url !== '' && $filter_data['type'] != 'group_users' && $filter_data['type'] != 'external') {
                 $url = parse_url($CFG_GLPI["url_base"]);
                 $port = 80;
                 if (isset($url['port'])) {
@@ -1195,7 +1194,7 @@ JAVASCRIPT;
         }
         echo "</span>";
 
-        if ($filter_data['type'] == 'group_users') {
+        if ($caldav_item_url !== '' && $filter_data['type'] == 'group_users') {
             echo "<ul class='group_listofusers filters'>";
             foreach ($filter_data['users'] as $user_key => $userdata) {
                 self::showSingleLinePlanningFilter(
@@ -1306,6 +1305,10 @@ JAVASCRIPT;
      */
     public static function sendAddUserForm($params = [])
     {
+        if (!isset($params['users_id']) || (int) $params['users_id'] <= 0) {
+            Session::addMessageAfterRedirect(__('A user selection is required'), false, ERROR);
+            return;
+        }
         $_SESSION['glpi_plannings']['plannings']["user_" . $params['users_id']]
          = ['color'   => self::getPaletteColor('bg', $_SESSION['glpi_plannings_color_index']),
              'display' => true,
@@ -1352,6 +1355,10 @@ JAVASCRIPT;
      */
     public static function sendAddGroupUsersForm($params = [])
     {
+        if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
+            Session::addMessageAfterRedirect(__('A group selection is required'), false, ERROR);
+            return;
+        }
         $current_group = &$_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id'] . "_users"];
         $current_group = ['display' => true,
             'type'    => 'group_users',
@@ -1363,13 +1370,13 @@ JAVASCRIPT;
             [
                 'OR' => [
                     ['glpi_users.begin_date' => null],
-                    ['glpi_users.begin_date' => ['<', new QueryExpression('NOW()')]],
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
                 ],
             ],
             [
                 'OR' => [
                     ['glpi_users.end_date' => null],
-                    ['glpi_users.end_date' => ['>', new QueryExpression('NOW()')]],
+                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
                 ]
             ]
         ]);
@@ -1455,6 +1462,10 @@ JAVASCRIPT;
      */
     public static function sendAddGroupForm($params = [])
     {
+        if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
+            Session::addMessageAfterRedirect(__('A group selection is required'), false, ERROR);
+            return;
+        }
         $_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id']]
          = ['color'   => self::getPaletteColor(
              'bg',
@@ -1514,8 +1525,12 @@ JAVASCRIPT;
      */
     public static function sendAddExternalForm($params = [])
     {
-        $raw_url = Sanitizer::decodeHtmlSpecialChars($params['url']);
-        if (!Toolbox::isUrlSafe($raw_url)) {
+        if (empty($params['url'])) {
+            Session::addMessageAfterRedirect(__('A url is required'), false, ERROR);
+            return;
+        }
+
+        if (!Toolbox::isUrlSafe($params['url'])) {
             Session::addMessageAfterRedirect(
                 sprintf(__('URL "%s" is not allowed by your administrator.'), $params['url']),
                 false,
@@ -1806,7 +1821,7 @@ JAVASCRIPT;
             $input[$key] = $event['actor']['items_id'];
         }
 
-        $new_items_id = $item->add(Toolbox::addslashes_deep($input));
+        $new_items_id = $item->add($input);
 
        // manage all assigments for ProjectTask
         if (
@@ -2297,8 +2312,7 @@ JAVASCRIPT;
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non external and inactive calendars
             }
-            $raw_url = Sanitizer::decodeHtmlSpecialChars($planning_params['url']);
-            $calendar_data = Toolbox::getURLContent($raw_url);
+            $calendar_data = Toolbox::getURLContent($planning_params['url']);
             if (empty($calendar_data)) {
                 continue;
             }
@@ -2306,14 +2320,14 @@ JAVASCRIPT;
                 $vcalendar = Reader::read($calendar_data);
             } catch (\Sabre\VObject\ParseException $exception) {
                 trigger_error(
-                    sprintf('Unable to parse calendar data from URL "%s"', $raw_url),
+                    sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
                     E_USER_WARNING
                 );
                 continue;
             }
             if (!$vcalendar instanceof VCalendar) {
                 trigger_error(
-                    sprintf('No VCalendar object found at URL "%s"', $raw_url),
+                    sprintf('No VCalendar object found at URL "%s"', $planning_params['url']),
                     E_USER_WARNING
                 );
                 continue;
@@ -2508,7 +2522,7 @@ JAVASCRIPT;
                      }
 
                      if (is_subclass_of($item, "CommonITILTask")) {
-                         $parentitemtype = $item->getItilObjectItemType();
+                         $parentitemtype = $item::getItilObjectItemType();
                          if (!$update["_job"] = getItemForItemtype($parentitemtype)) {
                              return;
                          }

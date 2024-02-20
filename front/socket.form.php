@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,21 +51,57 @@ if (!isset($_GET["itemtype"])) {
 }
 
 $socket = new Socket();
-if (isset($_POST["add"])) {
+if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["execute_multi"])) {
     $socket->check(-1, CREATE, $_POST);
 
-    if ($socket->add($_POST)) {
-        Event::log(
-            $_POST['items_id'],
-            $_POST['itemtype'],
-            4,
-            "socket",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
-        );
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($socket->getLinkURL());
+    if (!isset($_POST["execute_multi"])) {
+        if ($socket->add($_POST)) {
+            Event::log(
+                $_POST['items_id'],
+                $_POST['itemtype'],
+                4,
+                "socket",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
+            );
+            if ($_SESSION['glpibackcreated']) {
+                Html::redirect($socket->getLinkURL());
+            }
         }
+    } else {
+        $initialName = $_POST["name"];
+        $wiring_side = $_POST["wiring_side"];
+
+        if ($_POST["_to"] < $_POST["_from"]) {
+            Session::addMessageAfterRedirect(
+                __("'To' should not be smaller than 'From'"),
+                false,
+                ERROR
+            );
+            Html::back();
+        }
+
+        for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
+            $_POST["name"] = $_POST["_before"] . $initialName . $i . $_POST["_after"];
+            $_POST["position"] =  $i;
+
+            //create REAR and FRONT if needed
+            if ($wiring_side == Socket::BOTH) {
+                $_POST["wiring_side"] = Socket::REAR ;
+                $socket->add($_POST);
+                $_POST["wiring_side"] = Socket::FRONT ;
+                $socket->add($_POST);
+            } else {
+                $socket->add($_POST);
+            }
+        }
+        Event::log(
+            0,
+            "socket",
+            5,
+            "setup",
+            sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"])
+        );
     }
     Html::back();
 } else if (isset($_POST["purge"])) {
@@ -96,38 +132,6 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["execute_multi"])) {
-    $socket->check(-1, CREATE, $_POST);
-
-    for ($i = $_POST["_from"]; $i <= $_POST["_to"]; $i++) {
-        $_POST["name"] = $_POST["_before"] . $i . $_POST["_after"];
-        $socket->add($_POST);
-    }
-    Event::log(
-        0,
-        "socket",
-        5,
-        "setup",
-        sprintf(__('%1$s adds several sockets'), $_SESSION["glpiname"])
-    );
-    Html::back();
-} else if (isset($_POST["execute_single"])) {
-    $socket->check(-1, CREATE, $_POST);
-
-    if ($socket->add($_POST)) {
-        Event::log(
-            $_POST['items_id'],
-            $_POST['itemtype'],
-            4,
-            "socket",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a socket'), $_SESSION["glpiname"])
-        );
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($socket->getLinkURL());
-        }
-    }
-    Html::back();
 } else {
     $itemtype = "Computer";
     if ($_GET['id'] != '') {
@@ -152,8 +156,11 @@ if (isset($_POST["add"])) {
         $options['itemtype'] = $itemtype;
     }
 
+    if (isset($_GET["several"])) {
+        $options['several'] = $_GET["several"];
+    }
+
    // Add a socket from item : format data
-   // see Socket::showNetworkPortForm()
     if (
         isset($_REQUEST['_add_fromitem'])
         && isset($_REQUEST['_from_itemtype'])

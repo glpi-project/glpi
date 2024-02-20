@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,6 @@ class DataExport
 {
     /**
      * Normalize a value for text export (PDF, CSV, SYLK, ...).
-     * Assume value cames from DB and has been processed by GLPI sanitize process.
      *
      * @param string $value
      *
@@ -49,8 +48,6 @@ class DataExport
      */
     public static function normalizeValueForTextExport(string $value): string
     {
-        $value = Sanitizer::unsanitize($value);
-
         if (RichText::isRichTextHtmlContent($value)) {
             libxml_use_internal_errors(true); // Silent errors
             $document = new \DOMDocument();

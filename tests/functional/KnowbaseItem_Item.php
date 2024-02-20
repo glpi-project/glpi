@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -199,23 +199,23 @@ class KnowbaseItem_Item extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Associated elements <span class=\'badge\'>3</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-lifebuoy me-2'></i>Associated elements</span> <span class='badge glpi-badge'>3</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($kb1);
-        $this->string($name)->isIdenticalTo('Associated elements');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-lifebuoy me-2'></i>Associated elements</span>");
 
         $ticket3 = getItemByTypeName(\Ticket::getType(), '_ticket03');
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($ticket3, true);
-        $this->string($name)->isIdenticalTo('Knowledge base <span class=\'badge\'>2</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-lifebuoy me-2'></i>Knowledge base</span> <span class='badge glpi-badge'>2</span>");
 
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->string($name)->isIdenticalTo('Knowledge base <span class=\'badge\'>2</span>');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-lifebuoy me-2'></i>Knowledge base</span> <span class='badge glpi-badge'>2</span>");
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($ticket3);
-        $this->string($name)->isIdenticalTo('Knowledge base');
+        $this->string($name)->isIdenticalTo("<span><i class='ti ti-lifebuoy me-2'></i>Knowledge base</span>");
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,15 @@ namespace Glpi;
 
 use Ajax;
 use CommonDBTM;
+use CommonGLPI;
 use CronTask;
 use DBConnection;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Html;
 use Infocom;
+use ITILSolution;
 use Session;
 use Toolbox;
 
@@ -51,15 +54,12 @@ use Toolbox;
  **/
 class Event extends CommonDBTM
 {
-    public static $rightname = 'logs';
-
-
+    public static $rightname = 'system_logs';
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Log', 'Logs', $nb);
+        return _n('Event log', 'Event logs', $nb);
     }
-
 
     public function prepareInputForAdd($input)
     {
@@ -90,7 +90,6 @@ class Event extends CommonDBTM
         }
     }
 
-
     /**
      * Log an event.
      *
@@ -105,20 +104,16 @@ class Event extends CommonDBTM
      **/
     public static function log($items_id, $type, $level, $service, $event)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $input = ['items_id' => intval($items_id),
-            'type'     => $DB->escape($type),
+            'type'     => $type,
             'date'     => $_SESSION["glpi_currenttime"],
-            'service'  => $DB->escape($service),
+            'service'  => $service,
             'level'    => intval($level),
-            'message'  => $DB->escape($event)
+            'message'  => $event
         ];
         $tmp = new self();
         return $tmp->add($input);
     }
-
 
     /**
      * Clean old event - Call by cron
@@ -137,12 +132,11 @@ class Event extends CommonDBTM
         $DB->delete(
             'glpi_events',
             [
-                new \QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
             ]
         );
         return $DB->affectedRows();
     }
-
 
     /**
      * Return arrays for function showEvent et lastEvent
@@ -157,7 +151,8 @@ class Event extends CommonDBTM
             return [$logItemtype, $logService];
         }
 
-        $logItemtype = ['system'      => __('System'),
+        $logItemtype = [
+            'system'      => __('System'),
             'devices'     => _n('Component', 'Components', Session::getPluralNumber()),
             'planning'    => __('Planning'),
             'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
@@ -165,25 +160,27 @@ class Event extends CommonDBTM
             'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())
         ];
 
-        $logService = ['inventory'    => _n('Asset', 'Assets', Session::getPluralNumber()),
-            'tracking'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-            'maintain'     => __('Assistance'),
-            'planning'     => __('Planning'),
-            'tools'        => __('Tools'),
-            'financial'    => __('Management'),
-            'login'        => _n('Connection', 'Connections', 1),
-            'setup'        => __('Setup'),
-            'security'     => __('Security'),
-            'reservation'  => _n('Reservation', 'Reservations', Session::getPluralNumber()),
-            'cron'         => CronTask::getTypeName(Session::getPluralNumber()),
-            'document'     => Document::getTypeName(Session::getPluralNumber()),
-            'notification' => _n('Notification', 'Notifications', Session::getPluralNumber()),
-            'plugin'       => _n('Plugin', 'Plugins', Session::getPluralNumber())
+        $logService = [
+            'inventory'    => _n('Asset', 'Assets', Session::getPluralNumber()),
+            'tracking'      => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'maintain'      => __('Assistance'),
+            'planning'      => __('Planning'),
+            'tools'         => __('Tools'),
+            'financial'     => __('Management'),
+            'login'         => _n('Connection', 'Connections', 1),
+            'setup'         => __('Setup'),
+            'security'      => __('Security'),
+            'reservation'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
+            'cron'          => CronTask::getTypeName(Session::getPluralNumber()),
+            'document'      => Document::getTypeName(Session::getPluralNumber()),
+            'notification'  => _n('Notification', 'Notifications', Session::getPluralNumber()),
+            'plugin'        => _n('Plugin', 'Plugins', Session::getPluralNumber()),
+            'socket'        => Socket::getTypeName(Session::getPluralNumber()),
+            'Impersonate'   => __('Impersonate'),
         ];
 
         return [$logItemtype, $logService];
     }
-
 
     /**
      * @param $type
@@ -238,7 +235,6 @@ class Event extends CommonDBTM
             }
         }
     }
-
 
     /**
      * Print a nice tab for last event from inventory section
@@ -364,7 +360,6 @@ class Event extends CommonDBTM
         }
     }
 
-
     /**
      * Print a nice tab for last event
      *
@@ -374,9 +369,11 @@ class Event extends CommonDBTM
      * @param string  $order   order by clause occurences (eg: ) (default 'DESC')
      * @param string  $sort    order by clause occurences (eg: date) (defaut 'date')
      * @param integer $start   (default 0)
+     * @deprecated 10.1.0
      **/
     public static function showList($target, $order = 'DESC', $sort = 'date', $start = 0)
     {
+        Toolbox::deprecated('Use Search::show(Glpi\Event::class);');
         $DBread = DBConnection::getReadConnection();
 
        // Show events from $result in table form
@@ -443,9 +440,249 @@ class Event extends CommonDBTM
         ]);
     }
 
-
     public static function getIcon()
     {
         return "ti ti-news";
+    }
+
+    public function rawSearchOptions()
+    {
+        $tab = parent::rawSearchOptions();
+
+        $tab[] = [
+            'id'            => '155',
+            'table'         => self::getTable(),
+            'field'         => 'type',
+            'name'          => __('Source'),
+            'datatype'      => 'specific',
+            'massiveaction' => false,
+            'searchtype'    => ['equals', 'notequals', 'contains', 'notcontains'],
+        ];
+
+        $tab[] = [
+            'id'            => '156',
+            'table'         => self::getTable(),
+            'field'         => 'items_id',
+            'name'          => _n('Item', 'Items', 1),
+            'datatype'      => 'specific',
+            'nosearch'      => true,
+            'massiveaction' => false,
+            'additionalfields' => ['type'],
+        ];
+
+        $tab[] = [
+            'id'            => '157',
+            'table'         => self::getTable(),
+            'field'         => 'date',
+            'name'          => _n('Date', 'Dates', 1),
+            'datatype'      => 'datetime',
+            'massiveaction' => false,
+        ];
+
+        $tab[] = [
+            'id'            => '158',
+            'table'         => self::getTable(),
+            'field'         => 'service',
+            'name'          => __('Service'),
+            'datatype'      => 'specific',
+            'massiveaction' => false,
+            'searchtype'    => ['equals', 'notequals', 'contains', 'notcontains'],
+        ];
+
+        $tab[] = [
+            'id'            => '159',
+            'table'         => self::getTable(),
+            'field'         => 'level',
+            'name'          => __('Level'),
+            'datatype'      => 'integer',
+            'massiveaction' => false,
+        ];
+
+        $tab[] = [
+            'id'            => '160',
+            'table'         => self::getTable(),
+            'field'         => 'message',
+            'name'          => __('Message'),
+            'datatype'      => 'text',
+            'massiveaction' => false,
+        ];
+
+        return $tab;
+    }
+
+    /**
+     * Get the possibles values for the 'Source' search option, which target
+     * the `type` column in glpi_events.
+     * Possibles values are :
+     * - Some specials types (see self::logArray)
+     * - Used itemtypes
+     *
+     * @return array
+     */
+    private static function getTypeValuesForDropdown(): array
+    {
+        // Get specials types
+        $specials = self::logArray()[0];
+
+        // Get itemtypes and build their display names
+        $itemtypes = [];
+        foreach (self::getUsedItemtypes() as $value) {
+            $itemtype = self::getItemtypeFromType($value);
+            if (is_a($itemtype, CommonGLPI::class, true)) {
+                $itemtypes[$value] = $itemtype::getTypeName(1);
+            } else {
+                trigger_error("Unsupported type: $value", E_USER_WARNING);
+                $itemtypes[$value] = $value;
+            }
+        }
+
+        return [
+            __('Special') => $specials,
+            __('Items') => $itemtypes,
+        ];
+    }
+
+    /**
+     * Get all itemtypes referenced in the `type` columns of glpi_events
+     * Note that these values are not real itemtypes but strings like "users".
+     * You need to call self::getItemtypeFromType() to get a valid GLPI itemtype
+     *
+     * @return array
+     */
+    private static function getUsedItemtypes(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // These values are not itemtypes
+        $blacklist = array_keys(self::logArray()[0]);
+
+        $data = $DB->request([
+            'SELECT'   => ['type'],
+            'DISTINCT' => 'true',
+            'FROM'     => self::getTable(),
+            'WHERE'    => [
+                'NOT' => ['type' => $blacklist]
+            ]
+        ]);
+
+        return array_column(iterator_to_array($data), 'type');
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if ($field === 'service') {
+            $value = $values['service'];
+            if (empty($value)) {
+                $value = 0;
+            }
+            return \Dropdown::showFromArray($name, self::logArray()[1], [
+                'value' => $value,
+                'display' => false,
+                'display_emptychoice' => true
+            ]);
+        } else if ($field === 'type') {
+            $value = $values['type'];
+            if (empty($value)) {
+                $value = 0;
+            }
+            return \Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
+                'value' => $value,
+                'display' => false,
+                'display_emptychoice' => true
+            ]);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if ($field === 'service') {
+            $value = $values['service'];
+            if (empty($value)) {
+                return NOT_AVAILABLE;
+            }
+            $services = self::logArray()[1];
+            return $services[$value] ?? $value;
+        } else if ($field === 'items_id') {
+            $type = $values['type'] ?? null;
+            if (
+                ((int) $values['items_id']) > 0
+                && $type !== null
+                && ($itemtype = self::getItemtypeFromType($type)) !== null
+                && is_a($itemtype, CommonDBTM::class, true)
+            ) {
+                $item = new $itemtype();
+                if ($item->getFromDB($values['items_id'])) {
+                    return $item->getLink(['complete' => true]);
+                }
+            }
+            // Show the ID at least if it is valid (There may be a plugin that is disabled)
+            return ((int) $values['items_id']) > 0 ? $values['items_id'] : NOT_AVAILABLE;
+        } else if ($field === 'type') {
+            $value = $values['type'];
+            if (empty($value)) {
+                return NOT_AVAILABLE;
+            }
+
+            if (($itemtype = self::getItemtypeFromType($value)) !== null) {
+                $display_value = $itemtype::getTypeName(1);
+                $icon = $itemtype::getIcon() ?? '';
+            } else {
+                $types = self::logArray()[0];
+                $display_value = $types[$value] ?? $value;
+                $icon = '';
+            }
+
+            return '<i class="fa-fw text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    /**
+     * Extract itemtype from type field value.
+     *
+     * @param string $type
+     *
+     * @return string|null
+     */
+    private static function getItemtypeFromType(string $type): ?string
+    {
+        if (is_a($type, CommonGLPI::class, true)) {
+            return $type;
+        }
+
+        static $mapping = [];
+
+        if (array_key_exists($type, $mapping)) {
+            return $mapping[$type];
+        }
+
+        $dbu = new \DbUtils();
+
+        // In many cases, `type` corresponds to a lowercase itemtype (e.g. `change`).
+        $fallback_type = $dbu->fixItemtypeCase($type);
+        if (is_a($fallback_type, CommonGLPI::class, true)) {
+            $mapping[$type] = $fallback_type;
+            return $fallback_type;
+        }
+
+        // In many cases, it also uses plural form of the lowercase itemtype (e.g. `users`).
+        $fallback_type = $dbu->fixItemtypeCase($dbu->getSingular($type));
+        if (is_a($fallback_type, CommonGLPI::class, true)) {
+            $mapping[$type] = $fallback_type;
+            return $fallback_type;
+        }
+
+        if ($type == 'solution') {
+            return ITILSolution::class;
+        }
+
+        return null;
+    }
+
+    public function getRights($interface = 'central'): array
+    {
+        return [ READ => __('Read')];
     }
 }

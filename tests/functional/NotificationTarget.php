@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -241,6 +241,71 @@ class NotificationTarget extends DbTestCase
             $target->setAllowResponse($allow_response);
             $this->array($target->getReplyTo())->isEqualTo($expected_result);
         }
+    }
+
+
+    public function testGetUrlbase()
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root    = getItemByTypeName('Entity', 'Root entity', true);
+        $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $ntarget_parent  = new \NotificationTarget($parent);
+        $ntarget_child_1 = new \NotificationTarget($child_1);
+        $ntarget_child_2 = new \NotificationTarget($child_2);
+
+       // test global settings
+        $CFG_GLPI['url_base'] = 'global.tld';
+
+        $this->string($ntarget_parent->getUrlBase())->isEqualTo('global.tld');
+        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('global.tld');
+        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('global.tld');
+
+       // test root entity settings
+        $entity  = new \Entity();
+        $this->boolean($entity->update([
+            'id'       => $root,
+            'url_base' => "root.tld",
+        ]))->isTrue();
+
+        $this->string($ntarget_parent->getUrlBase())->isEqualTo('root.tld');
+        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('root.tld');
+        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('root.tld');
+
+       // test parent entity settings
+        $this->boolean($entity->update([
+            'id'       => $parent,
+            'url_base' => "parent.tld",
+        ]))->isTrue();
+
+        $this->string($ntarget_parent->getUrlBase())->isEqualTo('parent.tld');
+        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('parent.tld');
+        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('parent.tld');
+
+       // test child_1 entity settings
+        $this->boolean($entity->update([
+            'id'       => $child_1,
+            'url_base' => "child1.tld",
+        ]))->isTrue();
+
+        $this->string($ntarget_parent->getUrlBase())->isEqualTo('parent.tld');
+        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('child1.tld');
+        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('parent.tld');
+
+       // test child_2 entity settings
+        $this->boolean($entity->update([
+            'id'       => $child_2,
+            'url_base' => "child2.tld",
+        ]))->isTrue();
+
+        $this->string($ntarget_parent->getUrlBase())->isEqualTo('parent.tld');
+        $this->string($ntarget_child_1->getUrlBase())->isEqualTo('child1.tld');
+        $this->string($ntarget_child_2->getUrlBase())->isEqualTo('child2.tld');
     }
 
     /**

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -76,7 +76,8 @@ trait Clonable
             'date_mod',
             'date_creation',
             'template_name',
-            'is_template'
+            'is_template',
+            'is_default'
         ];
         foreach ($properties_to_clean as $property) {
             if (array_key_exists($property, $input)) {
@@ -222,7 +223,7 @@ trait Clonable
             return false;
         }
         $new_item = new static();
-        $input = Toolbox::addslashes_deep($this->fields);
+        $input = $this->fields;
         foreach ($override_input as $key => $value) {
             $input[$key] = $value;
         }

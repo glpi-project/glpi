@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\SearchOption;
 
 /**
  * This class manages locks
@@ -54,6 +58,10 @@ class Lock extends CommonGLPI
         return _n('Lock', 'Locks', $nb);
     }
 
+    public static function getIcon()
+    {
+        return "ti ti-lock";
+    }
 
     /**
      * Display form to unlock fields and links
@@ -91,7 +99,7 @@ class Lock extends CommonGLPI
             $subquery = [];
 
             //get locked field for current itemtype
-            $subquery[] = new \QuerySubQuery([
+            $subquery[] = new QuerySubQuery([
                 'SELECT' => $lockedfield->getTable() . ".*",
                 'FROM'   => $lockedfield->getTable(),
                 'WHERE'  => [
@@ -125,7 +133,7 @@ class Lock extends CommonGLPI
                         'OR' => [
                             [
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield->getTable() . '.items_id'  => new \QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
+                                $lockedfield->getTable() . '.items_id'  => new QueryExpression(getTableForItemType($lockable_itemtype) . '.id')
                             ], [
                                 $lockedfield->getTable() . '.itemtype'  => $lockable_itemtype,
                                 $lockedfield->getTable() . '.is_global' => 1
@@ -169,10 +177,10 @@ class Lock extends CommonGLPI
                         ];
                     }
                 }
-                $subquery[] = new \QuerySubQuery($query);
+                $subquery[] = new QuerySubQuery($query);
             }
 
-            $union = new \QueryUnion($subquery);
+            $union = new QueryUnion($subquery);
             $locked_iterator = $DB->request([
                 'FROM' => $union
             ]);
@@ -199,7 +207,7 @@ class Lock extends CommonGLPI
 
 
                 //get fields labels
-                $search_options = Search::getOptions($itemtype);
+                $search_options = SearchOption::getOptionsForItemtype($itemtype);
                 foreach ($search_options as $search_option) {
                     //exclude SO added by dropdown part (to get real name)
                     //ex : Manufacturer != Firmware : Manufacturer
@@ -410,60 +418,65 @@ class Lock extends CommonGLPI
                 echo "<td class='left'>" . Dropdown::getYesNo($item_disk->fields['is_dynamic']) . "</td>";
                 echo "</tr>\n";
             }
+        }
 
-            $computer_vm = new ComputerVirtualMachine();
-            $params = ['is_dynamic'    => 1,
-                'is_deleted'    => 1,
-                'computers_id'  => $ID
-            ];
-            $params['FIELDS'] = ['id', 'name'];
-            $first  = true;
-            foreach ($DB->request($computer_vm->getTable(), $params) as $line) {
-                if ($first) {
-                    echo "<tr>";
-                    echo "<th width='10'></th>";
-                    echo "<th>" . $computer_vm->getTypeName(Session::getPluralNumber()) . "</th>";
-                    echo "<th>" . __('UUID') . "</th>";
-                    echo "<th>" . __('Machine') . "</th>";
-                    echo "<th>" . __('Automatic inventory') . "</th>";
-                    echo "</tr>";
-                    $first = false;
-                }
-
-                $computer_vm->getFromDB($line['id']);
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='center' width='10'>";
-                if ($computer_vm->can($line['id'], UPDATE) || $computer_vm->can($line['id'], PURGE)) {
-                    $header = true;
-                    echo "<input type='checkbox' name='ComputerVirtualMachine[" . $line['id'] . "]'>";
-                }
-                echo "</td>";
-                echo "<td class='left'>" . $computer_vm->getLink() . "</td>";
-                echo "<td class='left'>" . $computer_vm->fields['uuid'] . "</td>";
-
-                $url = "";
-                if ($link_computer = ComputerVirtualMachine::findVirtualMachine($computer_vm->fields)) {
-                    $computer = new Computer();
-                    if ($computer->can($link_computer, READ)) {
-                        $url  = "<a href='" . $computer->getFormURLWithID($link_computer) . "'>";
-                        $url .= $computer->fields["name"] . "</a>";
-
-                        $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $computer->fields['name'] .
-                            '</td></tr>';
-                        $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $computer->fields['serial'] .
-                            '</td></tr>';
-                        $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $computer->fields['comment'] .
-                            '</td></tr></table>';
-
-                        $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
-                    } else {
-                        $url = $computer->fields['name'];
-                    }
-                }
-                echo "<td class='left'>" . $url . "</td>";
-                echo "<td class='left'>" . Dropdown::getYesNo($computer_vm->fields['is_dynamic']) . "</td>";
-                echo "</tr>\n";
+        $item_vm = new ItemVirtualMachine();
+        $params = ['is_dynamic'    => 1,
+            'is_deleted'    => 1,
+            'itemtype' => $itemtype,
+            'items_id'  => $ID
+        ];
+        $params['FIELDS'] = ['id', 'name'];
+        $first  = true;
+        foreach ($DB->request($item_vm->getTable(), $params) as $line) {
+            if ($first) {
+                echo "<tr>";
+                echo "<th width='10'></th>";
+                echo "<th>" . $item_vm->getTypeName(Session::getPluralNumber()) . "</th>";
+                echo "<th>" . __('UUID') . "</th>";
+                echo "<th>" . __('Machine') . "</th>";
+                echo "<th>" . __('Automatic inventory') . "</th>";
+                echo "</tr>";
+                $first = false;
             }
+
+            $item_vm->getFromDB($line['id']);
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='center' width='10'>";
+            if ($item_vm->can($line['id'], UPDATE) || $item_vm->can($line['id'], PURGE)) {
+                $header = true;
+                echo "<input type='checkbox' name='ItemVirtualMachine[" . $line['id'] . "]'>";
+            }
+            echo "</td>";
+            echo "<td class='left'>" . $item_vm->getLink() . "</td>";
+            echo "<td class='left'>" . $item_vm->fields['uuid'] . "</td>";
+
+            $url = "";
+            if ($link_item = ItemVirtualMachine::findVirtualMachine($item_vm->fields)) {
+                $item = new $itemtype();
+                if ($item->can($link_item, READ)) {
+                    $url  = "<a href='" . $item->getFormURLWithID($link_item) . "'>";
+                    $url .= $item->fields["name"] . "</a>";
+
+                    $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $item->fields['name'] .
+                        '</td></tr>';
+                    if (isset($item->fields['serial'])) {
+                        $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $item->fields['serial'] .
+                            '</td></tr>';
+                    }
+                    if (isset($item->fields['comment'])) {
+                        $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $item->fields['comment'] .
+                            '</td></tr></table>';
+                    }
+
+                    $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
+                } else {
+                    $url = $item->fields['name'];
+                }
+            }
+            echo "<td class='left'>" . $url . "</td>";
+            echo "<td class='left'>" . Dropdown::getYesNo($item_vm->fields['is_dynamic']) . "</td>";
+            echo "</tr>\n";
         }
 
         //Software versions
@@ -914,10 +927,10 @@ class Lock extends CommonGLPI
             echo "<td class='left' width='80%'>";
 
             echo "<input type='submit' name='unlock' ";
-            echo "value=\"" . addslashes(_sx('button', 'Unlock')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "value=\"" . _sx('button', 'Unlock') . "\" class='btn btn-primary'>&nbsp;";
 
             echo "<input type='submit' name='purge' ";
-            echo "value=\"" . addslashes(_sx('button', 'Delete permanently')) . "\" class='btn btn-primary'>&nbsp;";
+            echo "value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>&nbsp;";
             echo "</td></tr>";
             echo "</table>";
         } else {
@@ -941,7 +954,7 @@ class Lock extends CommonGLPI
     {
 
         if ($item->isDynamic() && $item->can($item->fields['id'], UPDATE)) {
-            return Lock::getTypeName(Session::getPluralNumber());
+            return self::createTabEntry(Lock::getTypeName(Session::getPluralNumber()), 0, $item::getType());
         }
         return '';
     }
@@ -1043,14 +1056,14 @@ class Lock extends CommonGLPI
                 $field     = 'items_id';
                 break;
 
-            case 'ComputerVirtualMachine':
+            case 'ItemVirtualMachine':
                 $condition = [
                     'is_dynamic' => 1,
                     'is_deleted' => 1,
                     'itemtype'   => $itemtype
                 ];
-                $table     = 'glpi_computervirtualmachines';
-                $field     = 'computers_id';
+                $table     = $itemtype::getTable();
+                $field     = 'items_id';
                 break;
 
             case 'SoftwareVersion':
@@ -1129,7 +1142,7 @@ class Lock extends CommonGLPI
                     'IPAddress'              => IPAddress::getTypeName(Session::getPluralNumber()),
                     'Item_Disk'              => Item_Disk::getTypeName(Session::getPluralNumber()),
                     'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),
-                    'ComputerVirtualMachine' => ComputerVirtualMachine::getTypeName(Session::getPluralNumber())
+                    'ItemVirtualMachine'     => ItemVirtualMachine::getTypeName(Session::getPluralNumber())
                 ];
 
                 echo __('Select the type of the item that must be unlock');

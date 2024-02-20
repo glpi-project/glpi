@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Glpi\Toolbox\Sanitizer;
 use Psr\Log\LogLevel;
 
 /* Test for inc/location.class.php */
@@ -308,7 +307,7 @@ class Location extends DbTestCase
 
         $count_before_import = countElementsInTable(\Location::getTable());
 
-        $this->integer($this->testedInstance->import(Sanitizer::sanitize($input)))->isGreaterThan(0);
+        $this->integer($this->testedInstance->import($input))->isGreaterThan(0);
 
         $this->integer(countElementsInTable(\Location::getTable()) - $count_before_import)->isEqualTo(count($imported));
 

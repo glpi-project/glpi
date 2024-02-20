@@ -36,7 +36,7 @@ jobs:
         with:
           ref: ${{ matrix.branch }}
       - name: "Restore dependencies cache"
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/

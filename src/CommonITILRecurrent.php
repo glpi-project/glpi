@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -569,13 +569,23 @@ abstract class CommonITILRecurrent extends CommonDropdown
     }
 
     /**
+     * Get all available types to which an ITIL object can be assigned
+     **/
+    public static function getAllTypesForHelpdesk()
+    {
+        return CommonITILObject::getAllTypesForHelpdesk();
+    }
+
+    /**
      * Create an item based on the specified template
+     *
+     * @param array $linked_items array of elements (itemtype => array(id1, id2, id3, ...))
      *
      * @param CommonITILObject|null $created_item   Will contain the created item instance
      *
      * @return boolean
      */
-    public function createItem(?CommonITILObject &$created_item = null)
+    public function createItem(array $linked_items = [], ?CommonITILObject &$created_item = null)
     {
         $result = false;
         $concrete_class = static::getConcreteClass();
@@ -605,9 +615,8 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $input['entities_id'] = $this->fields['entities_id'];
             $input['_auto_import'] = true;
 
-            /** @var CommonITILObject */
+            /** @var CommonITILObject $item */
             $item = new $concrete_class();
-            $input  = Toolbox::addslashes_deep($input);
 
             if ($items_id = $item->add($input)) {
                 $created_item = $item;
@@ -616,6 +625,23 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     $concrete_class::getTypeName(1),
                     $items_id
                 );
+                // add item if any
+                if (count($linked_items) > 0 && ($item_link_class = $concrete_class::getItemLinkClass()) !== null) {
+                    foreach ($linked_items as $linked_itemtype => $linked_items_ids) {
+                        foreach ($linked_items_ids as $linked_item_id) {
+                            /* @var CommonItilObject_Item $item_link */
+                            $item_link = new $item_link_class();
+                            $item_link->add(
+                                [
+                                    $item->getForeignKeyField() => $items_id,
+                                    'itemtype' => $linked_itemtype,
+                                    'items_id' => $linked_item_id,
+                                ]
+                            );
+                        }
+                    }
+                }
+
                 $result = true;
             } else {
                 $msg = sprintf(
@@ -633,7 +659,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         Log::history(
             $this->fields['id'],
             static::class,
-            [0, '', addslashes($msg)],
+            [0, '', $msg],
             '',
             Log::HISTORY_LOG_SIMPLE_MESSAGE
         );
@@ -657,5 +683,43 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-alarm";
+    }
+
+    /**
+     * Return classname corresponding to relations with items.
+     *
+     * @return string|null Classname, or null if relations with items is not handled.
+     */
+    public static function getItemLinkClass(): ?string
+    {
+        return null;
+    }
+
+    /**
+     * Return elements related to the recurrent object.
+     * Result keys corresponds to itemtypes, and values are arrays of ids `array(itemtype => array(id1, id2, id3, ...))`.
+     *
+     * @return array
+     */
+    public function getRelatedElements(): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $items = [];
+        if (($item_class = static::getItemLinkClass()) !== null) {
+            $iterator = $DB->request([
+                'FROM'   => $item_class::getTable(),
+                'WHERE'  => [
+                    'ticketrecurrents_id' =>  $this->getId(),
+                ]
+            ]);
+            foreach ($iterator as $data) {
+                if (!array_key_exists($data['itemtype'], $items)) {
+                    $items[$data['itemtype']] = [];
+                }
+                $items[$data['itemtype']][] = $data['items_id'];
+            }
+        }
+        return $items;
     }
 }

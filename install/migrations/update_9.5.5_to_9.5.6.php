@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,9 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Update from 9.5.5 to 9.5.6
@@ -75,18 +78,22 @@ function update955to956()
             ]
         ]);
 
-        $migration->addPostQuery($DB->buildUpdate(
-            'glpi_documents_items',
-            ['date' => new QueryExpression($parent_date->getQuery())],
-            ['itemtype' => ['ITILFollowup']]
-        ));
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_documents_items',
+                ['date' => new QueryExpression($parent_date->getQuery())],
+                ['itemtype' => ['ITILFollowup']]
+            )
+        );
 
        // Init date as the value of date_creation for others items
-        $migration->addPostQuery($DB->buildUpdate(
-            'glpi_documents_items',
-            ['date' => new QueryExpression($DB->quoteName('glpi_documents_items.date_creation'))],
-            ['itemtype' => ['!=', 'ITILFollowup']]
-        ));
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_documents_items',
+                ['date' => new QueryExpression($DB->quoteName('glpi_documents_items.date_creation'))],
+                ['itemtype' => ['!=', 'ITILFollowup']]
+            )
+        );
     }
    /* /Add `date` to glpi_documents_items */
 

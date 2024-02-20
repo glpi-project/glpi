@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ namespace Glpi\Application\View\Extension;
 use DBmysql;
 use Entity;
 use Glpi\Toolbox\FrontEnd;
+use Glpi\UI\ThemeManager;
 use Html;
 use Plugin;
 use Session;
@@ -99,7 +100,11 @@ class FrontEndAssetsExtension extends AbstractExtension
 
         $extra_params = parse_url($path, PHP_URL_QUERY) ?: '';
 
-        if (preg_match('/\.scss$/', $file_path)) {
+        if (
+            preg_match('/\.scss$/', $file_path)
+            || (strpos($extra_params, 'is_custom_theme=1') !== false
+                && ThemeManager::getInstance()->getTheme($file_path))
+        ) {
             $compiled_file = Html::getScssCompilePath($file_path, $this->root_dir);
 
             if (!$is_debug && file_exists($compiled_file)) {
@@ -226,7 +231,6 @@ JAVASCRIPT;
                 '/front/locale.php'
                 . '?domain=' . $locale_domain
                 . '&v=' . FrontEnd::getVersionCacheKey($locale_version)
-                . ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? '&debug' : '')
             );
             $script .= <<<JAVASCRIPT
             $(function() {

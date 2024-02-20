@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ if (!isset($_REQUEST["action"])) {
 }
 
 // Parse stringified JSON payload (Used to preserve integers)
-$request_data = array_merge($_REQUEST, json_decode($_UREQUEST['data'] ?? '{}', true));
+$request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
 $embed = false;
@@ -142,7 +142,9 @@ switch ($_GET['action'] ?? null) {
         exit;
 }
 
+\Glpi\Debug\Profiler::getInstance()->start('Grid::construct');
 $grid = new Grid($_REQUEST['dashboard'] ?? "");
+\Glpi\Debug\Profiler::getInstance()->stop('Grid::construct');
 
 header("Content-Type: text/html; charset=UTF-8");
 switch ($_REQUEST['action']) {
@@ -191,7 +193,9 @@ switch ($_REQUEST['action']) {
         }
 
         Session::writeClose();
+        \Glpi\Debug\Profiler::getInstance()->start('Get card HTML');
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
+        \Glpi\Debug\Profiler::getInstance()->stop('Get card HTML');
         break;
 
     case 'get_cards':
@@ -205,6 +209,7 @@ switch ($_REQUEST['action']) {
         $cards = $request_data['cards'];
         unset($request_data['cards']);
         $result = [];
+        \Glpi\Debug\Profiler::getInstance()->start('Get cards HTML');
         foreach ($cards as $card) {
             try {
                 $result[$card['card_id']] = $grid->getCardHtml($card['card_id'], array_merge($request_data, $card));
@@ -216,6 +221,7 @@ switch ($_REQUEST['action']) {
                 $GLPI->getErrorHandler()->handleException($e, true);
             }
         }
+        \Glpi\Debug\Profiler::getInstance()->stop('Get cards HTML');
         echo json_encode($result);
         break;
 

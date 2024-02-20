@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -195,7 +195,7 @@ trait CommonDeprecatedTrait
     /**
      * Add a searchoption
      *
-     * @param array $fields
+     * @param array $soptions
      * @param string $key
      * @param array $values
      * @return self Return self to allow method chaining
@@ -213,7 +213,7 @@ trait CommonDeprecatedTrait
     /**
      * Edit an existing searchoption
      *
-     * @param array $fields
+     * @param array $soptions
      * @param string $key
      * @param array $values
      * @return self Return self to allow method chaining
@@ -233,9 +233,8 @@ trait CommonDeprecatedTrait
     /**
      * Delete an existing searchoption
      *
-     * @param array $fields
+     * @param array $soptions
      * @param string $key
-     * @param array $values
      * @return self Return self to allow method chaining
      */
     public function deleteSearchOption(array &$soptions, string $key)

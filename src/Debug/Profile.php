@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,6 +55,8 @@ final class Profile
 
     private static ?self $current = null;
 
+    private $disabled = false;
+
     public function __construct(string $id, ?string $parent_id)
     {
         $this->id = $id;
@@ -76,6 +78,25 @@ final class Profile
             });
         }
         return self::$current;
+    }
+
+    /**
+     * Stops the collection of new debug data.
+     * This does not clear any existing data or prevent the existing data from being saved.
+     * @return void
+     */
+    public function disable(): void
+    {
+        $this->disabled = true;
+    }
+
+    /**
+     * Re-enables the collection of new debug data.
+     * @return void
+     */
+    public function enable(): void
+    {
+        $this->disabled = false;
     }
 
     public static function pull(string $id): ?self
@@ -110,14 +131,20 @@ final class Profile
 
     public function setData(string $widget, $data)
     {
+        if ($this->disabled) {
+            return;
+        }
         if (!array_key_exists($widget, $this->additional_info)) {
             $this->additional_info[$widget] = [];
         }
         $this->additional_info[$widget][] = $data;
     }
 
-    public function addSQLQueryData(string $query, int $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
     {
+        if ($this->disabled) {
+            return;
+        }
         if (!array_key_exists('sql', $this->additional_info)) {
             $this->additional_info['sql'] = [
                 'queries' => [],
@@ -191,6 +218,10 @@ final class Profile
 
     public function save(): void
     {
+        if ($_SESSION['glpi_use_mode'] !== \Session::DEBUG_MODE) {
+            // Don't save debug info for non-debug requests
+            return;
+        }
         if (isAPI() || isCommandLine()) {
             // No saving debug info for API or CLI requests
             return;

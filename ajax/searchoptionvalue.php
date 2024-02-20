@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -165,6 +165,6 @@ if (isset($_POST['searchtype'])) {
    // Default case : text field
     if (!$display) {
         echo "<input type='text' size='13' name='$inputname' value=\"" .
-               Html::cleanInputText($_POST['value']) . "\">";
+               htmlspecialchars($_POST['value']) . "\">";
     }
 }

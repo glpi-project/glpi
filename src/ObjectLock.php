@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  * @since 9.1
@@ -594,7 +596,7 @@ class ObjectLock extends CommonDBTM
             && in_array($itemtype, $CFG_GLPI['lock_item_list'])
         ) {
             $tab[] = [
-                'id' => '205',
+                'id'            => '207',
                 'table'         => 'glpi_users',
                 'field'         => 'name',
                 'datatype'      => 'dropdown',
@@ -612,7 +614,7 @@ class ObjectLock extends CommonDBTM
             ];
 
             $tab[] = [
-                'id'            => '206',
+                'id'            => '208',
                 'table'         => getTableForItemType('ObjectLock'),
                 'field'         => 'date',
                 'datatype'      => 'datetime',
@@ -621,9 +623,51 @@ class ObjectLock extends CommonDBTM
                 'massiveaction' => false,
                 'forcegroupby'  => true
             ];
+
+            $tab[] = [
+                'id'            => '209',
+                'table'         => getTableForItemType('ObjectLock'),
+                'field'         => 'id',
+                'datatype'      => 'specific',
+                'name'          => __('Lock status'),
+                'joinparams'    => ['jointype' => 'itemtype_item'],
+                'massiveaction' => false,
+                'forcegroupby'  => true,
+                'additionalfields' => ['date', 'users_id']
+            ];
         }
 
         return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'id':
+                $templateContent = <<<TWIG
+                    {% set color = is_locked ? 'bg-red-lt' : 'bg-green-lt' %}
+                    {% set icon = is_locked ? 'ti-lock' : 'ti-lock-open' %}
+                    {% set text = is_locked ? __('Locked') : __('Free') %}
+                    {% set tooltip = is_locked ? __('Locked by %s at %s')|format(user_name, date) : text %}
+
+                    <span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
+                        <i class="ti {{ icon }}"></i>
+                        {{ text }}
+                    </span>
+TWIG;
+
+                return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
+                    'is_locked' => $values['id'] > 0,
+                    'user_name' => getUserName($values['users_id']),
+                    'date'      => $values['date'],
+                ]);
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
 

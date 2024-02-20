@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Socket;
 
 /**
@@ -101,6 +103,7 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Cartridge', $ong, $options);
         $this->addStandardTab('PrinterLog', $ong, $options);
         $this->addStandardTab('Item_Devices', $ong, $options);
+        $this->addStandardTab('Item_Line', $ong, $options);
         $this->addStandardTab('Item_Disk', $ong, $options);
         $this->addStandardTab('Computer_Item', $ong, $options);
         $this->addStandardTab('NetworkPort', $ong, $options);
@@ -109,7 +112,7 @@ class Printer extends CommonDBTM
         $this->addStandardTab('Contract_Item', $ong, $options);
         $this->addStandardTab('Document_Item', $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Ticket', $ong, $options);
+        $this->addStandardTab('Item_Ticket', $ong, $options);
         $this->addStandardTab('Item_Problem', $ong, $options);
         $this->addStandardTab('Change_Item', $ong, $options);
         $this->addStandardTab('ManualLink', $ong, $options);
@@ -165,7 +168,11 @@ class Printer extends CommonDBTM
             $criteria = [
                 'SELECT'       => [
                     'itemtype',
-                    new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName('items_id') . ') AS ' . $DB->quoteName('ids'))
+                    QueryFunction::groupConcat(
+                        expression: 'items_id',
+                        distinct: true,
+                        alias: 'ids'
+                    ),
                 ],
                 'FROM'         => 'glpi_networkports_networkports',
                 'INNER JOIN'   => [
@@ -661,6 +668,8 @@ class Printer extends CommonDBTM
 
         $tab = array_merge($tab, Socket::rawSearchOptionsToAdd());
 
+        $tab = array_merge($tab, Printer_CartridgeInfo::rawSearchOptionsToAdd());
+
         $tab = array_merge($tab, SNMPCredential::rawSearchOptionsToAdd());
 
         return $tab;
@@ -703,8 +712,8 @@ class Printer extends CommonDBTM
     /**
      * Add a printer. If already exist in trashbin restore it
      *
-     * @param $name          the printer's name (need to be addslashes)
-     * @param $manufacturer  the software's manufacturer (need to be addslashes)
+     * @param $name          the printer's name
+     * @param $manufacturer  the software's manufacturer
      * @param $entity        the entity in which the software must be added
      * @param $comment       comment (default '')
      **/
@@ -747,8 +756,8 @@ class Printer extends CommonDBTM
     /**
      * Create a new printer
      *
-     * @param string  $name         the printer's name (need to be addslashes)
-     * @param string  $manufacturer the printer's manufacturer (need to be addslashes)
+     * @param string  $name         the printer's name
+     * @param string  $manufacturer the printer's manufacturer
      * @param integer $entity       the entity in which the printer must be added
      * @param string  $comment      (default '')
      *

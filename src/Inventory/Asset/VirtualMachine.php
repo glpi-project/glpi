@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,9 +38,8 @@ namespace Glpi\Inventory\Asset;
 
 use AutoUpdateSystem;
 use Computer;
-use ComputerVirtualMachine;
+use ItemVirtualMachine;
 use Glpi\Inventory\Conf;
-use Glpi\Toolbox\Sanitizer;
 use RuleImportAssetCollection;
 use Toolbox;
 
@@ -60,6 +59,9 @@ class VirtualMachine extends InventoryAsset
 
     public function prepare(): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $mapping = [
             'memory'      => 'ram',
             'vmtype'      => 'virtualmachinetypes_id',
@@ -79,8 +81,13 @@ class VirtualMachine extends InventoryAsset
             'macaddr'     => 'mac'
         ];
 
-        if ($this->item->getType() != 'Computer') {
-            throw new \RuntimeException('Virtual machines are handled for computers only.');
+        if (!in_array($this->item->getType(), $CFG_GLPI['itemvirtualmachines_types'])) {
+            throw new \RuntimeException(
+                sprintf(
+                    'Virtual machines are not handled for %s.',
+                    $this->item->getType()
+                )
+            );
         }
 
         foreach ($this->data as &$val) {
@@ -196,9 +203,10 @@ class VirtualMachine extends InventoryAsset
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
-            'FROM'   => ComputerVirtualMachine::getTable(),
+            'FROM'   => ItemVirtualMachine::getTable(),
             'WHERE'  => [
-                'computers_id' => $this->item->fields['id'],
+                'itemtype' => $this->item->getType(),
+                'items_id' => $this->item->fields['id'],
                 'is_dynamic'   => 1
             ]
         ]);
@@ -215,21 +223,21 @@ class VirtualMachine extends InventoryAsset
     public function handle()
     {
         $value = $this->data;
-        $computerVirtualmachine = new ComputerVirtualMachine();
+        $itemVirtualmachine = new ItemVirtualMachine();
         $computer = new Computer();
 
         $db_vms = $this->getExisting();
 
         foreach ($db_vms as $keydb => $arraydb) {
-            $computerVirtualmachine->getFromDB($keydb);
+            $itemVirtualmachine->getFromDB($keydb);
             foreach ($value as $key => $val) {
-                $handled_input = $this->handleInput($val, $computerVirtualmachine);
+                $handled_input = $this->handleInput($val, $itemVirtualmachine);
 
-                //search ComputervirtualMachine on cleaned UUID if it changed
-                foreach (ComputerVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid'] ?? '') as $cleaned_uuid) {
+                //search ItemvirtualMachine on cleaned UUID if it changed
+                foreach (ItemVirtualMachine::getUUIDRestrictCriteria($handled_input['uuid'] ?? '') as $cleaned_uuid) {
                     $sinput = [
                         'name'                     => $handled_input['name'] ?? '',
-                        'uuid'                     => Sanitizer::unsanitize($cleaned_uuid ?? ''),
+                        'uuid'                     => $cleaned_uuid ?? '',
                         'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
                     ];
 
@@ -249,7 +257,7 @@ class VirtualMachine extends InventoryAsset
                             }
                         }
 
-                        $computerVirtualmachine->update(Sanitizer::sanitize($input));
+                        $itemVirtualmachine->update($input);
                         unset($value[$key]);
                         unset($db_vms[$keydb]);
                         break 2;
@@ -261,16 +269,17 @@ class VirtualMachine extends InventoryAsset
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_vms) != 0) {
             // Delete virtual machines links in DB
             foreach ($db_vms as $idtmp => $data) {
-                $computerVirtualmachine->delete(['id' => $idtmp], 1);
+                $itemVirtualmachine->delete(['id' => $idtmp], 1);
             }
         }
 
         if (count($value) != 0) {
             foreach ($value as $val) {
-                $input = $this->handleInput($val, $computerVirtualmachine);
-                $input['computers_id'] = $this->item->fields['id'];
+                $input = $this->handleInput($val, $itemVirtualmachine);
+                $input['itemtype'] = $this->item->getType();
+                $input['items_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
-                $computerVirtualmachine->add(Sanitizer::sanitize($input));
+                $itemVirtualmachine->add($input);
             }
         }
 
@@ -314,7 +323,6 @@ class VirtualMachine extends InventoryAsset
                     $input = (array)$vm;
                     $input['itemtype'] = \Computer::class;
                     $input['entities_id'] = $this->main_asset->getEntityID();
-                    $input  = Sanitizer::sanitize($input);
                     $datarules = $rule->processAllRules($input);
 
                     if (isset($datarules['_no_rule_matches']) && ($datarules['_no_rule_matches'] == '1') || isset($datarules['found_inventories'])) {
@@ -330,7 +338,7 @@ class VirtualMachine extends InventoryAsset
                     $computervm->getFromDB($computers_vm_id);
                     $input = (array)$vm;
                     $input['id'] = $computers_vm_id;
-                    $computervm->update(Sanitizer::sanitize($input));
+                    $computervm->update($input);
                 }
 
                 //load if new, reload if not.
@@ -386,7 +394,7 @@ class VirtualMachine extends InventoryAsset
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
-                    'LOWER(uuid)'  => ComputerVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
+                    'LOWER(uuid)'  => ItemVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
                 ]
             ],
             'LIMIT'  => 1
@@ -407,6 +415,6 @@ class VirtualMachine extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \ComputerVirtualMachine::class;
+        return \ItemVirtualMachine::class;
     }
 }

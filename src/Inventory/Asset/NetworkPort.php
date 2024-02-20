@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,13 +36,13 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
-use Glpi\Toolbox\Sanitizer;
 use NetworkPort as GlobalNetworkPort;
 use NetworkPortAggregate;
 use NetworkPortType;
-use QueryParam;
 use RuleImportAssetCollection;
 use Unmanaged;
 
@@ -202,7 +202,7 @@ class NetworkPort extends InventoryAsset
                             ]
                         ];
                         $criteria['LEFT JOIN'][\NetworkPort::getTable() . ' AS n2'][] =
-                            new \QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
+                            new QueryExpression("`n1`.`items_id`=`n2`.`items_id` AND `n1`.`itemtype`=`n2`.`itemtype`");
 
                         $iterator = $DB->request($criteria);
                         if (count($iterator)) {
@@ -499,7 +499,7 @@ class NetworkPort extends InventoryAsset
                     }
                 }
 
-                $stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($stmt_columns));
+                $stmt_values = array_values($stmt_columns);
                 $this->vlan_stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($this->vlan_stmt);
                 $vlans_id = $DB->insertId();
@@ -529,7 +529,7 @@ class NetworkPort extends InventoryAsset
                 }
             }
 
-            $pvlan_stmt_values = Sanitizer::encodeHtmlSpecialCharsRecursive(array_values($pvlan_stmt_columns));
+            $pvlan_stmt_values = array_values($pvlan_stmt_columns);
             $this->pvlan_stmt->bind_param($pvlan_stmt_types, ...$pvlan_stmt_values);
             $DB->executeStatement($this->pvlan_stmt);
         }
@@ -599,7 +599,7 @@ class NetworkPort extends InventoryAsset
             }
 
             $input['networkports_id_list'] = array_values($aggregates);
-            $netport_aggregate->update(Sanitizer::sanitize($input), false);
+            $netport_aggregate->update($input, false);
         }
     }
 
@@ -664,7 +664,7 @@ class NetworkPort extends InventoryAsset
                     $input['name'] = $name;
                 }
             }
-            $items_id = $item->add(Sanitizer::sanitize($input));
+            $items_id = $item->add($input);
         }
 
         $rulesmatched = new \RuleMatchedLog();
@@ -721,7 +721,7 @@ class NetworkPort extends InventoryAsset
                 $input['logical_number'] = $port->logical_number;
             }
 
-            $ports_id[] = $netport->add(Sanitizer::sanitize($input));
+            $ports_id[] = $netport->add($input);
         }
 
         if (!isset($this->connection_ports[$itemtype])) {

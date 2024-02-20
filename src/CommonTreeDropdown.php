@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Toolbox\Sanitizer;
+use Glpi\DBAL\QueryExpression;
 
 /**
  * CommonTreeDropdown Class
@@ -69,7 +69,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $this->addStandardTab('Log', $ong, $options);
         }
 
-        if (DropdownTranslation::canBeTranslated($this)) {
+        if ($this->maybeTranslated()) {
             $this->addStandardTab('DropdownTranslation', $ong, $options);
         }
 
@@ -91,7 +91,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     [$this->getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb);
+            return self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
         return '';
     }
@@ -110,12 +110,12 @@ abstract class CommonTreeDropdown extends CommonDropdown
     /**
      * Compute completename based on parent one
      *
-     * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
-     * @param $thisName           string item name (need to be addslashes : comes from input)
+     * @param $parentCompleteName string parent complete name
+     * @param $thisName           string item name
      **/
     public static function getCompleteNameFromParents($parentCompleteName, $thisName)
     {
-        return addslashes($parentCompleteName) . " > " . $thisName;
+        return $parentCompleteName . " > " . $thisName;
     }
 
 
@@ -128,7 +128,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         $parent = clone $this;
        // Update case input['name'] not set :
         if (!isset($input['name']) && isset($this->fields['name'])) {
-            $input['name'] = addslashes($this->fields['name']);
+            $input['name'] = $this->fields['name'];
         }
        // leading/ending space will break findID/import
         $input['name'] = trim($input['name']);
@@ -272,10 +272,10 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     if (isset($currentNodeCompleteName)) {
                         $update['completename'] = self::getCompleteNameFromParents(
                             $currentNodeCompleteName,
-                            addslashes($data["name"])
+                            $data["name"]
                         );
                     } else {
-                        $update['completename'] = addslashes($data["name"]);
+                        $update['completename'] = $data["name"];
                     }
                 }
 
@@ -387,7 +387,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $changes = [
                 0,
                 '',
-                addslashes($this->getNameID(['forceid' => true])),
+                $this->getNameID(['forceid' => true]),
             ];
             Log::history(
                 $parent,
@@ -420,7 +420,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     $oldParentNameID = $parent->getNameID(['forceid' => true]);
                     $changes = [
                         '0',
-                        addslashes($this->getNameID(['forceid' => true])),
+                        $this->getNameID(['forceid' => true]),
                         '',
                     ];
                     Log::history(
@@ -441,7 +441,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     $changes = [
                         '0',
                         '',
-                        addslashes($this->getNameID(['forceid' => true])),
+                        $this->getNameID(['forceid' => true]),
                     ];
                     Log::history(
                         $newParentID,
@@ -479,7 +479,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         if ($parent && $this->dohistory) {
             $changes = [
                 '0',
-                addslashes($this->getNameID(['forceid' => true])),
+                $this->getNameID(['forceid' => true]),
                 '',
             ];
             Log::history(
@@ -947,7 +947,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
         }
 
        // Import a full tree from completename
-        $names  = explode('>', self::unsanitizeSeparatorInCompletename($input['completename']));
+        $names  = explode('>', $input['completename']);
         $fk     = $this->getForeignKeyField();
         $i      = count($names);
         $parent = 0;
@@ -990,43 +990,5 @@ abstract class CommonTreeDropdown extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-subtask";
-    }
-
-    /**
-     * Separator is not encoded in DB, and it could not be changed as this is mandatory to be able to split tree
-     * correctly even if some tree elements are containing ">" char in their name (this one will be encoded).
-     *
-     * This method aims to sanitize the completename value in display context.
-     *
-     * @param string|null $completename
-     *
-     * @return string|null
-     */
-    public static function sanitizeSeparatorInCompletename(?string $completename): ?string
-    {
-        if (empty($completename)) {
-            return $completename;
-        }
-        $separator = ' > ';
-        return implode(Sanitizer::sanitize($separator), explode($separator, $completename));
-    }
-
-    /**
-     * Separator may be encoded in input, but should sometimes be decoded to have a complename
-     * that fits the value expected to be stored in DB.
-     *
-     * This method aims to normalize the completename value.
-     *
-     * @param string|null $completename
-     *
-     * @return string|null
-     */
-    public static function unsanitizeSeparatorInCompletename(?string $completename): ?string
-    {
-        if (empty($completename)) {
-            return $completename;
-        }
-        $separator = ' > ';
-        return implode($separator, explode(Sanitizer::sanitize($separator), $completename));
     }
 }

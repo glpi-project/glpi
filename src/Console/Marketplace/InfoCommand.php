@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,6 +55,11 @@ class InfoCommand extends AbstractMarketplaceCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if (!Controller::isCLIAllowed()) {
+            $output->writeln("<error>" . __('Access to the marketplace CLI commands is disallowed by the GLPI configuration') . "</error>");
+            return 1;
+        }
+
         if (!GLPINetwork::isRegistered()) {
             $output->writeln("<error>" . __("The GLPI Network registration key is missing or invalid") . "</error>");
         }

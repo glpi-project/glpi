@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -665,7 +665,7 @@ abstract class CommonITILRecurrent extends DbTestCase
             ]
         );
         $created_item = null;
-        $this->boolean($instance->createItem($created_item))->isTrue();
+        $this->boolean($instance->createItem([], $created_item))->isTrue();
 
         // Validates created item fields
         $this->object($created_item)->isInstanceOf(\CommonITILObject::class);

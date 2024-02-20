@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Search\SearchEngine;
 
 /* Test for inc/tickettask.class.php */
 
@@ -382,7 +383,7 @@ class TicketTask extends DbTestCase
         ]);
         $this->integer($tasks_id)->isGreaterThan(0);
 
-        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->string($task->fields['content'])->isEqualTo('<p>test template</p>');
         $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
         $this->integer($task->fields['state'])->isEqualTo(\Planning::DONE);
         $this->integer($task->fields['is_private'])->isEqualTo(1);
@@ -396,7 +397,7 @@ class TicketTask extends DbTestCase
         ]);
         $this->integer($tasks_id)->isGreaterThan(0);
 
-        $this->string($task->fields['content'])->isEqualTo('&#60;p&#62;test template&#60;/p&#62;');
+        $this->string($task->fields['content'])->isEqualTo('<p>test template</p>');
         $this->integer($task->fields['users_id_tech'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
         $this->integer($task->fields['state'])->isEqualTo(\Planning::TODO);
         $this->integer($task->fields['is_private'])->isEqualTo(0);
@@ -534,5 +535,33 @@ class TicketTask extends DbTestCase
         $this->integer($task->fields['actiontime'])->isEqualTo(7200);
         $this->string($task->fields['begin'])->isEqualTo($date_begin_string);
         $this->string($task->fields['end'])->isEqualTo($date_begin->add(new \DateInterval('PT2H'))->format('Y-m-d H:i:s'));
+    }
+
+    public function testParentMetaSearchOptions()
+    {
+        $this->login();
+        $ticket = $this->getNewTicket(true);
+        $followup = new \ITILFollowup();
+        $this->integer($followup->add([
+            'itemtype' => 'Ticket',
+            'items_id' => $ticket->fields['id'],
+            'content'  => 'Test followup',
+        ]))->isGreaterThan(0);
+
+        $criteria = [
+            [
+                'link' => 'AND',
+                'itemtype' => 'Ticket',
+                'meta' => true,
+                'field' => 1, //Title
+                'searchtype' => 'contains',
+                'value' => 'ticket title',
+            ]
+        ];
+        $data = SearchEngine::getData('ITILFollowup', [
+            'criteria' => $criteria,
+        ]);
+        $this->integer($data['data']['totalcount'])->isEqualTo(1);
+        $this->string($data['data']['rows'][0]['Ticket_1'][0]['name'])->isEqualTo('ticket title');
     }
 }

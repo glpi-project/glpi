@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
+ * @copyright 2015-2024 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\Toolbox\Sanitizer;
 use Item_Ticket;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -93,14 +92,14 @@ class TicketParameters extends CommonITILObjectParameters
 
     protected function defineValues(CommonDBTM $ticket): array
     {
-        /** @var Ticket $ticket  */
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-       // Output "unsanitized" values
-        $fields = Sanitizer::unsanitize($ticket->fields);
+
+        $fields = $ticket->fields;
 
         $values = parent::defineValues($ticket);
 
+        /** @var Ticket $ticket  */
         $values['type'] = $ticket::getTicketTypeName($fields['type']);
         $values['global_validation'] = TicketValidation::getStatus($fields['global_validation']);
         $values['tto'] = $fields['time_to_own'];

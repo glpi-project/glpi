@@ -38,7 +38,8 @@ await import('jquery').then((jquery) => {
 });
 await import('@tabler/core');
 await import('select2/dist/js/select2.full').then((select2) => {
-    $.fn.select2 = select2;
+    // Select2 exports a function that registers itself as a jQuery plugin
+    select2.default();
 });
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
@@ -69,7 +70,7 @@ window._nx = function (msgctxt, msgid, msgid_plural, n = 1, domain /* , extra */
 
 window.AjaxMockResponse = class {
 
-    constructor(url, method = 'GET', data = {}, response, is_persistent = false) {
+    constructor(url, method = 'GET', data = {}, response, is_persistent = false, resolve_type = 'success') {
         /**
          * The URL
          * @type string
@@ -79,6 +80,7 @@ window.AjaxMockResponse = class {
         this.data = data;
         this.response = response;
         this.is_persistent = is_persistent;
+        this.resolve_type = resolve_type;
     }
 
     isMatch(url, method = 'GET', data = {}) {
@@ -86,9 +88,19 @@ window.AjaxMockResponse = class {
             return false;
         }
         let data_match = true;
+
+        const value_match = (v1, v2) => {
+            // Object comparison
+            if (typeof v1 === 'object' && typeof v2 === 'object') {
+                return JSON.stringify(v1) === JSON.stringify(v2);
+            }
+            // We specifically allow type coercion in the comparison
+            return v1 == v2;
+        };
+
         $.each(data, (k, v) => {
             // We specifically allow type coercion in the comparison
-            if (this.data[k] !== undefined && this.data[k] != v) {
+            if (this.data[k] !== undefined && !value_match(this.data[k], v)) {
                 data_match = false;
                 return false;
             }
@@ -130,7 +142,7 @@ class AjaxMock {
     }
 
     ajax() {
-        let url, settings;
+        let url, settings, method;
 
         if (arguments.length === 2) {
             [url, settings] = arguments;
@@ -138,14 +150,17 @@ class AjaxMock {
             settings = arguments[0];
             url = settings.url;
         }
+        method = (settings.method || settings.type || 'GET').toUpperCase();
 
         if (window.AjaxMock.isResponseStackEmpty()) {
             throw new Error('No mock responses in stack');
         }
         let result = undefined;
+        let resolve_type = 'success';
         for (let i = 0; i < window.AjaxMock.response_stack.length; i++) {
             const response = window.AjaxMock.response_stack[i];
-            if (response.isMatch(url, settings.method, settings.data)) {
+            if (response.isMatch(url, method, settings.data)) {
+                resolve_type = response.resolve_type;
                 result = response.call(settings.data);
                 if (!response.is_persistent) {
                     window.AjaxMock.response_stack.splice(i, 1);
@@ -153,8 +168,17 @@ class AjaxMock {
             }
         }
         if (result !== undefined) {
-            return Promise.resolve(result);
+            if (resolve_type === 'success') {
+                result = Promise.resolve(result);
+            } else {
+                result = Promise.reject(result);
+            }
+            return result;
         } else {
+            console.dir({
+                request_data: settings.data,
+                responses: window.AjaxMock.response_stack
+            })
             throw "No mock response found for " + url;
         }
     }
