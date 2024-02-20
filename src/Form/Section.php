@@ -40,7 +40,7 @@ use CommonDBChild;
 /**
  * Section of a given helpdesk form
  */
-class Section extends CommonDBChild
+final class Section extends CommonDBChild
 {
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';

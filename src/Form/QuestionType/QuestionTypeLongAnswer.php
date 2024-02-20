@@ -42,7 +42,7 @@ use Override;
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-class QuestionTypeLongAnswer implements QuestionTypeInterface
+final class QuestionTypeLongAnswer implements QuestionTypeInterface
 {
     #[Override]
     public function __construct()

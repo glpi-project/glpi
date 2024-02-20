@@ -46,7 +46,7 @@ use Log;
 /**
  * Helpdesk form
  */
-class Form extends CommonDBTM
+final class Form extends CommonDBTM
 {
     public static $rightname = 'form';
 

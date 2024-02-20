@@ -41,7 +41,7 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 /**
  * Question of a given helpdesk form's section
  */
-class Question extends CommonDBChild
+final class Question extends CommonDBChild
 {
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
