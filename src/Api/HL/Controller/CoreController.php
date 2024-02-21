@@ -493,7 +493,7 @@ HTML;
         return new JSONResponse($data);
     }
 
-    #[Route(path: '/status/all', methods: ['GET'], tags: ['Status'])]
+    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'])]
     #[Doc\Route(
         description: 'Get the the status of all GLPI system status checker services',
         responses: [

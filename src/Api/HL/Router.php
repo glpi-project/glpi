@@ -118,7 +118,7 @@ class Router
 
     /**
      * Get information about all API versions available.
-     * @return array
+     * @return array{api_version: string, version: string, description?: string, endpoint: string}[]
      */
     public static function getAPIVersions(): array
     {

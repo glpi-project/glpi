@@ -43,13 +43,10 @@ use Glpi\System\Status\StatusChecker as GlpiStatusChecker;
 
 class StatusChecker extends DbTestCase
 {
-    public function testStatusFormats()
+    public function testStatusFormat()
     {
         $status = GlpiStatusChecker::getServiceStatus(null, true);
         $this->boolean(is_array($status))->isTrue();
-
-        $status = GlpiStatusChecker::getServiceStatus(null, true, false);
-        $this->boolean(is_string($status))->isTrue();
     }
 
     public function testDefaultStatus()
@@ -150,7 +147,7 @@ class StatusChecker extends DbTestCase
             'state'        => \CronTask::STATE_RUNNING,
         ]);
 
-        $status = GlpiStatusChecker::getServiceStatus(null, true, true);
+        $status = GlpiStatusChecker::getServiceStatus(null, true);
 
        // Test overall status is PROBLEM
         $this->string($status['glpi']['status'])->isEqualTo(GlpiStatusChecker::STATUS_PROBLEM);
@@ -246,14 +243,6 @@ class StatusChecker extends DbTestCase
             $status = GlpiStatusChecker::getServiceStatus($name, false);
             $this->boolean(is_array($status))->isTrue();
             $this->array($status)->hasKey('status');
-
-            $status = GlpiStatusChecker::getServiceStatus($name, true, false);
-            $this->boolean(is_string($status))->isTrue();
-            $this->string($status)->isNotEmpty();
-
-            $status = GlpiStatusChecker::getServiceStatus($name, false, false);
-            $this->boolean(is_string($status))->isTrue();
-            $this->string($status)->isNotEmpty();
         }
     }
 }
