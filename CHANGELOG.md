@@ -123,6 +123,7 @@ The present file will list all changes made to the project; according to the
 - `ITILTemplateField::showForITILTemplate()` method is no longer abstract.
 - `CommonITILTask::getItilObjectItemType` is now static.
 - The `Item_Ticket$1` tab should be used in replacement of the `Ticket$1` tab to display tickets associated with an item.
+- Specifying the `ranking` of a rule during add/update now triggers `RuleCollection::moveRule` to manage the rankings of other rules to try to keep them valid and in order.
 
 #### Deprecated
 - Usage of `GLPI_USE_CSRF_CHECK` constant.
