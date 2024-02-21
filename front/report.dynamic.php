@@ -121,7 +121,7 @@ if (isset($_GET["display_type"])) {
                          );
                 }
             } else if (isset($_GET["type"]) && ($_GET["type"] == "hardwares")) {
-                Stat::showItems("", $_GET["date1"], $_GET["date2"], $_GET['start']);
+                Stat::showItems("", $_GET["date1"], $_GET["date2"], $_GET['start'], $_GET["itemtype"]);
             }
             break;
 

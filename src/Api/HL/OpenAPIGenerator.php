@@ -534,7 +534,8 @@ EOT;
             'description' => $route_param->getDescription(),
             'in' => $route_param->getLocation(),
             'required' => $route_param->getRequired(),
-            'schema' => $schema
+            'schema' => $schema,
+            'example' => $route_param->getExample(),
         ];
     }
 
