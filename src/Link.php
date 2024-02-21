@@ -523,7 +523,7 @@ class Link extends CommonDBTM
      *
      * @param CommonDBTM $item CommonDBTM object
      * @param integer $withtemplate  withtemplate param (default 0)
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      * @see Link::showAllLinksForItem()
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)

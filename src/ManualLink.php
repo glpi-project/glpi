@@ -165,7 +165,7 @@ class ManualLink extends CommonDBChild
      *
      * @param CommonDBTM $item
      * @return void
-     * @deprecated 10.1.0
+     * @deprecated 11.0.0
      * @see Link::showAllLinksForItem()
      */
     private static function showForItem(CommonDBTM $item): void
