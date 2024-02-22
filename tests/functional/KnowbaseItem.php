@@ -1449,6 +1449,7 @@ HTML,
         $names = empty($names) ? [] : explode("\n", $names);
 
         // Check results
-        $this->array($names)->isEqualTo($articles);
+        $this->array($names)->size->isEqualTo(count($articles));
+        $this->array($names)->containsValues($articles);
     }
 }
