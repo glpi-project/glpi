@@ -51,6 +51,12 @@ let config = {
                 use: ['script-loader', 'strip-sourcemap-loader'],
             },
             {
+                // Test for a polyfill (or any file) and it won't be included in your
+                // bundle
+                test: path.resolve(__dirname, 'node_modules/jquery.fancytree/dist/modules/jquery.fancytree.ui-deps.js'),
+                use: 'null-loader',
+            },
+            {
             // Build styles
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader'],
