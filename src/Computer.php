@@ -425,19 +425,7 @@ class Computer extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'joinparams'         => [
-                'condition' => [
-                    '`glpi_computers`.`states_id`' => new \Glpi\DBAL\QueryExpression('`NEWTABLE`.`id`'),
-                ],
-                'jointype' => 'itemtype_item_revert',
-                'specific_itemtype' => State::getType(),
-                'beforejoin' => [
-                    'table'      => DropdownVisibility::getTable(),
-                    'joinparams' => [
-                        'jointype' => 'itemtypeonly',
-                    ]
-                ]
-            ]
+            'condition'          => self::getVisibilityCriteria(),
         ];
 
         $tab[] = [
