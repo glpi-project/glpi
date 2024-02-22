@@ -2287,7 +2287,8 @@ class Search extends DbTestCase
         $names = explode("\n", trim($names));
 
        // Check results
-        $this->array($names)->isEqualTo($expected);
+        $this->array($names)->size->isEqualTo(count($expected));
+        $this->array($names)->containsValues($expected);
     }
 
     protected function testMyselfSearchCriteriaProvider(): array

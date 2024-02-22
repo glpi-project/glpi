@@ -576,22 +576,23 @@ final class SearchOption implements \ArrayAccess
      *
      * Get an option number in the SEARCH_OPTION array
      *
-     * @param class-string<\CommonDBTM> $itemtype  Item type
-     * @param string $field     Name
+     * @param class-string<\CommonDBTM> $itemtype  Item type the search option belongs to
+     * @param string $field     Name of the field
+     * @param class-string<\CommonDBTM>|null $meta_itemtype  If specified, the itemtype that provides the search option. This affects the table used to match the search option.
      *
      * @return integer
      **/
-    public static function getOptionNumber($itemtype, $field): int
+    public static function getOptionNumber($itemtype, $field, $meta_itemtype = null): int
     {
-
-        $table = $itemtype::getTable();
+        $meta_itemtype ??= $itemtype;
+        $table = $meta_itemtype::getTable();
         $opts  = self::getOptionsForItemtype($itemtype);
 
         foreach ($opts as $num => $opt) {
             if (
                 is_array($opt) && isset($opt['table'])
-                && ($opt['table'] == $table)
-                && ($opt['field'] == $field)
+                && ($opt['table'] === $table)
+                && ($opt['field'] === $field)
             ) {
                 return $num;
             }
@@ -717,7 +718,7 @@ final class SearchOption implements \ArrayAccess
         if ($itemtype !== \AllAssets::getType()) {
             if (isset($params['as_map']) && (int)$params['as_map'] === 1) {
                 // Add location name when map mode
-                $loc_opt = self::getOptionNumber($itemtype, 'locations_id');
+                $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
                 if ($loc_opt > 0) {
                     $toview[] = $loc_opt;
                 }
@@ -735,7 +736,7 @@ final class SearchOption implements \ArrayAccess
                     || ($item && $item->maybeRecursive())
                     || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
             ) {
-                $entity_opt = self::getOptionNumber($itemtype, 'entities_id');
+                $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
                 if ($entity_opt > 0) {
                     $toview[] = $entity_opt;
                 }
