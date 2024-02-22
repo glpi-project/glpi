@@ -701,7 +701,7 @@ class State extends CommonTreeDropdown
     {
         return [];
     }
-    
+
     public function post_getFromDB()
     {
         $statevisibility = new DropdownVisibility();
