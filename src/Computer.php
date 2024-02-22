@@ -425,7 +425,7 @@ class Computer extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => self::getVisibilityCriteria(),
+            'condition'          => self::getStateVisibilityCriteria(),
         ];
 
         $tab[] = [

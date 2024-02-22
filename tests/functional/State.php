@@ -165,7 +165,7 @@ class State extends DbTestCase
             ->exists();
     }
 
-    public function testGetVisibilityCriteria()
+    public function testGetStateVisibilityCriteria()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -173,7 +173,7 @@ class State extends DbTestCase
         $itemtype = $CFG_GLPI['state_types'][0];
 
         $item = new $itemtype();
-        $this->array($item->getVisibilityCriteria())->isIdenticalTo([
+        $this->array($item->getStateVisibilityCriteria())->isIdenticalTo([
             'LEFT JOIN' => [
                 \DropdownVisibility::getTable() => [
                     'ON' => [

@@ -94,7 +94,7 @@ trait State
      *
      * @return array
      */
-    public function getVisibilityCriteria(): array
+    public function getStateVisibilityCriteria(): array
     {
         $this->checkSetup();
         return [
