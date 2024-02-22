@@ -1921,8 +1921,9 @@ class Dropdown extends DbTestCase
             $input['items_id'] = 1;
         }
         $this->integer($original_items_id = $item->add($input))->isGreaterThan(0);
+        $original_fields = $item->fields;
         $this->integer($item->clone())->isNotEqualTo($original_items_id);
-        foreach ($input as $field => $value) {
+        foreach ($original_fields as $field => $value) {
             $this->variable($item->fields[$field])->isEqualTo($value);
         }
     }
