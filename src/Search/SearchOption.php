@@ -670,4 +670,66 @@ final class SearchOption implements \ArrayAccess
 
         return $options;
     }
+
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $params
+     * @return array
+     */
+    public static function getDefaultToView(string $itemtype, array $params): array
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $toview = [];
+        $item   = null;
+        $entity_check = true;
+
+        if ($itemtype !== \AllAssets::getType()) {
+            $item = getItemForItemtype($itemtype);
+            $entity_check = $item->isEntityAssign();
+        }
+
+        // Add the related search option for the 'name' OR 'id' field. If none is found, add the search option 1 (how it was handled before).
+        // Since not all itemtypes have ID set to 1, it used to add other, heavier search options like content in the case of Followups.
+        $options = array_filter(self::getOptionsForItemtype($itemtype, false), static fn ($o) => is_numeric($o), ARRAY_FILTER_USE_KEY);
+        $id_field = array_filter($options, static function ($option) use ($itemtype) {
+            return $option['field'] === 'id' && $option['table'] === $itemtype::getTable();
+        });
+        $name_field = array_filter($options, static function ($option) use ($itemtype) {
+            return $option['field'] === 'name' && $option['table'] === $itemtype::getTable();
+        });
+
+        if (count($name_field) > 0) {
+            $toview[] = array_keys($name_field)[0];
+        } elseif (count($id_field) > 0) {
+            $toview[] = array_keys($id_field)[0];
+        } else {
+            // Fallback to whatever option is ID 1
+            $toview[] = 1;
+        }
+
+        if (isset($params['as_map']) && (int) $params['as_map'] === 1) {
+            // Add location name when map mode
+            $loc_opt = self::getOptionNumber($itemtype, 'locations_id');
+            if ($loc_opt > 0) {
+                $toview[] = $loc_opt;
+            }
+        }
+
+        // Add entity view :
+        if (
+            \Session::isMultiEntitiesMode()
+            && $entity_check
+            && (isset($CFG_GLPI["union_search_type"][$itemtype])
+                || ($item && $item->maybeRecursive())
+                || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
+        ) {
+            $entity_opt = self::getOptionNumber($itemtype, 'entities_id');
+            if ($entity_opt > 0) {
+                $toview[] = $entity_opt;
+            }
+        }
+        return $toview;
+    }
 }
