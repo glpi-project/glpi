@@ -93,9 +93,6 @@ final class GraphQLGenerator
     {
         $component_schemas = OpenAPIGenerator::getComponentSchemas();
         foreach ($component_schemas as $schema_name => $schema) {
-            if (!isset($schema['x-itemtype'])) {
-                continue;
-            }
             $new_types = $this->getTypesForSchema($schema_name, $schema);
             foreach ($new_types as $type_name => $type) {
                 $this->types[$type_name] = $type;
