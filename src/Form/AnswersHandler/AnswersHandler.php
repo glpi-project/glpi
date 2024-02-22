@@ -35,7 +35,10 @@
 
 namespace Glpi\Form\AnswersHandler;
 
+use CommonDBTM;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use Glpi\Form\Destination\FormDestinationInterface;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 
@@ -72,19 +75,130 @@ final class AnswersHandler
     }
 
     /**
-     * Saves the given answers of a given form into an AnswersSet object
+     * Saves the given answers of a given form into an AnswersSet object and
+     * create destinations objects.
      *
      * @param Form  $form     The form to save answers for
      * @param array $answers  The answers to save
      * @param int   $users_id The author of the answers
      *
-     * @return AnswersSet|false The created AnswersSet object or false on failure
+     * @return AnswersSet The created AnswersSet object
+     *
+     * @throws \Exception If the data can't be fully saved
      */
     public function saveAnswers(
         Form $form,
         array $answers,
         int $users_id
-    ): AnswersSet|false {
+    ): AnswersSet {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if ($DB->inTransaction()) {
+            return $this->doSaveAnswers($form, $answers, $users_id);
+        } else {
+            // We do not want to commit the answers unless everything was processed
+            // correctly
+            $DB->beginTransaction();
+
+            try {
+                $answers_set = $this->doSaveAnswers($form, $answers, $users_id);
+                $DB->commit();
+                return $answers_set;
+            } catch (\Throwable $e) {
+                $DB->rollback();
+                trigger_error(
+                    "Failed to save answers: " . $e->getMessage(),
+                    E_USER_WARNING
+                );
+
+                // Propagate the exception
+                throw $e;
+            }
+        }
+    }
+
+    /**
+     * Insert additionnal data into the given raw answers array to be used when rendering
+     *
+     * @param array $answers The raw answers array
+     *
+     * @return array The formatted answers array
+     */
+    public function prepareAnswersForDisplay(array $answers): array
+    {
+        $computed_answers = [];
+
+        // Insert types objects which will be used to render the answers
+        foreach ($answers as $answer) {
+            $type = $answer['type'] ?? "";
+            if (!is_a($answer['type'], QuestionTypeInterface::class, true)) {
+                continue;
+            }
+
+            $answer['type'] = new $type();
+            $computed_answers[] = $answer;
+        }
+
+        return $computed_answers;
+    }
+
+    /**
+     * Saves the given answers of a given form into an AnswersSet object and
+     * create destinations objects.
+     *
+     * Exported outside the `saveAnswers` method to allow running it with or
+     * without transactions
+     *
+     * @param Form  $form     The form to save answers for
+     * @param array $answers  The answers to save
+     * @param int   $users_id The author of the answers
+     *
+     * @return AnswersSet The created AnswersSet object
+     *
+     * @throws \Exception If the data can't be saved
+     */
+    protected function doSaveAnswers(
+        Form $form,
+        array $answers,
+        int $users_id
+    ): AnswersSet {
+        // Save answers
+        $answers_set = $this->createAnswserSet(
+            $form,
+            $answers,
+            $users_id
+        );
+
+        // Create destinations objects
+        $this->createDestinations(
+            $form,
+            $answers_set
+        );
+
+        return $answers_set;
+    }
+
+    /**
+     * Saves the given answers of a given form into an AnswersSet object and
+     * create destinations objects.
+     *
+     * Exported outside the `saveAnswers` method to allow running it with or
+     * without transactions
+     *
+     * @param Form  $form     The form to save answers for
+     * @param array $answers  The answers to save
+     * @param int   $users_id The author of the answers
+     *
+     * @return AnswersSet The created AnswersSet object
+     *
+     * @throws \Exception If the data can't be saved
+     */
+    protected function createAnswserSet(
+        Form $form,
+        array $answers,
+        int $users_id
+    ): AnswersSet {
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -115,40 +229,67 @@ final class AnswersHandler
             ];
         }
 
+        // Save to database
         $answers_set = new AnswersSet();
-        $id = $answers_set->add([
+        $input = [
             'name'           => $form->getName() . " #$next_index",
             'forms_forms_id' => $form->getID(),
             'answers'        => json_encode($formatted_answers),
             'users_id'       => $users_id,
             'index'          => $next_index,
-        ]);
+        ];
+        $id = $answers_set->add($input);
 
-        return $id !== false ? $answers_set : false;
+        // If we can't save the answers, throw an exception as it make no sense
+        // to keep going
+        if (!$id) {
+            throw new \Exception(
+                "Failed to save answers: " . json_encode($input)
+            );
+        }
+
+        return $answers_set;
     }
 
     /**
-     * Insert additionnal data into the given raw answers array to be used when rendering
+     * Create destinations for a given form and its answers
      *
-     * @param array $answers The raw answers array
+     * @param Form       $form
+     * @param AnswersSet $answers_set
      *
-     * @return array The formatted answers array
+     * @throws \Exception If the data can't be saved
+     *
+     * @return void
      */
-    public function prepareAnswersForDisplay(array $answers): array
+    protected function createDestinations(Form $form, AnswersSet $answers_set): void
     {
-        $computed_answers = [];
+        // Get defined destinations
+        $destinations = $form->getDestinations();
 
-        // Insert types objects which will be used to render the answers
-        foreach ($answers as $answer) {
-            $type = $answer['type'] ?? "";
-            if (!is_a($answer['type'], QuestionTypeInterface::class, true)) {
-                continue;
+        /** @var FormDestinationInterface&CommonDBTM $destination */
+        foreach ($destinations as $destination) {
+            // Create destination item
+            $items = $destination->createDestinationItems($form, $answers_set);
+
+            // Link items to answers by creating a Form_FormDestinationItem object
+            foreach ($items as $item) {
+                if (!($item instanceof CommonDBTM)) {
+                    throw new \Exception("Invalid destination item");
+                }
+
+                $form_item = new AnswersSet_FormDestinationItem();
+                $input = [
+                    AnswersSet::getForeignKeyField() => $form->getID(),
+                    'itemtype'                       => $item::getType(),
+                    'items_id'                       => $item->getID(),
+                ];
+                if (!$form_item->add($input)) {
+                    throw new \Exception(
+                        "Failed to create destination item: "
+                        . json_encode($input)
+                    );
+                }
             }
-
-            $answer['type'] = new $type();
-            $computed_answers[] = $answer;
         }
-
-        return $computed_answers;
     }
 }

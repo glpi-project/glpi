@@ -9540,6 +9540,38 @@ CREATE TABLE `glpi_forms_answerssets` (
     KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_destinations_answerssets_formdestinationitems`;
+CREATE TABLE `glpi_forms_destinations_answerssets_formdestinationitems` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_answerssets_id` int unsigned NOT NULL DEFAULT '0',
+    `itemtype` varchar(255) NOT NULL,
+    `items_id` int unsigned NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unicity` (`forms_answerssets_id`,`itemtype`,`items_id`),
+    KEY `forms_answerssets_id` (`forms_answerssets_id`),
+    KEY `item` (`itemtype`, `items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_forms_destinations_forms_formdestinations`;
+CREATE TABLE `glpi_forms_destinations_forms_formdestinations` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+    `itemtype` varchar(255) NOT NULL,
+    `items_id` int unsigned NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unicity` (`forms_forms_id`,`itemtype`,`items_id`),
+    KEY `forms_forms_id` (`forms_forms_id`),
+    KEY `item` (`itemtype`, `items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_forms_destinations_formdestinationtickets`;
+CREATE TABLE `glpi_forms_destinations_formdestinationtickets` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;
 CREATE TABLE `glpi_items_ticketrecurrents` (
    `id` int unsigned NOT NULL AUTO_INCREMENT,
