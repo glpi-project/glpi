@@ -480,7 +480,52 @@ SQL
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
         );
 
-       //test derived table in JOIN statement
+        //order in fkey should not matter
+        $it = $this->it->execute(
+            'foo',
+            [
+                'LEFT JOIN' => [
+                    'bar' => [
+                        'FKEY' => [
+                            [
+                                'AND'  => ['field' => 42]
+                            ],
+                            'bar' => 'id',
+                            'foo' => 'fk'
+                        ]
+                    ]
+                ]
+            ]
+        );
+        $this->string($it->getSql())->isIdenticalTo(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        );
+
+        //fail with condition set as associative array
+        $this->exception(
+            function () {
+                $it = $this->it->execute(
+                    'foo',
+                    [
+                        'LEFT JOIN' => [
+                            'bar' => [
+                                'FKEY' => [
+                                    'bar' => 'id',
+                                    'foo' => 'fk',
+                                    'zzz' => [
+                                        'AND'  => ['field' => 42]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                );
+            }
+        )
+            ->isInstanceOf('LogicException')
+            ->hasMessage('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
+
+        //test derived table in JOIN statement
         $it = $this->it->execute(
             'foo',
             [
