@@ -84,6 +84,7 @@
         "jest-environment-jsdom": "^29.7.0",
         "jest-extended": "^4.0.2",
         "mini-css-extract-plugin": "^2.7.7",
+        "null-loader": "^4.0.1",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
         "stylelint": "^16.2.0",
