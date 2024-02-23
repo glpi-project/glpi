@@ -65,7 +65,8 @@ class TemplateManager
     public static function render(
         string $content,
         array $params,
-        bool $expect_html = true
+        bool $expect_html = true,
+        array $extra_extensions = []
     ): string {
         // Init twig
         $loader = new ArrayLoader(['template' => $content]);
@@ -73,6 +74,11 @@ class TemplateManager
 
         // Use sandbox extension to restrict code execution
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
+
+        // Add extra extensions
+        foreach ($extra_extensions as $extension) {
+            $twig->addExtension($extension);
+        }
 
         // Render the template
         $result = $twig->render('template', $params);
