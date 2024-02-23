@@ -2296,6 +2296,9 @@ class Search extends DbTestCase
 
     public function testSearchWithNamespacedItem()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $search_params = [
             'is_deleted'   => 0,
             'start'        => 0,
@@ -2304,6 +2307,7 @@ class Search extends DbTestCase
         $this->login();
         $this->setEntity('_test_root_entity', true);
 
+        $CFG_GLPI['state_types'][] = 'SearchTest\\Computer';
         $data = $this->doSearch('SearchTest\\Computer', $search_params);
 
         $this->string($data['sql']['search'])
