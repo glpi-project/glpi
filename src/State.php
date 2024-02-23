@@ -385,7 +385,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Computer'
+                    'NEWTABLE.visible_itemtype' => 'Computer',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -404,7 +405,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'SoftwareVersion'
+                    'NEWTABLE.visible_itemtype' => 'SoftwareVersion',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -419,7 +421,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Monitor'
+                    'NEWTABLE.visible_itemtype' => 'Monitor',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -434,7 +437,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Printer'
+                    'NEWTABLE.visible_itemtype' => 'Printer',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -449,7 +453,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Peripheral'
+                    'NEWTABLE.visible_itemtype' => 'Peripheral',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -464,7 +469,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Phone'
+                    'NEWTABLE.visible_itemtype' => 'Phone',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -483,7 +489,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'NetworkEquipment'
+                    'NEWTABLE.visible_itemtype' => 'NetworkEquipment',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -502,7 +509,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'SoftwareLicense'
+                    'NEWTABLE.visible_itemtype' => 'SoftwareLicense',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -521,7 +529,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Certificate'
+                    'NEWTABLE.visible_itemtype' => 'Certificate',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -540,7 +549,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Rack'
+                    'NEWTABLE.visible_itemtype' => 'Rack',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -559,7 +569,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Line'
+                    'NEWTABLE.visible_itemtype' => 'Line',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -578,7 +589,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Enclosure'
+                    'NEWTABLE.visible_itemtype' => 'Enclosure',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -597,7 +609,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'PDU'
+                    'NEWTABLE.visible_itemtype' => 'PDU',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -616,7 +629,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Cluster'
+                    'NEWTABLE.visible_itemtype' => 'Cluster',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -635,7 +649,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'PassiveDCEquipment'
+                    'NEWTABLE.visible_itemtype' => 'PassiveDCEquipment',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -654,7 +669,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Contract'
+                    'NEWTABLE.visible_itemtype' => 'Contract',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -673,7 +689,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Appliance'
+                    'NEWTABLE.visible_itemtype' => 'Appliance',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -692,7 +709,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Cable'
+                    'NEWTABLE.visible_itemtype' => 'Cable',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
@@ -711,7 +729,8 @@ class State extends CommonTreeDropdown
                 'jointype' => 'itemtypeonly',
                 'table'      => $this->getTable(),
                 'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'DatabaseInstance'
+                    'NEWTABLE.visible_itemtype' => 'DatabaseInstance',
+                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
                 ]
             ]
         ];
