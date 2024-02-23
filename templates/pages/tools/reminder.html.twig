@@ -58,11 +58,13 @@
                 clearable: true,
                 readonly: not params['canedit'],
                 mb: '',
+                is_horizontal: false,
             })) }}
             {{ fields.datetimeField('end_view_date', item.fields['end_view_date'], __('End'), field_options|merge({
                 clearable: true,
                 readonly: not params['canedit'],
                 mb: '',
+                is_horizontal: false,
             })) }}
         {% endset %}
         {{ fields.htmlField('', visibility_fields, __('Visibility'), field_options|merge({
@@ -124,6 +126,11 @@
                 {% endif %}
                 {% if item.fields['begin'] is not empty or item.fields['end'] is not empty %}
                     {{ __('From %1$s to %2$s')|format(item.fields['begin']|formatted_datetime, item.fields['end']|formatted_datetime) }}
+                    {% set reminder = active_recall ? call('PlanningRecall::getForItem', ['Reminder', id]) : null %}
+                    {% set reminder_before = reminder is not null ? reminder.fields['before_time']|formatted_duration(false) : '' %}
+                    {%- if reminder_before is not empty -%}
+                        ({{ __('Reminder %1$s')|format(reminder_before) }})
+                    {%- endif -%}
                 {% else %}
                     {{ __('Not planned') }}
                 {% endif %}
@@ -134,26 +141,6 @@
             {% endif %}
             {% if params['canedit'] %}
                 <div id="viewplan{{ rand }}"></div>
-            {% endif %}
-            {% if active_recall %}
-                {% set recall_field %}
-                    {% if params['canedit'] %}
-                        {% do call('PlanningRecall::dropdown', [{
-                            itemtype: 'Reminder',
-                            items_id: id
-                        }]) %}
-                    {% else %}
-                        {% do call('PlanningRecall::specificForm', [{
-                            itemtype: 'Reminder',
-                            items_id: id
-                        }]) %}
-                    {% endif %}
-                {% endset %}
-                {{ fields.htmlField('', recall_field, _x('Planning', 'Reminder'), field_options|merge({
-                    full_width: true,
-                    full_width_adapt_column: false,
-                    mb: 'mb-3',
-                })) }}
             {% endif %}
         {% endif %}
     {% endset %}
