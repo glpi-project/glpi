@@ -234,11 +234,11 @@ class Monitor extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_monitor' => 1]
+            'condition'          => self::getStateVisibilityCriteria()
         ];
 
         $tab[] = [

@@ -257,11 +257,11 @@ class Certificate extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_certificate' => 1]
+            'condition'          => self::getStateVisibilityCriteria()
         ];
 
         $tab[] = [

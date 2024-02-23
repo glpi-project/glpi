@@ -292,11 +292,11 @@ class Appliance extends CommonDBTM
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_appliance' => 1]
+            'condition'          => self::getStateVisibilityCriteria()
         ];
 
         $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());
