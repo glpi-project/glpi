@@ -97,29 +97,68 @@
                 </div>
             {% endif %}
         {% endset %}
+        <div class="modal fade" id="deletionWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></a>
+                    <div class="modal-status bg-danger"></div>
+                    <div class="modal-body text-center py-4">
+                        {# SVG Icon corresponding to the ti-alert-triangle icon #}
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v4"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path><path d="M12 16h.01"></path></svg>
+
+                        <h3>{{ _x('button', 'Are you sure?') }}</h3>
+                        <div class="text-muted">
+                            {% if asset_count > 0 %}
+                                {{ __('This asset definition is used by %d assets.')|format(asset_count) }}
+                                <br>
+                                {% if item.fields['is_active'] %}
+                                    {# Can only view search page when the definition is active #}
+                                    <a href="{{ asset_search_url }}">{{ __('Show what would be deleted') }}</a>
+                                {% else %}
+                                    {{ __('All assets that are using this definition will also be deleted.') }}
+                                {% endif %}
+                            {% else %}
+                                {{ __('This asset definition is not used by any assets.') }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="w-100">
+                            <div class="row">
+                                <div class="col">
+                                    <a class="btn w-100" data-bs-dismiss="modal">
+                                        {{ _x('button', 'Cancel') }}
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <button type="button" class="btn btn-danger w-100" name="save">
+                                        {{ _x('button', 'Yes, delete it!') }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <script>
-            $(() => {
-                const handle_delete = (e) => {
-                    e.preventDefault();
-                    glpi_confirm({
-                        title: '{{ __('Confirm the final deletion?')|e('js') }}',
-                        message: '{{ delete_msg|e('js') }}',
-                        confirm_callback: () => {
-                            // Our 'one' custom handler was already called, so this will call the default one
-                            $('.asset button[name="purge"]').click();
-                        },
-                        cancel_callback: () => {
-                            // Rebind our custom handler to be run once
-                            $('.asset button[name="purge"]').one('click', handle_delete);
-                        },
-                        close_callback: () => {
-                            // Rebind our custom handler to be run once if the modal is closed
-                            $('.asset button[name="purge"]').one('click', handle_delete);
-                        },
-                    });
+            $('#mainformtable button[name="purge"]').on('click', { is_from_modal: false }, (event, data) => {
+                data = data || event.data;
+
+                if (data.is_from_modal !== true) {
+                    event.preventDefault();
+                    $('#deletionWarningModal').modal('show');
                 }
-                // Using glpi_confirm modal instead of default `confirm` dialog because we have some HTML we want to show while the default window only supports text.
-                $('.asset button[name="purge"]').one('click', handle_delete);
+            });
+
+            $('#deletionWarningModal button[name="save"]').on('click', () => {
+                $('#deletionWarningModal').modal('hide');
+                $('#mainformtable button[name="purge"]').trigger(
+                    'click',
+                    {
+                        'is_from_modal': true,
+                    }
+                );
             });
         </script>
     {% endif %}
