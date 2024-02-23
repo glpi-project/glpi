@@ -952,7 +952,7 @@ class Conf extends CommonGLPI
             echo "<td width='20%'>";
             $condition = [];
             foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
-                $condition[] = $int_type::getStateVisibilityCriteria();
+                $condition[] = $inv_type::getStateVisibilityCriteria();
             }
 
 
