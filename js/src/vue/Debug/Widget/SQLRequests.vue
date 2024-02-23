@@ -110,7 +110,9 @@
     function copyToClipboard(e) {
         // copy content of code block in clipboard
         const code =  $(e.currentTarget).parent().find('code');
-        copyTextToClipboard(code.text());
+        // Normalize whitespace as spaces and trim
+        const code_clean = code.text().replace(/\s+/g, ' ').trim();
+        copyTextToClipboard(code_clean);
 
         // change temporary the button icon to a check then after a while return to the original icon
         const icon = $(e.currentTarget).find('i');
