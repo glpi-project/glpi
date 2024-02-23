@@ -173,11 +173,9 @@ export default class MonacoEditor {
     getTwigCompletions() {
         const keywords = [
             // (opening) tags
-            'apply', 'autoescape', 'block', 'deprecated', 'do', 'embed', 'extends', 'flush', 'for', 'from', 'if',
-            'import', 'include', 'macro', 'sandbox', 'set', 'use', 'verbatim', 'with',
+            'apply', 'autoescape', 'block', 'for', 'if', 'macro', 'set',
             // closing tags
-            'endapply', 'endautoescape', 'endblock', 'endembed', 'endfor', 'endif', 'endmacro', 'endsandbox',
-            'endset', 'endwith',
+            'endapply', 'endautoescape', 'endblock', 'endfor', 'endif', 'endmacro', 'endset',
             // literals
             'true', 'false', 'null'
         ];
