@@ -74,10 +74,10 @@ class TemplateManager extends GLPITestCase
                 'expected'  => "<p>Test for: no items</p>",
             ],
             [
-                'content'   => "Test forbidden tag: {% set var = 'value' %}",
+                'content'   => "Test forbidden tag: {% do 1 + 2 %}",
                 'params'    => [],
                 'expected'  => "",
-                'error'     => 'Invalid twig template (Tag "set" is not allowed in "template" at line 1.)',
+                'error'     => 'Invalid twig template (Tag "do" is not allowed in "template" at line 1.)',
             ],
             [
                 'content'   => "Test syntax error {{",
