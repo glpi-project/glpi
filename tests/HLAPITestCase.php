@@ -58,6 +58,11 @@ class HLAPITestCase extends \DbTestCase
         parent::afterTestMethod($method);
     }
 
+    public function resetSession()
+    {
+        parent::resetSession();
+    }
+
     public function getScore()
     {
         // if this method wasn't called from the \atoum\atoum\asserter\exception class, we can return the real score
@@ -165,6 +170,11 @@ final class HLAPIHelper
         private Router $router,
         private HLAPITestCase $test
     ) {
+    }
+
+    public function getRouter(): Router
+    {
+        return $this->router;
     }
 
     /**
@@ -289,8 +299,6 @@ final class HLAPIHelper
     {
         if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
-        } else {
-            $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
         }
         $response = $this->router->handleRequest($request);
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
@@ -299,6 +307,7 @@ final class HLAPIHelper
 
     public function autoTestCRUD(string $endpoint, array $create_params = [], array $update_params = []): self
     {
+        $this->test->resetSession();
         $this->test->login();
         $unique_id = __FUNCTION__;
 
@@ -503,6 +512,7 @@ final class HLAPIHelper
 
     public function autoTestSearch(string $endpoint, array $dataset, string $unique_field = 'name'): self
     {
+        $this->test->resetSession();
         $this->test->array($dataset)->size->isGreaterThan(2, 'Dataset for endpoint "' . $endpoint . '" must have at least 3 entries');
 
         // Search without authorization should return an error
@@ -796,21 +806,30 @@ final class HLAPIResponseAsserter
     public function matchesSchema(string|array $schema, string|null $fail_msg = null, string|null $operation = null): HLAPIResponseAsserter
     {
         if (is_string($schema)) {
+            $is_schema_array = str_ends_with($schema, '[]');
+            if ($is_schema_array) {
+                $schema = substr($schema, 0, -2);
+            }
             $matched_route = $this->call_asserter->route->get();
             /** @var class-string<\Glpi\Api\HL\Controller\AbstractController> $controller */
             $controller = $matched_route->getController();
             $schema = $controller::getKnownSchemas()[$schema];
+        } else {
+            $is_schema_array = $schema['type'] === Doc\Schema::TYPE_ARRAY;
         }
         $content = json_decode((string) $this->response->getBody(), true);
+        $items = $is_schema_array ? $content : [$content];
 
-        // Verify the JSON content matches the OpenAPI schema
-        $matches = Doc\Schema::fromArray($schema)->isValid($content, $operation);
-        if (!$matches) {
-            $fail_msg = $fail_msg ?? 'Response content does not match the schema';
-            $fail_msg .= ":\n" . var_export($content, true);
-            $fail_msg .= "\n\nSchema:\n" . var_export($schema, true);
-            $this->call_asserter->test
-                ->boolean($matches)->isTrue($fail_msg);
+        foreach ($items as $item) {
+            // Verify the JSON content matches the OpenAPI schema
+            $matches = Doc\Schema::fromArray($schema)->isValid($item, $operation);
+            if (!$matches) {
+                $fail_msg = $fail_msg ?? 'Response content does not match the schema';
+                $fail_msg .= ":\n" . var_export($item, true);
+                $fail_msg .= "\n\nSchema:\n" . var_export($schema, true);
+                $this->call_asserter->test
+                    ->boolean($matches)->isTrue($fail_msg);
+            }
         }
         return $this;
     }

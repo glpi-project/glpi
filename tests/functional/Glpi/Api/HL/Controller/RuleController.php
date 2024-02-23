@@ -56,6 +56,7 @@ class RuleController extends \HLAPITestCase
         $rule_ticket_right = $_SESSION['glpiactiveprofile']['rule_ticket'];
         $_SESSION['glpiactiveprofile']['rule_ticket'] = 0;
 
+        $this->api->getRouter()->registerAuthMiddleware(new \Glpi\Api\HL\Middleware\InternalAuthMiddleware());
         $this->api->call(new Request('GET', '/Rule/Collection'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
