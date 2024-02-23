@@ -130,7 +130,6 @@ if (!$DB->tableExists('glpi_forms_destinations_answerssets_formdestinationitems'
             `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             UNIQUE KEY `unicity` (`forms_answerssets_id`,`itemtype`,`items_id`),
-            KEY `forms_answerssets_id` (`forms_answerssets_id`),
             KEY `item` (`itemtype`, `items_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
@@ -144,7 +143,6 @@ if (!$DB->tableExists('glpi_forms_destinations_forms_formdestinations')) {
             `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             UNIQUE KEY `unicity` (`forms_forms_id`,`itemtype`,`items_id`),
-            KEY `forms_forms_id` (`forms_forms_id`),
             KEY `item` (`itemtype`, `items_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
