@@ -29,6 +29,8 @@
         }
     });
 
+    const indent_size = 20;
+
     const tree_data = ref([]);
     /** The start index of the visible items in the tree */
     const start = ref(0);
@@ -214,7 +216,7 @@
 </script>
 
 <template>
-    <div class="flexbox-item-grow data_tree" :style="`height: ${22 * max_items}px; width: 450px`">
+    <div class="flexbox-item-grow data_tree" :style="`height: ${22 * max_items}px`">
         <table :id="`tree_data${rand}`">
             <colgroup>
                 <col>
@@ -226,7 +228,7 @@
             </thead>
             <tbody>
                 <tr v-for="node in visible_in_dom" :key="node.key" :class="node.selected ? 'fw-bold' : ''">
-                    <td :style="{paddingLeft: node.level * 20 + 'px'}" :data-node-id="node.key">
+                    <td :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key">
                         <span v-if="node.folder" class="me-1 cursor-pointer">
                             <i v-if="node.expanded === 'true'" class="ti ti-folder-open"></i>
                             <i v-else class="ti ti-folder"></i>
@@ -244,13 +246,5 @@
 </template>
 
 <style scoped>
-    .data_tree {
-        width: 450px;
-        max-width: 85vw;
-        position: relative;
 
-        table {
-            width: 100%;
-        }
-    }
 </style>

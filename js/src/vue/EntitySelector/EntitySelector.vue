@@ -98,5 +98,13 @@
 </template>
 
 <style scoped>
+    .data_tree {
+        width: 450px;
+        max-width: 85vw;
+        position: relative;
 
+        table {
+            width: 100%;
+        }
+    }
 </style>
