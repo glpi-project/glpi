@@ -164,7 +164,7 @@ class ObjectLock {
                             'Content-Type': 'application/x-www-form-urlencoded;',
                             'X-Glpi-Csrf-Token': getAjaxCsrfToken()
                         },
-                        body: 'unlock=1&id={$id}'
+                        body: `unlock=1&id=${this.lock.id}`
                     }).catch(() => {
                         //fallback if fetch fails
                         fallback_request();
