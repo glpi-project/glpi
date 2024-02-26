@@ -44,7 +44,7 @@
         <script>
             $('button.force-unlock-item').on('click', () => {
                 glpi_confirm({
-                    title: '{{ item.fields['itemtype']|itemtype_name }} #{{ item.fields['items_id'] }}',
+                    title: '{{ item.fields['itemtype']|itemtype_name|e('js') }} #{{ item.fields['items_id'] }}',
                     message: __('Force unlock this item?'),
                     confirm_callback: () => {
                         $.post({
@@ -53,7 +53,7 @@
                             data: {
                                 unlock: 1,
                                 force: 1,
-                                id: {{ item.getID }},
+                                id: {{ item.getID() }},
                             },
                             dataType: 'json'
                         }).then(() => {
@@ -141,11 +141,11 @@
                 $('#message_after_lock').insertAfter('.navigationheader');
             }
             new m.initObjectLock({
-                id: {{ item.getID }},
-                itemtype: '{{ item.fields['itemtype'] }}',
-                itemtype_name: '{{ item.fields['itemtype']|itemtype_name }}',
-                items_id: {{ item.fields['items_id'] }},
-            }, {{ user_data|json_encode|raw }}, {{ new_lock }});
+                id: {{ item.getID() }},
+                itemtype: '{{ item.fields['itemtype']|e('js') }}',
+                itemtype_name: '{{ item.fields['itemtype']|itemtype_name|e('js') }}',
+                items_id: {{ item.fields['items_id']|e('js') }},
+            }, {{ user_data|json_encode|raw }}, {{ new_lock ? true : false }});
         });
     });
 </script>
