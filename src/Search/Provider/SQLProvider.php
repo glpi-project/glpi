@@ -2652,7 +2652,7 @@ final class SQLProvider implements SearchProviderInterface
                                 "$new_table$AS" => [
                                     'ON' => [
                                         $nt => 'itemtype',
-                                        'qexp' => new QueryExpression("'$used_itemtype'"),
+                                        new QueryExpression("'$used_itemtype'"),
                                     ]
                                 ]
                             ]
@@ -3169,7 +3169,7 @@ final class SQLProvider implements SearchProviderInterface
                 "glpi_dropdowntranslations AS $alias" => [
                     'ON' => [
                         $alias => 'itemtype',
-                        'qexp' => new QueryExpression("'$itemtype'"),
+                        new QueryExpression("'$itemtype'"),
                         [
                             'AND' => [
                                 "$alias.items_id" => "$table.id",

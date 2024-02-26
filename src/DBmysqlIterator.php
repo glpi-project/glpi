@@ -725,19 +725,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
                 }
             } else if (count($values) == 3) {
-                $real_values = [];
-                foreach ($values as $k => $v) {
-                    if (is_string($k)) {
-                        $real_values[$k] = $v;
-                    } else {
-                        $condition = $v;
-                    }
-                }
-                if (count($real_values) != 2 || !isset($condition)) {
-                    throw new \LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
-                }
-                //$condition = array_pop($real_values);
-                $fkey = $this->analyseFkey($real_values);
+                $condition = array_pop($values);
+                $fkey = $this->analyseFkey($values);
                 $condition_value = $this->analyseCrit(current($condition));
                 if (!empty(trim($condition_value))) {
                     return $fkey . ' ' . key($condition) . ' ' . $condition_value;
