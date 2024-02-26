@@ -295,7 +295,7 @@ final class RichText
         ];
         $p = array_replace($p, $params);
 
-        $content_size = strlen($content);
+        $content_size = strlen($content ?? '');
 
        // Sanitize content first (security and to decode HTML entities)
         $content = self::getSafeHtml($content);
