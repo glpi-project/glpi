@@ -108,6 +108,38 @@ class ObjectLock {
             });
         });
 
+        $('button.force-unlock-item').on('click', () => {
+            glpi_confirm({
+                title: `${this.lock.itemtype_name} #${this.lock.items_id}`,
+                message: __('Force unlock this item?'),
+                confirm_callback: () => {
+                    $.post({
+                        url: `${CFG_GLPI.root_doc}/ajax/unlockobject.php`,
+                        cache: false,
+                        data: {
+                            unlock: 1,
+                            force: 1,
+                            id: this.lock.id,
+                        },
+                        dataType: 'json'
+                    }).then(() => {
+                        glpi_confirm({
+                            title: __('Item unlocked!'),
+                            message: __('Reload page?'),
+                            confirm_callback: () => {
+                                window.location.reload();
+                            }
+                        });
+                    }, () => {
+                        glpi_alert({
+                            title: __('Item NOT unlocked!'),
+                            message: __('Contact your GLPI admin!'),
+                        });
+                    });
+                }
+            });
+        });
+
         if (this.new_lock) {
             $(window).on('beforeunload', () => {
                 const fallback_request = () => {
