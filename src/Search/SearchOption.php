@@ -715,35 +715,36 @@ final class SearchOption implements \ArrayAccess
             $toview[] = 1;
         }
 
-        if ($itemtype !== \AllAssets::getType()) {
-            if (isset($params['as_map']) && (int)$params['as_map'] === 1) {
+        if (isset($params['as_map']) && (int)$params['as_map'] === 1) {
+            if ($itemtype !== \AllAssets::getType()) {
                 // Add location name when map mode
                 $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
                 if ($loc_opt > 0) {
                     $toview[] = $loc_opt;
                 }
+            } else {
+                $toview[] = 3;
             }
-        } else {
-            $toview[] = 3;
         }
 
-        if ($itemtype !== \AllAssets::getType()) {
-            // Add entity view :
-            if (
-                \Session::isMultiEntitiesMode()
-                && $entity_check
-                && (isset($CFG_GLPI["union_search_type"][$itemtype])
-                    || ($item && $item->maybeRecursive())
-                    || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
-            ) {
+        // Add entity view :
+        if (
+            \Session::isMultiEntitiesMode()
+            && $entity_check
+            && (isset($CFG_GLPI["union_search_type"][$itemtype])
+                || ($item && $item->maybeRecursive())
+                || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
+        ) {
+            if ($itemtype !== \AllAssets::getType()) {
                 $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
                 if ($entity_opt > 0) {
                     $toview[] = $entity_opt;
                 }
+            } else {
+                $toview[] = 80;
             }
-        } else {
-            $toview[] = 80;
         }
+
         return $toview;
     }
 }
