@@ -155,8 +155,24 @@ final class Server
      */
     public static function getAllowedScopes(): array
     {
-        // Not yet supported
-        return [];
+        return [
+            'email' => 'email',
+            'user' => 'user',
+            'api' => 'api',
+            'inventory' => 'inventory',
+            'status' => 'status',
+        ];
+    }
+
+    public static function getScopeDescriptions(): array
+    {
+        return [
+            'email' => __('Access to the user\'s email address'),
+            'user' => __('Access to the user\'s information'),
+            'api' => __('Access to the API'),
+            'inventory' => __('Access to submit inventory from an agent'),
+            'status' => __('Access to the status endpoint'),
+        ];
     }
 
     public static function generateKeys(): void

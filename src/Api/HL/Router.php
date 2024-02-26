@@ -57,6 +57,7 @@ use Glpi\Api\HL\Middleware\DebugRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
+use Glpi\Api\HL\Middleware\OAuthRequestMiddleware;
 use Glpi\Api\HL\Middleware\RequestMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -198,6 +199,7 @@ EOT;
             $instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
             $instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
+            $instance->registerRequestMiddleware(new OAuthRequestMiddleware());
             $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
                 return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
             });

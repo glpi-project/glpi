@@ -270,7 +270,7 @@ class AdministrationController extends \HLAPITestCase
             ]
         ])->current()['id'];
 
-        $this->api->call(new Request('GET', "/Administration/User/me/emails/$email_id"), function ($call) {
+        $this->api->call(new Request('GET', "/Administration/User/me/email/$email_id"), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
@@ -281,14 +281,14 @@ class AdministrationController extends \HLAPITestCase
         });
 
         // Try getting an email that doesn't exist
-        $this->api->call(new Request('GET', "/Administration/User/me/emails/999999999"), function ($call) {
+        $this->api->call(new Request('GET', "/Administration/User/me/email/999999999"), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
 
         // Log in as another user and try to get the email of the first user (should fail)
         $this->login('tech', 'tech');
-        $this->api->call(new Request('GET', "/Administration/User/me/emails/$email_id"), function ($call) {
+        $this->api->call(new Request('GET', "/Administration/User/me/email/$email_id"), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });

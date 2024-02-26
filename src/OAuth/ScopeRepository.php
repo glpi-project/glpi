@@ -49,6 +49,21 @@ class ScopeRepository implements ScopeRepositoryInterface
 
     public function finalizeScopes(array $scopes, $grantType, ClientEntityInterface $clientEntity, $userIdentifier = null)
     {
-        return $scopes;
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $allowed_scopes = json_decode($DB->request([
+            'SELECT' => 'scopes',
+            'FROM'   => 'glpi_oauthclients',
+            'WHERE'  => [
+                'identifier' => $clientEntity->getIdentifier()
+            ]
+        ])->current()['scopes']);
+        if (!is_array($allowed_scopes)) {
+            $allowed_scopes = [];
+        }
+        return array_filter($scopes, static function ($scope) use ($allowed_scopes) {
+            return in_array($scope->getIdentifier(), $allowed_scopes, true);
+        });
     }
 }

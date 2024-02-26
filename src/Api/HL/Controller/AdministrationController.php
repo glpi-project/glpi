@@ -415,7 +415,7 @@ final class AdministrationController extends AbstractController
         return $emails;
     }
 
-    #[Route(path: '/User/me', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the current user',
         responses: [
@@ -428,7 +428,7 @@ final class AdministrationController extends AbstractController
         return Search::getOneBySchema($this->getKnownSchema('User'), ['id' => $my_user_id], $request->getParameters());
     }
 
-    #[Route(path: '/User/me/emails', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/Email', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the current user\'s email addresses',
         responses: [
@@ -440,7 +440,7 @@ final class AdministrationController extends AbstractController
         return new JSONResponse($this->getEmailDataForUser($this->getMyUserID()));
     }
 
-    #[Route(path: '/User/me/emails', methods: ['POST'])]
+    #[Route(path: '/User/Me/Email', methods: ['POST'])]
     #[Doc\Route(
         description: 'Create a new email address for the current user',
         parameters: [
@@ -499,7 +499,7 @@ final class AdministrationController extends AbstractController
         return self::getCRUDCreateResponse($emails_id, self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $emails_id]));
     }
 
-    #[Route(path: '/User/me/emails/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/Email/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific email address for the current user',
         responses: [
@@ -511,6 +511,24 @@ final class AdministrationController extends AbstractController
         $emails = $this->getEmailDataForUser($this->getMyUserID());
         foreach ($emails as $email) {
             if ($email['id'] == $request->getAttribute('id')) {
+                return new JSONResponse($email);
+            }
+        }
+        return self::getNotFoundErrorResponse();
+    }
+
+    #[Route(path: '/User/Me/Emails/Default', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get a specific email address for the current user',
+        responses: [
+            ['schema' => 'EmailAddress']
+        ]
+    )]
+    public function getMyDefaultEmail(Request $request): Response
+    {
+        $emails = $this->getEmailDataForUser($this->getMyUserID());
+        foreach ($emails as $email) {
+            if ($email['is_default']) {
                 return new JSONResponse($email);
             }
         }
@@ -533,7 +551,7 @@ final class AdministrationController extends AbstractController
         return \Toolbox::sendFile($picture_path, $username, null, false, true);
     }
 
-    #[Route(path: '/User/me/Picture', methods: ['GET'])]
+    #[Route(path: '/User/Me/Picture', methods: ['GET'])]
     #[Doc\Route(
         description: 'Get the picture for the current user'
     )]
