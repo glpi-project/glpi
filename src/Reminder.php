@@ -683,14 +683,16 @@ class Reminder extends CommonDBVisible implements
         }
 
         if ($personal) {
-            $titre = "<a href='" . $CFG_GLPI["root_doc"] . "/front/reminder.php'>" .
-                    _n('Personal reminder', 'Personal reminders', Session::getPluralNumber()) . "</a>";
+            $title = '<a href="' . $CFG_GLPI["root_doc"] . '/front/reminder.php">'
+                . _sn('Personal reminder', 'Personal reminders', Session::getPluralNumber())
+                . '</a>';
         } else {
             if (Session::getCurrentInterface() !== 'helpdesk') {
-                $titre = "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/reminder.php\">" .
-                       _n('Public reminder', 'Public reminders', Session::getPluralNumber()) . "</a>";
+                $title = '<a href="' . $CFG_GLPI["root_doc"] . '/front/reminder.php">'
+                    . _sn('Public reminder', 'Public reminders', Session::getPluralNumber())
+                    . '</a>';
             } else {
-                $titre = _n('Public reminder', 'Public reminders', Session::getPluralNumber());
+                $title = _sn('Public reminder', 'Public reminders', Session::getPluralNumber());
             }
         }
 
@@ -718,16 +720,20 @@ class Reminder extends CommonDBVisible implements
                 if (!empty($data['transname'])) {
                     $name = $data['transname'];
                 }
-                $link = "<a id='content_reminder_" . $data["id"] . $rand . "'
-                      href='" . self::getFormURLWithID($data["id"]) . "'>" .
-                    $name . "</a>";
+                $link = sprintf(
+                    '<a id="content_reminder_%s" href="%s">%s</a>',
+                    htmlspecialchars($data["id"] . $rand),
+                    htmlspecialchars(self::getFormURLWithID($data["id"])),
+                    htmlspecialchars($name)
+                );
                 $text = $data["text"];
                 if (!empty($data['transtext'])) {
                     $text = $data['transtext'];
                 }
                 $tooltip = Html::showToolTip(
                     RichText::getEnhancedHtml($text),
-                    ['applyto' => "content_reminder_" . $data["id"] . $rand,
+                    [
+                        'applyto' => "content_reminder_" . $data["id"] . $rand,
                         'display' => false
                     ]
                 );
@@ -741,12 +747,12 @@ class Reminder extends CommonDBVisible implements
                         Html::convDateTime($data["begin"]),
                         Html::convDateTime($data["end"])
                     );
-                    $planning_link =  "<a href='" . $CFG_GLPI["root_doc"] . "/front/planning.php?date=" . $date_url .
-                        "&amp;type=day' class='pointer float-end' title=\"" . $planning_text . "\">";
-                    $planning_link .= "<i class='ti ti-bell'></i>";
-                    $planning_link .= "<span class='sr-only'>" . __s('Planning') . "</span>";
-                    $planning_link .= "</a>";
-                    $row['values'][] = $planning_link;
+                    $row['values'][] = sprintf(
+                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="sr-only">%s</span></a>',
+                        htmlspecialchars(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
+                        htmlspecialchars($planning_text),
+                        __s('Planning')
+                    );
                 } else {
                     $row['values'][] = '';
                 }
@@ -755,7 +761,7 @@ class Reminder extends CommonDBVisible implements
         }
 
         $output = TemplateRenderer::getInstance()->render('central/lists/table.html.twig', [
-            'title' => $titre,
+            'title' => $title,
             'add_link' => $add_link,
             'rows' => $rows,
         ]);

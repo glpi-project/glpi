@@ -127,28 +127,28 @@ class ReminderTranslation extends CommonDBChild
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center">
-                    <button class="btn btn-primary" onclick="showTranslation{{ item.getID ~ rand }}(-1)">{{ button_msg }}</button>
+                    <button class="btn btn-primary" onclick="showTranslation{{ item.getID() ~ rand }}(-1)">{{ button_msg }}</button>
                 </div>
-                <div id="viewtranslation{{ item.getID ~ rand }}" class="mb-3"></div>
+                <div id="viewtranslation{{ item.getID() ~ rand }}" class="mb-3"></div>
                 <script>
-                    function showTranslation{{ item.getID ~ rand }}(translations_id) {
+                    function showTranslation{{ item.getID() ~ rand }}(translations_id) {
                         $.ajax({
                             url: '{{ CFG_GLPI.root_doc }}/ajax/viewsubitem.php',
                             method: 'POST',
                             data: {
                                 type: 'ReminderTranslation',
                                 parenttype: '{{ item.getType }}',
-                                reminders_id: {{ item.getID }},
+                                reminders_id: {{ item.getID() }},
                                 id: translations_id
                             },
                             success: (data) => {
-                                $('#viewtranslation{{ item.getID ~ rand }}').html(data);
+                                $('#viewtranslation{{ item.getID() ~ rand }}').html(data);
                             }
                         });
                     }
                     $(() => {
                         $('#translationlist{{ rand }} tbody tr').on('click', function() {
-                            showTranslation{{ item.getID ~ rand }}($(this).attr('data-id'));
+                            showTranslation{{ item.getID() ~ rand }}($(this).attr('data-id'));
                         });
                     });
                 </script>
@@ -170,9 +170,13 @@ TWIG, $twig_params);
             $entry['language'] = Dropdown::getLanguageName($data['language']);
 
             if ($canedit) {
-                $entry['subject'] = "<a href=\"" . self::getFormURLWithID($data["id"]) . "\">{$data['name']}</a>";
+                $entry['subject'] = sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars(self::getFormURLWithID($data['id'])),
+                    htmlspecialchars($data['name'])
+                );
             } else {
-                $entry['subject'] = $data["name"];
+                $entry['subject'] = htmlspecialchars($data['name']);
             }
             if (!empty($data['text'])) {
                 $entry['subject'] .= Html::showToolTip(RichText::getEnhancedHtml($data['text']), ['display' => false]);

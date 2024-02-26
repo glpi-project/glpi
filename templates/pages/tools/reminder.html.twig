@@ -97,8 +97,8 @@
                     action: 'add_event_classic_form',
                     form: 'remind',
                     users_id: item.fields['users_id'],
-                    itemtype: item.getType,
-                    items_id: item.getID
+                    itemtype: item.getType(),
+                    items_id: item.getID()
                 } %}
                 {% if id and item.fields['is_planned'] %}
                     {% set ajax_params = ajax_params|merge({
