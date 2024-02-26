@@ -43,14 +43,14 @@ class GeolocationField {
         this.element_id = element_id;
         this.rand = Math.floor(Math.random() * 10000);
         this.marker = null;
-        this.init();
+        this.#init();
     }
 
-    init() {
+    #init() {
         // Geolocation may be disabled in the browser (e.g. geo.enabled = false in firefox)
         if (!navigator.geolocation) {
             this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '200px');
-            this.finalizeMap();
+            this.#finalizeMap();
         } else {
             navigator.geolocation.getCurrentPosition((pos) => {
                 // Try to determine an appropriate zoom level based on accuracy
@@ -73,15 +73,15 @@ class GeolocationField {
                     position: [pos.coords.latitude, pos.coords.longitude],
                     zoom: zoom
                 });
-                this.finalizeMap();
+                this.#finalizeMap();
             }, () => {
                 this.map = initMap($(`#${this.element_id}`), `setlocation_${this.rand}`, '200px');
-                this.finalizeMap();
+                this.#finalizeMap();
             }, {enableHighAccuracy: true});
         }
     }
 
-    finalizeMap() {
+    #finalizeMap() {
         const geocoder = L.Control.geocoder({
             defaultMarkGeocode: false,
             errorMessage: __('No result found'),
@@ -91,7 +91,7 @@ class GeolocationField {
             this._map.fitBounds(e.geocode.bbox);
         });
         this.map.addControl(geocoder);
-        this.autoSearch();
+        this.#autoSearch();
 
         function onMapClick(e) {
             const popup = L.popup();
@@ -124,7 +124,7 @@ class GeolocationField {
         let _curlng = $('*[name=longitude]').val();
 
         if (_curlat && _curlng) {
-            this.setLocation(_curlat, _curlng);
+            this.#setLocation(_curlat, _curlng);
         }
 
         $('*[name=latitude],*[name=longitude]').on('change', () => {
@@ -132,12 +132,12 @@ class GeolocationField {
             _curlng = $('*[name=longitude]').val();
 
             if (_curlat && _curlng) {
-                this.setLocation(_curlat, _curlng);
+                this.#setLocation(_curlat, _curlng);
             }
         });
     }
 
-    autoSearch() {
+    #autoSearch() {
         let _tosearch = '';
         const _address = $('*[name=address]').val();
         const _town = $('*[name=town]').val();
@@ -161,7 +161,7 @@ class GeolocationField {
         $('.leaflet-control-geocoder-form > input[type=text]').val(_tosearch);
     }
 
-    setLocation(lat, lng) {
+    #setLocation(lat, lng) {
         if (this.marker) {
             this.map.removeLayer(this.marker);
         }
@@ -175,7 +175,4 @@ class GeolocationField {
     }
 }
 
-// Initialize map without exposing the class
-export function initGeolocationField(element_id) {
-    new GeolocationField(element_id);
-}
+export default GeolocationField;

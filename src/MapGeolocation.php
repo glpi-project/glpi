@@ -51,7 +51,7 @@ trait MapGeolocation
             <div id="setlocation_container_{{ rand }}"></div>
             <script type="module">
                 import('{{ js_path('js/modules/Form/GeolocationField.js') }}').then((m) => {
-                    m.initGeolocationField('setlocation_container_{{ rand }}');
+                    new m.default('setlocation_container_{{ rand }}');
                 });
             </script>
 TWIG);
