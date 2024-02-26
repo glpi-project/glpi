@@ -519,7 +519,7 @@ final class AdministrationController extends AbstractController
 
     #[Route(path: '/User/Me/Emails/Default', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Get a specific email address for the current user',
+        description: 'Get the default email address for the current user',
         responses: [
             ['schema' => 'EmailAddress']
         ]
