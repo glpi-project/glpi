@@ -102,7 +102,7 @@ trait State
                 \DropdownVisibility::getTable() => [
                     'ON' => [
                         \DropdownVisibility::getTable() => 'items_id',
-                        \State::getTable() => 'id', 'zzz' => [
+                        \State::getTable() => 'id', [
                             'AND' => [
                                 \DropdownVisibility::getTable() . '.itemtype' => \State::getType()
                             ]
