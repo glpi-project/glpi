@@ -76,6 +76,11 @@ class FormBuilder
     protected array $sections;
 
     /**
+     * Form destinations
+     */
+    protected array $destinations;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -89,6 +94,7 @@ class FormBuilder
         $this->header = "";
         $this->is_draft = false;
         $this->sections = [];
+        $this->destinations = [];
     }
 
     /**
@@ -292,6 +298,35 @@ class FormBuilder
             'is_mandatory'  => $is_mandatory,
         ];
 
+        return $this;
+    }
+
+     /**
+     * Get form destinations
+     *
+     * @return array Form destinations
+     */
+    public function getDestinations(): array
+    {
+        return $this->destinations;
+    }
+
+    /**
+     * Add a destination to the form
+     *
+     * @param string $itemtype Destination itemtype
+     * @param array  $values   Input values
+     *
+     * @return self To allow chain calls
+     */
+    public function addDestination(string $itemtype, array $values): self
+    {
+        // If first destination of the given itemtype, init its key
+        if (!isset($this->destinations[$itemtype])) {
+            $this->destinations[$itemtype] = [];
+        }
+
+        $this->destinations[$itemtype] = $values;
         return $this;
     }
 }

@@ -37,6 +37,7 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Form\Destination\Form_FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
@@ -515,6 +516,16 @@ class DbTestCase extends \GLPITestCase
                     'extra_data'        => $question_data['extra_data'],
                 ]);
             }
+        }
+
+        // Create destinations
+        foreach ($builder->getDestinations() as $itemtype => $destination_data) {
+            $destination = $this->createItem($itemtype, $destination_data);
+            $this->createItem(Form_FormDestination::class, [
+                'forms_forms_id' => $form->getID(),
+                'itemtype' => $destination->getType(),
+                'items_id' => $destination->getID(),
+            ]);
         }
 
         // Reload form

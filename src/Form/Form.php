@@ -38,11 +38,14 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Destination\Form_FormDestination;
+use Glpi\Form\Destination\FormDestinationInterface;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
+use ReflectionClass;
 
 /**
  * Helpdesk form
@@ -252,6 +255,43 @@ final class Form extends CommonDBTM
             $questions = $questions + $section->getQuestions();
         }
         return $questions;
+    }
+
+    /**
+     * Get all defined destinations of this form
+     *
+     * @return FormDestinationInterface&CommonDBTM[]
+     */
+    public function getDestinations(): array
+    {
+        $link_data = (new Form_FormDestination())->find([
+            self::getForeignKeyField() => $this->getID(),
+        ]);
+
+        $destinations = [];
+        foreach ($link_data as $row) {
+            if (
+                !is_a($row['itemtype'], FormDestinationInterface::class, true)
+                || !is_a($row['itemtype'], CommonDBTM::class, true)
+                || (new ReflectionClass($row['itemtype']))->isAbstract()
+            ) {
+                // Invalid data or disabled plugin
+                continue;
+            }
+
+            $destination = new $row['itemtype']();
+            if (!$destination->getFromDB($row['items_id'])) {
+                // Missing data, should be logged
+                trigger_error(
+                    "Failed to load destination: " . json_encode($link_data),
+                    E_USER_WARNING
+                );
+                continue;
+            }
+            $destinations[] = $destination;
+        }
+
+        return $destinations;
     }
 
     /**

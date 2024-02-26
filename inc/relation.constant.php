@@ -693,9 +693,14 @@ $RELATION = [
         'glpi_items_disks' => 'filesystems_id',
     ],
 
+    'glpi_forms_answerssets' => [
+        "glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
+    ],
+
     'glpi_forms_forms' => [
-        "_glpi_forms_answerssets" => "forms_forms_id",
-        "_glpi_forms_sections"    => "forms_forms_id",
+        "_glpi_forms_answerssets"                         => "forms_forms_id",
+        "_glpi_forms_destinations_forms_formdestinations" => "forms_forms_id",
+        "_glpi_forms_sections"                            => "forms_forms_id",
     ],
 
     'glpi_forms_sections' => [

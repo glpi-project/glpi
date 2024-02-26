@@ -211,6 +211,9 @@ class AnswersHandler extends DbTestCase
                 ->isEqualTo($answer_set->fields[$field])
             ;
         }
+
+        // The `createDestinations` part of the `saveAnswers` method is tested
+        // by each possible destinations type in their own test file
     }
 
     /**
