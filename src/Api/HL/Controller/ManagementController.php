@@ -36,13 +36,9 @@
 namespace Glpi\Api\HL\Controller;
 
 use Appliance;
-use ApplianceEnvironment;
-use ApplianceType;
 use AutoUpdateSystem;
 use Budget;
-use BudgetType;
 use Certificate;
-use CertificateType;
 use Cluster;
 use Contact;
 use Contract;
@@ -56,6 +52,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
+use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group;
@@ -73,29 +70,83 @@ final class ManagementController extends AbstractController
 {
     use CRUDControllerTrait;
 
+    /**
+     * @param bool $schema_names_only If true, only the schema names are returned.
+     * @return array<class-string<CommonDBTM>, string>
+     */
+    public static function getManagementTypes(bool $schema_names_only = true): array
+    {
+        static $management_types = null;
+
+        if ($management_types === null) {
+            $management_types = [
+                Appliance::class => [
+                    'schema_name' => 'Appliance',
+                    'label' => Appliance::getTypeName(1)
+                ],
+                Budget::class => [
+                    'schema_name' => 'Budget',
+                    'label' => Budget::getTypeName(1)
+                ],
+                Certificate::class => [
+                    'schema_name' => 'Certificate',
+                    'label' => Certificate::getTypeName(1)
+                ],
+                Cluster::class => [
+                    'schema_name' => 'Cluster',
+                    'label' => Cluster::getTypeName(1)
+                ],
+                Contact::class => [
+                    'schema_name' => 'Contact',
+                    'label' => Contact::getTypeName(1)
+                ],
+                Contract::class => [
+                    'schema_name' => 'Contract',
+                    'label' => Contract::getTypeName(1)
+                ],
+                Database::class => [
+                    'schema_name' => 'Database',
+                    'label' => Database::getTypeName(1)
+                ],
+                Datacenter::class => [
+                    'schema_name' => 'DataCenter',
+                    'label' => Datacenter::getTypeName(1)
+                ],
+                Document::class => [
+                    'schema_name' => 'Document',
+                    'label' => Document::getTypeName(1)
+                ],
+                Domain::class => [
+                    'schema_name' => 'Domain',
+                    'label' => Domain::getTypeName(1)
+                ],
+                SoftwareLicense::class => [
+                    'schema_name' => 'License',
+                    'label' => SoftwareLicense::getTypeName(1)
+                ],
+                Line::class => [
+                    'schema_name' => 'Line',
+                    'label' => Line::getTypeName(1)
+                ],
+                Supplier::class => [
+                    'schema_name' => 'Supplier',
+                    'label' => Supplier::getTypeName(1)
+                ],
+            ];
+        }
+        return $schema_names_only ? array_column($management_types, 'schema_name') : $management_types;
+    }
+
     protected static function getRawKnownSchemas(): array
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $schemas = [];
 
-        $management_types = [
-            Appliance::class => 'Appliance',
-            Budget::class => 'Budget',
-            Certificate::class => 'Certificate',
-            Cluster::class => 'Cluster',
-            Contact::class => 'Contact',
-            Contract::class => 'Contract',
-            Database::class => 'Database',
-            Datacenter::class => 'DataCenter',
-            Document::class => 'Document',
-            Domain::class => 'Domain',
-            SoftwareLicense::class => 'License',
-            Line::class => 'Line',
-            Supplier::class => 'Supplier',
-        ];
+        $management_types = self::getManagementTypes(false);
 
-        foreach ($management_types as $m_class => $m_name) {
+        foreach ($management_types as $m_class => $m_data) {
+            $m_name = $m_data['schema_name'];
             $schemas[$m_name] = [
                 'x-itemtype' => $m_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
@@ -126,9 +177,6 @@ final class ManagementController extends AbstractController
 
             if ($item->isEntityAssign()) {
                 $schemas[$m_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
-                // Add completename field
-                $schemas[$m_name]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
-                $schemas[$m_name]['properties']['is_recursive'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
             }
             $schemas[$m_name]['properties']['date_creation'] = ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME];
             $schemas[$m_name]['properties']['date_mod'] = ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME];
@@ -250,763 +298,120 @@ final class ManagementController extends AbstractController
         return $schemas;
     }
 
-    #[Route(path: '/Budget', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'List or search budgets',
+        description: 'Get all available management types',
+        methods: ['GET'],
+        responses: [
+            '200' => [
+                'description' => 'List of management types',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'properties' => [
+                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                            'href' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ]
+            ]
+        ]
+    )]
+    public function index(Request $request): Response
+    {
+        $management_types = self::getManagementTypes(false);
+        $asset_paths = [];
+        foreach ($management_types as $m_class => $m_data) {
+            $asset_paths[] = [
+                'itemtype'  => $m_class,
+                'name'      => $m_data['label'],
+                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $m_data['schema_name']]),
+            ];
+        }
+        return new JSONResponse($asset_paths);
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementTypes']
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'List or search management items',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
-            ['schema' => 'Budget[]']
+            ['schema' => '{itemtype}[]']
         ]
     )]
-    public function searchBudgets(Request $request): Response
+    public function searchItems(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Budget'), $request->getParameters());
+        $itemtype = $request->getAttribute('itemtype');
+        return Search::searchBySchema($this->getKnownSchema($itemtype), $request->getParameters());
     }
 
-    #[Route(path: '/Budget/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementTypes'],
+        'id' => '\d+'
+    ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
-        description: 'Get a budget by ID',
+        description: 'Get a management item by ID',
         responses: [
-            ['schema' => 'Budget']
+            ['schema' => '{itemtype}']
         ]
     )]
-    public function getBudget(Request $request): Response
+    public function getItem(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
+        $itemtype = $request->getAttribute('itemtype');
+        return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Budget', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new budget', parameters: [
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getManagementTypes']
+    ])]
+    #[Doc\Route(description: 'Create a new management item', parameters: [
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Budget',
+            'schema' => '{itemtype}',
         ]
     ])]
-    public function createBudget(Request $request): Response
+    public function createItem(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Budget'), $request->getParameters(), [self::class, 'getBudget']);
+        $itemtype = $request->getAttribute('itemtype');
+        return Search::createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
-    #[Route(path: '/Budget/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a budget by ID',
-        responses: [
-            ['schema' => 'Budget']
-        ]
-    )]
-    public function updateBudget(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Budget/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a budget by ID')]
-    public function deleteBudget(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Budget'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/License', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search licenses',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'License[]']
-        ]
-    )]
-    public function searchLicenses(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('License'), $request->getParameters());
-    }
-
-    #[Route(path: '/License/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a license by ID',
-        responses: [
-            ['schema' => 'License']
-        ]
-    )]
-    public function getLicense(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/License', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new license', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'License',
-        ]
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getManagementTypes'],
+        'id' => '\d+'
     ])]
-    public function createLicense(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('License'), $request->getParameters(), [self::class, 'getLicense']);
-    }
-
-    #[Route(path: '/License/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[Doc\Route(
-        description: 'Update a license by ID',
-        responses: [
-            ['schema' => 'License']
-        ]
-    )]
-    public function updateLicense(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/License/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a license by ID')]
-    public function deleteLicense(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('License'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Supplier', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search suppliers',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Supplier[]']
-        ]
-    )]
-    public function searchSuppliers(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Supplier'), $request->getParameters());
-    }
-
-    #[Route(path: '/Supplier/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a supplier by ID',
-        responses: [
-            ['schema' => 'Supplier']
-        ]
-    )]
-    public function getSupplier(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Supplier', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new supplier', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Supplier',
-        ]
-    ])]
-    public function createSupplier(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Supplier'), $request->getParameters(), [self::class, 'getSupplier']);
-    }
-
-    #[Route(path: '/Supplier/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a supplier by ID',
+        description: 'Update a management item by ID',
         parameters: [
             [
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
-                'type' => Doc\Schema::TYPE_OBJECT,
-                'schema' => 'Supplier',
+                'schema' => '{itemtype}',
             ]
         ],
         responses: [
-            ['schema' => 'Supplier']
+            ['schema' => '{itemtype}']
         ]
     )]
-    public function updateSupplier(Request $request): Response
+    public function updateItem(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
+        $itemtype = $request->getAttribute('itemtype');
+        return Search::updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
-    #[Route(path: '/Supplier/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a supplier by ID')]
-    public function deleteSupplier(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Supplier'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Contact', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search contacts',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Contact[]']
-        ]
-    )]
-    public function searchContacts(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Contact'), $request->getParameters());
-    }
-
-    #[Route(path: '/Contact/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a contact by ID',
-        responses: [
-            ['schema' => 'Contact']
-        ]
-    )]
-    public function getContact(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Contact', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new contact', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Contact',
-        ]
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getManagementTypes'],
+        'id' => '\d+'
     ])]
-    public function createContact(Request $request): Response
+    #[Doc\Route(description: 'Delete a management item by ID')]
+    public function deleteItem(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Contact'), $request->getParameters(), [self::class, 'getContact']);
-    }
-
-    #[Route(path: '/Contact/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a contact by ID',
-        responses: [
-            ['schema' => 'Contact']
-        ]
-    )]
-    public function updateContact(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Contact/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a contact by ID')]
-    public function deleteContact(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Contact'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Contract', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search contracts',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Contract[]']
-        ]
-    )]
-    public function searchContracts(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Contract'), $request->getParameters());
-    }
-
-    #[Route(path: '/Contract/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a contract by ID',
-        responses: [
-            ['schema' => 'Contract']
-        ]
-    )]
-    public function getContract(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Contract', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new contract', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Contract',
-        ]
-    ])]
-    public function createContract(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Contract'), $request->getParameters(), [self::class, 'getContract']);
-    }
-
-    #[Route(path: '/Contract/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a contract by ID',
-        responses: [
-            ['schema' => 'Contract']
-        ]
-    )]
-    public function updateContract(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Contract/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a contract by ID')]
-    public function deleteContract(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Contract'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Document', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search documents',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Document[]']
-        ]
-    )]
-    public function searchDocuments(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Document'), $request->getParameters());
-    }
-
-    #[Route(path: '/Document/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a document by ID. If the Accept header is set to application/octet-stream, the file will be returned. Otherwise, the document metadata will be returned.',
-        responses: [
-            ['schema' => 'Document']
-        ]
-    )]
-    public function getDocument(Request $request): Response
-    {
-        if ($request->hasHeader('Accept') && $request->getHeaderLine('Accept') === 'application/octet-stream') {
-            // User is requesting the actual file
-            $document = new Document();
-            if ($document->getFromDB($request->getAttribute('id'))) {
-                if ($document->canViewFile()) {
-                    return $document->send(true);
-                }
-                return self::getAccessDeniedErrorResponse();
-            }
-            return self::getNotFoundErrorResponse();
-        }
-        return Search::getOneBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Document', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new document', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Document',
-        ]
-    ])]
-    public function createDocument(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Document'), $request->getParameters(), [self::class, 'getDocument']);
-    }
-
-    #[Route(path: '/Document/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a document by ID',
-        responses: [
-            ['schema' => 'Document']
-        ]
-    )]
-    public function updateDocument(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Document/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a document by ID')]
-    public function deleteDocument(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Line', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search lines',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Line[]']
-        ]
-    )]
-    public function searchLines(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Line'), $request->getParameters());
-    }
-
-    #[Route(path: '/Line/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a line by ID',
-        responses: [
-            ['schema' => 'Line']
-        ]
-    )]
-    public function getLine(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Line', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new line', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Line',
-        ]
-    ])]
-    public function createLine(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Line'), $request->getParameters(), [self::class, 'getLine']);
-    }
-
-    #[Route(path: '/Line/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a line by ID',
-        responses: [
-            ['schema' => 'Line']
-        ]
-    )]
-    public function updateLine(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Line/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a line by ID')]
-    public function deleteLine(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Line'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Certificate', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search certificates',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Certificate[]']
-        ]
-    )]
-    public function searchCertificates(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Certificate'), $request->getParameters());
-    }
-
-    #[Route(path: '/Certificate/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a certificate by ID',
-        responses: [
-            ['schema' => 'Certificate']
-        ]
-    )]
-    public function getCertificate(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Certificate', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new certificate', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Certificate',
-        ]
-    ])]
-    public function createCertificate(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Certificate'), $request->getParameters(), [self::class, 'getCertificate']);
-    }
-
-    #[Route(path: '/Certificate/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a certificate by ID',
-        responses: [
-            ['schema' => 'Certificate']
-        ]
-    )]
-    public function updateCertificate(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Certificate/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a certificate by ID')]
-    public function deleteCertificate(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Certificate'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/DataCenter', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search data centers',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'DataCenter[]']
-        ]
-    )]
-    public function searchDatacenters(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('DataCenter'), $request->getParameters());
-    }
-
-    #[Route(path: '/DataCenter/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a data center by ID',
-        responses: [
-            ['schema' => 'DataCenter']
-        ]
-    )]
-    public function getDataCenter(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/DataCenter', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new data center', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'DataCenter',
-        ]
-    ])]
-    public function createDataCenter(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('DataCenter'), $request->getParameters(), [self::class, 'getDataCenter']);
-    }
-
-    #[Route(path: '/DataCenter/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a data center by ID',
-        responses: [
-            ['schema' => 'DataCenter']
-        ]
-    )]
-    public function updateDataCenter(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/DataCenter/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a data center by ID')]
-    public function deleteDataCenter(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('DataCenter'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Cluster', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search clusters',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Cluster[]']
-        ]
-    )]
-    public function searchClusters(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Cluster'), $request->getParameters());
-    }
-
-    #[Route(path: '/Cluster/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a cluster by ID',
-        responses: [
-            ['schema' => 'Cluster']
-        ]
-    )]
-    public function getCluster(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Cluster', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new cluster', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Cluster',
-        ]
-    ])]
-    public function createCluster(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Cluster'), $request->getParameters(), [self::class, 'getCluster']);
-    }
-
-    #[Route(path: '/Cluster/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a cluster by ID',
-        responses: [
-            ['schema' => 'Cluster']
-        ]
-    )]
-    public function updateCluster(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Cluster/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a cluster by ID')]
-    public function deleteCluster(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Cluster'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Domain', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search domains',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Domain[]']
-        ]
-    )]
-    public function searchDomains(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Domain'), $request->getParameters());
-    }
-
-    #[Route(path: '/Domain/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a domain by ID',
-        responses: [
-            ['schema' => 'Domain']
-        ]
-    )]
-    public function getDomain(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Domain', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new domain', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Domain',
-        ]
-    ])]
-    public function createDomain(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Domain'), $request->getParameters(), [self::class, 'getDomain']);
-    }
-
-    #[Route(path: '/Domain/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a domain by ID',
-        responses: [
-            ['schema' => 'Domain']
-        ]
-    )]
-    public function updateDomain(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Domain/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a domain by ID')]
-    public function deleteDomain(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Domain'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Appliance', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search appliances',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Appliance[]']
-        ]
-    )]
-    public function searchAppliances(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Appliance'), $request->getParameters());
-    }
-
-    #[Route(path: '/Appliance/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a appliance by ID',
-        responses: [
-            ['schema' => 'Appliance']
-        ]
-    )]
-    public function getAppliance(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Appliance', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new appliance', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Appliance',
-        ]
-    ])]
-    public function createAppliance(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Appliance'), $request->getParameters(), [self::class, 'getAppliance']);
-    }
-
-    #[Route(path: '/Appliance/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a appliance by ID',
-        responses: [
-            ['schema' => 'Appliance']
-        ]
-    )]
-    public function updateAppliance(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Appliance/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a appliance by ID')]
-    public function deleteAppliance(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Appliance'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Database', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'List or search databases',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
-        responses: [
-            ['schema' => 'Database[]']
-        ]
-    )]
-    public function searchDatabases(Request $request): Response
-    {
-        return Search::searchBySchema($this->getKnownSchema('Database'), $request->getParameters());
-    }
-
-    #[Route(path: '/Database/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
-    #[Doc\Route(
-        description: 'Get a database by ID',
-        responses: [
-            ['schema' => 'Database']
-        ]
-    )]
-    public function getDatabase(Request $request): Response
-    {
-        return Search::getOneBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Database', methods: ['POST'])]
-    #[Doc\Route(description: 'Create a new database', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Database',
-        ]
-    ])]
-    public function createDatabase(Request $request): Response
-    {
-        return Search::createBySchema($this->getKnownSchema('Database'), $request->getParameters(), [self::class, 'getDatabase']);
-    }
-
-    #[Route(path: '/Database/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(
-        description: 'Update a database by ID',
-        responses: [
-            ['schema' => 'Database']
-        ]
-    )]
-    public function updateDatabase(Request $request): Response
-    {
-        return Search::updateBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Database/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
-    #[Doc\Route(description: 'Delete a database by ID')]
-    public function deleteDatabase(Request $request): Response
-    {
-        return Search::deleteBySchema($this->getKnownSchema('Database'), $request->getAttributes(), $request->getParameters());
+        $itemtype = $request->getAttribute('itemtype');
+        return Search::deleteBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 }

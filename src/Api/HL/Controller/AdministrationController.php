@@ -233,6 +233,7 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                     ],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity')
                 ]
             ],
             'Entity' => [

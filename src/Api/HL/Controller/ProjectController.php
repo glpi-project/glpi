@@ -111,7 +111,7 @@ final class ProjectController extends AbstractController
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'Task',
+                            'x-full-schema' => 'ProjectTask',
                             'x-join' => [
                                 'table' => 'glpi_projecttasks',
                                 'fkey' => 'id',
@@ -132,7 +132,7 @@ final class ProjectController extends AbstractController
                     ]
                 ]
             ],
-            'Task' => [
+            'ProjectTask' => [
                 'x-itemtype' => ProjectTask::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
@@ -211,7 +211,7 @@ final class ProjectController extends AbstractController
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
                     'content' => ['type' => Doc\Schema::TYPE_STRING],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
-                    'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'Task'),
+                    'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
                 ]
             ],
         ];
@@ -258,6 +258,13 @@ final class ProjectController extends AbstractController
     #[Route(path: '/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[Doc\Route(
         description: 'Update a project by ID',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => 'Project',
+            ]
+        ],
         responses: [
             ['schema' => 'Project']
         ]
@@ -279,24 +286,24 @@ final class ProjectController extends AbstractController
         description: 'List or search project tasks',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
-            ['schema' => 'Task[]']
+            ['schema' => 'ProjectTask[]']
         ]
     )]
     public function searchTasks(Request $request): Response
     {
-        return Search::searchBySchema($this->getKnownSchema('Task'), $request->getParameters());
+        return Search::searchBySchema($this->getKnownSchema('ProjectTask'), $request->getParameters());
     }
 
     #[Route(path: '/Task/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a task by ID',
         responses: [
-            ['schema' => 'Task']
+            ['schema' => 'ProjectTask']
         ]
     )]
     public function getTask(Request $request): Response
     {
-        return Search::getOneBySchema($this->getKnownSchema('Task'), $request->getAttributes(), $request->getParameters());
+        return Search::getOneBySchema($this->getKnownSchema('ProjectTask'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Task', methods: ['POST'])]
@@ -304,31 +311,31 @@ final class ProjectController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Task',
+            'schema' => 'ProjectTask',
         ]
     ])]
     public function createTask(Request $request): Response
     {
-        return Search::createBySchema($this->getKnownSchema('Task'), $request->getParameters(), [self::class, 'getTask']);
+        return Search::createBySchema($this->getKnownSchema('ProjectTask'), $request->getParameters(), [self::class, 'getTask']);
     }
 
     #[Route(path: '/Task/{id}', methods: ['PATCH'], requirements: ['id' => '\d+'])]
     #[Doc\Route(
         description: 'Update a task by ID',
         responses: [
-            ['schema' => 'Task']
+            ['schema' => 'ProjectTask']
         ]
     )]
     public function updateTask(Request $request): Response
     {
-        return Search::updateBySchema($this->getKnownSchema('Task'), $request->getAttributes(), $request->getParameters());
+        return Search::updateBySchema($this->getKnownSchema('ProjectTask'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Task/{id}', methods: ['DELETE'], requirements: ['id' => '\d+'])]
     #[Doc\Route(description: 'Delete a task by ID')]
     public function deleteTask(Request $request): Response
     {
-        return Search::deleteBySchema($this->getKnownSchema('Task'), $request->getAttributes(), $request->getParameters());
+        return Search::deleteBySchema($this->getKnownSchema('ProjectTask'), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{project_id}/Task', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -336,7 +343,7 @@ final class ProjectController extends AbstractController
         description: 'List or search project tasks',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
         responses: [
-            ['schema' => 'Task[]']
+            ['schema' => 'ProjectTask[]']
         ]
     )]
     public function searchLinkedTasks(Request $request): Response
@@ -346,7 +353,7 @@ final class ProjectController extends AbstractController
             $params['filter'] = [];
         }
         $params['filter']['project'] = $request->getAttributes()['project_id'];
-        return Search::searchBySchema($this->getKnownSchema('Task'), $params);
+        return Search::searchBySchema($this->getKnownSchema('ProjectTask'), $params);
     }
 
     #[Route(path: '/{project_id}/Task', methods: ['POST'])]
@@ -354,13 +361,13 @@ final class ProjectController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => 'Task',
+            'schema' => 'ProjectTask',
         ]
     ])]
     public function createLinkedTask(Request $request): Response
     {
         $params = $request->getParameters();
         $params['project'] = $request->getAttributes()['project_id'];
-        return Search::createBySchema($this->getKnownSchema('Task'), $params, [self::class, 'getTask']);
+        return Search::createBySchema($this->getKnownSchema('ProjectTask'), $params, [self::class, 'getTask']);
     }
 }

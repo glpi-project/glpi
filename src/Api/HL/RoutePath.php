@@ -192,6 +192,29 @@ final class RoutePath
         return $path;
     }
 
+    /**
+     * Get the attributes from the provided path when matched against this route
+     * @param string $path
+     * @return array<string, string>
+     */
+    public function getAttributesFromPath(string $path): array
+    {
+        $attributes = [];
+        $placeholders = [];
+        preg_match_all('/\{([^}]+)\}/', $this->getRoutePath(), $placeholders);
+        $placeholders = $placeholders[1];
+        $path_parts = explode('/', $path);
+        $route_parts = explode('/', $this->getRoutePath());
+        foreach ($route_parts as $i => $part) {
+            if (isset($path_parts[$i])) {
+                if (preg_match('/\{([^}]+)\}/', $part)) {
+                    $attributes[trim($part, '{}')] = $path_parts[$i];
+                }
+            }
+        }
+        return $attributes;
+    }
+
     public function isValidPath($path): bool
     {
         // Ensure no placeholders are left

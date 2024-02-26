@@ -434,9 +434,9 @@ EOT;
 
     /**
      * @param Request $request
-     * @return ?RoutePath
+     * @return RoutePath[]
      */
-    public function match(Request $request): ?RoutePath
+    public function matchAll(Request $request): array
     {
         /** @var RoutePath[] $routes */
         $routes = $this->getRoutesFromCache();
@@ -474,7 +474,16 @@ EOT;
             return ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1;
         });
 
-        $routes = array_reverse($routes);
+        return array_reverse($routes);
+    }
+
+    /**
+     * @param Request $request
+     * @return ?RoutePath
+     */
+    public function match(Request $request): ?RoutePath
+    {
+        $routes = $this->matchAll($request);
         if (count($routes)) {
             return reset($routes);
         }

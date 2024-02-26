@@ -627,6 +627,9 @@ class ComponentController extends AbstractController
     #[Doc\Route(
         description: 'Get the component definitions of the specified type',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => '{component_type}']
+        ]
     )]
     public function getComponentTypes(Request $request): Response
     {
@@ -640,6 +643,9 @@ class ComponentController extends AbstractController
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific component definition',
+        responses: [
+            ['schema' => '{component_type}']
+        ]
     )]
     public function getComponentType(Request $request): Response
     {
@@ -652,6 +658,13 @@ class ComponentController extends AbstractController
     ], tags: ['Components'])]
     #[Doc\Route(
         description: 'Create a component definition of the specified type',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{component_type}',
+            ]
+        ]
     )]
     public function createComponentType(Request $request): Response
     {
@@ -668,6 +681,9 @@ class ComponentController extends AbstractController
     #[Doc\Route(
         description: 'Get the components of a specific component definition',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => '{component_type}']
+        ]
     )]
     public function getComponentsOfType(Request $request): Response
     {
@@ -699,6 +715,13 @@ class ComponentController extends AbstractController
     ], tags: ['Components'])]
     #[Doc\Route(
         description: 'Update a component definition of the specified type',
+        parameters: [
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'schema' => '{component_type}',
+            ]
+        ]
     )]
     public function updateComponentType(Request $request): Response
     {
@@ -725,6 +748,9 @@ class ComponentController extends AbstractController
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a specific component',
+        responses: [
+            ['schema' => '{component_type}Item']
+        ]
     )]
     public function getComponent(Request $request): Response
     {
@@ -742,6 +768,9 @@ class ComponentController extends AbstractController
     #[Doc\Route(
         description: 'Get all components for an asset',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        responses: [
+            ['schema' => '{component_type}Item']
+        ]
     )]
     public function getAssetComponentsByType(Request $request): Response
     {

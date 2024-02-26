@@ -305,7 +305,7 @@ class Schema implements \ArrayAccess
         $type_match = match ($type) {
             self::TYPE_STRING => is_string($value),
             self::TYPE_INTEGER => is_int($value),
-            self::TYPE_NUMBER => is_float($value),
+            self::TYPE_NUMBER => is_int($value) || is_float($value),
             self::TYPE_BOOLEAN => is_bool($value),
             self::TYPE_ARRAY, self::TYPE_OBJECT => is_array($value),
             default => false
@@ -321,8 +321,9 @@ class Schema implements \ArrayAccess
             self::FORMAT_INTEGER_INT32 => ((abs($value) & 0x7FFFFFFF) === abs($value)),
             self::FORMAT_INTEGER_INT64 => ((abs($value) & 0x7FFFFFFFFFFFFFFF) === abs($value)),
             // Double: float and has 2 or less decimal places
-            self::FORMAT_NUMBER_DOUBLE => is_float($value) && (strlen(substr(strrchr((string)$value, "."), 1)) <= 2),
-            self::FORMAT_NUMBER_FLOAT => is_float($value),
+            // We also accept integers as doubles (no decimal places specified)
+            self::FORMAT_NUMBER_DOUBLE => is_int($value) || (is_float($value) && (strlen(substr(strrchr((string)$value, "."), 1)) <= 2)),
+            self::FORMAT_NUMBER_FLOAT => is_int($value) || is_float($value),
             // Binary: binary data like used for Files
             self::FORMAT_STRING_BINARY, self::FORMAT_STRING_PASSWORD, self::FORMAT_STRING_STRING => is_string($value),
             // Byte: base64 encoded string
@@ -336,13 +337,25 @@ class Schema implements \ArrayAccess
         return $format_match;
     }
 
-    public function isValid(array $content): bool
+    public function isValid(array $content, string|null $operation = null): bool
     {
         $flattened_schema = self::flattenProperties($this->toArray()['properties'], '', false);
 
         foreach ($flattened_schema as $sk => $sv) {
+            $ignored = false;
             // Get value from original content by the array path $sk
             $cv = ArrayPathAccessor::getElementByArrayPath($content, $sk);
+            if ($cv === null) {
+                if ($operation === 'read' && ($sv['x-writeonly'] ?? false)) {
+                    $ignored = true;
+                } else if ($operation === 'write' && ($sv['x-readonly'] ?? false)) {
+                    $ignored = true;
+                }
+            }
+            if ($ignored) {
+                // Property was not found, but it wasn't applicable to the operation
+                continue;
+            }
 
             // Verify that the type is correct
             if (!self::validateTypeAndFormat($sv['type'], $sv['format'] ?? '', $cv)) {

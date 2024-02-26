@@ -46,78 +46,11 @@ class ITILController extends \HLAPITestCase
         $func_name = __FUNCTION__;
 
         foreach ($itil_types as $itil_type) {
-            // Create
-            $request = new Request('POST', '/Assistance/' . $itil_type);
-            $request->setParameter('name', $func_name);
-            $request->setParameter('content', 'test');
-            $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
-            $new_item_location = null;
-            $this->api->call($request, function ($call) use (&$new_item_location) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->headers(function ($headers) use (&$new_item_location) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $new_item_location = $headers['Location'];
-                    });
-            });
-
-            // Get
-            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) use ($func_name) {
-                        $this->string($content['name'])->isIdenticalTo($func_name);
-                        $this->string($content['content'])->isIdenticalTo('test');
-                    });
-            });
-
-            // Update
-            $request = new Request('PATCH', $new_item_location);
-            $request->setParameter('name', $func_name . '2');
-            $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify update
-            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) use ($func_name) {
-                        $this->string($content['name'])->isIdenticalTo($func_name . '2');
-                        $this->string($content['content'])->isIdenticalTo('test');
-                    });
-            });
-
-            // Delete (Trash)
-            $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Get (Trash)
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Delete (Purge)
-            $request = new Request('DELETE', $new_item_location);
-            $request->setParameter('force', 1);
-            $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify not found
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isNotFoundError();
-            });
+            $this->api->autoTestCRUD('/Assistance/' . $itil_type, [
+                'name' => $func_name,
+                'content' => 'test',
+                'entity' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]);
         }
     }
 
@@ -145,61 +78,9 @@ class ITILController extends \HLAPITestCase
                     });
             });
 
-            // Create
-            $request = new Request('POST', $itil_base_path . '/Timeline/Followup');
-            $request->setParameter('content', 'test');
-            $new_item_location = null;
-            $this->api->call($request, function ($call) use ($itil_base_path, &$new_item_location) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->headers(function ($headers) use ($itil_base_path, &$new_item_location) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $this->string($headers['Location'])->contains($itil_base_path . '/Timeline/Followup/');
-                        $new_item_location = $headers['Location'];
-                    });
-            });
-
-            // Get
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) {
-                        $this->string($content['content'])->isIdenticalTo('test');
-                    });
-            });
-
-            // Update
-            $request = new Request('PATCH', $new_item_location);
-            $request->setParameter('content', 'test2');
-            $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify Update
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) {
-                        $this->string($content['content'])->isIdenticalTo('test2');
-                    });
-            });
-
-            // Delete
-            $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify not found
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isNotFoundError();
-            });
+            $this->api->autoTestCRUD($itil_base_path . '/Timeline/Followup', [
+                'content' => 'test',
+            ]);
         }
     }
 
@@ -227,61 +108,9 @@ class ITILController extends \HLAPITestCase
                     });
             });
 
-            // Create
-            $request = new Request('POST', $itil_base_path . '/Timeline/Task');
-            $request->setParameter('content', 'test');
-            $new_item_location = null;
-            $this->api->call($request, function ($call) use ($itil_base_path, &$new_item_location) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->headers(function ($headers) use ($itil_base_path, &$new_item_location) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $this->string($headers['Location'])->contains($itil_base_path . '/Timeline/Task/');
-                        $new_item_location = $headers['Location'];
-                    });
-            });
-
-            // Get
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) {
-                        $this->string($content['content'])->isIdenticalTo('test');
-                    });
-            });
-
-            // Update
-            $request = new Request('PATCH', $new_item_location);
-            $request->setParameter('content', 'test2');
-            $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify Update
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) {
-                        $this->string($content['content'])->isIdenticalTo('test2');
-                    });
-            });
-
-            // Delete
-            $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify not found
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isNotFoundError();
-            });
+            $this->api->autoTestCRUD($itil_base_path . '/Timeline/Task', [
+                'content' => 'test',
+            ]);
         }
     }
 
@@ -425,62 +254,10 @@ class ITILController extends \HLAPITestCase
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]))->isGreaterThan(0);
 
-            // Create a recurring ITIL item
-            $request = new Request('POST', '/Assistance/Recurring' . $itil_type);
-            $request->setParameter('name', $func_name);
-            $request->setParameter('template', $templates_id);
-            $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
-            $new_item_location = null;
-            $this->api->call($request, function ($call) use (&$new_item_location) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->headers(function ($headers) use (&$new_item_location) {
-                        $this->array($headers)->hasKey('Location');
-                        $this->string($headers['Location'])->isNotEmpty();
-                        $new_item_location = $headers['Location'];
-                    });
-            });
-
-            // Get
-            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) use ($func_name) {
-                        $this->string($content['name'])->isIdenticalTo($func_name);
-                    });
-            });
-
-            // Update
-            $request = new Request('PATCH', $new_item_location);
-            $request->setParameter('name', $func_name . '2');
-            $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify update
-            $this->api->call(new Request('GET', $new_item_location), function ($call) use ($func_name) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response
-                    ->isOK()
-                    ->jsonContent(function ($content) use ($func_name) {
-                        $this->string($content['name'])->isIdenticalTo($func_name . '2');
-                    });
-            });
-
-            // Delete
-            $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isOK();
-            });
-
-            // Verify not found
-            $this->api->call(new Request('GET', $new_item_location), function ($call) {
-                /** @var \HLAPICallAsserter $call */
-                $call->response->isNotFoundError();
-            });
+            $this->api->autoTestCRUD('/Assistance/Recurring' . $itil_type, [
+                'name' => $func_name,
+                'template' => $templates_id,
+            ]);
         }
     }
 
