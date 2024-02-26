@@ -1,0 +1,68 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var form       Glpi\Form\Form #}
+{# @var can_update bool #}
+
+{% if can_update %}
+    <div
+        class="btn-group mt-2 d-flex justify-content-center"
+        style="box-shadow:none;"
+        role="group"
+    >
+        {# Add question action #}
+        <label
+            for="btn-radio-toolbar-1"
+            class="btn btn-icon flex-grow-0"
+            data-glpi-form-editor-on-click="add-question"
+        >
+            {# This is the main action, we highlight it by adding a description #}
+            <span class="px-2 d-flex align-items-center">
+                <i class="ti ti-circle-plus me-2"></i> {{ __("Add a new question") }}
+            </span>
+        </label>
+
+        {# Add section action #}
+        {% set add_section_action_visible = form.getSections()|length > 1 or (form.getSections()|first).getQuestions()|length > 0 %}
+        <label
+            for="btn-radio-toolbar-1"
+            class="btn btn-icon flex-grow-0 {{ add_section_action_visible ? '' : 'd-none' }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{{ __("Add a new section") }}" {# Secondary action, use a tooltip #}
+            data-glpi-form-editor-on-click="add-section"
+        >
+            <i class="ti ti-box-align-top"></i>
+        </label>
+    </div>
+{% endif %}
