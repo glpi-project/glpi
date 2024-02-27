@@ -150,14 +150,14 @@ class State extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $itemtype = $CFG_GLPI['state_types'][0];
+
         $state = new \State();
         $states_id = $state->add([
             'name' => 'Test computer and phone',
-            'is_visible_computer' => '1'
+            'is_visible_' . strtolower($itemtype) => '1'
         ]);
         $this->integer($states_id)->isGreaterThan(0);
-
-        $itemtype = $CFG_GLPI['state_types'][0];
 
         $item = new $itemtype();
         $this->boolean(method_exists($itemtype, 'isStateVisible'))->isTrue($itemtype . ' misses isStateVisible() method!');
@@ -173,7 +173,7 @@ class State extends DbTestCase
         )
             ->error()
             ->withType(E_USER_ERROR)
-            ->withMessage('Class Computer must be present in $CFG_GLPI[\'state_types\']')
+            ->withMessage(sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype))
             ->exists();
     }
 
