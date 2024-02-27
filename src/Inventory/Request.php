@@ -349,9 +349,14 @@ class Request extends AbstractRequest
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $data = Plugin::doHook(Hooks::PRE_INVENTORY, $data);
-        if ($data === null) {
-            $this->addError('Rejected by a plugin', 400);
+        try {
+            $data = Plugin::doHook(Hooks::PRE_INVENTORY, $data);
+            if ($data === null) {
+                $this->addError('Rejected by a plugin: No reason specified', 400);
+                return;
+            }
+        } catch (\Exception $e) {
+            $this->addError('Rejected by a plugin: ' . $e->getMessage(), 400);
             return;
         }
 
