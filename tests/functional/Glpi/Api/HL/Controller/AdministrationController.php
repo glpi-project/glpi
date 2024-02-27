@@ -236,7 +236,7 @@ class AdministrationController extends \HLAPITestCase
     public function testGetMyEmails()
     {
         $this->login();
-        $this->api->call(new Request('GET', '/Administration/User/me/emails'), function ($call) {
+        $this->api->call(new Request('GET', '/Administration/User/me/email'), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
