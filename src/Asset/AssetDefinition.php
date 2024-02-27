@@ -629,14 +629,15 @@ final class AssetDefinition extends CommonDBTM
             'datatype'      => 'text'
         ];
 
-        $i = 1000;
+        // Capacity search option IDs can be assigned anywhere in the 1000-11000 range based on the capacity class name
+        $fn_get_id_for_capacity = static function (string $capacity) {
+            return (int) abs((int) hexdec(hash('xxh3', $capacity)) % 10000) + 1000;
+        };
         $search_options[] = [
             'id'   => 'capacities',
             'name' => __('Capacities')
         ];
         foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
-            $i++;
-
             // capacity is stored in a JSON array, so entry is surrounded by double quotes
             $search_string = json_encode($capacity::class);
             // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
@@ -646,7 +647,7 @@ final class AssetDefinition extends CommonDBTM
             $search_string = str_replace('\\', '\\\\', $search_string);
 
             $search_options[] = [
-                'id'            => $i,
+                'id'            => $fn_get_id_for_capacity($capacity::class),
                 'table'         => self::getTable(),
                 'field'         => sprintf('_capacities_%s', $capacity::class),
                 'name'          => $capacity->getLabel(),
