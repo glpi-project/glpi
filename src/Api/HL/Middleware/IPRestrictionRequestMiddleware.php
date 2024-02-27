@@ -1,0 +1,107 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Api\HL\Middleware;
+
+use CommonDBTM;
+use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\RoutePath;
+use Glpi\Api\HL\Router;
+use Glpi\Http\Request;
+use Glpi\Http\Response;
+
+class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
+{
+    public function process(MiddlewareInput $input, callable $next): void
+    {
+        $client = Router::getInstance()->getCurrentClient();
+        if (!$client) {
+            $next($input);
+            return;
+        }
+
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $request_ip = $_SERVER['REMOTE_ADDR'];
+
+        $allowed_ips = $DB->request([
+            'SELECT' => ['allowed_ips'],
+            'FROM'   => 'glpi_oauthclients',
+            'WHERE'  => [
+                'identifier' => $client['client_id']
+            ]
+        ])->current()['allowed_ips'];
+
+        if (empty($allowed_ips)) {
+            // No IP restriction
+            $next($input);
+            return;
+        }
+
+        if (!$this->isIPAllowed($request_ip, $allowed_ips)) {
+            // IP doesn't match the allowed IPs
+            $input->response = AbstractController::getAccessDeniedErrorResponse();
+            return;
+        }
+
+        // IP was explicitly allowed
+        $next($input);
+    }
+
+    private function isIPAllowed(string $ip, string $allowed_ips): bool
+    {
+        $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
+        foreach ($allowed_ip_array as $allowed_ip) {
+            if (str_contains($allowed_ip, '/')) {
+                if (self::isCidrMatch($ip, $allowed_ip)) {
+                    return true;
+                }
+            } else if ($ip === $allowed_ip) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static function isCidrMatch(string $ip, string $range): bool
+    {
+        [$subnet, $mask] = explode('/', $range);
+        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1)) === ip2long($subnet)) {
+            return true;
+        }
+        return false;
+    }
+}

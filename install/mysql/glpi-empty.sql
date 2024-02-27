@@ -9672,6 +9672,7 @@ CREATE TABLE `glpi_oauthclients` (
    `scopes` text NOT NULL,
    `is_active` tinyint NOT NULL DEFAULT '1',
    `is_confidential` tinyint NOT NULL DEFAULT '1',
+   `allowed_ips` text DEFAULT NULL,
    PRIMARY KEY (`identifier`),
    KEY `id` (`id`),
    KEY `name` (`name`),
