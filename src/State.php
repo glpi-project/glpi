@@ -332,10 +332,10 @@ class State extends CommonTreeDropdown
 
     public function post_addItem()
     {
-        $state_visilibity = new DropdownVisibility();
+        $state_visibility = new DropdownVisibility();
         foreach ($this->getvisibilityFields() as $itemtype => $field) {
             if (isset($this->input[$field])) {
-                $state_visilibity->add([
+                $state_visibility->add([
                     'itemtype' => State::getType(),
                     'items_id' => $this->fields['id'],
                     'visible_itemtype'  => $itemtype,
@@ -349,16 +349,16 @@ class State extends CommonTreeDropdown
 
     public function post_updateItem($history = true)
     {
-        $state_visilibity = new DropdownVisibility();
+        $state_visibility = new DropdownVisibility();
         foreach ($this->getvisibilityFields() as $itemtype => $field) {
             if (isset($this->input[$field])) {
-                if ($state_visilibity->getFromDBByCrit(['itemtype' => self::getType(), 'items_id' => $this->input['id'], 'visible_itemtype' => $itemtype])) {
-                    $state_visilibity->update([
-                        'id' => $state_visilibity->fields['id'],
+                if ($state_visibility->getFromDBByCrit(['itemtype' => self::getType(), 'items_id' => $this->input['id'], 'visible_itemtype' => $itemtype])) {
+                    $state_visibility->update([
+                        'id' => $state_visibility->fields['id'],
                         'is_visible' => $this->input[$field]
                     ]);
                 } else {
-                    $state_visilibity->add([
+                    $state_visibility->add([
                         'itemtype' => State::getType(),
                         'items_id' => $this->fields['id'],
                         'visible_itemtype' => $itemtype,

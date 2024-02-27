@@ -35,17 +35,7 @@
 
 namespace Glpi\Features;
 
-use Agent;
-use AutoUpdateSystem;
-use CommonDBTM;
-use Computer;
-use Computer_Item;
-use DatabaseInstance;
-use Glpi\Inventory\Conf;
-use Glpi\Plugin\Hooks;
-use Html;
-use Plugin;
-use RefusedEquipment;
+use DropdownVisibility;
 
 trait State
 {
@@ -54,16 +44,16 @@ trait State
      *
      * @return void
      */
-    protected function checkSetup(): void
+    private function checkSetup(): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!in_array(get_class($this), $CFG_GLPI['state_types'])) {
+        if (!in_array(static::class, $CFG_GLPI['state_types'])) {
             trigger_error(
                 sprintf(
                     'Class %s must be present in $CFG_GLPI[\'state_types\']',
-                    get_class($this)
+                    static::class
                 ),
                 E_USER_ERROR
             );
@@ -80,11 +70,11 @@ trait State
     public function isStateVisible(int $id): bool
     {
         $this->checkSetup();
-        $dropdownVisibility = new \DropdownVisibility();
+        $dropdownVisibility = new DropdownVisibility();
         return $dropdownVisibility->getFromDBByCrit([
             'itemtype' => \State::getType(),
             'items_id' => $id,
-            'visible_itemtype' => get_class($this),
+            'visible_itemtype' => static::class,
             'is_visible' => 1
         ]);
     }
@@ -99,21 +89,21 @@ trait State
         $this->checkSetup();
         return [
             'LEFT JOIN' => [
-                \DropdownVisibility::getTable() => [
+                DropdownVisibility::getTable() => [
                     'ON' => [
-                        \DropdownVisibility::getTable() => 'items_id',
+                        DropdownVisibility::getTable() => 'items_id',
                         \State::getTable() => 'id', [
                             'AND' => [
-                                \DropdownVisibility::getTable() . '.itemtype' => \State::getType()
+                                DropdownVisibility::getTable() . '.itemtype' => \State::getType()
                             ]
                         ]
                     ]
                 ]
             ],
             'WHERE' => [
-                \DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
-                \DropdownVisibility::getTable() . '.visible_itemtype' => get_class($this),
-                \DropdownVisibility::getTable() . '.is_visible' => 1
+                DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                DropdownVisibility::getTable() . '.visible_itemtype' => static::class,
+                DropdownVisibility::getTable() . '.is_visible' => 1
             ]
         ];
     }

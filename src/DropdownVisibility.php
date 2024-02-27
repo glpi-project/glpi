@@ -33,9 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Dashboard\Widget;
-
 class DropdownVisibility extends CommonDBChild
 {
     public static $mustBeAttached  = false; //no idea why.

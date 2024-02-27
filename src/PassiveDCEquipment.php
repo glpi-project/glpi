@@ -147,7 +147,7 @@ class PassiveDCEquipment extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => self::getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
