@@ -784,10 +784,6 @@ abstract class APIBaseClass extends atoum
     {
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
-
-       // create a network port for the previous computer
-        $this->createNetworkPort($computers_id);
-
        // Get the User TU_USER
         $uid = getItemByTypeName('User', TU_USER, true);
         $data = $this->query(
@@ -847,8 +843,30 @@ abstract class APIBaseClass extends atoum
          ->hasKey('name')
          ->hasKey('_networkports');
 
-        $this->array($data['_networkports'])
-         ->hasKey('NetworkPortEthernet');
+        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
+        $this->array($data['_networkports']['NetworkPortEthernet'])->isEmpty();
+
+       // create a network port for the computer
+        $this->createNetworkPort($computers_id);
+
+        $data = $this->query(
+            'getItem',
+            ['itemtype' => 'Computer',
+                'id'       => $computers_id,
+                'headers'  => ['Session-Token' => $this->session_token],
+                'query'    => ['with_networkports' => true]
+            ]
+        );
+
+        $this->variable($data)->isNotFalse();
+
+        $this->array($data)
+         ->hasKey('id')
+         ->hasKey('name')
+         ->hasKey('_networkports');
+
+        $this->array($data['_networkports'])->hasKey('NetworkPortEthernet');
+        $this->array($data['_networkports']['NetworkPortEthernet'])->isNotEmpty();
 
         $this->array($data['_networkports']['NetworkPortEthernet'][0])->hasKey('NetworkName');
 
