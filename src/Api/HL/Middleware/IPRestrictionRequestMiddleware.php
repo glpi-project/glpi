@@ -35,12 +35,8 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
 
 class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
@@ -81,12 +77,12 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         $next($input);
     }
 
-    private function isIPAllowed(string $ip, string $allowed_ips): bool
+    public function isIPAllowed(string $ip, string $allowed_ips): bool
     {
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
         foreach ($allowed_ip_array as $allowed_ip) {
             if (str_contains($allowed_ip, '/')) {
-                if (self::isCidrMatch($ip, $allowed_ip)) {
+                if ($this->isCidrMatch($ip, $allowed_ip)) {
                     return true;
                 }
             } else if ($ip === $allowed_ip) {
@@ -96,12 +92,22 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         return false;
     }
 
-    private static function isCidrMatch(string $ip, string $range): bool
+    /**
+     * Check that the given IP is in the given CIDR range
+     * @param string $ip The IP to check
+     * @param string $range The CIDR notation range
+     * @return bool
+     */
+    public function isCidrMatch(string $ip, string $range): bool
     {
+        $ipv6 = str_contains($ip, ':');
+        $max_mask = $ipv6 ? 128 : 32;
         [$subnet, $mask] = explode('/', $range);
-        if ((ip2long($ip) & ~((1 << (32 - $mask)) - 1)) === ip2long($subnet)) {
-            return true;
-        }
-        return false;
+        $subnet = inet_pton($subnet);
+        $ip = inet_pton($ip);
+        $mask = $mask === '' ? $max_mask : (int)$mask;
+        $subnet = substr($subnet, 0, $mask / 8);
+        $ip = substr($ip, 0, $mask / 8);
+        return $subnet === $ip;
     }
 }

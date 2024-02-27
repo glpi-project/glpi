@@ -109,8 +109,11 @@ final class OAuthClient extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (!$this->validateAllowedIPs($input['allowed_ips'])) {
-            Session::addMessageAfterRedirect(__('Invalid IP address or CIDR range'), false);
+        if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
+            Session::addMessageAfterRedirect(
+                msg: __('Invalid IP address or CIDR range'),
+                message_type: ERROR
+            );
             return false;
         }
         $key = new GLPIKey();
@@ -130,8 +133,11 @@ final class OAuthClient extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (!$this->validateAllowedIPs($input['allowed_ips'])) {
-            Session::addMessageAfterRedirect(__('Invalid IP address or CIDR range'), false);
+        if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
+            Session::addMessageAfterRedirect(
+                msg: __('Invalid IP address or CIDR range'),
+                message_type: ERROR
+            );
             return false;
         }
         $key = new GLPIKey();
@@ -151,19 +157,21 @@ final class OAuthClient extends CommonDBTM
 
     /**
      * Ensure the allowed IPs input is a comma-separated list of valid IP addresses or CIDR ranges.
-     * @param string $allowed_ips
+     * @param string|null $allowed_ips
      * @return bool
      */
-    private function validateAllowedIPs(string $allowed_ips)
+    private function validateAllowedIPs(?string $allowed_ips)
     {
         if (empty($allowed_ips)) {
             return true;
         }
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
         foreach ($allowed_ip_array as $allowed_ip) {
+            $ipv6 = str_contains($allowed_ip, ':');
+            $max_mask = $ipv6 ? 128 : 32;
             if (str_contains($allowed_ip, '/')) {
                 [$ip, $mask] = explode('/', $allowed_ip);
-                if (filter_var($mask, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0, 'max_range' => 32]]) === false) {
+                if (filter_var($mask, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => $max_mask]]) === false) {
                     return false;
                 }
             } else {
