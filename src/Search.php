@@ -555,7 +555,7 @@ class Search
      **/
     public static function addDefaultToView($itemtype, $params)
     {
-        return SearchEngine::addDefaultToView($itemtype, $params);
+        return SearchOption::getDefaultToView($itemtype, $params);
     }
 
 

@@ -287,7 +287,7 @@ final class SearchEngine
         $p = [
             'criteria'                  => [],
             'metacriteria'              => [],
-            'sort'                      => ['1'],
+            'sort'                      => [0],
             'order'                     => ['ASC'],
             'start'                     => 0,
             'is_deleted'                => 0,
@@ -395,7 +395,10 @@ final class SearchEngine
         // If no research limit research to display item and compute number of item using simple request
         $data['search']['no_search']   = true;
 
-        $data['toview'] = self::addDefaultToView($itemtype, $params);
+        $data['toview'] = SearchOption::getDefaultToView($itemtype, $params);
+        if ($p['sort'] === [0]) {
+            $p['sort'] = [array_values($data['toview'])[0]];
+        }
         $data['meta_toview'] = [];
         if (!$forcetoview) {
             // Add items to display depending of personal prefs
@@ -463,7 +466,10 @@ final class SearchEngine
 
         // Special case for CommonITILObjects : put ID in front
         if (is_a($itemtype, CommonITILObject::class, true)) {
-            array_unshift($data['toview'], 2);
+            $id_opt = SearchOption::getOptionNumber($itemtype, 'id');
+            if ($id_opt > 0) {
+                array_unshift($data['toview'], $id_opt);
+            }
         }
 
         $limitsearchopt   = SearchOption::getCleanedOptions($itemtype);
@@ -487,48 +493,6 @@ final class SearchEngine
         }
 
         return $data;
-    }
-
-    /**
-     * Generic Function to add default columns to view
-     *
-     * @param class-string<\CommonDBTM> $itemtype device type
-     * @param array  $params   array of parameters
-     *
-     * @return array
-     **/
-    public static function addDefaultToView($itemtype, $params): array
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $toview = [];
-        $item   = null;
-        $entity_check = true;
-
-        if ($itemtype != \AllAssets::getType()) {
-            $item = getItemForItemtype($itemtype);
-            $entity_check = $item->isEntityAssign();
-        }
-        // Add first element (name)
-        array_push($toview, 1);
-
-        if (isset($params['as_map']) && $params['as_map'] == 1) {
-            // Add location name when map mode
-            array_push($toview, ($itemtype == 'Location' ? 1 : ($itemtype == 'Ticket' ? 83 : 3)));
-        }
-
-        // Add entity view :
-        if (
-            \Session::isMultiEntitiesMode()
-            && $entity_check
-            && (isset($CFG_GLPI["union_search_type"][$itemtype])
-                || ($item && $item->maybeRecursive())
-                || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
-        ) {
-            array_push($toview, 80);
-        }
-        return $toview;
     }
 
     /**
