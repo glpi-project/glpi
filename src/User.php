@@ -3740,6 +3740,7 @@ HTML;
             'forcegroupby'       => true,
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
+            'use_subquery'       => true,
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_groups_users',

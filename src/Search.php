@@ -5229,6 +5229,11 @@ JAVASCRIPT;
                     break;
 
                 case "itemlink":
+                    if ($should_use_subquery) {
+                        // Condition will be handled by the subquery
+                        break;
+                    }
+
                     if (in_array($searchtype, ['equals', 'notequals', 'under', 'notunder'])) {
                         return " $link (`$table`.`id`" . $SEARCH . ') ';
                     }
