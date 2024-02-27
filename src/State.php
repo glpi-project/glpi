@@ -850,6 +850,12 @@ class State extends CommonTreeDropdown
     public function post_getFromDB()
     {
         $statevisibility = new DropdownVisibility();
+
+        foreach ($this->getvisibilityFields() as $visibility_field) {
+            // Default value for fields that may not be yet stored in DB.
+            $this->fields[$visibility_field] = 0;
+        }
+
         $visibilities = $statevisibility->find(['itemtype' => State::getType(), 'items_id' => $this->fields['id']]);
         foreach ($visibilities as $visibility) {
             $this->fields['is_visible_' . strtolower($visibility['visible_itemtype'])] = $visibility['is_visible'];

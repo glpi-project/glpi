@@ -86,6 +86,9 @@ class State extends DbTestCase
 
     public function testVisibility()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $state = new \State();
 
         $states_id = $state->add([
@@ -118,9 +121,18 @@ class State extends DbTestCase
 
         $this->boolean($state->getFromDB($states_id))->isTrue();
         $this->string($state->fields['name'])->isEqualTo('Test computer and phone');
-        $this->integer($state->fields['is_visible_computer'])->isIdenticalTo(0);
-        $this->integer($state->fields['is_visible_phone'])->isIdenticalTo(1);
-        $this->integer($state->fields['is_visible_printer'])->isIdenticalTo(1);
+
+        $expected_values = [];
+        // Default values
+        foreach ($CFG_GLPI['state_types'] as $type) {
+            $expected_values['is_visible_' . strtolower($type)] = 0;
+        }
+        $expected_values['is_visible_computer'] = 0;
+        $expected_values['is_visible_phone']    = 1;
+        $expected_values['is_visible_printer']  = 1;
+        foreach ($expected_values as $field =>  $expected_value) {
+            $this->integer($state->fields[$field])->isIdenticalTo($expected_value);
+        }
     }
 
     public function testHasFeature()
