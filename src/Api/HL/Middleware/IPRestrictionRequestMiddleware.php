@@ -77,7 +77,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         $next($input);
     }
 
-    public function isIPAllowed(string $ip, string $allowed_ips): bool
+    private function isIPAllowed(string $ip, string $allowed_ips): bool
     {
         $allowed_ip_array = array_map('trim', explode(',', $allowed_ips));
         foreach ($allowed_ip_array as $allowed_ip) {
@@ -98,7 +98,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
      * @param string $range The CIDR notation range
      * @return bool
      */
-    public function isCidrMatch(string $ip, string $range): bool
+    private function isCidrMatch(string $ip, string $range): bool
     {
         $ipv6 = str_contains($ip, ':');
         $max_mask = $ipv6 ? 128 : 32;

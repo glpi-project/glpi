@@ -61,7 +61,8 @@ class IPRestrictionRequestMiddleware extends \GLPITestCase
     public function testIsIPAllowed($ip, $allowed_ips, $expected)
     {
         $middleware = new \Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware();
-        $this->variable($middleware->isIPAllowed($ip, $allowed_ips))->isEqualTo($expected);
+        $this->variable($this->callPrivateMethod($middleware, 'isIPAllowed', $ip, $allowed_ips))
+            ->isEqualTo($expected);
     }
 
     protected function isCidrMatchProvider()
@@ -83,6 +84,7 @@ class IPRestrictionRequestMiddleware extends \GLPITestCase
     public function testIsCidrMatch($ip, $range, $expected)
     {
         $middleware = new \Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware();
-        $this->variable($middleware->isCidrMatch($ip, $range))->isEqualTo($expected);
+        $this->variable($this->callPrivateMethod($middleware, 'isCidrMatch', $ip, $range))
+            ->isEqualTo($expected);
     }
 }
