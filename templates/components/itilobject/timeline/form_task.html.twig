@@ -69,7 +69,11 @@
             {% if entry_i['groups_id_tech'] %}
                <span class="badge bg-orange-lt">
                   <i class="fas fa-users me-1"></i>
-                  {{ get_item_link('Group', entry_i['groups_id_tech'], {'enable_anonymization': true}) }}
+                  {% if get_current_interface() == 'helpdesk' %}
+                     {{ get_item_name('Group', entry_i['groups_id_tech'], {'enable_anonymization': true}) }}
+                  {% else %}
+                     {{ get_item_link('Group', entry_i['groups_id_tech'], {'enable_anonymization': true}) }}
+                  {% endif %}
                </span>
             {% endif %}
 
