@@ -40,8 +40,10 @@ use CommonITILActor;
 use DBConnection;
 use DbTestCase;
 use Glpi\Toolbox\Sanitizer;
+use Group_User;
 use Psr\Log\LogLevel;
 use Ticket;
+use User;
 
 /* Test for inc/search.class.php */
 
@@ -3380,6 +3382,49 @@ class Search extends DbTestCase
             // Not very logical but GLPI return the same results for a contains "" and not contains "" queries
             $all_tickets
         );
+
+        // Data set for tests on user searches
+        list (
+            $user_without_groups,
+            $user_group_1,
+            $user_group_1_and_2
+        ) = $this->createItems(User::class, [
+            ['name' => 'user_without_groups'],
+            ['name' => 'user_group_1'],
+            ['name' => 'user_group_1_and_2'],
+        ]);
+        $this->createItems(Group_User::class, [
+            ['users_id' => $user_group_1->getID(), 'groups_id' => $group_1],
+            ['users_id' => $user_group_1_and_2->getID(), 'groups_id' => $group_1],
+            ['users_id' => $user_group_1_and_2->getID(), 'groups_id' => $group_2],
+        ]);
+        $all_users = ['user_without_groups', 'user_group_1', 'user_group_1_and_2'];
+        $base_condition = [
+            'link'       => 'AND',
+            'field'      => 1, // Name
+            'searchtype' => 'contains',
+            'value'      => "user_",
+        ];
+
+        // Search users by groups
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'User',
+            $base_condition,
+            $all_users,
+            ['user_group_1', 'user_group_1_and_2'],
+            13, // Groups
+            'equals',
+            $group_1
+        );
+        yield from $this->testCriteriaWithSubqueriesProvider_getAllCombination(
+            'User',
+            $base_condition,
+            $all_users,
+            ['user_group_1', 'user_group_1_and_2'],
+            13, // Groups
+            'contains',
+            "Group 1"
+        );
     }
 
     /**
@@ -3398,7 +3443,14 @@ class Search extends DbTestCase
         // Parse results
         $names = [];
         foreach ($data['data']['rows'] as $row) {
-            $names[] = $row['raw']['ITEM_Ticket_1'];
+            $name = $row['raw']["ITEM_{$itemtype}_1"];
+
+            // Clear extra data that is sometimes added by the search engine to handle display
+            if (strpos($name, "$#$") !== false) {
+                $name = substr($name, 0, strpos($name, "$#$"));
+            }
+
+            $names[] = $name;
         }
 
         // Sort both array as atoum is "position sensitive"
