@@ -4644,9 +4644,7 @@ JAVASCRIPT
     {
         $out = '';
 
-        if (GLPI_USE_CSRF_CHECK) {
-            $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-        }
+        $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
 
         $out .= "</form>";
         if ($display) {

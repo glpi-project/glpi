@@ -114,11 +114,6 @@ if (!isCommandLine()) {
         'GLPI_THEMES_DIR'      => '{GLPI_VAR_DIR}/_themes', // Path for custom themes storage
 
         // Security constants
-        'GLPI_USE_CSRF_CHECK'            => '1',
-        'GLPI_CSRF_EXPIRES'              => '7200',
-        'GLPI_CSRF_MAX_TOKENS'           => '100',
-        'GLPI_USE_IDOR_CHECK'            => '1',
-        'GLPI_IDOR_EXPIRES'              => '7200',
         'GLPI_ALLOW_IFRAME_IN_RICH_TEXT' => false,
         'GLPI_SERVERSIDE_URL_ALLOWLIST'  => [
             // allowlist (regex format) of URL that can be fetched from server side (used for RSS feeds and external calendars, among others)

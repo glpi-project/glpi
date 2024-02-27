@@ -129,7 +129,6 @@ The present file will list all changes made to the project; according to the
 - Specifying the `ranking` of a rule during add/update now triggers `RuleCollection::moveRule` to manage the rankings of other rules to try to keep them valid and in order.
 
 #### Deprecated
-- Usage of `GLPI_USE_CSRF_CHECK` constant.
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
@@ -205,6 +204,7 @@ The present file will list all changes made to the project; according to the
 - `Timer` class.
 
 #### Removed
+- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
