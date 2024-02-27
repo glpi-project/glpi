@@ -130,7 +130,7 @@ class State extends DbTestCase
         $expected_values['is_visible_computer'] = 0;
         $expected_values['is_visible_phone']    = 1;
         $expected_values['is_visible_printer']  = 1;
-        foreach ($expected_values as $field =>  $expected_value) {
+        foreach ($expected_values as $field => $expected_value) {
             $this->integer($state->fields[$field])->isIdenticalTo($expected_value);
         }
     }
