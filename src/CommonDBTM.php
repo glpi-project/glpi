@@ -1445,7 +1445,7 @@ class CommonDBTM extends CommonGLPI
 
         $link = $this->getLinkURL();
 
-        $label = $this->getNameID($options);
+        $label = htmlentities($this->getNameID($options));
         $title = '';
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);
@@ -1508,16 +1508,8 @@ class CommonDBTM extends CommonGLPI
                 );
             }
             $opt = [ 'forceid' => $this instanceof CommonITILObject ];
-            $display = (isset($this->input['_no_message_link']) ? $this->getNameID($opt)
-                                                            : $this->getLink($opt));
 
-           // Do not display quotes
-           //TRANS : %s is the description of the added item
-            Session::addMessageAfterRedirect(sprintf(
-                __('%1$s: %2$s'),
-                __('Item successfully added'),
-                $display
-            ));
+            Session::addMessageAfterRedirect($this->formatSessionMessageAfterAction(__s('Item successfully added')));
         }
     }
 
@@ -1942,12 +1934,12 @@ class CommonDBTM extends CommonGLPI
     final public function formatSessionMessageAfterAction(string $message): string
     {
         if (isset($this->input['_no_message_link'])) {
-            $display = $this->getNameID();
+            $display = htmlentities($this->getNameID());
         } else {
             $display = $this->getLink();
         }
 
-        return sprintf(__('%1$s: %2$s'), $message, $display);
+        return sprintf(__s('%1$s: %2$s'), $message, $display);
     }
 
     /**
@@ -1984,7 +1976,7 @@ class CommonDBTM extends CommonGLPI
                 );
             }
 
-            $message = $this->formatSessionMessageAfterAction(__('Item successfully updated'));
+            $message = $this->formatSessionMessageAfterAction(__s('Item successfully updated'));
             Session::addMessageAfterRedirect($message);
         }
     }
@@ -2216,7 +2208,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $message = $this->formatSessionMessageAfterAction(__('Item successfully deleted'));
+            $message = $this->formatSessionMessageAfterAction(__s('Item successfully deleted'));
             Session::addMessageAfterRedirect($message);
         }
     }
@@ -2251,7 +2243,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $message = $this->formatSessionMessageAfterAction(__('Item successfully purged'));
+            $message = $this->formatSessionMessageAfterAction(__s('Item successfully purged'));
             Session::addMessageAfterRedirect($message);
         }
     }
@@ -2362,7 +2354,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if ($addMessAfterRedirect) {
-            $message = $this->formatSessionMessageAfterAction(__('Item successfully restored'));
+            $message = $this->formatSessionMessageAfterAction(__s('Item successfully restored'));
             Session::addMessageAfterRedirect($message);
         }
     }
@@ -4365,12 +4357,12 @@ class CommonDBTM extends CommonGLPI
             }
         }
         if ($display && count($fails)) {
-           //Display a message to indicate that one or more value where filtered
-           //TRANS: %s is the list of the failed fields
+            //Display a message to indicate that one or more value where filtered
+            //TRANS: %s is the list of the failed fields
             $message = sprintf(
-                __('%1$s: %2$s'),
-                __('At least one field has an incorrect value'),
-                implode(',', $fails)
+                __s('%1$s: %2$s'),
+                __s('At least one field has an incorrect value'),
+                implode(',', Html::entities_deep($fails))
             );
             Session::addMessageAfterRedirect($message, INFO, true);
         }

@@ -4899,7 +4899,7 @@ final class SQLProvider implements SearchProviderInterface
                                                 $itemtype::getById($data['id'])->getEntityId()
                                             ))
                                         ) {
-                                            $out .= $anon_name;
+                                            $out .= htmlentities($anon_name);
                                         } else {
                                             $userdata = getUserName($data[$ID][$k]['name'], 2);
                                             $tooltip  = "";
@@ -4911,13 +4911,17 @@ final class SQLProvider implements SearchProviderInterface
                                                     ]
                                                 );
                                             }
-                                            $out .= sprintf(__('%1$s %2$s'), $userdata['name'], $tooltip);
+                                            $out .= sprintf(__s('%1$s %2$s'), htmlentities($userdata['name']), $tooltip);
                                         }
 
                                         $count_display++;
                                     }
                                 } else {
-                                    $out .= getUserName($data[$ID][$k]['name'], $showuserlink);
+                                    if (!$showuserlink) {
+                                        $out .= getUserName($data[$ID][$k]['name'], $showuserlink);
+                                    } else {
+                                        $out .= htmlentities(getUserName($data[$ID][$k]['name'], $showuserlink));
+                                    }
                                     $count_display++;
                                 }
 
@@ -4998,7 +5002,7 @@ final class SQLProvider implements SearchProviderInterface
                                 )
                             ) {
                                 $text = sprintf(
-                                    __('%1$s - %2$s'),
+                                    __s('%1$s - %2$s'),
                                     $data[$ID][$k]['name'],
                                     \Dropdown::getDropdownName(
                                         'glpi_entities',
@@ -5007,22 +5011,22 @@ final class SQLProvider implements SearchProviderInterface
                                 );
                                 $comp = '';
                                 if ($data[$ID][$k]['is_recursive']) {
-                                    $comp = __('R');
+                                    $comp = __s('R');
                                     if ($data[$ID][$k]['is_dynamic']) {
-                                        $comp = sprintf(__('%1$s%2$s'), $comp, ", ");
+                                        $comp = sprintf(__s('%1$s%2$s'), $comp, ", ");
                                     }
                                 }
                                 if ($data[$ID][$k]['is_dynamic']) {
-                                    $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
+                                    $comp = sprintf(__s('%1$s%2$s'), $comp, __s('D'));
                                 }
                                 if (!empty($comp)) {
-                                    $text = sprintf(__('%1$s %2$s'), $text, "(" . $comp . ")");
+                                    $text = sprintf(__s('%1$s %2$s'), $text, "(" . $comp . ")");
                                 }
                                 if ($count_display) {
                                     $out .= \Search::LBBR;
                                 }
                                 $count_display++;
-                                $out     .= $text;
+                                $out     .= htmlentities($text);
                                 $added[]  = $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['entities_id'];
                             }
                         }
@@ -5045,7 +5049,7 @@ final class SQLProvider implements SearchProviderInterface
                                 )
                             ) {
                                 $text = sprintf(
-                                    __('%1$s - %2$s'),
+                                    __s('%1$s - %2$s'),
                                     \Entity::badgeCompletename($data[$ID][$k]['name']),
                                     \Dropdown::getDropdownName(
                                         'glpi_profiles',
@@ -5054,22 +5058,22 @@ final class SQLProvider implements SearchProviderInterface
                                 );
                                 $comp = '';
                                 if ($data[$ID][$k]['is_recursive']) {
-                                    $comp = __('R');
+                                    $comp = __s('R');
                                     if ($data[$ID][$k]['is_dynamic']) {
-                                        $comp = sprintf(__('%1$s%2$s'), $comp, ", ");
+                                        $comp = sprintf(__s('%1$s%2$s'), $comp, ", ");
                                     }
                                 }
                                 if ($data[$ID][$k]['is_dynamic']) {
-                                    $comp = sprintf(__('%1$s%2$s'), $comp, __('D'));
+                                    $comp = sprintf(__s('%1$s%2$s'), $comp, __s('D'));
                                 }
                                 if (!empty($comp)) {
-                                    $text = sprintf(__('%1$s %2$s'), $text, "(" . $comp . ")");
+                                    $text = sprintf(__s('%1$s %2$s'), $text, "(" . $comp . ")");
                                 }
                                 if ($count_display) {
                                     $out .= \Search::LBBR;
                                 }
                                 $count_display++;
-                                $out    .= $text;
+                                $out    .= htmlentities($text);
                                 $added[] = $data[$ID][$k]['name'] . "-" . $data[$ID][$k]['profiles_id'];
                             }
                         }
@@ -5087,9 +5091,9 @@ final class SQLProvider implements SearchProviderInterface
                             if (!$_SESSION['glpiuse_flat_dropdowntree_on_search_result']) {
                                 $split_name = explode(">", $completename);
                                 $entity_name = trim(end($split_name));
-                                return $entity_name;
+                                return htmlentities($entity_name);
                             }
-                            return $completename;
+                            return htmlentities($completename);
                         }
                     }
                     break;
@@ -5100,14 +5104,14 @@ final class SQLProvider implements SearchProviderInterface
                         && !$_SESSION['glpiuse_flat_dropdowntree_on_search_result'] //user doesn't want the completename
                     ) {
                         $split_name = explode(">", $data[$ID][0]['name']);
-                        return trim(end($split_name));
+                        return htmlentities(trim(end($split_name)));
                     }
                     break;
 
                 case "glpi_documenttypes.icon":
                     if (!empty($data[$ID][0]['name'])) {
                         return "<img class='middle' alt='' src='" . $CFG_GLPI["typedoc_icon_dir"] . "/" .
-                            $data[$ID][0]['name'] . "'>";
+                            htmlentities($data[$ID][0]['name']) . "'>";
                     }
                     return '';
 
@@ -5131,9 +5135,9 @@ final class SQLProvider implements SearchProviderInterface
                             $linkid = (int) $linkid;
                         }
                         if ((is_int($linkid) && $linkid > 0) && !isset($displayed[$linkid])) {
-                            $link_text = \Dropdown::getDropdownName('glpi_tickets', $linkid);
+                            $link_text = htmlentities(\Dropdown::getDropdownName('glpi_tickets', $linkid));
                             if ($_SESSION["glpiis_ids_visible"] || empty($link_text)) {
-                                $link_text = sprintf(__('%1$s (%2$s)'), $link_text, $linkid);
+                                $link_text = sprintf(__s('%1$s (%2$s)'), $link_text, $linkid);
                             }
                             $text  = "<a ";
                             $text .= "href=\"" . \Ticket::getFormURLWithID($linkid) . "\">";
@@ -5405,7 +5409,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 case "glpi_softwarelicenses.number":
                     if ($data[$ID][0]['min'] == -1) {
-                        return __('Unlimited');
+                        return __s('Unlimited');
                     }
                     if (empty($data[$ID][0]['name'])) {
                         return 0;
@@ -5414,9 +5418,9 @@ final class SQLProvider implements SearchProviderInterface
 
                 case "glpi_reservationitems.comment":
                     if (empty($data[$ID][0]['name'])) {
-                        $text = __('None');
+                        $text = __s('None');
                     } else {
-                        $text = \Html::resume_text($data[$ID][0]['name']);
+                        $text = \Html::resume_text(htmlentities($data[$ID][0]['name']));
                     }
                     if (Session::haveRight('reservation', UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
@@ -5426,7 +5430,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 case 'glpi_crontasks.description':
                     $tmp = new \CronTask();
-                    return $tmp->getDescription($data[$ID][0]['name']);
+                    return htmlentities($tmp->getDescription($data[$ID][0]['name']));
 
                 case 'glpi_changes.status':
                     $status = Change::getStatus($data[$ID][0]['name']);
@@ -5452,6 +5456,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (isset($data[$ID][0]['trans'])) {
                         $name = $data[$ID][0]['trans'];
                     }
+                    $name = htmlentities($name);
                     if ($itemtype == 'ProjectState') {
                         $out =   "<a href='" . \ProjectState::getFormURLWithID($data[$ID][0]["id"]) . "'>" . $name . "</a></div>";
                     } else {
@@ -5494,9 +5499,7 @@ final class SQLProvider implements SearchProviderInterface
                                     !empty($val['name'])
                                     && ($item = getItemForItemtype($val['name']))
                                 ) {
-                                    $item = new $val['name']();
-                                    $name = $item->getTypeName();
-                                    $itemtypes[] = __($name);
+                                    $itemtypes[] = $item::getTypeName();
                                 }
                             }
                         }
@@ -5532,17 +5535,17 @@ final class SQLProvider implements SearchProviderInterface
                         ) {
                             $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][0]['id']);
                         }
-                        $out    .= $name . "</a>";
+                        $out    .= htmlentities($name) . "</a>";
 
                         // Add tooltip
                         $id = $data[$ID][0]['id'];
                         $itemtype = $opt_itemtype;
 
                         $out     = sprintf(
-                            __('%1$s %2$s'),
+                            __s('%1$s %2$s'),
                             $out,
                             \Html::showToolTip(
-                                __('Loading...'),
+                                __s('Loading...'),
                                 [
                                     'applyto' => $itemtype . $data[$ID][0]['id'],
                                     'display' => false,
@@ -5647,7 +5650,7 @@ final class SQLProvider implements SearchProviderInterface
                                 if ($count_display) {
                                     $out .=  \Search::LBBR;
                                 }
-                                $out .= $link;
+                                $out .= htmlentities($link);
                                 $count_display++;
                             }
                         }
@@ -5669,7 +5672,7 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_projects.priority":
                     $index = $data[$ID][0]['name'];
                     $color = $_SESSION["glpipriority_$index"];
-                    $name  = \CommonITILObject::getPriorityName($index);
+                    $name  = htmlentities(\CommonITILObject::getPriorityName($index));
                     return "<div class='priority_block' style='border-color: $color'>
                         <span style='background: $color'></span>&nbsp;$name
                        </div>";
@@ -5719,7 +5722,7 @@ final class SQLProvider implements SearchProviderInterface
                             ]
                         ],
                     ]);
-                    $name = $data[$ID][0]['name'];
+                    $name = htmlentities($data[$ID][0]['name']);
                     $fa_class = "";
                     $fa_title = "";
                     $href = \KnowbaseItem::getFormURLWithID($data[$ID][0]['id']);
@@ -5749,7 +5752,7 @@ final class SQLProvider implements SearchProviderInterface
             ))
         ) {
             // Assigned groups
-            return $anon_name;
+            return htmlentities($anon_name);
         }
 
         // Link with plugin tables : need to know left join structure
@@ -5796,9 +5799,9 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $count_display++;
                             $page  = $linkitemtype::getFormURLWithID($data[$ID][$k]['id']);
-                            $name  = $data[$ID][$k]['name'];
+                            $name  = htmlentities($data[$ID][$k]['name']);
                             if ($_SESSION["glpiis_ids_visible"] || empty($data[$ID][$k]['name'])) {
-                                $name = sprintf(__('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
+                                $name = sprintf(__s('%1$s (%2$s)'), $name, $data[$ID][$k]['id']);
                             }
                             if (isset($field) && $field === 'completename') {
                                 $chunks = preg_split('/ > /', $name);
@@ -5806,7 +5809,7 @@ final class SQLProvider implements SearchProviderInterface
                                 foreach ($chunks as $key => $element_name) {
                                     $class = $key === array_key_last($chunks) ? '' : 'class="text-muted"';
                                     $separator = $key === array_key_last($chunks) ? '' : ' &gt; ';
-                                    $completename .= sprintf('<span %s>%s</span>%s', $class, $element_name, $separator);
+                                    $completename .= sprintf('<span %s>%s</span>%s', $class, htmlentities($element_name), $separator);
                                 }
                                 $name = $completename;
                             }
@@ -5928,8 +5931,9 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $count_display++;
                         if (!empty($data[$ID][$k]['name'])) {
+                            $email = htmlentities($data[$ID][$k]['name']);
                             $out .= (empty($out) ? '' : \Search::LBBR);
-                            $out .= "<a href='mailto:" . \Html::entities_deep($data[$ID][$k]['name']) . "'>" . $data[$ID][$k]['name'];
+                            $out .= "<a href='mailto:" . $email . "'>" . $email;
                             $out .= "</a>";
                         }
                     }
@@ -5944,7 +5948,7 @@ final class SQLProvider implements SearchProviderInterface
                         if (\Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                             $link = \Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
                         }
-                        return "<a href=\"" . \Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link</a>";
+                        return "<a href=\"" . \Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>" . htmlentities($link) . "</a>";
                     }
                     return '';
 
@@ -6022,18 +6026,18 @@ final class SQLProvider implements SearchProviderInterface
                         }
                         $count_display++;
                         if ($obj = getItemForItemtype($itemtype_name)) {
-                            $out .= $obj->getTypeName();
+                            $out .= $obj::getTypeName();
                         } else {
                             $out .= $itemtype_name;
                         }
                     }
-                    return $out;
+                    return htmlentities($out);
 
                 case "language":
                     if (isset($CFG_GLPI['languages'][$data[$ID][0]['name']])) {
                         return $CFG_GLPI['languages'][$data[$ID][0]['name']][0];
                     }
-                    return __('Default value');
+                    return __s('Default value');
                 case 'progressbar':
                     if (!isset($progressbar_data)) {
                         $bar_color = 'green';
@@ -6045,6 +6049,12 @@ final class SQLProvider implements SearchProviderInterface
                             'text'         => ''
                         ];
                     }
+                    $progressbar_data = [
+                        'percent' => (int) $progressbar_data['percent'],
+                        'percent_text' => htmlentities($progressbar_data['percent_text']),
+                        'color' => htmlentities($progressbar_data['color']),
+                        'text' => htmlentities($progressbar_data['text'])
+                    ];
 
                     $out = "";
                     if ($progressbar_data['percent'] !== null) {
@@ -6088,15 +6098,15 @@ HTML;
                     isset($so['toadd'])
                     && isset($so['toadd'][$field_data['name']])
                 ) {
-                    $out .= $so['toadd'][$field_data['name']];
+                    $out .= htmlentities($so['toadd'][$field_data['name']]);
                 } else {
                     // Trans field exists
                     if (isset($field_data['trans']) && !empty($field_data['trans'])) {
-                        $out .= $field_data['trans'];
+                        $out .= htmlentities($field_data['trans']);
                     } elseif (isset($field_data['trans_completename']) && !empty($field_data['trans_completename'])) {
-                        $out .= $field_data['trans_completename'];
+                        $out .= htmlentities($field_data['trans_completename']);
                     } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
-                        $out .= $field_data['trans_name'];
+                        $out .= htmlentities($field_data['trans_name']);
                     } else {
                         $value = $field_data['name'];
                         $out .= $value;
