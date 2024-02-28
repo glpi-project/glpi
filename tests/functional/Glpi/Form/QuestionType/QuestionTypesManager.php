@@ -136,4 +136,25 @@ class QuestionTypesManager extends DbTestCase
 
         $this->array($types)->isEqualTo($expected_types);
     }
+
+    /**
+     * This test case ensure all categories are defined by the
+     * testGetTypesForCategoryProvider provider.
+     *
+     * This prevent us from forgetting to update this provider when adding new
+     * questions types
+     *
+     * @return void
+     */
+    public function testEnsureAllCategoriesAreTested(): void
+    {
+        $manager = \Glpi\Form\QuestionType\QuestionTypesManager::getInstance();
+        $provider_data = iterator_to_array($this->testGetTypesForCategoryProvider());
+
+        $this
+            ->array($provider_data)
+            ->hasSize(
+                count($manager->getCategories())
+            );
+    }
 }
