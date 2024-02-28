@@ -161,6 +161,26 @@ class CommonDBTM extends DbTestCase
         $this->boolean($instance->isNewItem())->isTrue();
     }
 
+    public function testGetFromDBByCrit()
+    {
+        $entity = new \Entity();
+        $this->boolean($entity->getFromDBByCrit(['name' => '_test_root_entity']))->isTrue();
+        $this->string($entity->fields['name'])->isEqualTo('_test_root_entity');
+
+        $this->when(
+            function () {
+                $entity = new \Entity();
+                $this->boolean($entity->getFromDBByCrit(['level' => ['>', 0]]))->isTrue();
+                $this->string($entity->fields['name'])->isEqualTo('Root entity');
+            }
+        )->error
+            ->withType(E_USER_WARNING)
+            ->withMessage('getFromDBByCrit expects to get one result, 4 found in query "SELECT `id` FROM `glpi_entities` WHERE `level` > \'0\'".')
+            ->exists();
+
+
+    }
+
     public function testGetFromResultSet()
     {
         global $DB;

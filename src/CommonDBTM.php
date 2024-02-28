@@ -362,7 +362,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $crit search criteria
      *
-     * @return boolean|array
+     * @return boolean
      */
     public function getFromDBByCrit(array $crit)
     {
@@ -375,10 +375,12 @@ class CommonDBTM extends CommonGLPI
         ];
 
         $iter = $DB->request($crit);
-        if (count($iter) == 1) {
-            $row = $iter->current();
-            return $this->getFromDB($row['id']);
-        } else if (count($iter) > 1) {
+
+        if (count($iter) === 0) {
+            return false;
+        }
+
+        if (count($iter) > 1) {
             trigger_error(
                 sprintf(
                     'getFromDBByCrit expects to get one result, %1$s found in query "%2$s".',
@@ -388,7 +390,9 @@ class CommonDBTM extends CommonGLPI
                 E_USER_WARNING
             );
         }
-        return false;
+
+        $row = $iter->current();
+        return $this->getFromDB($row['id']);
     }
 
 
