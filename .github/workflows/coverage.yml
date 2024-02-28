@@ -24,18 +24,13 @@ jobs:
           - {branch: "main", php-version: "8.2", db-image: "mariadb:11.0"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      APP_CONTAINER_HOME: "${{ runner.temp }}/app_home"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
       CODE_COVERAGE: true
     steps:
-      - name: "Clean workspace"
-        if: env.skip != 'true'
-        run: |
-          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
-          rm -rf "${{ env.APPLICATION_ROOT }}/*"
-          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         uses: "actions/checkout@v4"
         with:
@@ -81,7 +76,3 @@ jobs:
         with:
           files: ./tests/coverage-unit/clover.xml,./tests/coverage-functional/clover.xml,./tests/coverage-ldap/clover.xml,./tests/coverage-imap/clover.xml
           override_branch: ${{ matrix.branch }}
-      - name: "Cleanup containers"
-        if: always()
-        run: |
-          .github/actions/teardown_containers-cleanup.sh
