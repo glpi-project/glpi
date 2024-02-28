@@ -106,6 +106,7 @@ if (!$DB->tableExists('glpi_forms_answerssets')) {
         "CREATE TABLE `glpi_forms_answerssets` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `users_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `name` varchar(255) NOT NULL DEFAULT '',
             `date_creation` timestamp NULL DEFAULT NULL,
@@ -117,7 +118,8 @@ if (!$DB->tableExists('glpi_forms_answerssets')) {
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`),
             KEY `forms_forms_id` (`forms_forms_id`),
-            KEY `users_id` (`users_id`)
+            KEY `users_id` (`users_id`),
+            KEY `entities_id` (`entities_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
@@ -158,7 +160,7 @@ $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
 
 // Temporary migration code to cover dev migrations
 // TODO: Should be removed from the final release
-if (GLPI_VERSION == "10.1.0-dev") {
+if (GLPI_VERSION == "11.0.0-dev") {
     $migration->addField("glpi_forms_forms", "is_draft", "bool");
     $migration->addKey("glpi_forms_forms", "is_draft");
     $migration->changeField("glpi_forms_forms", "header", "header", "longtext");
@@ -193,4 +195,7 @@ if (GLPI_VERSION == "10.1.0-dev") {
             ));
         }
     }
+
+    $migration->addField("glpi_forms_answerssets", "entities_id", "fkey");
+    $migration->addKey("glpi_forms_answerssets", "entities_id");
 }

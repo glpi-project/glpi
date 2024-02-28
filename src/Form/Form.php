@@ -83,6 +83,7 @@ final class Form extends CommonDBTM
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
+        $this->addStandardTab(FormDestination::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);
         return $tabs;
     }

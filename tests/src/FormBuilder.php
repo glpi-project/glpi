@@ -326,7 +326,7 @@ class FormBuilder
             $this->destinations[$itemtype] = [];
         }
 
-        $this->destinations[$itemtype] = $values;
+        $this->destinations[$itemtype][] = $values;
         return $this;
     }
 }

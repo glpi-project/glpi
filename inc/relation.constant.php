@@ -584,6 +584,7 @@ $RELATION = [
         'glpi_fieldblacklists'             => 'entities_id',
         'glpi_fieldunicities'              => 'entities_id',
         'glpi_forms_forms'                 => 'entities_id',
+        'glpi_forms_answerssets'           => 'entities_id',
         'glpi_fqdns'                       => 'entities_id',
         'glpi_groups'                      => 'entities_id',
         'glpi_groups_knowbaseitems'        => 'entities_id',
@@ -694,7 +695,7 @@ $RELATION = [
     ],
 
     'glpi_forms_answerssets' => [
-        "glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
+        "_glpi_forms_destinations_answerssets_formdestinationitems" => "forms_answerssets_id",
     ],
 
     'glpi_forms_forms' => [

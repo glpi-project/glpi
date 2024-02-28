@@ -9497,6 +9497,7 @@ DROP TABLE IF EXISTS `glpi_forms_answerssets`;
 CREATE TABLE `glpi_forms_answerssets` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+    `entities_id` int unsigned NOT NULL DEFAULT '0',
     `users_id` int unsigned NOT NULL DEFAULT '0',
     `name` varchar(255) NOT NULL DEFAULT '',
     `date_creation` timestamp NULL DEFAULT NULL,
@@ -9508,7 +9509,8 @@ CREATE TABLE `glpi_forms_answerssets` (
     KEY `date_creation` (`date_creation`),
     KEY `date_mod` (`date_mod`),
     KEY `forms_forms_id` (`forms_forms_id`),
-    KEY `users_id` (`users_id`)
+    KEY `users_id` (`users_id`),
+    KEY `entities_id` (`entities_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_forms_destinations_answerssets_formdestinationitems`;

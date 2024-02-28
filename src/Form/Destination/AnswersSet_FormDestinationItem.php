@@ -44,7 +44,7 @@ final class AnswersSet_FormDestinationItem extends CommonDBRelation
      * Item 1 is an AnswersSet object
      */
     public static $itemtype_1 = AnswersSet::class;
-    public static $items_id_1 = 'forms_answserssets_id';
+    public static $items_id_1 = 'forms_answerssets_id';
 
     /**
      * Item 2 is any common DBTM item

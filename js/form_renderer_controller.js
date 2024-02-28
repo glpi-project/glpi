@@ -118,7 +118,7 @@ class GlpiFormRendererController
             glpi_toast_info(
                 __("Item successfully created: %s").replace(
                     "%s",
-                    response.link_to_created_item
+                    response.links_to_created_items.join(", ")
                 )
             );
 

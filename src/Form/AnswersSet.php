@@ -36,11 +36,15 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use CommonDBTM;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Log;
 use Override;
+use ReflectionClass;
 use Search;
 use User;
 
@@ -55,7 +59,7 @@ final class AnswersSet extends CommonDBChild
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return __('Answers');
+        return __('Form answers');
     }
 
     #[Override]
@@ -68,9 +72,11 @@ final class AnswersSet extends CommonDBChild
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
+
+        // TODO: iterate on all possible destinations (for now only ticket exist)
+        $this->addStandardTab(FormDestinationTicket::class, $tabs, []);
         $this->addStandardTab(Log::class, $tabs, []);
 
-        // TODO: add tab for created objects
         return $tabs;
     }
 
@@ -103,10 +109,19 @@ final class AnswersSet extends CommonDBChild
         }
 
         Search::showList(self::class, [
+            'criteria' => [
+                [
+                    'link'       => 'AND',
+                    'field'      => 5,  // Parent form
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID()
+                ]
+            ],
             'showmassiveactions' => false,
             'hide_controls'      => true,
-            'sort'               => 4, // Creation date
+            'sort'               => 4,        // Creation date
             'order'              => 'DESC',
+            'as_map'             => false,
         ]);
         return true;
     }
@@ -136,6 +151,15 @@ final class AnswersSet extends CommonDBChild
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
+            'massiveaction' => false
+        ];
+
+        $search_options[] = [
+            'id'            => '5',
+            'table'         => Form::getTable(),
+            'field'         => 'name',
+            'name'          => Form::getTypeName(),
+            'datatype'      => 'dropdown',
             'massiveaction' => false
         ];
 
@@ -179,6 +203,42 @@ final class AnswersSet extends CommonDBChild
             'params'  => $options,
         ]);
         return true;
+    }
+
+    /**
+     * Get items linked to this form answers set
+     *
+     * @return \CommonDBTM[]
+     */
+    public function getCreatedItems(): array
+    {
+        $items = [];
+
+        // Find all links
+        $links = (new AnswersSet_FormDestinationItem())->find([
+            self::getForeignKeyField() => $this->getID(),
+        ]);
+
+        // Instanciate matching items
+        foreach ($links as $link) {
+            // Validate itemtype
+            if (
+                !is_a($link['itemtype'], CommonDBTM::class, true)
+                || (new ReflectionClass($link['itemtype']))->isAbstract()
+            ) {
+                continue;
+            }
+
+            // Try to load item
+            $item = new $link['itemtype']();
+            if (!$item->getFromDB($link['items_id'])) {
+                continue;
+            }
+
+            $items[] = $item;
+        }
+
+        return $items;
     }
 
     /**
