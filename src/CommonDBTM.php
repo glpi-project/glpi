@@ -1440,12 +1440,12 @@ class CommonDBTM extends CommonGLPI
             $this->no_form_page
             || !$this->can($this->fields['id'], READ)
         ) {
-            return $this->getNameID($options);
+            return htmlspecialchars($this->getNameID($options));
         }
 
         $link = $this->getLinkURL();
 
-        $label = htmlentities($this->getNameID($options));
+        $label = htmlspecialchars($this->getNameID($options));
         $title = '';
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);
@@ -4362,7 +4362,7 @@ class CommonDBTM extends CommonGLPI
             $message = sprintf(
                 __s('%1$s: %2$s'),
                 __s('At least one field has an incorrect value'),
-                implode(',', Html::entities_deep($fails))
+                htmlspecialchars(implode(',', $fails))
             );
             Session::addMessageAfterRedirect($message, INFO, true);
         }
