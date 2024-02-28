@@ -1440,12 +1440,12 @@ class CommonDBTM extends CommonGLPI
             $this->no_form_page
             || !$this->can($this->fields['id'], READ)
         ) {
-            return htmlspecialchars($this->getNameID($options));
+            return $this->getNameID($options);
         }
 
         $link = $this->getLinkURL();
 
-        $label = htmlspecialchars($this->getNameID($options));
+        $label = $this->getNameID($options);
         $title = '';
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);
@@ -3699,10 +3699,11 @@ class CommonDBTM extends CommonGLPI
                 }
             }
 
+            $name = htmlspecialchars($name);
             if ($p['icon']) {
-                $icon = $this->getIcon();
+                $icon = static::getIcon();
                 if (!empty($icon)) {
-                    $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
+                    $name = sprintf(__s('%1$s %2$s'), "<i class='$icon'></i>", $name);
                 }
             }
             return $name;
