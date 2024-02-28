@@ -22,11 +22,13 @@ jobs:
           - {branch: "10.0/bugfixes", php-version: "7.4"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
-      APP_CONTAINER_HOME: "${{ runner.temp }}/app_home"
       APPLICATION_ROOT: "${{ github.workspace }}"
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
         uses: "actions/checkout@v4"
         with:

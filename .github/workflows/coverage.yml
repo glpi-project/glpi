@@ -24,13 +24,15 @@ jobs:
           - {branch: "main", php-version: "8.2", db-image: "mariadb:11.0"}
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
-      APP_CONTAINER_HOME: "${{ runner.temp }}/app_home"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php-coverage:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
       CODE_COVERAGE: true
     steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
         uses: "actions/checkout@v4"
         with:

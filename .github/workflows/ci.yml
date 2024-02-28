@@ -38,11 +38,13 @@ jobs:
           - {php-version: "8.3"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
-      APP_CONTAINER_HOME: "${{ runner.temp }}/app_home"
       APPLICATION_ROOT: "${{ github.workspace }}"
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
         uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
@@ -116,12 +118,14 @@ jobs:
       # No jobs will be skipped on nightly build, manual dispatch or push on main branches (main and */bugfixes) or tags.
       skip: ${{ matrix.always == false && (github.event_name == 'pull_request' || github.repository != 'glpi-project/glpi' || !(github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main' || endsWith(github.ref, '/bugfixes') || startsWith(github.ref, 'refs/tags'))) }}
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
-      APP_CONTAINER_HOME: "${{ runner.temp }}/app_home"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
+      - name: "Set env"
+        run: |
+          echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v4"
