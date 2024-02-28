@@ -1035,7 +1035,7 @@ class Group extends CommonTreeDropdown
     {
         if (
             Session::getCurrentInterface() == 'helpdesk'
-            && ($anon = self::getAnonymizedName()) !== ""
+            && ($anon = self::getAnonymizedName()) !== null
         ) {
             return $anon;
         }
@@ -1048,7 +1048,7 @@ class Group extends CommonTreeDropdown
     {
         if (
             Session::getCurrentInterface() == 'helpdesk'
-            && ($anon = $this->getAnonymizedName()) !== ""
+            && ($anon = $this->getAnonymizedName()) !== null
         ) {
             return $anon;
         }
@@ -1057,12 +1057,12 @@ class Group extends CommonTreeDropdown
     }
 
 
-    public static function getAnonymizedName(?int $entities_id = null): string
+    public static function getAnonymizedName(?int $entities_id = null): ?string
     {
         switch (Entity::getAnonymizeConfig($entities_id)) {
             default:
             case Entity::ANONYMIZE_DISABLED:
-                return "";
+                return null;
 
             case Entity::ANONYMIZE_USE_GENERIC:
             case Entity::ANONYMIZE_USE_NICKNAME:
@@ -1083,12 +1083,12 @@ class Group extends CommonTreeDropdown
      *
      * @return string
      */
-    public function getGroupLink(bool $enable_anonymization = false): string
+    public function getGroupLink(bool $enable_anonymization = false): ?string
     {
 
         if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
            // if anonymized name active, return only the anonymized name
-            return $anon;
+            return "test";
         }
 
         return $this->getLink();
