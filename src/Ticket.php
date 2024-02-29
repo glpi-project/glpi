@@ -185,7 +185,11 @@ class Ticket extends CommonITILObject
 
     public function canAssign()
     {
-        if (!parent::canAssign()) {
+        if (
+            isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
+            || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+            || isset($this->input['status']) && in_array($this->input['status'], $this->getClosedStatusArray())
+        ) {
             return false;
         }
         return Session::haveRight(static::$rightname, self::ASSIGN);
