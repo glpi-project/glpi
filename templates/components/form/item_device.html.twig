@@ -182,7 +182,7 @@
                      ) }}
                   {% endif %}
 
-                  {% if item.isField('states_id') %}
+                  {% if item.isField('states_id') and item is usingtrait('Glpi\\Features\\State') %}
                      {{ fields.dropdownField(
                         'State',
                         'states_id',
@@ -190,7 +190,7 @@
                         __('Status'),
                         field_options|merge({
                            'entity': item.fields['entities_id'],
-                           'condition': item is usingtrait('Glpi\\Features\\State') ? item.getStateVisibilityCriteria() : []
+                           'condition': item.getStateVisibilityCriteria()
                         })
                      ) }}
                   {% endif %}

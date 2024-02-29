@@ -100,3 +100,6 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         }
     }
 }
+
+$migration->addField('glpi_items_devicecameras', 'states_id', 'fkey');
+$migration->addKey('glpi_items_devicecameras', 'states_id');
