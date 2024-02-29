@@ -38,7 +38,6 @@ namespace Glpi\Asset;
 use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Entity;
-use Glpi\Features\Clonable;
 use Group;
 use Location;
 use Manufacturer;
@@ -48,7 +47,8 @@ use User;
 
 abstract class Asset extends CommonDBTM
 {
-    use Clonable;
+    use \Glpi\Features\Clonable;
+    use \Glpi\Features\State;
 
     final public function __construct()
     {
@@ -189,7 +189,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            // TODO 'condition' to filter values
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $search_options[] = [
