@@ -437,4 +437,19 @@ class QueryFunction
         }
         return self::getExpression('UNIX_TIMESTAMP', $params, $alias);
     }
+
+    /**
+     * Build a LOCATE SQL function call
+     * @param string|QueryExpression $substring String to search for. Treated like a value if it's a string.
+     * @param string|QueryExpression $expression Expression to search in
+     * @param string|null $alias Function result alias (will be automatically quoted)
+     * @return QueryExpression
+     */
+    public static function locate(string|QueryExpression $substring, string|QueryExpression $expression, ?string $alias = null): QueryExpression
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $substring = is_string($substring) ? new QueryExpression($DB::quoteValue($substring)) : $substring;
+        return self::getExpression('LOCATE', [$substring, $expression], $alias);
+    }
 }

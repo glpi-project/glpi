@@ -659,4 +659,36 @@ class QueryFunction extends \GLPITestCase
     {
         $this->string((string) \Glpi\DBAL\QueryFunction::timediff($expression1, $expression2, $alias))->isIdenticalTo($expected);
     }
+
+    protected function locateProvider()
+    {
+        return [
+            [
+                'expression' => 'glpi_computers.name',
+                'substring' => 'test',
+                'alias' => null,
+                'expected' => "LOCATE('test', `glpi_computers`.`name`)"
+            ],
+            [
+                'expression' => 'glpi_computers.name',
+                'substring' => 'test',
+                'alias' => 'locate_alias',
+                'expected' => "LOCATE('test', `glpi_computers`.`name`) AS `locate_alias`"
+            ],
+            [
+                'expression' => 'glpi_computers.name',
+                'substring' => new QueryExpression('`glpi_computers`.`serial`'),
+                'alias' => null,
+                'expected' => "LOCATE(`glpi_computers`.`serial`, `glpi_computers`.`name`)"
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider locateProvider
+     */
+    public function testLocate($substring, $expression, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::locate($substring, $expression, $alias))->isIdenticalTo($expected);
+    }
 }
