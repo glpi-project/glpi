@@ -1083,7 +1083,7 @@ class Group extends CommonTreeDropdown
      *
      * @return string
      */
-    public function getGroupLink(bool $enable_anonymization = false): ?string
+    public function getGroupLink(bool $enable_anonymization = false): string
     {
 
         if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
