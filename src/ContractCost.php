@@ -311,6 +311,8 @@ class ContractCost extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => ['contracts_id' => $ID],
             'ORDER'  => ["$sort $order"],
+            'START'  => $start,
+            'LIMIT'  => $_SESSION['glpilist_limit']
         ];
         $iterator = $DB->request($criteria);
         $count_criteria = $criteria;
