@@ -35,9 +35,8 @@
 
 class DropdownVisibility extends CommonDBChild
 {
-    public static $mustBeAttached  = false; //no idea why.
     public static $itemtype        = 'itemtype';
-    public static $items_id        = 'states_id';
+    public static $items_id        = 'items_id';
     public $dohistory              = false;
     public static $logs_for_parent = false;
 }
