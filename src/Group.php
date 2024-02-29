@@ -1088,7 +1088,7 @@ class Group extends CommonTreeDropdown
 
         if ($enable_anonymization && Session::getCurrentInterface() == 'helpdesk' && ($anon = $this->getAnonymizedName()) !== null) {
            // if anonymized name active, return only the anonymized name
-            return "test";
+            return $anon;
         }
 
         return $this->getLink();
