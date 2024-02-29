@@ -67,7 +67,7 @@
     {% endif %}
 
     {% if item.isField('cost') %}
-        {{ fields.numberField('cost', item.fields['cost'], __('Cost'), {
+        {{ fields.numberField('cost', item.fields['cost'], _n('Cost', 'Costs', 1), {
             min: 0,
             max: constant('PHP_INT_MAX'),
             step: 0.0001
