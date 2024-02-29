@@ -211,7 +211,7 @@ class Inventory extends InventoryTestCase
             [
                 'logical_number' => 0,
                 'name' => 'lo',
-                'instantiation_type' => 'NetworkPortEthernet',
+                'instantiation_type' => 'NetworkPortLocal',
                 'mac' => '00:00:00:00:00:00',
                 'ifinternalstatus' => '1',
             ], [
@@ -5527,6 +5527,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'is_dynamic' => 1,
                     'entities_id' => 0,
                     'is_recursive' => 0,
+                    'locations_id' => 0,
                 ], [
                     'items_id' => $phones_id,
                     'itemtype' => 'Phone',
@@ -5535,6 +5536,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'is_dynamic' => 1,
                     'entities_id' => 0,
                     'is_recursive' => 0,
+                    'locations_id' => 0,
                 ]
             ]
         ];

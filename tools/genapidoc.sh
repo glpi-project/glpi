@@ -37,20 +37,12 @@ cd $(dirname $0)
 
 if which apigen &>/dev/null
 then
-   version=$(php -r '
-      require __DIR__ . "/../inc/define.php";
-      echo GLPI_VERSION;
-   ')
-   apigen generate \
-      --access-levels=public,protected,private \
-      --todo \
-      --deprecated \
-      --tree \
+   version=$(php -r 'include(__DIR__ . "/../inc/includes.php"); echo GLPI_VERSION;')
+   apigen \
+      --working-dir ../ \
       --title "GLPI version $version API" \
-      --source ../inc \
-      --destination api
-
+      --output api \
+      ../src/
 else
    echo -e "\nApiGen not found, see https://github.com/ApiGen/ApiGen\n"
-
 fi

@@ -29,7 +29,7 @@ jobs:
     # Do not run scheduled lint on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Lint on PHP ${{ matrix.php-version }}"
-    runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
+    runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
@@ -42,11 +42,9 @@ jobs:
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
-      - name: "Clean workspace"
+      - name: "Set env"
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
-          rm -rf "${{ env.APPLICATION_ROOT }}/*"
-          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         uses: "actions/checkout@v4"
       - name: "Restore dependencies cache"
@@ -92,16 +90,12 @@ jobs:
       - name: "Misc lint"
         run: |
           docker-compose exec -T app .github/actions/lint_misc-lint.sh
-      - name: "Cleanup containers"
-        if: always()
-        run: |
-          .github/actions/teardown_containers-cleanup.sh
 
   tests:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
-    runs-on: "${{ github.repository == 'glpi-network/glpi' && 'self-hosted' || 'ubuntu-latest' }}"
+    runs-on: "ubuntu-latest"
     strategy:
       fail-fast: false
       matrix:
@@ -124,12 +118,9 @@ jobs:
       PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
-      - name: "Clean workspace"
-        if: env.skip != 'true'
+      - name: "Set env"
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
-          rm -rf "${{ env.APPLICATION_ROOT }}/*"
-          rm -rf "${{ env.APP_CONTAINER_HOME }}/*"
       - name: "Checkout"
         if: env.skip != 'true'
         uses: "actions/checkout@v4"
@@ -200,7 +191,3 @@ jobs:
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_javascript.sh
-      - name: "Cleanup containers"
-        if: env.skip != 'true' && always()
-        run: |
-          .github/actions/teardown_containers-cleanup.sh

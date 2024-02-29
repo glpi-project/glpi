@@ -307,6 +307,19 @@ class Rack extends CommonDBTM
             'datatype'           => 'dropdown'
         ];
 
+        $tab[] = [
+            'id'                 => '85',
+            'table'              => Datacenter::getTable(),
+            'field'              => 'name',
+            'name'               => Datacenter::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => DCRoom::getTable(),
+                ]
+            ]
+        ];
+
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));

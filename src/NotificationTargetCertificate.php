@@ -89,6 +89,10 @@ class NotificationTargetCertificate extends NotificationTarget
 
         $this->data['##certificate.name##']           = $certificate->fields['name'];
         $this->data['##certificate.serial##']         = $certificate->fields['serial'];
+        $this->data['##certificate.type##'] = Dropdown::getDropdownName(
+            'glpi_certificatetypes',
+            $certificate->fields['certificatetypes_id']
+        );
         $this->data['##certificate.expirationdate##'] = Html::convDate($certificate->fields["date_expiration"]);
         $this->data['##certificate.url##']            = $this->formatURL(
             $options['additionnaloption']['usertype'],
@@ -122,6 +126,7 @@ class NotificationTargetCertificate extends NotificationTarget
 
         $tags = ['certificate.expirationdate' => __('Expiration date'),
             'certificate.name'           => __('Name'),
+            'certificate.type'         => _n('Type', 'Types', 1),
             'certificate.serial'         => __('Serial number'),
             'certificate.url'            => __('URL'),
             'certificate.entity'         => Entity::getTypeName(1),

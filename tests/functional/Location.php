@@ -315,4 +315,14 @@ class Location extends DbTestCase
             $this->integer(countElementsInTable(\Location::getTable(), $location_data))->isEqualTo(1, json_encode($location_data));
         }
     }
+
+    public function testMaybeLocated()
+    {
+        global $CFG_GLPI;
+
+        foreach ($CFG_GLPI['location_types'] as $type) {
+            $item = new $type();
+            $this->boolean($item->maybeLocated())->isTrue($type . ' cannot be located!');
+        }
+    }
 }

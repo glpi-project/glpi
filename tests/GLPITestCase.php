@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use atoum\atoum;
 use Glpi\Tests\Log\TestHandler;
 use Monolog\Level;
 use Psr\Log\LogLevel;

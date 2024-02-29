@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c4c93ca0753ac717d8ddf2c4779ce673",
+    "content-hash": "5467a64eddc286a7d3b0eec2cbc8a567",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -701,16 +701,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.1.32",
+            "version": "1.1.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "cdd76c4e3ff9183e6c4bbc474113a5d186a81ac9"
+                "reference": "3241f9ea5182183af369993fce3e1e34b3916771"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/cdd76c4e3ff9183e6c4bbc474113a5d186a81ac9",
-                "reference": "cdd76c4e3ff9183e6c4bbc474113a5d186a81ac9",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/3241f9ea5182183af369993fce3e1e34b3916771",
+                "reference": "3241f9ea5182183af369993fce3e1e34b3916771",
                 "shasum": ""
             },
             "require": {
@@ -769,7 +769,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2024-01-23T12:17:07+00:00"
+            "time": "2024-02-08T13:22:54+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4563,16 +4563,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.10.1",
+            "version": "1.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "76d449a358ece77d6f1d6331c68453e657172202"
+                "reference": "9bb7db07b5d66d90f6ebf542f09fc67d800e5259"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/76d449a358ece77d6f1d6331c68453e657172202",
-                "reference": "76d449a358ece77d6f1d6331c68453e657172202",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9bb7db07b5d66d90f6ebf542f09fc67d800e5259",
+                "reference": "9bb7db07b5d66d90f6ebf542f09fc67d800e5259",
                 "shasum": ""
             },
             "require": {
@@ -4611,7 +4611,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.10.1"
+                "source": "https://github.com/Seldaek/jsonlint/tree/1.10.2"
             },
             "funding": [
                 {
@@ -4623,7 +4623,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-18T13:03:25+00:00"
+            "time": "2024-02-07T12:57:50+00:00"
         },
         {
             "name": "simplepie/simplepie",
@@ -5879,16 +5879,16 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.28.0",
+            "version": "v1.29.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
-                "reference": "42292d99c55abe617799667f454222c54c60e229"
+                "reference": "9773676c8a1bb1f8d4340a62efe641cf76eda7ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/42292d99c55abe617799667f454222c54c60e229",
-                "reference": "42292d99c55abe617799667f454222c54c60e229",
+                "url": "https://api.github.com/repos/symfony/polyfill-mbstring/zipball/9773676c8a1bb1f8d4340a62efe641cf76eda7ec",
+                "reference": "9773676c8a1bb1f8d4340a62efe641cf76eda7ec",
                 "shasum": ""
             },
             "require": {
@@ -5902,9 +5902,6 @@
             },
             "type": "library",
             "extra": {
-                "branch-alias": {
-                    "dev-main": "1.28-dev"
-                },
                 "thanks": {
                     "name": "symfony/polyfill",
                     "url": "https://github.com/symfony/polyfill"
@@ -5942,7 +5939,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.28.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.29.0"
             },
             "funding": [
                 {
@@ -5958,7 +5955,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-07-28T09:04:16+00:00"
+            "time": "2024-01-29T20:11:03+00:00"
         },
         {
             "name": "symfony/polyfill-php82",
@@ -7100,6 +7097,57 @@
                 "source": "https://github.com/atoum/atoum/tree/4.2.0"
             },
             "time": "2023-07-30T12:52:23+00:00"
+        },
+        {
+            "name": "atoum/stubs",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atoum/stubs.git",
+                "reference": "df8b73b0358de7283ecba91d8f4a9683f583993d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atoum/stubs/zipball/df8b73b0358de7283ecba91d8f4a9683f583993d",
+                "reference": "df8b73b0358de7283ecba91d8f4a9683f583993d",
+                "shasum": ""
+            },
+            "suggest": {
+                "atoum/atoum": "Include atoum in your projet dependencies"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Julien Bianchi",
+                    "email": "julien.bianchi@atoum.org"
+                },
+                {
+                    "name": "Ludovic Fleury",
+                    "email": "ludovic.fleury@atoum.org"
+                }
+            ],
+            "description": "Stubs for atoum, the simple modern and intuitive unit testing framework for PHP 5.3+",
+            "homepage": "http://www.atoum.org",
+            "keywords": [
+                "TDD",
+                "atoum",
+                "test",
+                "unit testing"
+            ],
+            "support": {
+                "issues": "https://github.com/atoum/stubs/issues",
+                "source": "https://github.com/atoum/stubs/tree/master"
+            },
+            "time": "2018-01-29T22:41:37+00:00"
         },
         {
             "name": "friendsoftwig/twigcs",

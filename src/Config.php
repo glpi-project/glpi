@@ -2033,6 +2033,12 @@ class Config extends CommonDBTM
             );
         }
 
+        // If the `devices_in_menu` option changed, we should regenerate the menu
+        if ($this->fields['name'] === 'devices_in_menu') {
+            $CFG_GLPI['devices_in_menu'] = json_decode($this->fields['value']) ?? [];
+            Html::generateMenuSession(true);
+        }
+
         if (array_key_exists('value', $this->oldvalues)) {
             $newvalue = (string)$this->fields['value'];
             $oldvalue = (string)$this->oldvalues['value'];

@@ -1421,16 +1421,18 @@ HTML;
      *
      * @since  9.2
      *
+-    * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
      * @return array the menu array
      */
-    public static function generateMenuSession()
+    public static function generateMenuSession($force = false)
     {
         /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
         $menu = [];
 
         if (
-            GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT
+            $force
+            || GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT
             || !isset($_SESSION['glpimenu'])
             || !is_array($_SESSION['glpimenu'])
             || (count($_SESSION['glpimenu']) == 0)

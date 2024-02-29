@@ -133,29 +133,63 @@ class Datacenter extends CommonDBTM
         return $tab;
     }
 
-
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        return [
-            [
-                'id'                 => 'datacenter',
-                'name'               => _n('Data center', 'Data centers', Session::getPluralNumber())
-            ],
-            [
-                'id'                 => '178',
-                'table'              => $itemtype::getTable(),
-                'field'              => '_virtual_datacenter_position', // virtual field
-                'additionalfields'   => [
-                    'id',
-                    'name'
-                ],
-                'name'               => __('Data center position'),
-                'datatype'           => 'specific',
-                'nosearch'           => true,
-                'nosort'             => true,
-                'massiveaction'      => false
-            ],
+        $tab = [];
+
+        $tab[] = [
+            'id'                 => 'datacenter',
+            'name'               => _n('Data center', 'Data centers', Session::getPluralNumber())
         ];
+
+        $tab[] = [
+            'id'                 => '178',
+            'table'              => $itemtype::getTable(),
+            'field'              => '_virtual_datacenter_position', // virtual field
+            'additionalfields'   => [
+                'id',
+                'name'
+            ],
+            'name'               => __('Data center position'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
+            'massiveaction'      => false
+        ];
+
+        if (($itemtype != Rack::getType()) && ($itemtype != DCRoom::getType())) {
+            $tab[] = [
+                'id'            => '1451',
+                'table'         => Datacenter::getTable(),
+                'field'         => 'name',
+                'datatype'      => 'dropdown',
+                'linkfield'     => 'datacenters_id',
+                'name'          => Datacenter::getTypeName(1),
+                'massiveaction' => false,
+                'joinparams'    => [
+                    'beforejoin'    => [
+                        'table'         => DCRoom::getTable(),
+                        'linkfield'     => 'dcrooms_id',
+                        'joinparams'    => [
+                            'beforejoin'    => [
+                                'table'         => Rack::getTable(),
+                                'linkfield'     => 'racks_id',
+                                'joinparams'    => [
+                                    'beforejoin'    => [
+                                        'table'         => Item_Rack::getTable(),
+                                        'joinparams'    => [
+                                            'jointype'      => 'itemtype_item'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+        }
+
+        return $tab;
     }
 
     public static function getAdditionalMenuLinks()

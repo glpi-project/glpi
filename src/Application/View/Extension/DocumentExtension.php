@@ -44,6 +44,11 @@ use Twig\TwigFilter;
  */
 class DocumentExtension extends AbstractExtension
 {
+    /**
+     * Static cache for user defined files extensions icons.
+     */
+    private static $extensionIcon = null;
+
     public function getFilters(): array
     {
         return [
@@ -62,11 +67,35 @@ class DocumentExtension extends AbstractExtension
     public function getDocumentIcon(string $filename): string
     {
         /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /** @var \DBmysql $DB */
+        global $CFG_GLPI, $DB;
 
-        $icon = sprintf('/pics/icones/%s-dist.png', strtolower(pathinfo($filename, PATHINFO_EXTENSION)));
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
-        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : '/pics/timeline/file.png');
+        if (static::$extensionIcon === null) {
+            $iterator = $DB->request([
+                'SELECT' => [
+                    'ext',
+                    'icon'
+                ],
+                'FROM' => 'glpi_documenttypes',
+                'WHERE' => [
+                    'icon' => ['<>', '']
+                ]
+            ]);
+            foreach ($iterator as $result) {
+                static::$extensionIcon[$result['ext']] = $result['icon'];
+            }
+        }
+
+        $defaultIcon = '/pics/timeline/file.png';
+        $icon = $defaultIcon;
+
+        if (isset(static::$extensionIcon[$extension])) {
+            $icon = '/pics/icones/' . static::$extensionIcon[$extension];
+        }
+
+        return $CFG_GLPI['root_doc'] . (file_exists(GLPI_ROOT . $icon) ? $icon : $defaultIcon);
     }
 
     /**

@@ -348,7 +348,11 @@ abstract class CommonITILCost extends CommonDBChild
             $this->fields['cost_fixed'] = $lastdata['cost_fixed'];
         }
         if (isset($lastdata['budgets_id'])) {
-            $this->fields['budgets_id'] = $lastdata['budgets_id'];
+            $budget_id = $lastdata['budgets_id'];
+            $budget    = new Budget();
+            if ($budget->getFromDB($budget_id) && $budget->fields['is_deleted'] == 0) {
+                $this->fields['budgets_id'] = $budget_id;
+            }
         }
         if (isset($lastdata['name'])) {
             $this->fields['name'] = $lastdata['name'];

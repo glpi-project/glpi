@@ -180,7 +180,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             return false;
         }
 
-        $canedit = ($obj->can($params['id'], UPDATE) && $params['_canupdate']);
+        $is_closed = in_array($obj->fields['status'], $obj->getClosedStatusArray());
+        $canedit   = $obj->can($params['id'], UPDATE) && $params['_canupdate'] && !$is_closed;
         $usedcount = 0;
         // ITIL Object update case
         if ($params['id'] > 0) {
@@ -252,7 +253,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         // Display list
         if (!empty($params['items_id'])) {
             // No delete if mandatory and only one item
-            $delete = $obj->canAddItem(static::class);
+            $delete = $obj->canAddItem(static::class) && !$is_closed;
             $cpt = 0;
             foreach ($params['items_id'] as $itemtype => $items) {
                 $cpt += count($items);

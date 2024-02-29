@@ -2875,6 +2875,8 @@ abstract class API
         } else {
             $networkport_types = NetworkPort::getNetworkPortInstantiations();
             foreach ($networkport_types as $networkport_type) {
+                $_networkports[$networkport_type] = [];
+
                 $netport_table = $networkport_type::getTable();
                 $netp_iterator = $DB->request([
                     'SELECT'    => [

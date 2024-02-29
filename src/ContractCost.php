@@ -199,10 +199,10 @@ class ContractCost extends CommonDBChild
     public function initBasedOnPrevious()
     {
 
-        $ticket = new Ticket();
+        $contract = new Contract();
         if (
             !isset($this->fields['contracts_id'])
-            || !$ticket->getFromDB($this->fields['contracts_id'])
+            || !$contract->getFromDB($this->fields['contracts_id'])
         ) {
             return false;
         }

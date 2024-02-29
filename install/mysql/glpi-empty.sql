@@ -2010,6 +2010,7 @@ CREATE TABLE `glpi_items_devicecameras` (
   `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
   `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `locations_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `items_id` (`items_id`),
   KEY `devicecameras_id` (`devicecameras_id`),
@@ -2017,6 +2018,7 @@ CREATE TABLE `glpi_items_devicecameras` (
   KEY `is_dynamic` (`is_dynamic`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
+  KEY `locations_id` (`locations_id`),
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -7847,8 +7849,8 @@ CREATE TABLE `glpi_users` (
   `substitution_end_date` timestamp NULL DEFAULT NULL,
   `substitution_start_date` timestamp NULL DEFAULT NULL,
   `toast_location` varchar(255) DEFAULT NULL,
-  `timeline_action_btn_layout` tinyint DEFAULT '0',
-  `timeline_date_format` tinyint DEFAULT '0',
+  `timeline_action_btn_layout` tinyint DEFAULT NULL,
+  `timeline_date_format` tinyint DEFAULT NULL,
   `2fa` text,
   `2fa_unenforced` tinyint NOT NULL DEFAULT 0 COMMENT 'If 1, the user is excluded from 2FA enforcement policies',
   `password_history` longtext,

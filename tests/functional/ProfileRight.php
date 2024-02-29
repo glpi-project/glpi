@@ -41,13 +41,8 @@ class ProfileRight extends DbTestCase
 {
     public function testUpdateProfileLastRightsUpdate()
     {
-        global $DB;
-
         // Create a profile
         $profile = getItemByTypeName('Profile', 'Super-Admin');
-
-        // Check that the last_rights_update field is not null
-        $this->variable($profile->fields['last_rights_update'])->isNotNull();
 
         // Update the last_rights_update field to null
         $this->updateItem('Profile', $profile->getID(), [

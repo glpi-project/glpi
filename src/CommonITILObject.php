@@ -10293,7 +10293,6 @@ abstract class CommonITILObject extends CommonDBTM
             return 0;
         }
 
-        $conf        = new Entity();
         /** @var CommonITILSatisfaction $inquest */
         $inquest     = new $inquest_class();
         $tot         = 0;
@@ -10309,20 +10308,18 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         foreach ($DB->request('glpi_entities') as $entity) {
-            $rate   = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'inquest_rate' . $config_suffix);
-            $parent = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'entities_id');
-
+            $rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'inquest_rate' . $config_suffix);
             if ($rate > 0) {
                 $tabentities[$entity['id']] = $rate;
             }
         }
 
-        foreach ($tabentities as $entity => $rate) {
-            $parent        = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'entities_id');
-            $delay         = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'inquest_delay' . $config_suffix);
-            $duration      = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'inquest_duration' . $config_suffix);
-            $type          = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity);
-            $max_closedate = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity, 'max_closedate' . $config_suffix);
+        foreach ($tabentities as $entity_id => $rate) {
+            $parent        = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity_id, 'entities_id');
+            $delay         = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity_id, 'inquest_delay' . $config_suffix);
+            $duration      = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity_id, 'inquest_duration' . $config_suffix);
+            $type          = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity_id);
+            $max_closedate = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity_id, 'max_closedate' . $config_suffix);
 
             $table = static::getTable();
             $survey_table = $inquest::getTable();
@@ -10350,7 +10347,7 @@ abstract class CommonITILObject extends CommonDBTM
                     ]
                 ],
                 'WHERE'     => [
-                    "$table.entities_id"          => $entity,
+                    "$table.entities_id"          => $entity_id,
                     "$table.is_deleted"           => 0,
                     "$table.status"               => self::CLOSED,
                     "$table.closedate"            => ['>', $max_closedate],
@@ -10375,7 +10372,6 @@ abstract class CommonITILObject extends CommonDBTM
 
             $nb            = 0;
             $max_closedate = '';
-
             foreach ($iterator as $itil_item) {
                 $max_closedate = $itil_item['closedate'];
                 if (mt_rand(1, 100) <= $rate) {
@@ -10392,13 +10388,20 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-            // keep all max_closedate of child entities
-            if (
-                !empty($max_closedate)
-                && (!isset($maxentity[$parent])
-                    || ($max_closedate > $maxentity[$parent]))
-            ) {
-                $maxentity[$parent] = $max_closedate;
+            // keep max_closedate
+            if (!empty($max_closedate)) {
+                $entity = new Entity();
+                $entity->getFromDB($entity_id);
+                // If the inquest configuration is inherited, then the `max_closedate` value should be updated
+                // on the entity that hosts the configuration, otherwise, it have to be stored on current entity.
+                // It is necessary to ensure that `Entity::getUsedConfig('inquest_config', $entity_id, 'max_closedate')`
+                // will return the expected value.
+                $target_entity_id = $entity->fields['inquest_config' . $config_suffix] === Entity::CONFIG_PARENT
+                    ? Entity::getUsedConfig('inquest_config' . $config_suffix, $entity_id, 'entities_id', 0)
+                    : $entity_id;
+                if (!array_key_exists($target_entity_id, $maxentity) || $max_closedate > $maxentity[$target_entity_id]) {
+                    $maxentity[$target_entity_id] = $max_closedate;
+                }
             }
 
             if ($nb) {
@@ -10406,18 +10409,17 @@ abstract class CommonITILObject extends CommonDBTM
                 $task->addVolume($nb);
                 $task->log(sprintf(
                     __('%1$s: %2$s'),
-                    Dropdown::getDropdownName('glpi_entities', $entity),
+                    Dropdown::getDropdownName('glpi_entities', $entity_id),
                     $nb
                 ));
             }
         }
 
-        // Save the max_closedate so as not to test the same items twice
-        foreach ($maxentity as $parent => $maxdate) {
-            $conf->getFromDB($parent);
-            $conf->update([
-                'id'            => $conf->fields['id'],
-                //'entities_id'   => $parent,
+        // Save max_closedate to avoid testing the same tickets twice
+        foreach ($maxentity as $entity_id => $maxdate) {
+            $entity = new Entity();
+            $entity->update([
+                'id'                             => $entity_id,
                 'max_closedate' . $config_suffix => $maxdate
             ]);
         }

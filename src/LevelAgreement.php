@@ -844,7 +844,7 @@ abstract class LevelAgreement extends CommonDBChild
                     return $cal->computeEndDate(
                         $start_date,
                         $delay,
-                        $additional_delay,
+                        (int) $additional_delay,
                         $work_in_days,
                         $this->fields['end_of_working_day']
                     );
@@ -854,7 +854,7 @@ abstract class LevelAgreement extends CommonDBChild
            // No calendar defined or invalid calendar
             if ($this->fields['number_time'] >= 0) {
                 $starttime = strtotime($start_date);
-                $endtime   = $starttime + $delay + $additional_delay;
+                $endtime   = $starttime + $delay + (int) $additional_delay;
                 return date('Y-m-d H:i:s', $endtime);
             }
         }

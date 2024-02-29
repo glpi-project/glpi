@@ -98,6 +98,7 @@
         "jest-extended": "^4.0.2",
         "mini-css-extract-plugin": "^2.7.7",
         "monaco-editor-webpack-plugin": "^7.0.1",
+        "null-loader": "^4.0.1",
         "sass": "^1.65.1",
         "sass-loader": "^13.3.2",
         "script-loader": "^0.7.2",

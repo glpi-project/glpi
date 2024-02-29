@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\RichText\RichText;
+use Glpi\Event;
 
 /**
  * Reservation Class
@@ -118,9 +118,9 @@ class Reservation extends CommonDBChild
      **/
     public function prepareInputForUpdate($input)
     {
-       // Save fields
+        // Save fields
         $oldfields             = $this->fields;
-       // Needed for test already planned
+        // Needed for test already planned
         if (isset($input["begin"])) {
             $this->fields["begin"] = $input["begin"];
         }
@@ -132,7 +132,7 @@ class Reservation extends CommonDBChild
             return false;
         }
 
-       // Restore fields
+        // Restore fields
         $this->fields = $oldfields;
 
         return parent::prepareInputForUpdate($input);
@@ -166,7 +166,6 @@ class Reservation extends CommonDBChild
      **/
     public function prepareInputForAdd($input)
     {
-
        // Error on previous added reservation on several add
         if (isset($input['_ok']) && !$input['_ok']) {
             return false;
@@ -174,14 +173,101 @@ class Reservation extends CommonDBChild
 
        // set new date.
         $this->fields["reservationitems_id"] = $input["reservationitems_id"];
-        $this->fields["begin"]               = $input["begin"];
-        $this->fields["end"]                 = $input["end"];
+        $this->fields["begin"] = $input["begin"];
+        $this->fields["end"] = $input["end"];
 
         if (!$this->isReservationInputValid($input)) {
             return false;
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    public static function handleAddForm(array $input): void
+    {
+        if (empty($input['users_id'])) {
+            $input['users_id'] = Session::getLoginUserID();
+        }
+        if (
+            !Session::haveRight("reservation", UPDATE)
+            && Session::getLoginUserID() !== $input['users_id']
+        ) {
+            return;
+        }
+
+        Toolbox::manageBeginAndEndPlanDates($input['resa']);
+        if (!isset($input['resa']["begin"]) || !isset($input['resa']["end"])) {
+            return;
+        }
+
+        if (!isset($input['items']) || !is_array($input['items']) || count($input['items']) === 0) {
+            Session::addMessageAfterRedirect(
+                __('No selected items'),
+                false,
+                ERROR
+            );
+        }
+
+        $dates_to_add = [];
+        $dates_to_add[$input['resa']["begin"]] = $input['resa']["end"];
+        if (
+            isset($input['periodicity'])
+            && isset($input['periodicity']['type'])
+            && !empty($input['periodicity']['type'])
+        ) {
+            $dates_to_add += Reservation::computePeriodicities(
+                $input['resa']["begin"],
+                $input['resa']["end"],
+                $input['periodicity']
+            );
+        }
+        ksort($dates_to_add);
+
+        foreach ($input['items'] as $reservationitems_id) {
+            $rr = new self();
+            $group = (count($dates_to_add) > 1) ? $rr->getUniqueGroupFor($reservationitems_id) : null;
+
+            foreach ($dates_to_add as $begin => $end) {
+                $reservation_input = [
+                    'begin' => $begin,
+                    'end' => $end,
+                    'reservationitems_id' => $reservationitems_id,
+                    'comment' => $input['comment'],
+                    'users_id' => (int)$input['users_id'],
+                ];
+                if (count($dates_to_add) > 1) {
+                    $reservation_input['group'] = $group;
+                }
+
+                if ($newID = $rr->add($reservation_input)) {
+                    Event::log(
+                        $newID,
+                        "reservation",
+                        4,
+                        "inventory",
+                        sprintf(
+                            __('%1$s adds the reservation %2$s for item %3$s'),
+                            $_SESSION["glpiname"],
+                            $newID,
+                            $reservationitems_id
+                        )
+                    );
+
+                    $rri = new ReservationItem();
+                    $rri->getFromDB($reservationitems_id);
+                    $item = new $rri->fields["itemtype"]();
+                    $item->getFromDB($rri->fields["items_id"]);
+
+                    Session::addMessageAfterRedirect(
+                        sprintf(
+                            __('Reservation added for item %s at %s'),
+                            $item->getLink(),
+                            Html::convDateTime($reservation_input['begin'])
+                        )
+                    );
+                }
+            }
+        }
     }
 
     /**
@@ -817,17 +903,20 @@ JAVASCRIPT;
                             $begin_hour = $begin_time - strtotime(date('Y-m-d', $begin_time));
                             $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
                             foreach ($options['days'] as $day => $val) {
+                                $end_day = $day;
+                                //Check that the start and end times are different else set the end day at the next day
+                                if ($begin_hour == $end_hour) {
+                                    $end_day = date('l', strtotime($day . ' +1 day'));
+                                }
                                 $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
-                                    'end'   => strtotime("next $day", $end_time) + $end_hour
+                                    'end'   => strtotime("next $end_day", $end_time) + $end_hour
                                 ];
                             }
                         }
                     }
-
                     foreach ($dates as $key => $val) {
                         $begin_time = $val['begin'];
                         $end_time   = $val['end'];
-
                         while ($begin_time < $repeat_end) {
                             $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
                             $begin_time = strtotime('+1 week', $begin_time);
@@ -887,7 +976,6 @@ JAVASCRIPT;
                     break;
             }
         }
-
         return $toadd;
     }
 

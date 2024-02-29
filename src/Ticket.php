@@ -422,7 +422,7 @@ class Ticket extends CommonITILObject
                 $data["slalevels_id_ttr"] = SlaLevel::getFirstSlaLevel($slas_id);
             }
            // Compute time_to_resolve
-            $data['sla_waiting_duration'] = $this->fields['sla_waiting_duration'] ?? 0;
+            $data['sla_waiting_duration'] = (int) ($this->fields['sla_waiting_duration'] ?? 0);
             $data[$dateField]             = $sla->computeDate($date, $data['sla_waiting_duration']);
         } else {
             $data["slalevels_id_ttr"]     = 0;
@@ -467,7 +467,7 @@ class Ticket extends CommonITILObject
                 $data['ola_tto_begin_date'] = $date;
             }
            // Compute time_to_own
-            $data['ola_waiting_duration'] = $this->fields['ola_waiting_duration'] ?? 0;
+            $data['ola_waiting_duration'] = (int) ($this->fields['ola_waiting_duration'] ?? 0);
             $data[$dateField]             = $ola->computeDate($date, $data['ola_waiting_duration']);
         } else {
             $data["olalevels_id_ttr"]     = 0;
@@ -3922,6 +3922,7 @@ JAVASCRIPT;
                         || (Session::getCurrentInterface() == "central"
                             && $this->canUpdateItem());
         $can_requester = $this->canRequesterUpdateItem();
+        $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         $canassign     = $this->canAssign();
         $canassigntome = $this->canAssignToMe();
         $cancreateuser = (bool) User::canCreate();
@@ -3936,15 +3937,11 @@ JAVASCRIPT;
             ]);
         }
 
-        $item_ticket = null;
         if ($ID && in_array($this->fields['status'], $this->getClosedStatusArray())) {
             $canupdate = false;
             // No update for actors
             $options['_noupdate'] = true;
             $canpriority = false;
-        } else {
-            $item_ticket = new Item_Ticket();
-            $canpriority   = (bool) Session::haveRight(self::$rightname, self::CHANGEPRIORITY);
         }
 
         $sla = new SLA();
@@ -3964,6 +3961,12 @@ JAVASCRIPT;
                 'items_id_2' => $options['_link']['tickets_id_2'],
             ];
         }
+
+        $item_ticket = null;
+        if ($options['_canupdate']) {
+            $item_ticket = new Item_Ticket();
+        }
+
         TemplateRenderer::getInstance()->display('components/itilobject/layout.html.twig', [
             'item'               => $this,
             'timeline_itemtypes' => $this->getTimelineItemtypes(),
