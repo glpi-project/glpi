@@ -154,7 +154,8 @@ class QuestionTypesManager extends DbTestCase
         $this
             ->array($provider_data)
             ->hasSize(
-                count($manager->getCategories())
+                count($manager->getCategories()),
+                "All categories must be added to the `testGetTypesForCategoryProvider` provider"
             );
     }
 }
