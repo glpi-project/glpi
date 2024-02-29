@@ -118,13 +118,15 @@ class DataHelpersExtension extends AbstractExtension
     /**
      * Return number formatted to user preferred format.
      *
-     * @param mixed $number
+     * @param mixed $number Number to display
+     * @param boolean $edit display number for edition ? (id edit use . in all case)
+     * @param integer $forcedecimal Force decimal number (do not use default value) (default -1)
      *
      * @return string
      */
-    public function getFormattedNumber($number): string
+    public function getFormattedNumber($number, $edit = false, $forcedecimal = -1): string
     {
-        return Html::formatNumber($number);
+        return Html::formatNumber($number, $edit, $forcedecimal);
     }
 
     /**

@@ -196,10 +196,14 @@
                                             {{ call("Html::convDate", [entry[colkey]])|raw }}
                                         {% elseif formatter == "datetime" %}
                                             {{ call("Html::convDateTime", [entry[colkey]])|raw }}
+                                        {% elseif formatter == "duration" %}
+                                            {{ entry[colkey]|formatted_duration }}
                                         {% elseif formatter == "bytesize" %}
                                             {{ call("Toolbox::getSize", [entry[colkey]])|raw }}
                                         {% elseif formatter == 'number' %}
                                             {{ entry[colkey]|formatted_number }}
+                                        {% elseif formatter == 'integer' %}
+                                            {{ entry[colkey]|formatted_number(false, 0) }}
                                         {% elseif formatter == "raw_html" %}
                                             {{ entry[colkey]|raw }}
                                         {% elseif formatter == 'avatar' %}
