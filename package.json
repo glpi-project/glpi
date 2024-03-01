@@ -72,25 +72,25 @@
         "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
-        "@testing-library/jest-dom": "^6.4.1",
+        "@testing-library/jest-dom": "^6.4.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^12.0.2",
         "css-loader": "^6.10.0",
         "csso-cli": "^4.0.2",
-        "eslint": "^8.56.0",
+        "eslint": "^8.57.0",
         "exports-loader": "^5.0.0",
         "glob": "^10.3.10",
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
         "jest-extended": "^4.0.2",
-        "mini-css-extract-plugin": "^2.7.7",
+        "mini-css-extract-plugin": "^2.8.1",
         "null-loader": "^4.0.1",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
-        "stylelint": "^16.2.0",
+        "stylelint": "^16.2.1",
         "stylelint-config-standard-scss": "^13.0.0",
-        "terser": "^5.27.0",
-        "webpack": "^5.90.0",
+        "terser": "^5.28.1",
+        "webpack": "^5.90.3",
         "webpack-cli": "^5.1.4"
     }
 }
