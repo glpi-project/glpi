@@ -54,6 +54,12 @@ final class Form extends CommonDBTM
 {
     public static $rightname = 'form';
 
+    public $dohistory = true;
+
+    public $history_blacklist = [
+        'date_mod',
+    ];
+
     /**
      * Lazy loaded array of sections
      * Should always be accessed through getSections()

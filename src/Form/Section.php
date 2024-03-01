@@ -54,6 +54,12 @@ final class Section extends CommonDBChild
     protected ?array $questions = null;
 
     #[Override]
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Step', 'Steps', $nb);
+    }
+
+    #[Override]
     public function post_getFromDB()
     {
         // Clear any lazy loaded data

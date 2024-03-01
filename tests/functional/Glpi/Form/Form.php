@@ -37,10 +37,12 @@ namespace tests\units\Glpi\Form;
 
 use DbTestCase;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
+use Log;
 
 class Form extends DbTestCase
 {
@@ -685,6 +687,80 @@ class Form extends DbTestCase
         $this
             ->array($names)
             ->isEqualTo($expected_question_names)
+        ;
+    }
+
+    /**
+     * Data provider for the testLogs method
+     *
+     * @return iterable
+     */
+    protected function testLogsProvider(): iterable
+    {
+        $form_1 = $this->createForm(new FormBuilder());
+        yield [$form_1, 1]; // Created
+
+        $form_2 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addSection('Section 3')
+        );
+        yield [$form_2, 4]; // Created + 3 sections
+
+        $form_3 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addSection('Section 3')
+                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+        );
+        yield [$form_3, 7]; // Created + 3 sections + 3 questions
+
+        // Update two fields from a question
+        $question_id = $this->getQuestionId($form_3, 'Question 1');
+        $this->updateItem(Question::class, $question_id, [
+            'name' => 'Question 1 (updated)',
+            'type' => QuestionTypeShortAnswerEmail::class,
+        ]);
+        yield [$form_3, 9]; // +2 updates
+
+        // Delete question
+        $this->deleteItem(Question::class, $question_id);
+        yield [$form_3, 10]; // +1 update
+    }
+
+    /**
+     * Ensure that update to a form questions are logged.
+     *
+     * @see Question::logCreationInParentForm
+     * @see Question::logUpdateInParentForm
+     * @see Question::logDeleteInParentForm
+     *
+     * Update to the form itself and its sections are already handled by GLPI's
+     * framework and are not required to be tested here.
+     *
+     * @dataProvider testLogsProvider
+     *
+     * @param \Glpi\Form\Form  $form,
+     * @param int               $expected_logs_count,
+     *
+     * @return void
+     */
+    public function testLogs(
+        \Glpi\Form\Form $form,
+        int $expected_logs_count
+    ): void {
+        $logs = (new Log())->find([
+            'itemtype' => $form->getType(),
+            'items_id' => $form->getID(),
+        ]);
+
+        $this
+            ->integer(count($logs))
+            ->isEqualTo($expected_logs_count)
         ;
     }
 }

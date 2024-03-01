@@ -1022,7 +1022,7 @@ class GlpiFormEditorController
     }
 
     /**
-     * Update "Section X of Y" labels
+     * Update "Step X of Y" labels
      */
     #updateSectionCountLabels() {
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
@@ -1031,7 +1031,7 @@ class GlpiFormEditorController
                 .find("[data-glpi-form-editor-section-number-display]");
 
             display.html(
-                __("Section %1$d of %2$d")
+                __("Step %1$d of %2$d")
                     .replace("%1$d", s_index + 1)
                     .replace("%2$d", sections.length)
             );
