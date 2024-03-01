@@ -33,7 +33,7 @@
         "cytoscape-dagre": "^2.2.1",
         "cytoscape-grid-guide": "^2.3.0",
         "diff-match-patch": "^1.0.4",
-        "echarts": "^5.4.3",
+        "echarts": "^5.5.0",
         "fittext.js": "^1.2.0",
         "flatpickr": "^4.6.3",
         "fuzzy": "^0.1.3",
