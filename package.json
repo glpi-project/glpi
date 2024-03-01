@@ -23,7 +23,7 @@
         "@fullcalendar/timegrid": "^4.4.2",
         "@fullcalendar/timeline": "^4.4.3",
         "@tabler/core": "^1.0.0-beta20",
-        "@tabler/icons-webfont": "^2.46.0",
+        "@tabler/icons-webfont": "^2.47.0",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.2",
         "cropperjs": "^2.0.0-beta.4",
