@@ -248,5 +248,10 @@ body {
     .flatpickr-time .flatpickr-am-pm:focus {
         background: transparent;
     }
+
+    .flatpickr input.form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+    }
 }
 /* stylelint-enable property-no-vendor-prefix */
