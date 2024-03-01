@@ -13,7 +13,7 @@
         "@fontsource/inter": "^4.5.15",
         "@fortawesome/fontawesome-free": "^6.5.1",
         "@fullcalendar/bootstrap": "^4.4.2",
-        "@fullcalendar/core": "^4.4.2",
+        "@fullcalendar/core": "^5.11.5",
         "@fullcalendar/daygrid": "^4.4.2",
         "@fullcalendar/interaction": "^4.4.2",
         "@fullcalendar/list": "^4.4.2",
