@@ -105,17 +105,18 @@ class NotificationMailing implements NotificationInterface
         $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
         $mmail->SetFrom($sender['email'], Sanitizer::decodeHtmlSpecialChars($sender['name'] ?? ''), false);
 
-        $text = __('This is a test email.') . "\n-- \n" . Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]);
+        $text = __('This is a test email.') . "<br>-- <br>" . Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["mailing_signature"]);
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
            //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
            //add original email addess to message body
-            $text .= "\n" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
+            $text .= "<br>" . sprintf(__('Original email address was %1$s'), $CFG_GLPI['admin_email']);
         }
 
         $mmail->AddAddress($recipient, Sanitizer::decodeHtmlSpecialChars($CFG_GLPI["admin_email_name"]));
         $mmail->Subject = "[GLPI] " . __('Mail test');
+        $mmail->isHTML(true);
         $mmail->Body    = $text;
 
         if (!$mmail->Send()) {
