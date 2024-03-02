@@ -81,6 +81,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
 #### Changes
+- Many methods have their signature changed to specify both their return type and the types of their parameters.
 - `chartist` library has been replaced by `echarts`.
 - `codemirror` library has been replaced by `monaco-editor`.
 - `htmLawed` library has been replaced by `symfony/html-sanitizer`.
@@ -230,6 +231,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
+- `Impact::buildNetwork()`
 - `KnowbaseItem::addToFaq()`
 - `KnowbaseItem::addVisibilityJoins()`
 - `KnowbaseItem::addVisibilityRestrict()`
