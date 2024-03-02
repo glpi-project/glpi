@@ -50,9 +50,9 @@ class DomainRecord extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item->getType() == 'Domain') {
+        if ($item::class === Domain::class) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item), $item::getType());
+                return self::createTabEntry(_n('Record', 'Records', Session::getPluralNumber()), self::countForDomain($item), $item::class);
             }
             return _n('Record', 'Records', Session::getPluralNumber());
         }
@@ -71,7 +71,7 @@ class DomainRecord extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == 'Domain') {
+        if ($item::class === Domain::class) {
             self::showForDomain($item);
         }
         return true;
@@ -101,14 +101,14 @@ class DomainRecord extends CommonDBChild
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'ttl',
             'name'               => __('TTL')
         ];
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'data',
             'name'               => __('Data'),
         ];
@@ -124,7 +124,7 @@ class DomainRecord extends CommonDBChild
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'date'
@@ -132,7 +132,7 @@ class DomainRecord extends CommonDBChild
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -149,7 +149,7 @@ class DomainRecord extends CommonDBChild
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_mod',
             'massiveaction'      => false,
             'name'               => __('Last update'),
@@ -183,7 +183,6 @@ class DomainRecord extends CommonDBChild
         return parent::canUpdate();
     }
 
-
     public static function canDelete()
     {
         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
@@ -191,7 +190,6 @@ class DomainRecord extends CommonDBChild
         }
         return parent::canDelete();
     }
-
 
     public static function canPurge()
     {
@@ -201,38 +199,34 @@ class DomainRecord extends CommonDBChild
         return parent::canPurge();
     }
 
-
     public function canCreateItem()
     {
         return count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);
     }
 
-
     public function canUpdateItem()
     {
         return parent::canUpdateItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
+         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
 
     public function canDeleteItem()
     {
         return parent::canDeleteItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
+         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
-
 
     public function canPurgeItem()
     {
         return parent::canPurgeItem()
-         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1]
-         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])
+         && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
+         || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
          );
     }
-
 
     public function defineTabs($options = [])
     {
@@ -264,7 +258,7 @@ class DomainRecord extends CommonDBChild
                 $input['date_creation'] = 'NULL';
             }
 
-            if (!isset($input['ttl']) || empty($input['ttl'])) {
+            if (empty($input['ttl'])) {
                 $input['ttl'] = self::DEFAULT_TTL;
             }
         }
@@ -281,20 +275,20 @@ class DomainRecord extends CommonDBChild
         }
 
         if (!Session::isCron() && (isset($input['domainrecordtypes_id']) || isset($this->fields['domainrecordtypes_id']))) {
-            if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] == [-1])) {
-                if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
+            if (!($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1])) {
+                if (isset($input['domainrecordtypes_id']) && !(in_array($input['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
                     //no right to use selected type
                     Session::addMessageAfterRedirect(
-                        __('You are not allowed to use this type of records'),
+                        __s('You are not allowed to use this type of records'),
                         true,
                         ERROR
                     );
                     return false;
                 }
-                if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes']))) {
+                if ($add === false && !(in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true))) {
                    //no right to change existing type
                     Session::addMessageAfterRedirect(
-                        __('You are not allowed to edit this type of records'),
+                        __s('You are not allowed to edit this type of records'),
                         true,
                         ERROR
                     );
@@ -320,7 +314,7 @@ class DomainRecord extends CommonDBChild
     {
 
         if (
-            (in_array('data', $this->updates) || in_array('domainrecordtypes_id', $this->updates))
+            (in_array('data', $this->updates, true) || in_array('domainrecordtypes_id', $this->updates, true))
             && !array_key_exists('data_obj', $this->input)
         ) {
            // Remove data stored as obj if "data" or "record type" changed" and "data_obj" is not part of input.
@@ -666,7 +660,6 @@ JAVASCRIPT;
         }
         return $name_txt;
     }
-
 
     public static function getIcon()
     {
