@@ -65,54 +65,33 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return __('Knowledge base');
     }
 
-
-    /**
-     * @see CommonGLPI::getMenuShorcut()
-     *
-     * @since 0.85
-     **/
     public static function getMenuShorcut()
     {
         return 'b';
     }
-
 
     public function getName($options = [])
     {
         return KnowbaseItemTranslation::getTranslatedValue($this);
     }
 
-
-    /**
-     * @see CommonGLPI::getMenuName()
-     *
-     * @since 0.85
-     **/
     public static function getMenuName()
     {
         if (!Session::haveRight('knowbase', READ)) {
             return __('FAQ');
-        } else {
-            return static::getTypeName(Session::getPluralNumber());
         }
+        return static::getTypeName(Session::getPluralNumber());
     }
-
 
     public static function canCreate()
     {
-
         return Session::haveRightsOr(self::$rightname, [CREATE, self::PUBLISHFAQ]);
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canUpdate()
     {
         return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
     }
-
 
     public static function canView()
     {
@@ -123,10 +102,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
     }
 
-
     public function canViewItem()
     {
-        if ($this->fields['users_id'] == Session::getLoginUserID()) {
+        if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
         if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
@@ -141,13 +119,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
     }
 
-
     public function canUpdateItem()
     {
-       // Personal knowbase or visibility and write access
+        // Personal knowbase or visibility and write access
         return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || (Session::getCurrentInterface() == "central"
-                  && $this->fields['users_id'] == Session::getLoginUserID())
+              || (Session::getCurrentInterface() === "central"
+                  && $this->fields['users_id'] === Session::getLoginUserID())
               || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
                    || (!$this->fields["is_faq"]
                        && Session::haveRight(self::$rightname, UPDATE)))
@@ -178,7 +155,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-        if (Session::getCurrentInterface() == "central") {
+        if (Session::getCurrentInterface() === "central") {
             return "$dir/front/knowbaseitem.php";
         }
         return "$dir/front/helpdesk.faq.php";
@@ -196,7 +173,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-        if (Session::getCurrentInterface() == "central") {
+        if (Session::getCurrentInterface() === "central") {
             return "$dir/front/knowbaseitem.form.php";
         }
         return "$dir/front/helpdesk.faq.php";
@@ -205,9 +182,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     /**
      * Get the form page URL for the current classe
      *
+     * @param array   $params parameters to add to the URL
      * @param boolean $full  path or relative one
+     * @return string
      **/
-    public static function getFormURLWithParam($params = [], $full = true)
+    public static function getFormURLWithParam($params = [], $full = true): string
     {
         $url = self::getFormURL($full) . '?';
 
@@ -225,7 +204,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
@@ -238,14 +216,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $ong;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case __CLASS__:
+            switch ($item::class) {
+                case self::class:
                     $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -256,7 +232,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                             $nb,
                             $item::getType()
                         );
-                        $ong[3] = self::createTabEntry(__('Edit'), 0, $item::getType(), 'ti ti-pencil');
+                        $ong[3] = self::createTabEntry(__('Edit'), 0, $item::class, 'ti ti-pencil');
                     }
                     return $ong;
             }
@@ -264,11 +240,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1:
                     $item->showFull();
@@ -286,7 +260,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return true;
     }
 
-
     /**
      * Actions done at the end of the getEmpty function
      *
@@ -294,7 +267,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public function post_getEmpty()
     {
-
         if (
             Session::haveRight(self::$rightname, self::PUBLISHFAQ)
             && !Session::haveRight("knowbase", UPDATE)
@@ -303,11 +275,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
     }
 
-
-    /**
-     * @since 0.85
-     * @see CommonDBTM::post_addItem()
-     **/
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
@@ -319,11 +286,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             ]
         );
 
-        if (
-            isset($this->input["_visibility"])
-            && isset($this->input["_visibility"]['_type'])
-            && !empty($this->input["_visibility"]["_type"])
-        ) {
+        if (isset($this->input["_visibility"]['_type']) && !empty($this->input["_visibility"]["_type"])) {
             $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
             $item                                           = null;
 
@@ -372,7 +335,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         }
 
-        if (isset($this->input['_do_item_link']) && $this->input['_do_item_link'] == 1) {
+        if (isset($this->input['_do_item_link']) && $this->input['_do_item_link'] === 1) {
             $params = [
                 'knowbaseitems_id' => $this->getID(),
                 'itemtype'         => $this->input['_itemtype'],
@@ -396,38 +359,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         NotificationEvent::raiseEvent('new', $this);
     }
 
-
-    /**
-     * @since 0.83
-     **/
     public function post_getFromDB()
     {
-
-       // Users
+        // Users
         $this->users    = KnowbaseItem_User::getUsers($this->fields['id']);
 
-       // Entities
+        // Entities
         $this->entities = Entity_KnowbaseItem::getEntities($this->fields['id']);
 
-       // Group / entities
+        // Group / entities
         $this->groups   = Group_KnowbaseItem::getGroups($this->fields['id']);
 
-       // Profile / entities
+        // Profile / entities
         $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
 
         // Load categories
         $this->load1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
     }
 
-
-    /**
-     * @see CommonDBTM::cleanDBonPurge()
-     *
-     * @since 0.83.1
-     **/
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Entity_KnowbaseItem::class,
@@ -440,11 +391,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             ]
         );
 
-       /// KnowbaseItem_Comment does not extends CommonDBConnexity
+        // KnowbaseItem_Comment does not extends CommonDBConnexity
         $kbic = new KnowbaseItem_Comment();
         $kbic->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
 
-       /// KnowbaseItem_Revision does not extends CommonDBConnexity
+        // KnowbaseItem_Revision does not extends CommonDBConnexity
         $kbir = new KnowbaseItem_Revision();
         $kbir->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
     }
@@ -481,7 +432,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function haveVisibilityAccess()
     {
-       // No public knowbaseitem right : no visibility check
+        // No public knowbaseitem right : no visibility check
         if (!Session::haveRightsOr(self::$rightname, [self::READFAQ, READ])) {
             return false;
         }
@@ -492,74 +443,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         return parent::haveVisibilityAccess();
-    }
-
-    /**
-     * Return visibility joins to add to SQL
-     *
-     * @since 0.83
-     *
-     * @param boolean $forceall  force all joins
-     *
-     * @return string joins to add
-     **/
-    public static function addVisibilityJoins($forceall = false)
-    {
-       //not deprecated because used in self::getListRequest and self::showRecentPopular
-
-        /** @var \DBmysql $DB */
-        global $DB;
-
-       //get and clean criteria
-        $criteria = self::getVisibilityCriteria($forceall);
-        unset($criteria['WHERE']);
-        $criteria['FROM'] = self::getTable();
-
-        $it = new \DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = str_replace(
-            'SELECT * FROM ' . $DB->quoteName(self::getTable()) . '',
-            '',
-            $sql
-        );
-        return $sql;
-    }
-
-    /**
-     * Return visibility SQL restriction to add
-     *
-     * @since 0.83
-     *
-     * @return string restrict to add
-     **/
-    public static function addVisibilityRestrict()
-    {
-       //not deprecated because used in self::getListRequest and self::showRecentPopular
-
-        /** @var \DBmysql $DB */
-        global $DB;
-
-       //get and clean criteria
-        $criteria = self::getVisibilityCriteria();
-        unset($criteria['LEFT JOIN']);
-        $criteria['FROM'] = self::getTable();
-
-        $it = new \DBmysqlIterator(null);
-        $it->buildQuery($criteria);
-        $sql = $it->getSql();
-        $sql = str_replace(
-            'SELECT * FROM ' . $DB->quoteName(self::getTable()) . '',
-            '',
-            $sql
-        );
-        $sql = preg_replace('/.*WHERE /', '', $sql);
-
-       //No where restrictions. Add a placeholder for compatibility with later restrictions
-        if (strlen(trim($sql)) == 0) {
-            $sql = "1";
-        }
-        return $sql;
     }
 
     /**
@@ -583,27 +466,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         // Handle anonymous users
         if (!Session::getLoginUserID()) {
-            if ($CFG_GLPI["use_public_faq"]) {
-                // Public FAQ is enabled; show FAQ
-                $criteria['WHERE'] = self::getVisibilityCriteriaFAQ();
-                return $criteria;
-            } else {
-                // Public FAQ is disabled; show nothing
-                $criteria['WHERE'] = [0];
-                return $criteria;
-            }
+            // Public FAQ is enabled; show FAQ, otherwise show nothing
+            $criteria['WHERE'] = $CFG_GLPI["use_public_faq"] ? self::getVisibilityCriteriaFAQ() : [0];
+            return $criteria;
         }
 
         // Handle logged in users
-        if (Session::getCurrentInterface() == "helpdesk") {
-            // Show FAQ for helpdesk user
-            $criteria['WHERE'] = self::getVisibilityCriteriaFAQ();
-            return $criteria;
-        } else {
-            // Show knowledge base for central users
-            $criteria['WHERE'] = self::getVisibilityCriteriaKB();
-            return $criteria;
-        }
+        // Show FAQ for helpdesk user, knowledge base for central users
+        $criteria['WHERE'] = Session::getCurrentInterface() === "helpdesk"
+            ? self::getVisibilityCriteriaFAQ()
+            : self::getVisibilityCriteriaKB();
+        return $criteria;
     }
 
     /**
@@ -825,8 +698,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function prepareInputForAdd($input)
     {
-
-       // set title for question if empty
+        // set title for question if empty
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
         }
@@ -846,10 +718,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $input;
     }
 
-
     public function prepareInputForUpdate($input)
     {
-       // set title for question if empty
+        // set title for question if empty
         if (isset($input["name"]) && empty($input["name"])) {
             $input["name"] = __('New item');
         }
@@ -885,12 +756,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         NotificationEvent::raiseEvent('delete', $this);
     }
 
-
     /**
      * Print out an HTML "<form>" for knowbase item
      *
-     * @param $ID
-     * @param $options array
+     * @param integer $ID
+     * @param array $options
      *     - target for the Form
      *
      * @return void
@@ -1111,28 +981,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return true;
     }
 
-
-    /**
-     * Add kb item to the public FAQ
-     *
-     * @return void
-     **/
-    public function addToFaq()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $DB->update(
-            $this->getTable(),
-            [
-                'is_faq' => 1
-            ],
-            [
-                'id' => $this->fields['id']
-            ]
-        );
-    }
-
     /**
      * Increase the view counter of the current knowbaseitem
      *
@@ -1143,11 +991,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         /** @var \DBmysql $DB */
         global $DB;
 
-       //update counter view
+        // update counter view
         $DB->update(
             'glpi_knowbaseitems',
             [
-                'view'   => new QueryExpression($DB->quoteName('view') . ' + 1')
+                'view'   => new QueryExpression($DB::quoteName('view') . ' + 1')
             ],
             [
                 'id' => $this->getID()
@@ -1155,11 +1003,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         );
     }
 
-
     /**
      * Print out (html) show item : question and answer
      *
-     * @param $options      array of options
+     * @param array $options Array of options
      *
      * @return boolean|string
      **/
@@ -1186,7 +1033,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
        // show item : question and answer
         if (
             ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
-            || (Session::getCurrentInterface() == "helpdesk")
+            || (Session::getCurrentInterface() === "helpdesk")
             || !User::canView()
         ) {
             $linkusers_id = false;
@@ -1325,7 +1172,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return true;
     }
 
-
     /**
      * Print out an HTML form for Search knowbase item
      *
@@ -1360,73 +1206,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
              htmlspecialchars($params["contains"]) . "\">";
         echo "<input type='submit' value=\"" . _sx('button', 'Search') . "\" class='btn btn-primary'>";
         echo "</table>";
-        if (
-            isset($options['item_itemtype'])
-            && isset($options['item_items_id'])
-        ) {
+        if (isset($options['item_itemtype'], $options['item_items_id'])) {
             echo "<input type='hidden' name='item_itemtype' value='" . $options['item_itemtype'] . "'>";
             echo "<input type='hidden' name='item_items_id' value='" . $options['item_items_id'] . "'>";
         }
         Html::closeForm();
     }
-
-
-    /**
-     * Print out an HTML "<form>" for Search knowbase item
-     *
-     * @since 0.84
-     *
-     * @param $options   $_GET
-     *
-     * @return void
-     **/
-    public function showBrowseForm($options)
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (
-            !$CFG_GLPI["use_public_faq"]
-            && !Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
-        ) {
-            return false;
-        }
-
-       // Default values of parameters
-        $params["knowbaseitemcategories_id"] = "";
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $params[$key] = $val;
-            }
-        }
-        $faq = !Session::haveRight(self::$rightname, READ);
-
-       // Category select not for anonymous FAQ
-        if (
-            Session::getLoginUserID()
-            && !$faq
-        ) {
-            echo "<div>";
-            echo "<form method='get' action='" . $this->getSearchURL() . "'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><td class='right' width='50%'>" . _n('Category', 'Categories', 1) . "&nbsp;";
-            KnowbaseItemCategory::dropdown(['value' => $params["knowbaseitemcategories_id"]]);
-            echo "</td><td class='left'>";
-            echo "<input type='submit' value=\"" . _sx('button', 'Post') . "\" class='btn btn-primary'></td>";
-            echo "</tr></table>";
-            if (
-                isset($options['item_itemtype'])
-                && isset($options['item_items_id'])
-            ) {
-                echo "<input type='hidden' name='item_itemtype' value='" . $options['item_itemtype'] . "'>";
-                echo "<input type='hidden' name='item_items_id' value='" . $options['item_items_id'] . "'>";
-            }
-            Html::closeForm();
-            echo "</div>";
-        }
-    }
-
 
     /**
      * Print out an HTML form for Search knowbase item
@@ -1483,8 +1268,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @since 0.83
      *
-     * @param $params array  (contains, knowbaseitemcategories_id, faq)
-     * @param $type   string search type : browse / search (default search)
+     * @param array $params (contains, knowbaseitemcategories_id, faq)
+     * @param string $type search type : browse / search (default search)
      *
      * @return array : SQL request
      **/
@@ -1513,8 +1298,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
        // Lists kb Items
         $restrict = self::getVisibilityCriteria(true);
         $restrict_where = $restrict['WHERE'];
-        unset($restrict['WHERE']);
-        unset($restrict['SELECT']);
+        unset($restrict['WHERE'], $restrict['SELECT']);
         $criteria = array_merge_recursive($criteria, $restrict);
 
         switch ($type) {
@@ -1805,12 +1589,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return $search;
     }
 
-
     /**
      * Print out list kb item
      *
-     * @param $options            $_GET
-     * @param $type      string   search type : browse / search (default search)
+     * @param array $options            $_GET
+     * @param string $type search type : browse / search (default search)
      **/
     public static function showList($options, $type = 'search')
     {
@@ -2113,7 +1896,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
     }
 
-
     /**
      * Print out list recent or popular kb/faq
      *
@@ -2137,10 +1919,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'LIMIT'     => 10
         ];
 
-        if ($type == "recent") {
+        if ($type === "recent") {
             $criteria['ORDERBY'] = self::getTable() . '.date_creation DESC';
             $title   = __('Recent entries');
-        } else if ($type == 'lastupdate') {
+        } else if ($type === 'lastupdate') {
             $criteria['ORDERBY'] = self::getTable() . '.date_mod DESC';
             $title   = __('Last updated entries');
         } else {
@@ -2150,8 +1932,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
        // Force all joins for not published to verify no visibility set
         $restrict = self::getVisibilityCriteria(true);
-        unset($restrict['WHERE']);
-        unset($restrict['SELECT']);
+        unset($restrict['WHERE'], $restrict['SELECT']);
         $criteria = array_merge($criteria, $restrict);
 
         if (Session::getLoginUserID()) {
@@ -2217,7 +1998,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             foreach ($iterator as $data) {
                 $name = $data['name'];
 
-                if (isset($data['transname']) && !empty($data['transname'])) {
+                if (!empty($data['transname'])) {
                     $name = $data['transname'];
                 }
                 $output .= "<tr class='tab_bg_2'><td class='left'><div class='kb'>";
@@ -2240,7 +2021,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
     }
 
-
     public function rawSearchOptions()
     {
         $tab = [];
@@ -2252,7 +2032,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Subject'),
             'datatype'           => 'itemlink',
@@ -2261,7 +2041,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -2270,7 +2050,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'answer',
             'name'               => __('Content'),
             'datatype'           => 'text',
@@ -2279,7 +2059,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_faq',
             'name'               => __('FAQ item'),
             'datatype'           => 'bool'
@@ -2287,7 +2067,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'view',
             'name'               => _n('View', 'Views', Session::getPluralNumber()),
             'datatype'           => 'integer',
@@ -2296,7 +2076,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'begin_date',
             'name'               => __('Visibility start date'),
             'datatype'           => 'datetime'
@@ -2304,7 +2084,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'end_date',
             'name'               => __('Visibility end date'),
             'datatype'           => 'datetime'
@@ -2312,7 +2092,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
@@ -2321,7 +2101,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '121',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
@@ -2467,8 +2247,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public function getRights($interface = 'central')
     {
-
-        if ($interface == 'central') {
+        if ($interface === 'central') {
             $values = parent::getRights();
             $values[self::KNOWBASEADMIN] = __('Knowledge base administration');
             $values[self::PUBLISHFAQ]    = __('Publish in the FAQ');
@@ -2498,8 +2277,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'text_maxsize' => 0 // Show all text without read more button
         ]);
 
-        $callback = function ($matches) {
-          //1 => tag name, 2 => existing attributes, 3 => title contents
+        $callback = static function ($matches) {
+            // 1 => tag name, 2 => existing attributes, 3 => title contents
             $tpl = '<%tag%attrs id="%slug"><a href="#%slug">%icon</a>%title</%tag>';
 
             $title = str_replace(
@@ -2508,7 +2287,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                     $matches[1],
                     $matches[2],
                     Toolbox::slugify($matches[3]),
-                    $matches[3],
+                    htmlspecialchars($matches[3]),
                     '<svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"/></svg>'
                 ],
                 $tpl
@@ -2563,9 +2342,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                 sprintf(__('%1$s reverts item to revision %2$s'), $_SESSION["glpiname"], $revid)
             );
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -2600,25 +2379,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
         ]);
 
-       // Get array of ids
-        $ids = array_map(function ($row) {
-            return $row['id'];
-        }, iterator_to_array($ids, false));
+        // Get array of ids
+        $ids = array_map(static fn ($row) => $row['id'], iterator_to_array($ids, false));
 
-       // Filter on canViewItem
-        $ids = array_filter($ids, function ($id) use ($kbi) {
+        // Filter on canViewItem
+        $ids = array_filter($ids, static function ($id) use ($kbi) {
             $kbi->getFromDB($id);
             return $kbi->canViewItem();
         });
 
-       // Avoid empty IN
+        // Avoid empty IN
         if (count($ids) === 0) {
             $ids[] = -1;
         }
 
         return $ids;
     }
-
 
     public static function getIcon()
     {
@@ -2627,8 +2403,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
 
     public static function getAdditionalSearchCriteria($params)
     {
-        $kbi = new self();
-        if (!$kbi->canView()) {
+        if (!self::canView()) {
             $params['criteria'][] = [
                 'link'          => "AND",
                 'field'         => '8', // is_faq
