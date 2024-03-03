@@ -107,7 +107,7 @@ class Group_User extends CommonDBRelation
             'ORDER'        => 'glpi_groups.name'
         ]);
 
-        return iterator_to_array($iterator);
+        return array_values(iterator_to_array($iterator));
     }
 
     /**
@@ -149,7 +149,7 @@ class Group_User extends CommonDBRelation
             'ORDER'        => 'glpi_users.name'
         ]);
 
-        return iterator_to_array($iterator);
+        return array_values(iterator_to_array($iterator));
     }
 
     /**
@@ -702,7 +702,6 @@ class Group_User extends CommonDBRelation
             'add_delegatee' => ['is_userdelegate' => 1],
             default => [],
         };
-
     }
 
     /**
