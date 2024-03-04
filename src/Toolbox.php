@@ -572,12 +572,11 @@ class Toolbox
      * Send a deprecated message in log (with backtrace)
      * @param  string $message the message to send
      * @param  boolean $strict
-     * @param  string $version The version to start the deprecation alert. If null, it is considered deprecated in the current version.
+     * @param  string|null $version The version to start the deprecation alert. If null, it is considered deprecated in the current version.
      * @return void
      */
-    public static function deprecated($message = "Called method is deprecated", $strict = true, $version = null)
+    public static function deprecated($message = "Called method is deprecated", $strict = true, ?string $version = null)
     {
-        $version ??= GLPI_VERSION;
         if (
             $version !== null
             && version_compare(
