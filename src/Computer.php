@@ -43,6 +43,7 @@ class Computer extends CommonDBTM
     use Glpi\Features\DCBreadcrumb;
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -195,7 +196,7 @@ class Computer extends CommonDBTM
             ) {
                 $changes['states_id'] = $input['states_id'];
             }
-           // Update loction of attached items
+           // Update location of attached items
             if (
                 $this->updates[$i] == 'locations_id'
                 && Entity::getUsedConfig('is_location_autoupdate', $this->getEntityID())
@@ -420,11 +421,11 @@ class Computer extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_computer' => 1]
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [

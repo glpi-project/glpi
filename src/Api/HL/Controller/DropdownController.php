@@ -76,6 +76,9 @@ final class DropdownController extends AbstractController
 
     protected static function getRawKnownSchemas(): array
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $schemas = [];
 
         $schemas['Location'] = [
@@ -129,30 +132,39 @@ final class DropdownController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'parent' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'level' => ['type' => Doc\Schema::TYPE_INTEGER],
-                'is_visible_computer' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_monitor' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_network_equipment' => ['x-field' => 'is_visible_networkequipment','type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_peripheral' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_phone' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_printer' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_software_version' => ['x-field' => 'is_visible_softwareversion','type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_software_license' => ['x-field' => 'is_visible_softwarelicense','type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_line' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_certificate' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_passive_dcequipment' => ['x-field' => 'is_visible_passivedcequipment', 'type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_enclosure' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_pdu' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_cluster' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_contract' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_appliance' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_cable' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_database_instance' => ['x-field' => 'is_visible_databaseinstance', 'type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_visible_helpdesk' => ['x-field' => 'is_helpdesk_visible', 'type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ]
         ];
+        $visiblities = array_map('strtolower', $CFG_GLPI['state_types']);
+
+        $schemas['State_Visibilities'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => []
+        ];
+        $schemas['State']['properties']['visibilities'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-full-schema' => 'State_Visibilities',
+        ];
+
+        foreach ($visiblities as $visiblity) {
+            $schemas['State_Visibilities']['properties'][$visiblity] = [
+                'type' => Doc\Schema::TYPE_BOOLEAN,
+                'x-field' => 'is_visible',
+                'x-readonly' => true,
+                'x-join' => [
+                    'table' => \DropdownVisibility::getTable(),
+                    'fkey' => 'id',
+                    'field' => 'items_id',
+                    'condition' => [
+                        'itemtype' => 'State',
+                        'visible_itemtype' => $visiblity
+                    ]
+                ]
+            ];
+        }
+        $schemas['State']['properties']['visibilities']['properties'] = $schemas['State_Visibilities']['properties'];
 
         $schemas['Manufacturer'] = [
             'type' => Doc\Schema::TYPE_OBJECT,

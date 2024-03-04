@@ -46,6 +46,8 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Item_Devices extends CommonDBRelation
 {
+    use Glpi\Features\State;
+
     public static $itemtype_1            = 'itemtype';
     public static $items_id_1            = 'items_id';
     public static $mustBeAttached_1      = false;

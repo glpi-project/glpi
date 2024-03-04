@@ -41,6 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Rack extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
+    use Glpi\Features\State;
 
     const FRONT    = 0;
     const REAR     = 1;
@@ -177,11 +178,11 @@ class Rack extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_rack' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [

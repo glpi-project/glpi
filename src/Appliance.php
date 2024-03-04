@@ -42,6 +42,7 @@ use Glpi\Features\AssetImage;
 class Appliance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
     use AssetImage;
 
    // From CommonDBTM
@@ -291,11 +292,11 @@ class Appliance extends CommonDBTM
 
         $tab[] = [
             'id'                 => '32',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_appliance' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab = array_merge($tab, Certificate::rawSearchOptionsToAdd());

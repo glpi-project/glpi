@@ -200,8 +200,7 @@ final class Search
                 $sql_field = $this->getSQLFieldForProperty($prop_name);
                 $expression = $this->db_read::quoteName($sql_field);
                 if (str_contains($sql_field, '.')) {
-                    $join_name = substr($sql_field, 0, strrpos($sql_field, '.'));
-                    $join_name = str_replace(chr(0x1F), '.', $join_name);
+                    $join_name = $this->getJoinNameForProperty($prop_name);
                     // Check if the join property is in an array. If so, we need to concat each result.
                     if (array_key_exists($join_name, $this->joins)) {
                         $join_def = $this->joins[$join_name];
@@ -577,6 +576,17 @@ final class Search
         throw new RuntimeException("Cannot find primary key property for join $join");
     }
 
+    private function getJoinNameForProperty(string $prop_name): string
+    {
+        if (array_key_exists(str_replace(chr(0x1F), '.', $prop_name), $this->joins)) {
+            $join_name = str_replace(chr(0x1F), '.', $prop_name);
+        } else {
+            $join_name = substr($prop_name, 0, strrpos($prop_name, chr(0x1F)));
+            $join_name = str_replace(chr(0x1F), '.', $join_name);
+        }
+        return $join_name;
+    }
+
     /**
      * @return array Matching records in the format Itemtype => IDs
      * @phpstan-return array<string, int[]>
@@ -796,8 +806,10 @@ final class Search
                 }
             } else {
                 // Add the joined item fields
-                $join_name = substr($dehydrated_ref, 0, strrpos($dehydrated_ref, chr(0x1F)));
-                $join_name = str_replace(chr(0x1F), '.', $join_name);
+                $join_name = $this->getJoinNameForProperty($dehydrated_ref);
+                if (isset($this->flattened_properties[$join_name])) {
+                    continue;
+                }
                 if (!ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $join_name)) {
                     ArrayPathAccessor::setElementByArrayPath($hydrated_record, $join_name, []);
                 }
@@ -824,7 +836,9 @@ final class Search
         // Do this last as some scalar joined properties may be nested and have other data added after the main record was built
         foreach ($dehydrated_row as $k => $v) {
             $normalized_k = str_replace(chr(0x1F), '.', $k);
-            if (isset($this->joins[$normalized_k]) && !isset($hydrated_record[$normalized_k])) {
+            if (isset($this->joins[$normalized_k]) && !ArrayPathAccessor::hasElementByArrayPath($hydrated_record, $normalized_k)) {
+                $v = explode(chr(0x1E), $v);
+                $v = end($v);
                 ArrayPathAccessor::setElementByArrayPath($hydrated_record, $normalized_k, $v);
             }
         }
@@ -948,8 +962,7 @@ final class Search
                             $criteria['SELECT'][] = new QueryExpression($this->db_read::quoteValue($schema_name), '_itemtype');
                         }
                     } else {
-                        $join_name = substr($fkey, 0, strrpos($fkey, chr(0x1F)));
-                        $join_name = str_replace(chr(0x1F), '.', $join_name);
+                        $join_name = $this->getJoinNameForProperty($fkey);
                         $props_to_use = array_filter($this->flattened_properties, function ($prop_name) use ($join_name) {
                             if (isset($this->joins[$prop_name])) {
                                 /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */

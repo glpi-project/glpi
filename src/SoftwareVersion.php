@@ -38,6 +38,8 @@
  **/
 class SoftwareVersion extends CommonDBChild
 {
+    use Glpi\Features\State;
+
    // From CommonDBTM
     public $dohistory = true;
 
@@ -146,7 +148,7 @@ class SoftwareVersion extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
         State::dropdown(['value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => ['is_visible_softwareversion' => 1]
+            'condition' => self::getStateVisibilityCriteria()
         ]);
         echo "</td></tr>\n";
 
@@ -199,11 +201,11 @@ class SoftwareVersion extends CommonDBChild
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_softwareversion' => 1]
+            'condition'          => self::getStateVisibilityCriteria()
         ];
 
         $tab[] = [
@@ -259,10 +261,10 @@ class SoftwareVersion extends CommonDBChild
             'DISTINCT'  => true,
             'FROM'      => 'glpi_softwareversions',
             'LEFT JOIN' => [
-                'glpi_states'  => [
+                State::getTable()  => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
-                        'glpi_states'           => 'id'
+                        State::getTable()           => 'id'
                     ]
                 ]
             ],
@@ -330,10 +332,10 @@ class SoftwareVersion extends CommonDBChild
             ],
             'FROM'      => 'glpi_softwareversions',
             'LEFT JOIN' => [
-                'glpi_states'  => [
+                State::getTable()  => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
-                        'glpi_states'           => 'id'
+                        State::getTable()           => 'id'
                     ]
                 ]
             ],

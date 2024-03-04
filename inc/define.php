@@ -338,6 +338,7 @@ $CFG_GLPI["socket_types"]                  = ['Computer','NetworkEquipment',
 $CFG_GLPI['itemdevices'] = [];
 foreach ($CFG_GLPI['device_types'] as $dtype) {
     $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
+    $CFG_GLPI['state_types'][] = 'Item_' . $dtype;
     $CFG_GLPI["itemdevices"][] = 'Item_' . $dtype;
 }
 

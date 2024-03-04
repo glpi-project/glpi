@@ -44,6 +44,7 @@ use Glpi\Features\AssetImage;
 class SoftwareLicense extends CommonTreeDropdown
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
     use AssetImage;
 
    /// TODO move to CommonDBChild ?
@@ -499,11 +500,11 @@ class SoftwareLicense extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_softwarelicense' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
