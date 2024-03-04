@@ -181,7 +181,14 @@
         });
     </script>
 
-    {{ fields.nullField() }}
+    {% if id < 1 %}
+        {% set teammember_list = call('ProjectTaskTeamDropdown::show', ['teammember_list', []]) %}
+        {{ fields.htmlField(
+            'teammember_list',
+            teammember_list,
+            __("Team members"),
+        ) }}
+    {% endif %}
 
     <div class="hr-text">
         <i class="ti ti-calendar-event"></i>
