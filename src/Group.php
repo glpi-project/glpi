@@ -989,6 +989,7 @@ class Group extends CommonTreeDropdown
 
     public function post_addItem()
     {
+        parent::post_addItem();
         // Adding a new group might invalidate the group cache if it's a new child
         // group and recursive membership is enabled
         if ($this->fields['groups_id']) {
@@ -998,6 +999,7 @@ class Group extends CommonTreeDropdown
 
     public function post_updateItem($history = 1)
     {
+        parent::post_updateItem();
         // Changing a group's parent might invalidate the group cache if recursive
         // membership is enabled
         $parent_changed =
