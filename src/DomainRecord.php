@@ -338,6 +338,7 @@ class DomainRecord extends CommonDBChild
             'item' => $this,
             'domain' => $domain,
         ]);
+        return true;
     }
 
     /**
