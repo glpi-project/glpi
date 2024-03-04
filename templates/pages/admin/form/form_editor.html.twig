@@ -59,6 +59,7 @@
     action="{{ item.getFormURL() }}"
     data-ajax-submit {# Form will be submitted using AJAX #}
     data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
+    data-track-changes="true"
 >
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
