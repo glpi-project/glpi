@@ -51,7 +51,6 @@ class KnowbaseItemTranslation extends CommonDBChild
     public static $rightname       = 'knowbase';
 
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Translation', 'Translations', $nb);
@@ -64,7 +63,6 @@ class KnowbaseItemTranslation extends CommonDBChild
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $this->addStandardTab('Log', $ong, $options);
@@ -76,21 +74,17 @@ class KnowbaseItemTranslation extends CommonDBChild
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
-            $nb = 0;
-            switch ($item->getType()) {
-                case __CLASS__:
-                    $ong[1] = $this->getTypeName(1);
+            switch ($item::class) {
+                case self::class:
+                    $ong[1] = self::getTypeName(1);
                     if ($item->canUpdateItem()) {
                         $ong[3] = __('Edit');
                     }
@@ -103,31 +97,24 @@ class KnowbaseItemTranslation extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
 
         return '';
     }
 
-
     /**
-     * @param $item            CommonGLPI object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
-     **/
+     * @param CommonGLPI $item
+     * @param integer $tabnum (default 1)
+     * @param integer $withtemplate (default 0)
+     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1:
                     $item->showFull();
                     break;
-
-                case 2:
-                    $item->showVisibility();
-                    break;
-
                 case 3:
                     $item->showForm($item->getID(), ['parent' => $item]);
                     break;
@@ -141,7 +128,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     /**
      * Print out (html) show item : question and answer
      *
-     * @param $options      array of options
+     * @param array $options of options
      *
      * @return void
      **/
@@ -184,7 +171,7 @@ class KnowbaseItemTranslation extends CommonDBChild
     /**
      * Display all translated field for an KnowbaseItem
      *
-     * @param $item a KnowbaseItem item
+     * @param KnowbaseItem $item
      *
      * @return true;
      **/
@@ -368,7 +355,6 @@ class KnowbaseItemTranslation extends CommonDBChild
         return $item->fields[$field];
     }
 
-
     /**
      * Is kb item translation functionality active
      *
@@ -383,13 +369,12 @@ class KnowbaseItemTranslation extends CommonDBChild
         return true;
     }
 
-
     /**
      * Check if an item can be translated
      * It be translated if translation if globally on and item is an instance of CommonDropdown
      * or CommonTreeDropdown and if translation is enabled for this class
      *
-     * @param item the item to check
+     * @param CommonGLPI $item the item to check
      *
      * @return true if item can be translated, false otherwise
      *
@@ -402,7 +387,6 @@ class KnowbaseItemTranslation extends CommonDBChild
         return $item instanceof KnowbaseItem;
     }
 
-
     /**
      * Return the number of translations for an item
      *
@@ -412,22 +396,20 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
-
         return countElementsInTable(
             getTableForItemType(__CLASS__),
             ['knowbaseitems_id' => $item->getID()]
         );
     }
 
-
     /**
      * Get already translated languages for item
      *
-     * @param item
+     * @param KnowbaseItem $item
      *
-     * @return array of already translated languages
+     * @return array Array of already translated languages
      **/
-    public static function getAlreadyTranslatedForItem($item)
+    public static function getAlreadyTranslatedForItem(KnowbaseItem $item): array
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -435,7 +417,8 @@ class KnowbaseItemTranslation extends CommonDBChild
         $tab = [];
 
         $iterator = $DB->request([
-            'FROM'   => getTableForItemType(__CLASS__),
+            'SELECT' => ['language'],
+            'FROM'   => self::getTable(),
             'WHERE'  => ['knowbaseitems_id' => $item->getID()]
         ]);
 
@@ -450,7 +433,7 @@ class KnowbaseItemTranslation extends CommonDBChild
         $revision = new KnowbaseItem_Revision();
         $translation = new KnowbaseItemTranslation();
         $translation->getFromDB($this->getID());
-        $revision->createNewTranslated($translation);
+        $revision->createNew($translation);
     }
 
     /**
@@ -481,8 +464,8 @@ class KnowbaseItemTranslation extends CommonDBChild
                 sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision)
             );
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

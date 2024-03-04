@@ -59,7 +59,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
             $where = [];
-            if ($item->getType() == KnowbaseItem::getType()) {
+            if ($item::class === KnowbaseItem::class) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
                     'language'         => null
@@ -88,8 +88,8 @@ class KnowbaseItem_Comment extends CommonDBTM
     /**
      * Show linked items of a knowbase item
      *
-     * @param $item                     CommonDBTM object
-     * @param $withtemplate    integer  withtemplate param (default 0)
+     * @param CommonDBTM $item
+     * @param integer $withtemplate withtemplate param (default 0)
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {

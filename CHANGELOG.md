@@ -230,6 +230,10 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Html::clean()`
+- `KnowbaseItem::addToFaq()`
+- `KnowbaseItem::addVisibilityJoins()`
+- `KnowbaseItem::addVisibilityRestrict()`
+- `KnowbaseItem::showBrowseForm()`
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `Netpoint` class
