@@ -224,7 +224,7 @@ trait Clonable
         $new_item = new static();
         $input = Toolbox::addslashes_deep($this->fields);
         foreach ($override_input as $key => $value) {
-            $input[$key] = $value;
+            $input[$key] = Toolbox::addslashes_deep($value);
         }
         $input = $new_item->cleanCloneInput($input);
 
