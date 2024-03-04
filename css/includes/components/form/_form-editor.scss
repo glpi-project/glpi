@@ -91,17 +91,25 @@
     }
 }
 
-// Hide secondary data on inactive questions
+// Show secondary data on active questions
 [data-glpi-form-editor-question].active [data-glpi-form-editor-question-extra-details] {
     opacity: 1;
     visibility: visible;
     transition: visibility 0s, opacity 0.20s linear;
 }
 
-[data-glpi-form-editor-question]:not(.active) [data-glpi-form-editor-question-extra-details] {
-    height: 0;
-    opacity: 0;
-    visibility: hidden;
+[data-glpi-form-editor-question]:not(.active) {
+    // Hide secondary data on inactive questions
+    [data-glpi-form-editor-question-extra-details] {
+        height: 0;
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    // Hide tinymce toolbar on inactive questions
+    .tox-editor-header {
+        display: none !important;
+    }
 }
 
 .glpi-form-editor-drag-question-placeholder {
