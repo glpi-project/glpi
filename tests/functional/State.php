@@ -179,11 +179,6 @@ class State extends DbTestCase
                 continue;
             }
 
-            if (in_array($classname, ['DeviceGeneric', 'DeviceSensor'])) {
-                // FIXME This field should probably not exist for these itemtypes.
-                continue;
-            }
-
             $has_field  = $DB->fieldExists($table_name, 'states_id');
             $this->array($CFG_GLPI['state_types'])->{$has_field ? 'contains' : 'notContains'}(
                 $classname,

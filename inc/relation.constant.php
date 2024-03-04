@@ -1404,6 +1404,7 @@ $RELATION = [
         'glpi_devicesensors'             => 'states_id',
         'glpi_enclosures'                => 'states_id',
         'glpi_items_devicebatteries'     => 'states_id',
+        'glpi_items_devicecameras'       => 'states_id',
         'glpi_items_devicecases'         => 'states_id',
         'glpi_items_devicecontrols'      => 'states_id',
         'glpi_items_devicedrives'        => 'states_id',

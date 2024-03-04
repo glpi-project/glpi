@@ -100,6 +100,14 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         }
     }
 }
+$migration->displayWarning(
+    'States dropdown in devices items forms are now filtered, and, by default, existing states are not visible.'
+);
 
+// Add missing field
 $migration->addField('glpi_items_devicecameras', 'states_id', 'fkey');
 $migration->addKey('glpi_items_devicecameras', 'states_id');
+
+// Drop unexpected fields
+$migration->dropField('glpi_devicegenerics', 'states_id');
+$migration->dropField('glpi_devicesensors', 'states_id');
