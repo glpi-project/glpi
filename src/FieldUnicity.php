@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * FieldUnicity Class
  **/
@@ -153,7 +155,7 @@ class FieldUnicity extends CommonDropdown
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
                 echo $item::getTypeName();
             }
-            echo "<input type='hidden' name='itemtype' value='" . $this->fields['itemtype'] . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlspecialchars($this->fields['itemtype']) . "'>";
         } else {
             $options = [];
            //Add criteria : display dropdown
@@ -523,81 +525,64 @@ class FieldUnicity extends CommonDropdown
             $where_fields[] = $field;
         }
 
-        echo "<table class='tab_cadre_fixe'>";
-        if (count($fields) > 0) {
-            $colspan = count($fields) + 1;
-            echo "<tr class='tab_bg_2'><th colspan='" . $colspan . "'>" . __('Duplicates') . "</th></tr>";
-
-            $entities = [$unicity->fields['entities_id']];
-            if ($unicity->fields['is_recursive']) {
-                $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
-            }
-
-            $where = [];
-            if ($item->maybeTemplate()) {
-                $where[$item::getTable() . '.is_template'] = 0;
-            }
-
-            foreach ($where_fields as $where_field) {
-                if (getTableNameForForeignKeyField($where_field)) {
-                    $where = $where + [
-                        'NOT'          => [$where_field => null],
-                        $where_field   => ['<>', 0]
-                    ];
-                } else {
-                    $where = $where + [
-                        'NOT'          => [$where_field => null],
-                        $where_field   => ['<>', '']
-                    ];
-                }
-            }
-
-            $iterator = $DB->request([
-                'SELECT'    => $fields,
-                'COUNT'     => 'cpt',
-                'FROM'      => $item->getTable(),
-                'WHERE'     => [
-                    $item->getTable() . '.entities_id'  => $entities
-                ] + $where,
-                'GROUPBY'   => $fields,
-                'ORDERBY'   => 'cpt DESC'
-            ]);
-            $results = [];
-            foreach ($iterator as $data) {
-                if ($data['cpt'] > 1) {
-                    $results[] = $data;
-                }
-            }
-
-            if (empty($results)) {
-                echo "<tr class='tab_bg_2'>";
-                echo "<td class='center' colspan='$colspan'>" . __('No item to display') . "</td></tr>";
-            } else {
-                echo "<tr class='tab_bg_2'>";
-                foreach ($fields as $field) {
-                    $searchOption = $item->getSearchOptionByField('field', $field);
-                    echo "<th>" . $searchOption["name"] . "</th>";
-                }
-                echo "<th>" . _x('quantity', 'Number') . "</th></tr>";
-
-                foreach ($results as $result) {
-                    echo "<tr class='tab_bg_2'>";
-                    foreach ($fields as $field) {
-                        $table = getTableNameForForeignKeyField($field);
-                        if ($table != '') {
-                             echo "<td>" . Dropdown::getDropdownName($table, $result[$field]) . "</td>";
-                        } else {
-                            echo "<td>" . $result[$field] . "</td>";
-                        }
-                    }
-                    echo "<td class='numeric'>" . $result['cpt'] . "</td></tr>";
-                }
-            }
-        } else {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>" . __('No item to display') . "</td></tr>";
+        $entities = [$unicity->fields['entities_id']];
+        if ($unicity->fields['is_recursive']) {
+            $entities = getSonsOf('glpi_entities', $unicity->fields['entities_id']);
         }
-        echo "</table>";
+
+        $where = [];
+        if ($item->maybeTemplate()) {
+            $where[$item::getTable() . '.is_template'] = 0;
+        }
+
+        foreach ($where_fields as $where_field) {
+            $where += [
+                'NOT' => [$where_field => null],
+                $where_field => ['<>', getTableNameForForeignKeyField($where_field) ? 0 : '']
+            ];
+        }
+        $item_table = $item::getTable();
+
+        $iterator = $DB->request([
+            'SELECT'    => $fields,
+            'COUNT'     => 'cpt',
+            'FROM'      => $item_table,
+            'WHERE'     => [
+                $item_table . '.entities_id'  => $entities
+            ] + $where,
+            'GROUPBY'   => $fields,
+            'ORDERBY'   => 'cpt DESC'
+        ]);
+
+        $entries = [];
+        foreach ($iterator as $data) {
+            if ($data['cpt'] > 1) {
+                $entry = [];
+                foreach ($fields as $field) {
+                    $table = getTableNameForForeignKeyField($field);
+                    $entry[$field] = $table !== '' ? Dropdown::getDropdownName($table, $data[$field]) : $data[$field];
+                }
+                $entry['number'] = $data['cpt'];
+                $entries[] = $entry;
+            }
+        }
+
+        $columns = [];
+        foreach ($fields as $field) {
+            $searchOption = $item->getSearchOptionByField('field', $field);
+            $columns[$field] = $searchOption["name"];
+        }
+        $columns['number'] = _x('quantity', 'Number');
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'columns' => $columns,
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false,
+        ]);
     }
 
     /**
