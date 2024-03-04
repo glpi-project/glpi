@@ -393,7 +393,6 @@ class DropdownTranslation extends CommonDBChild
                     </button>
                 </div>
 TWIG, $twig_params);
-
         }
 
         $iterator = $DB->request([
