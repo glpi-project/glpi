@@ -184,7 +184,8 @@ class Project extends DbTestCase
         $project = new \Project();
 
        // Create a project template
-        $template_id = $project->add(
+        $template = $this->createItem(
+            'Project',
             [
                 'name'         => $this->getUniqueString(),
                 'entities_id'  => 0,
@@ -192,28 +193,33 @@ class Project extends DbTestCase
                 'is_template'  => 1,
             ]
         );
-        $this->integer($template_id)->isGreaterThan(0);
 
-        $project_task = new ProjectTask();
-        $task1_id = $project_task->add(
+        $expected_names = [];
+
+        $task_1_name = $this->getUniqueString();
+        $this->createItem(
+            'ProjectTask',
             [
-                'name'         => $this->getUniqueString(),
-                'projects_id'  => $template_id,
+                'name'         => $task_1_name,
+                'projects_id'  => $template->getID(),
                 'entities_id'  => 0,
                 'is_recursive' => 1,
             ]
         );
-        $this->integer($task1_id)->isGreaterThan(0);
+        $expected_names[] = $task_1_name;
+
         // Task with a quote in its name
-        $task2_id = $project_task->add(
+        $task_2_name = "Task 2 '" . $this->getUniqueString();
+        $this->createItem(
+            'ProjectTask',
             [
-                'name'         => "Task 2 \'" . $this->getUniqueString(),
-                'projects_id'  => $template_id,
+                'name'         => $task_2_name,
+                'projects_id'  => $template->getID(),
                 'entities_id'  => 0,
                 'is_recursive' => 1,
             ]
         );
-        $this->integer($task2_id)->isGreaterThan(0);
+        $expected_names[] = $task_2_name;
 
         // Add 1 second to GLPI current time
         $date2 = date('Y-m-d H:i:s', strtotime($date) + 1);
@@ -221,16 +227,16 @@ class Project extends DbTestCase
 
        // Create from template
         $entity_id = getItemByTypeName('Entity', '_test_child_2', true);
-        $project_id = $project->add(
+        $project = $this->createItem(
+            'Project',
             [
-                'id'           => $template_id,
+                'id'           => $template->getID(),
                 'name'         => $this->getUniqueString(),
                 'entities_id'  => $entity_id,
                 'is_recursive' => 0,
             ]
         );
-        $this->integer($project_id)->isGreaterThan(0);
-        $this->integer($project_id)->isNotEqualTo($template_id);
+        $this->integer($project->getID())->isNotEqualTo($template->getID());
 
        // Check created project
         $this->integer($project->fields['entities_id'])->isEqualTo($entity_id);
@@ -242,9 +248,11 @@ class Project extends DbTestCase
         $this->variable($project->fields['date_mod'])->isNotEqualTo($date);
 
        // Check created tasks
-        $tasks_data = getAllDataFromTable($project_task->getTable(), ['projects_id' => $project_id]);
+        $tasks_data = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID()]);
         $this->array($tasks_data)->hasSize(2);
-        foreach ($tasks_data as $task_data) {
+
+        foreach (array_values($tasks_data) as $index => $task_data) {
+            $this->string($task_data['name'])->isEqualTo($expected_names[$index]);
             $this->integer($task_data['entities_id'])->isEqualTo($entity_id);
             $this->integer($task_data['is_recursive'])->isEqualTo(0);
         }
