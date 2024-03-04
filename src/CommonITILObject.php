@@ -909,6 +909,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
             || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+            || isset($this->input['status']) && in_array($this->input['status'], $this->getClosedStatusArray())
         ) {
             return false;
         }
@@ -9797,7 +9798,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             foreach (['requester', 'observer', 'assign'] as $actor_type) {
                 $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
-                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
+                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign() && !$this->isNewItem()) {
                     continue;
                 }
                 if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
