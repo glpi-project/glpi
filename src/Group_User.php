@@ -59,7 +59,7 @@ class Group_User extends CommonDBRelation
      *
      * @return boolean true if the user belongs to the group
      */
-    public static function isUserInGroup($users_id, $groups_id)
+    public static function isUserInGroup($users_id, $groups_id): bool
     {
         return countElementsInTable(
             'glpi_groups_users',
@@ -78,12 +78,11 @@ class Group_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getUserGroups($users_id, $condition = [])
+    public static function getUserGroups($users_id, $condition = []): array
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $groups = [];
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_groups.*',
@@ -107,13 +106,9 @@ class Group_User extends CommonDBRelation
             ] + $condition,
             'ORDER'        => 'glpi_groups.name'
         ]);
-        foreach ($iterator as $row) {
-            $groups[] = $row;
-        }
 
-        return $groups;
+        return array_values(iterator_to_array($iterator));
     }
-
 
     /**
      * Get users for a group
@@ -129,8 +124,6 @@ class Group_User extends CommonDBRelation
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        $users = [];
 
         $iterator = $DB->request([
             'SELECT' => [
@@ -155,17 +148,14 @@ class Group_User extends CommonDBRelation
             ] + $condition,
             'ORDER'        => 'glpi_users.name'
         ]);
-        foreach ($iterator as $row) {
-            $users[] = $row;
-        }
 
-        return $users;
+        return array_values(iterator_to_array($iterator));
     }
 
-
-    /**  Show groups of a user
+    /**
+     * Show groups of a user
      *
-     * @param $user   User object
+     * @param User $user   User object
      **/
     public static function showForUser(User $user)
     {
@@ -678,12 +668,6 @@ class Group_User extends CommonDBRelation
         }
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBRelation::getRelationMassiveActionsSpecificities()
-     **/
     public static function getRelationMassiveActionsSpecificities()
     {
         $specificities                           = parent::getRelationMassiveActionsSpecificities();
@@ -707,24 +691,18 @@ class Group_User extends CommonDBRelation
         return $specificities;
     }
 
-
     public static function getRelationInputForProcessingOfMassiveActions(
         $action,
         CommonDBTM $item,
         array $ids,
         array $input
     ) {
-        switch ($action) {
-            case 'add_supervisor':
-                return ['is_manager' => 1];
-
-            case 'add_delegatee':
-                return ['is_userdelegate' => 1];
-        }
-
-        return [];
+        return match ($action) {
+            'add_supervisor' => ['is_manager' => 1],
+            'add_delegatee' => ['is_userdelegate' => 1],
+            default => [],
+        };
     }
-
 
     /**
      * Get search function for the class
@@ -742,7 +720,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -751,7 +729,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_dynamic',
             'name'               => __('Dynamic'),
             'datatype'           => 'bool',
@@ -779,7 +757,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '6',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_manager',
             'name'               => _n('Manager', 'Managers', 1),
             'datatype'           => 'bool'
@@ -787,7 +765,7 @@ class Group_User extends CommonDBRelation
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_userdelegate',
             'name'               => __('Delegatee'),
             'datatype'           => 'bool'
@@ -795,7 +773,6 @@ class Group_User extends CommonDBRelation
 
         return $tab;
     }
-
 
     /**
      * @param $user_ID
@@ -811,28 +788,26 @@ class Group_User extends CommonDBRelation
         $obj->deleteByCriteria($crit);
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
-                case 'User':
+            switch ($item::class) {
+                case User::class:
                     if (Group::canView()) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
                     break;
 
-                case 'Group':
+                case Group::class:
                     if (User::canView()) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                               $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
                     break;
             }
@@ -856,23 +831,23 @@ class Group_User extends CommonDBRelation
             $members = self::clearDuplicatedGroupData($members);
 
             return count($members);
-        } elseif ($item instanceof User) {
+        }
+
+        if ($item instanceof User) {
             return parent::countForItem($item);
         }
 
         return 0;
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'User':
+        switch ($item::class) {
+            case User::class:
                 self::showForUser($item);
                 break;
 
-            case 'Group':
+            case Group::class:
                 self::showForGroup($item);
                 break;
         }
@@ -896,7 +871,6 @@ class Group_User extends CommonDBRelation
         $params['SELECT'][] = self::getTable() . '.is_userdelegate';
         return $params;
     }
-
 
     public function post_addItem()
     {
@@ -935,19 +909,19 @@ class Group_User extends CommonDBRelation
             $plannings = importArrayFromDB($user['plannings']);
             $nb_users  = count($plannings['plannings'][$planning_k]['users']);
 
-           // add the planning for the user
+            // add the planning for the user
             $plannings['plannings'][$planning_k]['users']['user_' . $this->fields['users_id']] = [
                 'color'   => Planning::getPaletteColor('bg', $nb_users),
                 'display' => true,
                 'type'    => 'user'
             ];
 
-           // if current user logged, append also to its session
-            if ($users_id == Session::getLoginUserID()) {
+            // if current user logged, append also to its session
+            if ($users_id === Session::getLoginUserID()) {
                 $_SESSION['glpi_plannings'] = $plannings;
             }
 
-           // save the planning completed to db
+            // save the planning completed to db
             $json_plannings = exportArrayToDB($plannings);
             $stmt->bind_param('si', $json_plannings, $users_id);
             $DB->executeStatement($stmt);
@@ -962,7 +936,6 @@ class Group_User extends CommonDBRelation
         Group::updateLastGroupChange();
     }
 
-
     public function post_purgeItem()
     {
         /** @var \DBmysql $DB */
@@ -970,11 +943,11 @@ class Group_User extends CommonDBRelation
 
         parent::post_purgeItem();
 
-       // remove user from plannings
+        // remove user from plannings
         $groups_id  = $this->fields['groups_id'];
         $planning_k = 'group_' . $groups_id . '_users';
 
-       // find users with the current group in their plannings
+        // find users with the current group in their plannings
         $user_inst = new User();
         $users = $user_inst->find([
             'plannings' => ['LIKE', "%$planning_k%"]
@@ -999,15 +972,15 @@ class Group_User extends CommonDBRelation
             $users_id  = $user['id'];
             $plannings = importArrayFromDB($user['plannings']);
 
-           // delete planning for the user
+            // delete planning for the user
             unset($plannings['plannings'][$planning_k]['users']['user_' . $this->fields['users_id']]);
 
-           // if current user logged, append also to its session
-            if ($users_id == Session::getLoginUserID()) {
+            // if current user logged, append also to its session
+            if ($users_id === Session::getLoginUserID()) {
                 $_SESSION['glpi_plannings'] = $plannings;
             }
 
-           // save the planning completed to db
+            // save the planning completed to db
             $json_plannings = exportArrayToDB($plannings);
             $stmt->bind_param('si', $json_plannings, $users_id);
             $DB->executeStatement($stmt);
@@ -1068,7 +1041,7 @@ class Group_User extends CommonDBRelation
     {
         $user_ids = [];
 
-        return array_filter($data, function ($user_data) use (&$user_ids) {
+        return array_filter($data, static function ($user_data) use (&$user_ids) {
             if (!isset($user_ids[$user_data['id']])) {
                 $user_ids[$user_data['id']] = true;
                 return true;
