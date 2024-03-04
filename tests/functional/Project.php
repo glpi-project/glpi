@@ -204,9 +204,10 @@ class Project extends DbTestCase
             ]
         );
         $this->integer($task1_id)->isGreaterThan(0);
+        // Task with a quote in its name
         $task2_id = $project_task->add(
             [
-                'name'         => $this->getUniqueString(),
+                'name'         => "Task 2 \'" . $this->getUniqueString(),
                 'projects_id'  => $template_id,
                 'entities_id'  => 0,
                 'is_recursive' => 1,
