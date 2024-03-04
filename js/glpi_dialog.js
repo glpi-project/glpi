@@ -292,6 +292,7 @@ var glpi_confirm = function({
     confirm_label = _x('button', 'Confirm'),
     cancel_callback  = () => {},
     cancel_label  = _x('button', 'Cancel'),
+    close_callback  = () => {},
 } = {}) {
 
     glpi_html_dialog({
@@ -308,7 +309,8 @@ var glpi_confirm = function({
             click: function(event) {
                 cancel_callback(event);
             }
-        }]
+        }],
+        close: close_callback
     });
 
     return id;
