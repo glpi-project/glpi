@@ -290,6 +290,7 @@ The present file will list all changes made to the project; according to the
 - `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
 - `DropdownTranslation::getTranslationByName()`
+- `addgroup` and `deletegroup` actions in `front/user.form.php`.
 
 
 ## [10.0.14] unreleased

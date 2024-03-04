@@ -1,0 +1,73 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.A
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{#  not extending generic form due to the canEdit check required to add the form and the odd (broken?) checks done for CommonDBRelation items #}
+<div class="asset">
+    <form name="asset_form" method="post" action="{{ 'Group_User'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once>
+        <div class="d-flex flex-row flex-wrap">
+            {% set field_options = {
+                field_class: 'col-4',
+            } %}
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            {% if source_itemtype is not defined or source_itemtype == 'User' %}
+                {{ inputs.hidden('users_id', item.fields['users_id']) }}
+                {{ fields.dropdownField('Group', 'groups_id', item.fields['groups_id']|default(0), 'Group'|itemtype_name, {
+                    used: used,
+                    condition: {
+                        is_usergroup: 1
+                    },
+                    entity: session('glpiactive_entity'),
+                    entity_sons: true
+                } + field_options) }}
+            {% endif %}
+            {% if source_itemtype is not defined or source_itemtype == 'Group' %}
+                {{ inputs.hidden('groups_id', item.fields['groups_id']) }}
+                {{ fields.dropdownField('User', 'users_id', item.fields['users_id']|default(0), 'User'|itemtype_name, {
+                    used: used,
+                    entity: entityrestrict|default(session('glpiactive_entity')),
+                    right: 'all',
+                    with_no_right: true
+                } + field_options) }}
+            {% endif %}
+
+            {{ fields.dropdownYesNo('is_manager', item.fields['is_manager'], _n('Manager', 'Managers', 1), field_options) }}
+            {{ fields.dropdownYesNo('is_userdelegate', item.fields['is_userdelegate'], __('Delegatee'), field_options) }}
+        </div>
+        <div class="d-flex flex-row-reverse pe-2">
+            {{ inputs.submit('add', _x('button', 'Add'), 1, field_options) }}
+        </div>
+    </form>
+</div>

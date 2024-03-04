@@ -176,9 +176,11 @@
                         <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
                             {% if showmassiveactions %}
                                 <td style="width: 10px">
-                                    <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                        value="1" aria-label=""
-                                        name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                    {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
+                                        <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                               value="1" aria-label=""
+                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                    {% endif %}
                                 </td>
                             {% endif %}
                             {% for colkey, colum in columns %}
