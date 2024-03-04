@@ -241,7 +241,6 @@ class ComponentController extends AbstractController
                     'type' => self::getDropdownTypeSchema(class: \DeviceGenericType::class, full_schema: 'GenericDeviceType'),
                     'model' => self::getDropdownTypeSchema(class: \DeviceGenericModel::class, full_schema: 'GenericDeviceModel'),
                     'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
-                    'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
                 ]
             ],
             'GraphicCardModel' => [
@@ -373,7 +372,6 @@ class ComponentController extends AbstractController
                     'type' => self::getDropdownTypeSchema(class: \DeviceSensorType::class, full_schema: 'SensorType'),
                     'model' => self::getDropdownTypeSchema(class: \DeviceSensorModel::class, full_schema: 'SensorModel'),
                     'location' => self::getDropdownTypeSchema(class: \Location::class, full_schema: 'Location'),
-                    'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
                 ]
             ],
             'SIMCardType' => [
