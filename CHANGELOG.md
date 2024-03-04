@@ -284,6 +284,7 @@ The present file will list all changes made to the project; according to the
 - `DisplayPreference::showFormPerso` `target_id` parameter.
 - `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
+- `DropdownTranslation::getTranslationByName()`
 
 
 ## [10.0.13] unreleased

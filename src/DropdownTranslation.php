@@ -762,41 +762,6 @@ JAVASCRIPT
     }
 
     /**
-     * Get a translation for a value
-     *
-     * @param string $itemtype  itemtype
-     * @param string $field     field to query
-     * @param string $value     value to translate
-     *
-     * @return string the value translated if a translation is available, or the same value if not
-     **/
-    public static function getTranslationByName($itemtype, $field, $value)
-    {
-        //TODO Check which version used this last
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $iterator = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => getTableForItemType($itemtype),
-            'WHERE'  => [
-                $field   => $value
-            ]
-        ]);
-        if (count($iterator) > 0) {
-            $current = $iterator->current();
-            return self::getTranslatedValue(
-                $current['id'],
-                $itemtype,
-                $field,
-                $_SESSION['glpilanguage'],
-                $value
-            );
-        }
-        return $value;
-    }
-
-    /**
      * Get translations for an item
      *
      * @param string  $itemtype  itemtype
