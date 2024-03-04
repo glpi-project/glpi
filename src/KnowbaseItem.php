@@ -335,7 +335,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             }
         }
 
-        if (isset($this->input['_do_item_link']) && $this->input['_do_item_link'] === 1) {
+        if (isset($this->input['_do_item_link']) && (bool)$this->input['_do_item_link']) {
             $params = [
                 'knowbaseitems_id' => $this->getID(),
                 'itemtype'         => $this->input['_itemtype'],
