@@ -77,26 +77,6 @@
     {% endif %}
 
     {% if not item.isNewItem() %}
-        {% set delete_msg %}
-            {% if asset_count > 0 %}
-                <div class="alert alert-warning">
-                    <div class="alert-title">{{ __('This asset definition is used by %d assets.')|format(asset_count) }}</div>
-                    <br>
-                    <div class="text-secondary">
-                        {% if item.fields['is_active'] %}
-                            {# Can only view search page when the definition is active #}
-                            <a href="{{ asset_search_url }}">{{ __('Show what would be deleted') }}</a>
-                        {% else %}
-                            {{ __('All assets that are using this definition will also be deleted.') }}
-                        {% endif %}
-                    </div>
-                </div>
-            {% else %}
-                <div class="alert alert-info">
-                    <div class="alert-title">{{ __('This asset definition is not used by any assets.') }}</div>
-                </div>
-            {% endif %}
-        {% endset %}
         <div class="modal fade" id="deletionWarningModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -111,12 +91,7 @@
                             {% if asset_count > 0 %}
                                 {{ __('This asset definition is used by %d assets.')|format(asset_count) }}
                                 <br>
-                                {% if item.fields['is_active'] %}
-                                    {# Can only view search page when the definition is active #}
-                                    <a href="{{ asset_search_url }}">{{ __('Show what would be deleted') }}</a>
-                                {% else %}
-                                    {{ __('All assets that are using this definition will also be deleted.') }}
-                                {% endif %}
+                                {{ __('All assets that are using this definition will be deleted.') }}
                             {% else %}
                                 {{ __('This asset definition is not used by any assets.') }}
                             {% endif %}

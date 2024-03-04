@@ -144,6 +144,8 @@ final class AssetDefinition extends CommonDBTM
         $this->initForm($ID, $options);
         $options['candel'] = false;
 
+        $asset_count = 0;
+
         if (!self::isNewID($ID)) {
             // Add custom delete button that will show the number of assets using this definition and a link to their search page
             $asset_count = countElementsInTable(
@@ -153,14 +155,6 @@ final class AssetDefinition extends CommonDBTM
                     'is_template' => 0
                 ]
             );
-            $asset_class = $this->getAssetClassName();
-            $asset_search_url = $asset_class::getSearchURL();
-            $params = [
-                'reset' => 'reset',
-                'criteria' => QueryBuilder::getDefaultCriteria($asset_class::getType())
-            ];
-            $asset_search_url .= '&' . \Toolbox::append_params($params);
-
             $options['addbuttons'] = [
                 'purge' => [
                     'title' => _x('button', 'Delete permanently'),
@@ -171,6 +165,7 @@ final class AssetDefinition extends CommonDBTM
                 ]
             ];
         }
+
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/main.html.twig',
             [
@@ -178,8 +173,7 @@ final class AssetDefinition extends CommonDBTM
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
                 'reserved_system_names' => AssetDefinitionManager::getInstance()->getReservedAssetsSystemNames(),
-                'asset_count'        => $asset_count ?? 0,
-                'asset_search_url'   => $asset_search_url ?? '#',
+                'asset_count'           => $asset_count,
             ]
         );
         return true;
