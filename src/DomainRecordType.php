@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 class DomainRecordType extends CommonDropdown
 {
     public static $rightname = 'dropdown';
@@ -370,11 +372,6 @@ class DomainRecordType extends CommonDropdown
      */
     public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
     {
-        $rand = mt_rand();
-
-        echo '<form id="domain_record_data' . $rand . '">';
-        echo '<table class="tab_cadre_fixe">';
-
         $fields = json_decode($this->fields['fields'] ?? '[]', true);
         if (empty($fields)) {
             $fields = [
@@ -385,103 +382,10 @@ class DomainRecordType extends CommonDropdown
             ];
         }
 
-        foreach ($fields as $field) {
-            $placeholder = Html::entities_deep($field['placeholder'] ?? '');
-            $quote_value = $field['quote_value'] ?? false;
-            $is_fqdn = $field['is_fqdn'] ?? false;
-
-            echo '<tr class="tab_bg_1">';
-            echo '<td>' . $field['label'] . '</td>';
-            echo '<td>';
-            echo '<input name="' . $field['key'] . '" '
-            . 'placeholder="' . $placeholder . '" '
-            . 'data-quote-value="' . ($quote_value ? 'true' : 'false') . '" '
-            . (!$quote_value ? 'pattern="[^\s]+" ' : '') // prevent usage of spaces in unquoted values
-            . 'data-is-fqdn="' . ($is_fqdn ? 'true' : 'false') . '" '
-            . ' />';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '<tr class="tab_bg_2">';
-        echo '<td colspan="2" class="right">';
-        echo Html::submit('<i class="fas fa-save"></i> ' . _x('button', 'Save'));
-        echo '</td>';
-        echo '</tr>';
-
-        echo '</table>';
-        echo '</form>';
-
-        $js = <<<JAVASCRIPT
-         $(
-            function () {
-               var form = $('#domain_record_data{$rand}');
-
-               // Put existing data into fields
-               var data_to_copy = $('#{$str_input_id}').val();
-               form.find('input').each(
-                  function () {
-                     var endoffset = 0;
-                     if ($(this).data('quote-value')) {
-                        // Search for closing quote (quote inside value are escaped by a \)
-                        do {
-                           endoffset = endoffset + 1; // move to next char (ignore opening or escaped quote)
-                           endoffset = data_to_copy.indexOf('" ', endoffset);
-                        } while (endoffset !== -1 && data_to_copy.charAt(endoffset - 1) == '\\\');
-
-                        if (endoffset !== -1) {
-                           endoffset += 1; // capture closing quote
-                        }
-                     } else {
-                        endoffset = data_to_copy.indexOf(' ');
-                     }
-
-                     if (endoffset === -1) {
-                        endoffset = data_to_copy.length; // get whole value if no separator found
-                     }
-
-                     var value = data_to_copy.substring(0, endoffset).trim();
-                     if ($(this).data('quote-value')) {
-                        value = value.replace(/^"/, '').replace(/"$/, ''); // trim surrounding quotes
-                        value = value.replace('\\\"', '"'); // unescape quotes
-                     }
-                     $(this).val(value);
-
-                     // "endoffset + 1" to strip also ' ' separator char
-                     data_to_copy = data_to_copy.substring(endoffset + 1);
-                  }
-               );
-
-               // Copy values into data input on submit
-               form.on(
-                  'submit',
-                  function(event) {
-                     event.preventDefault();
-
-                     var data_tokens = [];
-                     var data_obj = {};
-                     $(this).find('input').each(
-                        function () {
-                           var value = $(this).val();
-                           data_obj[$(this).attr('name')] = value; // keep raw value
-
-                           if ($(this).data('is-fqdn') && !value.match('/^\.$/')) {
-                              value += '.'; // add ending dot
-                           }
-                           if ($(this).data('quote-value') && !value.match('/^".*"$/')) {
-                              value = '"' + value.replace('"', '\\\"') + '"';
-                           }
-                           data_tokens.push(value);
-                        }
-                     );
-
-                     $('#{$str_input_id}').val(data_tokens.join(' '));
-                     $('#{$obj_input_id}').val(JSON.stringify(data_obj));
-                  }
-               );
-            }
-         );
-JAVASCRIPT;
-        echo Html::scriptBlock($js);
+        TemplateRenderer::getInstance()->display('pages/management/domainrecordtype_helper.html.twig', [
+            'fields' => $fields,
+            'str_input_id' => $str_input_id,
+            'obj_input_id' => $obj_input_id,
+        ]);
     }
 }

@@ -1,0 +1,151 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {% set field_options = {
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+    } %}
+
+    {% if _request['_in_modal'] %}
+        {{ inputs.hidden('_in_modal', 1) }}
+    {% endif %}
+    {% if domains_id is defined %}
+        {{ inputs.hidden('domains_id', domains_id) }}
+    {% else %}
+        {% set domain_field %}
+            {% if domain.isTemplate %}
+                {{ inputs.hidden('domains_id', item.fields['domains_id']) }}
+                {{ _n('%1$s template', '%1$s templates', 1)|format(domain.fields['template_name']) }}
+            {% else %}
+                {{ fields.dropdownField('Domain', 'domains_id', item.fields['domains_id'], null, {
+                    no_label: true,
+                    mb: '',
+                    entity: item.fields['entities_id']
+                }) }}
+            {% endif %}
+        {% endset %}
+        {{ fields.htmlField('', domain_field, 'Domain'|itemtype_name, field_options) }}
+    {% endif %}
+    {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+
+    {{ fields.dropdownField(
+        'DomainRecordType',
+        'domainrecordtypes_id',
+        item.fields['domainrecordtypes_id'],
+        'DomainRecordType'|itemtype_name,
+        field_options
+    ) }}
+    {{ fields.dropdownField(
+        'User',
+        'users_id_tech',
+        item.fields['users_id_tech'],
+        __('Technician in charge'),
+        field_options|merge({
+            'entity': item.fields['entities_id'],
+            'right': 'own_ticket',
+        })
+    ) }}
+
+    {{ fields.dropdownField(
+        'Group',
+        'groups_id_tech',
+        item.fields['groups_id_tech'],
+        __('Group in charge'),
+        field_options|merge({
+            'entity': item.fields['entities_id'],
+            'condition': {'is_assign': 1},
+        })
+    ) }}
+
+    {# In this case, date_creation is a user-changeable field (indicating when the actual domain record was added?) #}
+    {# TODO shouldn't this use a 'date' field instead? #}
+    {{ fields.dateField('date_creation', item.fields['date_creation'], __('Creation date'), {
+        clearable: true
+    } + field_options) }}
+
+    {{ fields.numberField('ttl', item.fields['ttl'], __('TTL'), field_options) }}
+
+    {{ inputs.hidden('data_obj', item.fields['data_obj'], {
+        id: 'data_obj' ~ rand
+    }) }}
+    {% set data_field_helper %}
+        <button name="open_data_helper" type="button" class="btn btn-icon btn-ghost-secondary" title="{{ __('Open helper form') }}">
+            <i class="ti ti-pencil"></i>
+        </button>
+        <script>
+            $(() => {
+                $('#data{{ rand }}, #dropdown_domainrecordtypes_id{{ rand }}').change(() => {
+                    $('#data_obj{{ rand }}').val(''); // empty "data_obj" value if "data" or "record type" changed
+                });
+                $('button[name="open_data_helper"]').click(
+                    function (event) {
+                        event.preventDefault();
+
+                        const select = $(this).closest('form').find('[name="domainrecordtypes_id"]');
+                        const domainrecordtypes_id = select.val();
+                        const title = domainrecordtypes_id > 0 ? select.find('option:selected').html() : '';
+
+                        glpi_ajax_dialog({
+                            id: 'modal_{{ rand }}',
+                            title: title,
+                            url: '{{ path('/ajax/domainrecord_data_form.php') }}',
+                            params: {
+                                domainrecordtypes_id: domainrecordtypes_id,
+                                str_input_id: 'data{{ rand }}',
+                                obj_input_id: 'data_obj{{ rand }}'
+                            },
+                            done: function() {
+                                $('#modal_{{ rand }}').find('form').on('submit', () => {
+                                    $('#modal_{{ rand }} + .modal-backdrop, #modal_{{ rand }}').remove();
+                                });
+                            }
+                        })
+                    }
+                );
+            });
+        </script>
+    {% endset %}
+
+    {{ fields.textField('data', item.fields['data'], __('Data'), {
+        full_width: true,
+        label_class: 'col-xxl-1',
+        input_class: 'col-xxl-11 d-flex',
+        add_field_html: data_field_helper,
+        id: 'data' ~ rand
+    }) }}
+{% endblock %}
