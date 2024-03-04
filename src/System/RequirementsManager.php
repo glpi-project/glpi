@@ -110,6 +110,11 @@ class RequirementsManager
             __('Required for internationalization.')
         );
         $requirements[] = new Extension(
+            'mbstring',
+            false,
+            __('Required for multibyte chars support and charset conversion.')
+        );
+        $requirements[] = new Extension(
             'zlib',
             false,
             __('Required for handling of compressed communication with inventory agents, installation of gzip packages from marketplace and PDF generation.')
@@ -181,7 +186,7 @@ class RequirementsManager
         );
         $requirements[] = new ExtensionGroup(
             __('PHP emulated extensions'),
-            ['ctype', 'iconv', 'mbstring', 'sodium'],
+            ['ctype', 'iconv', 'sodium'],
             true,
             __('Slightly enhance performances.')
         );
