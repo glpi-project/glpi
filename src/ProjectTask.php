@@ -1449,6 +1449,171 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
+     * Get the list of projects for a user.
+     *
+     * @param int $user_id The user ID.
+     * @param bool $search_in_groups Whether to search in groups.
+     * @param bool $search_in_team Whether to search in the team.
+     * @return array The list of project IDs.
+     */
+    public static function getProjectTaskIDsForUser(
+        int $user_id,
+        bool $search_in_groups = true
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $groups_sub_query = new \Glpi\DBAL\QuerySubQuery([
+            'SELECT' => [
+                'groups_id'
+            ],
+            'FROM' => Group_User::getTable(),
+            'WHERE' => [
+                'users_id' => $user_id
+            ]
+        ]);
+
+        $crit = [
+            ['itemtype' => 'User', 'items_id' => $user_id]
+        ];
+
+        if ($search_in_groups) {
+            $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
+        }
+
+        $req = [
+            'FROM' => ProjectTask::getTable(),
+            'WHERE' => [
+                'id' => new QuerySubQuery([
+                    'SELECT' => [
+                        'projecttasks_id'
+                    ],
+                    'FROM' => ProjectTaskTeam::getTable(),
+                    'WHERE' => [
+                        'OR' => $crit
+                    ]
+                ])
+            ]
+        ];
+
+        $iterator = $DB->request($req);
+
+        $projecttask_ids = [];
+        foreach ($iterator as $data) {
+            $projecttask_ids[] = $data['id'];
+        }
+
+        return $projecttask_ids;
+    }
+
+
+    /**
+     *  Show the list of projects for a user in the personal view.
+     *
+     * @param int $user_id The user ID.
+     * @return void
+     */
+    public static function showListForCentral(int $user_id): void
+    {
+        $projecttasks = array_map(
+            fn($id) => self::getById($id),
+            self::getProjectTaskIDsForUser($user_id, false)
+        );
+
+        // If no project tasks are found, do not display anything
+        if (empty($projecttasks)) {
+            return;
+        }
+
+        // If all project tasks are finished, do not display anything
+        if (
+            empty(array_filter($projecttasks, function ($projecttask) {
+                $state = ProjectState::getById($projecttask->fields['projectstates_id']);
+                if ($state !== false) {
+                    if ($state->fields['is_finished']) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }))
+        ) {
+            return;
+        }
+
+        $displayed_row_count = min(count($projecttasks), 5);
+        $total_row_count = count($projecttasks);
+        $search_url = self::getSearchURL();
+        $title = Html::makeTitle(__('Your project tasks'), $displayed_row_count, $total_row_count);
+        $main_header = "<a href='$search_url'>$title</a>";
+
+        $twig_params = [
+            'class'       => 'table table-borderless table-striped table-hover card-table',
+            'header_rows' => [
+                [
+                    [
+                        'colspan'   => 4,
+                        'content'   => $main_header
+                    ]
+                ],
+                [
+                    [
+                        'content' => __('Name'),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => _n('State', 'States', 1),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => _n('Project', 'Projects', 1),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => __('Percent done'),
+                        'style'   => 'width: 10%'
+                    ]
+                ]
+            ],
+            'rows' => []
+        ];
+
+        foreach ($projecttasks as $key => $projecttask) {
+            if ($key >= $displayed_row_count) {
+                break;
+            }
+
+            $name = $projecttask->getLink();
+            $project = Project::getById($projecttask->fields['projects_id'])->getLink();
+            $percent_done = $projecttask->fields['percent_done'] . '%';
+
+            $state = ProjectState::getById($projecttask->fields['projectstates_id']);
+            if ($state !== false) {
+                $state_cell = '<div class="priority_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
+            }
+
+            $twig_params['rows'][] = [
+                'values' => [
+                    [
+                        'content' => $name
+                    ],
+                    [
+                        'content' => $state_cell ?? ''
+                    ],
+                    [
+                        'content' => $project
+                    ],
+                    [
+                        'content' => $percent_done
+                    ]
+                ]
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
+    }
+
+    /**
      * Populate the planning with planned project tasks
      *
      * @since 9.1

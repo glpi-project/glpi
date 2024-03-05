@@ -496,4 +496,78 @@ class Project extends DbTestCase
         $this->integer(substr_count($html, "background-color: #000002;"))->isEqualTo(2);
         $this->integer(substr_count($html, "background-color: #000003;"))->isEqualTo(3);
     }
+
+    public function testGetProjectIDsForUser(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create some users
+        $users = $this->createItems(\User::getType(), [
+            ['name' => 'user0'],
+            ['name' => 'user1'],
+            ['name' => 'user2'],
+            ['name' => 'user3'],
+            ['name' => 'user4']
+        ]);
+
+        // Create group
+        $groups = $this->createItems(\Group::getType(), [
+            ['name' => 'group1'],
+            ['name' => 'group2']
+        ]);
+
+        // Add users to groups
+        $this->createItems(\Group_User::getType(), [
+            ['groups_id' => $groups[0]->getID(), 'users_id' => $users[2]->getID()],
+            ['groups_id' => $groups[1]->getID(), 'users_id' => $users[4]->getID()],
+        ]);
+
+        // Create project
+        $project = $this->createItem(\Project::getType(), [
+            'name' => 'project1',
+            'entities_id' => $entity,
+            'users_id' => $users[1]->getID(),
+            'groups_id' => $groups[0]->getID(),
+        ]);
+
+        // Create user team
+        $project_user_team = $this->createItem(\ProjectTeam::getType(), [
+            'projects_id' => $project->getID(),
+            'itemtype' => \User::class,
+            'items_id' => $users[3]->getID(),
+        ]);
+
+        // Create group team
+        $project_group_team = $this->createItem(\ProjectTeam::getType(), [
+            'projects_id' => $project->getID(),
+            'itemtype' => \Group::class,
+            'items_id' => $groups[1]->getID(),
+        ]);
+
+        // Get projects for user0
+        $this->array(\Project::getProjectIDsForUser($users[0]->getID()))->isEmpty();
+
+        // Get projects for user1
+        $this->array(\Project::getProjectIDsForUser($users[1]->getID()))->isEqualTo([$project->getID()]);
+        $this->array(\Project::getProjectIDsForUser($users[1]->getID(), false, false))->isEqualTo([$project->getID()]);
+
+        // Get projects for user2
+        $this->array(\Project::getProjectIDsForUser($users[2]->getID()))->isEqualTo([$project->getID()]);
+        $this->array(\Project::getProjectIDsForUser($users[2]->getID(), true, false))->isEqualTo([$project->getID()]);
+        $this->array(\Project::getProjectIDsForUser($users[2]->getID(), false, false))->isEmpty();
+        $this->array(\Project::getProjectIDsForUser($users[2]->getID(), false, true))->isEmpty();
+
+        // Get projects for user3
+        $this->array(\Project::getProjectIDsForUser($users[3]->getID()))->isEqualTo([$project->getID()]);
+        $this->array(\Project::getProjectIDsForUser($users[3]->getID(), false, true))->isEqualTo([$project->getID()]);
+        $this->array(\Project::getProjectIDsForUser($users[3]->getID(), false, false))->isEmpty();
+        $this->array(\Project::getProjectIDsForUser($users[3]->getID(), true, false))->isEmpty();
+
+        // Get projects for user4
+        $this->array(\Project::getProjectIDsForUser($users[4]->getID()))->isEqualTo([$project->getID()]);
+        $this->array(\Project::getProjectIDsForUser($users[4]->getID(), false, true))->isEmpty();
+        $this->array(\Project::getProjectIDsForUser($users[4]->getID(), false, false))->isEmpty();
+        $this->array(\Project::getProjectIDsForUser($users[4]->getID(), true, false))->isEmpty();
+    }
 }

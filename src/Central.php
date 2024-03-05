@@ -305,6 +305,26 @@ class Central extends CommonGLPI
                 ]
             ];
         }
+        $idor = Session::getNewIDORToken(Project::class);
+        if (Session::haveRight("project", Project::READMY)) {
+            $twig_params['cards'][] = [
+                'itemtype'  => Project::class,
+                'widget'    => 'central_list',
+                'params'    => $card_params + [
+                    '_idor_token'  => $idor
+                ]
+            ];
+        }
+        $idor = Session::getNewIDORToken(ProjectTask::class);
+        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+            $twig_params['cards'][] = [
+                'itemtype'  => ProjectTask::class,
+                'widget'    => 'central_list',
+                'params'    => $card_params + [
+                    '_idor_token'  => $idor
+                ]
+            ];
+        }
 
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
     }

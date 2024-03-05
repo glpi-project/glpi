@@ -2670,6 +2670,200 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
+     * Get the list of projects for a user.
+     *
+     * @param int $user_id The user ID.
+     * @param bool $search_in_groups Whether to search in groups.
+     * @param bool $search_in_team Whether to search in the team.
+     * @return array The list of project IDs.
+     */
+    public static function getProjectIDsForUser(
+        int $user_id,
+        bool $search_in_groups = true,
+        bool $search_in_team = true
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $req = [
+            'FROM' => Project::getTable(),
+            'WHERE' => [
+                'OR' => [
+                    'users_id' => $user_id
+                ]
+            ]
+        ];
+
+        $groups_sub_query = new \Glpi\DBAL\QuerySubQuery([
+            'SELECT' => [
+                'groups_id'
+            ],
+            'FROM' => Group_User::getTable(),
+            'WHERE' => [
+                'users_id' => $user_id
+            ]
+        ]);
+
+        if ($search_in_groups) {
+            $req['WHERE']['OR']['groups_id'] = $groups_sub_query;
+        }
+
+        if ($search_in_team) {
+            $crit = [
+                ['itemtype' => 'User', 'items_id' => $user_id]
+            ];
+
+            if ($search_in_groups) {
+                $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
+            }
+
+            $team_sub_query = new \Glpi\DBAL\QuerySubQuery([
+                'SELECT' => [
+                    'projects_id'
+                ],
+                'FROM' => ProjectTeam::getTable(),
+                'WHERE' => [
+                    'OR' => $crit
+                ]
+            ]);
+
+            $req['WHERE']['OR']['id'] = $team_sub_query;
+        }
+
+        $iterator = $DB->request($req);
+
+        $project_ids = [];
+        foreach ($iterator as $data) {
+            $project_ids[] = $data['id'];
+        }
+
+        return $project_ids;
+    }
+
+    /**
+     *  Show the list of projects for a user in the personal view.
+     *
+     * @param int $user_id The user ID.
+     * @return void
+     */
+    public static function showListForCentral(int $user_id): void
+    {
+        $projects = array_map(
+            fn($id) => self::getById($id),
+            self::getProjectIDsForUser($user_id, false, true)
+        );
+
+        // If no project are found, do not display anything
+        if (empty($projects)) {
+            return;
+        }
+
+        // If all project are finished, do not display anything
+        if (
+            empty(array_filter($projects, function ($project) {
+                $state = ProjectState::getById($project->fields['projectstates_id']);
+                if ($state !== false) {
+                    if ($state->fields['is_finished']) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }))
+        ) {
+            return;
+        }
+
+        $options = [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => 87,
+                    'searchtype' => 'equals',
+                    'value' => 'myself'
+                ],
+                [
+                    'link' => 'OR',
+                    'field' => 24,
+                    'searchtype' => 'equals',
+                    'value' => 'myself'
+                ]
+            ]
+        ];
+
+        $displayed_row_count = min(count($projects), 5);
+        $total_row_count = count($projects);
+        $search_url = self::getSearchURL() . '?' . Toolbox::append_params($options);
+        $title = Html::makeTitle(__('Your projects'), $displayed_row_count, $total_row_count);
+        $main_header = "<a href='$search_url'>$title</a>";
+
+        $twig_params = [
+            'class'       => 'table table-borderless table-striped table-hover card-table',
+            'header_rows' => [
+                [
+                    [
+                        'colspan'   => 4,
+                        'content'   => $main_header
+                    ]
+                ],
+                [
+                    [
+                        'content' => __('Name'),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => _n('State', 'States', 1),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => __('Priority'),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => __('Percent done'),
+                        'style'   => 'width: 10%'
+                    ]
+                ]
+            ],
+            'rows' => []
+        ];
+
+        foreach ($projects as $key => $project) {
+            if ($key >= $displayed_row_count) {
+                break;
+            }
+
+            $name = $project->getLink();
+            $priority = CommonITILObject::getPriorityName($project->fields['priority']);
+            $percent_done = $project->fields['percent_done'] . '%';
+
+            $state = ProjectState::getById($project->fields['projectstates_id']);
+            if ($state !== false) {
+                $state_cell = '<div class="priority_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
+            }
+
+            $twig_params['rows'][] = [
+                'values' => [
+                    [
+                        'content' => $name
+                    ],
+                    [
+                        'content' => $state_cell ?? '',
+                    ],
+                    [
+                        'content' => '<div class="priority_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>' . $priority,
+                    ],
+                    [
+                        'content' => $percent_done
+                    ]
+                ]
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
+    }
+
+    /**
      * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
      * This function indirectly updates the percent done for all parents if they are set to automatically update.
      * @since 9.5.0

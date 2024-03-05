@@ -401,4 +401,65 @@ class ProjectTask extends DbTestCase
         $this->integer($clonedSubtask2->fields['projects_id'])->isEqualTo($project->getID());
         $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
     }
+
+    public function testGetProjectTaskIDsForUser(): void
+    {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
+
+        // Create some users
+        $users = $this->createItems(\User::getType(), [
+            ['name' => 'user0'],
+            ['name' => 'user1'],
+            ['name' => 'user2'],
+        ]);
+
+        // Create group
+        $group = $this->createItem(\Group::getType(), [
+            'name' => 'group1'
+        ]);
+
+        // Add users to groups
+        $this->createItem(\Group_User::getType(), [
+            'groups_id' => $group->getID(),
+            'users_id' => $users[2]->getID()
+        ]);
+
+        // Create project
+        $project = $this->createItem(\Project::getType(), [
+            'name' => 'project1',
+            'entities_id' => $entity
+        ]);
+
+        // Create project task
+        $task = $this->createItem(\ProjectTask::getType(), [
+            'projects_id' => $project->getID(),
+            'name' => 'task1'
+        ]);
+
+        // Create user project task team
+        $this->createItem(\ProjectTaskTeam::getType(), [
+            'projecttasks_id' => $task->getID(),
+            'itemtype' => \User::getType(),
+            'items_id' => $users[1]->getID()
+        ]);
+
+        // Create group project task team
+        $this->createItem(\ProjectTaskTeam::getType(), [
+            'projecttasks_id' => $task->getID(),
+            'itemtype' => \Group::getType(),
+            'items_id' => $group->getID()
+        ]);
+
+        // Get project tasks for user0
+        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[0]->getID()))->isEmpty();
+
+        // Get project tasks for user1
+        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[1]->getID()))->contains($task->getID());
+        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[1]->getID(), false))->contains($task->getID());
+
+        // Get project tasks for user2
+        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[2]->getID()))->contains($task->getID());
+        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[2]->getID(), false))->isEmpty();
+    }
 }
