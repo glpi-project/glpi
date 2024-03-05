@@ -44,11 +44,13 @@
         <label
             for="btn-radio-toolbar-1"
             class="btn btn-icon flex-grow-0"
+            data-bs-toggle="tooltip"
+            data-bs-placement="bottom"
+            title="{{ __("Add a new question") }}"
             data-glpi-form-editor-on-click="add-question"
         >
-            {# This is the main action, we highlight it by adding a description #}
             <span class="px-2 d-flex align-items-center">
-                <i class="ti ti-circle-plus me-2"></i> {{ __("Add a new question") }}
+                <i class="ti ti-circle-plus"></i>
             </span>
         </label>
 
@@ -59,7 +61,7 @@
             class="btn btn-icon flex-grow-0 {{ add_section_action_visible ? '' : 'd-none' }}"
             data-bs-toggle="tooltip"
             data-bs-placement="bottom"
-            title="{{ __("Add a new section") }}" {# Secondary action, use a tooltip #}
+            title="{{ __("Add a new section") }}"
             data-glpi-form-editor-on-click="add-section"
         >
             <i class="ti ti-box-align-top"></i>
