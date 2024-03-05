@@ -186,8 +186,7 @@
 // Hide content of collapsed sections
 [data-glpi-form-editor-section].section-collapsed {
     [data-glpi-form-editor-section-description],
-    [data-glpi-form-editor-question-description],
-    [data-glpi-form-editor-question-type-specific] {
+    [data-glpi-form-editor-section-questions] {
         display: none;
     }
 }
