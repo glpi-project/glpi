@@ -1888,7 +1888,7 @@ class MailCollector extends CommonDBTM
             ));
             // language=twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <span class="text-danger p-1 ps-2">
+                <span class="alert alert-danger p-1 ps-2">
                     <i class="ti ti-alert-triangle me-2"></i>
                     <span>{{ receivers_error_msg|raw }}</span>
                 </span>
