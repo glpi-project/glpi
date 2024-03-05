@@ -262,7 +262,7 @@ class ObjectLock extends CommonDBTM
         $ret = Html::scriptBlock("
          $(function(){
             var lockStatusTimer;
-            $('#alertMe').change(function( eventObject ){
+            $('#alertMe').on('change',function( eventObject ){
                if( this.checked ) {
                   lockStatusTimer = setInterval( function() {
                      $.get({
@@ -286,8 +286,6 @@ class ObjectLock extends CommonDBTM
          });
       ");
 
-        echo $ret;
-
         $msg = "<strong class='nowrap'>";
         $msg .= sprintf(__('Locked by %s'), "<a href='" . $user->getLinkURL() . "'>" . $userdata['name'] . "</a>");
         $msg .= "&nbsp;" . Html::showToolTip($userdata["comment"], ['link' => $userdata['link'], 'display' => false]);
@@ -304,6 +302,8 @@ class ObjectLock extends CommonDBTM
         $msg .= $this->getForceUnlockMessage(); // will get a button to force unlock if UNLOCK rights are in the user's profile
 
         $this->displayLockMessage($msg);
+
+        echo $ret;
     }
 
 
