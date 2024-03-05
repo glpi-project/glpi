@@ -244,6 +244,7 @@ class GlpiFormEditorController
 
             // Delete the target section
             case "delete-section":
+                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#deleteSection(
                     target.closest("[data-glpi-form-editor-section]")
                 );
@@ -528,9 +529,13 @@ class GlpiFormEditorController
         // Set new active item if specified
         if (item_container !== null) {
             possible_active_items.forEach((type) => {
+                // Can be set active from the container itself or the sub "details" container
                 if (item_container.data(`glpi-form-editor-${type}-details`) !== undefined) {
                     item_container
                         .closest(`[data-glpi-form-editor-${type}]`)
+                        .attr(`data-glpi-form-editor-active-${type}`, "");
+                } else if (item_container.data(`glpi-form-editor-${type}`) !== undefined) {
+                    item_container
                         .attr(`data-glpi-form-editor-active-${type}`, "");
                 }
             });
@@ -588,17 +593,27 @@ class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
-        // Remove question and update UX
-        question.remove();
-        this.#updateAddSectionActionVisiblity();
-
-        // If the last questions was deleted, most active item to the form itself
-        // to show its toolbar
-        if ($(this.#target).find("[data-glpi-form-editor-question]").length == 0) {
+        if (
+            $(this.#target).find("[data-glpi-form-editor-question]").length == 1
+            && $(this.#getSectionCount()) == 1
+        ) {
+            // If the last questions is going to be deleted and there is only one section
+            // set the form itself as active to show its toolbar
             this.#setActiveItem(
                 $(this.#target).find("[data-glpi-form-editor-form-details]")
             );
+        } else {
+            // Set active the previous question/section
+            if (question.prev().length > 0) {
+                this.#setActiveItem(question.prev());
+            } else {
+                this.#setActiveItem(question.closest("[data-glpi-form-editor-section]"));
+            }
         }
+
+        // Remove question and update UX
+        question.remove();
+        this.#updateAddSectionActionVisiblity();
     }
 
     /**
@@ -879,6 +894,27 @@ class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
+        if (section.prev().length == 0) {
+            // If this is the first section of the form, set the next section as active
+            this.#setActiveItem(section.next());
+        } else {
+            // Else, set the previous section last question (if it exist) as active
+            const prev_questions = section.prev().find("[data-glpi-form-editor-question]");
+            if (prev_questions.length > 0) {
+                this.#setActiveItem(prev_questions.last());
+            } else {
+                if (this.#getSectionCount() == 2) {
+                    // If there is only one section left after this one is deleted,
+                    // set the form itself as active as the remaining section will not be displayed
+                    this.#setActiveItem(
+                        $(this.#target).find("[data-glpi-form-editor-form-details]")
+                    );
+                } else {
+                    this.#setActiveItem(section.prev());
+                }
+            }
+        }
+
         // Remove question and update UX
         section.remove();
         this.#updateSectionCountLabels();
@@ -905,15 +941,21 @@ class GlpiFormEditorController
     }
 
     /**
+     * Count the number of sections in the form.
+     * @returns {number}
+     */
+    #getSectionCount() {
+        return $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .length;
+    }
+
+    /**
      * Update the visibility of the sections details.
      * The details are hidden if there is only one section.
      */
     #updateSectionsDetailsVisiblity() {
-        const sections_count = $(this.#target)
-            .find("[data-glpi-form-editor-section]")
-            .length;
-
-        if (sections_count <= 1) {
+        if (this.#getSectionCount() <= 1) {
             // Only one section, do not display its details
             $(this.#target)
                 .find("[data-glpi-form-editor-section-details]")
