@@ -286,10 +286,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
 
-        if (isset($this->input['auto_projectstates']) && $this->input['auto_projectstates'] > 0) {
-            self::recalculateStatus($this->getID());
-        }
-
         if (isset($this->input['_old_projects_id'])) {
            // Recalculate previous parent project percent done
             Project::recalculatePercentDone($this->input['_old_projects_id']);
@@ -343,10 +339,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         if ($this->fields['projects_id'] > 0) {
             Project::recalculatePercentDone($this->fields['projects_id']);
-        }
-
-        if (isset($this->input['auto_projectstates']) && $this->input['auto_projectstates'] > 0) {
-            self::recalculateStatus($this->getID());
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -464,6 +456,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
+        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] > 0) {
+            $input['projectstates_id'] = self::recalculateStatus($input);
+        }
         if (isset($input["plan"])) {
             $input["plan_start_date"] = $input['plan']["begin"];
             $input["plan_end_date"]   = $input['plan']["end"];
@@ -547,6 +542,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             if (array_key_exists('real_start_date', $input)) {
                 $input['real_end_date'] = $input['real_start_date'];
             }
+        }
+
+        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] > 0) {
+            $input['projectstates_id'] = self::recalculateStatus($input);
         }
 
         return Project::checkPlanAndRealDates($input);
@@ -1809,29 +1808,28 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return true;
     }
 
-    public static function recalculateStatus($ID)
+    /**
+     * Recalculate the status of a project task based on the percent_done.
+     * @since 11.0.0
+     * @param array $input
+     */
+    public static function recalculateStatus(array $input)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        $projecttask = new self();
-        $projecttask->getFromDB($ID);
-        if (!$projecttask->fields['auto_projectstates']) {
+        if (!$input['auto_projectstates']) {
             return false;
         }
         $config = \Config::getConfigurationValues('core');
-        if ($projecttask->fields['percent_done'] === 0) {
+        if ($input['percent_done'] === 0) {
             $state_id = $config['projecttask_unstarted'] ?? 0;
-        } else if ($projecttask->fields['percent_done'] === 100) {
+        } elseif ($input['percent_done'] === 100) {
             $state_id = $config['projecttask_completed'] ?? 0;
         } else {
             $state_id = $config['projecttask_inprogress'] ?? 0;
         }
-        $projecttask->update([
-            'id'                 => $ID,
-            'projectstates_id'       => $state_id,
-        ]);
-        return true;
+        return $state_id;
     }
 
     public static function getGroupItemsAsVCalendars($groups_id)
