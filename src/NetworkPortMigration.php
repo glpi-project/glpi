@@ -45,18 +45,15 @@ class NetworkPortMigration extends CommonDBChild
     public static $rightname              = 'networking';
 
 
-
     public static function getTypeName($nb = 0)
     {
         return __('Network port migration');
     }
 
-
     public static function canCreate()
     {
         return false;
     }
-
 
     private function cleanDatabase()
     {
@@ -67,59 +64,45 @@ class NetworkPortMigration extends CommonDBChild
 
         if ($networkport->getFromDB($this->getID())) {
             if (
-                !in_array(
-                    $networkport->fields['instantiation_type'],
-                    NetworkPort::getNetworkPortInstantiations()
-                )
+                !in_array($networkport->fields['instantiation_type'], NetworkPort::getNetworkPortInstantiations(), true)
             ) {
                 $networkport->delete($networkport->fields);
             }
         }
 
-        if (countElementsInTable($this->getTable()) == 0) {
-            $DB->dropTable($this->getTable());
+        if (countElementsInTable(static::getTable()) === 0) {
+            $DB->dropTable(static::getTable());
         }
     }
 
-
     public function post_purgeItem()
     {
-
         $this->cleanDatabase();
         parent::post_purgeItem();
     }
 
-
     public function post_deleteItem()
     {
-
         $this->cleanDatabase();
         parent::post_deleteItem();
     }
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         return $ong;
     }
 
-
     public static function getMotives()
     {
-
-        return [ 'unknown_interface_type'
-                              => __('Undefined interface'),
-            'invalid_network'
-                              => __('Invalid network (already defined or with invalid addresses)'),
-            'invalid_gateway'
-                              => __('Gateway not include inside the network'),
-            'invalid_address'
-                              => __('Invalid IP address')
+        return [
+            'unknown_interface_type' => __('Undefined interface'),
+            'invalid_network' => __('Invalid network (already defined or with invalid addresses)'),
+            'invalid_gateway' => __('Gateway not include inside the network'),
+            'invalid_address' => __('Invalid IP address')
         ];
     }
-
 
     public function showForm($ID, array $options = [])
     {
@@ -338,19 +321,15 @@ class NetworkPortMigration extends CommonDBChild
         return true;
     }
 
-
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'transform_to']
-            = __('Transform this network port to');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'transform_to'] = __('Transform this network port to');
         }
         return $actions;
     }
-
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
@@ -367,7 +346,6 @@ class NetworkPortMigration extends CommonDBChild
         }
         return parent::showMassiveActionsSubForm($ma);
     }
-
 
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
@@ -392,32 +370,31 @@ class NetworkPortMigration extends CommonDBChild
                                        unset($input2['id']);
                                     if ($instantiation->add($input2)) {
                                         $item->delete(['id' => $id]);
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                     } else {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                         $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                                     }
                                 } else {
-                                     $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                     $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                      $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($networkport->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($networkport->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
-
 
     public function rawSearchOptions()
     {
@@ -428,7 +405,7 @@ class NetworkPortMigration extends CommonDBChild
         foreach (self::getMotives() as $motive => $name) {
             $tab[] = [
                 'id'                 => $optionIndex,
-                'table'              => $this->getTable(),
+                'table'              => static::getTable(),
                 'field'              => $motive,
                 'name'               => $name,
                 'datatype'           => 'bool'
@@ -439,7 +416,7 @@ class NetworkPortMigration extends CommonDBChild
 
         $tab[] = [
             'id'                 => '20',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'ip',
             'datatype'           => 'ip',
             'name'               => IPAddress::getTypeName(1)
@@ -447,7 +424,7 @@ class NetworkPortMigration extends CommonDBChild
 
         $tab[] = [
             'id'                 => '21',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'netmask',
             'datatype'           => 'string',
             'name'               => IPNetmask::getTypeName(1)
@@ -455,7 +432,7 @@ class NetworkPortMigration extends CommonDBChild
 
         $tab[] = [
             'id'                 => '22',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'subnet',
             'datatype'           => 'string',
             'name'               => __('Network address')
@@ -463,7 +440,7 @@ class NetworkPortMigration extends CommonDBChild
 
         $tab[] = [
             'id'                 => '23',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'gateway',
             'datatype'           => 'string',
             'name'               => IPAddress::getTypeName(1)
@@ -480,14 +457,14 @@ class NetworkPortMigration extends CommonDBChild
         return $tab;
     }
 
-
     /**
-     * @param $group           HTMLTableGroup object
-     * @param $super           HTMLTableSuperHeader object
-     * @param $options   array
-     * @param $internet_super
-     * @param $father
-     **/
+     * @param HTMLTableGroup $group
+     * @param HTMLTableSuperHeader $super object
+     * @param HTMLTableSuperHeader|null $internet_super
+     * @param HTMLTableHeader|null $father
+     * @param array $options
+     * @return null
+     */
     public static function getMigrationInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
         HTMLTableSuperHeader $super,
@@ -495,7 +472,7 @@ class NetworkPortMigration extends CommonDBChild
         HTMLTableHeader $father = null,
         array $options = []
     ) {
-       // TODO : study to display the correct information for this undefined NetworkPort
+        // TODO : study to display the correct information for this undefined NetworkPort
         return null;
     }
 }
