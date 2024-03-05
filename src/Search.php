@@ -5182,6 +5182,14 @@ JAVASCRIPT;
                                AND `$table`.`itemtype` = '$itemtype_val')";
                 }
                 break;
+
+            case "glpi_changes.content":
+            case "glpi_problems.content":
+            case "glpi_tickets.content":
+                if (in_array($searchtype, ['contains', 'notcontains'])) {
+                    $val = str_replace('&#38;', '38;amp;', $val);
+                }
+                break;
         }
 
        //// Default cases
