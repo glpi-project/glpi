@@ -181,7 +181,7 @@
         });
     </script>
 
-    {% if id < 1 %}
+    {% if item.isNewItem() %}
         {% set teammember_list = call('ProjectTaskTeamDropdown::show', ['teammember_list', []]) %}
         {{ fields.htmlField(
             'teammember_list',

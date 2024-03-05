@@ -317,6 +317,22 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        // Add team members
+        if (isset($this->input['teammember_list'])) {
+            $taskteam = new ProjectTaskTeam();
+            foreach ($this->input['teammember_list'] as $teammember) {
+                $teammember_info = preg_split("/[_-]/", $teammember);
+                $itemtype = substr(ucfirst($teammember_info[0]), 0, -1);
+                $taskteam->add(
+                    [
+                        'projecttasks_id' => $this->fields['id'],
+                        'itemtype'        => $itemtype,
+                        'items_id'        => $teammember_info[2]
+                    ]
+                );
+            }
+        }
+
         // Handle rich-text images
         $this->input = $this->addFiles(
             $this->input,

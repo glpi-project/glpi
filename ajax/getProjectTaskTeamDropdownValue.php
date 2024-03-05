@@ -37,6 +37,6 @@ include(__DIR__ . '/getAbstractRightDropdownValue.php');
 
 // Only users who can update dashboards are allowed to use the "share dashboard" feature
 // Users without this right shouldn't be allowed to read this dropdown values
-Session::checkRight('dashboard', UPDATE);
+Session::checkRightsOr('project', [Project::READALL, Project::READMY]);
 
 show_rights_dropdown(ProjectTaskTeamDropdown::class);

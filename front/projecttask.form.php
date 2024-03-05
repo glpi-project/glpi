@@ -66,21 +66,6 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s adds a task'), $_SESSION["glpiname"])
     );
-
-    if (isset($_POST['teammember_list'])) {
-        $taskteam = new ProjectTaskTeam();
-        foreach ($_POST['teammember_list'] as $teammember) {
-            $teammember_info = preg_split("/[_-]/", $teammember);
-            $itemtype = substr(ucfirst($teammember_info[0]), 0, -1);
-            $taskteam->add(
-                [
-                    'projecttasks_id' => $task_id,
-                    'itemtype'        => $itemtype,
-                    'items_id'        => $teammember_info[2]
-                ]
-            );
-        }
-    }
     if ($_SESSION['glpibackcreated']) {
         Html::redirect($task->getLinkURL());
     } else {

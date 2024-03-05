@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-class ProjecttaskTeamDropdown extends AbstractRightsDropdown
+class ProjectTaskTeamDropdown extends AbstractRightsDropdown
 {
     protected static function getAjaxUrl(): string
     {
@@ -47,7 +47,7 @@ class ProjecttaskTeamDropdown extends AbstractRightsDropdown
     {
         return [
             User::getType(),
-            Group::getType(),
+            Group::getType()
         ];
     }
 }
