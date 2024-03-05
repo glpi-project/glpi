@@ -58,6 +58,12 @@
         entity_data.value = data;
     });
     const search_filter = ref('');
+
+    const icons = {
+        folder_closed: 'ti ti-stack-2',
+        folder_open: 'ti ti-stack-2',
+        item: 'ti ti-stack',
+    };
 </script>
 
 <template>
@@ -92,7 +98,8 @@
                 </div>
             </form>
 
-            <TreeView :tree="entity_data" :rand="rand" :max_items="15" :virtual_dom="true" :search_filter="search_filter" />
+            <TreeView :tree="entity_data" :rand="rand" :max_items="15" :virtual_dom="true" :search_filter="search_filter"
+                      :icons="icons"/>
         </div>
     </div>
 </template>

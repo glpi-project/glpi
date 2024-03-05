@@ -26,8 +26,21 @@
             type: String,
             required: false,
             default: ''
+        },
+        icons: {
+            type: Object,
+            required: false,
         }
     });
+
+    const default_icons = {
+        folder_closed: 'ti ti-folder',
+        folder_open: 'ti ti-folder-open',
+        item: 'ti ti-file',
+        collapsed: 'ti ti-chevron-right',
+        expanded: 'ti ti-chevron-down'
+    };
+    const icons = Object.assign({}, default_icons, props.icons);
 
     const indent_size = 20;
 
@@ -185,8 +198,8 @@
             }
             start.value = new_start;
         });
-        // Clicking a folder icon will toggle the expanded state of the folder
-        tree_el.on('click', '.ti-folder, .ti-folder-open', (e) => {
+
+        tree_el.on('click', '.collapse-item', (e) => {
             e.preventDefault();
             e.stopPropagation();
             const cell = $(e.target).closest('td');
@@ -219,7 +232,7 @@
 
 <template>
     <div class="flexbox-item-grow data_tree" :style="`height: ${22 * max_items}px`">
-        <table :id="`tree_data${rand}`">
+        <table :id="`tree_data${rand}`" class="w-100">
             <colgroup>
                 <col>
             </colgroup>
@@ -231,9 +244,16 @@
             <tbody>
                 <tr v-for="node in visible_in_dom" :key="node.key" :class="node.selected ? 'fw-bold' : ''">
                     <td :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key">
-                        <span v-if="node.folder" class="me-1 cursor-pointer">
-                            <i v-if="node.expanded === 'true'" class="ti ti-folder-open"></i>
-                            <i v-else class="ti ti-folder"></i>
+                        <span v-if="node.folder" class="me-1 cursor-pointer collapse-item">
+                            <i v-if="node.expanded === 'true'" :class="icons.expanded"></i>
+                            <i v-else :class="icons.collapsed"></i>
+                        </span>
+                        <span v-if="node.folder" class="me-1">
+                            <i v-if="node.expanded === 'true'" :class="icons.folder_open"></i>
+                            <i v-else :class="icons.folder_closed"></i>
+                        </span>
+                        <span v-else class="me-1">
+                            <i :class="icons.item"></i>
                         </span>
                         <span v-html="node.title"></span>
                     </td>
