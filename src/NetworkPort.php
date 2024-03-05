@@ -330,7 +330,6 @@ class NetworkPort extends CommonDBChild
             isset($this->input_for_instantiation)
             || isset($this->input_for_NetworkName)
             || isset($this->input_for_NetworkPortConnect)
-            || !isset($input)
         ) {
             return;
         }
