@@ -185,7 +185,11 @@ class GlpiFormEditorController
             case "add-question":
                 event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#addQuestion(
-                    target.closest('[data-glpi-form-editor-active]'),
+                    target.closest(`
+                        [data-glpi-form-editor-active-form],
+                        [data-glpi-form-editor-active-section],
+                        [data-glpi-form-editor-active-question]
+                    `),
                 );
                 break;
 
@@ -230,7 +234,11 @@ class GlpiFormEditorController
             case "add-section":
                 event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#addSection(
-                    target.closest('[data-glpi-form-editor-active]')
+                    target.closest(`
+                        [data-glpi-form-editor-active-form],
+                        [data-glpi-form-editor-active-section],
+                        [data-glpi-form-editor-active-question]
+                    `),
                 );
                 break;
 
@@ -508,14 +516,24 @@ class GlpiFormEditorController
      * @param {jQuery|null} item_container
      */
     #setActiveItem(item_container) {
+        const possible_active_items = ['form', 'section', 'question'];
+
         // Remove current active item
-        $(this.#target)
-            .find("[data-glpi-form-editor-active]")
-            .removeAttr("data-glpi-form-editor-active");
+        possible_active_items.forEach((type) => {
+            $(this.#target)
+                .find(`[data-glpi-form-editor-active-${type}]`)
+                .removeAttr(`data-glpi-form-editor-active-${type}`);
+        });
 
         // Set new active item if specified
         if (item_container !== null) {
-            item_container.attr("data-glpi-form-editor-active", "");
+            possible_active_items.forEach((type) => {
+                if (item_container.data(`glpi-form-editor-${type}-details`) !== undefined) {
+                    item_container
+                        .closest(`[data-glpi-form-editor-${type}]`)
+                        .attr(`data-glpi-form-editor-active-${type}`, "");
+                }
+            });
         }
     }
 
@@ -532,19 +550,18 @@ class GlpiFormEditorController
             // Adding a new question after an existing question
             destination = target;
             action = "after";
-        } else if (target.data('glpi-form-editor-section-details') !== undefined) {
+        } else if (target.data('glpi-form-editor-section') !== undefined) {
             // Adding a question at the start of a section
             destination = target
                 .closest("[data-glpi-form-editor-section]")
                 .find("[data-glpi-form-editor-section-questions]");
             action = "prepend";
-        } else if (target.data('glpi-form-editor-form-details') !== undefined) {
-            // Adding a question at the start of the form
-            destination = target
-                .closest("[data-glpi-form-editor-form]")
-                .find("[data-glpi-form-editor-section]:first-child")
-                .find("[data-glpi-form-editor-section-questions]");
-            action = "prepend";
+        } else if (target.data('glpi-form-editor-form') !== undefined) {
+            // Add a question at the end of the form
+            destination = $(this.#target)
+                .find("[data-glpi-form-editor-section]:last-child")
+                .find("[data-glpi-form-editor-section-questions]:last-child");
+            action = "append";
         } else {
             throw new Error('Unexpected target');
         }
@@ -805,7 +822,7 @@ class GlpiFormEditorController
                 .closest("[data-glpi-form-editor-section]");
             action = "after";
             to_move = $(target).nextAll();
-        } else if (target.data('glpi-form-editor-section-details') !== undefined) {
+        } else if (target.data('glpi-form-editor-section') !== undefined) {
             // Adding a new section at the start of an existing section
             // All questions of the existing section will be moved into the new
             // section, leaving it empty
@@ -815,13 +832,13 @@ class GlpiFormEditorController
             to_move = $(target)
                 .closest("[data-glpi-form-editor-section]")
                 .find("[data-glpi-form-editor-question]");
-        } else if (target.data('glpi-form-editor-form-details') !== undefined) {
-            // Adding a section at the start of the form
+        } else if (target.data('glpi-form-editor-form') !== undefined) {
+            // Adding a section at the end of the form
             // The new section will be empty
             destination = target
                 .closest("[data-glpi-form-editor-form]")
-                .find("[data-glpi-form-editor-section]:first-child");
-            action = "before";
+                .find("[data-glpi-form-editor-section]:last-child");
+            action = "after";
             to_move = null;
         } else {
             throw new Error('Unexpected target');
@@ -845,7 +862,7 @@ class GlpiFormEditorController
                 section.find("[data-glpi-form-editor-section-questions]")
             );
             to_move.each((index, question) => {
-                this.#handleItemMove(question);
+                this.#handleItemMove($(question));
             });
         }
 

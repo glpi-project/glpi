@@ -49,15 +49,15 @@
 <div
     class="mb-3"
     data-glpi-form-editor-question
-    data-glpi-form-editor-on-click="set-active"
 >
     <div
+        data-glpi-form-editor-on-click="set-active"
         data-glpi-form-editor-question-details
         class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
     >
         <div
             class="card-status-start bg-primary"
-            data-glpi-form-editor-active-status-indicator
+            data-glpi-form-editor-active-question-status-indicator
         ></div>
         <div class="card-body">
             <div class="d-flex">

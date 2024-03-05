@@ -71,18 +71,20 @@
             <div class="row">
 
                 {# We expect to use the right side to display some extra info later so keep some available space for now #}
-                <div class="col-7" data-glpi-form-editor-form>
-
+                <div
+                    class="col-7"
+                    data-glpi-form-editor-form
+                    data-glpi-form-editor-active-form
+                >
                     <div
                         data-glpi-form-editor-form-details
-                        data-glpi-form-editor-active
                         data-glpi-form-editor-on-click="set-active"
                     >
                         {# Card containing the main form data: title, header and status #}
                         <div class="card form-details mb-3">
                             <div
                                 class="card-status-start bg-primary"
-                                data-glpi-form-editor-active-status-indicator
+                                data-glpi-form-editor-active-form-status-indicator
                             ></div>
                             <div class="card-body">
 
@@ -127,13 +129,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div data-glpi-form-editor-form-extra-details>
-                            {{ include('pages/admin/form/form_toolbar.html.twig', {
-                                'can_update': item.canUpdate(),
-                                'form'      : item,
-                            }, with_context = false) }}
-                        </div>
                     </div>
 
                     {# Display all questions here #}
@@ -150,6 +145,13 @@
                                 'number_of_sections'    : number_of_sections,
                             }, with_context = false) }}
                         {% endfor %}
+                    </div>
+
+                    <div data-glpi-form-editor-form-extra-details>
+                        {{ include('pages/admin/form/form_toolbar.html.twig', {
+                            'can_update': item.canUpdate(),
+                            'form'      : item,
+                        }, with_context = false) }}
                     </div>
                 </div>
             </div>
