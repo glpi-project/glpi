@@ -1221,7 +1221,8 @@ class NetworkPort extends CommonDBChild
                                     $title = __('Unknown');
                                     break;
                             }
-                            $output .= sprintf("<i class='fas %s' title='%s'></i> <span class='sr-only'>%s</span>",
+                            $output .= sprintf(
+                                "<i class='fas %s' title='%s'></i> <span class='sr-only'>%s</span>",
                                 htmlspecialchars($co_class),
                                 htmlspecialchars($title),
                                 htmlspecialchars($title)
