@@ -31,11 +31,12 @@
  # ---------------------------------------------------------------------
  #}
 
+{# @var form                   Glpi\Form #}
 {# @var question_types_manager Glpi\Form\QuestionType\QuestionTypesManager #}
 {# @var question_type          Glpi\Form\QuestionType\QuestionTypeInterface #}
 {# @var question               Glpi\Form\Question|null #}
 {# @var section                Glpi\Form\Section|null #}
-
+{# @var can_update             bool #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
@@ -46,156 +47,167 @@
 } %}
 
 <div
-    class="card mb-3 {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+    class="mb-3"
     data-glpi-form-editor-question
-    data-glpi-form-editor-on-click="set-active"
 >
     <div
-        class="card-status-start bg-primary"
-        data-active-status
-    ></div>
-    <div class="card-body">
-        <div class="d-flex">
-            <i
-                class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
-                data-glpi-form-editor-question-handle
-                draggable="true"
-            ></i>
-        </div>
-        {# Display question's title #}
-        <div class="d-flex mt-n1">
-            <input
-                class="form-control content-editable-h2"
-                type="text"
-                name="name"
-                value="{{ question is not null ? question.fields.name : '' }}"
-                placeholder="{{ __("New question") }}"
-                data-glpi-form-editor-dynamic-input
-                data-glpi-form-editor-on-input="compute-dynamic-input"
-            />
-            <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
-        </div>
-
-        {# Render the specific question type #}
-        <div data-glpi-form-editor-question-type-specific>
-            {{ question_type.renderAdminstrationTemplate(question)|raw }}
-        </div>
-
-        {# Display common fields #}
+        data-glpi-form-editor-on-click="set-active"
+        data-glpi-form-editor-question-details
+        class="card {{ question is not null and question.fields.is_mandatory ? 'mandatory-question' : '' }}"
+    >
         <div
-            class="content-editable-tinymce"
-            data-glpi-form-editor-question-description
-            {# Mark as secondary if empty #}
-            {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
-        >
-            {{ fields.textareaField(
-                'description',
-                question is not null ? question.fields.description : '',
-                __('Description'),
-                base_field_options|merge({
-                    'placeholder': __('Add a description...'),
-                    'enable_richtext': true,
-                    'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                    'editor_height': "0",
-                    'rows' : 1,
-                    'toolbar_location': 'bottom',
-                    'init': question is not null ? true : false,
-                })
-            ) }}
-        </div>
-
-        <div
-            class="d-flex align-items-center"
-            data-glpi-form-editor-question-extra-details
-        >
-            <select
-                {# Note: _type_category is not saved by the backend as we can guess it from the type itself #}
-                name="_type_category"
-                class="form-select form-select-sm me-2"
-                aria-label="{{ __('Question type') }}"
-                style="width: auto;"
-                data-glpi-form-editor-on-change="change-question-type-category"
-            >
-
-                {% for category in question_types_manager.getCategories() %}
-                    {# TODO: add icon, use select2 ? #}
-                     <option
-                        value="{{ category.value }}"
-                        {{ category.value == question_type.getCategory().value ? 'selected' : '' }}
-                    >
-                        {{ category.getLabel() }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
-            <select
-                name="type"
-                class="form-select form-select-sm {{ types|length == 1 ? 'd-none' : '' }}"
-                aria-label="{{ __('Question sub type') }}"
-                style="width: auto;"
-                data-glpi-form-editor-on-change="change-question-type"
-                data-glpi-form-editor-question-type-selector
-            >
-                {% for possible_question_type in types %}
-                    {# TODO: add icon, use select2 ? #}
-                    <option
-                        value="{{ get_class(possible_question_type) }}"
-                        {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
-                    >
-                        {{ possible_question_type.getName() }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
-                <input type="hidden" value="0" name="is_mandatory">
+            class="card-status-start bg-primary"
+            data-glpi-form-editor-active-question-status-indicator
+        ></div>
+        <div class="card-body">
+            <div class="d-flex">
+                <i
+                    class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
+                    data-glpi-form-editor-question-handle
+                    draggable="true"
+                ></i>
+            </div>
+            {# Display question's title #}
+            <div class="d-flex mt-n1">
                 <input
-                    class="form-check-input"
-                    name="is_mandatory"
-                    type="checkbox"
-                    value="1"
-                    {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
-                    data-glpi-form-editor-on-change="toggle-mandatory-question"
-                >
-                <span class="form-check-label">{{ __("Mandatory") }}</span>
-            </label>
+                    class="form-control content-editable-h2"
+                    type="text"
+                    name="name"
+                    value="{{ question is not null ? question.fields.name|e('html_attr') : '' }}"
+                    placeholder="{{ __("New question") }}"
+                    data-glpi-form-editor-dynamic-input
+                    data-glpi-form-editor-on-input="compute-dynamic-input"
+                />
+                <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+            </div>
 
-            <button
-                class="btn btn-ghost-danger px-2"
-                type="button"
-                data-glpi-form-editor-on-click="delete-question"
+            {# Render the specific question type #}
+            <div data-glpi-form-editor-question-type-specific>
+                {{ question_type.renderAdminstrationTemplate(question)|raw }}
+            </div>
+
+            {# Display common fields #}
+            <div
+                class="content-editable-tinymce"
+                data-glpi-form-editor-question-description
+                {# Mark as secondary if empty #}
+                {{ question is null or question.fields.description|length == 0 ? "data-glpi-form-editor-question-extra-details" : "" }}
             >
-                <i class="ti ti-trash me-2"></i>
-                {{ __("Delete") }}
-            </button>
-        </div>
-    </div>
+                {{ fields.textareaField(
+                    'description',
+                    question is not null ? question.fields.description : '',
+                    __('Description'),
+                    base_field_options|merge({
+                        'placeholder': __('Add a description...'),
+                        'enable_richtext': true,
+                        'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                        'editor_height': "0",
+                        'rows' : 1,
+                        'toolbar_location': 'bottom',
+                        'init': question is not null ? true : false,
+                    })
+                ) }}
+            </div>
 
-    {# Common hidden data #}
-    <input
-        type="hidden"
-        name="_use_uuid"
-        value="{{ question is not null ? 0 : 1 }}"
-    />
-    <input
-        type="hidden"
-        name="id"
-        value="{{ question is not null ? question.fields.id : 0 }}"
-    />
-    <input
-        type="hidden"
-        name="_use_uuid_for_sections_id"
-        value="{{ section is not null ? 0 : 1 }}"
-    />
-    <input
-        type="hidden"
-        name="forms_sections_id"
-        value="{{ section is not null ? section.fields.id : 0 }}"
-    />
-    <input
-        type="hidden"
-        name="rank"
-        value="{{ question is not null ? question.fields.rank : 0 }}"
-    />
+            <div
+                class="d-flex align-items-center"
+                data-glpi-form-editor-question-extra-details
+            >
+                <select
+                    {# Note: _type_category is not saved by the backend as we can guess it from the type itself #}
+                    name="_type_category"
+                    class="form-select form-select-sm me-2"
+                    aria-label="{{ __('Question type') }}"
+                    style="width: auto;"
+                    data-glpi-form-editor-on-change="change-question-type-category"
+                >
+
+                    {% for category in question_types_manager.getCategories() %}
+                        {# TODO: add icon, use select2 ? #}
+                        <option
+                            value="{{ category.value }}"
+                            {{ category.value == question_type.getCategory().value ? 'selected' : '' }}
+                        >
+                            {{ category.getLabel() }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
+                <select
+                    name="type"
+                    class="form-select form-select-sm {{ types|length == 1 ? 'd-none' : '' }}"
+                    aria-label="{{ __('Question sub type') }}"
+                    style="width: auto;"
+                    data-glpi-form-editor-on-change="change-question-type"
+                    data-glpi-form-editor-question-type-selector
+                >
+                    {% for possible_question_type in types %}
+                        {# TODO: add icon, use select2 ? #}
+                        <option
+                            value="{{ get_class(possible_question_type) }}"
+                            {{ get_class(possible_question_type) == get_class(question_type) ? 'selected' : '' }}
+                        >
+                            {{ possible_question_type.getName() }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
+                    <input type="hidden" value="0" name="is_mandatory">
+                    <input
+                        class="form-check-input"
+                        name="is_mandatory"
+                        type="checkbox"
+                        value="1"
+                        {{ question is not null and question.fields.is_mandatory ? 'checked' : '' }}
+                        data-glpi-form-editor-on-change="toggle-mandatory-question"
+                    >
+                    <span class="form-check-label">{{ __("Mandatory") }}</span>
+                </label>
+
+                <button
+                    class="btn btn-ghost-danger px-2"
+                    type="button"
+                    data-glpi-form-editor-on-click="delete-question"
+                >
+                    <i class="ti ti-trash me-2"></i>
+                    {{ __("Delete") }}
+                </button>
+            </div>
+        </div>
+
+        {# Common hidden data #}
+        <input
+            type="hidden"
+            name="_use_uuid"
+            value="{{ question is not null ? 0 : 1 }}"
+        />
+        <input
+            type="hidden"
+            name="id"
+            value="{{ question is not null ? question.fields.id : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="_use_uuid_for_sections_id"
+            value="{{ section is not null ? 0 : 1 }}"
+        />
+        <input
+            type="hidden"
+            name="forms_sections_id"
+            value="{{ section is not null ? section.fields.id : 0 }}"
+        />
+        <input
+            type="hidden"
+            name="rank"
+            value="{{ question is not null ? question.fields.rank : 0 }}"
+        />
+    </div>
+    <div data-glpi-form-editor-question-extra-details>
+        {{ include('pages/admin/form/form_toolbar.html.twig', {
+            'can_update': can_update,
+            'form': form,
+        }, with_context = false) }}
+    </div>
 </div>
