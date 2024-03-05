@@ -4713,6 +4713,183 @@ class Search extends DbTestCase
             $this->variable(array_search('datacenter', array_column($so, 'id')))->isNotEqualTo(false, $item->getTypeName() . ' should use \'$tab = array_merge($tab, DataCenter::rawSearchOptionsToAdd());');
         }
     }
+
+    protected function testRichTextProvider(): iterable
+    {
+        $this->login('glpi', 'glpi');
+
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket 1',
+                'content' => 'This is a test ticket'
+            ],
+            [
+                'name' => 'Ticket 2',
+                'content' => 'This is a test ticket with & in description'
+            ],
+            [
+                'name' => 'Ticket 3',
+                'content' => 'This is a test ticket with followup'
+            ],
+            [
+                'name' => 'Ticket 4',
+                'content' => 'This is a test ticket with task'
+            ],
+            
+            [
+                'name' => 'Ticket & 5',
+                'content' => 'This is a test ticket'
+            ],
+        ]);
+
+        // Add a followup to ticket 3
+        $this->createItem('ITILFollowup', [
+            'itemtype' => 'Ticket',
+            'items_id' => getItemByTypeName('Ticket', 'Ticket 3')->getID(),
+            'content' => 'This is a followup with & in description'
+        ]);
+
+        // Add a task to ticket 4
+        $this->createItem('TicketTask', [
+            'tickets_id' => getItemByTypeName('Ticket', 'Ticket 4')->getID(),
+            'content' => 'This is a task with & in description'
+        ]);
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 1, // title
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket &#38; 5'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 21, // ticket content
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 2'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 25, // followup content
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 3'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 26, // task content
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 4'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    0 => [
+                        'link' => 'AND',
+                        'field' => 'view', // items seen
+                        'searchtype' => 'contains',
+                        'value' => '&'
+                    ],
+                    1 => [
+                        'link' => 'AND',
+                        'field' => 1, //title
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    2 => [
+                        'link' => 'AND',
+                        'field' => 21, // ticket content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    3 => [
+                        'link' => 'AND',
+                        'field' => 25, // followup content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    4 => [
+                        'link' => 'AND',
+                        'field' => 26, // task content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                ],
+            ],
+            'expected' => [
+                'Ticket 2',
+                'Ticket 3',
+                'Ticket 4',
+                'Ticket &#38; 5'
+            ]
+        ];
+    }
+
+    /**
+     * @dataprovider testRichTextProvider
+     */
+    public function testRichText(
+        array $search_params,
+        array $expected
+    ): void {
+        $data = $this->doSearch(\Ticket::class, $search_params);
+
+        // Extract items names
+        $items = [];
+        foreach ($data['data']['rows'] as $row) {
+            $items[] = $row['raw']['ITEM_Ticket_1'];
+        }
+
+        $this->array($items)->isEqualTo($expected);
+    }
 }
 
 // @codingStandardsIgnoreStart
