@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-class ProjectTaskTeamDropdown extends AbstractRightsDropdown
+final class ProjectTaskTeamDropdown extends AbstractRightsDropdown
 {
     protected static function getAjaxUrl(): string
     {

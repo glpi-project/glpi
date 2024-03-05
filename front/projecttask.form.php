@@ -56,7 +56,7 @@ $task = new ProjectTask();
 
 if (isset($_POST["add"])) {
     $task->check(-1, CREATE, $_POST);
-    $task_id = $task->add($_POST);
+    $task->add($_POST);
 
     Event::log(
         $task->fields['projects_id'],
