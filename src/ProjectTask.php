@@ -1449,15 +1449,52 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
-     * Get the list of projects for a user.
+     * Get the list of project tasks for a list of groups.
      *
-     * @param int $user_id The user ID.
+     * @param array $groups_id The group IDs.
+     * @return array The list of projecttask IDs.
+     */
+    public static function getProjectTaskIDsForGroup(
+        array $groups_id,
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $req = [
+            'FROM' => ProjectTask::getTable(),
+            'WHERE' => [
+                'id' => new QuerySubQuery([
+                    'SELECT' => [
+                        'projecttasks_id'
+                    ],
+                    'FROM' => ProjectTaskTeam::getTable(),
+                    'WHERE' => [
+                        ['itemtype' => 'Group', 'items_id' => $groups_id]
+                    ]
+                ])
+            ]
+        ];
+
+        $iterator = $DB->request($req);
+
+        $projecttask_ids = [];
+        foreach ($iterator as $data) {
+            $projecttask_ids[] = $data['id'];
+        }
+
+        return $projecttask_ids;
+    }
+
+    /**
+     * Get the list of project tasks for a list of users
+     *
+     * @param array $users_id The user IDs.
      * @param bool $search_in_groups Whether to search in groups.
      * @param bool $search_in_team Whether to search in the team.
-     * @return array The list of project IDs.
+     * @return array The list of projecttask IDs.
      */
     public static function getProjectTaskIDsForUser(
-        int $user_id,
+        array $users_id,
         bool $search_in_groups = true
     ): array {
         /** @var \DBmysql $DB */
@@ -1469,12 +1506,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ],
             'FROM' => Group_User::getTable(),
             'WHERE' => [
-                'users_id' => $user_id
+                'users_id' => $users_id
             ]
         ]);
 
         $crit = [
-            ['itemtype' => 'User', 'items_id' => $user_id]
+            ['itemtype' => 'User', 'items_id' => $users_id]
         ];
 
         if ($search_in_groups) {
@@ -1508,16 +1545,27 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
 
     /**
-     *  Show the list of projects for a user in the personal view.
+     *  Show the list of projecttasks for a user in the personal view or for a group in the group view
      *
-     * @param int $user_id The user ID.
+     * @param string $itemtype The itemtype (User or Group)
+     * @param array $items_id The user or group IDs
      * @return void
      */
-    public static function showListForCentral(int $user_id): void
+    public static function showListForCentral(string $itemtype, array $items_id): void
     {
+        $projecttasks = [];
+        switch ($itemtype) {
+            case 'User':
+                $projecttasks = self::getProjectTaskIDsForUser($items_id);
+                break;
+            case 'Group':
+                $projecttasks = self::getProjectTaskIDsForGroup($items_id);
+                break;
+        }
+
         $projecttasks = array_map(
             fn($id) => self::getById($id),
-            self::getProjectTaskIDsForUser($user_id, false)
+            $projecttasks
         );
 
         // If no project tasks are found, do not display anything
@@ -1544,7 +1592,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $displayed_row_count = min(count($projecttasks), 5);
         $total_row_count = count($projecttasks);
         $search_url = self::getSearchURL();
-        $title = Html::makeTitle(__('Your project tasks'), $displayed_row_count, $total_row_count);
+        $title = Html::makeTitle(__('Ongoing Project Tasks'), $displayed_row_count, $total_row_count);
         $main_header = "<a href='$search_url'>$title</a>";
 
         $twig_params = [

@@ -2670,15 +2670,64 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
-     * Get the list of projects for a user.
+     * Get the list of projects for a list of groups.
      *
-     * @param int $user_id The user ID.
+     * @param array $groups_id The group IDs.
+     * @param bool $search_in_team Whether to search in the team.
+     * @return array The list of project IDs.
+     */
+    public static function getProjectIDsForGroup(
+        array $groups_id,
+        bool $search_in_team = true
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $req = [
+            'FROM' => Project::getTable(),
+            'WHERE' => [
+                'OR' => [
+                    'groups_id' => $groups_id
+                ]
+            ]
+        ];
+
+        if ($search_in_team) {
+            $team_sub_query = new \Glpi\DBAL\QuerySubQuery([
+                'SELECT' => [
+                    'projects_id'
+                ],
+                'FROM' => ProjectTeam::getTable(),
+                'WHERE' => [
+                    'OR' => [
+                        ['itemtype' => 'Group', 'items_id' => $groups_id]
+                    ]
+                ]
+            ]);
+
+            $req['WHERE']['OR']['id'] = $team_sub_query;
+        }
+
+        $iterator = $DB->request($req);
+
+        $project_ids = [];
+        foreach ($iterator as $data) {
+            $project_ids[] = $data['id'];
+        }
+
+        return $project_ids;
+    }
+
+    /**
+     * Get the list of projects for a list of users.
+     *
+     * @param array $users_id The user IDs.
      * @param bool $search_in_groups Whether to search in groups.
      * @param bool $search_in_team Whether to search in the team.
      * @return array The list of project IDs.
      */
     public static function getProjectIDsForUser(
-        int $user_id,
+        array $users_id,
         bool $search_in_groups = true,
         bool $search_in_team = true
     ): array {
@@ -2689,7 +2738,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'FROM' => Project::getTable(),
             'WHERE' => [
                 'OR' => [
-                    'users_id' => $user_id
+                    'users_id' => $users_id
                 ]
             ]
         ];
@@ -2700,7 +2749,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ],
             'FROM' => Group_User::getTable(),
             'WHERE' => [
-                'users_id' => $user_id
+                'users_id' => $users_id
             ]
         ]);
 
@@ -2710,7 +2759,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         if ($search_in_team) {
             $crit = [
-                ['itemtype' => 'User', 'items_id' => $user_id]
+                ['itemtype' => 'User', 'items_id' => $users_id]
             ];
 
             if ($search_in_groups) {
@@ -2741,16 +2790,27 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
-     *  Show the list of projects for a user in the personal view.
+     *  Show the list of projects for a user in the personal view or for a group in the group view
      *
-     * @param int $user_id The user ID.
+     * @param string $itemtype The itemtype (User or Group)
+     * @param array $items_id The user or group IDs
      * @return void
      */
-    public static function showListForCentral(int $user_id): void
+    public static function showListForCentral(string $itemtype, array $items_id): void
     {
+        $projects = [];
+        switch ($itemtype) {
+            case 'User':
+                $projects = self::getProjectIDsForUser($items_id, false, true);
+                break;
+            case 'Group':
+                $projects = self::getProjectIDsForGroup($items_id);
+                break;
+        }
+
         $projects = array_map(
             fn($id) => self::getById($id),
-            self::getProjectIDsForUser($user_id, false, true)
+            $projects
         );
 
         // If no project are found, do not display anything
@@ -2794,7 +2854,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $displayed_row_count = min(count($projects), 5);
         $total_row_count = count($projects);
         $search_url = self::getSearchURL() . '?' . Toolbox::append_params($options);
-        $title = Html::makeTitle(__('Your projects'), $displayed_row_count, $total_row_count);
+        $title = Html::makeTitle(__('Ongoing Projects'), $displayed_row_count, $total_row_count);
         $main_header = "<a href='$search_url'>$title</a>";
 
         $twig_params = [
