@@ -1449,27 +1449,40 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
-     * Get the list of project tasks for a list of groups.
+     * Get the list of active project tasks for a list of groups.
      *
      * @param array $groups_id The group IDs.
      * @return array The list of projecttask IDs.
      */
-    public static function getProjectTaskIDsForGroup(
+    public static function getActiveProjectTaskIDsForGroup(
         array $groups_id,
     ): array {
         /** @var \DBmysql $DB */
         global $DB;
 
         $req = [
+            'SELECT' => ProjectTask::getTable() . '.id',
             'FROM' => ProjectTask::getTable(),
+            'LEFT JOIN' => [
+                ProjectState::getTable() => [
+                    'FKEY' => [
+                        ProjectState::getTable() => 'id',
+                        ProjectTask::getTable() => 'projectstates_id'
+                    ]
+                ]
+            ],
             'WHERE' => [
-                'id' => new QuerySubQuery([
+                ProjectTask::getTable() . '.id' => new QuerySubQuery([
                     'SELECT' => [
                         'projecttasks_id'
                     ],
                     'FROM' => ProjectTaskTeam::getTable(),
                     'WHERE' => [
-                        ['itemtype' => 'Group', 'items_id' => $groups_id]
+                        ['itemtype' => 'Group', 'items_id' => $groups_id],
+                        'OR' => [
+                            [ProjectState::getTable() . '.is_finished' => 0],
+                            [ProjectState::getTable() . '.is_finished' => null]
+                        ]
                     ]
                 ])
             ]
@@ -1486,14 +1499,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     }
 
     /**
-     * Get the list of project tasks for a list of users
+     * Get the list of active project tasks for a list of users
      *
      * @param array $users_id The user IDs.
      * @param bool $search_in_groups Whether to search in groups.
      * @param bool $search_in_team Whether to search in the team.
      * @return array The list of projecttask IDs.
      */
-    public static function getProjectTaskIDsForUser(
+    public static function getActiveProjectTaskIDsForUser(
         array $users_id,
         bool $search_in_groups = true
     ): array {
@@ -1519,9 +1532,18 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $req = [
+            'SELECT' => ProjectTask::getTable() . '.id',
             'FROM' => ProjectTask::getTable(),
+            'LEFT JOIN' => [
+                ProjectState::getTable() => [
+                    'FKEY' => [
+                        ProjectState::getTable() => 'id',
+                        ProjectTask::getTable() => 'projectstates_id'
+                    ]
+                ]
+            ],
             'WHERE' => [
-                'id' => new QuerySubQuery([
+                ProjectTask::getTable() . '.id' => new QuerySubQuery([
                     'SELECT' => [
                         'projecttasks_id'
                     ],
@@ -1529,7 +1551,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                     'WHERE' => [
                         'OR' => $crit
                     ]
-                ])
+                ]),
+                'OR' => [
+                    [ProjectState::getTable() . '.is_finished' => 0],
+                    [ProjectState::getTable() . '.is_finished' => null]
+                ]
             ]
         ];
 
@@ -1553,44 +1579,23 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      */
     public static function showListForCentral(string $itemtype, array $items_id): void
     {
-        $projecttasks = [];
+        $projecttasks_id = [];
         switch ($itemtype) {
             case 'User':
-                $projecttasks = self::getProjectTaskIDsForUser($items_id);
+                $projecttasks_id = self::getActiveProjectTaskIDsForUser($items_id);
                 break;
             case 'Group':
-                $projecttasks = self::getProjectTaskIDsForGroup($items_id);
+                $projecttasks_id = self::getActiveProjectTaskIDsForGroup($items_id);
                 break;
         }
 
-        $projecttasks = array_map(
-            fn($id) => self::getById($id),
-            $projecttasks
-        );
-
         // If no project tasks are found, do not display anything
-        if (empty($projecttasks)) {
+        if (empty($projecttasks_id)) {
             return;
         }
 
-        // If all project tasks are finished, do not display anything
-        if (
-            empty(array_filter($projecttasks, function ($projecttask) {
-                $state = ProjectState::getById($projecttask->fields['projectstates_id']);
-                if ($state !== false) {
-                    if ($state->fields['is_finished']) {
-                        return false;
-                    }
-                }
-
-                return true;
-            }))
-        ) {
-            return;
-        }
-
-        $displayed_row_count = min(count($projecttasks), 5);
-        $total_row_count = count($projecttasks);
+        $displayed_row_count = min(count($projecttasks_id), 5);
+        $total_row_count = count($projecttasks_id);
         $search_url = self::getSearchURL();
         $title = Html::makeTitle(__('Ongoing Project Tasks'), $displayed_row_count, $total_row_count);
         $main_header = "<a href='$search_url'>$title</a>";
@@ -1626,11 +1631,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'rows' => []
         ];
 
-        foreach ($projecttasks as $key => $projecttask) {
+        foreach ($projecttasks_id as $key => $projecttask_id) {
             if ($key >= $displayed_row_count) {
                 break;
             }
 
+            $projecttask = self::getById($projecttask_id);
             $name = $projecttask->getLink();
             $project = Project::getById($projecttask->fields['projects_id'])->getLink();
             $percent_done = $projecttask->fields['percent_done'] . '%';
