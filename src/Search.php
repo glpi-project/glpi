@@ -4758,6 +4758,13 @@ JAVASCRIPT;
                 } else {
                     $SEARCH = self::makeTextSearch($val, $nott);
                 }
+                // To search for '&' in rich text
+                if (
+                    (($searchopt[$ID]['datatype'] ?? null) === 'text')
+                    && (($searchopt[$ID]['htmltext'] ?? null) === true)
+                ) {
+                    $val = str_replace('&#38;', '38;amp;', $val);
+                }
                 break;
 
             case "equals":
@@ -5180,14 +5187,6 @@ JAVASCRIPT;
                     list($itemtype_val, $event_val) = explode(self::SHORTSEP, $val);
                     return " $link $not(`$table`.`event` = '$event_val'
                                AND `$table`.`itemtype` = '$itemtype_val')";
-                }
-                break;
-
-            case "glpi_changes.content":
-            case "glpi_problems.content":
-            case "glpi_tickets.content":
-                if (in_array($searchtype, ['contains', 'notcontains'])) {
-                    $val = str_replace('&#38;', '38;amp;', $val);
                 }
                 break;
         }
