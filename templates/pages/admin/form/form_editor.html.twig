@@ -95,7 +95,7 @@
                                         type="text"
                                         class="form-control content-editable-h1"
                                         name="name"
-                                        value="{{ item.fields.name }}"
+                                        value="{{ item.fields.name|e('html_attr') }}"
                                     >
 
                                     {# Form's status #}
