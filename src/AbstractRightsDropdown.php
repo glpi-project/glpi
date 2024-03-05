@@ -132,6 +132,16 @@ abstract class AbstractRightsDropdown
             $possible_rights[Group::getType()] = self::getGroups($text);
         }
 
+        // Add contacts if enabled
+        if (self::isTypeEnabled(Contact::getType())) {
+            $possible_rights[Contact::getType()] = self::getContacts($text);
+        }
+
+        // Add suppliers if enabled
+        if (self::isTypeEnabled(Supplier::getType())) {
+            $possible_rights[Supplier::getType()] = self::getSuppliers($text);
+        }
+
         $results = [];
         foreach ($possible_rights as $itemtype => $ids) {
             $new_group = [];
@@ -269,6 +279,58 @@ abstract class AbstractRightsDropdown
         }
 
         return $groups_items;
+    }
+
+    /**
+     * Get possible values for contacts
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
+    protected static function getContacts(string $text): array
+    {
+        $contact_item = new Contact();
+        $contacts = $contact_item->find(
+            [
+                'name' => ["LIKE", "%$text%"]
+            ] + getEntitiesRestrictCriteria(Contact::getTable()),
+            [],
+            self::LIMIT
+        );
+        $contacts_item = [];
+        foreach ($contacts as $contact) {
+            $new_key = 'contacts_id-' . $contact['id'];
+            $contacts_item[$new_key] = $contact['name'];
+        }
+
+        return $contacts_item;
+    }
+
+    /**
+     * Get possible values for suppliers
+     *
+     * @param string $text Search string
+     *
+     * @return array
+     */
+    protected static function getSuppliers(string $text): array
+    {
+        $supplier_item = new Supplier();
+        $suppliers = $supplier_item->find(
+            [
+                'name' => ["LIKE", "%$text%"]
+            ] + getEntitiesRestrictCriteria(Supplier::getTable()),
+            [],
+            self::LIMIT
+        );
+        $suppliers_item = [];
+        foreach ($suppliers as $supplier) {
+            $new_key = 'suppliers_id-' . $supplier['id'];
+            $suppliers_item[$new_key] = $supplier['name'];
+        }
+
+        return $suppliers_item;
     }
 
     /**
