@@ -42,7 +42,7 @@
     };
     const icons = Object.assign({}, default_icons, props.icons);
 
-    const indent_size = 20;
+    const indent_size = 40;
 
     const tree_data = ref([]);
     /** The start index of the visible items in the tree */
@@ -228,6 +228,32 @@
             start.value = Math.round(fake_scrollbar.scrollTop() / item_height);
         });
     });
+
+    const selected_node = computed(() => {
+        let selected = null;
+        walkTree(tree_data.value, 0, null, (node) => {
+            if (node.selected) {
+                selected = node;
+            }
+        });
+        return selected;
+    });
+
+    /**
+     * Returns true if the node is selected or is a parent of a selected node.
+     * @param node
+     */
+    function isSelectedOrParent(node)
+    {
+        if (node.key === selected_node.value?.key) {
+            return true;
+        }
+        return selected_node.value.parents.some((parent) => {
+            if (parent.key === node.key) {
+                return true;
+            }
+        });
+    }
 </script>
 
 <template>
@@ -255,7 +281,7 @@
                         <span v-else class="me-1">
                             <i :class="icons.item"></i>
                         </span>
-                        <span v-html="node.title"></span>
+                        <span :class="isSelectedOrParent(node) ? 'fw-bold' : ''" v-html="node.title"></span>
                     </td>
                 </tr>
             </tbody>
