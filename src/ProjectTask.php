@@ -456,7 +456,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
-        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] > 0) {
+        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
             $input['projectstates_id'] = self::recalculateStatus($input);
         }
         if (isset($input["plan"])) {
@@ -544,7 +544,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
 
-        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] > 0) {
+        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
             $input['projectstates_id'] = self::recalculateStatus($input);
         }
 
