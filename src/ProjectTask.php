@@ -273,7 +273,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 );
             }
         }
-
         if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
            // Auto-calculate was toggled. Force recalculation of this and parents
             self::recalculatePercentDone($this->getID());
@@ -285,6 +284,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             if ($this->fields['projects_id'] > 0) {
                 Project::recalculatePercentDone($this->fields['projects_id']);
             }
+        }
+
+        if ($this->input['auto_projectstates'] > 0) {
+            self::recalculateStatus($this->getID());
         }
 
         if (isset($this->input['_old_projects_id'])) {
@@ -1798,6 +1801,31 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $projecttask->update([
             'id'                 => $ID,
             'percent_done'       => $percent_done,
+        ]);
+        return true;
+    }
+
+    public static function recalculateStatus($ID)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $projecttask = new self();
+        $projecttask->getFromDB($ID);
+        if (!$projecttask->fields['auto_projectstates']) {
+            return false;
+        }
+        $config = \Config::getConfigurationValues('core');
+        if ($projecttask->fields['percent_done'] === 0) {
+            $state_id = $config['projecttask_unstarted'] ?? 0;
+        } else if ($projecttask->fields['percent_done'] === 100) {
+            $state_id = $config['projecttask_completed'] ?? 0;
+        } else {
+            $state_id = $config['projecttask_inprogress'] ?? 0;
+        }
+        $projecttask->update([
+            'id'                 => $ID,
+            'projectstates_id'       => $state_id,
         ]);
         return true;
     }

@@ -273,6 +273,47 @@
 </div>
 
 <div class="hr-text">
+    <i class="ti ti-layout-kanban"></i>
+    <span>{{ __('Project Task State') }}</span>
+</div>
+
+<div class="row ps-4">
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projecttask_unstarted',
+        config['projecttask_unstarted']|default('0'),
+        __('Status of unstarted tasks'),
+        inline_field_options|merge({
+            'width': 'auto',
+            'rand': locks_rand,
+        })
+    ) }}
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projecttask_inprogress',
+        config['projecttask_inprogress']|default('0'),
+        __('Status of tasks in progress'),
+        inline_field_options|merge({
+            'width': 'auto',
+            'rand': locks_rand,
+        })
+    ) }}
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projecttask_completed',
+        config['projecttask_completed']|default('0'),
+        __('Status of tasks done'),
+        inline_field_options|merge({
+            'width': 'auto',
+            'rand': locks_rand,
+        })
+    ) }}
+</div>
+
+<div class="hr-text">
     <i class="ti ti-login"></i>
     <span>{{ __('Auto Login') }}</span>
 </div>
