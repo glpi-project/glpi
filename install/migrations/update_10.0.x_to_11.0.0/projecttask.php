@@ -38,9 +38,23 @@
  */
 
 $table = ProjectTask::getTable();
+$migration->addField($table, "is_deleted", "tinyint NOT NULL DEFAULT '0'", [
+    'after' => 'projecttasks_id',
+]);
+$migration->addKey($table, 'is_deleted');
+
 $migration->addField($table, "auto_projectstates", "bool", [
     'after' => 'projectstates_id',
 ]);
+
+$migration->addConfig(
+    [
+        'projecttask_unstarted' => 0,
+        'projecttask_inprogress' => 0,
+        'projecttask_completed' => 0,
+    ],
+    'core'
+);
 
 // new right value for projecttask
 $migration->updateRight('projecttask', DELETE | PURGE | ProjectTask::READMY | ProjectTask::UPDATEMY | READNOTE | UPDATENOTE, [

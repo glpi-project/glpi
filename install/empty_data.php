@@ -352,9 +352,9 @@ $empty_data_builder = new class
             'is_notif_enable_default' => 1,
             'show_search_form' => 0,
             'is_demo_dashboards' => 1, // Not configurable by users except to disable via a button on the dashboards. Switches dashboard data provider to demo data when enabled.
-            'projecttask_unstarted' => 1,
-            'projecttask_inprogress' => 2,
-            'projecttask_completed' => 3,
+            'projecttask_unstarted' => 0,
+            'projecttask_inprogress' => 0,
+            'projecttask_completed' => 0,
         ];
 
         $tables['glpi_configs'] = [];
