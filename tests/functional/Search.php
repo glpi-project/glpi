@@ -4735,7 +4735,6 @@ class Search extends DbTestCase
                 'name' => 'Ticket 4',
                 'content' => 'This is a test ticket with task'
             ],
-            
             [
                 'name' => 'Ticket & 5',
                 'content' => 'This is a test ticket'
