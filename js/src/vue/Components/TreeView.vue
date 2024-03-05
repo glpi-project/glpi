@@ -173,6 +173,8 @@
         const tree_el = $(`#tree_data${props.rand}`);
         // Handle scrolling to change the start index of the visible items
         tree_el.on('wheel', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
             const pos_delta = e.originalEvent.deltaY / 120;
             let new_start = start.value + pos_delta;
             if (new_start < 0) {

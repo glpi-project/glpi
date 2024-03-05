@@ -1,6 +1,6 @@
 <script setup>
     /* global hotkeys, typewatch, initTooltips */
-    import {ref, computed, onMounted, watch} from 'vue';
+    import {ref} from 'vue';
     import TreeView from "../Components/TreeView.vue";
 
     const props = defineProps({
