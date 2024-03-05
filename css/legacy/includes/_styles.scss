@@ -1013,22 +1013,6 @@
          padding-left: 20px;
       }
 
-      .add_answer {
-         background-image: url("../pics/answer.png");
-         width: 16px;
-         height: 16px;
-         display: block;
-         position: absolute;
-         right: 5px;
-         bottom: 5px;
-         opacity: .5;
-
-         &:hover {
-            opacity: 1;
-            cursor: pointer;
-         }
-      }
-
       .h_item {
          border: none;
       }

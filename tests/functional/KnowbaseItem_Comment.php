@@ -167,10 +167,9 @@ class KnowbaseItem_Comment extends DbTestCase
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
         $this->addComments($kb1);
 
-        $html = \KnowbaseItem_Comment::displayComments(
-            \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
-            true
-        );
+        ob_start();
+        \KnowbaseItem_Comment::showForItem($kb1);
+        $html = ob_get_clean();
 
         preg_match_all("/li class='comment'/", $html, $results);
         $this->array($results[0])->hasSize(2);
@@ -184,15 +183,14 @@ class KnowbaseItem_Comment extends DbTestCase
         preg_match_all("/span class='add_answer'/", $html, $results);
         $this->array($results[0])->hasSize(5);
 
-       //same tests, from another user
+        // same tests, from another user
         $auth = new \Auth();
         $result = $auth->login('glpi', 'glpi', true);
         $this->boolean($result)->isTrue();
 
-        $html = \KnowbaseItem_Comment::displayComments(
-            \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null),
-            true
-        );
+        ob_start();
+        \KnowbaseItem_Comment::showForItem($kb1);
+        $html = ob_get_clean();
 
         preg_match_all("/li class='comment'/", $html, $results);
         $this->array($results[0])->hasSize(2);

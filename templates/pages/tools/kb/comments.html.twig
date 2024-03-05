@@ -1,0 +1,182 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro kb_comment(comment, level, can_comment) %}
+    <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }}"
+        data-id="{{ comment['id'] }}" data-kbitem_id="{{ comment['knowbaseitems_id'] }}" data-lang="{{ comment['language'] }}">
+        <div class="h_item text-start d-flex">
+            {% if level == 0 %}
+                <hr>
+            {% endif %}
+            <div class="h_info">
+                <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
+                <div class="h_user">
+                    <a href="{{ comment['user_info']['link'] }}">
+                        {% set avatar_style = comment['user_info']['avatar'] is not empty
+                            ? ('background-image: url(' ~ comment['user_info']['avatar'] ~ ');')
+                            : ('background-color: ' ~ comment['user_info']['initials_bg_color'] ) %}
+                        <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
+                        {% if comment['user_info']['avatar'] is empty %}
+                            {{ comment['user_info']['initials'] }}
+                        {% endif %}
+                    </span>
+                    </a>
+                </div>
+            </div>
+            <div class="h_content KnowbaseItemComment">
+                <div class="displayed_content ms-2">
+                    {% if can_comment and comment['users_id'] == session('glpiID') %}
+                        <button type="button" class="btn btn-sm btn-ghost-secondary edit_item" title="{{ __('Edit') }}">
+                            <i class="ti ti-edit"></i>
+                        </button>
+                    {% else %}
+                        <br>
+                    {% endif %}
+                    <div class="item_content">
+                        <p>{{ comment['comment'] }}</p>
+                    </div>
+                </div>
+                {% if can_comment %}
+                    <button type="button" class="btn btn-sm btn-ghost-secondary add_answer position-absolute" title="{{ __('Add an answer') }}"
+                            style="right: 5px; bottom: 5px">
+                        <i class="ti ti-arrow-back-up"></i>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+        {% if comment['answers'] is defined and comment['answers']|length > 0 %}
+            <input type="checkbox" id="toggle_{{ comment['id'] }}" class="toggle_comments" checked="checked">
+            <label for="toggle_{{ comment['id'] }}" class="toggle_label"></label>
+            <ul>
+                {% for answer in comment['answers'] %}
+                    {{ _self.kb_comment(answer, level + 1, can_comment) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{% if can_comment %}
+    {% include 'pages/tools/kb/comment_form.html.twig' with {
+        kbitem_id: kbitem_id,
+        language: language,
+    } %}
+{% endif %}
+
+{% if comments|length == 0 %}
+    <div class="alert alert-info">
+        {{ __('No comments') }}
+    </div>
+{% else %}
+    <div class="forcomments timeline_history">
+        <ul class="comments text-start">
+            {% for comment in comments %}
+                {{ _self.kb_comment(comment, 0, can_comment) }}
+            {% endfor %}
+        </ul>
+        <script>
+            $(() => {
+                const _bindForm = function(form) {
+                    form.find('input[type=reset]').on('click', (e) => {
+                        e.preventDefault();
+                        form.remove();
+                        $('.displayed_content').show();
+                    });
+                };
+
+                $('.add_answer').on('click', (e) => {
+                    const add_btn = $(e.target);
+                    const comment = add_btn.closest('.comment');
+                    const _data = {
+                        'kbitem_id': comment.data('kbitem_id'),
+                        'answer'   : comment.data('id'),
+                        'language' : comment.data('lang')
+                    };
+
+                    if (comment.find('#newcomment' + add_btn.data('id')).length > 0) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '{{ path('/ajax/getKbComment.php') }}',
+                        method: 'post',
+                        cache: false,
+                        data: _data,
+                    }).then((data) => {
+                        const _form = $(`<div class="newcomment ms-3" id="newcomment${comment.data('id')}">${data}</div>`);
+                        _bindForm(_form);
+                        add_btn.parents('.h_item').after(_form);
+                    }, () => {
+                        glpi_alert({
+                            title: __('Unable to load comment!'),
+                            message: __('Contact your GLPI admin!'),
+                        });
+                    });
+                });
+
+                $('.edit_item').on('click', (e) => {
+                    const edit_btn = $(e.target)
+                    const comment = edit_btn.closest('.comment');
+                    const _data = {
+                        'kbitem_id': comment.data('kbitem_id'),
+                        'edit'     : comment.data('id'),
+                        'language' : comment.data('lang')
+                    };
+
+                    if (comment.find('#editcomment' + edit_btn.data('id')).length > 0) {
+                        return;
+                    }
+
+                    $.ajax({
+                        url: '{{ path('/ajax/getKbComment.php') }}',
+                        method: 'post',
+                        cache: false,
+                        data: _data,
+                    }).then((data) => {
+                        const _form = $(`<div class="editcomment" id="editcomment${comment.data('id')}">${data}</div>`);
+                        _bindForm(_form);
+                        edit_btn
+                            .parents('.displayed_content').hide()
+                            .parent()
+                            .append(_form);
+                    }, () => {
+                        glpi_alert({
+                            title: __('Unable to load comment!'),
+                            message: __('Contact your GLPI admin!'),
+                        });
+                    });
+                });
+            });
+        </script>
+    </div>
+{% endif %}

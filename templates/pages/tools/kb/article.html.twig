@@ -1,0 +1,105 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div>
+    {% set kb_cats %}
+        {% for cat_id, cat_name in categories %}
+            <span class="badge badge-outline text-secondary">
+                <a href="{{ 'KnowbaseItem'|itemtype_search_path ~ '?knowbaseitemcategories_id=' ~ cat_id ~ '&forcetab=Knowbase$2' }}">
+                    {{ cat_name }}
+                </a>
+            </span>
+        {% endfor %}
+    {% endset %}
+    {{ fields.htmlField('', kb_cats, _n('Category', 'Categories', get_plural_number()), {
+        full_width: true,
+        is_horizontal: false,
+        label_class: 'pb-0'
+    }) }}
+
+    {{ fields.htmlField('', subject|e, __('Subject'), {
+        full_width: true,
+        is_horizontal: false,
+        label_class: 'fs-2'
+    }) }}
+    {% set answer_field %}
+        <div class="rich_text_container">
+            {{ answer|raw }}
+        </div>
+    {% endset %}
+    {{ fields.htmlField('', answer_field, __('Content'), {
+        full_width: true,
+        is_horizontal: false,
+        label_class: 'fs-2'
+    }) }}
+
+    {% if attachments|length > 0 %}
+        {% include 'components/datatable.html.twig' with {
+            is_tab: true,
+            nopager: true,
+            nofilter: true,
+            columns: {
+                filename: __('File'),
+                headings: __('Heading'),
+                assocdate: _n('Date', 'Dates', 1)
+            },
+            formatters: {
+                filename: 'raw_html',
+                assocdate: 'datetime'
+            },
+            entries: attachments,
+            total_number: attachments|length,
+            filtered_number: attachments|length,
+            showmassiveactions: false
+        } only %}
+    {% endif %}
+
+    <div class="card-footer mx-n2 mb-n2 mt-4 fw-bold">
+        <div class="d-flex row">
+            <div class="col-sm-6 col-12">
+                {{ __('%1$s: %2$s')|e|format(__('Writer')|e, writer_link)|raw }}
+            </div>
+            <div class="col-sm-6 col-12">
+                {{ _n('%d view', '%d views', item.fields['view'])|format(item.fields['view']) }}
+            </div>
+        </div>
+        <div class="d-flex row">
+            <div class="col-sm-6 col-12">
+                {{ item.fields['is_faq'] ? __('This item is part of the FAQ') :  __('This item is not part of the FAQ')}}
+            </div>
+        </div>
+        {{ include('components/form/dates.html.twig') }}
+    </div>
+</div>

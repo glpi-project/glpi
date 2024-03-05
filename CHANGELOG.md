@@ -243,6 +243,10 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem::addVisibilityJoins()`
 - `KnowbaseItem::addVisibilityRestrict()`
 - `KnowbaseItem::showBrowseForm()`
+- `KnowbaseItem_Comment::displayComments()`
+- `KnowbaseItem_KnowbaseItemCategory::displayTabContentForItem()`
+- `KnowbaseItem_KnowbaseItemCategory::getTabNameForItem()`
+- `KnowbaseItem_KnowbaseItemCategory::showForItem()`
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`

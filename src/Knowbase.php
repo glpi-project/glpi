@@ -90,7 +90,6 @@ class Knowbase extends CommonGLPI
      **/
     public static function showSearchView()
     {
-
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
@@ -112,14 +111,11 @@ class Knowbase extends CommonGLPI
         $ki->searchForm($_GET);
 
         if (empty($_GET['contains'])) {
-            echo "<div><table class='mx-auto' width='950px'><tr class='noHover'><td class='center top'>";
+            echo '<div class="d-flex flex-wrap mt-3">';
             KnowbaseItem::showRecentPopular("recent");
-            echo "</td><td class='center top'>";
             KnowbaseItem::showRecentPopular("lastupdate");
-            echo "</td><td class='center top'>";
             KnowbaseItem::showRecentPopular("popular");
-            echo "</td></tr>";
-            echo "</table></div>";
+            echo '</div>';
         } else {
             KnowbaseItem::showList($_GET, 'search');
         }
