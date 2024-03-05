@@ -496,6 +496,9 @@ final class DbUtils
      * @param string $itemtype itemtype
      *
      * @return CommonDBTM|false itemtype instance or false if class does not exists
+     * @template T
+     * @phpstan-param class-string<T> $itemtype
+     * @phpstan-return T|false
      */
     public function getItemForItemtype($itemtype)
     {

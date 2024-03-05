@@ -54,47 +54,23 @@ class NetworkAlias extends FQDNLabel
         return _n('Network alias', 'Network aliases', $nb);
     }
 
-
     public function defineTabs($options = [])
     {
-
         $ong  = [];
         $this->addDefaultFormTab($ong);
 
         return $ong;
     }
 
-
-    /**
-     * Get the full name (internet name) of a NetworkName
-     *
-     * @param integer $ID  ID of the NetworkName
-     *
-     * @return string  its internet name, or empty string if invalid NetworkName
-     **/
-    public static function getInternetNameFromID($ID)
-    {
-
-        $networkAlias = new self();
-        if ($networkAlias->can($ID, READ)) {
-            return FQDNLabel::getInternetNameFromLabelAndDomainID(
-                $networkAlias->fields["name"],
-                $networkAlias->fields["fqdns_id"]
-            );
-        }
-        return "";
-    }
-
-
     /**
      * Print the network alias form
      *
-     * @param $ID        integer ID of the item
-     * @param $options   array
+     * @param integer $ID ID of the item
+     * @param array $options
      *     - target for the Form
      *     - withtemplate template or basic computer
      *
-     * @return void
+     * @return bool
      **/
     public function showForm($ID, $options = [])
     {
@@ -149,16 +125,15 @@ class NetworkAlias extends FQDNLabel
         return true;
     }
 
-
     /**
+     * @param string $itemtype
+     * @param HTMLTableBase $base
+     * @param HTMLTableSuperHeader|null $super
+     * @param HTMLTableHeader|null $father
+     * @param array $options
+     * @throws Exception
      * @since 0.84
-     *
-     * @param $itemtype
-     * @param $base                  HTMLTableBase object
-     * @param $super                 HTMLTableSuperHeader object (default NULL)
-     * @param $father                HTMLTableHeader object (default NULL)
-     * @param $options      array
-     **/
+     */
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -172,11 +147,11 @@ class NetworkAlias extends FQDNLabel
             return;
         }
 
-        if ($itemtype != 'NetworkName') {
+        if ($itemtype !== NetworkName::class) {
             return;
         }
 
-        $content = self::getTypeName();
+        $content = htmlspecialchars(self::getTypeName());
         if (isset($options['column_links'][$column_name])) {
             $content = "<a href='" . $options['column_links'][$column_name] . "'>$content</a>";
         }
@@ -184,15 +159,14 @@ class NetworkAlias extends FQDNLabel
         $this_header->setItemType('NetworkAlias');
     }
 
-
     /**
+     * @param HTMLTableRow|null $row
+     * @param CommonDBTM|null $item
+     * @param HTMLTableCell|null $father
+     * @param array $options
+     * @throws Exception
      * @since 0.84
-     *
-     * @param $row                HTMLTableRow object (default NULL)
-     * @param $item               CommonDBTM object (default NULL)
-     * @param $father             HTMLTableCell object (default NULL)
-     * @param $options   array
-     **/
+     */
     public static function getHTMLTableCellsForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
@@ -209,7 +183,7 @@ class NetworkAlias extends FQDNLabel
             $item = $father->getItem();
         }
 
-        if ($item->getType() != 'NetworkName') {
+        if ($item->getType() !== NetworkName::class) {
             return;
         }
 
@@ -224,7 +198,6 @@ class NetworkAlias extends FQDNLabel
         }
 
         $createRow            = (isset($options['createRow']) && $options['createRow']);
-        $options['createRow'] = false;
         $alias                = new self();
 
         $iterator = $DB->request([
@@ -239,22 +212,23 @@ class NetworkAlias extends FQDNLabel
                     $row = $row->createRow();
                 }
 
-                $content = "<a href='" . $alias->getLinkURL() . "'>" . $alias->getInternetName() . "</a>";
+                $content = "<a href='" . $alias->getLinkURL() . "'>" . htmlspecialchars($alias->getInternetName()) . "</a>";
                 $row->addCell($header, $content, $father, $alias);
             }
         }
     }
 
-
     /**
-     * \brief Show aliases for an item from its form
+     * Show aliases for an item from its form
+     *
      * Beware that the rendering can be different if readden from direct item form (ie : add new
      * NetworkAlias, remove, ...) or if readden from item of the item (for instance from the computer
      * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
      *
-     * @param $item                     NetworkName object
-     * @param $withtemplate   integer   withtemplate param (default 0)
-     **/
+     * @param NetworkName $item
+     * @param integer $withtemplate
+     * @return false|void
+     */
     public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
     {
         /**
@@ -385,14 +359,13 @@ class NetworkAlias extends FQDNLabel
         echo "</div>";
     }
 
-
     /**
      * Show the aliases contained by the alias
      *
-     * @param CommonGLPI $item          the FQDN owning the aliases
-     * @param integer    $withtemplate  withtemplate param
+     * @param FQDN $item The FQDN owning the aliases
+     * @param integer $withtemplate
      **/
-    public static function showForFQDN(CommonGLPI $item, $withtemplate)
+    public static function showForFQDN(FQDN $item, $withtemplate)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -412,7 +385,7 @@ class NetworkAlias extends FQDNLabel
             $order = "alias";
         }
 
-        $number = countElementsInTable($alias->getTable(), ['fqdns_id' => $item->getID() ]);
+        $number = countElementsInTable($alias::getTable(), ['fqdns_id' => $item->getID() ]);
 
         echo "<br><div class='center'>";
 
@@ -483,52 +456,46 @@ class NetworkAlias extends FQDNLabel
         echo "</div>\n";
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case 'NetworkName':
+        switch ($item::class) {
+            case NetworkName::class:
                 self::showForNetworkName($item, $withtemplate);
                 break;
-
-            case 'FQDN':
+            case FQDN::class:
                 self::showForFQDN($item, $withtemplate);
                 break;
         }
         return true;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (
             $item->getID()
             && $item->can($item->getField('id'), READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                switch ($item->getType()) {
-                    case 'NetworkName':
+                switch ($item::class) {
+                    case NetworkName::class:
                         $nb = countElementsInTable(
-                            $this->getTable(),
-                            ['networknames_id' => $item->getID() ]
+                            static::getTable(),
+                            ['networknames_id' => $item->getID()]
                         );
                         break;
 
-                    case 'FQDN':
+                    case FQDN::class:
                         $nb = countElementsInTable(
-                            $this->getTable(),
-                            ['fqdns_id' => $item->getID() ]
+                            static::getTable(),
+                            ['fqdns_id' => $item->getID()]
                         );
                 }
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
-
 
     public function rawSearchOptions()
     {
