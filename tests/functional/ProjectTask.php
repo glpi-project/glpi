@@ -401,4 +401,60 @@ class ProjectTask extends DbTestCase
         $this->integer($clonedSubtask2->fields['projects_id'])->isEqualTo($project->getID());
         $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
     }
+
+    public function testAutochangeState()
+    {
+
+        $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
+        $config = new \Config();
+        $config->add([
+            'context' => 'core',
+            'name'  => 'projecttask_unstarted',
+            'value' => 1
+        ]);
+        $config->add([
+            'context' => 'core',
+            'name'  => 'projecttask_inprogress',
+            'value' => 2
+        ]);
+        $config->add([
+            'context' => 'core',
+            'name'  => 'projecttask_completed',
+            'value' => 3
+        ]);
+
+        $project = new \Project();
+        $project_id_1 = $project->add([
+            'name' => 'Project 1',
+            'auto_projectstates' => 1
+        ]);
+        $this->integer((int) $project_id_1)->isGreaterThan(0);
+
+        $projecttask = new \ProjectTask();
+        $projecttask_id_1 = $projecttask->add([
+            'name' => 'Project Task 1',
+            'auto_projectstates' => 1,
+            'projects_id' => $project_id_1,
+            'percent_done'  => 0
+        ]);
+        $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
+
+        // Reload projects and tasks to get newest values
+        $this->boolean($projecttask->getFromDB($projecttask_id_1))->isTrue();
+        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(1);
+
+        $this->boolean($projecttask->update(['id' => $projecttask_id_1, 'percent_done'  => 50, 'auto_projectstates' => 1]));
+        $this->integer($projecttask->fields['percent_done'])->isEqualTo(50);
+
+        // Reload projects and tasks to get newest values
+        $this->boolean($projecttask->getFromDB($projecttask_id_1))->isTrue();
+        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(2);
+
+        $this->boolean($projecttask->update(['id' => $projecttask_id_1, 'percent_done'  => 100, 'auto_projectstates' => 1]));
+        $this->integer($projecttask->fields['percent_done'])->isEqualTo(100);
+
+        // Reload projects and tasks to get newest values
+        $this->boolean($projecttask->getFromDB($projecttask_id_1))->isTrue();
+        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(3);
+    }
 }

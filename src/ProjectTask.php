@@ -286,7 +286,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
 
-        if ($this->input['auto_projectstates'] > 0) {
+        if (isset($this->input['auto_projectstates']) && $this->input['auto_projectstates'] > 0) {
             self::recalculateStatus($this->getID());
         }
 
@@ -343,6 +343,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         if ($this->fields['projects_id'] > 0) {
             Project::recalculatePercentDone($this->fields['projects_id']);
+        }
+
+        if (isset($this->input['auto_projectstates']) && $this->input['auto_projectstates'] > 0) {
+            self::recalculateStatus($this->getID());
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
