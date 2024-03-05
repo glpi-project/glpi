@@ -64,19 +64,19 @@ class NetworkPort extends CommonDBChild
 
     /**
      * Subset of input that will be used for NetworkPortInstantiation.
-     * @var array|null
+     * @var array
      */
-    private ?array $input_for_instantiation;
+    private array $input_for_instantiation;
     /**
      * Subset of input that will be used for NetworkName.
-     * @var array|null
+     * @var array
      */
-    private ?array $input_for_NetworkName;
+    private array $input_for_NetworkName;
     /**
      * Subset of input that will be used for NetworkPort_NetworkPort.
-     * @var array|null
+     * @var array
      */
-    private ?array $input_for_NetworkPortConnect;
+    private array $input_for_NetworkPortConnect;
 
     public function __get(string $property)
     {
@@ -327,9 +327,9 @@ class NetworkPort extends CommonDBChild
     {
 
         if (
-            $this->input_for_instantiation !== null
-            || $this->input_for_NetworkName !== null
-            || $this->input_for_NetworkPortConnect !== null
+            isset($this->input_for_instantiation)
+            || isset($this->input_for_NetworkName)
+            || isset($this->input_for_NetworkPortConnect)
             || !isset($input)
         ) {
             return;
@@ -380,7 +380,7 @@ class NetworkPort extends CommonDBChild
         $instantiation = $this->getInstantiation();
         if (
             $instantiation !== false
-            && is_array($this->input_for_instantiation)
+            && isset($this->input_for_instantiation)
             && count($this->input_for_instantiation) > 0
         ) {
             $this->input_for_instantiation['networkports_id'] = $this->getID();
@@ -390,10 +390,10 @@ class NetworkPort extends CommonDBChild
                 $instantiation->update($this->input_for_instantiation, $history);
             }
         }
-        $this->input_for_instantiation = null;
+        unset($this->input_for_instantiation);
 
         if (
-            is_array($this->input_for_NetworkName)
+            isset($this->input_for_NetworkName)
             && count($this->input_for_NetworkName) > 0
             && !isset($_POST['several'])
         ) {
@@ -426,10 +426,10 @@ class NetworkPort extends CommonDBChild
                 $network_name->add($this->input_for_NetworkName, [], $history);
             }
         }
-        $this->input_for_NetworkName = null;
+        unset($this->input_for_NetworkName);
 
         if (
-            is_array($this->input_for_NetworkPortConnect)
+            isset($this->input_for_NetworkPortConnect)
             && count($this->input_for_NetworkPortConnect) > 0
         ) {
             if (
@@ -440,7 +440,7 @@ class NetworkPort extends CommonDBChild
                 $nn->add($this->input_for_NetworkPortConnect, [], $history);
             }
         }
-        $this->input_for_NetworkPortConnect = null;
+        unset($this->input_for_NetworkPortConnect);
     }
 
     public function updateMetrics()
