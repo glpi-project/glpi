@@ -268,6 +268,13 @@ class GlpiFormEditorController
                 this.#reorderSections();
                 break;
 
+            // Merge current section with the previous section
+            case "merge-with-previous-section":
+                this.#mergeWithPreviousSection(
+                    target.closest("[data-glpi-form-editor-section]")
+                )
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
@@ -904,6 +911,8 @@ class GlpiFormEditorController
         // Update UX
         this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
+
         this.#setActiveItem(
             section.find("[data-glpi-form-editor-section-details]")
         );
@@ -939,6 +948,7 @@ class GlpiFormEditorController
         section.remove();
         this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -1009,6 +1019,23 @@ class GlpiFormEditorController
                     .replace("%2$d", sections.length)
             );
         });
+    }
+
+    /**
+     * Update the visibility of the "merge with previous section" action.
+     * The action is hidden for the first section.
+     */
+    #updateMergeSectionActionVisibility() {
+        // Reset hidden actions
+        $(this.#target)
+            .find(`[data-glpi-form-editor-on-click="merge-with-previous-section"]`)
+            .removeClass("d-none");
+
+        // Hide first section's action
+        $(this.#target)
+            .find(`[data-glpi-form-editor-section]:first-child`)
+            .find(`[data-glpi-form-editor-on-click="merge-with-previous-section"]`)
+            .addClass("d-none");
     }
 
     /**
@@ -1148,6 +1175,7 @@ class GlpiFormEditorController
 
         // Relabel sections
         this.#updateSectionCountLabels();
+        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -1167,5 +1195,37 @@ class GlpiFormEditorController
                     tinymce.init(window.tinymce_editor_configs[id]);
                 }
             });
+    }
+
+    /**
+     * Merge the given section with the previous section.
+     * @param {jQuery} section Section to merge
+     */
+    #mergeWithPreviousSection(section) {
+        // Find previous section
+        const previous_section = section.prev();
+
+        // Move questions into the previous section
+        const to_move = section
+            .find("[data-glpi-form-editor-section-questions]")
+            .children();
+        to_move
+            .detach()
+            .appendTo(
+                previous_section.find("[data-glpi-form-editor-section-questions]")
+            );
+
+        // Fix complex inputs like tinymce that don't like to be moved
+        to_move.each((index, question) => {
+            this.#handleItemMove($(question));
+        });
+
+        // Remove the section
+        section.remove();
+
+        // Update UX
+        this.#updateSectionCountLabels();
+        this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
     }
 }

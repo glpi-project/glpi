@@ -104,6 +104,16 @@
                                     <span>{{ __("Move section") }}</span>
                                 </a>
                             </li>
+                            <li>
+                                <a
+                                    href="#"
+                                    class="dropdown-item {{ section_index == 1 ? "d-none" : "" }}"
+                                    data-glpi-form-editor-on-click="merge-with-previous-section"
+                                >
+                                    <i class="ti ti-arrow-merge me-2"></i>
+                                    <span>{{ __("Merge with previous section") }}</span>
+                                </a>
+                            </li>
 
                             <li>
                                 <a
