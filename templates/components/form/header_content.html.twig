@@ -77,7 +77,7 @@
 {% endif %}
 
 <div id="header_{{ rand }}"
-     class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1">
+     class="card-header main-header d-flex flex-wrap mx-n2 mt-n2 align-items-stretch {% if in_navheader %} align-self-end {% endif %} flex-grow-1" style="width: 100%;">
    {% if withtemplate == 1 and item.isNewItem() %}
       <input type="text" class="form-control ms-4 mb-2" placeholder="{{ __('Template name') }}"
              name="template_name" id="textfield_template_name{{ rand }}"
@@ -127,13 +127,9 @@
    {% set single_actions_ms_auto = true %}
    {% if item.isEntityAssign() and is_multi_entities_mode() and item is not instanceof('Entity') %}
       {% set single_actions_ms_auto = false %}
-      <span class="badge entity-name mx-1 px-2 ms-auto align-items-center" title="{{ entity_name }}">
+      <span class="badge entity-name mx-1 px-2 ms-auto align-items-center" title="{{ entity_name }}" style="max-width: 20%;">
         <i class="ti ti-stack me-2"></i>
-           <div style="width: 200px; direction: ltr;">
-              <div class="text-truncate" style="direction: rtl;">
-                 {{ entity_name }}
-              </div>
-           </div>
+            {{ entity_name }}
       </span>
 
       {% if item.maybeRecursive() %}
