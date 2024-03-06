@@ -456,12 +456,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
-        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
-            $projectstate_id = self::recalculateStatus($input);
-            if ($projectstate_id !== false) {
-                $input['projectstates_id'] = $projectstate_id;
-            }
+        $projectstate_id = $this->recalculateStatus($input);
+        if ($projectstate_id !== false) {
+            $input['projectstates_id'] = $projectstate_id;
         }
+
         if (isset($input["plan"])) {
             $input["plan_start_date"] = $input['plan']["begin"];
             $input["plan_end_date"]   = $input['plan']["end"];
@@ -548,7 +547,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
-            $projectstate_id = self::recalculateStatus($input);
+            $projectstate_id = $this->recalculateStatus($input);
             if ($projectstate_id !== false) {
                 $input['projectstates_id'] = $projectstate_id;
             }
@@ -1820,22 +1819,21 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @param array $input
      * @return int|false
      */
-    public static function recalculateStatus(array $input): int|false
+    public function recalculateStatus(array $input): int|false
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!isset($input['auto_projectstates'], $input['percent_done'])) {
-            return false;
-        }
+        $auto_projectstates = $input['auto_projectstates'] ?? $this->fields['auto_projectstates'] ?? false;
+        $percent_done = $input['percent_done'] ?? $this->fields['percent_done'] ?? null;
 
-        if (!$input['auto_projectstates']) {
+        if (!$auto_projectstates || $percent_done === null) {
             return false;
         }
         $config = \Config::getConfigurationValues('core');
-        if ($input['percent_done'] === 0) {
+        if ((int) $percent_done === 0) {
             $state_id = $config['projecttask_unstarted'] ?? 0;
-        } elseif ($input['percent_done'] === 100) {
+        } elseif ((int) $percent_done === 100) {
             $state_id = $config['projecttask_completed'] ?? 0;
         } else {
             $state_id = $config['projecttask_inprogress'] ?? 0;
