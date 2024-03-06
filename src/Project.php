@@ -2905,7 +2905,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
             $state = ProjectState::getById($project->fields['projectstates_id']);
             if ($state !== false) {
-                $state_cell = '<div class="priority_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
+                $state_cell = '<div class="badge_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
             }
 
             $twig_params['rows'][] = [
@@ -2917,7 +2917,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         'content' => $state_cell ?? '',
                     ],
                     [
-                        'content' => '<div class="priority_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>' . $priority,
+                        'content' => '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>' . $priority,
                     ],
                     [
                         'content' => $percent_done

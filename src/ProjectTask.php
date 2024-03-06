@@ -1643,7 +1643,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
             $state = ProjectState::getById($projecttask->fields['projectstates_id']);
             if ($state !== false) {
-                $state_cell = '<div class="priority_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
+                $state_cell = '<div class="badge_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
             }
 
             $twig_params['rows'][] = [
