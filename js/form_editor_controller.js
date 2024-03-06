@@ -102,6 +102,13 @@ class GlpiFormEditorController
         this.#enableSortable(
             $(this.#target).find("[data-glpi-form-editor-sections]")
         );
+
+        // Focus the form's name input if there are no questions
+        if (this.#getQuestionsCount() === 0) {
+            $(this.#target)
+                .find("[data-glpi-form-editor-form-details-name]")[0]
+                .focus();
+        }
     }
 
     /**
@@ -594,6 +601,11 @@ class GlpiFormEditorController
         // Update UX
         this.#setActiveItem(new_question);
         this.#updateAddSectionActionVisiblity();
+
+        // Focus question's name
+        new_question
+            .find("[data-glpi-form-editor-question-details-name]")[0]
+            .focus();
     }
 
     /**
@@ -907,6 +919,11 @@ class GlpiFormEditorController
         this.#setActiveItem(
             section.find("[data-glpi-form-editor-section-details]")
         );
+
+        // Focus section's name
+        section
+            .find("[data-glpi-form-editor-section-details-name]")[0]
+            .focus();
     }
 
     /**
@@ -967,6 +984,16 @@ class GlpiFormEditorController
     #getSectionCount() {
         return $(this.#target)
             .find("[data-glpi-form-editor-section]")
+            .length;
+    }
+
+    /**
+     * Count the number of questions in the form.
+     * @returns {number}
+     */
+    #getQuestionsCount() {
+        return $(this.#target)
+            .find("[data-glpi-form-editor-question]")
             .length;
     }
 
