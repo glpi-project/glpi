@@ -250,8 +250,9 @@
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
-                <i class="input-group-text fas fa-times-circle pointer" data-clear
-                    title="{{ __('Clear') }}"></i>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Clear') }}">
+                    <i class="ti ti-circle-x" data-clear></i>
+                </button>
             {% endif %}
         {% endif %}
     </div>

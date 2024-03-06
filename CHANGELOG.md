@@ -243,6 +243,7 @@ The present file will list all changes made to the project; according to the
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `Reminder::addVisibilityJoins()`
 - `RSSFeed::showDiscoveredFeeds()`
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
