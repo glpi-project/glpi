@@ -404,24 +404,19 @@ class ProjectTask extends DbTestCase
 
     public function testAutochangeState()
     {
+        $config = new \Config();
+        $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_unstarted']))->isTrue();
+        $this->boolean($config->update(['value' => '1'] + $config->fields))->isTrue();
+
+        $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_inprogress']))->isTrue();
+        $this->boolean($config->update(['value' => '2'] + $config->fields))->isTrue();
+
+        $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_completed']))->isTrue();
+        $this->boolean($config->update(['value' => '3'] + $config->fields))->isTrue();
+        $config = new \Config();
+        $config->getFromDB(234);
 
         $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
-        $config = new \Config();
-        $config->add([
-            'context' => 'core',
-            'name'  => 'projecttask_unstarted',
-            'value' => 1
-        ]);
-        $config->add([
-            'context' => 'core',
-            'name'  => 'projecttask_inprogress',
-            'value' => 2
-        ]);
-        $config->add([
-            'context' => 'core',
-            'name'  => 'projecttask_completed',
-            'value' => 3
-        ]);
 
         $project = new \Project();
         $project_id_1 = $project->add([
