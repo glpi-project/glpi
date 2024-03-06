@@ -9016,7 +9016,7 @@ abstract class CommonITILObject extends CommonDBTM
                     User::getTableField('name'),
                 ],
                 'FROM'   => $user_link_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     User::getTable() => [
                         'ON'  => [
                             $user_link_table => 'users_id',
@@ -9064,7 +9064,7 @@ abstract class CommonITILObject extends CommonDBTM
                     Group::getTableField('name'),
                 ],
                 'FROM'   => $group_link_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     Group::getTable() => [
                         'ON'  => [
                             $group_link_table => 'groups_id',
@@ -9105,7 +9105,7 @@ abstract class CommonITILObject extends CommonDBTM
                     Supplier::getTableField('name'),
                 ],
                 'FROM'   => $suplier_link_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     Supplier::getTable() => [
                         'ON'  => [
                             $suplier_link_table => 'suppliers_id',
