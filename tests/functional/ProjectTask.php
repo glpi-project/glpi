@@ -402,64 +402,159 @@ class ProjectTask extends DbTestCase
         $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
     }
 
-    public function testGetProjectTaskIDsForUser(): void
+    public function providerGetProjectTaskIDsForUser()
     {
+        // Check if a user with no project returns an empty array
+        yield ['user1', false, false, false, false, false, false, true];
+
+        // Check if a user with a project with no tasks returns an empty array
+        yield ['user2', false, true, false, false, false, false, true];
+
+        // Check if a user with a project with tasks, where the user is not a member of the team, returns an empty array
+        yield ['user3', false, true, true, false, false, false, true];
+
+        // Check if a user with a project with tasks, where the user is a member of the team, returns an array with the task ID
+        yield ['user4', false, true, true, true, false, false, false];
+
+        // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an array with the task ID if $search_in_groups is true
+        yield ['user5', true, true, true, false, true, true, false];
+
+        // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an empty array if $search_in_groups is false
+        yield ['user6', true, true, true, false, true, false, true];
+    }
+
+    /**
+     * @dataProvider providerGetProjectTaskIDsForUser
+     */
+    public function testGetActiveProjectTaskIDsForUser(
+        string $user_name,
+        bool $group,
+        bool $project,
+        bool $projecttask,
+        bool $user_as_projecttask_team,
+        bool $group_as_projecttask_team,
+        bool $search_in_groups,
+        bool $expectedIsEmpty
+    ): void {
         $this->login();
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
-        // Create some users
-        $users = $this->createItems(\User::getType(), [
-            ['name' => 'user0'],
-            ['name' => 'user1'],
-            ['name' => 'user2'],
-        ]);
+        // Create user
+        $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . $user_name]);
+
+        if ($group) {
+            // Create group
+            $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . $user_name]);
+
+            // Add user to group
+            $this->createItem(\Group_User::getType(), ['groups_id' => $group->getID(), 'users_id' => $user->getID()]);
+        }
+
+        if ($project) {
+            // Create project
+            $project = $this->createItem(\Project::getType(), [
+                'name'         => 'project',
+                'entities_id'  => $entity
+            ]);
+
+            if ($projecttask) {
+                // Create project task
+                $project_task = $this->createItem(\ProjectTask::getType(), [
+                    'projects_id' => $project->getID(),
+                    'name'        => 'project task',
+                ]);
+
+                if ($user_as_projecttask_team) {
+                    // Create user team
+                    $this->createItem(\ProjectTaskTeam::getType(), [
+                        'projecttasks_id' => $project_task->getID(),
+                        'itemtype'        => \User::class,
+                        'items_id'        => $user->getID(),
+                    ]);
+                }
+
+                if ($group_as_projecttask_team) {
+                    // Create group team
+                    $this->createItem(\ProjectTaskTeam::getType(), [
+                        'projecttasks_id' => $project_task->getID(),
+                        'itemtype'        => \Group::class,
+                        'items_id'        => $group->getID(),
+                    ]);
+                }
+            }
+        }
+
+        if ($expectedIsEmpty) {
+            $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], $search_in_groups))
+                ->isEmpty();
+        } else {
+            $this->array(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], $search_in_groups))
+                ->isEqualTo([$project_task->getID()]);
+        }
+    }
+
+    public function providerGetActiveProjectTaskIDsForGroup(): iterable
+    {
+        // Check if a group with no project returns an empty array
+        yield ['group1', false, false, false, true];
+
+        // Check if a group with a project with no tasks returns an empty array
+        yield ['group2', true, false, false, true];
+
+        // Check if a group with a project with tasks, where the group is not a member of the team, returns an empty array
+        yield ['group3', true, true, false, true];
+
+        // Check if a group with a project with tasks, where the group is a member of the team, returns an array with the task ID
+        yield ['group4', true, true, true, false];
+    }
+
+    /**
+     * @dataProvider providerGetActiveProjectTaskIDsForGroup
+     */
+    public function testGetActiveProjectTaskIDsForGroup(
+        string $group_name,
+        bool $project,
+        bool $projecttask,
+        bool $group_as_projecttask_team,
+        bool $expectedIsEmpty
+    ): void {
+        $this->login();
+        $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create group
-        $group = $this->createItem(\Group::getType(), [
-            'name' => 'group1'
-        ]);
+        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . $group_name]);
 
-        // Add users to groups
-        $this->createItem(\Group_User::getType(), [
-            'groups_id' => $group->getID(),
-            'users_id' => $users[2]->getID()
-        ]);
+        if ($project) {
+            // Create project
+            $project = $this->createItem(\Project::getType(), [
+                'name'         => 'project',
+                'entities_id'  => $entity
+            ]);
 
-        // Create project
-        $project = $this->createItem(\Project::getType(), [
-            'name' => 'project1',
-            'entities_id' => $entity
-        ]);
+            if ($projecttask) {
+                // Create project task
+                $project_task = $this->createItem(\ProjectTask::getType(), [
+                    'projects_id' => $project->getID(),
+                    'name'        => 'project task',
+                ]);
 
-        // Create project task
-        $task = $this->createItem(\ProjectTask::getType(), [
-            'projects_id' => $project->getID(),
-            'name' => 'task1'
-        ]);
+                if ($group_as_projecttask_team) {
+                    // Create group team
+                    $this->createItem(\ProjectTaskTeam::getType(), [
+                        'projecttasks_id' => $project_task->getID(),
+                        'itemtype'        => \Group::class,
+                        'items_id'        => $group->getID(),
+                    ]);
+                }
+            }
+        }
 
-        // Create user project task team
-        $this->createItem(\ProjectTaskTeam::getType(), [
-            'projecttasks_id' => $task->getID(),
-            'itemtype' => \User::getType(),
-            'items_id' => $users[1]->getID()
-        ]);
-
-        // Create group project task team
-        $this->createItem(\ProjectTaskTeam::getType(), [
-            'projecttasks_id' => $task->getID(),
-            'itemtype' => \Group::getType(),
-            'items_id' => $group->getID()
-        ]);
-
-        // Get project tasks for user0
-        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[0]->getID()))->isEmpty();
-
-        // Get project tasks for user1
-        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[1]->getID()))->contains($task->getID());
-        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[1]->getID(), false))->contains($task->getID());
-
-        // Get project tasks for user2
-        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[2]->getID()))->contains($task->getID());
-        $this->array(\ProjectTask::getProjectTaskIDsForUser($users[2]->getID(), false))->isEmpty();
+        if ($expectedIsEmpty) {
+            $this->array(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]))
+                ->isEmpty();
+        } else {
+            $this->array(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]))
+                ->isEqualTo([$project_task->getID()]);
+        }
     }
 }
