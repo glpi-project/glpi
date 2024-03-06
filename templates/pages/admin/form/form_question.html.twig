@@ -70,7 +70,7 @@
             {# Display question's title #}
             <div class="d-flex mt-n1">
                 <input
-                    class="form-control content-editable-h2"
+                    class="form-control content-editable-h2 mb-0"
                     type="text"
                     name="name"
                     value="{{ question is not null ? question.fields.name|e('html_attr') : '' }}"
@@ -83,7 +83,10 @@
             </div>
 
             {# Render the specific question type #}
-            <div data-glpi-form-editor-question-type-specific>
+            <div
+                class="mt-3"
+                data-glpi-form-editor-question-type-specific
+            >
                 {{ question_type.renderAdminstrationTemplate(question)|raw }}
             </div>
 

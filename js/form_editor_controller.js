@@ -282,6 +282,13 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // Collapse/uncollapse target section
+            case "collapse-section":
+                this.#collaspeSection(
+                    target.closest("[data-glpi-form-editor-section]")
+                );
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
@@ -548,6 +555,7 @@ class GlpiFormEditorController
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
 
+
         // Set new active item if specified
         if (item_container !== null) {
             possible_active_items.forEach((type) => {
@@ -561,6 +569,14 @@ class GlpiFormEditorController
                         .attr(`data-glpi-form-editor-active-${type}`, "");
                 }
             });
+
+            // An item can't be active if its parent section is collapsed
+            const section = item_container.closest("[data-glpi-form-editor-section]");
+            if (section.hasClass("section-collapsed")) {
+                return;
+            }
+
+            item_container.addClass("active");
         }
     }
 
@@ -1254,5 +1270,14 @@ class GlpiFormEditorController
         this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
         this.#updateMergeSectionActionVisibility();
+    }
+
+    /**
+     * Collaspe target section
+     * @param {jQuery} section
+     */
+    #collaspeSection(section) {
+        // Simple class toggle, hiding the correct parts is handled by CSS rules
+        section.toggleClass("section-collapsed");
     }
 }

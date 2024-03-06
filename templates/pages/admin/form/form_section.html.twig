@@ -78,12 +78,21 @@
                     {# Section's name #}
                     <input
                         type="text"
-                        class="form-control content-editable-h2"
+                        class="form-control content-editable-h2 mb-0"
                         name="name"
                         value="{{ section is not null ? section.fields.name|e('html_attr') : '' }}"
                         placeholder="{{ __("New section") }}"
                         data-glpi-form-editor-section-details-name
                     >
+
+                    {# Collapse section #}
+                    <i
+                        class="ti ti-selector ms-3 me-3 cursor-pointer"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="{{ __("Collapse section") }}"
+                        data-glpi-form-editor-on-click="collapse-section"
+                    ></i>
 
                     {# Extra actions #}
                     <div class="dropdown ms-auto cursor-pointer">
@@ -131,7 +140,10 @@
                 </div>
 
                 {# Section's description #}
-                <div class="content-editable-tinymce">
+                <div
+                    class="content-editable-tinymce mt-3"
+                    data-glpi-form-editor-section-description
+                >
                     {{ fields.textareaField(
                         "description",
                         section is not null ? section.fields.description : '',
