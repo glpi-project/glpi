@@ -9570,6 +9570,13 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool
     {
+        if (
+            array_key_exists('role', $params)
+            && is_string($params['role'])
+            && defined(CommonITILActor::class . '::' . strtoupper($params['role']))
+        ) {
+            $params['role'] = constant(CommonITILActor::class . '::' . strtoupper($params['role']));
+        }
         $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
         /** @var CommonDBTM $link_class */

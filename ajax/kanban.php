@@ -278,14 +278,9 @@ if (($_POST['action'] ?? null) === 'update') {
     }
 } else if (($_POST['action'] ?? null) === 'add_teammember') {
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
-    if ($_POST['itemtype'] == Project::class) {
-        $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember']);
-    } else {
-        $_POST['role'] = constant(CommonITILActor::class . '::' . strtoupper($_POST['role']));
-        $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
-            'role'   => $_POST['role']
-        ]);
-    }
+    $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
+        'role' => $_POST['role']
+    ]);
 } else if (($_POST['action'] ?? null) === 'delete_teammember') {
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
     $item->deleteTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
