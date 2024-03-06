@@ -2009,4 +2009,46 @@ class CronTask extends CommonDBTM
     {
         return "ti ti-settings-automation";
     }
+
+    /**
+     * @return void
+     * @used-by templates/components/search/controls.html.twig
+     */
+    public static function showSearchStatusArea()
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $crontask = new self();
+        $warnings = [];
+        if ($crontask->getNeedToRun(self::MODE_INTERNAL)) {
+            $warnings[] = __("You have at least one automatic action configured in GLPI mode, we advise you to switch to CLI mode.");
+        }
+
+        if (
+            $CFG_GLPI['cron_limit'] < countElementsInTable(
+                'glpi_crontasks',
+                ['frequency' => MINUTE_TIMESTAMP]
+            )
+        ) {
+            $warnings[] = __("You have more actions scheduled to run every minute than the number allowed to run at once. Increase this config.");
+        }
+
+        if (count($warnings) > 0) {
+            $msg = __('Automatic actions may not be running as expected');
+            $params = [
+                'msg' => $msg,
+                'warnings' => '<ul>' . implode('', array_map(static fn ($warning) => '<li>' . htmlspecialchars($warning) . '</li>', $warnings)) . '</ul>'
+            ];
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <span class="alert alert-warning p-1 ps-2">
+                    <i class="ti ti-alert-triangle me-2"></i>
+                    <span>{{ msg }}</span>
+                    <span class="form-help" data-bs-toggle="popover" data-bs-placement="bottom" data-bs-html="true" data-bs-content="{{ warnings|escape('html_attr') }}">
+                        ?
+                    </span>
+                </span>
+TWIG, $params);
+        }
+    }
 }

@@ -239,6 +239,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem::showBrowseForm()`
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
+- `MailCollector::title()`
 - `Netpoint` class
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
