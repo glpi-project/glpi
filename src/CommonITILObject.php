@@ -9215,7 +9215,8 @@ abstract class CommonITILObject extends CommonDBTM
             $data = [
                 'id'        => $data['id'],
                 'name'      => $data['name'],
-                'category'  => $category_names[$data['itilcategories_id']] ?? '',
+                'category'  => $data['itilcategories_id'],
+                'category_name' => $category_names[$data['itilcategories_id']] ?? '',
                 'content'   => $data['content'],
                 'status'    => $data['status'],
                 '_itemtype' => $itemtype,
@@ -9336,6 +9337,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $card['_metadata']['content'] = '';
             }
             $card['_metadata']['category'] = $item['category'];
+            $card['_metadata']['category_name'] = $item['category_name'];
             $card['_metadata'] = Plugin::doHookFunction(Hooks::KANBAN_ITEM_METADATA, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
