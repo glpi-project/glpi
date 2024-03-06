@@ -2721,14 +2721,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $req['WHERE'][0]['OR'][Project::getTable() . '.id'] = $team_sub_query;
         }
 
-        $iterator = $DB->request($req);
-
-        $project_ids = [];
-        foreach ($iterator as $data) {
-            $project_ids[] = $data['id'];
-        }
-
-        return $project_ids;
+        return iterator_to_array($DB->request($req), false);
     }
 
     /**
@@ -2805,14 +2798,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $req['WHERE'][0]['OR'][Project::getTable() . '.id'] = $team_sub_query;
         }
 
-        $iterator = $DB->request($req);
-
-        $project_ids = [];
-        foreach ($iterator as $data) {
-            $project_ids[] = $data['id'];
-        }
-
-        return $project_ids;
+        return iterator_to_array($DB->request($req), false);
     }
 
     /**
@@ -2893,12 +2879,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'rows' => []
         ];
 
-        foreach ($projects_id as $key => $project_id) {
+        foreach ($projects_id as $key => $raw_project) {
             if ($key >= $displayed_row_count) {
                 break;
             }
 
-            $project = self::getById($project_id);
+            $project = self::getById($raw_project['id']);
             $name = $project->getLink();
             $priority = CommonITILObject::getPriorityName($project->fields['priority']);
             $percent_done = $project->fields['percent_done'] . '%';

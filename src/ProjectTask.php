@@ -1488,14 +1488,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ]
         ];
 
-        $iterator = $DB->request($req);
-
-        $projecttask_ids = [];
-        foreach ($iterator as $data) {
-            $projecttask_ids[] = $data['id'];
-        }
-
-        return $projecttask_ids;
+        return iterator_to_array($DB->request($req), false);
     }
 
     /**
@@ -1559,14 +1552,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ]
         ];
 
-        $iterator = $DB->request($req);
-
-        $projecttask_ids = [];
-        foreach ($iterator as $data) {
-            $projecttask_ids[] = $data['id'];
-        }
-
-        return $projecttask_ids;
+        return iterator_to_array($DB->request($req), false);
     }
 
 
@@ -1631,12 +1617,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'rows' => []
         ];
 
-        foreach ($projecttasks_id as $key => $projecttask_id) {
+        foreach ($projecttasks_id as $key => $raw_projecttask) {
             if ($key >= $displayed_row_count) {
                 break;
             }
 
-            $projecttask = self::getById($projecttask_id);
+            $projecttask = self::getById($raw_projecttask['id']);
             $name = $projecttask->getLink();
             $project = Project::getById($projecttask->fields['projects_id'])->getLink();
             $percent_done = $projecttask->fields['percent_done'] . '%';
