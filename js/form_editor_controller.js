@@ -189,10 +189,7 @@ class GlpiFormEditorController
      * @param {jQuery} target Element that triggered the action
      * @param {Event}  event  Event
      */
-<<<<<<< HEAD
     #handleEditorAction(action, target, event) {
-=======
-    #handleEditorAction(action, target) {
         /**
          * Some unsaved changes are not tracked by the native `data-track-changes`
          * attribute.
@@ -205,7 +202,6 @@ class GlpiFormEditorController
          */
         let unsaved_changes = true;
 
->>>>>>> 114969932d... Forms: track unsaved changes
         switch (action) {
             // Mark the target item as active
             case "set-active":
