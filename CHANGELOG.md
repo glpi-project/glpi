@@ -232,6 +232,7 @@ The present file will list all changes made to the project; according to the
 - `Html::clean()`
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
+- `MailCollector::title()`
 - `Netpoint` class
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`

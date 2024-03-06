@@ -1875,15 +1875,15 @@ class MailCollector extends CommonDBTM
             foreach ($errors as $data) {
                 $collector->getFromDB($data['id']);
                 $servers[] = [
-                    'link' => $collector->getLinkURL(),
-                    'name' => $collector->getName(['complete' => true])
+                    'link' => htmlspecialchars($collector->getLinkURL()),
+                    'name' => htmlspecialchars($collector->getName(['complete' => true]))
                 ];
             }
         }
 
         if (count($servers)) {
             $server_links = implode(' ', array_map(
-                static fn ($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . htmlentities($v['name']) . '</a>',
+                static fn ($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
                 $servers
             ));
             // language=twig

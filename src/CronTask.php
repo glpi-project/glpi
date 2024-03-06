@@ -2030,10 +2030,10 @@ class CronTask extends CommonDBTM
         }
 
         if (count($warnings) > 0) {
-            $msg = __s('Automatic actions may not be running as expected');
+            $msg = __('Automatic actions may not be running as expected');
             $params = [
                 'msg' => $msg,
-                'warnings' => '<ul>' . implode('', array_map(static fn ($warning) => "<li>$warning</li>", $warnings)) . '</ul>'
+                'warnings' => '<ul>' . implode('', array_map(static fn ($warning) => '<li>' . htmlspecialchars($warning) . '</li>', $warnings)) . '</ul>'
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <span class="alert alert-warning p-1 ps-2">
