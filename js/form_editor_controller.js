@@ -272,7 +272,7 @@ class GlpiFormEditorController
             case "merge-with-previous-section":
                 this.#mergeWithPreviousSection(
                     target.closest("[data-glpi-form-editor-section]")
-                )
+                );
                 break;
 
             // Unknown action
