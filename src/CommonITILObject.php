@@ -9951,7 +9951,7 @@ abstract class CommonITILObject extends CommonDBTM
     {
         $itiltemplate = $item->getITILTemplateToUse(
             0,
-            null,
+            $item instanceof Ticket ? $item->fields['type'] : null,
             $item->fields['itilcategories_id'],
             $item->fields['entities_id']
         );
@@ -9970,6 +9970,7 @@ abstract class CommonITILObject extends CommonDBTM
             'canassigntome' => false,
             'field_options' => $field_options,
             'allow_auto_submit' => false,
+            'main_rand' => mt_rand(),
         ]);
     }
 }
