@@ -464,6 +464,15 @@ class Contract extends CommonDBTM
 
             case 'renewal':
                 return self::getContractRenewalName($values[$field]);
+
+            case '_virtual_expiration':
+                return Infocom::getWarrantyExpir(
+                    $values['begin_date'],
+                    $values['duration'],
+                    0,
+                    true,
+                    true
+                );
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -654,16 +663,15 @@ class Contract extends CommonDBTM
         $tab[] = [
             'id'                 => '12',
             'table'              => $this->getTable(),
-            'field'              => 'expire',
-            'name'               => __('Expiration'),
-            'datatype'           => 'date_delay',
-            'datafields'         => [
-                '1'                  => 'begin_date',
-                '2'                  => 'duration'
+            'field'              => '_virtual_expiration', // virtual field
+            'additionalfields'   => [
+                'begin_date',
+                'duration'
             ],
-            'searchunit'         => 'DAY',
-            'delayunit'          => 'MONTH',
-            'maybefuture'        => true,
+            'name'               => __('Expiration'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false
         ];
 
