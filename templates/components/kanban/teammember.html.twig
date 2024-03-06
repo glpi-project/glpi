@@ -33,12 +33,12 @@
 
 {% import "components/form/fields_macros.html.twig" as fields %}
 
-{% for types in members_types %}
+{% for type in members_types %}
     {{ fields.dropdownField(
-        types,
-        types ~ 'list',
+        type,
+        type ~ 'list',
         [],
-        __(types),
+        type|itemtype_name,
         {
             'entity': item.fields['entities_id'],
             'right': 'interface',
@@ -53,15 +53,15 @@
 
 <script>
     $(document).ready(function() {
-        {% for types in members_types %}
-            $('select[name="{{ types }}list[]"]').change(function() {
+        {% for type in members_types %}
+            $('select[name="{{ type }}list[]"]').change(function() {
                 $(this).find('option:selected').each(function() {
                     let items_id = $(this).val();
                     let role = '';
                     $('<input>').attr({
                         type: 'hidden',
                         class: 'actor_entry',
-                        'data-itemtype': "{{ types }}",
+                        'data-itemtype': "{{ type }}",
                         'data-items-id': items_id,
                         'data-actortype': role
                     }).appendTo('div[name="members_list"]');
