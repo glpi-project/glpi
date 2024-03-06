@@ -57,7 +57,7 @@ if (!isset($_REQUEST['action'])) {
 $action = $_REQUEST['action'];
 
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delete_item', 'load_item_panel',
-    'add_teammember', 'delete_teammember', 'restore_item'
+    'add_teammember', 'delete_teammember', 'restore_item', 'load_teammember_form',
 ];
 
 $itemtype = null;
@@ -298,8 +298,8 @@ if (($_POST['action'] ?? null) === 'update') {
         return;
     }
 } else if (($_REQUEST['action'] ?? null) === 'load_teammember_form') {
-    if (isset($itemtype, $item)) {
-        $item::getTeamMemberForm($item, $itemtype);
+    if (isset($itemtype, $item) && Toolbox::hasTrait($_REQUEST['itemtype'], Teamwork::class)) {
+        echo $item::getTeamMemberForm($item, $itemtype);
     } else {
         http_response_code(400);
         return;

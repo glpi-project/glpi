@@ -52,7 +52,7 @@ abstract class CommonITILObject extends CommonDBTM
     use \Glpi\Features\Clonable;
     use \Glpi\Features\Timeline;
     use \Glpi\Features\Kanban;
-    use Glpi\Features\Teamwork;
+    use \Glpi\Features\Teamwork;
 
    /// Users by type
     protected $lazy_loaded_users = null;
@@ -9947,7 +9947,7 @@ abstract class CommonITILObject extends CommonDBTM
         return self::canDelete();
     }
 
-    public static function getTeamMemberForm(CommonITILObject $item)
+    public static function getTeamMemberForm(CommonITILObject $item): string
     {
         $itiltemplate = $item->getITILTemplateToUse(
             0,
@@ -9960,7 +9960,7 @@ abstract class CommonITILObject extends CommonDBTM
             'fields_template' => $itiltemplate,
             'add_field_class' => 'col-sm-12',
         ];
-        TemplateRenderer::getInstance()->display('components/itilobject/actors/main.html.twig', [
+        return TemplateRenderer::getInstance()->render('components/itilobject/actors/main.html.twig', [
             'item' => $item,
             'entities_id' => 0,
             'canupdate' => true,
