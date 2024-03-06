@@ -457,7 +457,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             unset($input['percent_done']);
         }
         if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
-            $input['projectstates_id'] = self::recalculateStatus($input);
+            $projectstate_id = self::recalculateStatus($input);
+            if ($projectstate_id !== false) {
+                $input['projectstates_id'] = $projectstate_id;
+            }
         }
         if (isset($input["plan"])) {
             $input["plan_start_date"] = $input['plan']["begin"];
@@ -545,7 +548,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
-            $input['projectstates_id'] = self::recalculateStatus($input);
+            $projectstate_id = self::recalculateStatus($input);
+            if ($projectstate_id !== false) {
+                $input['projectstates_id'] = $projectstate_id;
+            }
         }
 
         return Project::checkPlanAndRealDates($input);
@@ -1812,11 +1818,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * Recalculate the status of a project task based on the percent_done.
      * @since 11.0.0
      * @param array $input
+     * @return int|false
      */
-    public static function recalculateStatus(array $input)
+    public static function recalculateStatus(array $input): int|false
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (!isset($input['auto_projectstates'], $input['percent_done'])) {
+            return false;
+        }
 
         if (!$input['auto_projectstates']) {
             return false;
@@ -1829,7 +1840,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         } else {
             $state_id = $config['projecttask_inprogress'] ?? 0;
         }
-        return $state_id;
+        $state = ProjectState::getById($state_id);
+        if (!$state) {
+            return false;
+        }
+        return $state->getID();
     }
 
     public static function getGroupItemsAsVCalendars($groups_id)
