@@ -33,6 +33,8 @@
 
 {% import "components/form/fields_macros.html.twig" as fields %}
 
+{% set rand = random() %}
+
 {% for type in members_types %}
     {{ fields.dropdownField(
         type,
@@ -48,13 +50,13 @@
         }
     ) }}
 {% endfor %}
-<div class="form-group" name="members_list">
+<div class="form-group" id="members_list_{{ rand }}">
 <div>
 
 <script>
     $(document).ready(function() {
         {% for type in members_types %}
-            $('select[name="{{ type }}list[]"]').change(function() {
+            $('#dropdown_{{ type }}list__{{ rand }}').change(function() {
                 $(this).find('option:selected').each(function() {
                     let items_id = $(this).val();
                     let role = '';
@@ -64,7 +66,7 @@
                         'data-itemtype': "{{ type }}",
                         'data-items-id': items_id,
                         'data-actortype': role
-                    }).appendTo('div[name="members_list"]');
+                    }).appendTo('#members_list_{{ rand }}');
                 });
             });
         {% endfor %}
