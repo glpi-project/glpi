@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\Team\Team;
+use Project;
 
 /* Test for inc/projecttask.class.php */
 
@@ -491,6 +492,258 @@ class ProjectTask extends DbTestCase
         $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
         $this->integer($projecttask->fields['percent_done'])->isEqualTo($result['percent_done']);
         $this->integer($projecttask->fields['projectstates_id'])->isEqualTo($result['projectstates_id']);
+    }
+
+    protected function testAutoSetDateForAddProvider()
+    {
+        $_SESSION['glpi_currenttime'] = '2023-10-10 10:10:10';
+        $project = $this->createItem('Project', [
+            'name' => 'Project 1',
+        ]);
+
+        yield [
+            'input' => [ // Task with percent_done < 100 and > 0
+                'projects_id'  => $project->getID(),
+                'name'         => 'Task 1',
+                'percent_done' => '5',
+            ],
+            'result' => [
+                'real_start_date' => \Session::getCurrentTime(),
+                'real_end_date'   => null,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done = 100
+                'projects_id'  => $project->getID(),
+                'name'         => 'Task 2',
+                'percent_done' => '100',
+            ],
+            'result' => [
+                'real_start_date' => \Session::getCurrentTime(),
+                'real_end_date'   => \Session::getCurrentTime(),
+            ]
+        ];
+        $tasks = [
+            [
+                'name'         => 'Task 3',
+                'percent_done' => '0'
+            ],
+            [
+                'name' => 'Task 4'
+            ],
+            [
+                'name'         => 'Task 5',
+                'percent_done' => null
+            ],
+            [
+                'name'            => 'Task 7',
+                'real_start_date' => null,
+                'real_end_date'   => null
+            ],
+        ];
+        foreach ($tasks as $task) {
+            $task['projects_id'] = $project->getID();
+            yield [
+                'input' => $task,
+                'result' => [
+                    'real_start_date' => null,
+                    'real_end_date'   => null
+                ]
+            ];
+        }
+        yield [
+            'input' => [ // Task with real_start_date and no real_end_date
+                'projects_id'     => $project->getID(),
+                'name'            => 'Task 6',
+                'percent_done'    => '0',
+                'real_start_date' => '2024-10-10 10:10:10',
+                'real_end_date'   => null,
+            ],
+            'result' => [
+                'real_start_date' => '2024-10-10 10:10:10',
+                'real_end_date'   => null
+            ]
+        ];
+        yield [
+            'input' => [ // Task with empty real_start_date and real_end_date
+                'projects_id'     => $project->getID(),
+                'name'            => 'Task 6',
+                'real_start_date' => '',
+                'real_end_date'   => '',
+            ],
+            'result' => [
+                'real_start_date' => null,
+                'real_end_date'   => null
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done = 100 and real_start_date and real_end_date
+                'projects_id'     => $project->getID(),
+                'name'            => 'Task 8',
+                'percent_done'    => '100',
+                'real_start_date' => '2023-05-12 11:54:23',
+                'real_end_date'   => '2023-09-05 16:21:46',
+            ],
+            'result' => [
+                'real_start_date' => '2023-05-12 11:54:23',
+                'real_end_date'   => '2023-09-05 16:21:46'
+            ]
+        ];
+    }
+
+    /**
+     * @dataprovider testAutoSetDateForAddProvider
+     */
+    public function testAutoSetDateForAdd($input, $result)
+    {
+        // Create a project task with percent_done < 100 and > 0
+        $task = $this->createItem('ProjectTask', $input);
+
+        // Check if the task has been added with the current date
+        $this->variable($task->fields['real_start_date'])->isEqualTo($result['real_start_date']);
+        $this->variable($task->fields['real_end_date'])->isEqualTo($result['real_end_date']);
+    }
+
+    protected function testAutoSetDateForUpdateProvider()
+    {
+        // no failure if `percent_done` is null
+        yield [
+            'fields' => [
+                'percent_done'    => 0,
+            ],
+            'input' => [
+                'percent_done'    => null,
+            ],
+            'result' => [
+                'percent_done'    => 0,
+                'real_start_date' => null,
+                'real_end_date'   => null,
+            ]
+        ];
+
+        // `real_start_date` is automatically set reset when `percent_done` is set to something else than 0%
+        foreach ([50, 75, 100] as $percent_done) {
+            yield [
+                'fields' => [
+                    'percent_done'    => 0,
+                ],
+                'input' => [
+                    'percent_done'    => $percent_done,
+                ],
+                'result' => [
+                    'percent_done'    => $percent_done,
+                    'real_start_date' => \Session::getCurrentTime(),
+                ]
+            ];
+        }
+
+        // `real_end_date` is not to current time if already set when `percent_done` is set to 100%
+        yield [
+            'fields' => [
+                'percent_done'    => 0,
+                'real_start_date' => '2023-12-12 04:56:35',
+                'real_end_date'   => '2023-12-22 12:23:35',
+            ],
+            'input' => [
+                'percent_done'    => 100,
+            ],
+            'result' => [
+                'percent_done'    => 100,
+                'real_start_date' => '2023-12-12 04:56:35',
+                'real_end_date'   => '2023-12-22 12:23:35',
+            ]
+        ];
+
+        // `real_start_date` is not reset when `percent_done` is set to 100%
+        // `real_end_date` is set to current time if not already set
+        $initial_fields_sets = [
+            [
+                'percent_done'    => 0,
+                'real_start_date' => '2023-12-12 04:56:35',
+            ],
+            [
+                'percent_done'    => 30,
+                'real_start_date' => '2023-12-12 04:56:35',
+            ],
+            [
+                'percent_done'    => 100,
+                'real_start_date' => '2023-12-12 04:56:35',
+            ]
+        ];
+        foreach ($initial_fields_sets as $fields) {
+            yield [
+                'fields' => $fields,
+                'input'  => [
+                    'percent_done'    => 100,
+                ],
+                'result' => [
+                    'percent_done'    => 100,
+                    'real_start_date' => '2023-12-12 04:56:35',
+                    'real_end_date'   => \Session::getCurrentTime(),
+                ],
+            ];
+        }
+
+        // `real_start_date` is not reset when `percent_done` is set below 100%
+        // but `real_end_date` is
+        $initial_fields_sets = [
+            [
+                'percent_done'    => 0,
+                'real_start_date' => '2023-12-12 04:56:35',
+                'real_end_date'   => '2023-12-22 12:23:35',
+            ],
+            [
+                'percent_done'    => 30,
+                'real_start_date' => '2023-12-12 04:56:35',
+                'real_end_date'   => '2023-12-22 12:23:35',
+            ],
+            [
+                'percent_done'    => 100,
+                'real_start_date' => '2023-12-12 04:56:35',
+                'real_end_date'   => '2023-12-22 12:23:35',
+            ]
+        ];
+        foreach ($initial_fields_sets as $fields) {
+            yield [
+                'fields' => $fields,
+                'input' => [
+                    'percent_done'    => 50,
+                ],
+                'result' => [
+                    'percent_done'    => 50,
+                    'real_start_date' => '2023-12-12 04:56:35',
+                    'real_end_date'   => null,
+                ],
+            ];
+        }
+    }
+
+    /**
+     * @dataprovider testAutoSetDateForUpdateProvider
+     */
+    public function testAutoSetDateForUpdate($fields, $input, $result)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Create a project
+        $project = $this->createItem(Project::class, [
+            'name' => 'Project 1',
+        ]);
+
+        $task = $this->createItem(\ProjectTask::class, ['projects_id' => $project->getId()]);
+
+        // Force initial fields (bypass prepareInputForAdd)
+        $DB->update(\ProjectTask::getTable(), $fields, ['id' => $task->getID()]);
+
+        $this->updateItem(\ProjectTask::class, $task->getID(), $input);
+
+        $ptask = new \ProjectTask();
+        $this->boolean($ptask->getFromDB($task->getID()))->isTrue();
+
+        foreach ($result as $field => $value) {
+            $this->variable($ptask->fields[$field])->isEqualTo($value);
+        }
     }
 
     public function testGetActiveProjectTaskIDsForUser()
