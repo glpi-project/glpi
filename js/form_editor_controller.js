@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -153,7 +153,7 @@ class GlpiFormEditorController
                 // Do not submit the form if the state isn't computed
                 event.preventDefault();
                 event.stopPropagation();
-                glpi_toast_error("Unexpected error");
+                glpi_toast_error(__("Unexpected error"));
                 throw e;
             }
         });
