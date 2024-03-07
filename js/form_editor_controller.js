@@ -107,7 +107,7 @@ class GlpiFormEditorController
         if (this.#getQuestionsCount() === 0) {
             $(this.#target)
                 .find("[data-glpi-form-editor-form-details-name]")[0]
-                .focus();
+                .select();
         }
     }
 
