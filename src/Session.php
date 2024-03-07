@@ -1545,6 +1545,9 @@ class Session
                     unset($array[$message_type][$key]);
                 }
             }
+
+            // Reorder keys
+            $array[$message_type] = array_values($array[$message_type]);
         }
     }
 

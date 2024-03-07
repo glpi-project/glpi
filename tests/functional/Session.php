@@ -820,4 +820,23 @@ class Session extends \DbTestCase
         // Assert that the current profile now has 'ticket' rights set to \Ticket::READALL
         $this->variable($_SESSION['glpiactiveprofile']['ticket'])->isEqualTo(\Ticket::READALL);
     }
+
+    /**
+     * Test the deleteMessageAfterRedirect method
+     *
+     * @return void
+     */
+    public function testDeleteMessageAfterRedirect(): void
+    {
+        \Session::addMessageAfterRedirect("Test 1", INFO);
+        \Session::addMessageAfterRedirect("Test 2", INFO);
+        \Session::addMessageAfterRedirect("Test 3", INFO);
+        $this->hasSessionMessages(INFO, ["Test 1", "Test 2", "Test 3"]);
+
+        \Session::addMessageAfterRedirect("Test 1", INFO);
+        \Session::addMessageAfterRedirect("Test 2", INFO);
+        \Session::addMessageAfterRedirect("Test 3", INFO);
+        \Session::deleteMessageAfterRedirect("Test 2", INFO);
+        $this->hasSessionMessages(INFO, ["Test 1", "Test 3"]);
+    }
 }
