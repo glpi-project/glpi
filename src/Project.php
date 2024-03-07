@@ -2842,7 +2842,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ]
         ];
 
-        $displayed_row_count = min(count($projects_id), 5);
+        $displayed_row_count = min(count($projects_id), (int)$_SESSION['glpidisplay_count_on_home']);
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',

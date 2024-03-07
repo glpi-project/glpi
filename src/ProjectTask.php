@@ -1580,7 +1580,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             return;
         }
 
-        $displayed_row_count = min(count($projecttasks_id), 5);
+        $displayed_row_count = min(count($projecttasks_id), (int)$_SESSION['glpidisplay_count_on_home']);
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',
