@@ -2705,7 +2705,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         [ProjectState::getTable() . '.is_finished' => 0],
                         [ProjectState::getTable() . '.is_finished' => null]
                     ]
-                ]
+                ],
+                ['NOT' => ['is_template' => 1]],
             ]
         ];
 
@@ -2766,7 +2767,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                         [ProjectState::getTable() . '.is_finished' => 0],
                         [ProjectState::getTable() . '.is_finished' => null]
                     ]
-                ]
+                ],
+                ['NOT' => ['is_template' => 1]],
             ]
         ];
 
