@@ -9683,7 +9683,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'SELECT' => $select,
                 'FROM'   => $link_class::getTable(),
                 'WHERE'  => [static::getForeignKeyField() => $this->getID()],
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     $itemtype::getTable() => [
                         'ON'  => [
                             $itemtype::getTable()   => 'id',
@@ -9706,6 +9706,11 @@ abstract class CommonITILObject extends CommonDBTM
                  $team[] = $member;
             }
         }
+
+        usort(
+            $team,
+            fn (array $member_1, array $member_2) => strcasecmp($member_1['display_name'], $member_2['display_name'])
+        );
 
         return $team;
     }

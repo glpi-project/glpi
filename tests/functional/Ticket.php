@@ -4556,46 +4556,118 @@ HTML
         ]);
         $this->integer($tickets_id)->isGreaterThan(0);
 
-       // Check team members array has keys for all team itemtypes
+        $this->array($ticket->getTeam())->isEmpty();
+
+        // Add team members
+        $this->boolean($ticket->addTeamMember(\User::class, 4, ['role' => Team::ROLE_ASSIGNED]))->isTrue(); // using constant value
+        $this->boolean($ticket->addTeamMember(\User::class, 2, ['role' => 'observer']))->isTrue(); // using CommonITILActor contant name
+
+        // Reload ticket from DB
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+        // Check team members
         $team = $ticket->getTeam();
-        $this->array($team)->isEmpty();
+        $this->array($team)->hasSize(2);
+        $member = array_shift($team);
+        $this->array($member)->hasKeys(['itemtype', 'items_id', 'role']);
+        $this->string($member['itemtype'])->isEqualTo(\User::class);
+        $this->integer($member['items_id'])->isEqualTo(2);
+        $this->integer($member['role'])->isEqualTo(Team::ROLE_OBSERVER);
+        $member = array_shift($team);
+        $this->array($member)->hasKeys(['itemtype', 'items_id', 'role']);
+        $this->string($member['itemtype'])->isEqualTo(\User::class);
+        $this->integer($member['items_id'])->isEqualTo(4);
+        $this->integer($member['role'])->isEqualTo(Team::ROLE_ASSIGNED);
 
-       // Add team members
-        $this->boolean($ticket->addTeamMember(\User::class, 4, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
-
-       // Reload ticket from DB
-        $ticket->getFromDB($tickets_id);
-
-       // Check team members
-        $team = $ticket->getTeam();
-        $this->array($team)->hasSize(1);
-        $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
-        $this->string($team[0]['itemtype'])->isEqualTo(\User::class);
-        $this->integer($team[0]['items_id'])->isEqualTo(4);
-        $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
-
-       // Delete team members
+        // Delete team member
         $this->boolean($ticket->deleteTeamMember(\User::class, 4, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
-       //Reload ticket from DB
-        $ticket->getFromDB($tickets_id);
-        $team = $ticket->getTeam();
+        //Reload ticket from DB
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
 
+        // Check team members
+        $team = $ticket->getTeam();
+        $this->array($team)->hasSize(1);
+        $member = array_shift($team);
+        $this->array($member)->hasKeys(['itemtype', 'items_id', 'role']);
+        $this->string($member['itemtype'])->isEqualTo(\User::class);
+        $this->integer($member['items_id'])->isEqualTo(2);
+        $this->integer($member['role'])->isEqualTo(Team::ROLE_OBSERVER);
+
+        // Delete team member
+        $this->boolean($ticket->deleteTeamMember(\User::class, 2, ['role' => Team::ROLE_OBSERVER]))->isTrue();
+
+        //Reload ticket from DB
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
+
+        // Check team members
         $this->array($team)->isEmpty();
 
-       // Add team members
+        // Add team members
         $this->boolean($ticket->addTeamMember(\Group::class, 2, ['role' => Team::ROLE_ASSIGNED]))->isTrue();
 
-       // Reload ticket from DB
-        $ticket->getFromDB($tickets_id);
+        // Reload ticket from DB
+        $this->boolean($ticket->getFromDB($tickets_id))->isTrue();
 
-       // Check team members
+        // Check team members
         $team = $ticket->getTeam();
         $this->array($team)->hasSize(1);
         $this->array($team[0])->hasKeys(['itemtype', 'items_id', 'role']);
         $this->string($team[0]['itemtype'])->isEqualTo(\Group::class);
         $this->integer($team[0]['items_id'])->isEqualTo(2);
         $this->integer($team[0]['role'])->isEqualTo(Team::ROLE_ASSIGNED);
+    }
+
+    public function testGetTeamWithInvalidData(): void
+    {
+        global $DB;
+
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'    => __FUNCTION__,
+                'content' => __FUNCTION__,
+            ]
+        );
+
+        $this->array($ticket->getTeam())->isEmpty();
+
+        // Create invalid entries
+        $this->boolean(
+            $DB->insert(
+                Ticket_User::getTable(),
+                [
+                    'tickets_id' => $ticket->getID(),
+                    'users_id'   => 978897, // not a valid id
+                    'type'       => CommonITILActor::REQUESTER,
+                ]
+            )
+        )->isTrue();
+        $this->boolean(
+            $DB->insert(
+                Group_Ticket::getTable(),
+                [
+                    'tickets_id' => $ticket->getID(),
+                    'groups_id'  => 46543, // not a valid id
+                    'type'       => CommonITILActor::ASSIGN,
+                ]
+            )
+        )->isTrue();
+        $this->boolean(
+            $DB->insert(
+                Supplier_Ticket::getTable(),
+                [
+                    'tickets_id'   => $ticket->getID(),
+                    'suppliers_id' => 99999, // not a valid id
+                    'type'         => CommonITILActor::OBSERVER,
+                ]
+            )
+        )->isTrue();
+
+        $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
+
+        // Does not contains invalid entries
+        $this->array($ticket->getTeam())->isEmpty();
     }
 
     protected function testUpdateLoad1NTableDataProvider(): \Generator
