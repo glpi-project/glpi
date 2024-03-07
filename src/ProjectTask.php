@@ -1460,6 +1460,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (count($groups_id) === 0) {
+            return [];
+        }
+
         $req = [
             'SELECT' => ProjectTask::getTable() . '.id',
             'FROM' => ProjectTask::getTable(),
@@ -1505,6 +1509,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     ): array {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (count($users_id) === 0) {
+            return [];
+        }
 
         $groups_sub_query = new \Glpi\DBAL\QuerySubQuery([
             'SELECT' => [
@@ -1560,18 +1568,17 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *  Show the list of projecttasks for a user in the personal view or for a group in the group view
      *
      * @param string $itemtype The itemtype (User or Group)
-     * @param array $items_id The user or group IDs
      * @return void
      */
-    public static function showListForCentral(string $itemtype, array $items_id): void
+    public static function showListForCentral(string $itemtype): void
     {
         $projecttasks_id = [];
         switch ($itemtype) {
             case 'User':
-                $projecttasks_id = self::getActiveProjectTaskIDsForUser($items_id);
+                $projecttasks_id = self::getActiveProjectTaskIDsForUser([Session::getLoginUserID()]);
                 break;
             case 'Group':
-                $projecttasks_id = self::getActiveProjectTaskIDsForGroup($items_id);
+                $projecttasks_id = self::getActiveProjectTaskIDsForGroup($_SESSION['glpigroups']);
                 break;
         }
 

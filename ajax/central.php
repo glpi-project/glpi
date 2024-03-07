@@ -87,15 +87,9 @@ switch ($_REQUEST['widget']) {
             $personal = ($params['personal'] ?? true) !== 'false';
             $itemtype::showListForCentral($personal);
         } elseif ($itemtype === Project::class) {
-            $itemtype::showListForCentral(
-                $params['itemtype'],
-                is_array($params['who']) ? $params['who'] : [$params['who']]
-            );
+            $itemtype::showListForCentral($params['itemtype']);
         } elseif ($itemtype === ProjectTask::class) {
-            $itemtype::showListForCentral(
-                $params['itemtype'],
-                is_array($params['who']) ? $params['who'] : [$params['who']]
-            );
+            $itemtype::showListForCentral($params['itemtype']);
         }
         break;
     default:

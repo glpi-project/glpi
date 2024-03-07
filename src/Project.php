@@ -2683,6 +2683,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (count($groups_id) === 0) {
+            return [];
+        }
+
         $req = [
             'SELECT' => Project::getTable() . '.id',
             'FROM' => Project::getTable(),
@@ -2739,6 +2743,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     ): array {
         /** @var \DBmysql $DB */
         global $DB;
+
+        if (count($users_id) === 0) {
+            return [];
+        }
 
         $req = [
             'SELECT' => Project::getTable() . '.id',
@@ -2805,18 +2813,17 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      *  Show the list of projects for a user in the personal view or for a group in the group view
      *
      * @param string $itemtype The itemtype (User or Group)
-     * @param array $items_id The user or group IDs
      * @return void
      */
-    public static function showListForCentral(string $itemtype, array $items_id): void
+    public static function showListForCentral(string $itemtype): void
     {
         $projects_id = [];
         switch ($itemtype) {
             case 'User':
-                $projects_id = self::getActiveProjectIDsForUser($items_id, false, true);
+                $projects_id = self::getActiveProjectIDsForUser([Session::getLoginUserID()], false, true);
                 break;
             case 'Group':
-                $projects_id = self::getActiveProjectIDsForGroup($items_id);
+                $projects_id = self::getActiveProjectIDsForGroup($_SESSION['glpigroups']);
                 break;
         }
 
