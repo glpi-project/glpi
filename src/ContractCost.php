@@ -362,6 +362,7 @@ TWIG, $twig_params);
         }
 
         $entries = [];
+        $budget_cache = [];
         foreach ($iterator as $data) {
             $name = empty($data['name']) ? sprintf(
                 __('%1$s (%2$s)'),
@@ -373,6 +374,9 @@ TWIG, $twig_params);
                 htmlspecialchars($name),
                 Html::showToolTip(htmlspecialchars($data['comment']), ['display' => false])
             );
+            if (!isset($budget_cache[$data['budgets_id']])) {
+                $budget_cache[$data['budgets_id']] = Dropdown::getDropdownName(table: 'glpi_budgets', id: $data['budgets_id'], default: '');
+            }
             $entries[] = [
                 'itemtype' => self::class,
                 'id' => $data['id'],
@@ -380,7 +384,7 @@ TWIG, $twig_params);
                 'name' => $name,
                 'begin_date' => $data['begin_date'],
                 'end_date' => $data['end_date'],
-                'budgets_id' => Dropdown::getDropdownName('glpi_budgets', $data['budgets_id']),
+                'budgets_id' => $budget_cache[$data['budgets_id']],
                 'cost' => $data['cost'],
             ];
         }
@@ -404,6 +408,15 @@ TWIG, $twig_params);
                 'begin_date' => 'date',
                 'end_date' => 'date',
                 'cost' => 'number'
+            ],
+            'footers' => [
+                [
+                    '',
+                    '',
+                    '',
+                    __('Total cost'),
+                    array_sum(array_column($entries, 'cost'))
+                ]
             ],
             'entries' => $entries,
             'total_number' => $total_count,

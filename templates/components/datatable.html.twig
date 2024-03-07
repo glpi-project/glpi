@@ -240,9 +240,15 @@
                 <tfoot class="{{ footer_class|default('') }}">
                     {% for footer in footers %}
                         <tr>
+                            {% if showmassiveactions %}
+                                <td></td>
+                            {% endif %}
                             {% for footer_col, footerval in footer %}
                                 <td>{{ footerval }}</td>
                             {% endfor %}
+                            {% if nofilter is not defined %}
+                                <td></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tfoot>
