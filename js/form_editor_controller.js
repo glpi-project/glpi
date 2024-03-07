@@ -146,13 +146,15 @@ class GlpiFormEditorController
             );
 
         // Compute state before submitting the form
-        $(this.#target).on('submit', () => {
+        $(this.#target).on('submit', (event) => {
             try {
                 this.#computeState();
             } catch (e) {
                 // Do not submit the form if the state isn't computed
-                e.preventDefault();
-                e.preventPropagation();
+                event.preventDefault();
+                event.stopPropagation();
+                glpi_toast_error("Unexpected error");
+                throw e;
             }
         });
 
@@ -805,7 +807,7 @@ class GlpiFormEditorController
         // Reduce scope when working with a section as we don't want to target
         // its sub-questions inputs
         if (item.data("glpi-form-editor-section") !== undefined) {
-            item = item.closest("[data-glpi-form-editor-section]");
+            item = item.find("[data-glpi-form-editor-section-details]");
         }
 
         // Input name before state was computed by #formatInputsNames()
