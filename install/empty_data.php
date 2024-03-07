@@ -7979,6 +7979,12 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
 
             ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'system_logs',
+                'rights' => READ,
+
+            ],
         ];
 
 
