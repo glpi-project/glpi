@@ -57,7 +57,7 @@ if (!isset($_REQUEST['action'])) {
 $action = $_REQUEST['action'];
 
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delete_item', 'load_item_panel',
-    'add_teammember', 'delete_teammember', 'restore_item'
+    'add_teammember', 'delete_teammember', 'restore_item', 'load_teammember_form',
 ];
 
 $itemtype = null;
@@ -89,7 +89,7 @@ if ($item !== null) {
             return;
         }
     }
-    if (in_array($action, ['add_teammember'])) {
+    if (in_array($action, ['load_teammember_form', 'add_teammember'])) {
         $item->getFromDB($_REQUEST['items_id']);
         $can_assign = method_exists($item, 'canAssign') ? $item->canAssign() : $item->can($_REQUEST['items_id'], UPDATE);
         if (!$can_assign) {
@@ -279,7 +279,7 @@ if (($_POST['action'] ?? null) === 'update') {
 } else if (($_POST['action'] ?? null) === 'add_teammember') {
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
     $item->addTeamMember($_POST['itemtype_teammember'], (int) $_POST['items_id_teammember'], [
-        'role'   => (int) $_POST['role']
+        'role' => $_POST['role']
     ]);
 } else if (($_POST['action'] ?? null) === 'delete_teammember') {
     $checkParams(['itemtype_teammember', 'items_id_teammember']);
@@ -293,6 +293,13 @@ if (($_POST['action'] ?? null) === 'update') {
             'item_fields'  => $item->fields,
             'team'         => Toolbox::hasTrait($item, Teamwork::class) ? $item->getTeam() : []
         ]);
+    } else {
+        http_response_code(400);
+        return;
+    }
+} else if (($_REQUEST['action'] ?? null) === 'load_teammember_form') {
+    if (isset($itemtype, $item) && Toolbox::hasTrait($_REQUEST['itemtype'], Teamwork::class)) {
+        echo $item::getTeamMemberForm($item, $itemtype);
     } else {
         http_response_code(400);
         return;

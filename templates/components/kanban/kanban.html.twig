@@ -31,7 +31,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/modals_macros.html.twig' as modals %}
 
 {% if rights is not defined %}
@@ -52,10 +51,6 @@
 
 {% for supported_itemtype, info in supported_itemtypes %}
    <template id="kanban-teammember-item-dropdown-{{ supported_itemtype }}">
-      {{ fields.dropdownArrayField('role', null, info.team_roles, __('Role')) }}
-      {{ fields.dropdownItemsFromItemtypes('add-teammember', '', {
-         'itemtypes': info.team_itemtypes
-      }) }}
    </template>
 {% endfor %}
 

@@ -33,7 +33,8 @@
 
 {% set rand = random() %}
 
-{% set actors = item.getActorsForType(actortypeint, params) %}
+{% set load_actors = params['load_actors'] ?? true %}
+{% set actors = load_selected_actors ? item.getActorsForType(actortypeint, params) : [] %}
 
 {% set required = false %}
 {% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
@@ -46,7 +47,8 @@
 {% endif %}
 
 {% set onchange = '' %}
-{% if item.isNewItem() and actortype == "requester" %}
+{% set allow_auto_submit = allow_auto_submit ?? true %}
+{% if allow_auto_submit and item.isNewItem() and actortype == "requester" %}
    {% set onchange = 'this.form.submit();' %}
 {% endif %}
 
@@ -213,7 +215,6 @@
          tags: true,
          width: select2_width,
          tokenSeparators: [',', ' '],
-         disabled: false, // TODO can edit
          containerCssClass: 'actor-field',
          templateSelection: function(option) { return genericTemplate_{{ rand }}(option, true); },
          templateResult:    function(option) { return genericTemplate_{{ rand }}(option, false); },
