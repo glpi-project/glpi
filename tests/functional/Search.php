@@ -4721,38 +4721,48 @@ class Search extends DbTestCase
         $this->createItems('Ticket', [
             [
                 'name' => 'Ticket 1',
-                'content' => 'This is a test ticket'
+                'content' => '<p>This is a test ticket</p>'
             ],
             [
                 'name' => 'Ticket 2',
-                'content' => 'This is a test ticket with & in description'
+                'content' => '<p>This is a test ticket with &amp; in description</p>'
             ],
             [
                 'name' => 'Ticket 3',
-                'content' => 'This is a test ticket with followup'
+                'content' => '<p>This is a test ticket with matching followup</p>'
             ],
             [
                 'name' => 'Ticket 4',
-                'content' => 'This is a test ticket with task'
+                'content' => '<p>This is a test ticket with task</p>'
             ],
             [
                 'name' => 'Ticket & 5',
-                'content' => 'This is a test ticket'
+                'content' => '<p>This is a test ticket</p>'
             ],
         ]);
 
-        // Add a followup to ticket 3
+        $this->createItem('ITILFollowup', [
+            'itemtype' => 'Ticket',
+            'items_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
+            'content' => '<p>This is a followup</p>'
+        ]);
         $this->createItem('ITILFollowup', [
             'itemtype' => 'Ticket',
             'items_id' => getItemByTypeName('Ticket', 'Ticket 3')->getID(),
-            'content' => 'This is a followup with & in description'
+            'content' => '<p>This is a followup with &amp; in description</p>'
         ]);
 
-        // Add a task to ticket 4
+        $this->createItem('TicketTask', [
+            'tickets_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
+            'content' => '<p>This is a task</p>'
+        ]);
         $this->createItem('TicketTask', [
             'tickets_id' => getItemByTypeName('Ticket', 'Ticket 4')->getID(),
-            'content' => 'This is a task with & in description'
+            'content' => '<p>This is a task with &amp; in description</p>'
         ]);
+
+        // When user searches for a `&`, the criteria is sanitized and its value is therefore `&#38;`
+        $sanitized_ampersand_criteria = '&#38;';
 
         yield [
             'search_params' => [
@@ -4763,7 +4773,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 1, // title
                         'searchtype' => 'contains',
-                        'value'      => '&'
+                        'value'      => $sanitized_ampersand_criteria
                     ]
                 ],
             ],
@@ -4781,7 +4791,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 21, // ticket content
                         'searchtype' => 'contains',
-                        'value'      => '&'
+                        'value'      => $sanitized_ampersand_criteria
                     ]
                 ],
             ],
@@ -4799,7 +4809,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 25, // followup content
                         'searchtype' => 'contains',
-                        'value'      => '&'
+                        'value'      => $sanitized_ampersand_criteria
                     ]
                 ],
             ],
@@ -4817,7 +4827,7 @@ class Search extends DbTestCase
                         'link'       => 'AND',
                         'field'      => 26, // task content
                         'searchtype' => 'contains',
-                        'value'      => '&'
+                        'value'      => $sanitized_ampersand_criteria
                     ]
                 ],
             ],
@@ -4835,7 +4845,7 @@ class Search extends DbTestCase
                         'link' => 'AND',
                         'field' => 'view', // items seen
                         'searchtype' => 'contains',
-                        'value' => '&'
+                        'value' => $sanitized_ampersand_criteria
                     ],
                     1 => [
                         'link' => 'AND',
