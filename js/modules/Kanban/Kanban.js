@@ -2334,10 +2334,7 @@ class GLPIKanbanRights {
                 }
 
                 if (self.filters.category !== undefined) {
-                    // Try using the category name first, then fall back to 'category' if it's not set (this is what it used originally)
-                    // The '' + is to ensure that the value is a string, as it may be a number and we don't want the filter to fail.
-                    const category = '' + card.data('category_name') !== undefined ? card.data('category_name') : card.data('category');
-                    filter_text(self.filters.category, category);
+                    filter_text(self.filters.category, card.data('category'));
                 }
 
                 if (self.filters.content !== undefined) {
