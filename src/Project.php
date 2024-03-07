@@ -2843,35 +2843,35 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         ];
 
         $displayed_row_count = min(count($projects_id), 5);
-        $total_row_count = count($projects_id);
-        $search_url = self::getSearchURL() . '?' . Toolbox::append_params($options);
-        $title = Html::makeTitle(__('Ongoing Projects'), $displayed_row_count, $total_row_count);
-        $main_header = "<a href='$search_url'>$title</a>";
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',
             'header_rows' => [
                 [
                     [
-                        'colspan'   => 4,
-                        'content'   => $main_header
+                        'colspan' => 4,
+                        'content' => sprintf(
+                            '<a href="%s">%s</a>',
+                            htmlspecialchars(self::getSearchURL() . '?' . Toolbox::append_params($options)),
+                            Html::makeTitle(__('Ongoing projects'), $displayed_row_count, count($projects_id))
+                        ),
                     ]
                 ],
                 [
                     [
-                        'content' => __('Name'),
+                        'content' => __s('Name'),
                         'style'   => 'width: 30%'
                     ],
                     [
-                        'content' => _n('State', 'States', 1),
+                        'content' => _sn('State', 'States', 1),
                         'style'   => 'width: 30%'
                     ],
                     [
-                        'content' => __('Priority'),
+                        'content' => __s('Priority'),
                         'style'   => 'width: 30%'
                     ],
                     [
-                        'content' => __('Percent done'),
+                        'content' => __s('Percent done'),
                         'style'   => 'width: 10%'
                     ]
                 ]
@@ -2885,28 +2885,32 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             }
 
             $project = self::getById($raw_project['id']);
-            $name = $project->getLink();
             $priority = CommonITILObject::getPriorityName($project->fields['priority']);
-            $percent_done = $project->fields['percent_done'] . '%';
-
             $state = ProjectState::getById($project->fields['projectstates_id']);
-            if ($state !== false) {
-                $state_cell = '<div class="badge_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
-            }
 
             $twig_params['rows'][] = [
                 'values' => [
                     [
-                        'content' => $name
+                        'content' => $project->getLink(),
                     ],
                     [
-                        'content' => $state_cell ?? '',
+                        'content' => $state !== false
+                            ? sprintf(
+                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
+                                htmlspecialchars($state->fields['color']),
+                                htmlspecialchars($state->fields['color']),
+                                htmlspecialchars($state->fields['name']),
+                            )
+                            : '',
                     ],
                     [
-                        'content' => '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>' . $priority,
+                        'content' => sprintf(
+                            '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
+                            htmlspecialchars($priority)
+                        ),
                     ],
                     [
-                        'content' => $percent_done
+                        'content' => $project->fields['percent_done'] . '%',
                     ]
                 ]
             ];

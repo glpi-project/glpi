@@ -1581,35 +1581,35 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         $displayed_row_count = min(count($projecttasks_id), 5);
-        $total_row_count = count($projecttasks_id);
-        $search_url = self::getSearchURL();
-        $title = Html::makeTitle(__('Ongoing Project Tasks'), $displayed_row_count, $total_row_count);
-        $main_header = "<a href='$search_url'>$title</a>";
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',
             'header_rows' => [
                 [
                     [
-                        'colspan'   => 4,
-                        'content'   => $main_header
+                        'colspan' => 4,
+                        'content' => sprintf(
+                            '<a href="%s">%s</a>',
+                            htmlspecialchars(self::getSearchURL()),
+                            Html::makeTitle(__('Ongoing projects tasks'), $displayed_row_count, count($projecttasks_id))
+                        ),
                     ]
                 ],
                 [
                     [
-                        'content' => __('Name'),
+                        'content' => __s('Name'),
                         'style'   => 'width: 30%'
                     ],
                     [
-                        'content' => _n('State', 'States', 1),
+                        'content' => _sn('State', 'States', 1),
                         'style'   => 'width: 30%'
                     ],
                     [
-                        'content' => _n('Project', 'Projects', 1),
+                        'content' => _sn('Project', 'Projects', 1),
                         'style'   => 'width: 30%'
                     ],
                     [
-                        'content' => __('Percent done'),
+                        'content' => __s('Percent done'),
                         'style'   => 'width: 10%'
                     ]
                 ]
@@ -1623,28 +1623,29 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
 
             $projecttask = self::getById($raw_projecttask['id']);
-            $name = $projecttask->getLink();
-            $project = Project::getById($projecttask->fields['projects_id'])->getLink();
-            $percent_done = $projecttask->fields['percent_done'] . '%';
-
+            $project = Project::getById($projecttask->fields['projects_id']);
             $state = ProjectState::getById($projecttask->fields['projectstates_id']);
-            if ($state !== false) {
-                $state_cell = '<div class="badge_block" style="border-color: ' . $state->fields['color'] . '"><span class="me-1" style="background: ' . $state->fields['color'] . '"></span>' . $state->fields['name'];
-            }
 
             $twig_params['rows'][] = [
                 'values' => [
                     [
-                        'content' => $name
+                        'content' => $projecttask->getLink(),
                     ],
                     [
-                        'content' => $state_cell ?? ''
+                        'content' => $state !== false
+                            ? sprintf(
+                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
+                                htmlspecialchars($state->fields['color']),
+                                htmlspecialchars($state->fields['color']),
+                                htmlspecialchars($state->fields['name']),
+                            )
+                            : '',
                     ],
                     [
-                        'content' => $project
+                        'content' => $project->getLink(),
                     ],
                     [
-                        'content' => $percent_done
+                        'content' => $projecttask->fields['percent_done'] . '%'
                     ]
                 ]
             ];
