@@ -190,10 +190,23 @@ class GlpiFormEditorController
      * @param {Event}  event  Event
      */
     #handleEditorAction(action, target, event) {
+        /**
+         * Some unsaved changes are not tracked by the native `data-track-changes`
+         * attribute.
+         *
+         * By default, any editor actions will be considered as unsaved changes.
+         *
+         * Actions that do not represent an actual data change must manually
+         * set this variable to `false`.
+         * This make sure we don't forget to track changes when needed.
+         */
+        let unsaved_changes = true;
+
         switch (action) {
             // Mark the target item as active
             case "set-active":
                 this.#setActiveItem(target);
+                unsaved_changes = false;
                 break;
 
             // Add a new question
@@ -268,6 +281,7 @@ class GlpiFormEditorController
             // Build the "move section modal" content
             case "build-move-section-modal-content":
                 this.#buildMoveSectionModalContent();
+                unsaved_changes = false;
                 break;
 
             // Reorder the sections based on the "move section modal" content
@@ -292,6 +306,10 @@ class GlpiFormEditorController
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
+        }
+
+        if (unsaved_changes) {
+            window.glpiUnsavedFormChanges = true;
         }
     }
 
@@ -1110,6 +1128,12 @@ class GlpiFormEditorController
             .find("[data-glpi-form-editor-section-questions]")
             .on('sortupdate', (e) => {
                 this.#handleItemMove($(e.detail.item));
+
+                // Would be nice to not have a specific case here where we need
+                // to manually call this
+                // TODO: this event handler should use the main handleEditorAction
+                // method rather than defining its code directly
+                window.glpiUnsavedFormChanges = true;
             });
     }
 
