@@ -4622,7 +4622,7 @@ JAVASCRIPT;
                         $bgcolor = $_SESSION["glpipriority_" . $job->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
                         $row['values'][] = [
-                            'content' => "<div class='priority_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
+                            'content' => "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
                         ];
 
                         $requesters = [];
@@ -5106,7 +5106,7 @@ JAVASCRIPT;
            // $rand    = mt_rand();
             echo "<tr class='tab_bg_2'>";
             echo "<td>
-            <div class='priority_block' style='border-color: $bgcolor'>
+            <div class='badge_block' style='border-color: $bgcolor'>
                <span style='background: $bgcolor'></span>&nbsp;$name
             </div>
          </td>";

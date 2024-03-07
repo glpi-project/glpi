@@ -5687,7 +5687,7 @@ final class SQLProvider implements SearchProviderInterface
                     $index = $data[$ID][0]['name'];
                     $color = $_SESSION["glpipriority_$index"];
                     $name  = \CommonITILObject::getPriorityName($index);
-                    return "<div class='priority_block' style='border-color: $color'>
+                    return "<div class='badge_block' style='border-color: $color'>
                         <span style='background: $color'></span>&nbsp;$name
                        </div>";
 

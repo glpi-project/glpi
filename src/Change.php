@@ -1287,7 +1287,7 @@ class Change extends CommonITILObject
                         $bgcolor = $_SESSION["glpipriority_" . $change->fields["priority"]];
                         $name = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
                         $row['values'][] = [
-                            'class' => 'priority_block',
+                            'class' => 'badge_block',
                             'content' => "<span style='background: $bgcolor'></span>&nbsp;$name"
                         ];
 
@@ -1514,7 +1514,7 @@ class Change extends CommonITILObject
             $name    = sprintf(__('%1$s: %2$s'), __('ID'), $change->fields["id"]);
             echo "<tr class='tab_bg_2'>";
             echo "<td>
-            <div class='priority_block' style='border-color: $bgcolor'>
+            <div class='badge_block' style='border-color: $bgcolor'>
                <span style='background: $bgcolor'></span>&nbsp;$name
             </div>
          </td>";

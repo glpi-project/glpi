@@ -1737,7 +1737,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     $bgcolor = $_SESSION["glpipriority_" . $parent_item->fields["priority"]];
                     $name = sprintf(__('%1$s: %2$s'), __('ID'), $parent_item->fields["id"]);
                     $row['values'][] = [
-                        'content' => "<div class='priority_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
+                        'content' => "<div class='badge_block' style='border-color: $bgcolor'><span style='background: $bgcolor'></span>&nbsp;$name</div>"
                     ];
 
                     // Parent item name
@@ -1802,7 +1802,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $name    = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
             echo "<tr class='tab_bg_2'>";
             echo "<td>
-            <div class='priority_block' style='border-color: $bgcolor'>
+            <div class='badge_block' style='border-color: $bgcolor'>
                <span style='background: $bgcolor'></span>&nbsp;$name
             </div>
          </td>";
