@@ -4622,52 +4622,78 @@ HTML
     {
         global $DB;
 
+        $this->login();
+
+        $user_id = getItemByTypeName(User::class, TU_USER, true);
+
         $ticket = $this->createItem(
             \Ticket::class,
             [
-                'name'    => __FUNCTION__,
-                'content' => __FUNCTION__,
+                'name'             => __FUNCTION__,
+                'content'          => __FUNCTION__,
+                'entities_id'      => $this->getTestRootEntity(true),
+                '_users_id_assign' => $user_id,
             ]
         );
 
-        $this->array($ticket->getTeam())->isEmpty();
+        $this->array($ticket->getTeam())->hasSize(1); // TU_USER as assignee
 
         // Create invalid entries
-        $this->boolean(
-            $DB->insert(
-                Ticket_User::getTable(),
-                [
-                    'tickets_id' => $ticket->getID(),
-                    'users_id'   => 978897, // not a valid id
-                    'type'       => CommonITILActor::REQUESTER,
-                ]
-            )
-        )->isTrue();
-        $this->boolean(
-            $DB->insert(
-                Group_Ticket::getTable(),
-                [
-                    'tickets_id' => $ticket->getID(),
-                    'groups_id'  => 46543, // not a valid id
-                    'type'       => CommonITILActor::ASSIGN,
-                ]
-            )
-        )->isTrue();
-        $this->boolean(
-            $DB->insert(
-                Supplier_Ticket::getTable(),
-                [
-                    'tickets_id'   => $ticket->getID(),
-                    'suppliers_id' => 99999, // not a valid id
-                    'type'         => CommonITILActor::OBSERVER,
-                ]
-            )
-        )->isTrue();
+        foreach ([CommonITILActor::REQUESTER, CommonITILActor::OBSERVER, CommonITILActor::ASSIGN] as $role) {
+            $this->boolean(
+                $DB->insert(
+                    Ticket_User::getTable(),
+                    [
+                        'tickets_id' => $ticket->getID(),
+                        'users_id'   => 978897, // not a valid id
+                        'type'       => $role,
+                    ]
+                )
+            )->isTrue();
+            $this->boolean(
+                $DB->insert(
+                    Group_Ticket::getTable(),
+                    [
+                        'tickets_id' => $ticket->getID(),
+                        'groups_id'  => 46543, // not a valid id
+                        'type'       => $role,
+                    ]
+                )
+            )->isTrue();
+            $this->boolean(
+                $DB->insert(
+                    Supplier_Ticket::getTable(),
+                    [
+                        'tickets_id'   => $ticket->getID(),
+                        'suppliers_id' => 99999, // not a valid id
+                        'type'         => $role,
+                    ]
+                )
+            )->isTrue();
+        }
 
         $this->boolean($ticket->getFromDB($ticket->getID()))->isTrue();
 
         // Does not contains invalid entries
-        $this->array($ticket->getTeam())->isEmpty();
+        $this->array($ticket->getTeam())->hasSize(1); // TU_USER as assignee
+
+        // Check team in global Kanban
+        $kanban = \Ticket::getDataToDisplayOnKanban(-1);
+        $kanban_ticket = array_pop($kanban); // checked ticket is the last created
+        $this->array($kanban_ticket)->hasKeys(['id', '_itemtype', '_team']);
+        $this->integer($kanban_ticket['id'])->isEqualTo($ticket->getID());
+        $this->string($kanban_ticket['_itemtype'])->isEqualTo(\Ticket::class);
+        $this->array($kanban_ticket['_team'])->isEqualTo(
+            [
+                [
+                    'itemtype'  => User::class,
+                    'id'        => $user_id,
+                    'firstname' => null,
+                    'realname'  => null,
+                    'name'      => '_test_user',
+                ]
+            ]
+        );
     }
 
     protected function testUpdateLoad1NTableDataProvider(): \Generator
