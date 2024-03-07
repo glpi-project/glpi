@@ -6724,6 +6724,6 @@ class CommonDBTM extends CommonGLPI
      */
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
-        return [];
+        return [new QueryExpression(1)];
     }
 }
