@@ -4748,6 +4748,13 @@ JAVASCRIPT;
                     }
                 }
 
+                // To search for '&' in rich text
+                if (
+                    (($searchopt[$ID]['datatype'] ?? null) === 'text')
+                    && (($searchopt[$ID]['htmltext'] ?? null) === true)
+                ) {
+                    $val = str_replace('&#38;', '38;amp;', $val);
+                }
                 if ($should_use_subquery) {
                     // Subquery will be needed to get accurate results
                     $use_subquery_on_text_search = true;
