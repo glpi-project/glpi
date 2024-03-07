@@ -39,6 +39,9 @@ use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Application\ErrorHandler;
+use Glpi\Http\Request;
+use Glpi\OAuth\Server;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use Toolbox;
 
 /**
@@ -207,6 +210,22 @@ abstract class AbstractRequest
      */
     public function handleRequest($data): bool
     {
+        $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+        if ($auth_required === 'client_credentials') {
+            $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
+            try {
+                $client = Server::validateAccessToken($request);
+                if (!\User::isNewID($client['users_id']) || !in_array('inventory', $client['scopes'], true)) {
+                    $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
+                    return false;
+                }
+            } catch (OAuthServerException) {
+                $this->setMode(self::JSON_MODE);
+                $this->addError('Authorization header required to send an inventory', 401);
+                return false;
+            }
+        }
+
         // Some network inventories may request may contains lots of information.
         // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
         // and GLPI will consume about 500MB of memory to handle it,

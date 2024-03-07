@@ -96,6 +96,7 @@ use wapmorgan\UnifiedArchive\UnifiedArchive;
  * @property int $import_printer
  * @property int $import_peripheral
  * @property int $import_env
+ * @property string $auth_required
  *
  */
 class Conf extends CommonGLPI
@@ -383,6 +384,19 @@ class Conf extends CommonGLPI
             echo '</div>';
             echo "</td>";
             echo "</tr>";
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<label for='auth'>" . __s('Authorization header') . "</label>";
+            echo "</td>";
+            echo "<td>";
+            Dropdown::showFromArray('auth_required', [
+                'none' => __('None'),
+                'client_credentials' => __('OAuth - Client credentials')
+            ], [
+                'value' => $config['auth_required'] ?? 'none'
+            ]);
+            echo "</td></tr>";
 
             echo "<tr>";
             echo "<th colspan='4'>";
@@ -1211,6 +1225,7 @@ class Conf extends CommonGLPI
             'stale_agents_status'            => 0,
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
+            'auth_required'                  => 'none',
         ];
     }
 
