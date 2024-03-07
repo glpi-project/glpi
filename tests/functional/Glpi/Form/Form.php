@@ -36,6 +36,8 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use Glpi\Form\Destination\Form_FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
@@ -764,6 +766,86 @@ class Form extends DbTestCase
         $this
             ->integer(count($logs))
             ->isEqualTo($expected_logs_count)
+        ;
+    }
+
+    /**
+     * Indirectly test the post_purgeItem method by purging a form
+     *
+     * @return void
+     */
+    public function testPost_purgeItem(): void
+    {
+        // Test subject that we are going to delete
+        $form_to_be_deleted = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addSection('Section 2')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
+        );
+
+        // Control subject that we are going to keep, its data shouldn't be deleted
+        $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
+        );
+
+        // Count items before deletion
+        $this
+            ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
+            ->isEqualTo(2)
+        ;
+        $this
+            ->integer(countElementsInTable(Question::getTable()))
+            ->isEqualTo(6) // 5 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Section::getTable()))
+            ->isEqualTo(3) // 2 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Form_FormDestination::getTable()))
+            ->isEqualTo(2) // 1 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(FormDestinationTicket::getTable()))
+            ->isEqualTo(2) // 1 (to delete) + 1 (control)
+        ;
+
+        // Delete item
+        $this->deleteItem(
+            \Glpi\Form\Form::class,
+            $form_to_be_deleted->getID(),
+            true
+        );
+
+        // Re count items after deletion
+        $this
+            ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
+            ->isEqualTo(1)
+        ;
+        $this
+            ->integer(countElementsInTable(Question::getTable()))
+            ->isEqualTo(1) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Section::getTable()))
+            ->isEqualTo(1) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Form_FormDestination::getTable()))
+            ->isEqualTo(1) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(FormDestinationTicket::getTable()))
+            ->isEqualTo(1) // 1 (control)
         ;
     }
 }

@@ -261,12 +261,16 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param int $id
+     * @param bool $purge
+     *
+     * @return void
      */
-    protected function deleteItem($itemtype, $id): void
+    protected function deleteItem($itemtype, $id, bool $purge = false): void
     {
+        /** @var CommonDBTM $item */
         $item = new $itemtype();
         $input['id'] = $id;
-        $success = $item->delete($input);
+        $success = $item->delete($input, $purge);
         $this->boolean($success)->isTrue();
     }
 

@@ -220,6 +220,38 @@ final class Form extends CommonDBTM
         }
     }
 
+    #[Override]
+    public function post_purgeItem()
+    {
+        // Delete all sections and questions
+        foreach ($this->getSections() as $section) {
+            foreach ($section->getQuestions() as $question) {
+                $question->delete([
+                    'id'          => $question->getID(),
+                    '_no_history' => true,
+                ]);
+            }
+            $section->delete([
+                'id' => $section->getID(),
+                '_no_history' => true,
+            ]);
+        }
+
+        // Delete configurated form destinations
+        foreach ($this->getDestinations() as $destination) {
+            $destination->delete([
+                'id' => $destination->getID(),
+                '_no_history' => true,
+            ]);
+        }
+        foreach ($this->getDestinationLinksObjects() as $link) {
+            $link->delete([
+                'id' => $link->getID(),
+                '_no_history' => true,
+            ]);
+        }
+    }
+
     /**
      * Get sections of this form
      *
@@ -271,23 +303,19 @@ final class Form extends CommonDBTM
      */
     public function getDestinations(): array
     {
-        $link_data = (new Form_FormDestination())->find([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
         $destinations = [];
-        foreach ($link_data as $row) {
+        foreach ($this->getDestinationLinksObjects() as $link) {
             if (
-                !is_a($row['itemtype'], FormDestinationInterface::class, true)
-                || !is_a($row['itemtype'], CommonDBTM::class, true)
-                || (new ReflectionClass($row['itemtype']))->isAbstract()
+                !is_a($link->fields['itemtype'], FormDestinationInterface::class, true)
+                || !is_a($link->fields['itemtype'], CommonDBTM::class, true)
+                || (new ReflectionClass($link->fields['itemtype']))->isAbstract()
             ) {
                 // Invalid data or disabled plugin
                 continue;
             }
 
-            $destination = new $row['itemtype']();
-            if (!$destination->getFromDB($row['items_id'])) {
+            $destination = new $link->fields['itemtype']();
+            if (!$destination->getFromDB($link->fields['items_id'])) {
                 // Missing data, should be logged
                 trigger_error(
                     "Failed to load destination: " . json_encode($link_data),
@@ -299,6 +327,28 @@ final class Form extends CommonDBTM
         }
 
         return $destinations;
+    }
+
+    /**
+     * Get all defined form <-> form destination links for this form.
+     *
+     * @return Form_FormDestination[]
+     */
+    protected function getDestinationLinksObjects(): array
+    {
+        $links = [];
+        $link_data = (new Form_FormDestination())->find([
+            self::getForeignKeyField() => $this->getID(),
+        ]);
+
+        foreach ($link_data as $row) {
+            $link = new Form_FormDestination();
+            $link->getFromResultSet($row);
+            $link->post_getFromDB();
+            $links[] = $link;
+        }
+
+        return $links;
     }
 
     /**
