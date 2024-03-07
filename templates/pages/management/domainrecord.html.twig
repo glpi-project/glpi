@@ -93,7 +93,7 @@
     ) }}
 
     {# In this case, date_creation is a user-changeable field (indicating when the actual domain record was added?) #}
-    {# TODO shouldn't this use a 'date' field instead? #}
+    {# TODO shouldn't this use a 'date' field instead of changing the purpose of date_creation? #}
     {{ fields.dateField('date_creation', item.fields['date_creation'], __('Creation date'), {
         clearable: true
     } + field_options) }}

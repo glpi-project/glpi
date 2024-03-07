@@ -70,7 +70,7 @@
 
                                 // Put existing data into fields
                                 let data_to_copy = $('#{{ str_input_id }}').val();
-                                form.find('input').each(() => {
+                                form.find('input').each(function () {
                                     let endoffset = 0;
                                     if ($(this).data('quote-value')) {
                                         // Search for closing quote (quote inside value are escaped by a \)
