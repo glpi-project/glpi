@@ -1125,17 +1125,31 @@ class GlpiFormEditorController
                 });
             });
 
-
+        // Keep track on unsaved changes if the sort order was updated
         sections
             .find("[data-glpi-form-editor-section-questions]")
             .on('sortupdate', (e) => {
-                this.#handleItemMove($(e.detail.item));
-
                 // Would be nice to not have a specific case here where we need
                 // to manually call this
                 // TODO: this event handler should use the main handleEditorAction
                 // method rather than defining its code directly
                 window.glpiUnsavedFormChanges = true;
+            });
+
+        // Run the post move process if any item was dragged, even if it was not
+        // moved in the end (= dragged on itself)
+        sections
+            .find("[data-glpi-form-editor-section-questions]")
+            .on('sortstop', (e) => {
+                // The 'sortstop' event trigger twice for a single drag and drop
+                // action.
+                // The first iteration will have the 'sortable-dragging' class,
+                // which we can check to filter it out.
+                if ($(e.detail.item).hasClass("sortable-dragging")) {
+                    return;
+                }
+
+                this.#handleItemMove($(e.detail.item));
             });
     }
 
