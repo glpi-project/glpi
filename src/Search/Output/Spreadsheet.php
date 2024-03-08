@@ -48,6 +48,7 @@ abstract class Spreadsheet extends ExportSearchOutput
 {
     protected \PhpOffice\PhpSpreadsheet\Spreadsheet $spread;
     protected BaseWriter $writer;
+    protected $count;
 
     public function __construct()
     {
@@ -90,7 +91,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         return '';
     }
 
-    public static function displayData(array $data, array $params = [])
+    public function displayData(array $data, array $params = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -114,20 +115,27 @@ abstract class Spreadsheet extends ExportSearchOutput
             ob_clean();
         }
 
-        $output = new static();
-        $spread = $output->getSpreasheet();
-        $writer = $output->getWriter();
+        $spread = $this->getSpreasheet();
+        $writer = $this->getWriter();
+
+        //set styles
+        $style = $spread->getDefaultStyle();
+        $font = $style->getFont();
 
         //write metadata
         $spread->getProperties()
             ->setCreator("GLPI " . GLPI_VERSION)
-            ->setTitle($output->getTitle($data))
+            ->setTitle($this->getTitle($data))
+            ->setCustomProperty('items count', $data['data']['totalcount'])
         ;
 
         $worksheet = $spread->getActiveSheet();
 
         $line_num = 1;
         $col_num = 0;
+
+        $font->setName($_SESSION['glpipdffont'] ?? 'helvetica');
+        $font->setSize(8);
 
         // Display column Headers for toview items
         $metanames = [];
@@ -167,6 +175,10 @@ abstract class Spreadsheet extends ExportSearchOutput
             $worksheet->setCellValue([$col_num, $line_num], __('Item type'));
         }
 
+        //column headers in bold
+        $worksheet->getStyle('A1:' . $worksheet->getHighestColumn() . '1')
+            ->getFont()->setBold(true);
+
         $typenames = [];
         // Display Loop
         foreach ($data['data']['rows'] as $row) {
@@ -192,10 +204,16 @@ abstract class Spreadsheet extends ExportSearchOutput
                 $value = DataExport::normalizeValueForTextExport($typenames[$row["TYPE"]] ?? '');
                 $worksheet->setCellValue([$col_num, $line_num], $value);
             }
+
+            if ($line_num % 2 != 0) {
+                $worksheet->getStyle('A' . $line_num . ':' . $worksheet->getHighestColumn() . $line_num)->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('FFDDDDDD');
+            }
         }
 
-        header('Content-Type: ' . $output->getMime());
-        header('Content-Disposition: attachment; filename="' . urlencode($output->getFileName()) . '"');
+        header('Content-Type: ' . $this->getMime());
+        header('Content-Disposition: attachment; filename="' . urlencode($this->getFileName()) . '"');
         $writer->save('php://output');
     }
 
@@ -220,7 +238,6 @@ abstract class Spreadsheet extends ExportSearchOutput
     {
         $title = "";
 
-        // copypasted verbatim from PDFSearchOutput
         if (count($data['search']['criteria'])) {
             //Drop the first link as it is not needed, or convert to clean link (AND NOT -> NOT)
             if (isset($data['search']['criteria']['0']['link'])) {
@@ -250,7 +267,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         __('%1$s %2$s (%3$s)'),
                         $titlecontain,
                         $oldlink,
-                        self::computeTitle($newdata)
+                        $this->getTitle($newdata)
                     );
                 } else {
                     if (strlen($criteria['value']) > 0) {
@@ -531,7 +548,6 @@ abstract class Spreadsheet extends ExportSearchOutput
                 $title .= $titlecontain2;
             }
         }
-        // /copypasted verbatim from PDFSearchOutput
 
         if ($title === '') {
             $itemtype = new $data['itemtype']();

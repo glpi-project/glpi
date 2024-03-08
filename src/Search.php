@@ -342,7 +342,7 @@ class Search
     {
         /** @var HTMLSearchOutput $output */
         $output = SearchEngine::getOutputForLegacyKey($data['display_type'], $data);
-        return $output::displayData($data, $params);
+        return $output->displayData($data, $params);
     }
 
     /**

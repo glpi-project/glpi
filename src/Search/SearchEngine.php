@@ -49,8 +49,7 @@ use Glpi\Search\Output\GlobalSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
 use Glpi\Search\Output\NamesListSearchOutput;
 use Glpi\Search\Output\Ods;
-use Glpi\Search\Output\PDFLandscapeSearchOutput;
-use Glpi\Search\Output\PDFPortraitSearchOutput;
+use Glpi\Search\Output\Pdf;
 use Glpi\Search\Output\TableSearchOutput;
 use Glpi\Search\Output\Xlsx;
 use Glpi\Search\Provider\SearchProviderInterface;
@@ -80,9 +79,9 @@ final class SearchEngine
             case \Search::HTML_OUTPUT:
                 return (isset($data['as_map']) && $data['as_map']) ? new MapSearchOutput() : new TableSearchOutput();
             case \Search::PDF_OUTPUT_LANDSCAPE:
-                return new PDFLandscapeSearchOutput();
+                return new Pdf(Pdf::LANDSCAPE);
             case \Search::PDF_OUTPUT_PORTRAIT:
-                return new PDFPortraitSearchOutput();
+                return new Pdf(Pdf::PORTRAIT);
             case \Search::CSV_OUTPUT:
                 return new Csv();
             case \Search::ODS_OUTPUT:
@@ -633,6 +632,6 @@ final class SearchEngine
     {
         $output = self::getOutputForLegacyKey($params['display_type'] ?? \Search::HTML_OUTPUT, $params);
         $data = self::getData($itemtype, $params, $forced_display);
-        $output::displayData($data, $params);
+        $output->displayData($data, $params);
     }
 }

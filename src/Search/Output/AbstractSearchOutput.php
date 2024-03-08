@@ -74,7 +74,7 @@ abstract class AbstractSearchOutput
      *
      * @return void|false
      **/
-    abstract public static function displayData(array $data, array $params = []);
+    abstract public function displayData(array $data, array $params = []);
 
     /**
      * Print generic normal Item Cell
