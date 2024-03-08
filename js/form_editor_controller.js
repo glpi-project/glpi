@@ -506,7 +506,14 @@ class GlpiFormEditorController
         const tab_content_border = 1;
 
         // Compute and apply ideal height
-        const height = (window_height - editor_height - tab_content_border);
+        let height = (window_height - editor_height - tab_content_border);
+
+        if ($("#debug-toolbar").length > 0) {
+            // If the debug toolbar is present, we need to take it into account
+            const debug_toolbar_height = $("#debug-toolbar").height();
+            height -= debug_toolbar_height;
+        }
+
         $(this.#target).css('height', `${height}`);
     }
 
