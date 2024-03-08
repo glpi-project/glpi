@@ -42,10 +42,13 @@ use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use Log;
 
 class Form extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Test the showForm method
      *
