@@ -1524,6 +1524,32 @@ class Session
         }
     }
 
+    /**
+     * Delete a session message
+     *
+     * @param string  $msg          Message to delete
+     * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+     *
+     * @return void
+     */
+    public static function deleteMessageAfterRedirect(
+        string $msg,
+        int $message_type = INFO
+    ): void {
+        if (!empty($msg)) {
+            $array = &$_SESSION['MESSAGE_AFTER_REDIRECT'];
+
+            if (isset($array[$message_type])) {
+                $key = array_search($msg, $array[$message_type]);
+                if ($key !== false) {
+                    unset($array[$message_type][$key]);
+                }
+            }
+
+            // Reorder keys
+            $array[$message_type] = array_values($array[$message_type]);
+        }
+    }
 
     /**
      *  Force active Tab for an itemtype

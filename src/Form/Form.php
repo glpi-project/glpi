@@ -46,6 +46,7 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
 use ReflectionClass;
+use Session;
 
 /**
  * Helpdesk form
@@ -205,16 +206,16 @@ final class Form extends CommonDBTM
                 $this->updateExtraFormData();
                 $DB->commit();
             } catch (\Throwable $e) {
+                // Delete the "Item sucessfully updated" message if it exist
+                Session::deleteMessageAfterRedirect(
+                    $this->formatSessionMessageAfterAction(__('Item successfully updated'))
+                );
+
                 // Do not keep half updated data
                 $DB->rollback();
 
                 // Propagate exception to ensure the server return an error code
                 throw $e;
-
-                // TODO: succesfull update message is still shown in this case as
-                // the exception in thrown after the main form object was already
-                // updated. Maybe this process should be done before the actual
-                // update using the prepareInputForUpdate method instead.
             }
         }
     }
@@ -367,8 +368,7 @@ final class Form extends CommonDBTM
                 $id = $section->add($form_data);
 
                 if (!$id) {
-                    trigger_error("Failed to add section", E_USER_WARNING);
-                    continue;
+                    throw new \RuntimeException("Failed to add section");
                 }
 
                 // Store temporary UUID -> ID mapping in session
@@ -379,7 +379,7 @@ final class Form extends CommonDBTM
                 // Update existing section
                 $success = $section->update($form_data);
                 if (!$success) {
-                    trigger_error("Failed to update section", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to update section");
                 }
                 $id = $section->getID();
             }
@@ -411,7 +411,7 @@ final class Form extends CommonDBTM
                 $section = new Section();
                 $success = $section->delete($row);
                 if (!$success) {
-                    trigger_error("Failed to delete section", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to delete section");
                 }
             }
         }
@@ -458,8 +458,7 @@ final class Form extends CommonDBTM
                 $id = $question->add($question_data);
 
                 if (!$id) {
-                    trigger_error("Failed to add question", E_USER_WARNING);
-                    continue;
+                    throw new \RuntimeException("Failed to add question");
                 }
 
                 // Store temporary UUID -> ID mapping in session
@@ -470,7 +469,7 @@ final class Form extends CommonDBTM
                 // Update existing section
                 $success = $question->update($question_data);
                 if (!$success) {
-                    trigger_error("Failed to update question", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to update question");
                 }
                 $id = $question->getID();
             }
@@ -507,7 +506,7 @@ final class Form extends CommonDBTM
                 $question = new Question();
                 $success = $question->delete($row);
                 if (!$success) {
-                    trigger_error("Failed to delete question", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to delete question");
                 }
             }
         }

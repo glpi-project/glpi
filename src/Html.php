@@ -3948,6 +3948,7 @@ JS;
                autoresize_overflow_padding: 0,
 
                min_height: $editor_height,
+               height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
                resize: true,
 
                // disable path indicator in bottom bar
