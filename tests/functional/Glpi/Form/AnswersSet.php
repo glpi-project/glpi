@@ -45,11 +45,14 @@ use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use Impact;
 use Ticket;
 
 class AnswersSet extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Data provider for the "testGetTabNameForItem" method
      *

@@ -42,10 +42,13 @@ use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Tests\FormTesterTrait;
 use User;
 
 class AnswersHandler extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Data provider for testSaveAnswers
      *

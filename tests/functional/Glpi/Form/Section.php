@@ -39,9 +39,12 @@ use DbTestCase;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 
 class Section extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Indirectly test the post_getFromDB method by editing and reloading an item
      *
