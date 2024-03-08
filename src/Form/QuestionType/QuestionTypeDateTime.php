@@ -314,8 +314,8 @@ TWIG;
             'is_date_enabled' => $this->isDateEnabled($question),
             'is_time_enabled' => $this->isTimeEnabled($question),
             'labels' => [
-                'date' => __s('Date'),
-                'time' => __s('Time')
+                'date' => _sn('Date', 'Dates', 1),
+                'time' => _sn('Time', 'Times', 1)
             ]
         ]);
     }
