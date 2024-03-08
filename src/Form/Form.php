@@ -318,7 +318,7 @@ final class Form extends CommonDBTM
             if (!$destination->getFromDB($link->fields['items_id'])) {
                 // Missing data, should be logged
                 trigger_error(
-                    "Failed to load destination: " . json_encode($link_data),
+                    "Failed to load destination: " . json_encode($link->fields),
                     E_USER_WARNING
                 );
                 continue;
