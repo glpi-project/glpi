@@ -130,6 +130,7 @@
     &[data-glpi-form-editor-active-question] {
         // Show secondary data on active form
         [data-glpi-form-editor-question-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -144,6 +145,7 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-question-extra-details] {
+            position: absolute;
             height: 0;
             opacity: 0;
             visibility: hidden;

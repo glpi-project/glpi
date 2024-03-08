@@ -87,7 +87,7 @@
                 class="mt-3"
                 data-glpi-form-editor-question-type-specific
             >
-                {{ question_type.renderAdminstrationTemplate(question)|raw }}
+                {{ question_type.renderAdministrationTemplate(question)|raw }}
             </div>
 
             {# Display common fields #}
@@ -109,7 +109,8 @@
                         'rows' : 1,
                         'toolbar_location': 'bottom',
                         'init': question is not null ? true : false,
-                    })
+                        'mb': 'mb-0',
+                })
                 ) }}
             </div>
 
@@ -156,6 +157,11 @@
                         </option>
                     {% endfor %}
                 </select>
+
+                {# Render the specific question options #}
+                <div class="ms-2" data-glpi-form-editor-specific-question-options data-glpi-form-editor-question-extra-details>
+                    {{ question_type.renderAdministrationOptionsTemplate(question)|raw }}
+                </div>
 
                 <label class="form-check form-switch ms-auto mb-0 me-2 cursor-pointer">
                     <input type="hidden" value="0" name="is_mandatory">

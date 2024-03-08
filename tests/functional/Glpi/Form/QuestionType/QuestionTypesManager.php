@@ -38,9 +38,6 @@ namespace tests\units\Glpi\Form\QuestionType;
 use DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeCategory;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 
 class QuestionTypesManager extends DbTestCase
 {
@@ -82,6 +79,7 @@ class QuestionTypesManager extends DbTestCase
         $expected_categories = [
             QuestionTypeCategory::SHORT_ANSWER,
             QuestionTypeCategory::LONG_ANSWER,
+            QuestionTypeCategory::DATE_AND_TIME,
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -102,16 +100,23 @@ class QuestionTypesManager extends DbTestCase
         yield [
             QuestionTypeCategory::SHORT_ANSWER,
             [
-                new QuestionTypeShortAnswerText(),
-                new QuestionTypeShortAnswerEmail(),
-                new QuestionTypeShortAnswerNumber(),
+                new \Glpi\Form\QuestionType\QuestionTypeShortText(),
+                new \Glpi\Form\QuestionType\QuestionTypeEmail(),
+                new \Glpi\Form\QuestionType\QuestionTypeNumber(),
             ]
         ];
 
         yield [
             QuestionTypeCategory::LONG_ANSWER,
             [
-                new \Glpi\Form\QuestionType\QuestionTypeLongAnswer(),
+                new \Glpi\Form\QuestionType\QuestionTypeLongText(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::DATE_AND_TIME,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeDateTime(),
             ]
         ];
     }

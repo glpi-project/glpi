@@ -375,7 +375,7 @@ class GlpiFormEditorController
      */
     #formatInputsNames(item, type, item_index) {
         // Find all inputs for this section
-        const inputs = item.find("input, select, textarea");
+        const inputs = item.find("input[name], select[name], textarea[name]");
 
         // Find all section inputs and update their names to match the
         // "_section[section_index][field]" format
@@ -396,6 +396,13 @@ class GlpiFormEditorController
             } else if (type === "question") {
                 // The input is for a question
                 base_input_index =  `_questions[${item_index}]`;
+
+                // Check if the input is an option (has the data-glpi-form-editor-specific-question-extra-data attribute)
+                let is_option = $(input).attr("data-glpi-form-editor-specific-question-extra-data") !== undefined;
+
+                if (is_option) {
+                    base_input_index += `[extra_data]`;
+                }
             } else {
                 throw new Error(`Unknown item type: ${type}`);
             }
@@ -906,10 +913,21 @@ class GlpiFormEditorController
             .find("[data-glpi-form-editor-question-type-specific]");
         specific.children().remove();
 
+        // Clear the extra data of the question
+        const extra_data = question
+            .find("[data-glpi-form-editor-specific-question-options]");
+        extra_data.children().remove();
+
         // Find the specific content of the given type
         const new_specific_content = this
             .#getQuestionTemplate(type)
             .find("[data-glpi-form-editor-question-type-specific]")
+            .children();
+
+        // Find the extra data of the given type
+        const new_extra_data = this
+            .#getQuestionTemplate(type)
+            .find("[data-glpi-form-editor-specific-question-options]")
             .children();
 
         // Copy the specific form of the new question type into the question
@@ -917,6 +935,14 @@ class GlpiFormEditorController
             new_specific_content,
             specific,
         );
+
+        // Copy the extra data of the new question type into the question
+        this.#copy_template(
+            new_extra_data,
+            extra_data,
+        );
+
+        $(document).trigger('glpi-form-editor-question-type-changed', [question, type]);
     }
 
     /**

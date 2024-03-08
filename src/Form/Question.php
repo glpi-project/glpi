@@ -98,6 +98,16 @@ final class Question extends CommonDBChild
     }
 
     /**
+     * Get the extra datas for the question.
+     *
+     * @return ?array
+     */
+    public function getExtraDatas(): ?array
+    {
+        return json_decode($this->fields['extra_data'] ?? "[]", true);
+    }
+
+    /**
      * Get the parent form of this question
      *
      * @return Form

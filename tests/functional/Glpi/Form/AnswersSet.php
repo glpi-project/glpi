@@ -40,11 +40,13 @@ use Computer;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\QuestionTypeDateTime;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\QuestionTypeTime;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Impact;
@@ -76,7 +78,7 @@ class AnswersSet extends DbTestCase
         // Form with answers
         $form_2 = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
 
         $answers_handler->saveAnswers($form_2, [
@@ -142,7 +144,7 @@ class AnswersSet extends DbTestCase
         // Form using all possible questions types
         $form_2 = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
 
         $answers_handler->saveAnswers($form_2, [
@@ -202,7 +204,7 @@ class AnswersSet extends DbTestCase
         // Create form and insert an anwser
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
@@ -232,30 +234,50 @@ class AnswersSet extends DbTestCase
         // Create a form with each possible types of questions and multiple sections
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
-                ->addQuestion("Age", QuestionTypeShortAnswerNumber::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
+                ->addQuestion("Age", QuestionTypeNumber::class)
                 ->addSection("Second section")
-                ->addQuestion("Email", QuestionTypeShortAnswerEmail::class)
-                ->addQuestion("Address", QuestionTypeLongAnswer::class)
+                ->addQuestion("Email", QuestionTypeEmail::class)
+                ->addQuestion("Address", QuestionTypeLongText::class)
                 ->addSection("Third section")
+                ->addQuestion("Date", QuestionTypeDateTime::class)
+                ->addQuestion("Time", QuestionTypeDateTime::class, '', json_encode(['is_time_enabled' => 1]))
+                ->addQuestion("DateTime", QuestionTypeDateTime::class, '', json_encode([
+                    'is_date_enabled' => 1,
+                    'is_time_enabled' => 1
+                ]))
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
             $this->getQuestionId($form, "Age") => 20,
             $this->getQuestionId($form, "Email") => "pierre@paul.jacques",
             $this->getQuestionId($form, "Address") => "France",
+            $this->getQuestionId($form, "Date") => "2021-01-01",
+            $this->getQuestionId($form, "Time") => "12:00",
+            $this->getQuestionId($form, "DateTime") => "2021-01-01 12:00:00",
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types
+        // Questions types can have multiple questions in the form
+        // so we need to check the count of unique types
         $possible_types = $types_manager->getQuestionTypes();
-        $this
-            ->array($form->getQuestions())
-            ->hasSize(count($possible_types))
-        ;
-        $this
-            ->array($answers_set->fields["answers"])
-            ->hasSize(count($possible_types))
-        ;
+        $current_questions_types = array_reduce(
+            $form->getQuestions(),
+            function ($carry, $question) {
+                $type = $question->getQuestionType();
+                if (!in_array($type, $carry)) {
+                    $carry[] = $type;
+                }
+
+                return $carry;
+            },
+            []
+        );
+        $this->array($current_questions_types)
+            ->hasSize(count($possible_types));
+
+        $this->array($answers_set->fields["answers"])
+            ->hasSize(count($form->getQuestions()));
 
         // Render content
         ob_start();

@@ -37,11 +37,11 @@ namespace tests\units\Glpi\Form;
 
 use Computer;
 use DbTestCase;
-use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswer;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\AbstractQuestionTypeShortAnswer;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 
 class Question extends DbTestCase
 {
@@ -56,24 +56,24 @@ class Question extends DbTestCase
 
         // First set of tests: valid values
         $question->fields = [
-            'type' => QuestionTypeShortAnswerText::class,
+            'type' => QuestionTypeShortText::class,
         ];
-        yield [$question, new QuestionTypeShortAnswerText()];
+        yield [$question, new QuestionTypeShortText()];
 
         $question->fields = [
-            'type' => QuestionTypeShortAnswerNumber::class,
+            'type' => QuestionTypeNumber::class,
         ];
-        yield [$question, new QuestionTypeShortAnswerNumber()];
+        yield [$question, new QuestionTypeNumber()];
 
         $question->fields = [
-            'type' => QuestionTypeShortAnswerEmail::class,
+            'type' => QuestionTypeEmail::class,
         ];
-        yield [$question, new QuestionTypeShortAnswerEmail()];
+        yield [$question, new QuestionTypeEmail()];
 
         $question->fields = [
-            'type' => QuestionTypeLongAnswer::class,
+            'type' => QuestionTypeLongText::class,
         ];
-        yield [$question, new QuestionTypeLongAnswer()];
+        yield [$question, new QuestionTypeLongText()];
 
         // Second set: Invalid values
         $question->fields = [
@@ -87,7 +87,7 @@ class Question extends DbTestCase
         yield [$question, null];
 
         $question->fields = [
-            'type' => QuestionTypeShortAnswer::class,
+            'type' => AbstractQuestionTypeShortAnswer::class,
         ];
         yield [$question, null];
     }

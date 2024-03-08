@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Form;
 
 use DbTestCase;
 use Glpi\Form\Question;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 
@@ -58,9 +58,9 @@ class Section extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addQuestion('Question 3', QuestionTypeShortText::class)
         );
         $section = \Glpi\Form\Section::getById($this->getSectionId($form, 'Section 1'));
         $this
@@ -98,9 +98,9 @@ class Section extends DbTestCase
         $form_1 = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addQuestion('Question 3', QuestionTypeShortText::class)
         );
 
         $section = \Glpi\Form\Section::getById($this->getSectionId($form_1, 'Section 1'));
@@ -113,10 +113,10 @@ class Section extends DbTestCase
         $form_2 = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addSection('Section 2')
-                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 3', QuestionTypeShortText::class)
         );
 
         $section = \Glpi\Form\Section::getById($this->getSectionId($form_2, 'Section 1'));
