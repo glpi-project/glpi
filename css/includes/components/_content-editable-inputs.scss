@@ -128,21 +128,23 @@ $inline-input-padding: 2px 4px;
 
 // Simulate focus like a bootstrap input, needed for tinymce with some javascript
 // help to trigger and remove the class as needed
-.simulate-focus {
-    box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.20);
+form:not(.disable-focus) {
+    .simulate-focus {
+        box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.20);
 
-    // Show richtext toolbar only when focused
-    .tox-editor-header {
-        opacity: unset;
-        height: 48px !important; // Need to set a fixed height for transition
-        transition: height 0.25s ease !important;
-        margin-top: 1rem !important;
-    }
+        // Show richtext toolbar only when focused
+        .tox-editor-header {
+            opacity: unset;
+            height: 48px !important; // Need to set a fixed height for transition
+            transition: height 0.25s ease !important;
+            margin-top: 1rem !important;
+        }
 
-    // Partial revert of margin change in this case as we want to keep the
-    // natural margin while the toolbar is visible
-    .tox-sidebar-wrap {
-        margin-bottom: -5px;
+        // Partial revert of margin change in this case as we want to keep the
+        // natural margin while the toolbar is visible
+        .tox-sidebar-wrap {
+            margin-bottom: -5px;
+        }
     }
 }
 

@@ -485,9 +485,13 @@ class GlpiFormEditorController
      * @param {Object} e Event data
      */
     #handleTinyMCEClick(e) {
+        // The event target expose its relevant textarea in a `data-id` property
+        const id = $(e.target).closest("#tinymce").data("id");
+        const textarea = $(`#${id}`);
+
         // Handle 'set-active' action for clicks inside tinymce
         this.#setActiveItem(
-            $(e.target.container)
+            textarea
                 .closest('[data-glpi-form-editor-on-click="set-active"]')
         );
     }
@@ -1128,12 +1132,19 @@ class GlpiFormEditorController
         // Keep track on unsaved changes if the sort order was updated
         sections
             .find("[data-glpi-form-editor-section-questions]")
-            .on('sortupdate', (e) => {
+            .on('sortupdate', () => {
                 // Would be nice to not have a specific case here where we need
                 // to manually call this
                 // TODO: this event handler should use the main handleEditorAction
                 // method rather than defining its code directly
                 window.glpiUnsavedFormChanges = true;
+            });
+
+        // Add a special class while a drag and drop is happening
+        sections
+            .find("[data-glpi-form-editor-section-questions]")
+            .on('sortstart', () => {
+                $(this.#target).addClass("disable-focus");
             });
 
         // Run the post move process if any item was dragged, even if it was not
@@ -1150,6 +1161,14 @@ class GlpiFormEditorController
                 }
 
                 this.#handleItemMove($(e.detail.item));
+
+                // Prevent tinymce from stealing focus when dragging someting
+                // over it.
+                // It seems to be caused by the fact that tinymce expect files
+                // to be dragged into it, thus we have to manually disable focus
+                // until our drag operation is over.
+                $(this.#target).removeClass("disable-focus");
+                $('.content-editable-tinymce').removeClass('simulate-focus');
             });
     }
 
