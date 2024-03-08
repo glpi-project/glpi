@@ -43,7 +43,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
     public function process(MiddlewareInput $input, callable $next): void
     {
         $client = Router::getInstance()->getCurrentClient();
-        if (!$client) {
+        if (!$client || isCommandLine()) {
             $next($input);
             return;
         }
