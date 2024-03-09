@@ -34,7 +34,7 @@
 {% set rand = random() %}
 
 {% set load_actors = params['load_actors'] ?? true %}
-{% set actors = load_selected_actors ? item.getActorsForType(actortypeint, params) : [] %}
+{% set actors = load_actors ? item.getActorsForType(actortypeint, params) : [] %}
 
 {% set required = false %}
 {% if itiltemplate.isMandatoryField('_users_id_' ~ actortype) or itiltemplate.isMandatoryField('_groups_id_' ~ actortype) or (actortype == 'assign' and itiltemplate.isMandatoryField('_suppliers_id_' ~ actortype)) %}
