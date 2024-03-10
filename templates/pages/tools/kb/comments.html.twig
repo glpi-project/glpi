@@ -42,9 +42,11 @@
                 <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
                 <div class="h_user">
                     <a href="{{ comment['user_info']['link'] }}">
-                        {% set avatar_style = comment['user_info']['avatar'] is not empty
-                            ? ('background-image: url(' ~ comment['user_info']['avatar'] ~ ');')
-                            : ('background-color: ' ~ comment['user_info']['initials_bg_color'] ) %}
+                        {% if comment['user_info']['avatar'] is not empty %}
+                            {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
+                        {% else %}
+                            {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
+                        {% endif %}
                         <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
                         {% if comment['user_info']['avatar'] is empty %}
                             {{ comment['user_info']['initials'] }}
