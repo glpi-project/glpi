@@ -55,14 +55,23 @@
 
     {% set btn %}
         <div class="d-flex flex-row-reverse pe-2 mt-2">
-            {% if comment_id and parent_comment_id %}
+            {% if comment_id or parent_comment_id %}
                 <div class="ms-2">
-                    {{ inputs.button('cancel', __('Cancel'), 'reset', 1) }}
+                    {{ inputs.button('cancel', __('Cancel'), 'reset', 1, {
+                        class: 'btn btn-ghost-secondary'
+                    }) }}
                 </div>
             {% endif %}
             <div class="ms-2">
                 {{ inputs.submit(comment_id ? 'edit' : 'add', comment_id ? _x('button', 'Edit') : _x('button', 'Add'), 1) }}
             </div>
+            <script>
+                $(`#kbcomment_form{{ rand }}`).on('click', 'button[name="cancel"]', (e) => {
+                    const btn = $(e.currentTarget);
+                    btn.closest('.comment').find('.displayed_content').show();
+                    $(`#kbcomment_form{{ rand }}`).remove();
+                });
+            </script>
         </div>
     {% endset %}
 
