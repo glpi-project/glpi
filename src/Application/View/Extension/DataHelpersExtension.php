@@ -202,13 +202,13 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function getSafeHtml($string, bool $encode_output_entities = false)
+    public function getSafeHtml($string)
     {
         if (!is_string($string)) {
             return $string;
         }
 
-        return RichText::getSafeHtml($string, $encode_output_entities);
+        return RichText::getSafeHtml($string);
     }
 
     /**

@@ -49,7 +49,7 @@
         {{ fields.htmlField('', search_option['name']|e, _n('Field', 'Fields', 1)) }}
 
         {% if matching_field['type']|default(null) == 'tinymce' %}
-            {{ fields.textareaField('value', item.fields['value']|safe_html(true), __('Value'), {
+            {{ fields.textareaField('value', item.fields['value'], __('Value'), {
                 enable_richtext: true,
                 enable_images: false,
                 enable_fileupload: false
