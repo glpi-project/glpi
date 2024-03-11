@@ -45,6 +45,6 @@ final class ProjectTaskTeamDropdown extends AbstractRightsDropdown
 
     protected static function getTypes(): array
     {
-        return ProjectTask::getAssociableItemtypes();
+        return ProjectTask::getTeamMembersItemtypes();
     }
 }

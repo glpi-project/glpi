@@ -320,7 +320,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         // Add team members
         if (isset($this->input['teammember_list'])) {
             $taskteam = new ProjectTaskTeam();
-            $members_types = ProjectTask::getAssociableItemtypes();
+            $members_types = ProjectTask::getTeamMembersItemtypes();
             foreach ($members_types as $type) {
                 $ids = ProjectTaskTeamDropdown::getPostedIds(
                     $this->input['teammember_list'],
@@ -574,7 +574,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
     }
 
-    public static function getAssociableItemtypes(): array
+    /**
+     * List of all possible team members itemtypes.
+     * @return array
+     */
+    public static function getTeamMembersItemtypes(): array
     {
         return [
             User::getType(),
