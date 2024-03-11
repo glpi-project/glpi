@@ -64,7 +64,7 @@ enum QuestionTypeCategory: string
         return match ($this) {
             self::SHORT_ANSWER => __("Short answer"),
             self::LONG_ANSWER  => __("Long answer"),
-            self::DATE_AND_TIME => __("Temporal answer"),
+            self::DATE_AND_TIME => __("Date and time"),
         };
     }
 }

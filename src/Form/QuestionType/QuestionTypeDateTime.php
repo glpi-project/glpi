@@ -225,16 +225,16 @@ TWIG;
                             .is(':checked');
 
                         let inputType = 'date';
-                        let inputPlaceholder = {{ placeholders.input.date|json_encode|e('html_attr') }};
-                        let defaultValuePlaceholder = {{ placeholders.default_value.date|json_encode|e('html_attr') }};
+                        let inputPlaceholder = {{ placeholders.input.date|json_encode|raw }};
+                        let defaultValuePlaceholder = {{ placeholders.default_value.date|json_encode|raw }};
                         if (isDateEnabled && isTimeEnabled) {
                             inputType = 'datetime-local';
-                            inputPlaceholder = {{ placeholders.input['datetime-local']|json_encode|e('html_attr') }};
-                            defaultValuePlaceholder = {{ placeholders.default_value['datetime-local']|json_encode|e('html_attr') }};
+                            inputPlaceholder = {{ placeholders.input['datetime-local']|json_encode|raw }};
+                            defaultValuePlaceholder = {{ placeholders.default_value['datetime-local']|json_encode|raw }};
                         } else if (isTimeEnabled) {
                             inputType = 'time';
-                            inputPlaceholder = {{ placeholders.input.time|json_encode|e('html_attr') }};
-                            defaultValuePlaceholder = {{ placeholders.default_value.time|json_encode|e('html_attr') }};
+                            inputPlaceholder = {{ placeholders.input.time|json_encode|raw }};
+                            defaultValuePlaceholder = {{ placeholders.default_value.time|json_encode|raw }};
                         }
 
                         if (isDefaultValueCurrentTime.is(':checked')) {
