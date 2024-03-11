@@ -44,6 +44,8 @@ use Glpi\Features\AssetImage;
  */
 class ConsumableItem extends CommonDBTM
 {
+    use Glpi\Features\Clonable;
+
     use AssetImage;
 
    // From CommonDBTM
@@ -53,6 +55,10 @@ class ConsumableItem extends CommonDBTM
 
     public static $rightname                   = 'consumable';
 
+    public function getCloneRelations(): array
+    {
+        return [];
+    }
 
     public static function getTypeName($nb = 0)
     {
