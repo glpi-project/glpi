@@ -4030,6 +4030,11 @@ JS;
                         $(editor.container).removeClass('required');
                      });
                    }
+                        // Propagate click event to allow other components to
+                        // listen to it
+                        editor.on('click', function (e) {
+                            $(document).trigger('tinyMCEClick', [e]);
+                        });
 
                         // Simulate focus on content-editable tinymce
                         editor.on('click focus', function (e) {
@@ -4045,9 +4050,6 @@ JS;
                             $(e.target.editorContainer)
                                 .closest('.content-editable-tinymce')
                                 .addClass('simulate-focus');
-
-                            // Propagate event to the document to allow other components to listen to it
-                            $(document).trigger('tinyMCEClick', [e]);
                         });
 
                         editor.on('Change', function (e) {
