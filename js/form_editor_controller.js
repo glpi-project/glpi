@@ -978,9 +978,13 @@ class GlpiFormEditorController
         this.#updateSectionsDetailsVisiblity();
         this.#updateMergeSectionActionVisibility();
 
+        // Mark new serction as active
         this.#setActiveItem(
             section.find("[data-glpi-form-editor-section-details]")
         );
+
+        // Enable sortable
+        this.#enableSortable(section);
 
         // Focus section's name
         section
