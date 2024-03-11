@@ -237,31 +237,15 @@
         });
     });
 
-    const selected_node = computed(() => {
+    const selected_nodes = computed(() => {
         let selected = null;
         walkTree(tree_data.value, 0, null, (node) => {
             if (node.selected) {
                 selected = node;
             }
         });
-        return selected;
+        return [selected.key, ...selected.parents.map((parent) => parent.key)];
     });
-
-    /**
-     * Returns true if the node is selected or is a parent of a selected node.
-     * @param node
-     */
-    function isSelectedOrParent(node)
-    {
-        if (node.key === selected_node.value?.key) {
-            return true;
-        }
-        return selected_node.value.parents.some((parent) => {
-            if (parent.key === node.key) {
-                return true;
-            }
-        });
-    }
 </script>
 
 <template>
@@ -290,7 +274,7 @@
                             <span v-else class="me-1">
                                 <i :class="icons.item"></i>
                             </span>
-                            <span :class="isSelectedOrParent(node) ? 'fw-bold' : ''" v-html="node.title"></span>
+                            <span :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" v-html="node.title"></span>
                         </td>
                     </tr>
                 </tbody>
