@@ -491,7 +491,8 @@ class ProjectTask extends DbTestCase
         $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
         $this->integer($projecttask->fields['percent_done'])->isEqualTo($result['percent_done']);
         $this->integer($projecttask->fields['projectstates_id'])->isEqualTo($result['projectstates_id']);
-      
+    }
+
     public function testGetActiveProjectTaskIDsForUser()
     {
         $this->login();
