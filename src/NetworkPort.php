@@ -723,11 +723,13 @@ class NetworkPort extends CommonDBChild
             }
         }
 
+        $netport_table = $netport->getTable();
+
         $criteria = [
-            'FROM'   => $netport->getTable(),
+            'FROM'   => $netport_table,
             'WHERE'  => [
-                'items_id'  => $item->getID(),
-                'itemtype'  => $item->getType(), [
+                "$netport_table.items_id"  => $item->getID(),
+                "$netport_table.itemtype"  => $item->getType(), [
                     'OR' => [
                         ['name' => ['!=', 'Management']],
                         ['name' => null]
@@ -736,12 +738,26 @@ class NetworkPort extends CommonDBChild
             ] + $deleted_criteria
         ];
 
-        $ports_iterator = $DB->request($criteria);
-
         $so = $netport->rawSearchOptions();
+        $already_link_tables = [];
         foreach (Plugin::getAddSearchOptions(__CLASS__) as $key => $data) {
             $so[] = ['id' => $key] + $data;
+            $join = Search::addLeftJoin(
+                __CLASS__,
+                $netport->getTable(),
+                $already_link_tables,
+                $data["table"],
+                $data["linkfield"],
+                0,
+                0,
+                $data["joinparams"],
+                $data["field"]
+            );
+            $criteria['JOIN'][] = new QueryExpression($join);
         }
+
+        $ports_iterator = $DB->request($criteria);
+
         $dprefs = DisplayPreference::getForTypeUser(
             'Networkport',
             Session::getLoginUserID()
@@ -1279,21 +1295,7 @@ class NetworkPort extends CommonDBChild
                             }
                             break;
                         default:
-                            if ($option['table'] == $this->getTable()) {
-                                $output .= $port[$option['field']];
-                            } else {
-                                $iterator = $DB->request([
-                                    'SELECT' => $option['field'],
-                                    'FROM'   => $option['table'],
-                                    'WHERE'  => [
-                                        'itemtype' => $this->getType(),
-                                        'items_id' => $port['id']
-                                    ]
-                                ]);
-                                foreach ($iterator as $row) {
-                                    $output .= $row[$option['field']];
-                                }
-                            }
+                            $output .= $port[$option['field']];
                             break;
                     }
                 }
