@@ -137,8 +137,8 @@ if (!$DB->tableExists('glpi_forms_destinations_answerssets_formdestinationitems'
 if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
     $DB->doQueryOrDie(
         "CREATE TABLE `glpi_forms_destinations_formdestinations` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `itemtype` varchar(255) NOT NULL,
             `name` varchar(255) NOT NULL,
             PRIMARY KEY (`id`),
