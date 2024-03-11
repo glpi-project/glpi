@@ -546,10 +546,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
 
-            $projectstate_id = $this->recalculateStatus($input);
-            if ($projectstate_id !== false) {
-                $input['projectstates_id'] = $projectstate_id;
-            }
+        $projectstate_id = $this->recalculateStatus($input);
+        if ($projectstate_id !== false) {
+            $input['projectstates_id'] = $projectstate_id;
         }
 
         return Project::checkPlanAndRealDates($input);
@@ -1830,12 +1829,12 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             return false;
         }
         $config = Config::getConfigurationValues('core');
-        if ((int) $percent_done === 0) {
-            $state_id = $config['projecttask_unstarted'] ?? 0;
+        if ((int) $percent_done === 0 || (int) $percent_done < 0) {
+            $state_id = $config['projecttask_unstarted_states_id'] ?? 0;
         } elseif ((int) $percent_done === 100) {
-            $state_id = $config['projecttask_completed'] ?? 0;
+            $state_id = $config['projecttask_completed_states_id'] ?? 0;
         } else {
-            $state_id = $config['projecttask_inprogress'] ?? 0;
+            $state_id = $config['projecttask_inprogress_states_id'] ?? 0;
         }
         $state = ProjectState::getById($state_id);
         if (!$state) {

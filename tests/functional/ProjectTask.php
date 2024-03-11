@@ -402,43 +402,95 @@ class ProjectTask extends DbTestCase
         $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
     }
 
-    public function testAutochangeState()
+    protected function testAutochangeStateProvider()
     {
         $config = new \Config();
-        $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_unstarted']))->isTrue();
-        $this->boolean($config->update(['value' => '1'] + $config->fields))->isTrue();
+        $config->getFromDBByCrit(['name' => 'projecttask_unstarted_states_id']);
+        $this->updateItem('Config', $config->getID(), ['value' => '1']  + $config->fields);
 
-        $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_inprogress']))->isTrue();
-        $this->boolean($config->update(['value' => '2'] + $config->fields))->isTrue();
+        $config->getFromDBByCrit(['name' => 'projecttask_inprogress_states_id']);
+        $this->updateItem('Config', $config->getID(), ['value' => '2']  + $config->fields);
 
-        $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_completed']))->isTrue();
-        $this->boolean($config->update(['value' => '3'] + $config->fields))->isTrue();
+        $config->getFromDBByCrit(['name' => 'projecttask_completed_states_id']);
+        $this->updateItem('Config', $config->getID(), ['value' => '3']  + $config->fields);
 
         $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
 
-        $project = new \Project();
-        $project_id_1 = $project->add([
-            'name' => 'Project 1',
-        ]);
-        $this->integer((int) $project_id_1)->isGreaterThan(0);
+        $project = $this->createItem(
+            'Project',
+            [
+                'name' => 'Project 1',
+            ]
+        );
+        $task = $this->createItem(
+            'ProjectTask',
+            [
+                'name' => 'Project Task 1',
+                'auto_projectstates' => 1,
+                'projects_id' => $project->getID(),
+                'percent_done'  => 0
+            ]
+        );
 
-        $projecttask = new \ProjectTask();
-        $projecttask_id_1 = $projecttask->add([
-            'name' => 'Project Task 1',
-            'auto_projectstates' => 1,
-            'projects_id' => $project_id_1,
-            'percent_done'  => 0
-        ]);
-        $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
+        yield [
+            'input' => [ // Task with percent_done == 0
+                'id'            => $task->getID(),
+                'percent_done'  => '0',
+            ],
+            'result' => [
+                'percent_done' => '0',
+                'projectstates_id' => 1,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done == 50
+                'id'            => $task->getID(),
+                'percent_done'  => '50',
+            ],
+            'result' => [
+                'percent_done' => '50',
+                'projectstates_id' => 2,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done == 100
+                'id'            => $task->getID(),
+                'percent_done'  => '100',
+            ],
+            'result' => [
+                'percent_done' => '100',
+                'projectstates_id' => 3,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done == 25
+                'id'            => $task->getID(),
+                'percent_done'  => '25',
+            ],
+            'result' => [
+                'percent_done' => '25',
+                'projectstates_id' => 2,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done < 0
+                'id'            => $task->getID(),
+                'percent_done'  => '-1',
+            ],
+            'result' => [
+                'percent_done' => '-1',
+                'projectstates_id' => 1,
+            ]
+        ];
+    }
 
-        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(1);
-
-        $this->boolean($projecttask->update(['id' => $projecttask_id_1, 'percent_done'  => 50, 'auto_projectstates' => 1]));
-        $this->integer($projecttask->fields['percent_done'])->isEqualTo(50);
-        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(2);
-
-        $this->boolean($projecttask->update(['id' => $projecttask_id_1, 'percent_done'  => 100, 'auto_projectstates' => 1]));
-        $this->integer($projecttask->fields['percent_done'])->isEqualTo(100);
-        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(3);
+    /**
+     * @dataprovider testAutochangeStateProvider
+     */
+    public function testAutochangeState($input, $result)
+    {
+        $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
+        $this->integer($projecttask->fields['percent_done'])->isEqualTo($result['percent_done']);
+        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo($result['projectstates_id']);
     }
 }

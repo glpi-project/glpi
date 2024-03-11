@@ -148,7 +148,7 @@
         item.fields.auto_projectstates,
         __('Automatically calculate'),
         {
-            'add_field_html': state_tooltip,
+            'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config.")
         }
     ) }}
     <script>
@@ -181,7 +181,7 @@
         item.fields.auto_percent_done,
         __('Automatically calculate'),
         {
-            'add_field_html': percent_tooltip,
+            'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
         }
     ) }}
     <script>

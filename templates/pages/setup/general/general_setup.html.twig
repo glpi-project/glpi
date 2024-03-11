@@ -281,8 +281,8 @@
 
     {{ fields.dropdownField(
         'ProjectState',
-        'projecttask_unstarted',
-        config['projecttask_unstarted']|default('0'),
+        'projecttask_unstarted_states_id',
+        config['projecttask_unstarted_states_id']|default('0'),
         __('Status of unstarted tasks'),
         inline_field_options|merge({
             'width': 'auto',
@@ -291,8 +291,8 @@
 
     {{ fields.dropdownField(
         'ProjectState',
-        'projecttask_inprogress',
-        config['projecttask_inprogress']|default('0'),
+        'projecttask_inprogress_states_id',
+        config['projecttask_inprogress_states_id']|default('0'),
         __('Status of tasks in progress'),
         inline_field_options|merge({
             'width': 'auto',
@@ -302,8 +302,8 @@
 
     {{ fields.dropdownField(
         'ProjectState',
-        'projecttask_completed',
-        config['projecttask_completed']|default('0'),
+        'projecttask_completed_states_id',
+        config['projecttask_completed_states_id']|default('0'),
         __('Status of tasks done'),
         inline_field_options|merge({
             'width': 'auto',
