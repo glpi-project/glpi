@@ -9316,6 +9316,9 @@ HTML;
        // escape _ char used as wildcard in mysql likes
         $val = str_replace('_', '\\_', $val);
 
+        // special case for & char
+        $val = str_replace('&', '&#38;', $val);
+
         if ($val === 'NULL' || $val === 'null') {
             return null;
         }
