@@ -2670,6 +2670,265 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     }
 
     /**
+     * Get the list of active projects for a list of groups.
+     *
+     * @param array $groups_id The group IDs.
+     * @param bool $search_in_team Whether to search in the team.
+     * @return array The list of project IDs.
+     */
+    public static function getActiveProjectIDsForGroup(
+        array $groups_id,
+        bool $search_in_team = true
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (count($groups_id) === 0) {
+            return [];
+        }
+
+        $req = [
+            'SELECT' => Project::getTable() . '.id',
+            'FROM' => Project::getTable(),
+            'LEFT JOIN' => [
+                ProjectState::getTable() => [
+                    'FKEY' => [
+                        ProjectState::getTable() => 'id',
+                        Project::getTable() => 'projectstates_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                ['OR' => ['groups_id' => $groups_id]],
+                [
+                    'OR' => [
+                        [ProjectState::getTable() . '.is_finished' => 0],
+                        [ProjectState::getTable() . '.is_finished' => null]
+                    ]
+                ],
+                ['NOT' => ['is_template' => 1]],
+            ]
+        ];
+
+        if ($search_in_team) {
+            $team_sub_query = new \Glpi\DBAL\QuerySubQuery([
+                'SELECT' => [
+                    'projects_id'
+                ],
+                'FROM' => ProjectTeam::getTable(),
+                'WHERE' => [
+                    'OR' => [
+                        ['itemtype' => 'Group', 'items_id' => $groups_id]
+                    ]
+                ]
+            ]);
+
+            $req['WHERE'][0]['OR'][Project::getTable() . '.id'] = $team_sub_query;
+        }
+
+        return iterator_to_array($DB->request($req), false);
+    }
+
+    /**
+     * Get the list of active projects for a list of users.
+     *
+     * @param array $users_id The user IDs.
+     * @param bool $search_in_groups Whether to search in groups.
+     * @param bool $search_in_team Whether to search in the team.
+     * @return array The list of project IDs.
+     */
+    public static function getActiveProjectIDsForUser(
+        array $users_id,
+        bool $search_in_groups = true,
+        bool $search_in_team = true
+    ): array {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (count($users_id) === 0) {
+            return [];
+        }
+
+        $req = [
+            'SELECT' => Project::getTable() . '.id',
+            'FROM' => Project::getTable(),
+            'LEFT JOIN' => [
+                ProjectState::getTable() => [
+                    'FKEY' => [
+                        ProjectState::getTable() => 'id',
+                        Project::getTable() => 'projectstates_id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                ['OR' => ['users_id' => $users_id]],
+                [
+                    'OR' => [
+                        [ProjectState::getTable() . '.is_finished' => 0],
+                        [ProjectState::getTable() . '.is_finished' => null]
+                    ]
+                ],
+                ['NOT' => ['is_template' => 1]],
+            ]
+        ];
+
+        $groups_sub_query = new \Glpi\DBAL\QuerySubQuery([
+            'SELECT' => [
+                'groups_id'
+            ],
+            'FROM' => Group_User::getTable(),
+            'WHERE' => [
+                'users_id' => $users_id
+            ]
+        ]);
+
+        if ($search_in_groups) {
+            $req['WHERE'][0]['OR']['groups_id'] = $groups_sub_query;
+        }
+
+        if ($search_in_team) {
+            $crit = [
+                ['itemtype' => 'User', 'items_id' => $users_id]
+            ];
+
+            if ($search_in_groups) {
+                $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
+            }
+
+            $team_sub_query = new \Glpi\DBAL\QuerySubQuery([
+                'SELECT' => [
+                    'projects_id'
+                ],
+                'FROM' => ProjectTeam::getTable(),
+                'WHERE' => [
+                    'OR' => $crit
+                ]
+            ]);
+
+            $req['WHERE'][0]['OR'][Project::getTable() . '.id'] = $team_sub_query;
+        }
+
+        return iterator_to_array($DB->request($req), false);
+    }
+
+    /**
+     *  Show the list of projects for a user in the personal view or for a group in the group view
+     *
+     * @param string $itemtype The itemtype (User or Group)
+     * @return void
+     */
+    public static function showListForCentral(string $itemtype): void
+    {
+        $projects_id = [];
+        switch ($itemtype) {
+            case 'User':
+                $projects_id = self::getActiveProjectIDsForUser([Session::getLoginUserID()], false, true);
+                break;
+            case 'Group':
+                $projects_id = self::getActiveProjectIDsForGroup($_SESSION['glpigroups']);
+                break;
+        }
+
+        // If no project are found, do not display anything
+        if (empty($projects_id)) {
+            return;
+        }
+
+        $options = [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => 87,
+                    'searchtype' => 'equals',
+                    'value' => 'myself'
+                ],
+                [
+                    'link' => 'OR',
+                    'field' => 24,
+                    'searchtype' => 'equals',
+                    'value' => 'myself'
+                ]
+            ]
+        ];
+
+        $displayed_row_count = min(count($projects_id), (int)$_SESSION['glpidisplay_count_on_home']);
+
+        $twig_params = [
+            'class'       => 'table table-borderless table-striped table-hover card-table',
+            'header_rows' => [
+                [
+                    [
+                        'colspan' => 4,
+                        'content' => sprintf(
+                            '<a href="%s">%s</a>',
+                            htmlspecialchars(self::getSearchURL() . '?' . Toolbox::append_params($options)),
+                            Html::makeTitle(__('Ongoing projects'), $displayed_row_count, count($projects_id))
+                        ),
+                    ]
+                ],
+                [
+                    [
+                        'content' => __s('Name'),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => _sn('State', 'States', 1),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => __s('Priority'),
+                        'style'   => 'width: 30%'
+                    ],
+                    [
+                        'content' => __s('Percent done'),
+                        'style'   => 'width: 10%'
+                    ]
+                ]
+            ],
+            'rows' => []
+        ];
+
+        foreach ($projects_id as $key => $raw_project) {
+            if ($key >= $displayed_row_count) {
+                break;
+            }
+
+            $project = self::getById($raw_project['id']);
+            $priority = CommonITILObject::getPriorityName($project->fields['priority']);
+            $state = ProjectState::getById($project->fields['projectstates_id']);
+
+            $twig_params['rows'][] = [
+                'values' => [
+                    [
+                        'content' => $project->getLink(),
+                    ],
+                    [
+                        'content' => $state !== false
+                            ? sprintf(
+                                '<div class="badge_block" style="border-color:%s"><span class="me-1" style="background:%s"></span>%s',
+                                htmlspecialchars($state->fields['color']),
+                                htmlspecialchars($state->fields['color']),
+                                htmlspecialchars($state->fields['name']),
+                            )
+                            : '',
+                    ],
+                    [
+                        'content' => sprintf(
+                            '<div class="badge_block" style="border-color: #ffcece"><span class="me-1" style="background: #ffcece"></span>%s',
+                            htmlspecialchars($priority)
+                        ),
+                    ],
+                    [
+                        'content' => $project->fields['percent_done'] . '%',
+                    ]
+                ]
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/table.html.twig', $twig_params);
+    }
+
+    /**
      * Update the specified project's percent_done based on the percent_done of subprojects and tasks.
      * This function indirectly updates the percent done for all parents if they are set to automatically update.
      * @since 9.5.0

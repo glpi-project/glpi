@@ -38,9 +38,12 @@ namespace tests\units\Glpi\Form\Renderer;
 use DbTestCase;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 
 class FormRenderer extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Test the `render` method
      *

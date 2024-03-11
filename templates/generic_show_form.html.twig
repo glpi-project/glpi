@@ -50,6 +50,7 @@
    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
    {% set field_options = {
        'locked_fields': item.getLockedFields(),
+       'rand': rand,
    } %}
 
    <div class="card-body d-flex flex-wrap">
@@ -97,8 +98,7 @@
                         {% endif %}
                      {% endif %}
 
-                     {% if item.isField('states_id') %}
-                        {% set condition = item.getType() in config('state_types') ? {('is_visible_' ~ item.getType()|lower): 1} : {} %}
+                     {% if item.isField('states_id') and item is usingtrait('Glpi\\Features\\State') %}
                         {{ fields.dropdownField(
                            'State',
                            'states_id',
@@ -106,7 +106,7 @@
                            __('Status'),
                            field_options|merge({
                               'entity': item.fields['entities_id'],
-                              'condition': condition
+                              'condition': item.getStateVisibilityCriteria()
                            })
                         ) }}
                      {% endif %}
@@ -137,7 +137,7 @@
                      {% set dc_breadcrumbs %}
                         {% if item is usingtrait('Glpi\\Features\\DCBreadcrumb') %}
                            {{ call(item.getType() ~ '::renderDcBreadcrumb', [
-                              item.fields['id']
+                              item.getID
                            ])|raw }}
                         {% endif %}
                      {% endset %}

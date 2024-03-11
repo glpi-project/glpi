@@ -43,6 +43,7 @@ class PassiveDCEquipment extends CommonDBTM
 {
     use Clonable;
     use Glpi\Features\DCBreadcrumb;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory = true;
@@ -142,11 +143,11 @@ class PassiveDCEquipment extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_passivedcequipment' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [

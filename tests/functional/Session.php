@@ -35,7 +35,8 @@
 
 namespace tests\units;
 
-use Config;
+use Computer;
+use ReflectionClass;
 
 /* Test for inc/session.class.php */
 
@@ -399,20 +400,14 @@ class Session extends \DbTestCase
      */
     public function testIDORToken(string $itemtype = "", array $add_params = [])
     {
-       // generate token
+        // generate token
         $token = \Session::getNewIDORToken($itemtype, $add_params);
         $this->string($token)->hasLength(64);
 
-       // token exists in session and is valid
-        $this->array($_SESSION['glpiidortokens'][$token])
-         ->string['itemtype']->isEqualTo($itemtype)
-         ->string['expires'];
+        // token exists in session and is valid
+        $this->array($_SESSION['glpiidortokens'][$token])->isEqualTo(['itemtype' => $itemtype] + $add_params);
 
-        if (count($add_params) > 0) {
-            $this->array($_SESSION['glpiidortokens'][$token])->size->isEqualTo(2 + count($add_params));
-        }
-
-       // validate token with dedicated method
+        // validate token with dedicated method
         $result = \Session::validateIDOR([
             '_idor_token' => $token,
             'itemtype'    => $itemtype,
@@ -451,6 +446,103 @@ class Session extends \DbTestCase
             'right'       => 'all'
         ]);
         $this->boolean($result)->isTrue();
+    }
+
+    public function testCleanIDORTokens(): void
+    {
+        $refected_class = new ReflectionClass(\Session::class);
+        $max = $refected_class->getConstant('IDOR_MAX_TOKENS');
+        $overflow = 100;
+
+        $tokens = [];
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $tokens[$i] = \Session::getNewIDORToken(Computer::class, ['test' => $i]);
+        }
+
+        \Session::cleanIDORTokens();
+
+        // Ensure that only max token count has been preserved
+        $this->integer(count($_SESSION['glpiidortokens']))->isEqualTo($max);
+
+        // Ensure that latest tokens are preserved during cleaning
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $result = \Session::validateIDOR(
+                [
+                    '_idor_token' => $tokens[$i],
+                    'itemtype'    => Computer::class,
+                    'test'       => $i,
+                ]
+            );
+            // if $i < $overflow, then the token should have been dropped from the list
+            $this->boolean($result)->isEqualTo($i >= $overflow);
+        }
+    }
+
+    public function testGetNewCSRFToken(): void
+    {
+        /** @var string $CURRENTCSRFTOKEN */
+        global $CURRENTCSRFTOKEN;
+
+        $CURRENTCSRFTOKEN = null;
+
+        $shared_token = \Session::getNewCSRFToken();
+        $this->string($shared_token)->isNotEmpty();
+
+        $standalone_token = null;
+        for ($i = 0; $i < 10; $i++) {
+            $previous_shared_token = $shared_token;
+            $shared_token = \Session::getNewCSRFToken(false);
+            $this->string($shared_token)->isEqualTo($previous_shared_token);
+            $this->string($shared_token)->isEqualTo($CURRENTCSRFTOKEN);
+
+            $previous_standalone_token = $standalone_token;
+            $standalone_token = \Session::getNewCSRFToken(true);
+            $this->string($standalone_token)->isNotEmpty();
+            $this->string($standalone_token)->isNotEqualTo($shared_token);
+            $this->string($standalone_token)->isNotEqualTo($previous_standalone_token);
+        }
+    }
+
+    public function testValidateCSRF(): void
+    {
+        for ($i = 0; $i < 10; $i++) {
+            // A shared token is only valid once
+            $shared_token = \Session::getNewCSRFToken(false);
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]))->isTrue();
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $shared_token]))->isFalse();
+
+            // A standalone token is only valid once
+            $standalone_token = \Session::getNewCSRFToken(true);
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]))->isTrue();
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => $standalone_token]))->isFalse();
+
+            // A fake token is never valid
+            $this->boolean(\Session::validateCSRF(['_glpi_csrf_token' => bin2hex(random_bytes(32))]))->isFalse();
+        }
+    }
+
+    public function testCleanCSRFTokens(): void
+    {
+        $refected_class = new ReflectionClass(\Session::class);
+        $max = $refected_class->getConstant('CSRF_MAX_TOKENS');
+        $overflow = 100;
+
+        $tokens = [];
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $tokens[$i] = \Session::getNewCSRFToken(true);
+        }
+
+        \Session::cleanCSRFTokens();
+
+        // Ensure that only max token count has been preserved
+        $this->integer(count($_SESSION['glpicsrftokens']))->isEqualTo($max);
+
+        // Ensure that latest tokens are preserved during cleaning
+        for ($i = 1; $i < $max + $overflow; $i++) {
+            $result = \Session::validateCSRF(['_glpi_csrf_token' => $tokens[$i]]);
+            // if $i < $overflow, then the token should have been dropped from the list
+            $this->boolean($result)->isEqualTo($i >= $overflow);
+        }
     }
 
     public function testCanImpersonate()
@@ -727,5 +819,24 @@ class Session extends \DbTestCase
 
         // Assert that the current profile now has 'ticket' rights set to \Ticket::READALL
         $this->variable($_SESSION['glpiactiveprofile']['ticket'])->isEqualTo(\Ticket::READALL);
+    }
+
+    /**
+     * Test the deleteMessageAfterRedirect method
+     *
+     * @return void
+     */
+    public function testDeleteMessageAfterRedirect(): void
+    {
+        \Session::addMessageAfterRedirect("Test 1", INFO);
+        \Session::addMessageAfterRedirect("Test 2", INFO);
+        \Session::addMessageAfterRedirect("Test 3", INFO);
+        $this->hasSessionMessages(INFO, ["Test 1", "Test 2", "Test 3"]);
+
+        \Session::addMessageAfterRedirect("Test 1", INFO);
+        \Session::addMessageAfterRedirect("Test 2", INFO);
+        \Session::addMessageAfterRedirect("Test 3", INFO);
+        \Session::deleteMessageAfterRedirect("Test 2", INFO);
+        $this->hasSessionMessages(INFO, ["Test 1", "Test 3"]);
     }
 }

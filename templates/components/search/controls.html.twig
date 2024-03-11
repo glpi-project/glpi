@@ -43,7 +43,7 @@
         {% set mainform = mainform ?? true %}
         {% set showaction = showaction ?? true %}
         {% if mainform and showaction %}
-        <form name="searchform{{ normalized_itemtype }}" class="search-form-container needs-validation" novalidate method="get" action="{{ p['target'] }}">
+            <form name="searchform{{ normalized_itemtype }}" class="search-form-container needs-validation" novalidate method="get" action="{{ p['target'] }}">
         {% endif %}
         <div class="primary-controls">
             <div class="btn-group me-1 me-xl-2">
@@ -95,11 +95,14 @@
             {% endif %}
         </div>
 
-
         {% if mainform and showaction %}
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-        </form>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </form>
         {% endif %}
+
+        <div class="status-area">
+            {% do call([itemtype, 'showSearchStatusArea']) %}
+        </div>
 
         <div class="secondary-controls">
             {% if may_be_located %}

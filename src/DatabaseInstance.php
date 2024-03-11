@@ -39,6 +39,7 @@ class DatabaseInstance extends CommonDBTM
 {
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -205,9 +206,10 @@ class DatabaseInstance extends CommonDBTM
         $tab[] = [
             'id'                 => '41',
             'table'              => State::getTable(),
-            'field'              => 'name',
-            'name'               => _n('State', 'States', 1),
-            'datatype'           => 'dropdown'
+            'field'              => 'completename',
+            'name'               => __('Status'),
+            'datatype'           => 'dropdown',
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [

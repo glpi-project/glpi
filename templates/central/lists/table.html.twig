@@ -29,20 +29,30 @@
  # along with this program.  If not, see <https://www.gnu.org/licenses/>.
  #
  # ---------------------------------------------------------------------
- #}
+#}
 
-<div class="btn-group flex-wrap mb-3">
-   {% if servers|length > 0 %}
-      <span class="border-danger text-danger border-1 border p-0 ps-2 rounded-start">
-         <i class="ti ti-alert-triangle me-2"></i>
-         {% set server_links = servers|map((v) => '<a class="btn btn-ghost-danger align-baseline" href="' ~ v['link'] ~ '">' ~ v['name']|e ~ '</a>')|join(' ') %}
-         <span>{{ __('Receivers in error: %s')|format(server_links)|raw }}</span>
-      </span>
-   {% endif %}
-   {% if has_collector %}
-      <a class="btn btn-outline-warning" href="{{ path('/front/notimportedemail.php') }}">
-         <i class="ti ti-list me-2"></i>
-         <span>{{ __('List of not imported emails') }}</span>
-      </a>
-   {% endif %}
-</div>
+{% set superheader_row %}
+    <div class="relative">
+        <span>{{ title|raw }}</span>
+        <span class="float-end">
+            {% if add_link is not empty %}
+                <a href="{{ add_link }}" title="{{ __('Add') }}">
+                    <i class="ti ti-plus"></i>
+                </a>
+            {% endif %}
+        </span>
+    </div>
+{% endset %}
+
+{% set superheader_colspan = rows is not empty ? rows[0]['values']|length : 1 %}
+
+{% include('components/table.html.twig') with {
+    class: 'table table-striped card-table table-hover',
+    header_rows: [
+        [{
+            colspan: superheader_colspan,
+            content: superheader_row,
+        }]
+    ]|merge(header_rows|default([])),
+    rows: rows,
+} only %}

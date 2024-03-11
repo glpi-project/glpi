@@ -3948,6 +3948,7 @@ JS;
                autoresize_overflow_padding: 0,
 
                min_height: $editor_height,
+               height: $editor_height, // Must be used with min_height to prevent "height jump" when the page is loaded
                resize: true,
 
                // disable path indicator in bottom bar
@@ -4029,6 +4030,11 @@ JS;
                         $(editor.container).removeClass('required');
                      });
                    }
+                        // Propagate click event to allow other components to
+                        // listen to it
+                        editor.on('click', function (e) {
+                            $(document).trigger('tinyMCEClick', [e]);
+                        });
 
                         // Simulate focus on content-editable tinymce
                         editor.on('click focus', function (e) {
@@ -4044,9 +4050,6 @@ JS;
                             $(e.target.editorContainer)
                                 .closest('.content-editable-tinymce')
                                 .addClass('simulate-focus');
-
-                            // Propagate event to the document to allow other components to listen to it
-                            $(document).trigger('tinyMCEClick', [e]);
                         });
 
                         editor.on('Change', function (e) {
@@ -4646,9 +4649,7 @@ JAVASCRIPT
     {
         $out = '';
 
-        if (GLPI_USE_CSRF_CHECK) {
-            $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
-        }
+        $out .= Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
 
         $out .= "</form>";
         if ($display) {

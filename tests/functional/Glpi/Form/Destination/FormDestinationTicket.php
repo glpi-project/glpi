@@ -39,10 +39,13 @@ use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use Ticket;
 
 class FormDestinationTicket extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Indirectly test the \Glpi\Form\AnswersHandler\AnswersHandler->createDestinations()
      * method using a FormDestinationTicket object

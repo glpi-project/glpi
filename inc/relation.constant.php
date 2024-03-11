@@ -698,9 +698,9 @@ $RELATION = [
     ],
 
     'glpi_forms_forms' => [
-        "_glpi_forms_answerssets"                         => "forms_forms_id",
-        "_glpi_forms_destinations_forms_formdestinations" => "forms_forms_id",
-        "_glpi_forms_sections"                            => "forms_forms_id",
+        "_glpi_forms_answerssets"                   => "forms_forms_id",
+        "_glpi_forms_destinations_formdestinations" => "forms_forms_id",
+        "_glpi_forms_sections"                      => "forms_forms_id",
     ],
 
     'glpi_forms_sections' => [
@@ -1400,10 +1400,9 @@ $RELATION = [
         'glpi_computers'                 => 'states_id',
         'glpi_contracts'                 => 'states_id',
         'glpi_databaseinstances'         => 'states_id',
-        'glpi_devicegenerics'            => 'states_id',
-        'glpi_devicesensors'             => 'states_id',
         'glpi_enclosures'                => 'states_id',
         'glpi_items_devicebatteries'     => 'states_id',
+        'glpi_items_devicecameras'       => 'states_id',
         'glpi_items_devicecases'         => 'states_id',
         'glpi_items_devicecontrols'      => 'states_id',
         'glpi_items_devicedrives'        => 'states_id',

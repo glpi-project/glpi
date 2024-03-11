@@ -265,6 +265,24 @@ class Schema implements \ArrayAccess
                 }
             }
         }
+        if ($prefix === '') {
+            // Fix parent_join for all joins
+            foreach ($joins as $join_name => $join) {
+                if (isset($join['join_parent'])) {
+                    // This join is supposed to have a parent
+                    // The set parent may not be correct currently. The join's parent may in fact be an ancestor of the one set
+                    // We need to check if the current parent exists in the list of joins. If not, we need to find the correct parent by walking up the tree
+                    $parent = $join['join_parent'];
+                    while ($parent !== '') {
+                        if (isset($joins[$parent])) {
+                            $joins[$join_name]['join_parent'] = $parent;
+                            break;
+                        }
+                        $parent = substr($parent, 0, strrpos($parent, chr(0x1F)));
+                    }
+                }
+            }
+        }
         return $joins;
     }
 

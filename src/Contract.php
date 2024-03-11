@@ -43,6 +43,7 @@ use Glpi\DBAL\QueryFunction;
 class Contract extends CommonDBTM
 {
     use Glpi\Features\Clonable;
+    use Glpi\Features\State;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -513,11 +514,11 @@ class Contract extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_contract' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [

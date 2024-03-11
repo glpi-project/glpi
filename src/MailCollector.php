@@ -137,6 +137,14 @@ class MailCollector extends CommonDBTM
         return false;
     }
 
+    public static function getAdditionalMenuLinks()
+    {
+        $links = [];
+        if (countElementsInTable(self::getTable()) > 0) {
+            $links["<i class='ti ti-list'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
+        }
+        return $links;
+    }
 
     public function post_getEmpty()
     {
@@ -1854,26 +1862,38 @@ class MailCollector extends CommonDBTM
         $mmail->send();
     }
 
-
-    public function title()
+    /**
+     * @return void
+     * @used-by templates/components/search/controls.html.twig
+     */
+    public static function showSearchStatusArea()
     {
-        $errors  = getAllDataFromTable($this->getTable(), ['errors' => ['>', 0]]);
+        $errors  = getAllDataFromTable(self::getTable(), ['errors' => ['>', 0]]);
         $collector = new self();
         $servers = [];
         if (count($errors)) {
             foreach ($errors as $data) {
                 $collector->getFromDB($data['id']);
                 $servers[] = [
-                    'link' => $collector->getLinkURL(),
-                    'name' => $collector->getName(['complete' => true])
+                    'link' => htmlspecialchars($collector->getLinkURL()),
+                    'name' => htmlspecialchars($collector->getName(['complete' => true]))
                 ];
             }
         }
-        TemplateRenderer::getInstance()->display('pages/setup/mailcollector/results_title.html.twig', [
-            'servers' => $servers,
-            'errors' => $errors,
-            'has_collector' => countElementsInTable(self::getTable()) > 0
-        ]);
+
+        if (count($servers)) {
+            $server_links = implode(' ', array_map(
+                static fn ($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
+                $servers
+            ));
+            // language=twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <span class="alert alert-danger p-1 ps-2">
+                    <i class="ti ti-alert-triangle me-2"></i>
+                    <span>{{ receivers_error_msg|raw }}</span>
+                </span>
+TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_links)]);
+        }
     }
 
 

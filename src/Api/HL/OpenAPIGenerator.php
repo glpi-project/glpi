@@ -39,6 +39,7 @@ use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Doc\Response;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Doc\SchemaReference;
+use Glpi\OAuth\Server;
 
 /**
  * @phpstan-type OpenAPIInfo array{title: string, version: string, license: array{name: string, url: string}}
@@ -434,6 +435,10 @@ EOT;
      */
     private function getSecuritySchemeComponents(): array
     {
+        $scopes = Server::getAllowedScopes();
+        $scope_descriptions = Server::getScopeDescriptions();
+        $scopes = array_combine(array_keys($scopes), $scope_descriptions);
+
         return [
             'oauth' => [
                 'type' => 'oauth2',
@@ -442,9 +447,11 @@ EOT;
                         'authorizationUrl' => '/api.php/authorize',
                         'tokenUrl' => '/api.php/token',
                         'refreshUrl' => '/api.php/token',
+                        'scopes' => $scopes
                     ],
                     'password' => [
                         'tokenUrl' => '/api.php/token',
+                        'scopes' => $scopes
                     ]
                 ]
             ],

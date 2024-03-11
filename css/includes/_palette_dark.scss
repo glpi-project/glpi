@@ -132,12 +132,12 @@
 
     .qtip-bootstrap,
     .popover .popover-body {
-        background-color: var(--tblr-active-bg) !important;
+        background-color: var(--tblr-bg-surface) !important;
         color: var(--tblr-light) !important;
     }
 
     .popover .popover-arrow::after {
-        border-top-color: var(--tblr-active-bg) !important;
+        border-top-color: var(--tblr-bg-surface) !important;
     }
 
     iframe.tox-edit-area__iframe {

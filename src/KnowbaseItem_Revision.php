@@ -60,8 +60,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
-            $where = [];
-            if ($item->getType() == KnowbaseItem::getType()) {
+            if ($item::class === KnowbaseItem::class) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
                     'language'         => ''
@@ -78,7 +77,7 @@ class KnowbaseItem_Revision extends CommonDBTM
                 $where
             );
         }
-        return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
+        return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -90,8 +89,8 @@ class KnowbaseItem_Revision extends CommonDBTM
     /**
      * Show linked items of a knowbase item
      *
-     * @param $item                     CommonDBTM object
-     * @param $withtemplate    integer  withtemplate param (default 0)
+     * @param CommonDBTM $item
+     * @param integer $withtemplate withtemplate param (default 0)
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
@@ -322,41 +321,24 @@ class KnowbaseItem_Revision extends CommonDBTM
     }
 
     /**
-     * Populate and create a new revision from KnowbaseItem information
+     * Populate and create a new revision from KnowbaseItem or KnowbaseItemTranslation information
      *
-     * @param KnowbaseItem $item Knowledge base item
+     * @param KnowbaseItem|KnowbaseItemTranslation $item Knowledge base item
      *
-     * @return integer|boolean ID of the revision created, or false on error
+     * @return integer|false ID of the revision created, or false on error
      */
-    public function createNew(KnowbaseItem $item)
+    public function createNew(KnowbaseItem|KnowbaseItemTranslation $item)
     {
         $this->getEmpty();
         unset($this->fields['id']);
-        $this->fields['knowbaseitems_id'] = $item->fields['id'];
+        $is_translation = $item::class === KnowbaseItemTranslation::class;
+        $this->fields['knowbaseitems_id'] = $item->fields[$is_translation ? 'knowbaseitems_id' : 'id'];
         $this->fields['name'] = $item->fields['name'];
         $this->fields['answer'] = $item->fields['answer'];
         $this->fields['date'] = $item->fields['date_mod'];
-        $this->fields['revision'] = $this->getNewRevision();
-        $this->fields['users_id'] = $item->fields['users_id'];
-        return $this->addToDB();
-    }
-
-    /**
-     * Populate and create a new revision from KnowbaseItemTranslation information
-     *
-     * @param KnowbaseItemTranslation $item Knowledge base item translation
-     *
-     * @return integer|boolean ID of the revision created, or false on error
-     */
-    public function createNewTranslated(KnowbaseItemTranslation $item)
-    {
-        $this->getEmpty();
-        unset($this->fields['id']);
-        $this->fields['knowbaseitems_id'] = $item->fields['knowbaseitems_id'];
-        $this->fields['name'] = $item->fields['name'];
-        $this->fields['answer'] = $item->fields['answer'];
-        $this->fields['date'] = $item->fields['date_mod'];
-        $this->fields['language'] = $item->fields['language'];
+        if ($is_translation) {
+            $this->fields['language'] = $item->fields['language'];
+        }
         $this->fields['revision'] = $this->getNewRevision();
         $this->fields['users_id'] = $item->fields['users_id'];
         return $this->addToDB();
@@ -383,7 +365,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         $rev = $result['revision'];
         if ($rev === null) {
-           //no revisions yet
+            // no revisions yet
             $rev = 1;
         } else {
             ++$rev;

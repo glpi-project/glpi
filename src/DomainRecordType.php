@@ -220,7 +220,7 @@ class DomainRecordType extends CommonDropdown
         switch ($field_type) {
             case 'fields':
                 $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
-                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . $printable . '</textarea >';
+                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . htmlspecialchars($printable) . '</textarea >';
                 break;
         }
     }
@@ -257,18 +257,18 @@ class DomainRecordType extends CommonDropdown
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (in_array('fields', $this->updates)) {
+        if (in_array('fields', $this->updates, true)) {
             $old_fields = self::decodeFields($this->oldvalues['fields']);
             $new_fields = self::decodeFields($this->fields['fields']);
 
-           // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
-           // should have no impact on object representation.
+            // Checks only for keys changes as fields order, label, placeholder or quote_value properties changes
+            // should have no impact on object representation.
             $old_keys = array_column($old_fields, 'key');
             $new_keys = array_column($new_fields, 'key');
             sort($old_keys);
             sort($new_keys);
 
-            if ($old_keys != $new_keys) {
+            if ($old_keys !== $new_keys) {
                 // Remove data stored as obj as properties changed.
                 // Do not remove data stored as string as this representation may still be valid.
                 $DB->update(
@@ -290,13 +290,13 @@ class DomainRecordType extends CommonDropdown
     private function validateFieldsDescriptor($fields_str): bool
     {
         if (!is_string($fields_str)) {
-            Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
+            Session::addMessageAfterRedirect(__s('Invalid JSON used to define fields.'), true, ERROR);
             return false;
         }
 
         $fields = self::decodeFields($fields_str);
         if (!is_array($fields)) {
-            Session::addMessageAfterRedirect(__('Invalid JSON used to define fields.'), true, ERROR);
+            Session::addMessageAfterRedirect(__s('Invalid JSON used to define fields.'), true, ERROR);
             return false;
         }
 
@@ -311,7 +311,7 @@ class DomainRecordType extends CommonDropdown
                 || count(array_diff(array_keys($field), ['key', 'label', 'placeholder', 'quote_value', 'is_fqdn'])) > 0
             ) {
                 Session::addMessageAfterRedirect(
-                    __('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
+                    __s('Valid field descriptor properties are: key (string, mandatory), label (string, mandatory), placeholder (string, optionnal), quote_value (boolean, optional), is_fqdn (boolean, optional).'),
                     true,
                     ERROR
                 );
@@ -353,7 +353,7 @@ class DomainRecordType extends CommonDropdown
     public static function getDefaults()
     {
         return array_map(
-            function ($e) {
+            static function ($e) {
                 $e['is_recursive'] = 1;
                 $e['fields'] = json_encode($e['fields']);
                 return $e;

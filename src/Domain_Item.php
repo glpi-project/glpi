@@ -61,18 +61,17 @@ class Domain_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (
-            $item->getType() == 'Domain'
-            && count(Domain::getTypes(false))
-        ) {
+        if ($item::class === Domain::class && count(Domain::getTypes(false))) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForDomain($item);
             }
             return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-        } else if (
-            $item->getType() == 'DomainRelation' || in_array($item->getType(), Domain::getTypes(true))
-                  && Session::haveRight('domain', READ)
+        }
+
+        if (
+            $item::class === DomainRelation::class || (in_array($item::class, Domain::getTypes(true), true)
+                && Session::haveRight('domain', READ))
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -85,11 +84,11 @@ class Domain_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == 'Domain') {
+        if ($item::class === Domain::class) {
             self::showForDomain($item);
         } else if (
-            in_array($item->getType(), Domain::getTypes(true))
-            || $item->getType() == DomainRelation::getType()
+            $item::class === DomainRelation::class
+            || in_array($item::class, Domain::getTypes(true), true)
         ) {
             self::showForItem($item);
         }
@@ -99,7 +98,7 @@ class Domain_Item extends CommonDBRelation
     public static function countForDomain(Domain $item)
     {
         $types = $item->getTypes();
-        if (count($types) == 0) {
+        if (count($types) === 0) {
             return 0;
         }
         return countElementsInTable(
@@ -113,12 +112,11 @@ class Domain_Item extends CommonDBRelation
 
     public static function countForItem(CommonDBTM $item)
     {
-        $criteria = [];
         if ($item instanceof DomainRelation) {
             $criteria = ['domainrelations_id' => $item->fields['id']];
         } else {
             $criteria = [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->fields['id']
             ];
         }
@@ -630,7 +628,7 @@ class Domain_Item extends CommonDBRelation
             'field'              => 'name',
             'name'               => DomainRelation::getTypeName(),
             'datatype'           => 'itemlink',
-            'itemlink_type'      => $this->getType(),
+            'itemlink_type'      => static::class,
         ];
 
         return $tab;

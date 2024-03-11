@@ -76,32 +76,84 @@
     }
 }
 
-// Hide active status by default
-[data-active-status] {
-    display: none;
-}
+[data-glpi-form-editor-form] {
+    &[data-glpi-form-editor-active-form] {
+        // Show secondary data on active form
+        [data-glpi-form-editor-form-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
 
-// Higlight active item
-[data-glpi-form-editor-form-details].active,
-[data-glpi-form-editor-question].active,
-[data-glpi-form-editor-section-form-container].active
-{
-    [data-active-status] {
-        display: inline-block;
+    &:not([data-glpi-form-editor-active-form]) {
+        // Do not highlight inactive forms
+        [data-glpi-form-editor-active-form-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive form
+        [data-glpi-form-editor-form-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
     }
 }
 
-// Hide secondary data on inactive questions
-[data-glpi-form-editor-question].active [data-glpi-form-editor-question-extra-details] {
-    opacity: 1;
-    visibility: visible;
-    transition: visibility 0s, opacity 0.20s linear;
+[data-glpi-form-editor-section] {
+    &[data-glpi-form-editor-active-section] {
+        // Show secondary data on active form
+        [data-glpi-form-editor-section-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-section]) {
+        // Do not highlight inactive forms
+        [data-glpi-form-editor-active-section-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive form
+        [data-glpi-form-editor-section-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+    }
 }
 
-[data-glpi-form-editor-question]:not(.active) [data-glpi-form-editor-question-extra-details] {
-    height: 0;
-    opacity: 0;
-    visibility: hidden;
+[data-glpi-form-editor-question] {
+    &[data-glpi-form-editor-active-question] {
+        // Show secondary data on active form
+        [data-glpi-form-editor-question-extra-details] {
+            opacity: 1;
+            visibility: visible;
+            transition: visibility 0s, opacity 0.20s linear;
+        }
+    }
+
+    &:not([data-glpi-form-editor-active-question]) {
+        // Do not highlight inactive forms
+        [data-glpi-form-editor-active-question-status-indicator] {
+            display: none;
+        }
+
+        // Do not show secondary data on inactive form
+        [data-glpi-form-editor-question-extra-details] {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        // Hide tinymce toolbar on inactive questions
+        .tox-editor-header {
+            display: none !important;
+        }
+    }
 }
 
 .glpi-form-editor-drag-question-placeholder {
@@ -123,7 +175,7 @@
     opacity: 0;
 }
 
-[data-glpi-form-editor-question] {
+[data-glpi-form-editor-question-details] {
     &:hover {
         .glpi-form-editor-question-handle {
             opacity: 0.7;
@@ -131,4 +183,14 @@
     }
 }
 
+// Hide content of collapsed sections
+[data-glpi-form-editor-section].section-collapsed {
+    [data-glpi-form-editor-section-description],
+    [data-glpi-form-editor-section-questions],
+    [data-glpi-form-editor-section-extra-details] {
+        display: none;
+    }
+
+    margin-bottom: 1rem !important;
+}
 

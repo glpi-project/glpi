@@ -4326,7 +4326,17 @@ $empty_data_builder = new class
                 'items_id'         => '21',
                 'type'             => '1',
                 'notifications_id' => '79',
-            ]
+            ], [
+                'id'               => '157',
+                'items_id'         => '16',
+                'type'             => '1',
+                'notifications_id' => '40',
+            ], [
+                'id'               => '158',
+                'items_id'         => '37',
+                'type'             => '1',
+                'notifications_id' => '40',
+            ],
         ];
 
         $tables['glpi_notificationtemplates'] = [

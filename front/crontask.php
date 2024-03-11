@@ -46,33 +46,6 @@ Session::checkRight("config", UPDATE);
 
 Html::header(CronTask::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'config', 'crontask');
 
-$crontask = new CronTask();
-if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
-    Html::displayTitle(
-        '',
-        '',
-        '',
-        [
-            GLPI_DOCUMENTATION_ROOT_URL . "/doc-crontasks" => "<i class='fas fa-2x fa-exclamation-triangle me-2'></i>" .
-            __("You have at least one automatic action configured in GLPI mode, we advise you to switch to CLI mode.")
-        ]
-    );
-}
-
-if (
-    $CFG_GLPI['cron_limit'] < countElementsInTable(
-        'glpi_crontasks',
-        ['frequency' => MINUTE_TIMESTAMP]
-    )
-) {
-    Html::displayTitle(
-        '',
-        '',
-        "<i class='fas fa-exclamation-triangle fa-lg me-2'></i>" .
-        __('You have more automatic actions which need to run each minute than the number allow each run. Increase this config.')
-    );
-}
-
 Search::show('CronTask');
 
 Html::footer();

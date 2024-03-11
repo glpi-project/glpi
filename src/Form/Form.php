@@ -38,14 +38,13 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Destination\Form_FormDestination;
-use Glpi\Form\Destination\FormDestinationInterface;
+use Glpi\Form\Destination\FormDestination;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
-use ReflectionClass;
+use Session;
 
 /**
  * Helpdesk form
@@ -53,6 +52,12 @@ use ReflectionClass;
 final class Form extends CommonDBTM
 {
     public static $rightname = 'form';
+
+    public $dohistory = true;
+
+    public $history_blacklist = [
+        'date_mod',
+    ];
 
     /**
      * Lazy loaded array of sections
@@ -199,18 +204,29 @@ final class Form extends CommonDBTM
                 $this->updateExtraFormData();
                 $DB->commit();
             } catch (\Throwable $e) {
+                // Delete the "Item sucessfully updated" message if it exist
+                Session::deleteMessageAfterRedirect(
+                    $this->formatSessionMessageAfterAction(__('Item successfully updated'))
+                );
+
                 // Do not keep half updated data
                 $DB->rollback();
 
                 // Propagate exception to ensure the server return an error code
                 throw $e;
-
-                // TODO: succesfull update message is still shown in this case as
-                // the exception in thrown after the main form object was already
-                // updated. Maybe this process should be done before the actual
-                // update using the prepareInputForUpdate method instead.
             }
         }
+    }
+
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Section::class,
+                FormDestination::class,
+            ]
+        );
     }
 
     /**
@@ -260,35 +276,20 @@ final class Form extends CommonDBTM
     /**
      * Get all defined destinations of this form
      *
-     * @return FormDestinationInterface&CommonDBTM[]
+     * @return FormDestination[]
      */
     public function getDestinations(): array
     {
-        $link_data = (new Form_FormDestination())->find([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
         $destinations = [];
-        foreach ($link_data as $row) {
-            if (
-                !is_a($row['itemtype'], FormDestinationInterface::class, true)
-                || !is_a($row['itemtype'], CommonDBTM::class, true)
-                || (new ReflectionClass($row['itemtype']))->isAbstract()
-            ) {
-                // Invalid data or disabled plugin
-                continue;
-            }
+        $destinations_data = (new FormDestination())->find(
+            [self::getForeignKeyField() => $this->fields['id']],
+        );
 
-            $destination = new $row['itemtype']();
-            if (!$destination->getFromDB($row['items_id'])) {
-                // Missing data, should be logged
-                trigger_error(
-                    "Failed to load destination: " . json_encode($link_data),
-                    E_USER_WARNING
-                );
-                continue;
-            }
-            $destinations[] = $destination;
+        foreach ($destinations_data as $row) {
+            $destination = new FormDestination();
+            $destination->getFromResultSet($row);
+            $destination->post_getFromDB();
+            $destinations[$row['id']] = $destination;
         }
 
         return $destinations;
@@ -301,8 +302,14 @@ final class Form extends CommonDBTM
      */
     protected function updateExtraFormData(): void
     {
+        // We must update sections first, as questions depend on them.
+        // However, they must only be deleted after questions have been updated.
+        // This prevents cascade deletion to delete their questions that might
+        // have been moved to another section.
         $this->updateSections();
         $this->updateQuestions();
+        $this->deleteMissingSections();
+        $this->deleteMissingQuestions();
     }
 
     /**
@@ -361,8 +368,7 @@ final class Form extends CommonDBTM
                 $id = $section->add($form_data);
 
                 if (!$id) {
-                    trigger_error("Failed to add section", E_USER_WARNING);
-                    continue;
+                    throw new \RuntimeException("Failed to add section");
                 }
 
                 // Store temporary UUID -> ID mapping in session
@@ -373,7 +379,7 @@ final class Form extends CommonDBTM
                 // Update existing section
                 $success = $section->update($form_data);
                 if (!$success) {
-                    trigger_error("Failed to update section", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to update section");
                 }
                 $id = $section->getID();
             }
@@ -381,6 +387,26 @@ final class Form extends CommonDBTM
             // Keep track of its id
             $found_sections[] = $id;
         }
+
+        // Deletion will be handled in a separate method
+        $this->input['_found_sections'] = $found_sections;
+
+        // Special input has been handled, it can be deleted
+        unset($this->input['_sections']);
+    }
+
+    /**
+     * Delete sections that were not found in the submitted data
+     *
+     * @return void
+     */
+    protected function deleteMissingSections(): void
+    {
+        // We can't run this code if we don't have the list of updated sections
+        if (!isset($this->input['_found_sections'])) {
+            return;
+        }
+        $found_sections = $this->input['_found_sections'];
 
         // Safety check to avoid deleting all sections if some code run an update
         // without the _sections keys.
@@ -405,13 +431,12 @@ final class Form extends CommonDBTM
                 $section = new Section();
                 $success = $section->delete($row);
                 if (!$success) {
-                    trigger_error("Failed to delete section", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to delete section");
                 }
             }
         }
 
-        // Special input has been handled, it can be deleted
-        unset($this->input['_sections']);
+        unset($this->input['_found_sections']);
     }
 
     /**
@@ -452,8 +477,7 @@ final class Form extends CommonDBTM
                 $id = $question->add($question_data);
 
                 if (!$id) {
-                    trigger_error("Failed to add question", E_USER_WARNING);
-                    continue;
+                    throw new \RuntimeException("Failed to add question");
                 }
 
                 // Store temporary UUID -> ID mapping in session
@@ -464,7 +488,7 @@ final class Form extends CommonDBTM
                 // Update existing section
                 $success = $question->update($question_data);
                 if (!$success) {
-                    trigger_error("Failed to update question", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to update question");
                 }
                 $id = $question->getID();
             }
@@ -472,6 +496,26 @@ final class Form extends CommonDBTM
             // Keep track of its id
             $found_questions[] = $id;
         }
+
+        // Deletion will be handled in a separate method
+        $this->input['_found_questions'] = $found_questions;
+
+        // Special input has been handled, it can be deleted
+        unset($this->input['_questions']);
+    }
+
+    /**
+     * Delete sections that were not found in the submitted data
+     *
+     * @return void
+     */
+    protected function deleteMissingQuestions(): void
+    {
+        // We can't run this code if we don't have the list of updated sections
+        if (!isset($this->input['_found_questions'])) {
+            return;
+        }
+        $found_questions = $this->input['_found_questions'];
 
         // Safety check to avoid deleting all questions if some code run an update
         // without the _questions keys.
@@ -501,12 +545,11 @@ final class Form extends CommonDBTM
                 $question = new Question();
                 $success = $question->delete($row);
                 if (!$success) {
-                    trigger_error("Failed to delete question", E_USER_WARNING);
+                    throw new \RuntimeException("Failed to delete question");
                 }
             }
         }
 
-        // Special input has been handled, it can be deleted
-        unset($this->input['_questions']);
+        unset($this->input['_found_questions']);
     }
 }

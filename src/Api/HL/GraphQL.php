@@ -84,6 +84,7 @@ final class GraphQL
                 }
             );
         } catch (\Throwable $e) {
+            trigger_error("Error processing GraphQL request: {$e->getMessage()}", E_USER_WARNING);
             return [];
         }
         return $result->toArray();

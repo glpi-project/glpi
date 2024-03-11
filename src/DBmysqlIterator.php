@@ -725,8 +725,21 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
                 }
             } else if (count($values) == 3) {
-                $condition = array_pop($values);
-                $fkey = $this->analyseFkey($values);
+                $real_values = [];
+                foreach ($values as $k => $v) {
+                    if (is_array($v)) {
+                        $condition = $v;
+                    } else {
+                        $real_values[$k] = $v;
+                    }
+                }
+
+                if (!isset($condition)) {
+                    //in theory, should never happen
+                    $condition = array_pop($real_values);
+                }
+
+                $fkey = $this->analyseFkey($real_values);
                 $condition_value = $this->analyseCrit(current($condition));
                 if (!empty(trim($condition_value))) {
                     return $fkey . ' ' . key($condition) . ' ' . $condition_value;

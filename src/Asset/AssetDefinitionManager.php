@@ -178,6 +178,7 @@ final class AssetDefinitionManager
             'linkuser_tech_types',
             'linkgroup_tech_types',
             'location_types',
+            'state_types',
             'ticket_types',
         ];
         foreach ($config_keys as $config_key) {

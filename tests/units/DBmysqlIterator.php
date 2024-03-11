@@ -480,7 +480,50 @@ SQL
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
         );
 
-       //test derived table in JOIN statement
+        //order in fkey should not matter
+        $it = $this->it->execute(
+            'foo',
+            [
+                'LEFT JOIN' => [
+                    'bar' => [
+                        'FKEY' => [
+                            [
+                                'AND'  => ['field' => 42]
+                            ],
+                            'bar' => 'id',
+                            'foo' => 'fk'
+                        ]
+                    ]
+                ]
+            ]
+        );
+        $this->string($it->getSql())->isIdenticalTo(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        );
+
+        //condition set as associative array should work also
+        $it = $this->it->execute(
+            'foo',
+            [
+                'LEFT JOIN' => [
+                    'bar' => [
+                        'FKEY' => [
+                            'bar' => 'id',
+                            'foo' => 'fk',
+                            'acondition' => [
+                                'AND'  => ['field' => 42]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        );
+        $this->string($it->getSql())->isIdenticalTo(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')'
+        );
+
+
+        //test derived table in JOIN statement
         $it = $this->it->execute(
             'foo',
             [

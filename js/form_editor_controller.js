@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error, bootstrap */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -102,6 +102,13 @@ class GlpiFormEditorController
         this.#enableSortable(
             $(this.#target).find("[data-glpi-form-editor-sections]")
         );
+
+        // Focus the form's name input if there are no questions
+        if (this.#getQuestionsCount() === 0) {
+            $(this.#target)
+                .find("[data-glpi-form-editor-form-details-name]")[0]
+                .select();
+        }
     }
 
     /**
@@ -139,7 +146,17 @@ class GlpiFormEditorController
             );
 
         // Compute state before submitting the form
-        $(this.#target).on('submit', () => this.#computeState());
+        $(this.#target).on('submit', (event) => {
+            try {
+                this.#computeState();
+            } catch (e) {
+                // Do not submit the form if the state isn't computed
+                event.preventDefault();
+                event.stopPropagation();
+                glpi_toast_error(__("Unexpected error"));
+                throw e;
+            }
+        });
 
         // Register handlers for each possible editor actions using custom
         // data attributes
@@ -152,7 +169,7 @@ class GlpiFormEditorController
                     const target = $(e.currentTarget);
                     const action = target.attr(attribute);
 
-                    this.#handleEditorAction(action, target);
+                    this.#handleEditorAction(action, target, e);
                 });
         });
     }
@@ -172,23 +189,43 @@ class GlpiFormEditorController
      *
      * @param {string} action Action to perform
      * @param {jQuery} target Element that triggered the action
+     * @param {Event}  event  Event
      */
-    #handleEditorAction(action, target) {
+    #handleEditorAction(action, target, event) {
+        /**
+         * Some unsaved changes are not tracked by the native `data-track-changes`
+         * attribute.
+         *
+         * By default, any editor actions will be considered as unsaved changes.
+         *
+         * Actions that do not represent an actual data change must manually
+         * set this variable to `false`.
+         * This make sure we don't forget to track changes when needed.
+         */
+        let unsaved_changes = true;
+
         switch (action) {
             // Mark the target item as active
             case "set-active":
                 this.#setActiveItem(target);
+                unsaved_changes = false;
                 break;
 
-            // Add a new question at the end of the current section
+            // Add a new question
             case "add-question":
+                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#addQuestion(
-                    target.closest("[data-glpi-form-editor-section]")
+                    target.closest(`
+                        [data-glpi-form-editor-active-form],
+                        [data-glpi-form-editor-active-section],
+                        [data-glpi-form-editor-active-question]
+                    `),
                 );
                 break;
 
             // Delete the target question
             case "delete-question":
+                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#deleteQuestion(
                     target.closest("[data-glpi-form-editor-question]")
                 );
@@ -225,11 +262,19 @@ class GlpiFormEditorController
 
             // Add a new section at the end of the form
             case "add-section":
-                this.#addSection();
+                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
+                this.#addSection(
+                    target.closest(`
+                        [data-glpi-form-editor-active-form],
+                        [data-glpi-form-editor-active-section],
+                        [data-glpi-form-editor-active-question]
+                    `),
+                );
                 break;
 
             // Delete the target section
             case "delete-section":
+                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#deleteSection(
                     target.closest("[data-glpi-form-editor-section]")
                 );
@@ -238,6 +283,7 @@ class GlpiFormEditorController
             // Build the "move section modal" content
             case "build-move-section-modal-content":
                 this.#buildMoveSectionModalContent();
+                unsaved_changes = false;
                 break;
 
             // Reorder the sections based on the "move section modal" content
@@ -245,9 +291,27 @@ class GlpiFormEditorController
                 this.#reorderSections();
                 break;
 
+            // Merge current section with the previous section
+            case "merge-with-previous-section":
+                this.#mergeWithPreviousSection(
+                    target.closest("[data-glpi-form-editor-section]")
+                );
+                break;
+
+            // Collapse/uncollapse target section
+            case "collapse-section":
+                this.#collaspeSection(
+                    target.closest("[data-glpi-form-editor-section]")
+                );
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
+        }
+
+        if (unsaved_changes) {
+            window.glpiUnsavedFormChanges = true;
         }
     }
 
@@ -263,7 +327,7 @@ class GlpiFormEditorController
         sections.each((s_index, section) => {
             // Compute state for each sections
             this.#formatInputsNames(
-                $(section).find("[data-glpi-form-editor-section-form-container]"),
+                $(section).find("[data-glpi-form-editor-section-details]"),
                 'section',
                 s_index
             );
@@ -421,9 +485,13 @@ class GlpiFormEditorController
      * @param {Object} e Event data
      */
     #handleTinyMCEClick(e) {
+        // The event target expose its relevant textarea in a `data-id` property
+        const id = $(e.target).closest("#tinymce").data("id");
+        const textarea = $(`#${id}`);
+
         // Handle 'set-active' action for clicks inside tinymce
         this.#setActiveItem(
-            $(e.target.container)
+            textarea
                 .closest('[data-glpi-form-editor-on-click="set-active"]')
         );
     }
@@ -442,7 +510,14 @@ class GlpiFormEditorController
         const tab_content_border = 1;
 
         // Compute and apply ideal height
-        const height = (window_height - editor_height - tab_content_border);
+        let height = (window_height - editor_height - tab_content_border);
+
+        if ($("#debug-toolbar").length > 0) {
+            // If the debug toolbar is present, we need to take it into account
+            const debug_toolbar_height = $("#debug-toolbar").height();
+            height -= debug_toolbar_height;
+        }
+
         $(this.#target).css('height', `${height}`);
     }
 
@@ -502,26 +577,69 @@ class GlpiFormEditorController
      * @param {jQuery|null} item_container
      */
     #setActiveItem(item_container) {
+        const possible_active_items = ['form', 'section', 'question'];
+
         // Remove current active item
-        $(this.#target)
-            .find("\
-                [data-glpi-form-editor-form-details], \
-                [data-glpi-form-editor-question], \
-                [data-glpi-form-editor-section-form-container] \
-            ")
-            .removeClass("active");
+        possible_active_items.forEach((type) => {
+            $(this.#target)
+                .find(`[data-glpi-form-editor-active-${type}]`)
+                .removeAttr(`data-glpi-form-editor-active-${type}`);
+        });
+
 
         // Set new active item if specified
         if (item_container !== null) {
+            possible_active_items.forEach((type) => {
+                // Can be set active from the container itself or the sub "details" container
+                if (item_container.data(`glpi-form-editor-${type}-details`) !== undefined) {
+                    item_container
+                        .closest(`[data-glpi-form-editor-${type}]`)
+                        .attr(`data-glpi-form-editor-active-${type}`, "");
+                } else if (item_container.data(`glpi-form-editor-${type}`) !== undefined) {
+                    item_container
+                        .attr(`data-glpi-form-editor-active-${type}`, "");
+                }
+            });
+
+            // An item can't be active if its parent section is collapsed
+            const section = item_container.closest("[data-glpi-form-editor-section]");
+            if (section.hasClass("section-collapsed")) {
+                return;
+            }
+
             item_container.addClass("active");
         }
     }
 
     /**
      * Add a new question at the end of the form
-     * @param {jQuery} section
+     * @param {jQuery} target   Current position in the form
      */
-    #addQuestion(section) {
+    #addQuestion(target) {
+        let destination;
+        let action;
+
+        // Find the context using the target
+        if (target.data('glpi-form-editor-question') !== undefined) {
+            // Adding a new question after an existing question
+            destination = target;
+            action = "after";
+        } else if (target.data('glpi-form-editor-section') !== undefined) {
+            // Adding a question at the start of a section
+            destination = target
+                .closest("[data-glpi-form-editor-section]")
+                .find("[data-glpi-form-editor-section-questions]");
+            action = "prepend";
+        } else if (target.data('glpi-form-editor-form') !== undefined) {
+            // Add a question at the end of the form
+            destination = $(this.#target)
+                .find("[data-glpi-form-editor-section]:last-child")
+                .find("[data-glpi-form-editor-section-questions]:last-child");
+            action = "append";
+        } else {
+            throw new Error('Unexpected target');
+        }
+
         // Get template content
         const template_content = this.#getQuestionTemplate(
             this.#defaultQuestionType
@@ -530,12 +648,18 @@ class GlpiFormEditorController
         // Insert the new template into the questions area of the current section
         const new_question = this.#copy_template(
             template_content,
-            section.find("[data-glpi-form-editor-section-questions]"),
+            destination,
+            action
         );
 
         // Update UX
         this.#setActiveItem(new_question);
         this.#updateAddSectionActionVisiblity();
+
+        // Focus question's name
+        new_question
+            .find("[data-glpi-form-editor-question-details-name]")[0]
+            .focus();
     }
 
     /**
@@ -543,6 +667,24 @@ class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
+        if (
+            $(this.#target).find("[data-glpi-form-editor-question]").length == 1
+            && $(this.#getSectionCount()) == 1
+        ) {
+            // If the last questions is going to be deleted and there is only one section
+            // set the form itself as active to show its toolbar
+            this.#setActiveItem(
+                $(this.#target).find("[data-glpi-form-editor-form-details]")
+            );
+        } else {
+            // Set active the previous question/section
+            if (question.prev().length > 0) {
+                this.#setActiveItem(question.prev());
+            } else {
+                this.#setActiveItem(question.closest("[data-glpi-form-editor-section]"));
+            }
+        }
+
         // Remove question and update UX
         question.remove();
         this.#updateAddSectionActionVisiblity();
@@ -578,9 +720,10 @@ class GlpiFormEditorController
      *
      * @param {jQuery} target         Template to copy
      * @param {jQuery} destination    Destination to copy the template into
+     * @param {string} action         How to insert the template (append, prepend, after)
      * @returns {jQuery} Copy of the template
      */
-    #copy_template(target, destination) {
+    #copy_template(target, destination, action = "append") {
         const copy = target.clone();
 
         // Keep track of rich text editors that will need to be initialized
@@ -608,9 +751,32 @@ class GlpiFormEditorController
             window.tinymce_editor_configs[id] = config;
         });
 
-        // Insert the new question and init the editors
-        copy.appendTo(destination);
+        // Insert the new question
+        switch (action) {
+            case "append":
+                copy.appendTo(destination);
+                break;
+            case "prepend":
+                copy.prependTo(destination);
+                break;
+            case "before":
+                copy.insertBefore(destination);
+                break;
+            case "after":
+                copy.insertAfter(destination);
+                break;
+            default:
+                throw new Error(`Unknown action: ${action}`);
+        }
+
+        // Init the editors
         tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
+
+        // Init tooltips
+        const tooltip_trigger_list = copy.find('[data-bs-toggle="tooltip"]');
+        [...tooltip_trigger_list].map(
+            tooltip_trigger_el => new bootstrap.Tooltip(tooltip_trigger_el)
+        );
 
         return copy;
     }
@@ -622,6 +788,12 @@ class GlpiFormEditorController
      * @returns {string|number}
      */
     #getItemInput(item, field) {
+        // Reduce scope when working with a section as we don't want to target
+        // its sub-questions inputs
+        if (item.data("glpi-form-editor-section") !== undefined) {
+            item = item.find("[data-glpi-form-editor-section-details]");
+        }
+
         // Input name before state was computed by #formatInputsNames()
         let input = item.find(`input[name=${field}]`);
         if (input.length > 0) {
@@ -649,6 +821,12 @@ class GlpiFormEditorController
      * @returns {jQuery}
      */
     #setItemInput(item, field, value) {
+        // Reduce scope when working with a section as we don't want to target
+        // its sub-questions inputs
+        if (item.data("glpi-form-editor-section") !== undefined) {
+            item = item.find("[data-glpi-form-editor-section-details]");
+        }
+
         // Input name before state was computed by #formatInputsNames()
         let input = item.find(`input[name=${field}]`);
         if (input.length > 0) {
@@ -735,8 +913,44 @@ class GlpiFormEditorController
 
     /**
      * Add a new section at the end of the form.
+     * @param {jQuery} target Current position in the form
      */
-    #addSection() {
+    #addSection(target) {
+        let destination;
+        let action;
+        let to_move;
+
+        // Find the context using the target
+        if (target.data('glpi-form-editor-question') !== undefined) {
+            // Adding a new section after an existing question
+            // For the existing sections, any questions AFTER the target will
+            // be moved into the new section
+            destination = target
+                .closest("[data-glpi-form-editor-section]");
+            action = "after";
+            to_move = $(target).nextAll();
+        } else if (target.data('glpi-form-editor-section') !== undefined) {
+            // Adding a new section at the start of an existing section
+            // All questions of the existing section will be moved into the new
+            // section, leaving it empty
+            destination = target
+                .closest("[data-glpi-form-editor-section]");
+            action = "after";
+            to_move = $(target)
+                .closest("[data-glpi-form-editor-section]")
+                .find("[data-glpi-form-editor-question]");
+        } else if (target.data('glpi-form-editor-form') !== undefined) {
+            // Adding a section at the end of the form
+            // The new section will be empty
+            destination = target
+                .closest("[data-glpi-form-editor-form]")
+                .find("[data-glpi-form-editor-section]:last-child");
+            action = "after";
+            to_move = null;
+        } else {
+            throw new Error('Unexpected target');
+        }
+
         // Find the section template
         const template = $(this.#templates)
             .find("[data-glpi-form-editor-section-template]")
@@ -745,15 +959,33 @@ class GlpiFormEditorController
         // Copy the new section template into the sections area
         const section = this.#copy_template(
             template,
-            $(this.#target).find("[data-glpi-form-editor-sections]"),
+            destination,
+            action
         );
+
+        // Move questions into their new sections if needed
+        if (to_move !== null && to_move.length > 0) {
+            to_move.detach().appendTo(
+                section.find("[data-glpi-form-editor-section-questions]")
+            );
+            to_move.each((index, question) => {
+                this.#handleItemMove($(question));
+            });
+        }
 
         // Update UX
         this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
+
         this.#setActiveItem(
-            section.find("[data-glpi-form-editor-section-form-container]")
+            section.find("[data-glpi-form-editor-section-details]")
         );
+
+        // Focus section's name
+        section
+            .find("[data-glpi-form-editor-section-details-name]")[0]
+            .focus();
     }
 
     /**
@@ -761,10 +993,32 @@ class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
+        if (section.prev().length == 0) {
+            // If this is the first section of the form, set the next section as active
+            this.#setActiveItem(section.next());
+        } else {
+            // Else, set the previous section last question (if it exist) as active
+            const prev_questions = section.prev().find("[data-glpi-form-editor-question]");
+            if (prev_questions.length > 0) {
+                this.#setActiveItem(prev_questions.last());
+            } else {
+                if (this.#getSectionCount() == 2) {
+                    // If there is only one section left after this one is deleted,
+                    // set the form itself as active as the remaining section will not be displayed
+                    this.#setActiveItem(
+                        $(this.#target).find("[data-glpi-form-editor-form-details]")
+                    );
+                } else {
+                    this.#setActiveItem(section.prev());
+                }
+            }
+        }
+
         // Remove question and update UX
         section.remove();
         this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -787,18 +1041,34 @@ class GlpiFormEditorController
     }
 
     /**
+     * Count the number of sections in the form.
+     * @returns {number}
+     */
+    #getSectionCount() {
+        return $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .length;
+    }
+
+    /**
+     * Count the number of questions in the form.
+     * @returns {number}
+     */
+    #getQuestionsCount() {
+        return $(this.#target)
+            .find("[data-glpi-form-editor-question]")
+            .length;
+    }
+
+    /**
      * Update the visibility of the sections details.
      * The details are hidden if there is only one section.
      */
     #updateSectionsDetailsVisiblity() {
-        const sections_count = $(this.#target)
-            .find("[data-glpi-form-editor-section]")
-            .length;
-
-        if (sections_count <= 1) {
+        if (this.#getSectionCount() <= 1) {
             // Only one section, do not display its details
             $(this.#target)
-                .find("[data-glpi-form-editor-section-form-container]")
+                .find("[data-glpi-form-editor-section-details]")
                 .addClass("d-none");
             $(this.#target)
                 .find("[data-glpi-form-editor-section-number-display]")
@@ -806,7 +1076,7 @@ class GlpiFormEditorController
         } else {
             // Mutliple sections, display all details
             $(this.#target)
-                .find("[data-glpi-form-editor-section-form-container]")
+                .find("[data-glpi-form-editor-section-details]")
                 .removeClass("d-none");
             $(this.#target)
                 .find("[data-glpi-form-editor-section-number-display]")
@@ -815,7 +1085,7 @@ class GlpiFormEditorController
     }
 
     /**
-     * Update "Section X of Y" labels
+     * Update "Step X of Y" labels
      */
     #updateSectionCountLabels() {
         const sections = $(this.#target).find("[data-glpi-form-editor-section]");
@@ -824,11 +1094,28 @@ class GlpiFormEditorController
                 .find("[data-glpi-form-editor-section-number-display]");
 
             display.html(
-                __("Section %1$d of %2$d")
+                __("Step %1$d of %2$d")
                     .replace("%1$d", s_index + 1)
                     .replace("%2$d", sections.length)
             );
         });
+    }
+
+    /**
+     * Update the visibility of the "merge with previous section" action.
+     * The action is hidden for the first section.
+     */
+    #updateMergeSectionActionVisibility() {
+        // Reset hidden actions
+        $(this.#target)
+            .find(`[data-glpi-form-editor-on-click="merge-with-previous-section"]`)
+            .removeClass("d-none");
+
+        // Hide first section's action
+        $(this.#target)
+            .find(`[data-glpi-form-editor-section]:first-child`)
+            .find(`[data-glpi-form-editor-on-click="merge-with-previous-section"]`)
+            .addClass("d-none");
     }
 
     /**
@@ -855,19 +1142,46 @@ class GlpiFormEditorController
                 });
             });
 
-
+        // Keep track on unsaved changes if the sort order was updated
         sections
             .find("[data-glpi-form-editor-section-questions]")
-            .on('sortupdate', (e) => {
-                // TinyMCE does no like being moved around and must be
-                // reinitialized by destroying the editor instance and
-                // recreating it
-                $(e.detail.item).find("textarea").each((index, textarea) => {
-                    const id = $(textarea).prop("id");
-                    const editor = tinymce.get(id);
-                    editor.destroy();
-                    tinymce.init(window.tinymce_editor_configs[id]);
-                });
+            .on('sortupdate', () => {
+                // Would be nice to not have a specific case here where we need
+                // to manually call this
+                // TODO: this event handler should use the main handleEditorAction
+                // method rather than defining its code directly
+                window.glpiUnsavedFormChanges = true;
+            });
+
+        // Add a special class while a drag and drop is happening
+        sections
+            .find("[data-glpi-form-editor-section-questions]")
+            .on('sortstart', () => {
+                $(this.#target).addClass("disable-focus");
+            });
+
+        // Run the post move process if any item was dragged, even if it was not
+        // moved in the end (= dragged on itself)
+        sections
+            .find("[data-glpi-form-editor-section-questions]")
+            .on('sortstop', (e) => {
+                // The 'sortstop' event trigger twice for a single drag and drop
+                // action.
+                // The first iteration will have the 'sortable-dragging' class,
+                // which we can check to filter it out.
+                if ($(e.detail.item).hasClass("sortable-dragging")) {
+                    return;
+                }
+
+                this.#handleItemMove($(e.detail.item));
+
+                // Prevent tinymce from stealing focus when dragging someting
+                // over it.
+                // It seems to be caused by the fact that tinymce expect files
+                // to be dragged into it, thus we have to manually disable focus
+                // until our drag operation is over.
+                $(this.#target).removeClass("disable-focus");
+                $('.content-editable-tinymce').removeClass('simulate-focus');
             });
     }
 
@@ -924,6 +1238,13 @@ class GlpiFormEditorController
      * Reorder the sections based on the "move section modal" content.
      */
     #reorderSections() {
+        // Temporary bugfix: state must be manually computed before we can reorder
+        // the sections as we use the data-glpi-form-editor-key parameter to
+        // select the correct section
+        this.#computeState();
+        // TODO: #computeState should not generate keys, it should be handled
+        // somewhere else
+
         // Close modal
         $(this.#target)
             .find("[data-glpi-form-editor-move-section-modal]")
@@ -954,6 +1275,7 @@ class GlpiFormEditorController
             });
 
         // Reinit tiynmce for all richtext inputs
+        // TODO: use #handleItemMove and only reinit the moved sections, not everything
         $(this.#target)
             .find("textarea")
             .each((index, textarea) => {
@@ -968,5 +1290,66 @@ class GlpiFormEditorController
 
         // Relabel sections
         this.#updateSectionCountLabels();
+        this.#updateMergeSectionActionVisibility();
+    }
+
+    /**
+     * Some libraries like TinyMCE does not like being moved around and need
+     * to be reinitialized after being moved.
+     */
+    #handleItemMove(item) {
+        // Reinit tiynmce for all richtext inputs
+        item
+            .find("textarea")
+            .each((index, textarea) => {
+                const id = $(textarea).prop("id");
+                const editor = tinymce.get(id);
+
+                if (editor) {
+                    editor.destroy();
+                    tinymce.init(window.tinymce_editor_configs[id]);
+                }
+            });
+    }
+
+    /**
+     * Merge the given section with the previous section.
+     * @param {jQuery} section Section to merge
+     */
+    #mergeWithPreviousSection(section) {
+        // Find previous section
+        const previous_section = section.prev();
+
+        // Move questions into the previous section
+        const to_move = section
+            .find("[data-glpi-form-editor-section-questions]")
+            .children();
+        to_move
+            .detach()
+            .appendTo(
+                previous_section.find("[data-glpi-form-editor-section-questions]")
+            );
+
+        // Fix complex inputs like tinymce that don't like to be moved
+        to_move.each((index, question) => {
+            this.#handleItemMove($(question));
+        });
+
+        // Remove the section
+        section.remove();
+
+        // Update UX
+        this.#updateSectionCountLabels();
+        this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
+    }
+
+    /**
+     * Collaspe target section
+     * @param {jQuery} section
+     */
+    #collaspeSection(section) {
+        // Simple class toggle, hiding the correct parts is handled by CSS rules
+        section.toggleClass("section-collapsed");
     }
 }

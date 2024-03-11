@@ -59,6 +59,7 @@
     action="{{ item.getFormURL() }}"
     data-ajax-submit {# Form will be submitted using AJAX #}
     data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
+    data-track-changes="true"
 >
     {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
@@ -71,59 +72,63 @@
             <div class="row">
 
                 {# We expect to use the right side to display some extra info later so keep some available space for now #}
-                <div class="col-7">
-
-                    {# Card containing the main form data: title, header and status #}
+                <div
+                    class="col-7"
+                    data-glpi-form-editor-form
+                    data-glpi-form-editor-active-form
+                >
                     <div
-                        class="card form-details mb-3 active"
-                        data-glpi-form-editor-on-click="set-active"
                         data-glpi-form-editor-form-details
+                        data-glpi-form-editor-on-click="set-active"
                     >
+                        {# Card containing the main form data: title, header and status #}
+                        <div class="card form-details mb-3">
+                            <div
+                                class="card-status-start bg-primary"
+                                data-glpi-form-editor-active-form-status-indicator
+                            ></div>
+                            <div class="card-body">
 
-                        <div
-                            class="card-status-start bg-primary"
-                            data-active-status
-                        ></div>
-                        <div class="card-body">
-
-                            {# Header #}
-                            <div class="d-flex">
-                                {# Form's name #}
-                                <input
-                                    type="text"
-                                    class="form-control content-editable-h1"
-                                    name="name"
-                                    value="{{ item.fields.name }}"
-                                >
-
-                                {# Form's status #}
-                                <label class="form-check form-switch ms-3" style="margin-top: 2px">
-                                    <input type="hidden" value="0" name="is_active">
+                                {# Header #}
+                                <div class="d-flex">
+                                    {# Form's name #}
                                     <input
-                                        class="form-check-input"
-                                        name="is_active"
-                                        type="checkbox"
-                                        value="1"
-                                        {% if item.fields.is_active %} checked {% endif %}
+                                        type="text"
+                                        class="form-control content-editable-h1"
+                                        name="name"
+                                        value="{{ item.fields.name|e('html_attr') }}"
+                                        data-glpi-form-editor-form-details-name
                                     >
-                                    <span class="form-check-label">{{ __("Active") }}</span>
-                                </label>
-                            </div>
 
-                            {# Form's hader #}
-                            <div class="content-editable-tinymce">
-                                {{ fields.textareaField(
-                                    'header',
-                                    item.fields.header,
-                                    __('Header'),
-                                    base_field_options|merge({
-                                        'enable_richtext': true,
-                                        'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                        'editor_height': "0",
-                                        'rows' : 1,
-                                        'toolbar_location': 'bottom',
-                                    })
-                                ) }}
+                                    {# Form's status #}
+                                    <label class="form-check form-switch ms-3" style="margin-top: 2px">
+                                        <input type="hidden" value="0" name="is_active">
+                                        <input
+                                            class="form-check-input"
+                                            name="is_active"
+                                            type="checkbox"
+                                            value="1"
+                                            {% if item.fields.is_active %} checked {% endif %}
+                                        >
+                                        <span class="form-check-label">{{ __("Active") }}</span>
+                                    </label>
+                                </div>
+
+                                {# Form's hader #}
+                                <div class="content-editable-tinymce">
+                                    {{ fields.textareaField(
+                                        'header',
+                                        item.fields.header,
+                                        __('Header'),
+                                        base_field_options|merge({
+                                            'enable_richtext': true,
+                                            'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                            'editor_height': "0",
+                                            'rows' : 1,
+                                            'toolbar_location': 'bottom',
+                                        })
+                                    ) }}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -144,19 +149,12 @@
                         {% endfor %}
                     </div>
 
-                    {# Single add section action at the end of the form#}
-                    {# TODO: UI/UX #}
-                    {% if item.canUpdate() %}
-                        {% set add_section_action_visible = number_of_sections > 1 or (item.getSections()|first).getQuestions()|length > 0 %}
-                        <div
-                            class="card cursor-pointer align-items-center {{ add_section_action_visible ? "" : "d-none" }}"
-                            data-glpi-form-editor-on-click="add-section"
-                        >
-                            <div class="card-body">
-                                <h3 class="d-flex align-items-center"><i class="ti ti-circle-plus me-2"></i> {{ __("Add section") }}</h3>
-                            </div>
-                        </div>
-                    {% endif %}
+                    <div data-glpi-form-editor-form-extra-details>
+                        {{ include('pages/admin/form/form_toolbar.html.twig', {
+                            'can_update': item.canUpdate(),
+                            'form'      : item,
+                        }, with_context = false) }}
+                    </div>
                 </div>
             </div>
         </div>
@@ -179,7 +177,7 @@
         <a
             href="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
             target="_blank"
-            class="btn btn-ghost-secondary me-auto"
+            class="btn btn-secondary me-auto"
             type="button"
             name="preview"
             form="form-form"
@@ -203,9 +201,8 @@
                 type="submit"
                 name="delete"
                 form="form-form"
-                title="{{ __("Put in trashbin") }}"
             >
-                <i class="ti ti-trash me-1"></i>
+                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
             </button>
         {% endif %}
 
@@ -216,9 +213,8 @@
                 type="submit"
                 name="purge"
                 form="form-form"
-                title="{{ __("Delete permanently") }}"
             >
-                <i class="ti ti-trash me-1"></i>
+                <i class="ti ti-trash me-1"></i>{{ __("Delete permanently") }}
             </button>
         {% endif %}
 
@@ -234,9 +230,8 @@
                 type="submit"
                 name="restore"
                 form="form-form"
-                title="{{ __("Restore") }}"
             >
-                <i class="ti ti-trash-off me-1"></i>
+                <i class="ti ti-trash-off me-1"></i>{{ __("Restore") }}
             </button>
         {% endif %}
 
@@ -297,10 +292,12 @@
             <div data-glpi-form-editor-question-template="{{ key }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
+                    'form'                   : item,
                     'question_types_manager' : question_types_manager,
                     'question_type'          : question_type,
                     'question'               : null,
                     'section'                : null,
+                    'can_update'             : true,
                 }, with_context = false) }}
             </div>
         {% endfor %}

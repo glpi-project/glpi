@@ -105,8 +105,8 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         }
 
         if ($limit) {
-            $criteria['START'] = intval($start);
-            $criteria['LIMIT'] = intval($limit);
+            $criteria['START'] = (int)$start;
+            $criteria['LIMIT'] = (int)$limit;
         }
 
         $linked_items = [];
@@ -115,7 +115,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             if ($used === false) {
                 $linked_items[] = $data;
             } else {
-                $key = $item::getType() == KnowbaseItem::getType() ? 'items_id' : 'knowbaseitems_id';
+                $key = $item::class === KnowbaseItem::class ? 'items_id' : 'knowbaseitems_id';
                 $linked_items[$data[$key]] = $data[$key];
             }
         }
@@ -124,7 +124,6 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (static::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -133,10 +132,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
                     ['knowbaseitems_id' => $item->getID()]
                 );
             }
-
-            $type_name = _n('Category', 'Categories', 1);
-
-            return self::createTabEntry($type_name, $nb, $item::getType());
+            return self::createTabEntry(_n('Category', 'Categories', 1), $nb, $item::class);
         }
         return '';
     }

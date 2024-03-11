@@ -81,6 +81,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
 
 #### Changes
+- Many methods have their signature changed to specify both their return type and the types of their parameters.
 - `chartist` library has been replaced by `echarts`.
 - `codemirror` library has been replaced by `monaco-editor`.
 - `htmLawed` library has been replaced by `symfony/html-sanitizer`.
@@ -128,7 +129,6 @@ The present file will list all changes made to the project; according to the
 - Specifying the `ranking` of a rule during add/update now triggers `RuleCollection::moveRule` to manage the rankings of other rules to try to keep them valid and in order.
 
 #### Deprecated
-- Usage of `GLPI_USE_CSRF_CHECK` constant.
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
 - Usage of `ajax/dropdownMassiveActionAddValidator.php` and `ajax/dropdownValidator.php` without `validation_class` parameter.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
@@ -204,6 +204,7 @@ The present file will list all changes made to the project; according to the
 - `Timer` class.
 
 #### Removed
+- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - Usage of `csrf_compliant` plugins hook.
 - Usage of `migratetypes` plugin hooks.
 - Usage of `planning_scheduler_key` plugins hook.
@@ -219,6 +220,7 @@ The present file will list all changes made to the project; according to the
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
+- `Document::uploadDocument()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
@@ -229,13 +231,21 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
+- `Group::title()`
 - `Html::clean()`
+- `Impact::buildNetwork()`
+- `KnowbaseItem::addToFaq()`
+- `KnowbaseItem::addVisibilityJoins()`
+- `KnowbaseItem::addVisibilityRestrict()`
+- `KnowbaseItem::showBrowseForm()`
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
+- `MailCollector::title()`
 - `Netpoint` class
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `Reminder::addVisibilityJoins()`
 - `RSSFeed::showDiscoveredFeeds()`
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
@@ -267,6 +277,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
+- `User::title()`
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.
@@ -277,6 +288,7 @@ The present file will list all changes made to the project; according to the
 - `DisplayPreference::showFormPerso` `target_id` parameter.
 - `$DEBUG_SQL, `$SQL_TOTAL_REQUEST`, `$TIMER_DEBUG` and `$TIMER` global variables.
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
+- `DropdownTranslation::getTranslationByName()`
 
 
 ## [10.0.13] unreleased

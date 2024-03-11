@@ -36,14 +36,21 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
+use Log;
 
 class Form extends DbTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Test the showForm method
      *
@@ -580,6 +587,123 @@ class Form extends DbTestCase
             ],
             'expected_sections_content' => [],
         ];
+
+        // Create a form with two sections
+        yield [
+            'input' => [
+                'id'         => $form->getID(),
+                '_delete_missing_questions' => true,
+                '_delete_missing_sections'  => true,
+                '_questions' => [
+                    [
+                        'id'                        => "Question 1",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 1',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 2",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 2',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 3",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 3',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                ],
+                '_sections' => [
+                    [
+                        'id'             => 'Section 1',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 1",
+                        'rank'           => 0,
+                    ],
+                    [
+                        'id'             => 'Section 2',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 2",
+                        'rank'           => 1,
+                    ],
+                ],
+            ],
+            'expected_sections_content' => [
+                [
+                    'name'    => 'Section 1',
+                    'q_names' => ['Question 1', 'Question 2', 'Question 3'],
+                ],
+                [
+                    'name'    => 'Section 2',
+                    'q_names' => [],
+                ],
+            ],
+        ];
+
+        // Delete first section and move its questions to the second section.
+        yield [
+            'input' => [
+                'id'         => $form->getID(),
+                '_delete_missing_questions' => true,
+                '_delete_missing_sections'  => true,
+                '_questions' => [
+                    [
+                        'id'                        => "Question 1",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 2",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 1',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 2",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 2",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 2',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 3",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 2",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 3',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                ],
+                '_sections' => [
+                    [
+                        'id'             => 'Section 2',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 2",
+                        'rank'           => 0,
+                    ],
+                ],
+            ],
+            'expected_sections_content' => [
+                [
+                    'name'    => 'Section 2',
+                    'q_names' => ['Question 1', 'Question 2', 'Question 3'],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -685,6 +809,152 @@ class Form extends DbTestCase
         $this
             ->array($names)
             ->isEqualTo($expected_question_names)
+        ;
+    }
+
+    /**
+     * Data provider for the testLogs method
+     *
+     * @return iterable
+     */
+    protected function testLogsProvider(): iterable
+    {
+        $form_1 = $this->createForm(new FormBuilder());
+        yield [$form_1, 1]; // Created
+
+        $form_2 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addSection('Section 3')
+        );
+        yield [$form_2, 4]; // Created + 3 sections
+
+        $form_3 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addSection('Section 2')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addSection('Section 3')
+                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+        );
+        yield [$form_3, 7]; // Created + 3 sections + 3 questions
+
+        // Update two fields from a question
+        $question_id = $this->getQuestionId($form_3, 'Question 1');
+        $this->updateItem(Question::class, $question_id, [
+            'name' => 'Question 1 (updated)',
+            'type' => QuestionTypeShortAnswerEmail::class,
+        ]);
+        yield [$form_3, 9]; // +2 updates
+
+        // Delete question
+        $this->deleteItem(Question::class, $question_id);
+        yield [$form_3, 10]; // +1 update
+    }
+
+    /**
+     * Ensure that update to a form questions are logged.
+     *
+     * @see Question::logCreationInParentForm
+     * @see Question::logUpdateInParentForm
+     * @see Question::logDeleteInParentForm
+     *
+     * Update to the form itself and its sections are already handled by GLPI's
+     * framework and are not required to be tested here.
+     *
+     * @dataProvider testLogsProvider
+     *
+     * @param \Glpi\Form\Form  $form,
+     * @param int               $expected_logs_count,
+     *
+     * @return void
+     */
+    public function testLogs(
+        \Glpi\Form\Form $form,
+        int $expected_logs_count
+    ): void {
+        $logs = (new Log())->find([
+            'itemtype' => $form->getType(),
+            'items_id' => $form->getID(),
+        ]);
+
+        $this
+            ->integer(count($logs))
+            ->isEqualTo($expected_logs_count)
+        ;
+    }
+
+    /**
+     * Indirectly test the cleanDBonPurge method by purging a form
+     *
+     * @return void
+     */
+    public function testCleanDBonPurge(): void
+    {
+        // Test subject that we are going to delete
+        $form_to_be_deleted = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addSection('Section 2')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
+        );
+
+        // Control subject that we are going to keep, its data shouldn't be deleted
+        $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
+        );
+
+        // Count items before deletion
+        $this
+            ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
+            ->isEqualTo(2)
+        ;
+        $this
+            ->integer(countElementsInTable(Question::getTable()))
+            ->isEqualTo(6) // 5 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Section::getTable()))
+            ->isEqualTo(3) // 2 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(FormDestination::getTable()))
+            ->isEqualTo(2) // 1 (to delete) + 1 (control)
+        ;
+
+        // Delete item
+        $this->deleteItem(
+            \Glpi\Form\Form::class,
+            $form_to_be_deleted->getID(),
+            true
+        );
+
+        // Re count items after deletion
+        $this
+            ->integer(countElementsInTable(\Glpi\Form\Form::getTable()))
+            ->isEqualTo(1)
+        ;
+        $this
+            ->integer(countElementsInTable(Question::getTable()))
+            ->isEqualTo(1) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(Section::getTable()))
+            ->isEqualTo(1) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(FormDestination::getTable()))
+            ->isEqualTo(1) // 1 (control)
         ;
     }
 }

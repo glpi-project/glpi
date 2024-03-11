@@ -248,6 +248,24 @@ class PlanningRecall extends CommonDBChild
         );
     }
 
+    /**
+     * Get the planning recall for an item if it exists
+     * @param class-string<CommonDBTM> $itemtype The itemtype
+     * @param int $items_id The item id
+     * @param int $users_id The user id. If 0 (default), the current user is used.
+     * @return PlanningRecall|null
+     */
+    public static function getForItem(string $itemtype, int $items_id, int $users_id = 0): ?PlanningRecall
+    {
+        $pr = new self();
+        if ($users_id === 0) {
+            $users_id = Session::getLoginUserID();
+        }
+        if ($pr->getFromDBForItemAndUser($itemtype, $items_id, $users_id)) {
+            return $pr;
+        }
+        return null;
+    }
 
     /**
      * Make a select box with recall times

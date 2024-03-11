@@ -42,7 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Line extends CommonDBTM
 {
-   // From CommonDBTM
+    use Glpi\Features\State;
+
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname                   = 'line';
@@ -146,11 +148,11 @@ class Line extends CommonDBTM
 
         $tab[] = [
             'id'                 => '31',
-            'table'              => 'glpi_states',
+            'table'              => State::getTable(),
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => ['is_visible_line' => 1]
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [

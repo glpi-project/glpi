@@ -195,4 +195,57 @@ class GraphQLController extends \HLAPITestCase
                 });
         });
     }
+
+    /**
+     * Tests a case where there are scalar joins inside an already-joined field (status in this case).
+     * @return void
+     */
+    public function testGetStateVisibilities()
+    {
+        $state = new \State();
+        $this->integer($states_id = $state->add([
+            'name' => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'is_visible_computer' => 1,
+            'is_visible_monitor' => 0
+        ]))->isGreaterThan(0);
+        $computer = new \Computer();
+        $this->integer($computers_id = $computer->add([
+            'name' => __FUNCTION__,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            'states_id' => $states_id
+        ]))->isGreaterThan(0);
+
+        $this->login();
+        $request = new Request('POST', '/GraphQL', [], <<<GRAPHQL
+            query {
+                Computer(id: $computers_id) {
+                    id
+                    name
+                    status {
+                        name
+                        visibilities {
+                            computer monitor
+                        }
+                    }
+                }
+            }
+GRAPHQL);
+
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn ($status) => $this->integer($status)->isEqualTo(200))
+                ->jsonContent(function ($content) {
+                    $this->array($content['data'])->hasSize(1);
+                    $this->array($content['data']['Computer'])->hasSize(1);
+                    $this->array($content['data']['Computer'][0])->hasKey('id');
+                    $this->array($content['data']['Computer'][0])->hasKey('name');
+                    $this->array($content['data']['Computer'][0])->hasKey('status');
+                    $this->array($content['data']['Computer'][0]['status'])->hasKey('name');
+                    $this->boolean($content['data']['Computer'][0]['status']['visibilities']['computer'])->isTrue();
+                    $this->boolean($content['data']['Computer'][0]['status']['visibilities']['monitor'])->isFalse();
+                });
+        });
+    }
 }
