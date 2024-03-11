@@ -760,12 +760,12 @@ final class SearchOption implements \ArrayAccess
     public static function generateAProbablyUniqueId(string $string_identifier, ?string $plugin = null): int
     {
         // Generates an ID that can be assigned anywhere in the 10000-19999 range
-        $generated_id = (int)abs((int)hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;
+        $generated_id = (int)abs((int)hexdec(hash('xxh32', $string_identifier))) % 10000 + 10000;
 
         if ($plugin !== null && $plugin !== '') {
             // For plugins, increment the generated ID from a value between 10000 to 79999,
             // to get a final ID anywhere in the 20000-99999 range.
-            $plugin_increment = (int)abs((int)hexdec(hash('xxh3', $plugin))) % 80000 + 10000;
+            $plugin_increment = (int)abs((int)hexdec(hash('xxh32', $plugin))) % 80000 + 10000;
             $generated_id += $plugin_increment;
         }
 

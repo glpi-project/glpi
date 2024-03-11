@@ -111,3 +111,24 @@ $migration->addKey('glpi_items_devicecameras', 'states_id');
 // Drop unexpected fields
 $migration->dropField('glpi_devicegenerics', 'states_id');
 $migration->dropField('glpi_devicesensors', 'states_id');
+
+// Migrate search options related to visibility
+$migration->changeSearchOption('State', 21, 99999); // Computer
+$migration->changeSearchOption('State', 22, 99999); // SoftwareVersion
+$migration->changeSearchOption('State', 23, 99999); // Monitor
+$migration->changeSearchOption('State', 24, 99999); // Printer
+$migration->changeSearchOption('State', 25, 99999); // Peripheral
+$migration->changeSearchOption('State', 26, 99999); // Phone
+$migration->changeSearchOption('State', 27, 99999); // NetworkEquipment
+$migration->changeSearchOption('State', 28, 99999); // SoftwareLicense
+$migration->changeSearchOption('State', 29, 99999); // Certificate
+$migration->changeSearchOption('State', 30, 99999); // Rack
+$migration->changeSearchOption('State', 31, 99999); // Line
+$migration->changeSearchOption('State', 32, 99999); // Enclosure
+$migration->changeSearchOption('State', 33, 99999); // PDU
+$migration->changeSearchOption('State', 34, 99999); // Cluster
+$migration->changeSearchOption('State', 35, 99999); // PassiveDCEquipment
+$migration->changeSearchOption('State', 36, 99999); // Contract
+$migration->changeSearchOption('State', 37, 99999); // Appliance
+$migration->changeSearchOption('State', 38, 99999); // Cable
+$migration->changeSearchOption('State', 39, 99999); // DatabaseInstance
