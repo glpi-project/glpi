@@ -195,7 +195,7 @@ class Group_User extends CommonDBRelation
         $group = new Group();
         $entries = [];
         $yes_icon = "<i class='ti ti-circle-check text-success' title='" . __s('Yes') . "'></i>";
-        $no_icon  = "<i class='ti ti-circle-x text-danger' title='" . __s('No') . "'></i>";
+        $no_icon  = "<span class='visually-hidden' aria-label='" . __s('No') . "'></span>";
         foreach ($groups as $data) {
             if (!$group->getFromDB($data["id"])) {
                 continue;
@@ -432,7 +432,7 @@ class Group_User extends CommonDBRelation
         $tmpgrp = new Group();
         $entries = [];
         $yes_icon = "<i class='ti ti-circle-check text-success' title='" . __s('Yes') . "'></i>";
-        $no_icon  = "<i class='ti ti-circle-x text-danger' title='" . __s('No') . "'></i>";
+        $no_icon  = "<span class='visually-hidden' aria-label='" . __s('No') . "'></span>";
         for ($i = $start, $j = 0; ($i < $number) && ($j < $_SESSION['glpilist_limit']); $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
