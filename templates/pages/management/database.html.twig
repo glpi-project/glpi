@@ -41,7 +41,7 @@
 
     {% set db_inst_field %}
         {% if _request['databaseinstances_id'] is not empty %}
-            {{ database_instance.getLink }}
+            {{ get_item_link(database_instance) }}
             {{ inputs.hidden('databaseinstances_id', item.fields['databaseinstances_id']) }}
         {% else %}
             {{ fields.dropdownField('DatabaseInstance', 'databaseinstances_id', item.fields['databaseinstances_id'], null, {
