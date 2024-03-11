@@ -1,0 +1,110 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {{ inputs.hidden('itemtype', get_class(parent_item)) }}
+    {{ inputs.hidden('items_id', parent_item.getID()) }}
+
+    {% if not item.isNewItem() %}
+        {# Updating translation only allows modifying the value #}
+        {{ inputs.hidden('language', item.fields['language']) }}
+        {{ fields.htmlField('', call('Dropdown::getLanguageName', [item.fields['language']])|e, __('Language')) }}
+        {{ fields.nullField() }}
+
+        {{ inputs.hidden('field', item.fields['field']) }}
+        {{ fields.htmlField('', search_option['name']|e, _n('Field', 'Fields', 1)) }}
+
+        {% if matching_field['type']|default(null) == 'tinymce' %}
+            {{ fields.textareaField('value', item.fields['value'], __('Value'), {
+                enable_richtext: true,
+                enable_images: false,
+                enable_fileupload: false
+            }) }}
+        {% else %}
+            {{ fields.textField('value', item.fields['value'], __('Value')) }}
+        {% endif %}
+    {% else %}
+        {% set lang_field %}
+            {% do call('Dropdown::showLanguages', ['language', {
+                display_name: false,
+                value: session('glpilanguage'),
+                rand: rand
+            }]) %}
+        {% endset %}
+        {{ fields.htmlField('', lang_field, __('Language')) }}
+        {{ fields.nullField() }}
+
+        {% set field_field %}
+            <span id="span_fields_{{ rand }}">
+                {% do call('DropdownTranslation::dropdownFields', [parent_item, session('glpilanguage'), '', {
+                    rand: rand
+                }]) %}
+            </span>
+            <script>
+                $(() => {
+                    $('#dropdown_language{{ rand }}').on('change', (e) => {
+                        $('#span_fields_{{ rand }}').load(
+                            CFG_GLPI['root_doc'] + '/ajax/updateTranslationFields.php',
+                            {
+                                itemtype: '{{ get_class(parent_item)|e('js') }}',
+                                items_id: {{ parent_item.getID() }},
+                                language: e.target.value
+                            }
+                        );
+                    });
+                    $('#span_fields_{{ rand }}').on('change', 'select[name="field"]', (e) => {
+                        $('#span_value_{{ rand }}').load(
+                            CFG_GLPI['root_doc'] + '/ajax/updateTranslationValue.php',
+                            {
+                                itemtype: '{{ get_class(parent_item)|e('js') }}',
+                                items_id: {{ parent_item.getID() }},
+                                field: e.target.value
+                            }
+                        );
+                    });
+                    $('#span_fields_{{ rand }} select[name="field"]').trigger('change');
+                });
+            </script>
+        {% endset %}
+        {{ fields.htmlField('', field_field, _n('Field', 'Fields', 1)) }}
+
+        {% set value_field %}
+            <span id="span_value_{{ rand }}"></span>
+        {% endset %}
+        {{ fields.htmlField('', value_field, __('Value')) }}
+    {% endif %}
+{% endblock %}

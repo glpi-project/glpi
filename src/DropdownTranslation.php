@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
 
@@ -341,43 +342,53 @@ class DropdownTranslation extends CommonDBChild
      * Display all translated field for a dropdown
      *
      * @param CommonDropdown $item  A Dropdown item
-     *
-     * @return true;
      **/
     public static function showTranslations(CommonDropdown $item)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $rand    = mt_rand();
         $canedit = $item->can($item->getID(), UPDATE);
 
-       //Remove namespace separators
-        $normalized_itemtype = Toolbox::getNormalizedItemtype($item->getType());
         if ($canedit) {
-            echo "<div id='viewtranslation" . $normalized_itemtype . $item->getID() . "$rand'></div>\n";
-
-            echo "<script type='text/javascript' >\n";
-            echo "function addTranslation" . $normalized_itemtype . $item->getID() . "$rand() {\n";
-            $params = ['type'                       => __CLASS__,
-                'parenttype'                 => get_class($item),
-                $item->getForeignKeyField()  => $item->getID(),
-                'id'                         => -1
+            $twig_params = [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+                'item_fk' => $item->getForeignKeyField(),
+                'rand' => $rand,
+                'btn_msg' => __('Add a new translation')
             ];
-            Ajax::updateItemJsCode(
-                "viewtranslation" . $normalized_itemtype . $item->getID() . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "};";
-            echo "</script>\n";
-            echo "<div class='center'>" .
-              "<a class='btn btn-primary' href='javascript:addTranslation" .
-              $normalized_itemtype . $item->getID() . "$rand();'>" . __('Add a new translation') .
-              "</a></div><br>";
+            // language=twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div id="viewtranslation{{ rand }}"></div>
+                <script>
+                    function viewEditTranslation{{ rand }}(translations_id = -1) {
+                        $('button[name="new_translation"]').toggleClass('d-none', translations_id <= 0);
+                        $('#viewtranslation{{ rand }}').load(
+                            CFG_GLPI['root_doc'] + '/ajax/viewsubitem.php',
+                            {
+                                type: 'DropdownTranslation',
+                                parenttype: '{{ itemtype|e('js') }}',
+                                {{ item_fk }}: {{ items_id }},
+                                id: translations_id
+                            }
+                        );
+                    }
+                    $(() => {
+                        $('#datatable_translations{{ rand }}').on('click', 'tr.cursor-pointer', function() {
+                            viewEditTranslation{{ rand }}($(this).data('id'));
+                        });
+                    });
+                </script>
+                <div class="text-center mb-3">
+                    <button name="new_translation" class="btn btn-primary" type="button" onclick="viewEditTranslation{{ rand }}()">
+                        {{ btn_msg }}
+                    </button>
+                </div>
+TWIG, $twig_params);
         }
 
         $iterator = $DB->request([
@@ -389,80 +400,49 @@ class DropdownTranslation extends CommonDBChild
             ],
             'ORDER'  => ['language ASC']
         ]);
-        if (count($iterator)) {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
-                Html::showMassiveActions($massiveactionparams);
-            }
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixehov'><tr class='tab_bg_2'>";
-            echo "<th colspan='4'>" . __("List of translations") . "</th></tr><tr>";
-            if ($canedit) {
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                echo "</th>";
-            }
-            echo "<th>" . __("Language") . "</th>";
-            echo "<th>" . _n('Field', 'Fields', 1) . "</th>";
-            echo "<th>" . __("Value") . "</th></tr>";
-            foreach ($iterator as $data) {
-                $onhover = '';
-                if ($canedit) {
-                    $onhover = "style='cursor:pointer'
-                           onClick=\"viewEditTranslation" . $normalized_itemtype . $data['id'] . "$rand();\"";
-                }
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td class='center'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    echo "</td>";
-                }
 
-                echo "<td $onhover>";
-                if ($canedit) {
-                    echo "\n<script type='text/javascript' >\n";
-                    echo "function viewEditTranslation" . $normalized_itemtype . $data['id'] . "$rand() {\n";
-                    $params = ['type'                     => __CLASS__,
-                        'parenttype'                => get_class($item),
-                        $item->getForeignKeyField() => $item->getID(),
-                        'id'                        => $data["id"]
-                    ];
-                    Ajax::updateItemJsCode(
-                        "viewtranslation" . $normalized_itemtype . $item->getID() . "$rand",
-                        $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                        $params
-                    );
-                    echo "};";
-                    echo "</script>\n";
-                }
-                echo Dropdown::getLanguageName($data['language']);
-                echo "</td><td $onhover>";
-                $searchOption = $item->getSearchOptionByField('field', $data['field']);
-                echo $searchOption['name'] . "</td>";
-                echo "<td $onhover>";
-                $matching_field = $item->getAdditionalField($data['field']);
-                if (($matching_field['type'] ?? null) === 'tinymce') {
-                    echo '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
-                } else {
-                    echo $data['value'];
-                }
-                echo "</td>";
-                echo "</tr>";
+        $entries = [];
+        foreach ($iterator as $data) {
+            $searchOption = $item->getSearchOptionByField('field', $data['field']);
+            $matching_field = $item->getAdditionalField($data['field']);
+            $entry = [
+                'itemtype' => self::class,
+                'id'       => $data['id'],
+                'row_class' => $canedit ? 'cursor-pointer' : '',
+                'language' => Dropdown::getLanguageName($data['language']),
+                'field'    => $searchOption['name']
+            ];
+            if (($matching_field['type'] ?? null) === 'tinymce') {
+                $entry['value'] = '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
+            } else {
+                $entry['value'] = htmlspecialchars($data['value']);
             }
-            echo "</table>";
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-        } else {
-            echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-            echo "<th class='b'>" . __("No translation found") . "</th></tr></table>";
+            $entries[] = $entry;
         }
-        return true;
-    }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'datatable_translations' . $rand,
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'columns' => [
+                'language' => __('Language'),
+                'field'    => _n('Field', 'Fields', 1),
+                'value'    => __('Value')
+            ],
+            'formatters' => [
+                'value' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
+    }
 
     /**
      * Display translation form
@@ -477,10 +457,6 @@ class DropdownTranslation extends CommonDBChild
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;
         }
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $item = $options['parent'];
 
         if ($ID > 0) {
@@ -489,91 +465,16 @@ class DropdownTranslation extends CommonDBChild
             $options['itemtype'] = get_class($item);
             $options['items_id'] = $item->getID();
 
-           // Create item
             $this->check(-1, CREATE, $options);
         }
-        $rand = mt_rand();
-        $this->showFormHeader($options);
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Language') . "</td>";
-        echo "<td>";
-        echo "<input type='hidden' name='items_id' value='" . $item->getID() . "'>";
-        echo "<input type='hidden' name='itemtype' value='" . get_class($item) . "'>";
-        if ($ID > 0) {
-            echo "<input type='hidden' name='language' value='" . $this->fields['language'] . "'>";
-            echo Dropdown::getLanguageName($this->fields['language']);
-        } else {
-            $rand   = Dropdown::showLanguages(
-                "language",
-                ['display_none' => false,
-                    'value'        => $_SESSION['glpilanguage']
-                ]
-            );
-            $params = ['language' => '__VALUE__',
-                'itemtype' => get_class($item),
-                'items_id' => $item->getID()
-            ];
-            Ajax::updateItemOnSelectEvent(
-                "dropdown_language$rand",
-                "span_fields",
-                $CFG_GLPI["root_doc"] . "/ajax/updateTranslationFields.php",
-                $params
-            );
-        }
-        echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
-        echo "<tr class='tab_bg_1'><td>" . _n('Field', 'Fields', 1) . "</td>";
-        echo "<td>";
-        if ($ID > 0) {
-            echo "<input type='hidden' name='field' value='" . $this->fields['field'] . "'>";
-            $searchOption = $item->getSearchOptionByField('field', $this->fields['field']);
-            echo $searchOption['name'];
-        } else {
-            echo "<span id='span_fields' name='span_fields'>";
-            $rand = self::dropdownFields($item, $_SESSION['glpilanguage']);
-            echo "</span>";
-            $params = [
-                'field'    => '__VALUE__',
-                'itemtype' => get_class($item),
-                'items_id' => $item->getID(),
-            ];
-            Ajax::updateItemOnSelectEvent(
-                "dropdown_field$rand",
-                "span_value",
-                $CFG_GLPI["root_doc"] . "/ajax/updateTranslationValue.php",
-                $params
-            );
-            echo Html::scriptBlock(<<<JAVASCRIPT
-                $(
-                    function() {
-                        $("#dropdown_field$rand").trigger("change");
-                    }
-                );
-JAVASCRIPT
-            );
-        }
-        echo "</td>";
-        echo "<td>" . __('Value') . "</td>";
-        echo "<td>";
-        echo "<span id='span_value'>";
-        if ($ID > 0) {
-            $matching_field = $item->getAdditionalField($this->fields['field']);
-            if (($matching_field['type'] ?? null) === 'tinymce') {
-                Html::textarea([
-                    'name'              => 'value',
-                    'value'             => RichText::getSafeHtml($this->fields["value"], true),
-                    'enable_richtext'   => true,
-                    'enable_images'     => false,
-                    'enable_fileupload' => false,
-                ]);
-            } else {
-                echo "<input type='text' name='value' value=\"" . $this->fields['value'] . "\" size='50'>";
-            }
-        }
-        echo "</span>";
-        echo "</td>";
-        echo "</tr>\n";
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/dropdowntranslation.html.twig', [
+            'parent_item' => $item,
+            'item' => $this,
+            'search_option' => !$item->isNewItem() ? $item->getSearchOptionByField('field', $this->fields['field']) : [],
+            'matching_field' => $item->getAdditionalField($this->fields['field']),
+            'no_header' => true
+        ]);
         return true;
     }
 
