@@ -69,7 +69,7 @@
                 $(`#kbcomment_form{{ rand }}`).on('click', 'button[name="cancel"]', (e) => {
                     const btn = $(e.currentTarget);
                     btn.closest('.comment').find('.displayed_content').show();
-                    $(`#kbcomment_form{{ rand }}`).remove();
+                    $(`#kbcomment_form{{ rand }}`).closest('.newcomment, .editcomment').remove();
                 });
             </script>
         </div>
