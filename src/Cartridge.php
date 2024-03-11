@@ -56,8 +56,6 @@ class Cartridge extends CommonDBRelation
     public static $itemtype_2 = 'Printer';
     public static $items_id_2 = 'printers_id';
     public static $mustBeAttached_2 = false;
-    public static int $read_assigned = 256;
-    public static int $update_assigned = 512;
 
     public function getCloneRelations(): array
     {

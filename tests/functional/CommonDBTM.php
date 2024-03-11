@@ -1783,7 +1783,7 @@ class CommonDBTM extends DbTestCase
         $this->login();
 
         $this->boolean($itemtype::canView())->isTrue();
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = $itemtype::$read_assigned;
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->boolean($itemtype::canView())->isTrue();
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
         $this->boolean($itemtype::canView())->isFalse();
@@ -1804,7 +1804,7 @@ class CommonDBTM extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->boolean($item->canViewItem())->isTrue();
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = $itemtype::$read_assigned;
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->boolean($item->canViewItem())->isFalse();
         $this->boolean($item->update([
             'id' => $item->getID(),
@@ -1840,7 +1840,7 @@ class CommonDBTM extends DbTestCase
         $this->login();
 
         $this->boolean($itemtype::canUpdate())->isTrue();
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = $itemtype::$update_assigned;
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
         $this->boolean($itemtype::canUpdate())->isTrue();
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
         $this->boolean($itemtype::canUpdate())->isFalse();
@@ -1861,7 +1861,7 @@ class CommonDBTM extends DbTestCase
         ]))->isGreaterThan(0);
 
         $this->boolean($item->canUpdateItem())->isTrue();
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = $itemtype::$update_assigned;
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
         $this->boolean($item->canUpdateItem())->isFalse();
         $this->boolean($item->update([
             'id' => $item->getID(),

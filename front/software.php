@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Software::$rightname, [READ, Software::$read_assigned]);
+Session::checkRightsOr(Software::$rightname, [READ, READ_ASSIGNED]);
 
 Html::header(Software::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "software");
 

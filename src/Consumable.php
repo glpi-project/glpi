@@ -56,8 +56,6 @@ class Consumable extends CommonDBChild
    // From CommonDBChild
     public static $itemtype             = 'ConsumableItem';
     public static $items_id             = 'consumableitems_id';
-    public static int $read_assigned = 256;
-    public static int $update_assigned = 512;
 
     public function getCloneRelations(): array
     {

@@ -40,13 +40,9 @@ use Session;
 
 trait AssignableAsset
 {
-    // TODO with PHP 8.2, we can use constants for these rights
-    public static int $read_assigned = 256;
-    public static int $update_assigned = 512;
-
     public static function canView()
     {
-        return Session::haveRightsOr(static::$rightname, [READ, self::$read_assigned]);
+        return Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED]);
     }
 
     public function canViewItem()
@@ -59,7 +55,7 @@ trait AssignableAsset
             in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
 
         if (!Session::haveRight(static::$rightname, READ)) {
-            return $is_assigned && Session::haveRight(static::$rightname, self::$read_assigned);
+            return $is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED);
         }
 
         // Has global READ right
@@ -68,7 +64,7 @@ trait AssignableAsset
 
     public static function canUpdate()
     {
-        return Session::haveRightsOr(static::$rightname, [UPDATE, self::$update_assigned]);
+        return Session::haveRightsOr(static::$rightname, [UPDATE, UPDATE_ASSIGNED]);
     }
 
     public function canUpdateItem()
@@ -81,7 +77,7 @@ trait AssignableAsset
             in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
 
         if (!Session::haveRight(static::$rightname, UPDATE)) {
-            return $is_assigned && Session::haveRight(static::$rightname, self::$update_assigned);
+            return $is_assigned && Session::haveRight(static::$rightname, UPDATE_ASSIGNED);
         }
 
         // Has global UPDATE right
@@ -113,7 +109,7 @@ trait AssignableAsset
         if (Session::haveRight(static::$rightname, READ)) {
             return [new QueryExpression('1')];
         }
-        if (Session::haveRight(static::$rightname, self::$read_assigned)) {
+        if (Session::haveRight(static::$rightname, READ_ASSIGNED)) {
             $criteria = [
                 'OR' => [
                     'users_id_tech' => $_SESSION['glpiID'],
@@ -137,9 +133,9 @@ trait AssignableAsset
     {
         $rights = parent::getRights($interface);
         $rights[READ] = __('View all');
-        $rights[self::$read_assigned] = __('View assigned');
+        $rights[READ_ASSIGNED] = __('View assigned');
         $rights[UPDATE] = __('Update all');
-        $rights[self::$update_assigned] = __('Update assigned');
+        $rights[UPDATE_ASSIGNED] = __('Update assigned');
         return $rights;
     }
 }

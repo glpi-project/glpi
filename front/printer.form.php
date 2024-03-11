@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Printer::$rightname, [READ, Printer::$read_assigned]);
+Session::checkRightsOr(Printer::$rightname, [READ, READ_ASSIGNED]);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

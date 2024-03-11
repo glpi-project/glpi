@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Peripheral::$rightname, [READ, Peripheral::$read_assigned]);
+Session::checkRightsOr(Peripheral::$rightname, [READ, READ_ASSIGNED]);
 
 Html::header(Peripheral::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], "assets", "peripheral");
 

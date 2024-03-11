@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Consumable::$rightname, [READ, Consumable::$read_assigned]);
+Session::checkRightsOr(Consumable::$rightname, [READ, READ_ASSIGNED]);
 
 $con      = new Consumable();
 $constype = new ConsumableItem();

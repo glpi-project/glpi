@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Cartridge::$rightname, [READ, Cartridge::$read_assigned]);
+Session::checkRightsOr(Cartridge::$rightname, [READ, READ_ASSIGNED]);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

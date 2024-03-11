@@ -35,7 +35,7 @@
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Phone::$rightname, [READ, Phone::$read_assigned]);
+Session::checkRightsOr(Phone::$rightname, [READ, READ_ASSIGNED]);
 
 Html::header(Phone::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', 'phone');
 

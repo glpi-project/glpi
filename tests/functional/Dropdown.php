@@ -1992,7 +1992,7 @@ class Dropdown extends DbTestCase
         $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
 
         // Remove permission to read all items
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = $itemtype::$read_assigned;
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
@@ -2082,7 +2082,7 @@ class Dropdown extends DbTestCase
         $this->array(array_column($results, 'text'))->containsValues($expected);
 
         // Remove permission to read all items
-        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = $itemtype::$read_assigned;
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
