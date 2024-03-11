@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\SearchOption;
 use Profile;
 use ProfileRight;
 use Session;
@@ -629,10 +629,6 @@ final class AssetDefinition extends CommonDBTM
             'datatype'      => 'text'
         ];
 
-        // Capacity search option IDs can be assigned anywhere in the 1000-11000 range based on the capacity class name
-        $fn_get_id_for_capacity = static function (string $capacity) {
-            return (int) abs((int) hexdec(hash('xxh3', $capacity)) % 10000) + 1000;
-        };
         $search_options[] = [
             'id'   => 'capacities',
             'name' => __('Capacities')
@@ -647,7 +643,7 @@ final class AssetDefinition extends CommonDBTM
             $search_string = str_replace('\\', '\\\\', $search_string);
 
             $search_options[] = [
-                'id'            => $fn_get_id_for_capacity($capacity::class),
+                'id'            => SearchOption::generateAPropbablyUniqueId($capacity::class),
                 'table'         => self::getTable(),
                 'field'         => sprintf('_capacities_%s', $capacity::class),
                 'name'          => $capacity->getLabel(),

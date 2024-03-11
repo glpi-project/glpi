@@ -747,4 +747,28 @@ final class SearchOption implements \ArrayAccess
 
         return $toview;
     }
+
+    /**
+     * Generates a search option ID that will probably be unique.
+     * This automatically generated ID will be in the 10000-19999 range for GLPI core and in the 20000-99999 range if a
+     * plugin name is provided.
+     *
+     * @param string $string_identifier
+     * @param string $plugin
+     * @return int
+     */
+    public static function generateAPropbablyUniqueId(string $string_identifier, ?string $plugin = null): int
+    {
+        // Generates an ID that can be assigned anywhere in the 10000-19999 range
+        $generated_id = (int)abs((int)hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;
+
+        if ($plugin !== null && $plugin !== '') {
+            // For plugins, increment the generated ID from a value between 10000 to 79999,
+            // to get a final ID anywhere in the 20000-99999 range.
+            $plugin_increment = (int)abs((int)hexdec(hash('xxh3', $plugin))) % 80000 + 10000;
+            $generated_id += $plugin_increment;
+        }
+
+        return $generated_id;
+    }
 }
