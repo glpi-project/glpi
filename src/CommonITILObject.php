@@ -9199,23 +9199,11 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        $category_names = [];
         foreach ($common_itil_iterator as $data) {
-            if (!array_key_exists($data['itilcategories_id'], $category_names)) {
-                $category_name = DropdownTranslation::getTranslatedValue(
-                    $data['itilcategories_id'],
-                    ITILCategory::class
-                );
-                if ($category_name === '') {
-                    $category_name = ITILCategory::getFriendlyNameById($data['itilcategories_id']);
-                }
-
-                $category_names[$data['itilcategories_id']] = $category_name;
-            }
             $data = [
                 'id'        => $data['id'],
                 'name'      => $data['name'],
-                'category'  => $category_names[$data['itilcategories_id']] ?? '',
+                'category'  => $data['itilcategories_id'],
                 'content'   => $data['content'],
                 'status'    => $data['status'],
                 '_itemtype' => $itemtype,
@@ -9403,7 +9391,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Replace category ids with category names in items metadata
         foreach ($columns as &$column) {
-            foreach (($column['items'] ?? []) as &$item) {
+            if (!isset($column['items'])) {
+                continue;
+            }
+            foreach ($column['items'] as &$item) {
                 $item['_metadata']['category'] = $categories[$item['_metadata']['category']] ?? '';
             }
         }
