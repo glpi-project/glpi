@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use Glpi\Search\Input\QueryBuilder;
+use Glpi\Search\SearchOption;
 use Profile;
 use ProfileRight;
 use Session;
@@ -629,14 +629,11 @@ final class AssetDefinition extends CommonDBTM
             'datatype'      => 'text'
         ];
 
-        $i = 1000;
         $search_options[] = [
             'id'   => 'capacities',
             'name' => __('Capacities')
         ];
         foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
-            $i++;
-
             // capacity is stored in a JSON array, so entry is surrounded by double quotes
             $search_string = json_encode($capacity::class);
             // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
@@ -646,7 +643,7 @@ final class AssetDefinition extends CommonDBTM
             $search_string = str_replace('\\', '\\\\', $search_string);
 
             $search_options[] = [
-                'id'            => $i,
+                'id'            => SearchOption::generateAProbablyUniqueId($capacity::class),
                 'table'         => self::getTable(),
                 'field'         => sprintf('_capacities_%s', $capacity::class),
                 'name'          => $capacity->getLabel(),
