@@ -55,14 +55,14 @@
 
     {% set btn %}
         <div class="d-flex flex-row-reverse pe-2 mt-2">
-            <div class="ms-2">
-                {{ inputs.submit(comment_id ? 'edit' : 'add', comment_id ? _x('button', 'Edit') : _x('button', 'Add'), 1) }}
-            </div>
             {% if comment_id and parent_comment_id %}
                 <div class="ms-2">
                     {{ inputs.button('cancel', __('Cancel'), 'reset', 1) }}
                 </div>
             {% endif %}
+            <div class="ms-2">
+                {{ inputs.submit(comment_id ? 'edit' : 'add', comment_id ? _x('button', 'Edit') : _x('button', 'Add'), 1) }}
+            </div>
         </div>
     {% endset %}
 
