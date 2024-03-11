@@ -134,7 +134,7 @@
         'projectstates_id',
         item.fields.projectstates_id,
         _x('item', 'State'),
-        item.fields.auto_projectstates ? {'specific_tags': {'disabled': 'disabled'}} : {}
+        item.fields.auto_projectstates ? {'disabled': true} : {}
     ) }}
 
     {% set state_tooltip %}

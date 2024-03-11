@@ -49,9 +49,9 @@ $migration->addField($table, "auto_projectstates", "bool", [
 
 $migration->addConfig(
     [
-        'projecttask_unstarted' => 0,
-        'projecttask_inprogress' => 0,
-        'projecttask_completed' => 0,
+        'projecttask_unstarted_states_id' => 0,
+        'projecttask_inprogress_states_id' => 0,
+        'projecttask_completed_states_id' => 0,
     ],
     'core'
 );

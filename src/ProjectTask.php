@@ -546,7 +546,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             }
         }
 
-        if (isset($input['auto_projectstates']) && $input['auto_projectstates'] == true) {
             $projectstate_id = $this->recalculateStatus($input);
             if ($projectstate_id !== false) {
                 $input['projectstates_id'] = $projectstate_id;
@@ -1819,7 +1818,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @param array $input
      * @return int|false
      */
-    public function recalculateStatus(array $input): int|false
+    public function recalculateStatus(array $input): int|null
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -1830,7 +1829,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (!$auto_projectstates || $percent_done === null) {
             return false;
         }
-        $config = \Config::getConfigurationValues('core');
+        $config = Config::getConfigurationValues('core');
         if ((int) $percent_done === 0) {
             $state_id = $config['projecttask_unstarted'] ?? 0;
         } elseif ((int) $percent_done === 100) {

@@ -413,15 +413,12 @@ class ProjectTask extends DbTestCase
 
         $this->boolean($config->getFromDBByCrit(['name' => 'projecttask_completed']))->isTrue();
         $this->boolean($config->update(['value' => '3'] + $config->fields))->isTrue();
-        $config = new \Config();
-        $config->getFromDB(234);
 
         $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
 
         $project = new \Project();
         $project_id_1 = $project->add([
             'name' => 'Project 1',
-            'auto_projectstates' => 1
         ]);
         $this->integer((int) $project_id_1)->isGreaterThan(0);
 
@@ -434,22 +431,14 @@ class ProjectTask extends DbTestCase
         ]);
         $this->integer((int) $projecttask_id_1)->isGreaterThan(0);
 
-        // Reload projects and tasks to get newest values
-        $this->boolean($projecttask->getFromDB($projecttask_id_1))->isTrue();
         $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(1);
 
         $this->boolean($projecttask->update(['id' => $projecttask_id_1, 'percent_done'  => 50, 'auto_projectstates' => 1]));
         $this->integer($projecttask->fields['percent_done'])->isEqualTo(50);
-
-        // Reload projects and tasks to get newest values
-        $this->boolean($projecttask->getFromDB($projecttask_id_1))->isTrue();
         $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(2);
 
         $this->boolean($projecttask->update(['id' => $projecttask_id_1, 'percent_done'  => 100, 'auto_projectstates' => 1]));
         $this->integer($projecttask->fields['percent_done'])->isEqualTo(100);
-
-        // Reload projects and tasks to get newest values
-        $this->boolean($projecttask->getFromDB($projecttask_id_1))->isTrue();
         $this->integer($projecttask->fields['projectstates_id'])->isEqualTo(3);
     }
 }
