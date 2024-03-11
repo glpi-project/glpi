@@ -772,6 +772,12 @@ class GlpiFormEditorController
         // Init the editors
         tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
 
+        // Init tooltips
+        const tooltip_trigger_list = copy.find('[data-bs-toggle="tooltip"]');
+        [...tooltip_trigger_list].map(
+            tooltip_trigger_el => new bootstrap.Tooltip(tooltip_trigger_el)
+        );
+
         return copy;
     }
 
