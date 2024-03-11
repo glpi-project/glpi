@@ -36,7 +36,7 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
-use Glpi\Form\Destination\Form_FormDestination;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
@@ -587,6 +587,123 @@ class Form extends DbTestCase
             ],
             'expected_sections_content' => [],
         ];
+
+        // Create a form with two sections
+        yield [
+            'input' => [
+                'id'         => $form->getID(),
+                '_delete_missing_questions' => true,
+                '_delete_missing_sections'  => true,
+                '_questions' => [
+                    [
+                        'id'                        => "Question 1",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 1',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 2",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 2',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 3",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 1",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 3',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                ],
+                '_sections' => [
+                    [
+                        'id'             => 'Section 1',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 1",
+                        'rank'           => 0,
+                    ],
+                    [
+                        'id'             => 'Section 2',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 2",
+                        'rank'           => 1,
+                    ],
+                ],
+            ],
+            'expected_sections_content' => [
+                [
+                    'name'    => 'Section 1',
+                    'q_names' => ['Question 1', 'Question 2', 'Question 3'],
+                ],
+                [
+                    'name'    => 'Section 2',
+                    'q_names' => [],
+                ],
+            ],
+        ];
+
+        // Delete first section and move its questions to the second section.
+        yield [
+            'input' => [
+                'id'         => $form->getID(),
+                '_delete_missing_questions' => true,
+                '_delete_missing_sections'  => true,
+                '_questions' => [
+                    [
+                        'id'                        => "Question 1",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 2",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 1',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 2",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 2",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 2',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                    [
+                        'id'                        => "Question 3",
+                        '_use_uuid'                 => true,
+                        'forms_sections_id'         => "Section 2",
+                        '_use_uuid_for_sections_id' => true,
+                        'name'                      => 'Question 3',
+                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'rank'                      => 0,
+                    ],
+                ],
+                '_sections' => [
+                    [
+                        'id'             => 'Section 2',
+                        'forms_forms_id' => $form->getID(),
+                        '_use_uuid'      => true,
+                        'name'           => "Section 2",
+                        'rank'           => 0,
+                    ],
+                ],
+            ],
+            'expected_sections_content' => [
+                [
+                    'name'    => 'Section 2',
+                    'q_names' => ['Question 1', 'Question 2', 'Question 3'],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -811,11 +928,7 @@ class Form extends DbTestCase
             ->isEqualTo(3) // 2 (to delete) + 1 (control)
         ;
         $this
-            ->integer(countElementsInTable(Form_FormDestination::getTable()))
-            ->isEqualTo(2) // 1 (to delete) + 1 (control)
-        ;
-        $this
-            ->integer(countElementsInTable(FormDestinationTicket::getTable()))
+            ->integer(countElementsInTable(FormDestination::getTable()))
             ->isEqualTo(2) // 1 (to delete) + 1 (control)
         ;
 
@@ -840,11 +953,7 @@ class Form extends DbTestCase
             ->isEqualTo(1) // 1 (control)
         ;
         $this
-            ->integer(countElementsInTable(Form_FormDestination::getTable()))
-            ->isEqualTo(1) // 1 (control)
-        ;
-        $this
-            ->integer(countElementsInTable(FormDestinationTicket::getTable()))
+            ->integer(countElementsInTable(FormDestination::getTable()))
             ->isEqualTo(1) // 1 (control)
         ;
     }

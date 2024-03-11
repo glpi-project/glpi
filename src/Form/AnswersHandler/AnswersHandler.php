@@ -38,7 +38,7 @@ namespace Glpi\Form\AnswersHandler;
 use CommonDBTM;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
-use Glpi\Form\Destination\FormDestinationInterface;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 
@@ -266,12 +266,18 @@ final class AnswersHandler
         // Get defined destinations
         $destinations = $form->getDestinations();
 
-        /** @var FormDestinationInterface&CommonDBTM $destination */
+        /** @var FormDestination $destination */
         foreach ($destinations as $destination) {
-            // Create destination item
-            $items = $destination->createDestinationItems($form, $answers_set);
+            $concrete_destination = $destination->getConcreteDestinationItem();
+            if (!$concrete_destination) {
+                // The configured destination might belong to an inactive plugin
+                continue;
+            }
 
-            // Link items to answers by creating a Form_FormDestinationItem object
+            // Create destination item
+            $items = $concrete_destination->createDestinationItems($form, $answers_set);
+
+            // Link items to answers by creating a AnswersSet_FormDestinationItem object
             foreach ($items as $item) {
                 if (!($item instanceof CommonDBTM)) {
                     throw new \Exception("Invalid destination item");

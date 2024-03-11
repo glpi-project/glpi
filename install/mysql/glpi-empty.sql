@@ -9522,23 +9522,15 @@ CREATE TABLE `glpi_forms_destinations_answerssets_formdestinationitems` (
     KEY `item` (`itemtype`, `items_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_forms_destinations_forms_formdestinations`;
-CREATE TABLE `glpi_forms_destinations_forms_formdestinations` (
+DROP TABLE IF EXISTS `glpi_forms_destinations_formdestinations`;
+CREATE TABLE `glpi_forms_destinations_formdestinations` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
     `itemtype` varchar(255) NOT NULL,
-    `items_id` int unsigned NOT NULL DEFAULT '0',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `unicity` (`forms_forms_id`,`itemtype`,`items_id`),
-    KEY `item` (`itemtype`, `items_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `glpi_forms_destinations_formdestinationtickets`;
-CREATE TABLE `glpi_forms_destinations_formdestinationtickets` (
-    `id` int unsigned NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`id`),
-    KEY `name` (`name`)
+    KEY `itemtype` (`itemtype`),
+    KEY `forms_forms_id` (`forms_forms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;

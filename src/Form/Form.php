@@ -38,14 +38,12 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Destination\Form_FormDestination;
-use Glpi\Form\Destination\FormDestinationInterface;
+use Glpi\Form\Destination\FormDestination;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
-use ReflectionClass;
 use Session;
 
 /**
@@ -223,33 +221,12 @@ final class Form extends CommonDBTM
     #[Override]
     public function cleanDBonPurge()
     {
-        // Delete all sections and questions
-        foreach ($this->getSections() as $section) {
-            foreach ($section->getQuestions() as $question) {
-                $question->delete([
-                    'id'          => $question->getID(),
-                    '_no_history' => true,
-                ]);
-            }
-            $section->delete([
-                'id' => $section->getID(),
-                '_no_history' => true,
-            ]);
-        }
-
-        // Delete configurated form destinations
-        foreach ($this->getDestinations() as $destination) {
-            $destination->delete([
-                'id' => $destination->getID(),
-                '_no_history' => true,
-            ]);
-        }
-        foreach ($this->getDestinationLinksObjects() as $link) {
-            $link->delete([
-                'id' => $link->getID(),
-                '_no_history' => true,
-            ]);
-        }
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Section::class,
+                FormDestination::class,
+            ]
+        );
     }
 
     /**
@@ -299,56 +276,23 @@ final class Form extends CommonDBTM
     /**
      * Get all defined destinations of this form
      *
-     * @return FormDestinationInterface&CommonDBTM[]
+     * @return FormDestination[]
      */
     public function getDestinations(): array
     {
         $destinations = [];
-        foreach ($this->getDestinationLinksObjects() as $link) {
-            if (
-                !is_a($link->fields['itemtype'], FormDestinationInterface::class, true)
-                || !is_a($link->fields['itemtype'], CommonDBTM::class, true)
-                || (new ReflectionClass($link->fields['itemtype']))->isAbstract()
-            ) {
-                // Invalid data or disabled plugin
-                continue;
-            }
+        $destinations_data = (new FormDestination())->find(
+            [self::getForeignKeyField() => $this->fields['id']],
+        );
 
-            $destination = new $link->fields['itemtype']();
-            if (!$destination->getFromDB($link->fields['items_id'])) {
-                // Missing data, should be logged
-                trigger_error(
-                    "Failed to load destination: " . json_encode($link->fields),
-                    E_USER_WARNING
-                );
-                continue;
-            }
-            $destinations[] = $destination;
+        foreach ($destinations_data as $row) {
+            $destination = new FormDestination();
+            $destination->getFromResultSet($row);
+            $destination->post_getFromDB();
+            $destinations[$row['id']] = $destination;
         }
 
         return $destinations;
-    }
-
-    /**
-     * Get all defined form <-> form destination links for this form.
-     *
-     * @return Form_FormDestination[]
-     */
-    protected function getDestinationLinksObjects(): array
-    {
-        $links = [];
-        $link_data = (new Form_FormDestination())->find([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
-        foreach ($link_data as $row) {
-            $link = new Form_FormDestination();
-            $link->getFromResultSet($row);
-            $link->post_getFromDB();
-            $links[] = $link;
-        }
-
-        return $links;
     }
 
     /**
@@ -358,8 +302,14 @@ final class Form extends CommonDBTM
      */
     protected function updateExtraFormData(): void
     {
+        // We must update sections first, as questions depend on them.
+        // However, they must only be deleted after questions have been updated.
+        // This prevents cascade deletion to delete their questions that might
+        // have been moved to another section.
         $this->updateSections();
         $this->updateQuestions();
+        $this->deleteMissingSections();
+        $this->deleteMissingQuestions();
     }
 
     /**
@@ -438,6 +388,26 @@ final class Form extends CommonDBTM
             $found_sections[] = $id;
         }
 
+        // Deletion will be handled in a separate method
+        $this->input['_found_sections'] = $found_sections;
+
+        // Special input has been handled, it can be deleted
+        unset($this->input['_sections']);
+    }
+
+    /**
+     * Delete sections that were not found in the submitted data
+     *
+     * @return void
+     */
+    protected function deleteMissingSections(): void
+    {
+        // We can't run this code if we don't have the list of updated sections
+        if (!isset($this->input['_found_sections'])) {
+            return;
+        }
+        $found_sections = $this->input['_found_sections'];
+
         // Safety check to avoid deleting all sections if some code run an update
         // without the _sections keys.
         // Deletion is only done if the special "_delete_missing_sections" key
@@ -466,8 +436,7 @@ final class Form extends CommonDBTM
             }
         }
 
-        // Special input has been handled, it can be deleted
-        unset($this->input['_sections']);
+        unset($this->input['_found_sections']);
     }
 
     /**
@@ -528,6 +497,26 @@ final class Form extends CommonDBTM
             $found_questions[] = $id;
         }
 
+        // Deletion will be handled in a separate method
+        $this->input['_found_questions'] = $found_questions;
+
+        // Special input has been handled, it can be deleted
+        unset($this->input['_questions']);
+    }
+
+    /**
+     * Delete sections that were not found in the submitted data
+     *
+     * @return void
+     */
+    protected function deleteMissingQuestions(): void
+    {
+        // We can't run this code if we don't have the list of updated sections
+        if (!isset($this->input['_found_questions'])) {
+            return;
+        }
+        $found_questions = $this->input['_found_questions'];
+
         // Safety check to avoid deleting all questions if some code run an update
         // without the _questions keys.
         // Deletion is only done if the special "_delete_missing_questions" key
@@ -561,7 +550,6 @@ final class Form extends CommonDBTM
             }
         }
 
-        // Special input has been handled, it can be deleted
-        unset($this->input['_questions']);
+        unset($this->input['_found_questions']);
     }
 }

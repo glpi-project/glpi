@@ -35,7 +35,7 @@
 
 namespace Glpi\Tests;
 
-use Glpi\Form\Destination\Form_FormDestination;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
@@ -90,11 +90,11 @@ trait FormTesterTrait
 
         // Create destinations
         foreach ($builder->getDestinations() as $itemtype => $destination_data) {
-            $destination = $this->createItem($itemtype, $destination_data);
-            $this->createItem(Form_FormDestination::class, [
+            $name = $destination_data['name'];
+            $this->createItem(FormDestination::class, [
                 'forms_forms_id' => $form->getID(),
-                'itemtype' => $destination->getType(),
-                'items_id' => $destination->getID(),
+                'itemtype'       => $itemtype,
+                'name'           => $name,
             ]);
         }
 

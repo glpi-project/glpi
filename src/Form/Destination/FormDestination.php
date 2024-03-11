@@ -35,20 +35,35 @@
 
 namespace Glpi\Form\Destination;
 
-use CommonDBRelation;
+use CommonDBChild;
 use Glpi\Form\Form;
+use ReflectionClass;
 
-final class Form_FormDestination extends CommonDBRelation
+final class FormDestination extends CommonDBChild
 {
     /**
-     * Item 1 is a Form
+     * Parent item is a Form
      */
-    public static $itemtype_1 = Form::class;
-    public static $items_id_1 = 'forms_forms_id';
+    public static $itemtype = Form::class;
+    public static $items_id = 'forms_forms_id';
 
     /**
-     * Item 2 is a concrete implementation of FormDestinationInterface
+     * Get the concrete destination item using the specified class.
+     *
+     * @return FormDestinationInterface|null
      */
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
+    public function getConcreteDestinationItem(): ?FormDestinationInterface
+    {
+        $class = $this->fields['itemtype'];
+
+        if (!is_a($class, FormDestinationInterface::class, true)) {
+            return null;
+        }
+
+        if ((new ReflectionClass($class))->isAbstract()) {
+            return null;
+        }
+
+        return new $class();
+    }
 }

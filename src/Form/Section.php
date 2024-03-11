@@ -66,6 +66,16 @@ final class Section extends CommonDBChild
         $this->clearLazyLoadedData();
     }
 
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                Question::class,
+            ]
+        );
+    }
+
     /**
      * Get questions of this section
      *
