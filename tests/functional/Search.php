@@ -4739,6 +4739,10 @@ class Search extends DbTestCase
                 'name' => 'Ticket & 5',
                 'content' => '<p>This is a test ticket</p>'
             ],
+            [
+                'name' => 'Ticket > 6',
+                'content' => '<p>This is a test ticket</p>'
+            ],
         ]);
 
         $this->createItem('ITILFollowup', [
