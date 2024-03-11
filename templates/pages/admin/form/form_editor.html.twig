@@ -177,7 +177,7 @@
         <a
             href="{{ path('front/form/form_renderer.php?id=' ~ item.fields.id) }}"
             target="_blank"
-            class="btn btn-ghost-secondary me-auto"
+            class="btn btn-secondary me-auto"
             type="button"
             name="preview"
             form="form-form"
@@ -201,9 +201,8 @@
                 type="submit"
                 name="delete"
                 form="form-form"
-                title="{{ __("Put in trashbin") }}"
             >
-                <i class="ti ti-trash me-1"></i>
+                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
             </button>
         {% endif %}
 
@@ -214,9 +213,8 @@
                 type="submit"
                 name="purge"
                 form="form-form"
-                title="{{ __("Delete permanently") }}"
             >
-                <i class="ti ti-trash me-1"></i>
+                <i class="ti ti-trash me-1"></i>{{ __("Delete permanently") }}
             </button>
         {% endif %}
 
@@ -232,9 +230,8 @@
                 type="submit"
                 name="restore"
                 form="form-form"
-                title="{{ __("Restore") }}"
             >
-                <i class="ti ti-trash-off me-1"></i>
+                <i class="ti ti-trash-off me-1"></i>{{ __("Restore") }}
             </button>
         {% endif %}
 
