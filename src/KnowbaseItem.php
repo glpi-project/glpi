@@ -1477,16 +1477,13 @@ TWIG, $twig_params);
                 $params['knowbaseitemcategories_id'] . "&amp;contains=" .
                 $params["contains"] . "&amp;is_faq=" . $params['faq'];
 
-            if (
-                isset($options['item_itemtype'])
-                && isset($options['item_items_id'])
-            ) {
+            if (isset($options['item_itemtype'], $options['item_items_id'])) {
                 $parameters .= "&amp;item_items_id=" . $options['item_items_id'] . "&amp;item_itemtype=" .
                     $options['item_itemtype'];
             }
 
             $pager_url = "";
-            if ($output_type == Search::HTML_OUTPUT) {
+            if ($output_type === Search::HTML_OUTPUT) {
                 $pager_url = Toolbox::getItemTypeSearchURL('KnowbaseItem');
                 if (!Session::getLoginUserID()) {
                     $pager_url = $CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php";
@@ -1502,7 +1499,7 @@ TWIG, $twig_params);
             $header_num = 1;
             echo Search::showHeaderItem($output_type, __('Subject'), $header_num);
 
-            if ($output_type != Search::HTML_OUTPUT) {
+            if ($output_type !== Search::HTML_OUTPUT) {
                 echo Search::showHeaderItem($output_type, __('Content'), $header_num);
             }
 
@@ -1511,15 +1508,11 @@ TWIG, $twig_params);
             }
             echo Search::showHeaderItem($output_type, _n('Category', 'Categories', 1), $header_num);
 
-            if ($output_type == Search::HTML_OUTPUT) {
+            if ($output_type === Search::HTML_OUTPUT) {
                 echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
             }
 
-            if (
-                isset($options['item_itemtype'])
-                && isset($options['item_items_id'])
-                && ($output_type == Search::HTML_OUTPUT)
-            ) {
+            if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
                 echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
             }
 
@@ -1537,27 +1530,24 @@ TWIG, $twig_params);
                 $name   = $data["name"];
                 $answer = $data["answer"];
                 // Manage translations
-                if (isset($data['transname']) && !empty($data['transname'])) {
+                if (!empty($data['transname'])) {
                     $name   = $data["transname"];
                 }
-                if (isset($data['transanswer']) && !empty($data['transanswer'])) {
+                if (!empty($data['transanswer'])) {
                     $answer = $data["transanswer"];
                 }
 
-                if ($output_type == Search::HTML_OUTPUT) {
+                if ($output_type === Search::HTML_OUTPUT) {
                     $toadd = '';
-                    if (
-                        isset($options['item_itemtype'])
-                        && isset($options['item_items_id'])
-                    ) {
+                    if (isset($options['item_itemtype'], $options['item_items_id'])) {
                         $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data["id"]}'";
                         $toadd = Ajax::createIframeModalWindow(
                             'kbshow' . $data["id"],
-                            KnowbaseItem::getFormURLWithID($data["id"]),
+                            self::getFormURLWithID($data["id"]),
                             ['display' => false]
                         );
                     } else {
-                        $href = " href=\"" . KnowbaseItem::getFormURLWithID($data["id"]) . "\" ";
+                        $href = " href=\"" . self::getFormURLWithID($data["id"]) . "\" ";
                     }
 
                     $fa_class = "";
@@ -1565,8 +1555,8 @@ TWIG, $twig_params);
                     if (
                         $data['is_faq']
                         && (!Session::isMultiEntitiesMode()
-                            || isset($data['visibility_count'])
-                            && $data['visibility_count'] > 0)
+                            || (isset($data['visibility_count'])
+                                && $data['visibility_count'] > 0))
                     ) {
                         $fa_class = "fa-question-circle faq";
                         $fa_title = __s("This item is part of the FAQ");
@@ -1579,8 +1569,8 @@ TWIG, $twig_params);
                     }
                     echo Search::showItem(
                         $output_type,
-                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
-                                       <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false, true), 600) . "</div>",
+                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . htmlspecialchars(Html::resume_text($name, 80)) . "</a></div>
+                                       <div class='kb_resume'>" . htmlspecialchars(Html::resume_text(RichText::getTextFromHtml($answer, false, false, true), 600)) . "</div>",
                         $item_num,
                         $row_num
                     );
@@ -1611,20 +1601,20 @@ TWIG, $twig_params);
                         "glpi_knowbaseitemcategories",
                         $knowbaseitemcategories_id
                     );
-                    if ($output_type == Search::HTML_OUTPUT) {
-                        $cathref = $ki->getSearchURL() . "?knowbaseitemcategories_id=" .
+                    if ($output_type === Search::HTML_OUTPUT) {
+                        $cathref = self::getSearchURL() . "?knowbaseitemcategories_id=" .
                             $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
                         $categories_names[] = "<a class='kb-category'"
                             . " href='$cathref'"
                             . " data-category-id='" . $knowbaseitemcategories_id . "'"
-                            . ">" . $fullcategoryname . '</a>';
+                            . ">" . htmlspecialchars($fullcategoryname) . '</a>';
                     } else {
-                        $categories_names[] = $fullcategoryname;
+                        $categories_names[] = htmlspecialchars($fullcategoryname);
                     }
                 }
                 echo Search::showItem($output_type, implode(', ', $categories_names), $item_num, $row_num);
 
-                if ($output_type == Search::HTML_OUTPUT) {
+                if ($output_type === Search::HTML_OUTPUT) {
                     echo "<td class='center'>";
                     $j = 0;
                     $iterator = $DBread->request([
@@ -1647,17 +1637,13 @@ TWIG, $twig_params);
                     echo "</td>";
                 }
 
-                if (
-                    isset($options['item_itemtype'])
-                    && isset($options['item_items_id'])
-                    && ($output_type == Search::HTML_OUTPUT)
-                ) {
+                if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
                     $forcetab = $options['item_itemtype'] . '$main';
                     $item_itemtype = $options['item_itemtype'];
                     $content = "<a href='" . $item_itemtype::getFormURLWithID($options['item_items_id']) .
                         "&amp;load_kb_sol=" . $data['id'] .
                         "&amp;forcetab=" . $forcetab . "'>" .
-                        __('Use as a solution') . "</a>";
+                        __s('Use as a solution') . "</a>";
                     echo Search::showItem($output_type, $content, $item_num, $row_num);
                 }
 
@@ -1667,8 +1653,8 @@ TWIG, $twig_params);
 
             // Display footer
             if (
-                ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
-                || ($output_type == Search::PDF_OUTPUT_PORTRAIT)
+                ($output_type === Search::PDF_OUTPUT_LANDSCAPE)
+                || ($output_type === Search::PDF_OUTPUT_PORTRAIT)
             ) {
                 echo Search::showFooter(
                     $output_type,
@@ -1682,11 +1668,11 @@ TWIG, $twig_params);
                 echo Search::showFooter($output_type, '', $numrows);
             }
             echo "<br>";
-            if ($output_type == Search::HTML_OUTPUT) {
+            if ($output_type === Search::HTML_OUTPUT) {
                 Html::printPager($params['start'], $rows, $pager_url, $parameters, 'KnowbaseItem');
             }
         } else {
-            echo "<div class='center b'>" . __('No item found') . "</div>";
+            echo "<div class='center b'>" . __s('No item found') . "</div>";
         }
     }
 
