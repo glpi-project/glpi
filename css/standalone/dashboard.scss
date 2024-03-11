@@ -562,13 +562,13 @@ $break_tablet: 1400px;
     .grid-guide {
         display: none;
         position: absolute;
-        top: calc(#{$toolbar_height} + #{$filter_height} + 5px);
+        top: calc(#{$toolbar_height} + #{$filter_height} + 16px);
         width: calc(100% + 1px);
-        border: 1px solid var(--tblr-border-color);
+        border: 1px solid var(--tblr-body-bg);
         border-width: 0 1px 1px 0;
         background-image:
-            linear-gradient(to right, var(--tblr-border-color) 1px, transparent 1px),
-            linear-gradient(to bottom, var(--tblr-border-color) 1px, transparent 1px);
+            linear-gradient(to right, var(--tblr-body-bg) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--tblr-body-bg) 1px, transparent 1px);
 
         .cell-add {
             opacity: 0;
