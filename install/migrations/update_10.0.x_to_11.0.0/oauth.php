@@ -91,6 +91,7 @@ if (!$DB->tableExists('glpi_oauthclients')) {
         `scopes` text NOT NULL,
         `is_active` tinyint NOT NULL DEFAULT '1',
         `is_confidential` tinyint NOT NULL DEFAULT '1',
+        `allowed_ips` text DEFAULT NULL,
         PRIMARY KEY (`identifier`),
         KEY `id` (`id`),
         KEY `name` (`name`),
@@ -100,6 +101,10 @@ if (!$DB->tableExists('glpi_oauthclients')) {
 } else {
     // Dev migration for `redirect_uri` column from varchar(255) to TEXT
     $migration->changeField('glpi_oauthclients', 'redirect_uri', 'redirect_uri', 'TEXT NOT NULL');
+
+    $migration->addField('glpi_oauthclients', 'allowed_ips', 'TEXT DEFAULT NULL', [
+        'after' => 'is_confidential'
+    ]);
 }
 
 $migration->addRight('oauth_client', ALLSTANDARDRIGHT, ['config' => UPDATE]);

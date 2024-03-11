@@ -55,6 +55,7 @@ use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Middleware\CRUDRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
+use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Middleware\RequestMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
@@ -115,6 +116,11 @@ class Router
      * @internal Only intended to be used by tests
      */
     private ?RoutePath $last_invoked_route = null;
+
+    /**
+     * @var array{client_id: string, user_id: int, scopes: array}|null The current client information if the user is authenticated.
+     */
+    private ?array $current_client = null;
 
     /**
      * Get information about all API versions available.
@@ -191,6 +197,7 @@ EOT;
             // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
             $instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
+            $instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
             $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
                 return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
             });
@@ -690,11 +697,11 @@ EOT;
      */
     public function startTemporarySession(Request $request): void
     {
-        $data = Server::validateAccessToken($request);
+        $this->current_client = Server::validateAccessToken($request);
         $auth = new \Auth();
         $auth->auth_succeded = true;
         $auth->user = new \User();
-        $auth->user->getFromDB($data['user_id']);
+        $auth->user->getFromDB($this->current_client['user_id']);
         Session::init($auth);
         if ($request->getHeaderLine('Accept-Language')) {
             // Make sure language header is set in SERVER superglobal so that Session::getPreferredLanguage() works
@@ -733,5 +740,10 @@ EOT;
     public function getControllers(): array
     {
         return $this->controllers;
+    }
+
+    public function getCurrentClient(): ?array
+    {
+        return $this->current_client;
     }
 }
