@@ -202,5 +202,6 @@ final class OAuthClient extends CommonDBTM
     public function post_getEmpty()
     {
         $this->fields['grants'] = [];
+        $this->fields['scopes'] = [];
     }
 }

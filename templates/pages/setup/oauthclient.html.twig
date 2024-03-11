@@ -76,13 +76,6 @@
                                 }) }}
                             {% endif %}
 
-                            {% if allowed_scopes is defined and allowed_scopes is not empty %}
-                                {{ fields.dropdownArrayField('scopes', null, allowed_scopes, __('Scopes'), {
-                                    multiple: true,
-                                    values: item.fields['scopes'],
-                                }) }}
-                            {% endif %}
-
                             {{ fields.textareaField(
                                 'comment',
                                 item.fields['comment'],
