@@ -227,31 +227,17 @@ class Group extends CommonTreeDropdown
         ]);
     }
 
-    /**
-     * Print a good title for group pages
-     *
-     *@return void
-     **/
-    public function title()
+    public static function getAdditionalMenuLinks()
     {
-        $buttons = [];
+        $links = [];
         if (
-            Group::canUpdate()
-            && Session::haveRight("user", User::UPDATEAUTHENT)
-            && AuthLDAP::useAuthLdap()
+            AuthLDAP::useAuthLdap()
+            && Session::haveRight("user", User::IMPORTEXTAUTHUSERS)
+            && static::canUpdate()
         ) {
-            $buttons["ldap.group.php"] = "<i class='fas fa-users-cog fa-lg me-2'></i>" . __('LDAP directory link');
-            $title                     = "";
-        } else {
-            $title = "<i class='fas fa-users fa-lg me-2'></i>" . self::getTypeName(Session::getPluralNumber());
+            $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "ldap.group.php";
         }
-
-        Html::displayTitle(
-            "",
-            self::getTypeName(Session::getPluralNumber()),
-            $title,
-            $buttons
-        );
+        return $links;
     }
 
     public function getSpecificMassiveActions($checkitem = null)

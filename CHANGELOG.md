@@ -231,6 +231,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
+- `Group::title()`
 - `Html::clean()`
 - `Impact::buildNetwork()`
 - `KnowbaseItem::addToFaq()`
@@ -276,6 +277,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::sodiumDecrypt()`
 - `Toolbox::sodiumEncrypt()`
 - `Toolbox::unclean_cross_side_scripting_deep()`
+- `User::title()`
 - `XML` class.
 - Usage of `Search::addOrderBy` signature with ($itemtype, $ID, $order) parameters
 - Javascript file upload functions `dataURItoBlob`, `extractSrcFromImgTag`, `insertImgFromFile()`, `insertImageInTinyMCE`, `isImageBlobFromPaste`, `isImageFromPaste`.

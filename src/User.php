@@ -130,6 +130,20 @@ class User extends CommonDBTM
         return false;
     }
 
+    public static function getAdditionalMenuLinks()
+    {
+        $links = [];
+        if (Auth::useAuthExt() && Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
+            if (static::canCreate()) {
+                $ext_auth_label = __s('Add from an external source');
+                $links['<i class="ti ti-user-cog"></i><span>' . $ext_auth_label . '</span>'] = 'user.form.php?new=1&amp;ext_auth=1';
+            }
+            if (static::canCreate() || static::canUpdate()) {
+                $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "ldap.php";
+            }
+        }
+        return $links;
+    }
 
     public function canViewItem()
     {
@@ -2489,49 +2503,6 @@ class User extends CommonDBTM
             );
         }
     }
-
-
-    /**
-     * Print a good title for user pages.
-     *
-     * @return void
-     */
-    public function title()
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $buttons = [];
-        $title   = self::getTypeName(Session::getPluralNumber());
-
-        if (static::canCreate()) {
-            $buttons["user.form.php"] = "<i class='fas fa-user-plus fa-lg me-2'></i>" . __('Add user...');
-            $title = __("Actions");
-
-            if (
-                Auth::useAuthExt()
-                && Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
-            ) {
-                // This requires write access because don't use entity config.
-                $buttons["user.form.php?new=1&amp;ext_auth=1"] = "<i class='fas fa-user-cog fa-lg me-2'></i>" . __('... From an external source');
-            }
-        }
-        if (
-            Session::haveRight("user", self::IMPORTEXTAUTHUSERS)
-            && (static::canCreate() || static::canUpdate())
-        ) {
-            if (AuthLDAP::useAuthLdap()) {
-                $buttons["ldap.php"] = "<i class='fas fa-cog fa-lg me-2'></i>" . __('LDAP directory link');
-            }
-        }
-        Html::displayTitle(
-            "",
-            self::getTypeName(Session::getPluralNumber()),
-            $title,
-            $buttons
-        );
-    }
-
 
     /**
      * Check if current user have more right than the specified one.
