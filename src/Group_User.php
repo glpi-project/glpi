@@ -378,9 +378,6 @@ class Group_User extends CommonDBRelation
      */
     public static function showForGroup(Group $group)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $ID = $group->getID();
         if (
             !User::canView()
@@ -476,8 +473,8 @@ class Group_User extends CommonDBRelation
                 'active' => 'raw_html'
             ],
             'entries' => $entries,
-            'total_number' => count($entries),
-            'filtered_number' => count($entries),
+            'total_number' => $number,
+            'filtered_number' => $number,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
