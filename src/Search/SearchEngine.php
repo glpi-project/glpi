@@ -569,10 +569,9 @@ final class SearchEngine
      * @param class-string<CommonGLPI> $itemtype
      * @param array $params Array of options:
      *                       - (bool) init_session_data - default: false
-     * @param array|null $get Alternative array of data to use instead of $_GET for the parameters passed to the search engine via the URL
      * @return void
      */
-    public static function show(string $itemtype, array $params = [], ?array $get = []): void
+    public static function show(string $itemtype, array $params = []): void
     {
         Profiler::getInstance()->start('SearchEngine::show', Profiler::CATEGORY_SEARCH);
         Plugin::doHook(Hooks::PRE_ITEM_LIST, ['itemtype' => $itemtype, 'options' => []]);
@@ -587,7 +586,7 @@ final class SearchEngine
 
         /** @var SearchInputInterface $search_input_class */
         $search_input_class = self::getSearchInputClass($params);
-        $params = array_merge($params, $search_input_class::manageParams($itemtype, $get ?? $_GET));
+        $params = array_merge($params, $search_input_class::manageParams($itemtype, $_GET));
 
         if (!isset($params['display_type'])) {
             $params['display_type'] = \Search::HTML_OUTPUT;
