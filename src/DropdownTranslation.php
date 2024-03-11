@@ -366,16 +366,12 @@ class DropdownTranslation extends CommonDBChild
                 <div id="viewtranslation{{ rand }}"></div>
                 <script>
                     function viewEditTranslation{{ rand }}(translations_id = -1) {
-                        if (translations_id <= 0) {
-                            $('button[name="new_translation"]').addClass('d-none');
-                        } else {
-                            $('button[name="new_translation"]').removeClass('d-none');
-                        }
+                        $('button[name="new_translation"]').toggleClass('d-none', translations_id <= 0);
                         $('#viewtranslation{{ rand }}').load(
-                            '/ajax/viewsubitem.php',
+                            CFG_GLPI['root_doc'] + '/ajax/viewsubitem.php',
                             {
                                 type: 'DropdownTranslation',
-                                parenttype: '{{ itemtype }}',
+                                parenttype: '{{ itemtype|e('js') }}',
                                 {{ item_fk }}: {{ items_id }},
                                 id: translations_id
                             }
@@ -419,7 +415,7 @@ TWIG, $twig_params);
             if (($matching_field['type'] ?? null) === 'tinymce') {
                 $entry['value'] = '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
             } else {
-                $entry['value'] = RichText::getTextFromHtml(content: $data['value'], encode_output_entities: true);
+                $entry['value'] = htmlspecialchars($data['value']);
             }
             $entries[] = $entry;
         }
@@ -475,7 +471,7 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('pages/setup/dropdowntranslation.html.twig', [
             'parent_item' => $item,
             'item' => $this,
-            'search_option' => $item->getSearchOptionByField('field', $this->fields['field']),
+            'search_option' => !$item->isNewItem() ? $item->getSearchOptionByField('field', $this->fields['field']) : [],
             'matching_field' => $item->getAdditionalField($this->fields['field']),
             'no_header' => true
         ]);

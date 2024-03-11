@@ -37,9 +37,9 @@
 
 {% block form_fields %}
     {{ inputs.hidden('itemtype', get_class(parent_item)) }}
-    {{ inputs.hidden('items_id', parent_item.getID) }}
+    {{ inputs.hidden('items_id', parent_item.getID()) }}
 
-    {% if not item.isNewItem %}
+    {% if not item.isNewItem() %}
         {# Updating translation only allows modifying the value #}
         {{ inputs.hidden('language', item.fields['language']) }}
         {{ fields.htmlField('', call('Dropdown::getLanguageName', [item.fields['language']])|e, __('Language')) }}
@@ -69,7 +69,7 @@
         {{ fields.nullField() }}
 
         {% set field_field %}
-            <span id="span_fields" name="span_fields">
+            <span id="span_fields_{{ rand }}">
                 {% do call('DropdownTranslation::dropdownFields', [parent_item, session('glpilanguage'), '', {
                     rand: rand
                 }]) %}
@@ -77,33 +77,33 @@
             <script>
                 $(() => {
                     $('#dropdown_language{{ rand }}').on('change', (e) => {
-                        $('#span_fields').load(
-                            "/ajax/updateTranslationFields.php",
+                        $('#span_fields_{{ rand }}').load(
+                            CFG_GLPI['root_doc'] + '/ajax/updateTranslationFields.php',
                             {
-                                itemtype: '{{ get_class(parent_item) }}',
-                                items_id: {{ parent_item.getID }},
+                                itemtype: '{{ get_class(parent_item)|e('js') }}',
+                                items_id: {{ parent_item.getID() }},
                                 language: e.target.value
                             }
                         );
                     });
-                    $('#span_fields').on('change', 'select[name="field"]', (e) => {
-                        $('#span_value').load(
-                            "/ajax/updateTranslationValue.php",
+                    $('#span_fields_{{ rand }}').on('change', 'select[name="field"]', (e) => {
+                        $('#span_value_{{ rand }}').load(
+                            CFG_GLPI['root_doc'] + '/ajax/updateTranslationValue.php',
                             {
-                                itemtype: '{{ get_class(parent_item) }}',
-                                items_id: {{ parent_item.getID }},
+                                itemtype: '{{ get_class(parent_item)|e('js') }}',
+                                items_id: {{ parent_item.getID() }},
                                 field: e.target.value
                             }
                         );
                     });
-                    $('#span_fields select[name="field"]').trigger('change');
+                    $('#span_fields_{{ rand }} select[name="field"]').trigger('change');
                 });
             </script>
         {% endset %}
         {{ fields.htmlField('', field_field, _n('Field', 'Fields', 1)) }}
 
         {% set value_field %}
-            <span id="span_value" name="span_value"></span>
+            <span id="span_value_{{ rand }}"></span>
         {% endset %}
         {{ fields.htmlField('', value_field, __('Value')) }}
     {% endif %}
