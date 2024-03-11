@@ -7825,6 +7825,7 @@ CREATE TABLE `glpi_users` (
   `password_history` longtext,
   `is_notif_enable_default` tinyint DEFAULT NULL,
   `show_search_form` tinyint DEFAULT 0,
+  `search_pagination_on_top` tinyint DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicityloginauth` (`name`,`authtype`,`auths_id`),
   KEY `firstname` (`firstname`),

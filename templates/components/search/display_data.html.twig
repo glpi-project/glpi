@@ -72,9 +72,9 @@
         {% endif %}
         {% if count > 0 %}
             {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-            <div class="card-footer search-footer">
-                {{ include('components/pager.html.twig') }}
-            </div>
+                <div class="card-footer search-footer {{ not user_pref('search_pagination_on_top') ? "d-block" : "d-block d-xxl-none"}}">
+                    {{ include('components/pager.html.twig') }}
+                </div>
             {% endif %}
         {% elseif data['search']['as_map'] == 1 %}
             <div class="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0" role="alert">

@@ -187,6 +187,7 @@
    }, __('Timeline order'), field_options) }}
 
    {{ fields.dropdownYesNo('show_search_form', config['show_search_form'], __('Show search form above results'), field_options) }}
+   {{ fields.dropdownYesNo('search_pagination_on_top', config['search_pagination_on_top'], __('Show search pagination above results'), field_options) }}
 
    {% if get_current_interface() == 'central' %}
       {{ fields.smallTitle(__('Assistance'), 'ti ti-headset') }}
