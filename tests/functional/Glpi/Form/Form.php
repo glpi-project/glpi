@@ -770,11 +770,11 @@ class Form extends DbTestCase
     }
 
     /**
-     * Indirectly test the post_purgeItem method by purging a form
+     * Indirectly test the cleanDBonPurge method by purging a form
      *
      * @return void
      */
-    public function testPost_purgeItem(): void
+    public function testCleanDBonPurge(): void
     {
         // Test subject that we are going to delete
         $form_to_be_deleted = $this->createForm(

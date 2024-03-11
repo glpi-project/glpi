@@ -221,7 +221,7 @@ final class Form extends CommonDBTM
     }
 
     #[Override]
-    public function post_purgeItem()
+    public function cleanDBonPurge()
     {
         // Delete all sections and questions
         foreach ($this->getSections() as $section) {
