@@ -739,6 +739,9 @@ class NetworkPort extends CommonDBChild
         $ports_iterator = $DB->request($criteria);
 
         $so = $netport->rawSearchOptions();
+        foreach (Plugin::getAddSearchOptions(__CLASS__) as $key => $data) {
+            $so[] = ['id' => $key] + $data;
+        }
         $dprefs = DisplayPreference::getForTypeUser(
             'Networkport',
             Session::getLoginUserID()
@@ -1276,7 +1279,21 @@ class NetworkPort extends CommonDBChild
                             }
                             break;
                         default:
-                            $output .= $port[$option['field']];
+                            if ($option['table'] == $this->getTable()) {
+                                $output .= $port[$option['field']];
+                            } else {
+                                $iterator = $DB->request([
+                                    'SELECT' => $option['field'],
+                                    'FROM'   => $option['table'],
+                                    'WHERE'  => [
+                                        'itemtype' => $this->getType(),
+                                        'items_id' => $port['id']
+                                    ]
+                                ]);
+                                foreach ($iterator as $row) {
+                                    $output .= $row[$option['field']];
+                                }
+                            }
                             break;
                     }
                 }
