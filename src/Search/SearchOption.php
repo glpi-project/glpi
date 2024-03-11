@@ -757,7 +757,7 @@ final class SearchOption implements \ArrayAccess
      * @param string $plugin
      * @return int
      */
-    public static function generateAPropbablyUniqueId(string $string_identifier, ?string $plugin = null): int
+    public static function generateAProbablyUniqueId(string $string_identifier, ?string $plugin = null): int
     {
         // Generates an ID that can be assigned anywhere in the 10000-19999 range
         $generated_id = (int)abs((int)hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;

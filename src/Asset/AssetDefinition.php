@@ -643,7 +643,7 @@ final class AssetDefinition extends CommonDBTM
             $search_string = str_replace('\\', '\\\\', $search_string);
 
             $search_options[] = [
-                'id'            => SearchOption::generateAPropbablyUniqueId($capacity::class),
+                'id'            => SearchOption::generateAProbablyUniqueId($capacity::class),
                 'table'         => self::getTable(),
                 'field'         => sprintf('_capacities_%s', $capacity::class),
                 'name'          => $capacity->getLabel(),

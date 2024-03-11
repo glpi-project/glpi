@@ -64,18 +64,18 @@ class SearchOption extends \GLPITestCase
         ?string $plugin,
         int $generated_id
     ) {
-        $result = \Glpi\Search\SearchOption::generateAPropbablyUniqueId($string_identifier, $plugin);
+        $result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($string_identifier, $plugin);
         $this->integer($result)->isEqualTo($generated_id);
     }
 
     public function testGenerateAPropbablyUniqueIdRange()
     {
         for ($i = 'a'; $i < 'aaa'; $i = str_increment($i)) {
-            $core_result = \Glpi\Search\SearchOption::generateAPropbablyUniqueId($i, null);
+            $core_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($i, null);
             $this->integer($core_result)->isGreaterThanOrEqualTo(10000);
             $this->integer($core_result)->isLessThanOrEqualTo(19999);
 
-            $plugin_result = \Glpi\Search\SearchOption::generateAPropbablyUniqueId($i, 'MyPlugin');
+            $plugin_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($i, 'MyPlugin');
             $this->integer($plugin_result)->isGreaterThanOrEqualTo(20000);
             $this->integer($plugin_result)->isLessThanOrEqualTo(99999);
         }
