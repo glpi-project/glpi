@@ -317,6 +317,25 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        // Add team members
+        if (isset($this->input['teammember_list'])) {
+            $taskteam = new ProjectTaskTeam();
+            $members_types = ProjectTask::getTeamMembersItemtypes();
+            foreach ($members_types as $type) {
+                $ids = ProjectTaskTeamDropdown::getPostedIds(
+                    $this->input['teammember_list'],
+                    $type
+                );
+                foreach ($ids as $id) {
+                    $taskteam->add([
+                        'projecttasks_id' => $this->fields['id'],
+                        'itemtype'        => $type,
+                        'items_id'        => $id
+                    ]);
+                }
+            }
+        }
+
         // Handle rich-text images
         $this->input = $this->addFiles(
             $this->input,
@@ -553,6 +572,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 'projecttasks_id' => $this->getID()
             ]);
         }
+    }
+
+    /**
+     * List of all possible team members itemtypes.
+     * @return array
+     */
+    public static function getTeamMembersItemtypes(): array
+    {
+        return [
+            User::getType(),
+            Group::getType(),
+            Contact::getType(),
+            Supplier::getType(),
+        ];
     }
 
 
