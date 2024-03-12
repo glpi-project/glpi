@@ -1276,19 +1276,10 @@ class GlpiFormEditorController
                     );
             });
 
-        // Reinit tiynmce for all richtext inputs
-        // TODO: use #handleItemMove and only reinit the moved sections, not everything
-        $(this.#target)
-            .find("textarea")
-            .each((index, textarea) => {
-                const id = $(textarea).prop("id");
-                const editor = tinymce.get(id);
-
-                if (editor) {
-                    editor.destroy();
-                    tinymce.init(window.tinymce_editor_configs[id]);
-                }
-            });
+        // Handle the move for each sections
+        $(this.#target).find("[data-glpi-form-editor-section]").each((index, section) => {
+            this.#handleItemMove($(section));
+        });
     }
 
     /**
