@@ -61,6 +61,7 @@ The present file will list all changes made to the project; according to the
   Permission checks at the item-level have not been changed.
 - External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
+- `Group` and `Group in charge` fields for assets may now contain multiple groups.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -132,6 +133,7 @@ The present file will list all changes made to the project; according to the
 - The `Item_Ticket$1` tab should be used in replacement of the `Ticket$1` tab to display tickets associated with an item.
 - Specifying the `ranking` of a rule during add/update now triggers `RuleCollection::moveRule` to manage the rankings of other rules to try to keep them valid and in order.
 - `Lock::getLocksQueryInfosByItemType()` has been made private.
+- For assets, `groups_id` and `groups_id_tech` fields were changed from integers to arrays and are loaded into the `fields` array after `getFromDB`/`getEmpty`.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.

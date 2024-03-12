@@ -210,11 +210,48 @@ foreach ($it as $data) {
     }
 }
 
-$assignable_asset_rights = [
-    'computer', 'monitor', 'software', 'networking', 'printer',
-    'cartridge', 'consumable', 'phone', 'peripheral'
+$assignable_assets = [
+    'Computer' => [
+        'table' => 'glpi_computers',
+        'rightname' => 'computer'
+    ],
+    'Monitor' => [
+        'table' => 'glpi_monitors',
+        'rightname' => 'monitor'
+    ],
+    'Software' => [
+        'table' => 'glpi_softwares',
+        'rightname' => 'software'
+    ],
+    'NetworkEquipment' => [
+        'table' => 'glpi_networkequipments',
+        'rightname' => 'networking'
+    ],
+    'Printer' => [
+        'table' => 'glpi_printers',
+        'rightname' => 'printer'
+    ],
+    'CartridgeItem' => [
+        'table' => 'glpi_cartridgeitems',
+        'rightname' => 'cartridge'
+    ],
+    'ConsumableItem' => [
+        'table' => 'glpi_consumableitems',
+        'rightname' => 'consumable'
+    ],
+    'Phone' => [
+        'table' => 'glpi_phones',
+        'rightname' => 'phone'
+    ],
+    'Peripheral' => [
+        'table' => 'glpi_peripherals',
+        'rightname' => 'peripheral'
+    ]
 ];
-foreach ($assignable_asset_rights as $rightname) {
-    $migration->addRight($rightname, READ_ASSIGNED, [$rightname => READ]);
-    $migration->addRight($rightname, UPDATE_ASSIGNED, [$rightname => UPDATE]);
+foreach ($assignable_assets as $asset) {
+    $migration->addRight($asset['rightname'], READ_ASSIGNED, [$asset['rightname'] => READ]);
+    $migration->addRight($asset['rightname'], UPDATE_ASSIGNED, [$asset['rightname'] => UPDATE]);
+    // groups_id and groups_id_tech are now TEXT fields
+    $migration->changeField($asset['table'], 'groups_id', 'groups_id', 'TEXT');
+    $migration->changeField($asset['table'], 'groups_id_tech', 'groups_id_tech', 'TEXT');
 }
