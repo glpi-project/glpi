@@ -351,7 +351,6 @@ class GlpiFormEditorController
             );
             this.#setItemRank($(section), s_index);
             this.#remplaceEmptyIdByUuid($(section));
-            this.#setKey($(section));
 
             // Find all questions for this section
             const questions = $(section).find("[data-glpi-form-editor-question]");
@@ -365,7 +364,6 @@ class GlpiFormEditorController
                 this.#setItemRank($(question), q_index);
                 this.#remplaceEmptyIdByUuid($(question));
                 this.#setParentSection($(question), $(section));
-                this.#setKey($(question));
 
                 global_q_index++;
             });
@@ -477,17 +475,6 @@ class GlpiFormEditorController
             question,
             "_use_uuid_for_sections_id",
             this.#getItemInput(section, "_use_uuid")
-        );
-    }
-
-    /**
-     * Must not be called directly, use #computeState() instead.
-     * @param {jQuery} item Section or question
-     */
-    #setKey(item) {
-        item.attr(
-            "data-glpi-form-editor-key",
-            this.#getItemInput(item, "id")
         );
     }
 
@@ -1221,18 +1208,20 @@ class GlpiFormEditorController
             .find("[data-glpi-form-editor-section]")
             .each((index, section) => {
                 const name = this.#getItemInput($(section), "name");
-                const section_key = $(section).data("glpi-form-editor-key");
 
                 // Copy template
                 const copy = $("[data-glpi-form-editor-move-section-modal-item-template]")
                     .clone();
 
-                // Set section index
+                // Set an unique identifier on both the section and its modal counter part
+                // This will allow us to find the matching sections for each modal list items
+                const uuid = getUUID();
+                $(section).attr("data-glpi-form-editor-move-section-modal-uuid", uuid);
                 copy
                     .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
                     .attr(
                         "data-glpi-form-editor-move-section-modal-item-section-key",
-                        section_key
+                        uuid
                     );
 
                 // Set section name
@@ -1259,13 +1248,6 @@ class GlpiFormEditorController
      * Reorder the sections based on the "move section modal" content.
      */
     #reorderSections() {
-        // Temporary bugfix: state must be manually computed before we can reorder
-        // the sections as we use the data-glpi-form-editor-key parameter to
-        // select the correct section
-        this.#computeState();
-        // TODO: #computeState should not generate keys, it should be handled
-        // somewhere else
-
         // Close modal
         $(this.#target)
             .find("[data-glpi-form-editor-move-section-modal]")
@@ -1275,18 +1257,17 @@ class GlpiFormEditorController
             .find("[data-glpi-form-editor-move-section-modal-items]")
             .children()
             .each((index, item) => {
-                // Find section key
+                // Get the UUID defined in the buildMoveSectionModalContent process
                 const section_key = $(item)
                     .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
                     .data("glpi-form-editor-move-section-modal-item-section-key");
 
                 // Find section by index
-                const by_key_selector = `[data-glpi-form-editor-key=${section_key}]`;
                 const section = $(this.#target)
-                    .find(`[data-glpi-form-editor-section]${by_key_selector}`);
+                    .find(`[data-glpi-form-editor-move-section-modal-uuid=${section_key}]`);
 
                 // Move section at the end of the form
-                // This will naturally sort all sections as there are moved one
+                // This will naturally sort all sections as they are moved one
                 // by one at the end
                 section
                     .remove()
