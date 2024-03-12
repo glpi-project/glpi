@@ -215,7 +215,6 @@ $assignable_asset_rights = [
     'cartridge', 'consumable', 'phone', 'peripheral'
 ];
 foreach ($assignable_asset_rights as $rightname) {
-    // Computer class used here for access to properties in AssignableAsset trait since direct access is deprecated by PHP
     $migration->addRight($rightname, READ_ASSIGNED, [$rightname => READ]);
     $migration->addRight($rightname, UPDATE_ASSIGNED, [$rightname => UPDATE]);
 }

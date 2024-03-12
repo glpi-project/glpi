@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRightsOr("computer", [READ, READ_ASSIGNED]);
+Session::checkRightsOr(Computer::$rightname, [READ, READ_ASSIGNED]);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
