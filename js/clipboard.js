@@ -61,10 +61,10 @@ $(function () {
     });
 
     /**
-     * For each input of type text,
+     * For each input of type text with name 'name'
      * if the input get a paste event, the text is trimmed before being pasted
      */
-    $(document).on("paste", "input[type='text']", function (event) {
+    $(document).on("paste", "input[type='text'][name='name']", function (event) {
         event.preventDefault();
         var pastedData = event.originalEvent.clipboardData || window.clipboardData;
         var pastedText = pastedData.getData('text');
