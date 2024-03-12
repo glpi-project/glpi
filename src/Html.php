@@ -437,9 +437,9 @@ class Html
     /**
      * Redirection to $_SERVER['HTTP_REFERER'] page
      *
-     * @return void
+     * @return never
      **/
-    public static function back()
+    public static function back(): never
     {
         self::redirect(self::getBackUrl());
     }
@@ -451,9 +451,9 @@ class Html
      * @param $dest string: Redirection destination
      * @param $http_response_code string: Forces the HTTP response code to the specified value
      *
-     * @return void
+     * @return never
      **/
-    public static function redirect($dest, $http_response_code = 302)
+    public static function redirect($dest, $http_response_code = 302): never
     {
 
         $toadd = '';

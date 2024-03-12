@@ -35,16 +35,22 @@
 
 namespace Glpi\Form\Destination;
 
-use CommonDBTM;
 use Exception;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Item_Ticket;
 use Override;
 use Ticket;
 
 // TODO: we may need an abstract FormDestinationCommonITIL base class
-final class FormDestinationTicket extends CommonDBTM implements FormDestinationInterface
+final class FormDestinationTicket extends AbstractFormDestinationType
 {
+    #[Override]
+    public static function getTargetItemtype(): string
+    {
+        return Ticket::class;
+    }
+
     #[Override]
     public function createDestinationItems(
         Form $form,
@@ -63,6 +69,33 @@ final class FormDestinationTicket extends CommonDBTM implements FormDestinationI
             );
         }
 
+        // We will also link the answers directly to the ticket
+        // This allow users to see it an an associated item and known where the
+        // ticket come from
+        $item_ticket = new Item_Ticket();
+        $input = [
+            'tickets_id' => $ticket->getID(),
+            'itemtype'   => $answers_set::class,
+            'items_id'   => $answers_set->getID(),
+        ];
+        if (!$item_ticket->add($input)) {
+            throw new Exception(
+                "Failed to create item ticket: " . json_encode($input)
+            );
+        }
+
         return [$ticket];
+    }
+
+    #[Override]
+    public static function getTypeName($nb = 0)
+    {
+        return Ticket::getTypeName($nb);
+    }
+
+    #[Override]
+    public static function getFilterByAnswsersSetSearchOptionID(): int
+    {
+        return 120;
     }
 }

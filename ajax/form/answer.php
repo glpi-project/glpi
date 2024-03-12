@@ -70,12 +70,24 @@ if (!$answers_set) {
     Response::sendError(500, __('Failed to save answers'));
 }
 
+$links = [];
+foreach ($answers_set->getCreatedItems() as $item) {
+    if ($item->can($item->getID(), READ)) {
+        $links[] = $item->getLink();
+    }
+}
+
+// If no items were created, display a link to the answers themselves instead
+if (empty($links)) {
+    $links[] = $answers_set->getLink();
+}
+
 // Success response
 $response = new Response(
     200,
     ['Content-Type' => 'application/json'],
     json_encode([
-        'link_to_created_item' => $answers_set->getLink(),
+        'links_to_created_items' => $links,
     ]),
 );
 $response->send();

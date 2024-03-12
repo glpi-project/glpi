@@ -1,0 +1,119 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var string                                        icon #}
+{# @var string                                        controller_url #}
+{# @var \Glpi\Form\Desination\AbstractFormDestination default_destination_object #}
+{# @var \Glpi\Form\Form                               form #}
+{# @var \Glpi\Form\Desination\FormDestination         destinations #}
+
+<div class="py-2 px-3">
+    <h2 class="d-flex">
+        <i class="{{ icon }} me-2"></i>
+        {{ __("Items to create") }}
+    </h2>
+
+    {% if destinations|length == 0 %}
+        <p class="empty-subtitle text-muted">
+            {{ __("No items will be created for this form.") }}
+        </p>
+    {% else %}
+        <div class="accordion mt-4">
+            {% for destination in destinations %}
+                {% set concrete_destination = destination.getConcreteDestinationItem() %}
+                <div
+                    id="glpi-destinations-accordion"
+                    class="accordion-item"
+                >
+                    <h3 class="accordion-header">
+                        <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#glpi-destinations-accordion-collapse-{{ loop.index }}"
+                            aria-expanded="false"
+                        >
+                            <i class="{{ concrete_destination.getTargetItemtype().getIcon() }} me-2"></i>
+                            {{ destination.getName() }}
+                        </button>
+                    </h3>
+                    <div
+                        id="glpi-destinations-accordion-collapse-{{ loop.index }}"
+                        class="accordion-collapse collapse"
+                        data-bs-parent="#glpi-destinations-accordion"
+                    >
+                        <div class="accordion-body pt-0">
+                            <form method="POST" action="{{ controller_url }}">
+                                <div>
+                                    {{ __("The created ticket's content is not yet customizable (WIP).") }}
+                                </div>
+
+                                {# Submit button to delete the destination #}
+                                <div class="d-flex">
+                                    <button class="btn btn-danger btn-sm mt-3" name="purge" type="submit">
+                                        <i class="ti ti-trash me-2"></i>
+                                        {{ __("Delete item") }}
+                                    </button>
+                                </div>
+
+                                {# Hidden values #}
+                                <input type="hidden" name="id" value="{{ destination.getID() }}"/>
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST" action="{{ controller_url }}">
+        {# Submit button to create a new destination #}
+        <button class="btn btn-primary btn-sm mt-4" name="add" type="submit">
+            <i class="ti ti-plus me-2"></i> {{ __("New item") }}
+        </button>
+
+        {# Hidden values #}
+        <input type="hidden" name="itemtype" value="{{ get_class(default_destination_object) }}"/>
+        <input type="hidden" name="name" value="{{ default_destination_object.getTypeName(1) }}"/>
+        <input type="hidden" name="{{ form.getForeignKeyField() }}" value="{{ form.getID() }}"/>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+    <form>
+</div>
+
+<style>
+    /* Should be handled by tabler but it doesn't seem to be active */
+    .accordion-header {
+        color: var(--tblr-dark);
+    }
+</style>

@@ -233,6 +233,7 @@ final class AnswersHandler
         $answers_set = new AnswersSet();
         $input = [
             'name'           => $form->getName() . " #$next_index",
+            'entities_id'    => $form->fields['entities_id'],
             'forms_forms_id' => $form->getID(),
             'answers'        => json_encode($formatted_answers),
             'users_id'       => $users_id,
@@ -285,7 +286,7 @@ final class AnswersHandler
 
                 $form_item = new AnswersSet_FormDestinationItem();
                 $input = [
-                    AnswersSet::getForeignKeyField() => $form->getID(),
+                    AnswersSet::getForeignKeyField() => $answers_set->getID(),
                     'itemtype'                       => $item::getType(),
                     'items_id'                       => $item->getID(),
                 ];

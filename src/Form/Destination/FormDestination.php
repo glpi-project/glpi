@@ -36,7 +36,11 @@
 namespace Glpi\Form\Destination;
 
 use CommonDBChild;
+use CommonGLPI;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
+use InvalidArgumentException;
+use Override;
 use ReflectionClass;
 
 final class FormDestination extends CommonDBChild
@@ -46,6 +50,128 @@ final class FormDestination extends CommonDBChild
      */
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
+
+    #[Override]
+    public static function getTypeName($nb = 0)
+    {
+        return __('Items to create', $nb);
+    }
+
+    #[Override]
+    public static function getIcon()
+    {
+        return "ti ti-arrow-forward";
+    }
+
+    #[Override]
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        // Only for forms
+        if (!($item instanceof Form)) {
+            return false;
+        }
+
+        $count = 0;
+        if ($_SESSION['glpishow_count_on_tabs']) {
+            $count = $this->countForForm($item);
+        }
+
+        return self::createTabEntry(
+            self::getTypeName(),
+            $count,
+            null,
+            self::getIcon() // Must be passed manually for some reason
+        );
+    }
+
+    #[Override]
+    public static function displayTabContentForItem(
+        CommonGLPI $item,
+        $tabnum = 1,
+        $withtemplate = 0
+    ) {
+        // Only for forms
+        if (!($item instanceof Form)) {
+            return false;
+        }
+
+        $renderer = TemplateRenderer::getInstance();
+        $renderer->display('pages/admin/form/form_destination.html.twig', [
+            'icon'                       => self::getIcon(),
+            'form'                       => $item,
+            'controller_url'             => self::getFormURL(),
+            'default_destination_object' => new FormDestinationTicket(),
+            'destinations'               => $item->getDestinations(),
+        ]);
+
+        return true;
+    }
+
+    #[Override]
+    public static function canCreate()
+    {
+        // Must be able to update forms
+        return Form::canUpdate();
+    }
+
+    #[Override]
+    public function canCreateItem()
+    {
+        $form = Form::getByID($this->fields['forms_forms_id']);
+        if (!$form) {
+            return false;
+        }
+
+        // Must be able to update the parent form
+        return $form->canUpdateItem();
+    }
+
+    #[Override]
+    public static function canPurge()
+    {
+        // Must be able to update forms
+        return Form::canUpdate();
+    }
+
+    #[Override]
+    public function canPurgeItem()
+    {
+        $form = Form::getByID($this->fields['forms_forms_id']);
+        if (!$form) {
+            return false;
+        }
+
+        // Must be able to update the parent form
+        return $form->canUpdateItem();
+    }
+
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        // Validate forms fk
+        $form_id = $input[Form::getForeignKeyField()] ?? null;
+        if ($form_id === null) {
+            throw new InvalidArgumentException("Missing form id");
+        }
+
+        // Validate parent Form object
+        $form = Form::getByID($form_id);
+        if (!$form) {
+            throw new InvalidArgumentException("Form not found");
+        }
+
+        // Validate itemtype
+        $type = $input['itemtype'] ?? null;
+        if (
+            $type === null
+            || !is_a($type, AbstractFormDestinationType::class, true)
+            || (new ReflectionClass($type))->isAbstract()
+        ) {
+            throw new InvalidArgumentException("Invalid itemtype");
+        }
+
+        return $input;
+    }
 
     /**
      * Get the concrete destination item using the specified class.
@@ -65,5 +191,52 @@ final class FormDestination extends CommonDBChild
         }
 
         return new $class();
+    }
+
+    /**
+     * Get valid destinations for a given form
+     *
+     * @param Form $form
+     *
+     * @return AbstractFormDestinationType[]
+     */
+    protected function getDestinationsForForm(Form $form): array
+    {
+        $destinations = [];
+        $raw_data = $this->find(['forms_forms_id' => $form->getID()]);
+
+        foreach ($raw_data as $row) {
+            if (
+                !is_a($row['itemtype'], AbstractFormDestinationType::class, true)
+                || (new ReflectionClass($row['itemtype']))->isAbstract()
+            ) {
+                // Invalid itemtype, maybe from a disabled plugin
+                continue;
+            }
+
+            $destination = $row['itemtype']::getById($row['items_id']);
+            if (!$destination) {
+                continue;
+            }
+
+            $destinations[] = $destination;
+        }
+
+        return $destinations;
+    }
+
+    /**
+     * Count the number of form_desinations items for a form
+     *
+     * @param Form $form
+     *
+     * @return int
+     */
+    protected function countForForm(Form $form): int
+    {
+        return countElementsInTable(
+            self::getTable(),
+            ['forms_forms_id' => $form->getID()],
+        );
     }
 }

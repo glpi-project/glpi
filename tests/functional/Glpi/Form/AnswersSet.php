@@ -39,6 +39,7 @@ use CommonGLPI;
 use Computer;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
@@ -70,7 +71,7 @@ class AnswersSet extends DbTestCase
 
         // Form without questions
         $form_1 = $this->createForm(new FormBuilder());
-        yield [$form_1, "Answers"];
+        yield [$form_1, "Form answers"];
 
         // Form with answers
         $form_2 = $this->createForm(
@@ -87,10 +88,10 @@ class AnswersSet extends DbTestCase
         ], \Session::getLoginUserID());
 
         $_SESSION['glpishow_count_on_tabs'] = true;
-        yield [$form_2, "Answers 2"];
+        yield [$form_2, "Form answers 2"];
 
         $_SESSION['glpishow_count_on_tabs'] = false;
-        yield [$form_2, "Answers"];
+        yield [$form_2, "Form answers"];
     }
 
     /**
@@ -263,5 +264,44 @@ class AnswersSet extends DbTestCase
             ->isTrue()
         ;
         ob_end_clean();
+    }
+
+    /**
+     * Test the "getCreatedItems" method
+     *
+     * @return void
+     */
+    public function testGetCreatedItems(): void
+    {
+        $this->login();
+        $answers_handler = AnswersHandler::getInstance();
+
+        // Create a form with two destinations
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addDestination(FormDestinationTicket::class, ['name' => 'Ticket 1'])
+                ->addDestination(FormDestinationTicket::class, ['name' => 'Ticket 2'])
+        );
+
+        // Submit form
+        $answers_set = $answers_handler->saveAnswers($form, [
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
+        ], \Session::getLoginUserID());
+
+        // Validate that we have the two expected items
+        $items = $answers_set->getCreatedItems();
+        $this
+            ->array($items)
+            ->hasSize(2);
+        $this
+            ->object($items[0])
+            ->isInstanceOf(Ticket::class);
+        $this
+            ->object($items[1])
+            ->isInstanceOf(Ticket::class);
+
+        // No need to test the content of the tickets here as it is already
+        // handled in the "FormDestinationTicket" tests class.
     }
 }

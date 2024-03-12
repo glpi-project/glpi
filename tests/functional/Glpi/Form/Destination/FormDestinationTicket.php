@@ -35,14 +35,15 @@
 
 namespace tests\units\Glpi\Form\Destination;
 
-use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Tests\Form\Destination\AbstractFormDestinationType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Override;
 use Ticket;
 
-class FormDestinationTicket extends DbTestCase
+class FormDestinationTicket extends AbstractFormDestinationType
 {
     use FormTesterTrait;
 
@@ -50,6 +51,13 @@ class FormDestinationTicket extends DbTestCase
      * Indirectly test the \Glpi\Form\AnswersHandler\AnswersHandler->createDestinations()
      * method using a FormDestinationTicket object
      */
+    #[Override]
+    protected function getTestedInstance(): \Glpi\Form\Destination\FormDestinationTicket
+    {
+        return new \Glpi\Form\Destination\FormDestinationTicket();
+    }
+
+    #[Override]
     public function testCreateDestinations(): void
     {
         $this->login();
