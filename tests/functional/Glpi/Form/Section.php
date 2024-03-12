@@ -125,6 +125,20 @@ class Section extends DbTestCase
             $section,
             ['Question 1', 'Question 2']
         ];
+
+        // Ensure that invalid questions types are dropped
+        $form_3 = $this->createForm(
+            (new FormBuilder())
+                ->addSection('Section 1')
+                ->addQuestion('Valid question type', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Invalid question type', "Not a type")
+        );
+
+        $section = \Glpi\Form\Section::getById($this->getSectionId($form_3, 'Section 1'));
+        yield [
+            $section,
+            ['Valid question type']
+        ];
     }
 
     /**

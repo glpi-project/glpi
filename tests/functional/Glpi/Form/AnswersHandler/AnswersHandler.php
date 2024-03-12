@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form\AnswersHandler;
 
 use DbTestCase;
+use Glpi\Form\Question;
 use Glpi\Tests\FormBuilder;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
@@ -279,25 +280,33 @@ class AnswersHandler extends DbTestCase
         ;
         $form_2 = $this->createForm($builder);
 
+        // We can't use `getQuestionId` to get an invalid question id
+        $invalid_questions_id = getItemByTypeName(Question::class, "Invalid question", true);
+
         // Register an answer
         $handler = \Glpi\Form\AnswersHandler\AnswersHandler::getInstance();
         $answers_set = $handler->saveAnswers($form_2, [
             $this->getQuestionId($form_2, "Valid question") => "Valid answer",
-            $this->getQuestionId($form_2, "Invalid question") => "Invalid answer",
+            $invalid_questions_id => "Invalid answer",
         ], $users_id);
 
-        // Second test, ensure invalid types are dropped
-        yield [
-            'answers' => $answers_set->fields['answers'],
-            'expected_prepared_answers' => [
-                [
-                    'question' => $this->getQuestionId($form_2, "Valid question"),
-                    'value'    => "Valid answer",
-                    'label'    => "Valid question",
-                    'type'     => new QuestionTypeShortAnswerText(),
-                ],
-            ],
-        ];
+        $error =  "Unknown question: $invalid_questions_id";
+        $this->when(
+            function () {
+                // Second test, ensure invalid types are dropped
+                yield [
+                    'answers' => $answers_set->fields['answers'],
+                    'expected_prepared_answers' => [
+                        [
+                            'question' => $this->getQuestionId($form_2, "Valid question"),
+                            'value'    => "Valid answer",
+                            'label'    => "Valid question",
+                            'type'     => new QuestionTypeShortAnswerText(),
+                        ],
+                    ],
+                ];
+            }
+        )->error()->withType(E_USER_WARNING)->exists()->withMessage($error);
     }
 
     /**

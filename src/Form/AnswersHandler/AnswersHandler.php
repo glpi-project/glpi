@@ -218,6 +218,15 @@ final class AnswersHandler
 
         $formatted_answers = [];
         foreach ($answers as $question_id => $answer) {
+            if (!isset($questions[$question_id])) {
+                // Ignore unknown question
+                trigger_error(
+                    "Unknown question: $question_id",
+                    E_USER_WARNING
+                );
+                continue;
+            }
+
             // We need to keep track of some extra data like label and type because
             // the linked question might be deleted one day but the answer must still
             // be readable.

@@ -96,6 +96,12 @@ final class Section extends CommonDBChild
                 $question = new Question();
                 $question->getFromResultSet($row);
                 $question->post_getFromDB();
+
+                if ($question->getQuestionType() === null) {
+                    // The question might belong to a disabled plugin
+                    continue;
+                }
+
                 $this->questions[$row['id']] = $question;
             }
         }
