@@ -1088,8 +1088,7 @@ class Consumable extends CommonDBChild
 
     public function getRights($interface = 'central')
     {
-        $ci = new ConsumableItem();
-        return $ci->getRights($interface);
+        return (new ConsumableItem())->getRights($interface);
     }
 
 

@@ -1392,7 +1392,7 @@ class Session
         }
 
         if (isset($_SESSION["glpiactiveprofile"][$module])) {
-            return intval($_SESSION["glpiactiveprofile"][$module]) & $right;
+            return (int)$_SESSION["glpiactiveprofile"][$module] & $right;
         }
 
         return false;

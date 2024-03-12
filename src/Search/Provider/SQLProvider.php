@@ -42,6 +42,7 @@ use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
+use Glpi\Features\AssignableAsset;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
@@ -996,6 +997,11 @@ final class SQLProvider implements SearchProviderInterface
                     }
                 }
                 break;
+        }
+
+        if (Toolbox::hasTrait($itemtype, AssignableAsset::class)) {
+            /** @var AssignableAsset $itemtype */
+            $criteria[] = $itemtype::getAssignableVisiblityCriteria();
         }
 
         /* Hook to restrict user right on current itemtype */

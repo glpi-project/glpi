@@ -1432,10 +1432,8 @@ class Cartridge extends CommonDBRelation
 
     public function getRights($interface = 'central')
     {
-        $ci = new CartridgeItem();
-        return $ci->getRights($interface);
+        return (new CartridgeItem())->getRights($interface);
     }
-
 
     public static function getIcon()
     {

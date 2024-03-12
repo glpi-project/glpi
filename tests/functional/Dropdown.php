@@ -38,6 +38,7 @@ namespace tests\units;
 use DbTestCase;
 use Generator;
 use Glpi\Features\Clonable;
+use Glpi\Features\AssignableAsset;
 use Glpi\Socket;
 use Session;
 use State;
@@ -1926,5 +1927,193 @@ class Dropdown extends DbTestCase
         foreach ($original_fields as $field => $value) {
             $this->variable($item->fields[$field])->isEqualTo($value);
         }
+    }
+
+    protected function assignableAssetsProvider()
+    {
+        return [
+            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+        ];
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testGetDropdownValueAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableAsset::class))->isTrue();
+
+        // Create group for the user
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        // Add user to group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+
+        Session::loadGroups();
+
+        // Create three items. One with the user assigned, one without, and one with a group assigned.
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '1',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id_tech' => $_SESSION['glpiID']
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '3',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id_tech' => $groups_id
+        ]))->isGreaterThan(0);
+
+        $results = \Dropdown::getDropdownValue([
+            'itemtype' => $itemtype,
+            'display_emptychoice' => 0,
+            '_idor_token' => \Session::getNewIDORToken($itemtype)
+        ], false)['results'];
+        // get optgroup id (key in the results array) for the test root entity "_test_root_entity"
+        $optgroup_id = array_search("Root _test_root_entity", array_column($results, 'text'));
+
+        $expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
+
+        // Remove permission to read all items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $results = \Dropdown::getDropdownValue([
+            'itemtype' => $itemtype,
+            'display_emptychoice' => 0,
+            '_idor_token' => \Session::getNewIDORToken($itemtype)
+        ], false)['results'];
+        $expected = [
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $not_expected = [
+            __FUNCTION__ . '1'
+        ];
+        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->containsValues($expected);
+        $this->array(array_column($results[$optgroup_id]['children'], 'text'))->notContainsValues($not_expected);
+
+        // Remove permission to read assigned items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $results = \Dropdown::getDropdownValue([
+            'itemtype' => $itemtype,
+            'display_emptychoice' => 0,
+            '_idor_token' => \Session::getNewIDORToken($itemtype)
+        ], false)['results'];
+        $not_expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $children = $results[$optgroup_id]['children'] ?? null;
+        if ($children === null) {
+            $children = [];
+        }
+        $this->array($children)->notContainsValues($not_expected);
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testGetDropdownFindNumAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableAsset::class))->isTrue();
+
+        // Create group for the user
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        // Add user to group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+
+        Session::loadGroups();
+
+        // Create three items. One with the user assigned, one without, and one with a group assigned.
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '1',
+            'entities_id' => $this->getTestRootEntity(true)
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '2',
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id_tech' => $_SESSION['glpiID']
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '3',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id_tech' => $groups_id
+        ]))->isGreaterThan(0);
+
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+
+        $expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
+
+        // Remove permission to read all items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+        $expected = [
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $not_expected = [
+            __FUNCTION__ . '1'
+        ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
+        $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+
+        // Remove permission to read assigned items
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $results = \Dropdown::getDropdownFindNum([
+            'itemtype' => $itemtype,
+            'table' => $itemtype::getTable(),
+            '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                'table' => $itemtype::getTable()
+            ])
+        ], false)['results'];
+        $not_expected = [
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '2',
+            __FUNCTION__ . '3'
+        ];
+        $this->array($results)->notContainsValues($not_expected);
     }
 }

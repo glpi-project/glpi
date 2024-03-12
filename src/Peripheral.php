@@ -44,6 +44,7 @@ class Peripheral extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
+    use Glpi\Features\AssignableAsset;
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -413,7 +414,6 @@ class Peripheral extends CommonDBTM
 
         return $tab;
     }
-
 
     public static function getIcon()
     {

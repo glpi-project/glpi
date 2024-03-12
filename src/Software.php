@@ -43,6 +43,7 @@ class Software extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
     use AssetImage;
+    use Glpi\Features\AssignableAsset;
 
    // From CommonDBTM
     public $dohistory                   = true;

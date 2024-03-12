@@ -37,7 +37,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRight("peripheral", READ);
+Session::checkRightsOr(Peripheral::$rightname, [READ, READ_ASSIGNED]);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";

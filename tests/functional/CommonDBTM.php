@@ -435,6 +435,7 @@ class CommonDBTM extends DbTestCase
         );
         $this->boolean($res)->isTrue();
     }
+
     /**
      * Check right on Recursive object
      *
@@ -477,12 +478,12 @@ class CommonDBTM extends DbTestCase
         ]);
         $this->integer($id[3])->isGreaterThan(0);
 
-       // Super admin
+        // Super admin
         $this->login('glpi', 'glpi');
         $this->variable($_SESSION['glpiactiveprofile']['id'])->isEqualTo(4);
-        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(255);
+        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(1023);
 
-       // See all
+        // See all
         $this->boolean(\Session::changeActiveEntities('all'))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
@@ -495,7 +496,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isTrue("Fail can write Printer 4");
 
-       // See only in main entity
+        // See only in main entity
         $this->boolean(\Session::changeActiveEntities($ent0))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isTrue("Fail can read Printer 1");
@@ -508,7 +509,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isFalse("Fail can't write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
-       // See only in child entity 1 + parent if recursive
+        // See only in child entity 1 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent1))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isFalse("Fail can't read Printer 1");
@@ -521,7 +522,7 @@ class CommonDBTM extends DbTestCase
         $this->boolean($printer->canEdit($id[2]))->isTrue("Fail can write Printer 3");
         $this->boolean($printer->canEdit($id[3]))->isFalse("Fail can't write Printer 4");
 
-       // See only in child entity 2 + parent if recursive
+        // See only in child entity 2 + parent if recursive
         $this->boolean(\Session::changeActiveEntities($ent2))->isTrue();
 
         $this->boolean($printer->can($id[0], READ))->isFalse("Fail can't read Printer 1");
@@ -1764,5 +1765,127 @@ class CommonDBTM extends DbTestCase
         sort($item->updates);
         sort($expected_updates);
         $this->array($item->updates)->isEqualTo($expected_updates);
+    }
+
+    protected function assignableAssetsProvider()
+    {
+        return [
+            [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+        ];
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanViewAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean($itemtype::canView())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->boolean($itemtype::canView())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
+        $this->boolean($itemtype::canView())->isFalse();
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanViewItemAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        /** @var \CommonDBTM $item */
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        $this->boolean($item->canViewItem())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
+        $this->boolean($item->canViewItem())->isFalse();
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
+
+        // Create group for the user
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        // Add user to group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        \Session::loadGroups();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+            'groups_id_tech' => $groups_id,
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanUpdateAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        $this->boolean($itemtype::canUpdate())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $this->boolean($itemtype::canUpdate())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+        $this->boolean($itemtype::canUpdate())->isFalse();
+    }
+
+    /**
+     * @dataProvider assignableAssetsProvider
+     */
+    public function testCanUpdateItemAssignableAssets($itemtype)
+    {
+        $this->login();
+
+        /** @var \CommonDBTM $item */
+        $item = new $itemtype();
+        $this->integer($item->add([
+            'name' => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]))->isGreaterThan(0);
+
+        $this->boolean($item->canUpdateItem())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
+        $this->boolean($item->canUpdateItem())->isFalse();
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        // Create group for the user
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        // Add user to group
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        \Session::loadGroups();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+            'groups_id_tech' => $groups_id,
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
     }
 }

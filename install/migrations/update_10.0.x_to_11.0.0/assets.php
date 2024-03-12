@@ -209,3 +209,12 @@ foreach ($it as $data) {
         ]);
     }
 }
+
+$assignable_asset_rights = [
+    'computer', 'monitor', 'software', 'networking', 'printer',
+    'cartridge', 'consumable', 'phone', 'peripheral'
+];
+foreach ($assignable_asset_rights as $rightname) {
+    $migration->addRight($rightname, READ_ASSIGNED, [$rightname => READ]);
+    $migration->addRight($rightname, UPDATE_ASSIGNED, [$rightname => UPDATE]);
+}
