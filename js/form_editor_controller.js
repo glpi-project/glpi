@@ -132,6 +132,13 @@ class GlpiFormEditorController
             () => this.#handleBackendUpdateResponse()
         );
 
+        // Handle global click event, remove the active item
+        $(document)
+            .on(
+                'click',
+                () => this.#setActiveItem(null)
+            );
+
         // Handle tinymce change event
         $(document)
             .on(
@@ -205,6 +212,9 @@ class GlpiFormEditorController
          */
         let unsaved_changes = true;
 
+        // Events should only be handled here once.
+        event.stopPropagation();
+
         switch (action) {
             // Mark the target item as active
             case "set-active":
@@ -214,7 +224,6 @@ class GlpiFormEditorController
 
             // Add a new question
             case "add-question":
-                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#addQuestion(
                     target.closest(`
                         [data-glpi-form-editor-active-form],
@@ -226,7 +235,6 @@ class GlpiFormEditorController
 
             // Delete the target question
             case "delete-question":
-                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#deleteQuestion(
                     target.closest("[data-glpi-form-editor-question]")
                 );
@@ -263,7 +271,6 @@ class GlpiFormEditorController
 
             // Add a new section at the end of the form
             case "add-section":
-                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#addSection(
                     target.closest(`
                         [data-glpi-form-editor-active-form],
@@ -275,7 +282,6 @@ class GlpiFormEditorController
 
             // Delete the target section
             case "delete-section":
-                event.stopPropagation(); // We don't want to trigger the "set-active" action for this item
                 this.#deleteSection(
                     target.closest("[data-glpi-form-editor-section]")
                 );
