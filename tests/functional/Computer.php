@@ -893,4 +893,132 @@ class Computer extends DbTestCase
         $message = $item->formatSessionMessageAfterAction($raw_message);
         $this->string($message)->isEqualTo($expected_formatted_message);
     }
+
+    /**
+     * Test adding an asset with the groups_id and groups_id_tech fields as an array and null.
+     * Test updating an asset with the groups_id and groups_id_tech fields as an array and null.
+     * @return void
+     */
+    public function testAddAndUpdateMultipleGroups()
+    {
+        $computer = $this->createItem(\Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]);
+        $computers_id_1 = $computer->fields['id'];
+        $this->array($computer->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($computer->fields['groups_id_tech'])->containsValues([3, 4]);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]);
+        $computers_id_2 = $computer->fields['id'];
+        $this->array($computer->fields['groups_id'])->isEmpty();
+        $this->array($computer->fields['groups_id_tech'])->isEmpty();
+
+        // Update both assets. Asset 1 will have the groups set to null and asset 2 will have the groups set to an array.
+        $computer->getFromDB($computers_id_1);
+        $this->boolean($computer->update([
+            'id' => $computers_id_1,
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]))->isTrue();
+        $this->array($computer->fields['groups_id'])->isEmpty();
+        $this->array($computer->fields['groups_id_tech'])->isEmpty();
+
+        $computer->getFromDB($computers_id_2);
+        $this->boolean($computer->update([
+            'id' => $computers_id_2,
+            'groups_id' => [5, 6],
+            'groups_id_tech' => [7, 8],
+        ]))->isTrue();
+        $this->array($computer->fields['groups_id'])->containsValues([5, 6]);
+        $this->array($computer->fields['groups_id_tech'])->containsValues([7, 8]);
+
+        // Test updating array to array
+        $this->boolean($computer->update([
+            'id' => $computers_id_2,
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]))->isTrue();
+        $this->array($computer->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($computer->fields['groups_id_tech'])->containsValues([3, 4]);
+    }
+
+    /**
+     * Test the loading of assets which still have integer values for groups_id and groups_id_tech (0 for no group).
+     * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
+     * @return void
+     */
+    public function testLoadOldItemsSingleGroup()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $computer = $this->createItem(\Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $computers_id = $computer->fields['id'];
+
+        // Manually set the groups_id and groups_id_tech fields to an integer value
+        $DB->update(
+            'glpi_computers',
+            [
+                'groups_id' => 1,
+                'groups_id_tech' => 2,
+            ],
+            [
+                'id' => $computers_id,
+            ]
+        );
+        $computer->getFromDB($computers_id);
+        $this->array($computer->fields['groups_id'])->containsValues([1]);
+        $this->array($computer->fields['groups_id_tech'])->containsValues([2]);
+
+        // Manually set the groups_id and groups_id_tech fields to 0
+        $DB->update(
+            'glpi_computers',
+            [
+                'groups_id' => 0,
+                'groups_id_tech' => 0,
+            ],
+            [
+                'id' => $computers_id,
+            ]
+        );
+        $computer->getFromDB($computers_id);
+        $this->array($computer->fields['groups_id'])->isEmpty();
+        $this->array($computer->fields['groups_id_tech'])->isEmpty();
+
+        // Manually set the groups_id and groups_id_tech fields to NULL (allowed by the DB schema)
+        $DB->update(
+            'glpi_computers',
+            [
+                'groups_id' => null,
+                'groups_id_tech' => null,
+            ],
+            [
+                'id' => $computers_id,
+            ]
+        );
+        $computer->getFromDB($computers_id);
+        $this->array($computer->fields['groups_id'])->isEmpty();
+        $this->array($computer->fields['groups_id_tech'])->isEmpty();
+    }
+
+    /**
+     * An empty asset object should have the groups_id and groups_id_tech fields initialized as an empty array.
+     * @return void
+     */
+    public function testGetEmptyMultipleGroups()
+    {
+        $computer = new \Computer();
+        $this->array($computer->fields['groups_id'])->isEmpty();
+        $this->array($computer->fields['groups_id_tech'])->isEmpty();
+    }
 }

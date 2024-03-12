@@ -436,4 +436,132 @@ class Software extends DbTestCase
         $result   = $software->rawSearchOptions();
         $this->array($result)->hasSize(61);
     }
+
+    /**
+     * Test adding an asset with the groups_id and groups_id_tech fields as an array and null.
+     * Test updating an asset with the groups_id and groups_id_tech fields as an array and null.
+     * @return void
+     */
+    public function testAddAndUpdateMultipleGroups()
+    {
+        $software = $this->createItem(\Software::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]);
+        $softwares_id_1 = $software->fields['id'];
+        $this->array($software->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($software->fields['groups_id_tech'])->containsValues([3, 4]);
+
+        $software = $this->createItem(\Software::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]);
+        $softwares_id_2 = $software->fields['id'];
+        $this->array($software->fields['groups_id'])->isEmpty();
+        $this->array($software->fields['groups_id_tech'])->isEmpty();
+
+        // Update both assets. Asset 1 will have the groups set to null and asset 2 will have the groups set to an array.
+        $software->getFromDB($softwares_id_1);
+        $this->boolean($software->update([
+            'id' => $softwares_id_1,
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]))->isTrue();
+        $this->array($software->fields['groups_id'])->isEmpty();
+        $this->array($software->fields['groups_id_tech'])->isEmpty();
+
+        $software->getFromDB($softwares_id_2);
+        $this->boolean($software->update([
+            'id' => $softwares_id_2,
+            'groups_id' => [5, 6],
+            'groups_id_tech' => [7, 8],
+        ]))->isTrue();
+        $this->array($software->fields['groups_id'])->containsValues([5, 6]);
+        $this->array($software->fields['groups_id_tech'])->containsValues([7, 8]);
+
+        // Test updating array to array
+        $this->boolean($software->update([
+            'id' => $softwares_id_2,
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]))->isTrue();
+        $this->array($software->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($software->fields['groups_id_tech'])->containsValues([3, 4]);
+    }
+
+    /**
+     * Test the loading asset which still have integer values for groups_id and groups_id_tech (0 for no group).
+     * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
+     * @return void
+     */
+    public function testLoadOldItemsSingleGroup()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $software = $this->createItem(\Software::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $softwares_id = $software->fields['id'];
+
+        // Manually set the groups_id and groups_id_tech fields to an integer value
+        $DB->update(
+            'glpi_softwares',
+            [
+                'groups_id' => 1,
+                'groups_id_tech' => 2,
+            ],
+            [
+                'id' => $softwares_id,
+            ]
+        );
+        $software->getFromDB($softwares_id);
+        $this->array($software->fields['groups_id'])->containsValues([1]);
+        $this->array($software->fields['groups_id_tech'])->containsValues([2]);
+
+        // Manually set the groups_id and groups_id_tech fields to 0
+        $DB->update(
+            'glpi_softwares',
+            [
+                'groups_id' => 0,
+                'groups_id_tech' => 0,
+            ],
+            [
+                'id' => $softwares_id,
+            ]
+        );
+        $software->getFromDB($softwares_id);
+        $this->array($software->fields['groups_id'])->isEmpty();
+        $this->array($software->fields['groups_id_tech'])->isEmpty();
+
+        // Manually set the groups_id and groups_id_tech fields to NULL (allowed by the DB schema)
+        $DB->update(
+            'glpi_softwares',
+            [
+                'groups_id' => null,
+                'groups_id_tech' => null,
+            ],
+            [
+                'id' => $softwares_id,
+            ]
+        );
+        $software->getFromDB($softwares_id);
+        $this->array($software->fields['groups_id'])->isEmpty();
+        $this->array($software->fields['groups_id_tech'])->isEmpty();
+    }
+
+    /**
+     * An empty asset object should have the groups_id and groups_id_tech fields initialized as an empty array.
+     * @return void
+     */
+    public function testGetEmptyMultipleGroups()
+    {
+        $software = new \Software();
+        $this->array($software->fields['groups_id'])->isEmpty();
+        $this->array($software->fields['groups_id_tech'])->isEmpty();
+    }
 }

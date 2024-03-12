@@ -95,4 +95,132 @@ class NetworkEquipment extends DbTestCase
        //see if links are dropped
         $this->integer($netport->countForItem($device))->isIdenticalTo(0);
     }
+
+    /**
+     * Test adding an asset with the groups_id and groups_id_tech fields as an array and null.
+     * Test updating an asset with the groups_id and groups_id_tech fields as an array and null.
+     * @return void
+     */
+    public function testAddAndUpdateMultipleGroups()
+    {
+        $networkequipment = $this->createItem(\NetworkEquipment::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]);
+        $networkequipments_id_1 = $networkequipment->fields['id'];
+        $this->array($networkequipment->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($networkequipment->fields['groups_id_tech'])->containsValues([3, 4]);
+
+        $networkequipment = $this->createItem(\NetworkEquipment::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]);
+        $networkequipments_id_2 = $networkequipment->fields['id'];
+        $this->array($networkequipment->fields['groups_id'])->isEmpty();
+        $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
+
+        // Update both assets. Asset 1 will have the groups set to null and asset 2 will have the groups set to an array.
+        $networkequipment->getFromDB($networkequipments_id_1);
+        $this->boolean($networkequipment->update([
+            'id' => $networkequipments_id_1,
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]))->isTrue();
+        $this->array($networkequipment->fields['groups_id'])->isEmpty();
+        $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
+
+        $networkequipment->getFromDB($networkequipments_id_2);
+        $this->boolean($networkequipment->update([
+            'id' => $networkequipments_id_2,
+            'groups_id' => [5, 6],
+            'groups_id_tech' => [7, 8],
+        ]))->isTrue();
+        $this->array($networkequipment->fields['groups_id'])->containsValues([5, 6]);
+        $this->array($networkequipment->fields['groups_id_tech'])->containsValues([7, 8]);
+
+        // Test updating array to array
+        $this->boolean($networkequipment->update([
+            'id' => $networkequipments_id_2,
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]))->isTrue();
+        $this->array($networkequipment->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($networkequipment->fields['groups_id_tech'])->containsValues([3, 4]);
+    }
+
+    /**
+     * Test the loading asset which still have integer values for groups_id and groups_id_tech (0 for no group).
+     * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
+     * @return void
+     */
+    public function testLoadOldItemsSingleGroup()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $networkequipment = $this->createItem(\NetworkEquipment::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $networkequipments_id = $networkequipment->fields['id'];
+
+        // Manually set the groups_id and groups_id_tech fields to an integer value
+        $DB->update(
+            'glpi_networkequipments',
+            [
+                'groups_id' => 1,
+                'groups_id_tech' => 2,
+            ],
+            [
+                'id' => $networkequipments_id,
+            ]
+        );
+        $networkequipment->getFromDB($networkequipments_id);
+        $this->array($networkequipment->fields['groups_id'])->containsValues([1]);
+        $this->array($networkequipment->fields['groups_id_tech'])->containsValues([2]);
+
+        // Manually set the groups_id and groups_id_tech fields to 0
+        $DB->update(
+            'glpi_networkequipments',
+            [
+                'groups_id' => 0,
+                'groups_id_tech' => 0,
+            ],
+            [
+                'id' => $networkequipments_id,
+            ]
+        );
+        $networkequipment->getFromDB($networkequipments_id);
+        $this->array($networkequipment->fields['groups_id'])->isEmpty();
+        $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
+
+        // Manually set the groups_id and groups_id_tech fields to NULL (allowed by the DB schema)
+        $DB->update(
+            'glpi_networkequipments',
+            [
+                'groups_id' => null,
+                'groups_id_tech' => null,
+            ],
+            [
+                'id' => $networkequipments_id,
+            ]
+        );
+        $networkequipment->getFromDB($networkequipments_id);
+        $this->array($networkequipment->fields['groups_id'])->isEmpty();
+        $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
+    }
+
+    /**
+     * An empty asset object should have the groups_id and groups_id_tech fields initialized as an empty array.
+     * @return void
+     */
+    public function testGetEmptyMultipleGroups()
+    {
+        $networkequipment = new \NetworkEquipment();
+        $this->array($networkequipment->fields['groups_id'])->isEmpty();
+        $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
+    }
 }

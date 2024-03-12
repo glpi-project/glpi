@@ -43,7 +43,10 @@ class Software extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
     use AssetImage;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+        prepareInputForUpdate as prepareInputForUpdateAssignableAsset;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -140,6 +143,7 @@ class Software extends CommonDBTM
             $input['softwares_id'] = 0;
         }
         $input = $this->managePictures($input);
+        $this->prepareInputForUpdateAssignableAsset($input);
         return $input;
     }
 
@@ -160,6 +164,7 @@ class Software extends CommonDBTM
         $this->handleCategoryRules($input);
 
         $input = $this->managePictures($input);
+        $this->prepareInputForAddAssignableAsset($input);
         return $input;
     }
 
