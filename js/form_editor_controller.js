@@ -312,6 +312,12 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // No specific instructions for these events.
+            // They must still be kept here as they benefits from the common code
+            // like refreshUX() and glpiUnsavedFormChanges.
+            case "question-sort-update":
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
@@ -367,7 +373,7 @@ class GlpiFormEditorController
     }
 
     /**
-     * Refresh all UX items that may be modified by mulitple actions
+     * Refresh all UX items that may be modified by mulitple actions.
      */
     #refreshUX() {
         this.#updateAddSectionActionVisiblity();
@@ -1162,13 +1168,10 @@ class GlpiFormEditorController
         // Keep track on unsaved changes if the sort order was updated
         sections
             .find("[data-glpi-form-editor-section-questions]")
-            .on('sortupdate', () => {
-                // Would be nice to not have a specific case here where we need
-                // to manually call this
-                // TODO: this event handler should use the main handleEditorAction
-                // method rather than defining its code directly
-                window.glpiUnsavedFormChanges = true;
-                this.#addFakeDivToEmptySections();
+            .on('sortupdate', (e) => {
+                // Trigger an action to make sure we use the main entry point
+                // where common action related functions are excuted
+                this.#handleEditorAction('question-sort-update', null, e);
             });
 
         // Add a special class while a drag and drop is happening
