@@ -90,7 +90,7 @@ class GlpiFormEditorController
         // Adjust container height and init handlers
         this.#adjustContainerHeight();
         this.#initEventHandlers();
-        this.#addFakeDivToEmptySections();
+        this.#refreshUX();
 
         // Adjust dynamics inputs size
         $(this.#target)
@@ -320,6 +320,11 @@ class GlpiFormEditorController
         if (unsaved_changes) {
             window.glpiUnsavedFormChanges = true;
         }
+
+        // Refresh all dynamic UX components after every action.
+        // It is a bit less effecient than refreshing only the needed components
+        // per action, but it is much simpler and safer.
+        this.#refreshUX();
     }
 
     /**
@@ -359,6 +364,17 @@ class GlpiFormEditorController
                 global_q_index++;
             });
         });
+    }
+
+    /**
+     * Refresh all UX items that may be modified by mulitple actions
+     */
+    #refreshUX() {
+        this.#updateAddSectionActionVisiblity();
+        this.#addFakeDivToEmptySections();
+        this.#updateSectionCountLabels();
+        this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -659,9 +675,8 @@ class GlpiFormEditorController
             action
         );
 
-        // Update UX
+        // Mark as active
         this.#setActiveItem(new_question);
-        this.#updateAddSectionActionVisiblity();
 
         // Focus question's name
         new_question
@@ -694,8 +709,6 @@ class GlpiFormEditorController
 
         // Remove question and update UX
         question.remove();
-        this.#updateAddSectionActionVisiblity();
-        this.#addFakeDivToEmptySections();
     }
 
     /**
@@ -981,12 +994,6 @@ class GlpiFormEditorController
             });
         }
 
-        // Update UX
-        this.#updateSectionCountLabels();
-        this.#updateSectionsDetailsVisiblity();
-        this.#updateMergeSectionActionVisibility();
-        this.#addFakeDivToEmptySections();
-
         // Mark new serction as active
         this.#setActiveItem(
             section.find("[data-glpi-form-editor-section-details]")
@@ -1029,9 +1036,6 @@ class GlpiFormEditorController
 
         // Remove question and update UX
         section.remove();
-        this.#updateSectionCountLabels();
-        this.#updateSectionsDetailsVisiblity();
-        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -1301,10 +1305,6 @@ class GlpiFormEditorController
                     tinymce.init(window.tinymce_editor_configs[id]);
                 }
             });
-
-        // Relabel sections
-        this.#updateSectionCountLabels();
-        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -1351,11 +1351,6 @@ class GlpiFormEditorController
 
         // Remove the section
         section.remove();
-
-        // Update UX
-        this.#updateSectionCountLabels();
-        this.#updateSectionsDetailsVisiblity();
-        this.#updateMergeSectionActionVisibility();
     }
 
     /**
