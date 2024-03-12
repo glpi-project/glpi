@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+#}
+
+{% extends 'pages/setup/general/base_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block config_fields %}
+    {{ fields.largeTitle(__('Registration')) }}
+
+    {% if registration_key is empty %}
+        <div class="alert alert-info">
+            <div class="alert-title">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</div>
+            <span class="text-secondary">
+                <a href="{{ constant('GLPI_NETWORK_SERVICES') }}">
+                    {{ __('Register on %1$s!')|format(__('GLPI Network')) }}
+                </a>
+                <br>
+                {{ __("And retrieve your key to paste it below") }}
+            </span>
+        </div>
+    {% endif %}
+
+    {% if not services_available %}
+        <div class="alert alert-warning">
+            <div class="alert-title">{{ __('%1$s services website seems to be unavailable from your network or offline!')|format(__('GLPI Network')) }}</div>
+            <span class="text-secondary">
+                {% if curl_error is not null %}
+                    {{ __('Error was: %s')|format(curl_error) }}
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
+
+    {{ fields.textareaField('glpinetwork_registration_key', registration_key, __('Registration key'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+        rows: 10
+    }) }}
+
+    {% if registration_key is not empty %}
+        {% if informations['validation_message'] is not empty %}
+            {% set subscription_ok = informations['is_valid'] and informations['subscription']['is_running'] %}
+            {% set validation_message %}
+                <span class="{{ subscription_ok ? 'text-success' : 'text-danger' }}">
+                    <i class="ti ti-info-circle"></i>
+                    {{ informations['validation_message'] }}
+                </span>
+            {% endset %}
+            {{ fields.htmlField('', validation_message, null, {
+                full_width: true,
+                label_class: 'col-xxl-2',
+                input_class: 'col-xxl-10',
+            }) }}
+        {% endif %}
+
+        {{ fields.htmlField('', informations['subscription']['title']|default(__('Unknown'))|e, __('Subscription'), {
+            full_width: true,
+            label_class: 'col-xxl-2',
+            input_class: 'col-xxl-10',
+        }) }}
+
+        {{ fields.htmlField('', informations['owner']['name']|default(__('Unknown'))|e, __('Registered by'), {
+            full_width: true,
+            label_class: 'col-xxl-2',
+            input_class: 'col-xxl-10',
+        }) }}
+    {% endif %}
+{% endblock %}

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\VersionParser;
 
 class GLPINetwork extends CommonGLPI
@@ -49,9 +50,8 @@ class GLPINetwork extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == 'Config') {
-            $glpiNetwork = new self();
-            $glpiNetwork->showForConfig();
+        if ($item::class === Config::class) {
+            self::showForConfig();
         }
         return true;
     }
@@ -65,77 +65,21 @@ class GLPINetwork extends CommonGLPI
         $registration_key = self::getRegistrationKey();
 
         $canedit = Config::canUpdate();
-        if ($canedit) {
-            echo "<form name='form' action=\"" . Toolbox::getItemTypeFormURL(Config::class) . "\" method='post'>";
-        }
-        echo "<div class='center' id='tabsbody'>";
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><th colspan='2'>" . __('Registration') . "</th></tr>";
-
-        if ($registration_key === "") {
-            echo "<tr><td colspan='2'>" .
-            __('A registration key is needed to use advanced feature (like marketplace) in GLPI') . "<br><br>" .
-            "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Register on %1$s!'), 'GLPI Network') . "</a><br>" .
-            __("And retrieve your key to paste it below") .
-            "</td></tr>";
-        }
 
         $curl_error = null;
-        if (!self::isServicesAvailable($curl_error)) {
-            echo '<tr>';
-            echo '<td colspan="2">';
-            echo '<div class="warning">';
-            echo '<i class="fa fa-exclamation-triangle fa-2x"></i>';
-            echo sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network');
-            if ($curl_error !== null) {
-                echo '<br />';
-                echo sprintf(__('Error was: %s'), $curl_error);
-            }
-            echo '</div>';
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td><label for='glpinetwork_registration_key'>" . __('Registration key') . "</label></td>";
-        echo "<td>" . Html::textarea(['name' => 'glpinetwork_registration_key', 'value' => $registration_key, 'display' => false]) . "</td>";
-        echo "</tr>";
-
+        $informations = [];
         if ($registration_key !== "") {
             $informations = self::getRegistrationInformations(true);
-            if (!empty($informations['validation_message'])) {
-                echo "<tr class='tab_bg_2'>";
-                echo "<td></td>";
-                echo "<td>";
-                echo "<div class=' " . (($informations['is_valid'] && $informations['subscription']['is_running'] ?? false) ? 'ok' : 'red') . "'> ";
-                echo "<i class='fa fa-info-circle'></i>";
-                echo htmlspecialchars($informations['validation_message']);
-                echo "</div>";
-                echo "</td>";
-                echo "</tr>";
-            }
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . __('Subscription') . "</td>";
-            echo "<td>" . ($informations['subscription'] !== null ? htmlspecialchars($informations['subscription']['title']) : __('Unknown')) . "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . __('Registered by') . "</td>";
-            echo "<td>" . ($informations['owner'] !== null ? htmlspecialchars($informations['owner']['name']) : __('Unknown')) . "</td>";
-            echo "</tr>";
         }
 
-        if ($canedit) {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td colspan='2' class='center'>";
-            echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
-            echo "</td></tr>";
-        }
-
-        echo "</table></div>";
-        Html::closeForm();
+        $services_available = self::isServicesAvailable($curl_error);
+        TemplateRenderer::getInstance()->display('pages/setup/general/glpinetwork_setup.html.twig', [
+            'registration_key' => $registration_key,
+            'informations'     => $informations,
+            'canedit' => $canedit,
+            'services_available' => $services_available,
+            'curl_error'       => $curl_error
+        ]);
     }
 
     /**
@@ -148,7 +92,7 @@ class GLPINetwork extends CommonGLPI
         $version = VersionParser::getNormalizedVersion(GLPI_VERSION, false);
         $comments = sprintf('installation-mode:%s', GLPI_INSTALL_MODE);
         if (!empty(GLPI_USER_AGENT_EXTRA_COMMENTS)) {
-           // append extra comments (remove '(' and ')' chars to not break UA string)
+            // append extra comments (remove '(' and ')' chars to not break UA string)
             $comments .= '; ' . preg_replace('/\(\)/', ' ', GLPI_USER_AGENT_EXTRA_COMMENTS);
         }
         return sprintf('GLPI/%s (%s)', $version, $comments);
@@ -284,11 +228,11 @@ class GLPINetwork extends CommonGLPI
         return self::getRegistrationInformations()['is_valid'];
     }
 
-    public static function showInstallMessage()
+    public static function showInstallMessage(): string
     {
         return nl2br(
             sprintf(
-                __(
+                __s(
                     "You need help to integrate GLPI in your IT, have a bug fixed or benefit from pre-configured rules or dictionaries?\n\n"
                     . "We provide the %s space for you.\n"
                     . "GLPI-Network is a commercial service that includes a subscription for tier 3 support, ensuring the correction of bugs encountered with a commitment time.\n\n"
@@ -299,16 +243,16 @@ class GLPINetwork extends CommonGLPI
         );
     }
 
-    public static function getSupportPromoteMessage()
+    public static function getSupportPromoteMessage(): string
     {
         return nl2br(sprintf(
-            __("Having troubles setting up an advanced GLPI module?\n" .
+            __s("Having troubles setting up an advanced GLPI module?\n" .
             "We can help you solve them. Sign up for support on %s."),
             "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>" . GLPI_NETWORK_SERVICES . "</a>"
         ));
     }
 
-    public static function addErrorMessageAfterRedirect()
+    public static function addErrorMessageAfterRedirect(): void
     {
         Session::addMessageAfterRedirect(self::getSupportPromoteMessage(), false, ERROR);
     }
@@ -320,11 +264,11 @@ class GLPINetwork extends CommonGLPI
      *
      * @return boolean
      */
-    public static function isServicesAvailable(&$curl_error = null)
+    public static function isServicesAvailable(&$curl_error = null): bool
     {
         $error_msg = null;
         $content = \Toolbox::callCurl(GLPI_NETWORK_REGISTRATION_API_URL, [], $error_msg, $curl_error);
-        return strlen($content) > 0;
+        return $content !== '';
     }
 
     public static function getOffers(bool $force_refresh = false): array
