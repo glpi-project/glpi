@@ -90,6 +90,7 @@ class GlpiFormEditorController
         // Adjust container height and init handlers
         this.#adjustContainerHeight();
         this.#initEventHandlers();
+        this.#addFakeDivToEmptySections();
 
         // Adjust dynamics inputs size
         $(this.#target)
@@ -688,6 +689,7 @@ class GlpiFormEditorController
         // Remove question and update UX
         question.remove();
         this.#updateAddSectionActionVisiblity();
+        this.#addFakeDivToEmptySections();
     }
 
     /**
@@ -977,6 +979,7 @@ class GlpiFormEditorController
         this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
         this.#updateMergeSectionActionVisibility();
+        this.#addFakeDivToEmptySections();
 
         // Mark new serction as active
         this.#setActiveItem(
@@ -1155,6 +1158,7 @@ class GlpiFormEditorController
                 // TODO: this event handler should use the main handleEditorAction
                 // method rather than defining its code directly
                 window.glpiUnsavedFormChanges = true;
+                this.#addFakeDivToEmptySections();
             });
 
         // Add a special class while a drag and drop is happening
@@ -1355,5 +1359,26 @@ class GlpiFormEditorController
     #collaspeSection(section) {
         // Simple class toggle, hiding the correct parts is handled by CSS rules
         section.toggleClass("section-collapsed");
+    }
+
+    /**
+     * Add fake div to empty sections to allow drag and drop.
+     * This is needed because sortable require at least one item in a list to
+     * enable drag and drop.
+     */
+    #addFakeDivToEmptySections() {
+        // Clear fake divs
+        $(this.#target)
+            .find("[data-glpi-form-editor-empty-div]")
+            .remove();
+
+        // Add fake divs to empty sections
+        const sections = $(this.#target).find("[data-glpi-form-editor-section]");
+        sections.each((index, section) => {
+            const questions = $(section).find("[data-glpi-form-editor-section-questions]");
+            if (questions.children().length == 0) {
+                questions.append('<div data-glpi-form-editor-empty-div style="height: 1px"></div>');
+            }
+        });
     }
 }
