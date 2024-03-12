@@ -273,7 +273,6 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 );
             }
         }
-
         if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
            // Auto-calculate was toggled. Force recalculation of this and parents
             self::recalculatePercentDone($this->getID());
@@ -476,6 +475,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
+        $projectstate_id = $this->recalculateStatus($input);
+        if ($projectstate_id !== false) {
+            $input['projectstates_id'] = $projectstate_id;
+        }
+
         if (isset($input["plan"])) {
             $input["plan_start_date"] = $input['plan']["begin"];
             $input["plan_end_date"]   = $input['plan']["end"];
@@ -559,6 +563,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             if (array_key_exists('real_start_date', $input)) {
                 $input['real_end_date'] = $input['real_start_date'];
             }
+        }
+
+        $projectstate_id = $this->recalculateStatus($input);
+        if ($projectstate_id !== false) {
+            $input['projectstates_id'] = $projectstate_id;
         }
 
         return Project::checkPlanAndRealDates($input);
@@ -2046,6 +2055,38 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'percent_done'       => $percent_done,
         ]);
         return true;
+    }
+
+    /**
+     * Recalculate the status of a project task based on the percent_done.
+     * @since 11.0.0
+     * @param array $input
+     * @return int|false
+     */
+    public function recalculateStatus(array $input): int|null
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $auto_projectstates = $input['auto_projectstates'] ?? $this->fields['auto_projectstates'] ?? false;
+        $percent_done = $input['percent_done'] ?? $this->fields['percent_done'] ?? null;
+
+        if (!$auto_projectstates || $percent_done === null) {
+            return false;
+        }
+        $config = Config::getConfigurationValues('core');
+        if ((int) $percent_done === 0 || (int) $percent_done < 0) {
+            $state_id = $config['projecttask_unstarted_states_id'] ?? 0;
+        } elseif ((int) $percent_done === 100) {
+            $state_id = $config['projecttask_completed_states_id'] ?? 0;
+        } else {
+            $state_id = $config['projecttask_inprogress_states_id'] ?? 0;
+        }
+        $state = ProjectState::getById($state_id);
+        if (!$state) {
+            return false;
+        }
+        return $state->getID();
     }
 
     public static function getGroupItemsAsVCalendars($groups_id)

@@ -122,21 +122,34 @@
         __('Name'),
     ) }}
 
-    {{ fields.nullField() }}
-
-    {{ fields.dropdownField(
-        'ProjectState',
-        'projectstates_id',
-        item.fields.projectstates_id,
-        _x('item', 'State'),
-    ) }}
-
     {{ fields.dropdownField(
         'ProjectTaskType',
         'projecttasktypes_id',
         item.fields.projecttasktypes_id,
         _n('Type', 'Types', 1),
     ) }}
+
+    {{ fields.dropdownField(
+        'ProjectState',
+        'projectstates_id',
+        item.fields.projectstates_id,
+        _x('item', 'State'),
+        item.fields.auto_projectstates ? {'disabled': true} : {}
+    ) }}
+
+    {{ fields.checkboxField(
+        'auto_projectstates',
+        item.fields.auto_projectstates,
+        __('Automatically calculate'),
+        {
+            'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config.")
+        }
+    ) }}
+    <script>
+        form.find("input[name=auto_projectstates]").on('change', function() {
+            $("select[name='projectstates_id']").prop('disabled', $("input[name='auto_projectstates']").eq(1).prop('checked'));
+        });
+    </script>
 
     {{ fields.dropdownNumberField(
         'percent_done',
@@ -151,17 +164,12 @@
          }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
     ) }}
 
-    {% set tooltip %}
-        {% do call('Html::showToolTip', [
-            __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
-        ]) %}
-    {% endset %}
     {{ fields.checkboxField(
         'auto_percent_done',
         item.fields.auto_percent_done,
         __('Automatically calculate'),
         {
-            'add_field_html': tooltip,
+            'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
         }
     ) }}
     <script>

@@ -6002,6 +6002,7 @@ CREATE TABLE `glpi_projecttasks` (
   `planned_duration` int NOT NULL DEFAULT '0',
   `effective_duration` int NOT NULL DEFAULT '0',
   `projectstates_id` int unsigned NOT NULL DEFAULT '0',
+  `auto_projectstates` tinyint NOT NULL DEFAULT '0',
   `projecttasktypes_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `percent_done` int NOT NULL DEFAULT '0',

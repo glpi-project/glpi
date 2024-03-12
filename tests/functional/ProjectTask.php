@@ -401,6 +401,97 @@ class ProjectTask extends DbTestCase
         $this->integer($clonedSubtask2->fields['projects_id'])->isEqualTo($project->getID());
         $this->string($clonedSubtask2->fields['name'])->isEqualTo($subtask2->fields['name'] . ' (copy)');
     }
+    protected function testAutochangeStateProvider()
+    {
+        $config = new \Config();
+        $config->getFromDBByCrit(['name' => 'projecttask_unstarted_states_id']);
+        $this->updateItem('Config', $config->getID(), ['value' => '1']  + $config->fields);
+
+        $config->getFromDBByCrit(['name' => 'projecttask_inprogress_states_id']);
+        $this->updateItem('Config', $config->getID(), ['value' => '2']  + $config->fields);
+
+        $config->getFromDBByCrit(['name' => 'projecttask_completed_states_id']);
+        $this->updateItem('Config', $config->getID(), ['value' => '3']  + $config->fields);
+
+        $this->login(); // must be logged as ProjectTask uses Session::getLoginUserID()
+
+        $project = $this->createItem(
+            'Project',
+            [
+                'name' => 'Project 1',
+            ]
+        );
+        $task = $this->createItem(
+            'ProjectTask',
+            [
+                'name' => 'Project Task 1',
+                'auto_projectstates' => 1,
+                'projects_id' => $project->getID(),
+                'percent_done'  => 0
+            ]
+        );
+
+        yield [
+            'input' => [ // Task with percent_done == 0
+                'id'            => $task->getID(),
+                'percent_done'  => '0',
+            ],
+            'result' => [
+                'percent_done' => '0',
+                'projectstates_id' => 1,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done == 50
+                'id'            => $task->getID(),
+                'percent_done'  => '50',
+            ],
+            'result' => [
+                'percent_done' => '50',
+                'projectstates_id' => 2,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done == 100
+                'id'            => $task->getID(),
+                'percent_done'  => '100',
+            ],
+            'result' => [
+                'percent_done' => '100',
+                'projectstates_id' => 3,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done == 25
+                'id'            => $task->getID(),
+                'percent_done'  => '25',
+            ],
+            'result' => [
+                'percent_done' => '25',
+                'projectstates_id' => 2,
+            ]
+        ];
+        yield [
+            'input' => [ // Task with percent_done < 0
+                'id'            => $task->getID(),
+                'percent_done'  => '-1',
+            ],
+            'result' => [
+                'percent_done' => '-1',
+                'projectstates_id' => 1,
+            ]
+        ];
+    }
+
+    /**
+     * @dataprovider testAutochangeStateProvider
+     */
+    public function testAutochangeState($input, $result)
+    {
+        $projecttask = $this->updateItem('ProjectTask', $input['id'], $input);
+        $this->integer($projecttask->fields['percent_done'])->isEqualTo($result['percent_done']);
+        $this->integer($projecttask->fields['projectstates_id'])->isEqualTo($result['projectstates_id']);
+    }
 
     public function testGetActiveProjectTaskIDsForUser()
     {
