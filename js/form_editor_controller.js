@@ -398,7 +398,7 @@ class GlpiFormEditorController
                 base_input_index =  `_questions[${item_index}]`;
 
                 // Check if the input is an option (has the data-glpi-form-editor-specific-question-extra-data attribute)
-                let is_option = $(input).attr("data-glpi-form-editor-specific-question-extra-data") !== undefined;
+                const is_option = $(input).attr("data-glpi-form-editor-specific-question-extra-data") !== undefined;
 
                 if (is_option) {
                     base_input_index += `[extra_data]`;
