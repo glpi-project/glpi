@@ -82,18 +82,18 @@
                 label_class: 'col-xxl-2',
                 input_class: 'col-xxl-10',
             }) }}
-
-            {{ fields.htmlField('', informations['subscription']['title']|default(__('Unknown'))|e, __('Subscription'), {
-                full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
-            }) }}
-
-            {{ fields.htmlField('', informations['owner']['name']|default(__('Unknown'))|e, __('Registered by'), {
-                full_width: true,
-                label_class: 'col-xxl-2',
-                input_class: 'col-xxl-10',
-            }) }}
         {% endif %}
+
+        {{ fields.htmlField('', informations['subscription']['title']|default(__('Unknown'))|e, __('Subscription'), {
+            full_width: true,
+            label_class: 'col-xxl-2',
+            input_class: 'col-xxl-10',
+        }) }}
+
+        {{ fields.htmlField('', informations['owner']['name']|default(__('Unknown'))|e, __('Registered by'), {
+            full_width: true,
+            label_class: 'col-xxl-2',
+            input_class: 'col-xxl-10',
+        }) }}
     {% endif %}
 {% endblock %}
