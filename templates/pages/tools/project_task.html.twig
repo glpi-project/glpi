@@ -137,12 +137,6 @@
         item.fields.auto_projectstates ? {'disabled': true} : {}
     ) }}
 
-    {% set state_tooltip %}
-        {% do call('Html::showToolTip', [
-            __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config.")
-        ]) %}
-    {% endset %}
-
     {{ fields.checkboxField(
         'auto_projectstates',
         item.fields.auto_projectstates,
@@ -169,12 +163,6 @@
             'unit': '%',
          }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
     ) }}
-
-    {% set percent_tooltip %}
-        {% do call('Html::showToolTip', [
-            __('When automatic computation is active, percentage is computed based on the average of all child task percent done.')
-        ]) %}
-    {% endset %}
 
     {{ fields.checkboxField(
         'auto_percent_done',
