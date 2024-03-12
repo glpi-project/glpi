@@ -75,7 +75,7 @@ final class FormDestinationTicket extends AbstractFormDestinationType
         $item_ticket = new Item_Ticket();
         $input = [
             'tickets_id' => $ticket->getID(),
-            'itemtype'   => get_class($answers_set),
+            'itemtype'   => $answers_set::class,
             'items_id'   => $answers_set->getID(),
         ];
         if (!$item_ticket->add($input)) {

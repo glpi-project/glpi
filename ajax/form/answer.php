@@ -72,7 +72,7 @@ if (!$answers_set) {
 
 $links = [];
 foreach ($answers_set->getCreatedItems() as $item) {
-    if ($item::canView() && $item->canViewItem()) {
+    if ($item->can($item->getID(), READ)) {
         $links[] = $item->getLink();
     }
 }
