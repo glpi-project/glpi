@@ -248,4 +248,147 @@ class Bios extends AbstractInventoryAsset
         //"original" firmware has been removed
         $this->boolean($item_bios->getFromDB($item_bios_id))->isFalse();
     }
+
+    public function testHistory()
+    {
+        global $DB;
+        $item_bios = new \Item_DeviceFirmware();
+
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>SG300-10MP</NAME>
+                <TYPE>device</TYPE>
+                <VERSION>1.4.12</VERSION>
+              </FIRMWARES>
+              <INFO>
+                <COMMENTS>SG300-10MPP 10-Port Gigabit PoE+ Managed Switch</COMMENTS>
+                <CONTACT>TECLIB</CONTACT>
+                <FIRMWARE>1.4.12</FIRMWARE>
+                <ID>2304</ID>
+                <IPS>
+                  <IP>10.10.10.10</IP>
+                  <IP>127.0.0.1</IP>
+                </IPS>
+                <LOCATION>Teclib Caaen</LOCATION>
+                <MAC>cc:8e:71:fb:42:1b</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>SG300-10MP</MODEL>
+                <NAME>TECLIB678</NAME>
+                <SERIAL>SDGFSDF51687SDF</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>5 hours, 35:46.00</UPTIME>
+              </INFO>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>6465205</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>teclib-home-2022-09-14-14-57-39</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>';
+
+        //computer inventory knows bios
+        $this->doInventory($xml_source, true);
+
+        $networkequipement = new \NetworkEquipment();
+        $networkequipement->getFromDBByCrit(['name' => 'TECLIB678']);
+        $this->integer($networkequipement->getID())->isGreaterThan(0);
+
+        //bios present in the inventory source is dynamic
+        $firmwares = $item_bios->find(['itemtype' => \NetworkEquipment::class, 'items_id' => $networkequipement->getID(), 'is_dynamic' => 1]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
+
+        //no log from first import (Computer or Monitor)
+        $nblogsnow = countElementsInTable(\Log::getTable());
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'LIMIT' => $nblogsnow,
+            'OFFSET' => $this->nblogs,
+            'WHERE' => [
+                'itemtype' => \NetworkEquipment::class,
+                'items_id' => $networkequipement->getID(),
+                'itemtype_link' => \DeviceFirmware::class
+            ]
+        ]);
+        $this->integer(count($logs))->isIdenticalTo(0);
+
+        // change version
+        // As the version is one of the reconciliation keys, we should see a deletion and then an addition.
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <FIRMWARES>
+                <DESCRIPTION>device firmware</DESCRIPTION>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <NAME>SG300-10MP</NAME>
+                <TYPE>device</TYPE>
+                <VERSION>1.4.13</VERSION>
+              </FIRMWARES>
+              <INFO>
+                <COMMENTS>SG300-10MPP 10-Port Gigabit PoE+ Managed Switch</COMMENTS>
+                <CONTACT>TECLIB</CONTACT>
+                <FIRMWARE>1.4.13</FIRMWARE>
+                <ID>2304</ID>
+                <IPS>
+                  <IP>10.10.10.10</IP>
+                  <IP>127.0.0.1</IP>
+                </IPS>
+                <LOCATION>Teclib Caaen</LOCATION>
+                <MAC>cc:8e:71:fb:42:1b</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>SG300-10MP</MODEL>
+                <NAME>TECLIB678</NAME>
+                <SERIAL>SDGFSDF51687SDF</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+                <UPTIME>5 hours, 35:46.00</UPTIME>
+              </INFO>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>6465205</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>teclib-home-2022-09-14-14-57-39</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>';
+        $this->doInventory($xml_source, true);
+
+
+        $networkequipement = new \NetworkEquipment();
+        $networkequipement->getFromDBByCrit(['name' => 'TECLIB678']);
+        $this->integer($networkequipement->getID())->isGreaterThan(0);
+
+        //bios present in the inventory source is dynamic
+        $firmwares = $item_bios->find(['itemtype' => \NetworkEquipment::class, 'items_id' => $networkequipement->getID(), 'is_dynamic' => 1]);
+        $this->integer(count($firmwares))->isIdenticalTo(1);
+
+        //one log for delete old firmware
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'WHERE' => [
+                'itemtype' => \NetworkEquipment::class,
+                'items_id' => $networkequipement->getID(),
+                'itemtype_link' => \DeviceFirmware::class,
+                'linked_action' => \Log::HISTORY_DELETE_DEVICE
+            ]
+        ]);
+
+        $this->integer(count($logs))->isIdenticalTo(1);
+
+        //one log for add new firmware
+        $logs = $DB->request([
+            'FROM' => \Log::getTable(),
+            'WHERE' => [
+                'itemtype' => \NetworkEquipment::class,
+                'items_id' => $networkequipement->getID(),
+                'itemtype_link' => \DeviceFirmware::class,
+                'linked_action' => \Log::HISTORY_ADD_DEVICE
+            ]
+        ]);
+
+        $this->integer(count($logs))->isIdenticalTo(1);
+    }
 }
