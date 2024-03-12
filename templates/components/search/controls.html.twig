@@ -38,7 +38,7 @@
 {% endif %}
 
 <div class="card-header search-header px-1 px-xl-3">
-    <div class="search-controls d-flex justify-content-between">
+    <div class="search-controls d-flex justify-content-between align-items-center">
 
         {% set mainform = mainform ?? true %}
         {% set showaction = showaction ?? true %}
@@ -101,7 +101,7 @@
 
         {% if user_pref('search_pagination_on_top') %}
             {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-                <div class="search-footer flex-grow-1 mx-1 d-none d-xxl-block" style="max-width: 650px;">
+                <div class="search-footer flex-grow-1 mx-1 d-none d-xxl-block mb-n2" style="max-width: 650px;">
                     {{ include('components/pager.html.twig') }}
                 </div>
             {% endif %}
