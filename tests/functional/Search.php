@@ -1956,8 +1956,8 @@ class Search extends DbTestCase
             ['quot\\\'ed', '%quot\\\'ed%'], // already escaped value should not produce double escaping
             ['^&#60;PROD-15&#62;', '<PROD-15>%'],
             ['<PROD-15>$', '%<PROD-15>'],
-            ['A&#38;B', '%A&B%'],
-            ['A&B', '%A&B%'],
+            ['A&#38;B', '%A&#38;B%'],
+            ['A&B', '%A&#38;B%'],
             ["backslashes \\ \\\\ are twice escaped when not used in ', \n, \r, ... ", "%backslashes \\\\\\\\ \\\\\\\\\\\\\\\\ are twice escaped when not used in \', \\n, \\r, ...%"],
         ];
     }
@@ -4737,6 +4737,10 @@ class Search extends DbTestCase
             ],
             [
                 'name' => 'Ticket & 5',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+            [
+                'name' => 'Ticket > 6',
                 'content' => '<p>This is a test ticket</p>'
             ],
         ]);
