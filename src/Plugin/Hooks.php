@@ -124,6 +124,19 @@ class Hooks
     const NETWORK_DISCOVERY = 'network_discovery';
     const NETWORK_INVENTORY = 'network_inventory';
     const INVENTORY_GET_PARAMS = 'inventory_get_params';
+    /** @var string Hook called before the inventory submission is handled.
+     *              You may modify the inventory data which is passed as a parameter (stdClass) and return the modified data.
+     *              Returning null will cancel the inventory submission with no specific reason.
+     *              Throwing an Exception will cancel the inventory submission with the exception message as the reason.
+     *              To avoid unrelated exception messages from being sent to the agent, you must handle all exceptions (except the one you would throw to cancel the inventory) within the hook function.
+     */
+    const PRE_INVENTORY = 'pre_inventory';
+    /** @var string Hook called after the inventory submission is handled.
+     *              You may view the inventory data which is passed as a parameter (stdClass).
+     *              Nothing is expected to be returned.
+     *              This hook is only called if the inventory submission was successful.
+     */
+    const POST_INVENTORY = 'post_inventory';
 
    // Agent contact request related hooks
     const HANDLE_INVENTORY_TASK    = 'handle_inventory_task';
