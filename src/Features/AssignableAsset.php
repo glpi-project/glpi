@@ -84,26 +84,6 @@ trait AssignableAsset
         return true;
     }
 
-    public static function canDelete()
-    {
-        return parent::canDelete() && static::canUpdate();
-    }
-
-    public function canDeleteItem()
-    {
-        return parent::canDeleteItem() && $this->canUpdateItem();
-    }
-
-    public static function canPurge()
-    {
-        return parent::canPurge() && static::canUpdate();
-    }
-
-    public function canPurgeItem()
-    {
-        return parent::canPurgeItem() && $this->canUpdateItem();
-    }
-
     public static function getAssignableVisiblityCriteria()
     {
         if (Session::haveRight(static::$rightname, READ)) {
