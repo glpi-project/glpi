@@ -1788,6 +1788,7 @@ class Inventory extends InventoryTestCase
         $expected_types_count = [
             0 => 3, //Agent version, disks usage
             \Log::HISTORY_ADD_DEVICE => 2, //new item_device...
+            \Log::HISTORY_DELETE_DEVICE => 2, //delete item_device...
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
