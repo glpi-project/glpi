@@ -408,6 +408,7 @@
                            field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_assign': 1},
+                              'multiple': item is usingtrait('Glpi\\Features\\AssignableAsset') ? true : false
                            })
                         ) }}
                      {% endif %}
@@ -550,6 +551,7 @@
                            field_options|merge({
                               'entity': item.fields['entities_id'],
                               'condition': {'is_itemgroup': 1},
+                              'multiple': item is usingtrait('Glpi\\Features\\AssignableAsset') ? true : false
                            })
                         ) }}
                      {% endif %}
