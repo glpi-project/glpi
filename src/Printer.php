@@ -46,7 +46,10 @@ class Printer extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+        prepareInputForUpdate as prepareInputForUpdateAssignableAsset;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -221,7 +224,6 @@ class Printer extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
@@ -239,13 +241,13 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = $input['init_pages_counter'];
         }
 
+        $input = $this->prepareInputForAddAssignableAsset($input);
         return $input;
     }
 
 
     public function prepareInputForUpdate($input)
     {
-
         if (isset($input['init_pages_counter'])) {
             $input['init_pages_counter'] = intval($input['init_pages_counter']);
         }
@@ -253,6 +255,7 @@ class Printer extends CommonDBTM
             $input['last_pages_counter'] = intval($input['last_pages_counter']);
         }
 
+        $input = $this->prepareInputForUpdateAssignableAsset($input);
         return $input;
     }
 

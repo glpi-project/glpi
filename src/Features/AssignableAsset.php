@@ -118,4 +118,65 @@ trait AssignableAsset
         $rights[UPDATE_ASSIGNED] = __('Update assigned');
         return $rights;
     }
+
+    private function prepareGroupFields(array $input)
+    {
+        $fields = ['groups_id', 'groups_id_tech'];
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $input)) {
+                if ($input[$field] === null) {
+                    $input[$field] = [];
+                } else if (!is_array($input[$field])) {
+                    $input[$field] = [$input[$field]];
+                }
+                $input[$field] = json_encode($input[$field]);
+            }
+        }
+        return $input;
+    }
+
+    public function prepareInputForAdd($input): array|false
+    {
+        if ($input === false) {
+            return false;
+        }
+        $input = $this->prepareGroupFields($input);
+        return parent::prepareInputForAdd($input);
+    }
+
+    public function prepareInputForUpdate($input): array|false
+    {
+        if ($input === false) {
+            return false;
+        }
+        $input = $this->prepareGroupFields($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    public function getEmpty()
+    {
+        if (!parent::getEmpty()) {
+            return false;
+        }
+        $group_fields = ['groups_id', 'groups_id_tech'];
+        foreach ($group_fields as $field) {
+            $this->fields[$field] = [];
+        }
+    }
+
+    public function post_getFromDB()
+    {
+        $group_fields = ['groups_id', 'groups_id_tech'];
+        foreach ($group_fields as $field) {
+            if (array_key_exists($field, $this->fields)) {
+                $this->fields[$field] = json_decode($this->fields[$field] ?? '[]', false) ?? [];
+                if ($this->fields[$field] === 0) {
+                    $this->fields[$field] = [];
+                }
+                if (!is_array($this->fields[$field])) {
+                    $this->fields[$field] = [$this->fields[$field]];
+                }
+            }
+        }
+    }
 }

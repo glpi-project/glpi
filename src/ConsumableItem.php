@@ -50,7 +50,10 @@ class ConsumableItem extends CommonDBTM
     use Glpi\Features\Clonable;
 
     use AssetImage;
-    use AssignableAsset;
+    use AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+        prepareInputForUpdate as prepareInputForUpdateAssignableAsset;
+    }
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Consumable', 'Infocom'];
@@ -97,13 +100,13 @@ class ConsumableItem extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $input = parent::prepareInputForAdd($input);
+        $input = $this->prepareInputForAddAssignableAsset($input);
         return $this->managePictures($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        $input = parent::prepareInputForUpdate($input);
+        $input = $this->prepareInputForUpdateAssignableAsset($input);
         return $this->managePictures($input);
     }
 

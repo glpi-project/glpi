@@ -44,7 +44,9 @@ class Phone extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -135,13 +137,13 @@ class Phone extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
         unset($input['id']);
         unset($input['withtemplate']);
 
+        $input = $this->prepareInputForAddAssignableAsset($input);
         return $input;
     }
 
