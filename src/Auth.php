@@ -496,9 +496,7 @@ class Auth extends CommonGLPI
                     ]
                 );
 
-                $this->user->fields = $result + [
-                    '_ruleright_process' => true,
-                ];
+                $this->user->willProcessRuleRight();
 
                 return true;
             }
