@@ -251,7 +251,9 @@ $assignable_assets = [
 foreach ($assignable_assets as $asset) {
     $migration->addRight($asset['rightname'], READ_ASSIGNED, [$asset['rightname'] => READ]);
     $migration->addRight($asset['rightname'], UPDATE_ASSIGNED, [$asset['rightname'] => UPDATE]);
-    // groups_id and groups_id_tech are now TEXT fields
+    // groups_id and groups_id_tech are now TEXT fields. We also cannot use indexes on them anymore because of that.
+    $migration->dropKey($asset['table'], 'groups_id');
+    $migration->dropKey($asset['table'], 'groups_id_tech');
     $migration->changeField($asset['table'], 'groups_id', 'groups_id', 'TEXT');
     $migration->changeField($asset['table'], 'groups_id_tech', 'groups_id_tech', 'TEXT');
 }
