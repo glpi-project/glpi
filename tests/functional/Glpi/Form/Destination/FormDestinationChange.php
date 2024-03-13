@@ -36,7 +36,7 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\Form\Destination\AbstractFormDestinationType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -63,7 +63,7 @@ class FormDestinationChange extends AbstractFormDestinationType
         // Create a form with a single FormDestinationChange destination
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
                 ->addDestination(\Glpi\Form\Destination\FormDestinationChange::class, ['name' => 'test'])
         );
 
