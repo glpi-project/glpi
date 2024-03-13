@@ -311,8 +311,6 @@ class ContractCost extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => ['contracts_id' => $ID],
             'ORDER'  => ["$sort $order"],
-            'START'  => $start,
-            'LIMIT'  => $_SESSION['glpilist_limit']
         ];
         $iterator = $DB->request($criteria);
         $count_criteria = $criteria;
@@ -339,11 +337,11 @@ class ContractCost extends CommonDBChild
                 <script>
                     function showCost{{ rand }}(subitems_id) {
                         $.ajax({
-                            url: '{{ CFG_GLPI.root_doc }}/ajax/viewsubitem.php',
+                            url: '{{ config('root_doc') }}/ajax/viewsubitem.php',
                             method: 'POST',
                             data: {
                                 type: 'ContractCost',
-                                parenttype: '{{ item.getType }}',
+                                parenttype: '{{ item.getType() }}',
                                 contracts_id: {{ item.getID() }},
                                 id: subitems_id
                             },
@@ -391,9 +389,9 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'contractcostlist' . $rand,
-            'start' => $start,
-            'limit' => $_SESSION['glpilist_limit'],
             'is_tab' => true,
+            'nofilter' => true,
+            'nopager' => true,
             'sort' => $sort,
             'order' => $order,
             'columns' => [
@@ -423,7 +421,7 @@ TWIG, $twig_params);
             'filtered_number' => $total_count,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
-                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
             ],
