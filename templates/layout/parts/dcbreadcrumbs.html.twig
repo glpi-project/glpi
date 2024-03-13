@@ -38,8 +38,20 @@
             <div class="col-auto p-1">
                 {{ breadcrumb_item['link']|raw }}
 
+                {% if breadcrumb_item['side'] is defined %}
+                    {% if breadcrumb_item['side'] == constant('PDU_Rack::SIDE_LEFT') %}
+                        {{ __('On left') }}
+                    {% elseif breadcrumb_item['side'] == constant('PDU_Rack::SIDE_RIGHT') %}
+                        {{ __('On right') }}
+                    {% elseif breadcrumb_item['side'] == constant('PDU_Rack::SIDE_TOP') %}
+                        {{ __('On top') }}
+                    {% elseif breadcrumb_item['side'] == constant('PDU_Rack::SIDE_BOTTOM') %}
+                        {{ __('On bottom') }}
+                    {% endif %}
+                {% endif %}
+
                 {% if breadcrumb_item['position'] is defined %}
-                    {{ __('(U%1$u)')|format(breadcrumb_item['position']) }}
+                    {{ __('(U%d)')|format(breadcrumb_item['position']) }}
                 {% endif %}
 
                 {% if breadcrumb_item['location'] is not null and breadcrumb_item['location']['id'] != previous_location_id %}

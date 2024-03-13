@@ -44,7 +44,7 @@ if (!isset($_GET['itemtype']) || !class_exists($_GET['itemtype'])) {
     );
 }
 
-$itemDevice = new $_GET['itemtype']();
+$itemDevice = getItemForItemtype($_GET['itemtype']);
 if (!$itemDevice->canView()) {
     Session::redirectIfNotLoggedIn();
     Html::displayRightError();

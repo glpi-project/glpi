@@ -1123,7 +1123,7 @@ class ReservationItem extends CommonDBChild
         ];
 
         if ($item->isEntityAssign()) {
-            $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table, '', '', true);
+            $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table, '', '', $item->maybeRecursive());
         }
 
         if ($item->maybeTemplate()) {

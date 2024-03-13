@@ -1605,12 +1605,14 @@ JAVASCRIPT;
         // Parse markdown
         $md = new MarkdownRenderer();
 
+        $content = RichText::getSafeHtml($md->disableHeadings()->render($p['markdown_content']));
+
         $html = <<<HTML
       <div
          class="card markdown"
          style="background-color: {$p['color']}; color: {$fg_color}; border-color: {$border_color}">
 
-         <div class="html_content">{$md->disableHeadings()->render($p['markdown_content'])}</div>
+         <div class="html_content">{$content}</div>
          <textarea
             class="markdown_content"
             placeholder="{$ph}">{$p['markdown_content']}</textarea>

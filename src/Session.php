@@ -1746,7 +1746,7 @@ class Session
      * Get new IDOR token
      * This token validates the itemtype used by an ajax request is the one asked by a dropdown.
      * So, we avoid IDOR request where an attacker asks for an another itemtype
-     * than the originaly indtended
+     * than the originaly intended
      *
      * @since 9.5.3
      *
@@ -1757,6 +1757,11 @@ class Session
      **/
     public static function getNewIDORToken(string $itemtype = "", array $add_params = []): string
     {
+        if ($itemtype === '' && count($add_params) === 0) {
+            trigger_error('IDOR token cannot be generated with empty criteria.', E_USER_WARNING);
+            return '';
+        }
+
         $token = "";
         do {
             $token = bin2hex(random_bytes(32));
@@ -1797,7 +1802,21 @@ class Session
         if (isset($_SESSION['glpiidortokens'][$token])) {
             $idor_data =  $_SESSION['glpiidortokens'][$token];
 
-           // check all stored data for the idor token are present (and identifical) in the posted data
+            // Ensure that `displaywith` and `condition` is checked if passed in data
+            $mandatory_properties = [
+                'displaywith' => [],
+                'condition'   => [],
+            ];
+            foreach ($mandatory_properties as $property_name => $default_value) {
+                if (!array_key_exists($property_name, $data)) {
+                    $data[$property_name] = $default_value;
+                }
+                if (!array_key_exists($property_name, $idor_data)) {
+                    $idor_data[$property_name] = $default_value;
+                }
+            }
+
+           // check all stored data for the idor token are present (and identical) in the posted data
             $match_expected = function ($expected, $given) use (&$match_expected) {
                 if (is_array($expected)) {
                     if (!is_array($given)) {
@@ -2089,6 +2108,48 @@ class Session
     public static function getActiveEntity()
     {
         return $_SESSION['glpiactive_entity'] ?? 0;
+    }
+
+    /**
+     * Filter given entities ID list to return only these tht are matching current active entities in session.
+     *
+     * @since 10.0.13
+     *
+     * @param int|int[] $entities_ids
+     *
+     * @return int|int[]
+     */
+    public static function getMatchingActiveEntities(/*int|array*/ $entities_ids)/*: int|array*/
+    {
+        if (
+            (int)$entities_ids === -1
+            || (is_array($entities_ids) && count($entities_ids) === 1 && (int)reset($entities_ids) === -1)
+        ) {
+            // Special value that is generally used to fallback to all active entities.
+            return $entities_ids;
+        }
+
+        if (!is_array($entities_ids) && !is_int($entities_ids) && !ctype_digit($entities_ids)) {
+            // Unexpected value type.
+            return [];
+        }
+
+        $active_entities_ids = $_SESSION['glpiactiveentities'] ?? [];
+
+        if (!is_array($entities_ids) && in_array((int)$entities_ids, $active_entities_ids, true)) {
+            return (int)$entities_ids;
+        }
+
+        $filtered = [];
+        foreach ((array)$entities_ids as $entity_id) {
+            if (
+                (is_int($entity_id) || ctype_digit($entity_id))
+                && in_array((int)$entity_id, $active_entities_ids, true)
+            ) {
+                $filtered[] = (int)$entity_id;
+            }
+        }
+        return $filtered;
     }
 
     /**

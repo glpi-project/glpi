@@ -305,23 +305,26 @@ class Calendar extends DbTestCase
     {
         $calendar = new \Calendar();
         $default_id = getItemByTypeName('Calendar', 'Default', true);
-       // get Default calendar
+        // get Default calendar
         $this->boolean($calendar->getFromDB($default_id))->isTrue();
         $this->addXmas($calendar);
 
         $id = $calendar->clone();
         $this->integer($id)->isGreaterThan($default_id);
         $this->boolean($calendar->getFromDB($id))->isTrue();
-       //should have been duplicated too.
+        //should have been duplicated too.
         $this->checkXmas($calendar);
 
-       //change name, and clone again
-        $this->boolean($calendar->update(['id' => $id, 'name' => "Je s\'apelle Groot"]))->isTrue();
+        //change name, and clone again
+        $this->updateItem('Calendar', $id, ['name' => "Je s'apelle Groot"]);
 
         $calendar = new \Calendar();
         $this->boolean($calendar->getFromDB($id))->isTrue();
 
-        $this->integer($calendar->clone())->isGreaterThan($id);
+        $id = $calendar->clone();
+        $this->integer($id)->isGreaterThan($default_id);
+        $this->boolean($calendar->getFromDB($id))->isTrue();
+        $this->string($calendar->fields['name'])->isEqualTo("Je s'apelle Groot (copy)");
        //should have been duplicated too.
         $this->checkXmas($calendar);
     }

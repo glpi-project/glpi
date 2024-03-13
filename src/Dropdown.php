@@ -218,6 +218,7 @@ class Dropdown
                 $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
             }
         }
+        $params['entity'] = Session::getMatchingActiveEntities($params['entity']);
 
         $field_id = Html::cleanId("dropdown_" . $params['name'] . $params['rand']);
 
@@ -243,9 +244,14 @@ class Dropdown
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
             'class'                => $params['class'],
-            '_idor_token'          => Session::getNewIDORToken($itemtype, [
-                'entity_restrict' => $entity_restrict,
-            ]),
+            '_idor_token'          => Session::getNewIDORToken(
+                $itemtype,
+                [
+                    'entity_restrict' => $entity_restrict,
+                    'displaywith'     => $params['displaywith'],
+                    'condition'       => $params['condition'],
+                ],
+            ),
             'order'                => $params['order'] ?? null,
             'parent_id_field'      => $params['parent_id_field'],
             'multiple'             => $params['multiple'] ?? false,
@@ -2665,7 +2671,9 @@ JAVASCRIPT;
             return;
         }
 
-        if (
+        if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
+            $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
+        } elseif (
             isset($post["entity_restrict"])
             && !is_array($post["entity_restrict"])
             && (substr($post["entity_restrict"], 0, 1) === '[')
@@ -2678,10 +2686,7 @@ JAVASCRIPT;
                     $entities[] = (int)$value;
                 }
             }
-            $post["entity_restrict"] = $entities;
-        }
-        if (isset($post['entity_restrict']) && 'default' === $post['entity_restrict']) {
-            $post['entity_restrict'] = $_SESSION['glpiactiveentities'];
+            $post["entity_restrict"] = Session::getMatchingActiveEntities($entities);
         }
 
        // Security
@@ -2695,12 +2700,8 @@ JAVASCRIPT;
         $displaywith = false;
         if (isset($post['displaywith'])) {
             if (is_array($post['displaywith']) && count($post['displaywith'])) {
-                $table = getTableForItemType($post['itemtype']);
-                foreach ($post['displaywith'] as $key => $value) {
-                    if (!$DB->fieldExists($table, $value)) {
-                        unset($post['displaywith'][$key]);
-                    }
-                }
+                $post['displaywith'] = self::filterDisplayWith($item, $post['displaywith']);
+
                 if (count($post['displaywith'])) {
                     $displaywith = true;
                 }
@@ -3534,6 +3535,28 @@ JAVASCRIPT;
         return ($json === true) ? json_encode($ret) : $ret;
     }
 
+    private static function filterDisplayWith(CommonDBTM $item, array $fields): array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Filter invalid fields
+        $table = $item->getTable();
+        foreach ($fields as $key => $value) {
+            if (!$DB->fieldExists($table, $value)) {
+                unset($fields[$key]);
+            }
+        }
+
+        // Filter sensitive fields in `displaywith`
+        // `CommonDBTM::unsetUndisclosedFields()` expects a `$field => $value` format.
+        $key_value_fields = array_fill_keys($fields, 0);
+        $item::unsetUndisclosedFields($key_value_fields);
+        $fields = array_keys($key_value_fields);
+
+        return $fields;
+    }
+
     /**
      * Get dropdown connect
      *
@@ -3557,6 +3580,10 @@ JAVASCRIPT;
 
         if (!isset($post['fromtype']) || !($fromitem = getItemForItemtype($post['fromtype']))) {
             return;
+        }
+
+        if (isset($post['entity_restrict'])) {
+            $post['entity_restrict'] = Session::getMatchingActiveEntities($post['entity_restrict']);
         }
 
         $fromitem->checkGlobal(UPDATE);
@@ -3830,7 +3857,7 @@ JAVASCRIPT;
 
         if ($item->isEntityAssign()) {
             if (isset($post["entity_restrict"]) && ($post["entity_restrict"] >= 0)) {
-                $entity = $post["entity_restrict"];
+                $entity = Session::getMatchingActiveEntities($post['entity_restrict']);
             } else {
                 $entity = '';
             }
@@ -4072,6 +4099,7 @@ JAVASCRIPT;
             $entity_restrict = -1;
             if (isset($post['entity_restrict'])) {
                 $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
+                $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
             }
 
             $start  = intval(($post['page'] - 1) * $post['page_limit']);
@@ -4167,7 +4195,6 @@ JAVASCRIPT;
             'value'              => 0,
             'page'               => 1,
             'inactive_deleted'   => 0,
-            '_idor_token'        => "",
             'searchText'         => null,
             'itiltemplate_class' => 'TicketTemplate',
             'itiltemplates_id'   => 0,
@@ -4179,6 +4206,7 @@ JAVASCRIPT;
         $entity_restrict = -1;
         if (isset($post['entity_restrict'])) {
             $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
+            $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
         }
 
        // prevent instanciation of bad classes
@@ -4234,9 +4262,12 @@ JAVASCRIPT;
             }
             $post['condition'] = static::addNewCondition($cond);
 
+            // Bypass checks, idor token validation has already been made earlier in method
+            $group_idor = Session::getNewIDORToken('Group', ['entity_restrict' => $entity_restrict, 'condition' => $post['condition']]);
+
             $groups = Dropdown::getDropdownValue([
                 'itemtype'            => 'Group',
-                '_idor_token'         => $post['_idor_token'],
+                '_idor_token'         => $group_idor,
                 'display_emptychoice' => false,
                 'searchText'          => $post['searchText'],
                 'entity_restrict'     => $entity_restrict,
@@ -4263,10 +4294,12 @@ JAVASCRIPT;
             && !$template->isHiddenField("_suppliers_id_{$post['actortype']}")
             && in_array('Supplier', $post['returned_itemtypes'])
         ) {
-            $supplier_obj = new Supplier();
+            // Bypass checks, idor token validation has already been made earlier in method
+            $supplier_idor = Session::getNewIDORToken('Group', ['entity_restrict' => $entity_restrict]);
+
             $suppliers    = Dropdown::getDropdownValue([
                 'itemtype'            => 'Supplier',
-                '_idor_token'         => $post['_idor_token'],
+                '_idor_token'         => $supplier_idor,
                 'display_emptychoice' => false,
                 'searchText'          => $post['searchText'],
                 'entity_restrict'     => $entity_restrict,
@@ -4274,6 +4307,7 @@ JAVASCRIPT;
             foreach ($suppliers['results'] as $supplier) {
                 if (isset($supplier['children'])) {
                     foreach ($supplier['children'] as &$children) {
+                        $supplier_obj = new Supplier();
                         $supplier_obj->getFromDB($children['id']);
 
                         $children['items_id']          = $children['id'];

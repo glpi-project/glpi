@@ -1880,17 +1880,11 @@ class APIRest extends atoum
             // Guzzle lib will automatically push the correct Content-type
             unset($params['headers']['Content-Type']);
         }
-        $verb = strtolower($verb);
-        if (in_array($verb, ['get', 'post', 'delete', 'put', 'options', 'patch'])) {
-            try {
-                return $this->http_client->{$verb}(
-                    $this->base_uri . $relative_uri,
-                    $params
-                );
-            } catch (\Throwable $e) {
-                throw $e;
-            }
-        }
+        return $this->http_client->request(
+            $verb,
+            $this->base_uri . $relative_uri,
+            $params
+        );
     }
 
     protected function query(

@@ -386,8 +386,8 @@ HTML;
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
             var url = tablink.attr('href');
+            const href_url_params = new URL(url, CFG_GLPI.url_base).searchParams;
             var target = tablink.attr('data-bs-target');
-            const href_url_params = new URLSearchParams(url);
 
             const updateCurrentTab = () => {
                 $.get(
@@ -442,7 +442,7 @@ HTML;
             active_link.attr('href', currenthref);
          };
          
-         const loadAllTabs = () => {
+         var loadAllTabs = () => {
              const tabs = $('#$tabdiv_id a[data-bs-toggle=\"tab\"]');
              tabs.each((index, tab) => {
                 loadTabContents($(tab));

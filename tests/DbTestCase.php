@@ -203,6 +203,7 @@ class DbTestCase extends \GLPITestCase
         $this->integer($id)->isGreaterThan(0);
 
         // Remove special fields
+        $skip_fields[] = 'id';
         $input = array_filter($input, function ($key) use ($skip_fields) {
             return !in_array($key, $skip_fields) && strpos($key, '_') !== 0;
         }, ARRAY_FILTER_USE_KEY);

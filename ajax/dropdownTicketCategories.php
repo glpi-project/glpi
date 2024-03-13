@@ -41,7 +41,7 @@ if (strpos($_SERVER['PHP_SELF'], "dropdownTicketCategories.php")) {
     die("Sorry. You can't access this file directly");
 }
 
-$opt = ['entity' => $_POST["entity_restrict"]];
+$opt = ['entity' => Session::getMatchingActiveEntities($_POST['entity_restrict'])];
 $condition  = [];
 
 if (Session::getCurrentInterface() == "helpdesk") {

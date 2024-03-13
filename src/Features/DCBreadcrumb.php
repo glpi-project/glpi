@@ -43,6 +43,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Item_Enclosure;
 use Item_Rack;
 use Location;
+use PDU;
+use PDU_Rack;
 use Rack;
 use Toolbox;
 
@@ -72,6 +74,39 @@ trait DCBreadcrumb
         unset($enclosure_types[array_search('Enclosure', $enclosure_types)]);
 
         $breadcrumb = [];
+
+        if ($item instanceof PDU) {
+            $pdu_rack = new PDU_Rack();
+            $rack = new Rack();
+            if (
+                $pdu_rack->getFromDBByCrit(['pdus_id'  => $item->getID()])
+                && $rack->getFromDB($pdu_rack->fields['racks_id'])
+            ) {
+                $position = '';
+                switch ($pdu_rack->fields['side']) {
+                    case PDU_Rack::SIDE_LEFT:
+                        $position =  __('On left');
+                        break;
+                    case PDU_Rack::SIDE_RIGHT:
+                        $position =  __('On right');
+                        break;
+                    case PDU_Rack::SIDE_TOP:
+                        $position =  __('On top');
+                        break;
+                    case PDU_Rack::SIDE_BOTTOM:
+                        $position =  __('On bottom');
+                        break;
+                }
+                $position .= ' (' . $pdu_rack->fields['position'] . ')';
+                $options = [
+                    'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
+                    'icon'       => true
+                ];
+                $breadcrumb[] = $rack->getLink($options) . '&nbsp;' . $position;
+                $item = $rack;
+            }
+        }
+
         if (in_array($item->getType(), $enclosure_types)) {
            //check if asset is part of an enclosure
             if ($enclosure = $this->isEnclosurePart($item->getType(), $item->getID(), true)) {
@@ -79,7 +114,7 @@ trait DCBreadcrumb
                     'linkoption' => $enclosure->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
-                $position = sprintf(__('(U%1$u)'), (int)$item->getPositionInEnclosure());
+                $position = sprintf(__('(U%d)'), (int)$item->getPositionInEnclosure());
                 $breadcrumb[] = $enclosure->getLink($options) . '&nbsp;' . $position;
                 $item = $enclosure;
             }
@@ -92,7 +127,7 @@ trait DCBreadcrumb
                     'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
                     'icon'       => true
                 ];
-                $position = sprintf(__('(U%1$u)'), (int)$this->getPositionInRack());
+                $position = sprintf(__('(U%d)'), (int)$item->getPositionInRack());
                 $breadcrumb[] = $rack->getLink($options) . '&nbsp;' . $position;
                 $item = $rack;
             }
@@ -235,6 +270,28 @@ trait DCBreadcrumb
         $item = new static();
         if ($item->getFromDB($items_id)) {
             $types = $CFG_GLPI['rackable_types'];
+
+            if ($item instanceof PDU) {
+                $pdu_rack = new PDU_Rack();
+                $rack = new Rack();
+                if (
+                    $pdu_rack->getFromDBByCrit(['pdus_id'  => $item->getID()])
+                    && $rack->getFromDB($pdu_rack->fields['racks_id'])
+                ) {
+                    $breadcrumb[Rack::getType()] = [
+                        'link'     => $rack->getLink(
+                            [
+                                'linkoption' => $rack->isDeleted() ? 'class="target-deleted"' : '',
+                                'icon'       => true
+                            ]
+                        ),
+                        'position' => $pdu_rack->fields['position'],
+                        'side'     => $pdu_rack->fields['side'],
+                    ];
+
+                    $item = $rack;
+                }
+            }
 
             // Add Enclosure part of breadcrumb
             $enclosure_types = $types;

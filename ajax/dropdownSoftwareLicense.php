@@ -56,7 +56,7 @@ if ($_POST['softwares_id'] > 0) {
         'FROM'      => 'glpi_softwarelicenses',
         'WHERE'     => [
             'glpi_softwarelicenses.softwares_id'   => (int)$_POST['softwares_id']
-        ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', $_POST['entity_restrict'], true),
+        ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', Session::getMatchingActiveEntities($_POST['entity_restrict']), true),
         'ORDERBY'   => 'name'
     ]);
     $number = count($iterator);

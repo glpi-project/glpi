@@ -770,30 +770,42 @@
     }
 
     function showTeamModal(card_itemtype, card_items_id) {
-        const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
-        const content = `
-            ${teammember_types_dropdown}
-            <button type="button" class="btn btn-primary" name="add">${_x('button', 'Add')}</button>
-        `;
         const modal = $('#kanban-modal');
         modal
             .off('click', 'button[name="add"]')
             .on('click', 'button[name="add"]', () => {
-                const itemtype = modal.find('select[name="itemtype"]').val();
-                const items_id = modal.find('select[name="items_id"]').val();
-                const role = modal.find('select[name="role"]').val();
-
-                if (itemtype && items_id) {
-                    addTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).then(() => {
-                        openCardDetailsPanel({
-                            card_id: `${card_itemtype}-${card_items_id}`
+                $('.actor_entry').each(function() {
+                    let itemtype = $(this).data('itemtype');
+                    let items_id = $(this).data('items-id');
+                    let role = $(this).data('actortype');
+                    if (itemtype && items_id) {
+                        addTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).then(() => {
+                            openCardDetailsPanel({
+                                card_id: `${card_itemtype}-${card_items_id}`
+                            });
                         });
-                    });
-                    modal.modal('hide');
-                }
+                    }
+                });
+                modal.modal('hide');
             });
-        modal.find('.modal-body').html(content);
-        modal.modal('show');
+        $.ajax({
+            method: 'GET',
+            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+            data: {
+                itemtype: card_itemtype,
+                items_id: card_items_id,
+                action: 'load_teammember_form'
+            }
+        }).done((result) => {
+            const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${card_itemtype}`).html();
+            const content = `
+                ${teammember_types_dropdown}
+                ${result}
+                <button type="button" name="add" class="btn btn-primary">${_x('button', 'Add')}</button>
+            `;
+            modal.find('.modal-body').html(content);
+            modal.modal('show');
+        });
     }
 
     /**

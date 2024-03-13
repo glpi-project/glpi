@@ -4069,6 +4069,193 @@ class Search extends DbTestCase
             $this->variable(array_search('datacenter', array_column($so, 'id')))->isNotEqualTo(false, $item->getTypeName() . ' should use \'$tab = array_merge($tab, DataCenter::rawSearchOptionsToAdd());');
         }
     }
+
+    protected function testRichTextProvider(): iterable
+    {
+        $this->login('glpi', 'glpi');
+
+        $this->createItems('Ticket', [
+            [
+                'name' => 'Ticket 1',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+            [
+                'name' => 'Ticket 2',
+                'content' => '<p>This is a test ticket with &amp; in description</p>'
+            ],
+            [
+                'name' => 'Ticket 3',
+                'content' => '<p>This is a test ticket with matching followup</p>'
+            ],
+            [
+                'name' => 'Ticket 4',
+                'content' => '<p>This is a test ticket with task</p>'
+            ],
+            [
+                'name' => 'Ticket & 5',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+            [
+                'name' => 'Ticket > 6',
+                'content' => '<p>This is a test ticket</p>'
+            ],
+        ]);
+
+        $this->createItem('ITILFollowup', [
+            'itemtype' => 'Ticket',
+            'items_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
+            'content' => '<p>This is a followup</p>'
+        ]);
+        $this->createItem('ITILFollowup', [
+            'itemtype' => 'Ticket',
+            'items_id' => getItemByTypeName('Ticket', 'Ticket 3')->getID(),
+            'content' => '<p>This is a followup with &amp; in description</p>'
+        ]);
+
+        $this->createItem('TicketTask', [
+            'tickets_id' => getItemByTypeName('Ticket', 'Ticket 1')->getID(),
+            'content' => '<p>This is a task</p>'
+        ]);
+        $this->createItem('TicketTask', [
+            'tickets_id' => getItemByTypeName('Ticket', 'Ticket 4')->getID(),
+            'content' => '<p>This is a task with &amp; in description</p>'
+        ]);
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 1, // title
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket & 5'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 21, // ticket content
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 2'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 25, // followup content
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 3'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    0 => [
+                        'link'       => 'AND',
+                        'field'      => 26, // task content
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ]
+                ],
+            ],
+            'expected' => [
+                'Ticket 4'
+            ]
+        ];
+
+        yield [
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    0 => [
+                        'link' => 'AND',
+                        'field' => 'view', // items seen
+                        'searchtype' => 'contains',
+                        'value'      => '&'
+                    ],
+                    1 => [
+                        'link' => 'AND',
+                        'field' => 1, //title
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    2 => [
+                        'link' => 'AND',
+                        'field' => 21, // ticket content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    3 => [
+                        'link' => 'AND',
+                        'field' => 25, // followup content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                    4 => [
+                        'link' => 'AND',
+                        'field' => 26, // task content
+                        'searchtype' => 'contains',
+                        'value' => ''
+                    ],
+                ],
+            ],
+            'expected' => [
+                'Ticket 2',
+                'Ticket 3',
+                'Ticket 4',
+                'Ticket & 5'
+            ]
+        ];
+    }
+
+    /**
+     * @dataprovider testRichTextProvider
+     */
+    public function testRichText(
+        array $search_params,
+        array $expected
+    ): void {
+        $data = $this->doSearch(\Ticket::class, $search_params);
+
+        // Extract items names
+        $items = [];
+        foreach ($data['data']['rows'] as $row) {
+            $items[] = $row['raw']['ITEM_Ticket_1'];
+        }
+
+        $this->array($items)->isEqualTo($expected);
+    }
 }
 
 // @codingStandardsIgnoreStart

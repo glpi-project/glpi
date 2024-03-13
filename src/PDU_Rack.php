@@ -91,11 +91,6 @@ class PDU_Rack extends CommonDBRelation
     {
         $error_detected = [];
 
-        $pdus_id  = $this->fields['pdus_id'];
-        $racks_id = $this->fields['racks_id'];
-        $position = $this->fields['position'];
-        $side     = $this->fields['side'];
-
        //check for requirements
         if ($this->isNewItem()) {
             if (!isset($input['pdus_id'])) {
@@ -115,18 +110,10 @@ class PDU_Rack extends CommonDBRelation
             }
         }
 
-        if (isset($input['pdus_id'])) {
-            $pdus_id = $input['pdus_id'];
-        }
-        if (isset($input['racks_id'])) {
-            $racks_id = $input['racks_id'];
-        }
-        if (isset($input['position'])) {
-            $position = $input['position'];
-        }
-        if (isset($input['side'])) {
-            $side = $input['side'];
-        }
+        $pdus_id  = $input['pdus_id'] ?? $this->fields['pdus_id'] ?? null;
+        $racks_id = $input['racks_id'] ?? $this->fields['racks_id'] ?? null;
+        $position = $input['position'] ?? $this->fields['position'] ?? null;
+        $side     = $input['side'] ?? $this->fields['side'] ?? null;
 
         if (!count($error_detected)) {
            //check if required U are available at position
@@ -446,11 +433,11 @@ class PDU_Rack extends CommonDBRelation
                                 break;
                             case self::SIDE_TOP:
                                 echo "<i class='fa fa-arrow-up fa-fw'
-                                 title='" . __("On left") . "'></i>";
+                                 title='" . __("On top") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                             case self::SIDE_BOTTOM:
                                 echo "<i class='fa fa-arrow-down fa-fw'
-                                 title='" . __("On left") . "'></i>";
+                                 title='" . __("On bottom") . " (" . $current_pdu['position'] . ")'></i>";
                                 break;
                         }
                     }

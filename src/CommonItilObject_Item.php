@@ -740,6 +740,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $userID = Session::getLoginUserID();
         }
 
+        $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
+
         $rand        = $params['rand'];
         $already_add = $params['used'];
 

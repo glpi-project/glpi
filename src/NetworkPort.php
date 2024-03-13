@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 
@@ -670,16 +671,19 @@ class NetworkPort extends CommonDBChild
         $itemtype = $item->getType();
         $items_id = $item->getField('id');
 
+        $netport = new self();
+        $netport_table = $netport->getTable();
+
         //no matter if the main item is dynamic,
         //deleted and dynamic networkport are displayed from lock tab
         //deleted and non dynamic networkport are always displayed (with is_deleted column)
         $deleted_criteria = [
             'OR'  => [
                 'AND' => [
-                    "is_deleted" => 0,
-                    "is_dynamic" => 1
+                    "$netport_table.is_deleted" => 0,
+                    "$netport_table.is_dynamic" => 1
                 ],
-                "is_dynamic" => 0
+                "$netport_table.is_dynamic" => 0
             ]
         ];
 
@@ -689,8 +693,6 @@ class NetworkPort extends CommonDBChild
         ) {
             return false;
         }
-
-        $netport = new self();
 
         if (($itemtype == 'NetworkPort') || ($withtemplate == 2)) {
             $canedit = false;
@@ -724,21 +726,38 @@ class NetworkPort extends CommonDBChild
         }
 
         $criteria = [
-            'FROM'   => $netport->getTable(),
+            'FROM'   => $netport_table,
             'WHERE'  => [
-                'items_id'  => $item->getID(),
-                'itemtype'  => $item->getType(), [
+                "$netport_table.items_id"  => $item->getID(),
+                "$netport_table.itemtype"  => $item->getType(), [
                     'OR' => [
-                        ['name' => ['!=', 'Management']],
-                        ['name' => null]
+                        ["$netport_table.name" => ['!=', 'Management']],
+                        ["$netport_table.name" => null]
                     ]
                 ]
             ] + $deleted_criteria
         ];
 
+        $so = $netport->rawSearchOptions();
+        $already_link_tables = [];
+        foreach (Plugin::getAddSearchOptions(__CLASS__) as $key => $data) {
+            $so[] = ['id' => $key] + $data;
+            $join = Search::addLeftJoin(
+                __CLASS__,
+                $netport->getTable(),
+                $already_link_tables,
+                $data["table"],
+                $data["linkfield"],
+                0,
+                0,
+                $data["joinparams"],
+                $data["field"]
+            );
+            $criteria['JOIN'][] = new QueryExpression($join);
+        }
+
         $ports_iterator = $DB->request($criteria);
 
-        $so = $netport->rawSearchOptions();
         $dprefs = DisplayPreference::getForTypeUser(
             'Networkport',
             Session::getLoginUserID()
@@ -1156,7 +1175,7 @@ class NetworkPort extends CommonDBChild
 
                             $device1 = $netport->getItem();
 
-                            if (!$device1->can($device1->getID(), READ)) {
+                            if ($device1 === false || !$device1->can($device1->getID(), READ)) {
                                 break;
                             }
 

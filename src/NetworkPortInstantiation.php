@@ -1026,7 +1026,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
 
         $params = ['itemtype'           => '__VALUE__',
-            'entity_restrict'    => $p['entity'],
+            'entity_restrict'    => Session::getMatchingActiveEntities($p['entity']),
             'networkports_id'    => $ID,
             'comments'           => $p['comments'],
             'myname'             => $p['name'],

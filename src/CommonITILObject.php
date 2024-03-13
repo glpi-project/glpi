@@ -55,7 +55,7 @@ abstract class CommonITILObject extends CommonDBTM
     use \Glpi\Features\Clonable;
     use \Glpi\Features\Timeline;
     use \Glpi\Features\Kanban;
-    use Glpi\Features\Teamwork;
+    use \Glpi\Features\Teamwork;
 
    /// Users by type
     protected $lazy_loaded_users = null;
@@ -911,6 +911,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             isset($this->fields['is_deleted']) && ($this->fields['is_deleted'] == 1)
             || isset($this->fields['status']) && in_array($this->fields['status'], $this->getClosedStatusArray())
+            || isset($this->input['status']) && in_array($this->input['status'], $this->getClosedStatusArray())
         ) {
             return false;
         }
@@ -5234,7 +5235,7 @@ abstract class CommonITILObject extends CommonDBTM
             'right'  => $right,
             'rand'   => $rand,
             'width'  => "95%",
-            'entity' => $options['entities_id'] ?? $options['entity_restrict']
+            'entity' => Session::getMatchingActiveEntities($options['entities_id'] ?? $options['entity_restrict']),
         ];
 
        //only for active ldap and corresponding right
@@ -9375,7 +9376,7 @@ abstract class CommonITILObject extends CommonDBTM
                     User::getTableField('name'),
                 ],
                 'FROM'   => $user_link_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     User::getTable() => [
                         'ON'  => [
                             $user_link_table => 'users_id',
@@ -9423,7 +9424,7 @@ abstract class CommonITILObject extends CommonDBTM
                     Group::getTableField('name'),
                 ],
                 'FROM'   => $group_link_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     Group::getTable() => [
                         'ON'  => [
                             $group_link_table => 'groups_id',
@@ -9464,7 +9465,7 @@ abstract class CommonITILObject extends CommonDBTM
                     Supplier::getTableField('name'),
                 ],
                 'FROM'   => $suplier_link_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     Supplier::getTable() => [
                         'ON'  => [
                             $suplier_link_table => 'suppliers_id',
@@ -9558,23 +9559,11 @@ abstract class CommonITILObject extends CommonDBTM
             }
         }
 
-        $category_names = [];
         foreach ($common_itil_iterator as $data) {
-            if (!array_key_exists($data['itilcategories_id'], $category_names)) {
-                $category_name = DropdownTranslation::getTranslatedValue(
-                    $data['itilcategories_id'],
-                    ITILCategory::class
-                );
-                if ($category_name === '') {
-                    $category_name = ITILCategory::getFriendlyNameById($data['itilcategories_id']);
-                }
-
-                $category_names[$data['itilcategories_id']] = $category_name;
-            }
             $data = [
                 'id'        => $data['id'],
                 'name'      => $data['name'],
-                'category'  => $category_names[$data['itilcategories_id']] ?? '',
+                'category'  => $data['itilcategories_id'],
                 'content'   => $data['content'],
                 'status'    => $data['status'],
                 '_itemtype' => $itemtype,
@@ -9756,7 +9745,10 @@ abstract class CommonITILObject extends CommonDBTM
 
         // Replace category ids with category names in items metadata
         foreach ($columns as &$column) {
-            foreach (($column['items'] ?? []) as &$item) {
+            if (!isset($column['items'])) {
+                continue;
+            }
+            foreach ($column['items'] as &$item) {
                 $item['_metadata']['category'] = $categories[$item['_metadata']['category']] ?? '';
             }
         }
@@ -9923,6 +9915,13 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function addTeamMember(string $itemtype, int $items_id, array $params = []): bool
     {
+        if (
+            array_key_exists('role', $params)
+            && is_string($params['role'])
+            && defined(CommonITILActor::class . '::' . strtoupper($params['role']))
+        ) {
+            $params['role'] = constant(CommonITILActor::class . '::' . strtoupper($params['role']));
+        }
         $role = $params['role'] ?? CommonITILActor::ASSIGN;
 
         /** @var CommonDBTM $link_class */
@@ -10029,7 +10028,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'SELECT' => $select,
                 'FROM'   => $link_class::getTable(),
                 'WHERE'  => [static::getForeignKeyField() => $this->getID()],
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     $itemtype::getTable() => [
                         'ON'  => [
                             $itemtype::getTable()   => 'id',
@@ -10052,6 +10051,11 @@ abstract class CommonITILObject extends CommonDBTM
                  $team[] = $member;
             }
         }
+
+        usort(
+            $team,
+            fn (array $member_1, array $member_2) => strcasecmp($member_1['display_name'], $member_2['display_name'])
+        );
 
         return $team;
     }
@@ -10544,7 +10548,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             foreach (['requester', 'observer', 'assign'] as $actor_type) {
                 $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
-                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
+                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign() && !$this->isNewItem()) {
                     continue;
                 }
                 if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {
@@ -10896,5 +10900,32 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
         return self::canDelete();
+    }
+
+    public static function getTeamMemberForm(CommonITILObject $item): string
+    {
+        $itiltemplate = $item->getITILTemplateToUse(
+            0,
+            $item instanceof Ticket ? $item->fields['type'] : null,
+            $item->fields['itilcategories_id'],
+            $item->fields['entities_id']
+        );
+        $field_options = [
+            'full_width' => true,
+            'fields_template' => $itiltemplate,
+            'add_field_class' => 'col-sm-12',
+        ];
+        return TemplateRenderer::getInstance()->render('components/itilobject/actors/main.html.twig', [
+            'item' => $item,
+            'entities_id' => 0,
+            'canupdate' => true,
+            'canassign' => true,
+            'params' => $item->fields + ['load_actors' => false],
+            'itiltemplate' => $itiltemplate,
+            'canassigntome' => false,
+            'field_options' => $field_options,
+            'allow_auto_submit' => false,
+            'main_rand' => mt_rand(),
+        ]);
     }
 }

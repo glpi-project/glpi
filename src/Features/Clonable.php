@@ -38,7 +38,6 @@ namespace Glpi\Features;
 use CommonDBConnexity;
 use CommonDBTM;
 use Session;
-use Toolbox;
 
 /**
  * Clonable objects

@@ -292,7 +292,7 @@ The present file will list all changes made to the project; according to the
 - `DropdownTranslation::getTranslationByName()`
 
 
-## [10.0.13] unreleased
+## [10.0.14] unreleased
 
 ### Added
 
@@ -307,6 +307,28 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.13] 2024-03-13
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+- `condition` and `displaywith` parameters must now be added in IDOR token creation data when they are not empty.
 
 #### Deprecated
 

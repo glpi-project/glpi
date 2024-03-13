@@ -37,7 +37,6 @@ namespace Glpi\Features;
 
 use Glpi\Http\Response;
 use Glpi\Plugin\Hooks;
-use Plugin;
 
 /**
  * Trait Kanban.
