@@ -120,8 +120,8 @@ class QuestionTypeDateTime implements QuestionTypeInterface
     {
         return [
             'input'         => [
-                'date'            => _sn('Date', 'Dates', 1),
-                'time'            => _sn('Time', 'Times', 1),
+                'date'            => __s('Date', 'Dates', 1),
+                'time'            => __s('Time', 'Times', 1),
                 'datetime-local'  => __s('Date and time'),
             ],
             'default_value' => [
@@ -296,7 +296,7 @@ TWIG;
                         value="1" {{ is_date_enabled ? 'checked' : '' }}
                         onchange="handleDateAndTimeCheckbox_{{ rand }}(this)"
                         data-glpi-form-editor-specific-question-extra-data>
-                    <span class="form-check-label">{{ labels.date|e('html') }}</span>
+                    <span class="form-check-label">{{ labels.date }}</span>
                 </label>
                 <label class="form-check form-switch mb-0">
                     <input type="hidden" name="is_time_enabled" value="0"
@@ -306,7 +306,7 @@ TWIG;
                         value="1" {{ is_time_enabled ? 'checked' : '' }}
                         onchange="handleDateAndTimeCheckbox_{{ rand }}(this)"
                         data-glpi-form-editor-specific-question-extra-data>
-                    <span class="form-check-label">{{ labels.time|e('html') }}</span>
+                    <span class="form-check-label">{{ labels.time }}</span>
                 </label>
             </div>
 
@@ -331,8 +331,8 @@ TWIG;
             'is_date_enabled' => $this->isDateEnabled($question),
             'is_time_enabled' => $this->isTimeEnabled($question),
             'labels' => [
-                'date' => _sn('Date', 'Dates', 1),
-                'time' => _sn('Time', 'Times', 1)
+                'date' => __s('Date', 'Dates', 1),
+                'time' => __s('Time', 'Times', 1)
             ]
         ]);
     }
