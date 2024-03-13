@@ -37,6 +37,8 @@
 {# @var \Glpi\Form\Form                               form #}
 {# @var \Glpi\Form\Desination\FormDestination         destinations #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <div class="py-2 px-3">
     <h2 class="d-flex">
         <i class="{{ icon }} me-2"></i>
@@ -98,14 +100,23 @@
     {% endif %}
 
     <form method="POST" action="{{ controller_url }}">
-        {# Submit button to create a new destination #}
-        <button class="btn btn-primary btn-sm mt-4" name="add" type="submit">
-            <i class="ti ti-plus me-2"></i> {{ __("New item") }}
-        </button>
+
+        <div class="d-flex mt-4">
+            {% do call('Dropdown::showFromArray', [
+                "itemtype",
+                available_destinations_types,
+                {
+                    'value': get_class(default_destination_object),
+                }
+            ]) %}
+
+            {# Submit button to create a new destination #}
+            <button class="btn btn-primary ms-2" name="add" type="submit">
+                <i class="ti ti-plus me-2"></i> {{ __("New item") }}
+            </button>
+        </div>
 
         {# Hidden values #}
-        <input type="hidden" name="itemtype" value="{{ get_class(default_destination_object) }}"/>
-        <input type="hidden" name="name" value="{{ default_destination_object.getTypeName(1) }}"/>
         <input type="hidden" name="{{ form.getForeignKeyField() }}" value="{{ form.getID() }}"/>
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
     <form>

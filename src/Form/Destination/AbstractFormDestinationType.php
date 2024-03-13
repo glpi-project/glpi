@@ -55,7 +55,7 @@ abstract class AbstractFormDestinationType extends CommonGLPI implements FormDes
             $count = $this->countCreatedItemsForAnswersSet($item);
         }
 
-        return self::createTabEntry(static::getTypeName(), $count);
+        return self::createTabEntry(static::getTypeName(), $count, "", static::getTargetItemtype()::getIcon());
     }
 
     #[Override]

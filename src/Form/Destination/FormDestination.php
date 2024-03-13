@@ -97,11 +97,16 @@ final class FormDestination extends CommonDBChild
 
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('pages/admin/form/form_destination.html.twig', [
-            'icon'                       => self::getIcon(),
-            'form'                       => $item,
-            'controller_url'             => self::getFormURL(),
-            'default_destination_object' => new FormDestinationTicket(),
-            'destinations'               => $item->getDestinations(),
+            'icon'                         => self::getIcon(),
+            'form'                         => $item,
+            'controller_url'               => self::getFormURL(),
+            'default_destination_object'   => new FormDestinationTicket(),
+            'destinations'                 => $item->getDestinations(),
+            'available_destinations_types' => [
+                FormDestinationTicket::class => \Ticket::getTypeName(1),
+                FormDestinationChange::class  => \Change::getTypeName(1),
+                FormDestinationProblem::class  => \Problem::getTypeName(1),
+            ],
         ]);
 
         return true;
@@ -168,6 +173,11 @@ final class FormDestination extends CommonDBChild
             || (new ReflectionClass($type))->isAbstract()
         ) {
             throw new InvalidArgumentException("Invalid itemtype");
+        }
+
+        // Set default name
+        if (!isset($input['name'])) {
+            $input['name'] = $type::getTypeName(1);
         }
 
         return $input;

@@ -39,6 +39,8 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
@@ -4508,6 +4510,33 @@ abstract class CommonITILObject extends CommonDBTM
         $tab = array_merge($tab, $location_so);
 
         $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
+
+        // Search by form answer
+        $tab[] = [
+            'id'   => 'forms',
+            'name' => __('Forms')
+        ];
+        $tab[] = [
+            'id'                 => '120',
+            'table'              => AnswersSet::getTable(),
+            'field'              => 'name',
+            'name'               => AnswersSet::getTypeName(1),
+            'massiveaction'      => false,
+            'searchtype'         => 'equals',
+            'datatype'           => 'itemlink',
+            'usehaving'          => true,
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => AnswersSet_FormDestinationItem::getTable(),
+                    'joinparams'         => [
+                        'jointype'           => 'child',
+                        'linkfield'          => 'items_id',
+                        'condition'          => ['NEWTABLE.itemtype' => self::getType()]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true
+        ];
 
         return $tab;
     }

@@ -36,26 +36,26 @@
 namespace tests\units\Glpi\Form\Destination;
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
 use Glpi\Tests\Form\Destination\AbstractFormDestinationType;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Item_Ticket;
+use Item_Problem;
 use Override;
-use Ticket;
+use Problem;
 
-class FormDestinationTicket extends AbstractFormDestinationType
+class FormDestinationProblem extends AbstractFormDestinationType
 {
     use FormTesterTrait;
 
     /**
      * Indirectly test the \Glpi\Form\AnswersHandler\AnswersHandler->createDestinations()
-     * method using a FormDestinationTicket object
+     * method using a FormDestinationProblem object
      */
     #[Override]
-    protected function getTestedInstance(): \Glpi\Form\Destination\FormDestinationTicket
+    protected function getTestedInstance(): \Glpi\Form\Destination\FormDestinationProblem
     {
-        return new \Glpi\Form\Destination\FormDestinationTicket();
+        return new \Glpi\Form\Destination\FormDestinationProblem();
     }
 
     #[Override]
@@ -64,28 +64,28 @@ class FormDestinationTicket extends AbstractFormDestinationType
         $this->login();
         $answers_handler = AnswersHandler::getInstance();
 
-        // Create a form with a single FormDestinationTicket destination
+        // Create a form with a single FormDestinationProblem destination
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
-                ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(\Glpi\Form\Destination\FormDestinationTicket::class, ['name' => 'test'])
+                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addDestination(\Glpi\Form\Destination\FormDestinationProblem::class, ['name' => 'test'])
         );
 
-        // There are no tickets in the database named after this form
-        $tickets = (new Ticket())->find(['name' => 'Ticket from form: Test form 1']);
-        $this->array($tickets)->hasSize(0);
+        // There are no problems in the database named after this form
+        $problems = (new Problem())->find(['name' => 'Problem from form: Test form 1']);
+        $this->array($problems)->hasSize(0);
 
-        // Submit form, a single ticket should be created
+        // Submit form, a single problem should be created
         $answers = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "My name",
         ], \Session::getLoginUserID());
-        $tickets = (new Ticket())->find(['name' => 'Ticket from form: Test form 1']);
-        $this->array($tickets)->hasSize(1);
+        $problems = (new Problem())->find(['name' => 'Problem from form: Test form 1']);
+        $this->array($problems)->hasSize(1);
 
         // Make sure link with the form answers was created too
-        $ticket = array_pop($tickets);
-        $links = (new Item_Ticket())->find([
-            'tickets_id' => $ticket['id'],
+        $problem = array_pop($problems);
+        $links = (new Item_Problem())->find([
+            'problems_id' => $problem['id'],
             'items_id'   => $answers->getID(),
             'itemtype'   => $answers::getType(),
         ]);

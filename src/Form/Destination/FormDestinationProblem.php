@@ -36,13 +36,13 @@
 namespace Glpi\Form\Destination;
 
 use Override;
-use Ticket;
+use Problem;
 
-final class FormDestinationTicket extends AbstractCommonITILFormDestination
+final class FormDestinationProblem extends AbstractCommonITILFormDestination
 {
     #[Override]
     public static function getTargetItemtype(): string
     {
-        return Ticket::class;
+        return Problem::class;
     }
 }
