@@ -301,7 +301,7 @@ class AnswersSet extends DbTestCase
         // Create a form with two destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, ['name' => 'Ticket 1'])
                 ->addDestination(FormDestinationTicket::class, ['name' => 'Ticket 2'])
         );

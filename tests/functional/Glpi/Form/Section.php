@@ -130,7 +130,7 @@ class Section extends DbTestCase
         $form_3 = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
-                ->addQuestion('Valid question type', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Valid question type', QuestionTypeShortText::class)
                 ->addQuestion('Invalid question type', "Not a type")
         );
 

@@ -38,7 +38,7 @@ namespace tests\units\Glpi\Form\Destination;
 use CommonGLPI;
 use DbTestCase;
 use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Monitor;
@@ -63,14 +63,14 @@ class FormDestination extends DbTestCase
         // Answers set with no destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
         yield [$form, "Items to create"];
 
         // Answers set with 4 destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, ['name' => 'destination 1'])
                 ->addDestination(FormDestinationTicket::class, ['name' => 'destination 2'])
                 ->addDestination(FormDestinationTicket::class, ['name' => 'destination 3'])
@@ -123,14 +123,14 @@ class FormDestination extends DbTestCase
         // Answers set with no destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
         yield [$form, true];
 
         // Answers set with 4 destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, ['name' => 'destination 1'])
                 ->addDestination(FormDestinationTicket::class, ['name' => 'destination 2'])
                 ->addDestination(FormDestinationTicket::class, ['name' => 'destination 3'])

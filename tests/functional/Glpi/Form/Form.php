@@ -600,7 +600,7 @@ class Form extends DbTestCase
                         'forms_sections_id'         => "Section 1",
                         '_use_uuid_for_sections_id' => true,
                         'name'                      => 'Question 1',
-                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'type'                      => QuestionTypeShortText::class,
                         'rank'                      => 0,
                     ],
                     [
@@ -609,7 +609,7 @@ class Form extends DbTestCase
                         'forms_sections_id'         => "Section 1",
                         '_use_uuid_for_sections_id' => true,
                         'name'                      => 'Question 2',
-                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'type'                      => QuestionTypeShortText::class,
                         'rank'                      => 0,
                     ],
                     [
@@ -618,7 +618,7 @@ class Form extends DbTestCase
                         'forms_sections_id'         => "Section 1",
                         '_use_uuid_for_sections_id' => true,
                         'name'                      => 'Question 3',
-                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'type'                      => QuestionTypeShortText::class,
                         'rank'                      => 0,
                     ],
                 ],
@@ -664,7 +664,7 @@ class Form extends DbTestCase
                         'forms_sections_id'         => "Section 2",
                         '_use_uuid_for_sections_id' => true,
                         'name'                      => 'Question 1',
-                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'type'                      => QuestionTypeShortText::class,
                         'rank'                      => 0,
                     ],
                     [
@@ -673,7 +673,7 @@ class Form extends DbTestCase
                         'forms_sections_id'         => "Section 2",
                         '_use_uuid_for_sections_id' => true,
                         'name'                      => 'Question 2',
-                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'type'                      => QuestionTypeShortText::class,
                         'rank'                      => 0,
                     ],
                     [
@@ -682,7 +682,7 @@ class Form extends DbTestCase
                         'forms_sections_id'         => "Section 2",
                         '_use_uuid_for_sections_id' => true,
                         'name'                      => 'Question 3',
-                        'type'                      => QuestionTypeShortAnswerText::class,
+                        'type'                      => QuestionTypeShortText::class,
                         'rank'                      => 0,
                     ],
                 ],
@@ -833,10 +833,10 @@ class Form extends DbTestCase
             (new FormBuilder())
                 ->addSection('Section 1')
                 ->addSection('Section 2')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addSection('Section 3')
-                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addQuestion('Question 3', QuestionTypeShortText::class)
         );
         yield [$form_3, 7]; // Created + 3 sections + 3 questions
 
@@ -896,12 +896,12 @@ class Form extends DbTestCase
         $form_to_be_deleted = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addSection('Section 2')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 2', QuestionTypeShortAnswerText::class)
-                ->addQuestion('Question 3', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
+                ->addQuestion('Question 2', QuestionTypeShortText::class)
+                ->addQuestion('Question 3', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
         );
 
@@ -909,7 +909,7 @@ class Form extends DbTestCase
         $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
-                ->addQuestion('Question 1', QuestionTypeShortAnswerText::class)
+                ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
         );
 
