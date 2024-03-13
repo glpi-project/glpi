@@ -173,7 +173,7 @@ export default class MonacoEditor {
     getTwigCompletions() {
         const keywords = [
             // (opening) tags
-            'apply', 'autoescape', 'block', 'for', 'if', 'macro', 'set',
+            'apply', 'autoescape', 'block', 'for', 'if', 'elseif', 'macro', 'set',
             // closing tags
             'endapply', 'endautoescape', 'endblock', 'endfor', 'endif', 'endmacro', 'endset',
             // literals
@@ -182,10 +182,10 @@ export default class MonacoEditor {
         const operators = [
             'in', 'is', 'and', 'or', 'not', 'b-and', 'b-xor', 'b-or', 'matches', 'starts with', 'ends with', 'has some', 'has every',
         ];
-        const functions = ['min', 'max', 'random', 'range'];
+        const functions = ['date', 'min', 'max', 'random', 'range'];
         // Like functions but occur after '|'
         const filters = [
-            'abs', 'batch', 'capitalize', 'column', 'default', 'escape', 'filter', 'first', 'format', 'join',
+            'abs', 'batch', 'capitalize', 'column', 'date', 'default', 'escape', 'filter', 'first', 'format', 'join',
             'json_encode', 'keys', 'last', 'length', 'lower', 'map', 'merge', 'nl2br', 'raw', 'reduce', 'replace',
             'reverse', 'round', 'slice', 'sort', 'split', 'striptags', 'title', 'trim', 'upper', 'url_encode'
         ];
