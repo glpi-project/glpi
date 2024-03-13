@@ -391,6 +391,7 @@ class Session extends \DbTestCase
 
         // No itemtype
         yield [
+            'itemtype'   => '',
             'add_params' => ['entity_restrict' => [0, 1, 2, 3, 5, 9, 1578]]
         ];
 
