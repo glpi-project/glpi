@@ -63,7 +63,7 @@
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ loop.index }}"
                             aria-expanded="false"
                         >
-                            <i class="{{ concrete_destination.getTargetItemtype().getIcon() }} me-2"></i>
+                            <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
                             {{ destination.getName() }}
                         </button>
                     </h3>
