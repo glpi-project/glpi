@@ -40,24 +40,14 @@ use Glpi\OAuth\Server;
 use Glpi\Socket;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_ENVIRONMENT_TYPE', 'development');
+define('GLPI_ENVIRONMENT_TYPE', 'testing');
 
 ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstraping are always displayed
 error_reporting(E_ALL);
 
 define('GLPI_ROOT', __DIR__ . '/../');
-define('GLPI_CONFIG_DIR', getenv('GLPI_CONFIG_DIR') ?: __DIR__ . '/config');
-define('GLPI_VAR_DIR', getenv('GLPI_VAR_DIR') ?: __DIR__ . '/files');
-define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:8088');
+define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
 define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
-
-define(
-    'PLUGINS_DIRECTORIES',
-    [
-        GLPI_ROOT . '/plugins',
-        GLPI_ROOT . '/tests/fixtures/plugins',
-    ]
-);
 
 define(
     'GLPI_SERVERSIDE_URL_ALLOWLIST',
@@ -77,8 +67,6 @@ include(GLPI_ROOT . "/inc/based_config.php");
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     die("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --config-dir=" . GLPI_CONFIG_DIR . " ...\n\n");
 }
-
-\Glpi\Tests\BootstrapUtils::initVarDirectories();
 
 include_once __DIR__ . '/../inc/includes.php';
 

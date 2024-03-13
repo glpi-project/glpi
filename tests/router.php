@@ -33,17 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-define('GLPI_ENVIRONMENT_TYPE', 'development');
-
-define('GLPI_CONFIG_DIR', __DIR__ . '/config');
-define('GLPI_VAR_DIR', __DIR__ . '/files');
-
-define(
-    'PLUGINS_DIRECTORIES',
-    [
-        __DIR__ . '/fixtures/plugins',
-    ]
-);
+define('GLPI_ENVIRONMENT_TYPE', 'testing');
 
 ini_set("log_error", 1);
 

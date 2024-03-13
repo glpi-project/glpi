@@ -46,9 +46,6 @@ define(
 );
 
 include_once(GLPI_ROOT . '/inc/based_config.php');
-
-\Glpi\Tests\BootstrapUtils::initVarDirectories();
-
 include_once(GLPI_ROOT . '/inc/includes.php');
 
 $command = new \Glpi\Tests\Command\TestUpdatedDataCommand();

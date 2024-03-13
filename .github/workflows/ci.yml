@@ -39,7 +39,7 @@ jobs:
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
+      PHP_IMAGE: "githubactions-php-apache:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
@@ -115,7 +115,7 @@ jobs:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-${{ matrix.db-image }}"
-      PHP_IMAGE: "githubactions-php:${{ matrix.php-version }}"
+      PHP_IMAGE: "githubactions-php-apache:${{ matrix.php-version }}"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
