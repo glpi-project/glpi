@@ -120,14 +120,14 @@ class QuestionTypeDateTime implements QuestionTypeInterface
     {
         return [
             'input'         => [
-                'date'            => __s('Date', 'Dates', 1),
-                'time'            => __s('Time', 'Times', 1),
-                'datetime-local'  => __s('Date and time'),
+                'date'            => _n('Date', 'Dates', 1),
+                'time'            => _n('Time', 'Times', 1),
+                'datetime-local'  => __('Date and time'),
             ],
             'default_value' => [
-                'date'            => __s('Current date'),
-                'time'            => __s('Current time'),
-                'datetime-local'  => __s('Current date and time'),
+                'date'            => __('Current date'),
+                'time'            => __('Current time'),
+                'datetime-local'  => __('Current date and time'),
             ]
         ];
     }
@@ -331,8 +331,8 @@ TWIG;
             'is_date_enabled' => $this->isDateEnabled($question),
             'is_time_enabled' => $this->isTimeEnabled($question),
             'labels' => [
-                'date' => __s('Date', 'Dates', 1),
-                'time' => __s('Time', 'Times', 1)
+                'date' => _n('Date', 'Dates', 1),
+                'time' => _n('Time', 'Times', 1)
             ]
         ]);
     }
