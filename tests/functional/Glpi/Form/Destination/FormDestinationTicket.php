@@ -48,10 +48,6 @@ class FormDestinationTicket extends AbstractFormDestinationType
 {
     use FormTesterTrait;
 
-    /**
-     * Indirectly test the \Glpi\Form\AnswersHandler\AnswersHandler->createDestinations()
-     * method using a FormDestinationTicket object
-     */
     #[Override]
     protected function getTestedInstance(): \Glpi\Form\Destination\FormDestinationTicket
     {

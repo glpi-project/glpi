@@ -48,10 +48,6 @@ class FormDestinationChange extends AbstractFormDestinationType
 {
     use FormTesterTrait;
 
-    /**
-     * Indirectly test the \Glpi\Form\AnswersHandler\AnswersHandler->createDestinations()
-     * method using a FormDestinationChange object
-     */
     #[Override]
     protected function getTestedInstance(): \Glpi\Form\Destination\FormDestinationChange
     {
