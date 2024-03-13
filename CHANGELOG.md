@@ -18,6 +18,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- `condition` and `displaywith` parameters must now be added in IDOR token creation data when they are not empty.
 
 #### Deprecated
 

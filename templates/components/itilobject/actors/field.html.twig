@@ -254,7 +254,7 @@
                   users_right: '{{ users_right ?? 'all' }}',
                   entity_restrict: (actors.requester.length == 0 && is_new_item) ? -1 : {{ entities_id }},
                   searchText: params.term,
-                  _idor_token: '{{ idor_token() }}',
+                  _idor_token: '{{ idor_token(item.getType(), {'users_right': users_right ?? 'all'}) }}',
                   itiltemplate_class: '{{ itiltemplate.getType() }}',
                   itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
                   itemtype: '{{ item.getType() }}',

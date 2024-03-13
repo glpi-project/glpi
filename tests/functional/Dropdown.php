@@ -35,12 +35,16 @@
 
 namespace tests\units;
 
+use CommonDBTM;
+use Computer;
 use DbTestCase;
 use Generator;
 use Glpi\Socket;
 use Glpi\Toolbox\Sanitizer;
+use Item_DeviceSimcard;
 use Session;
 use State;
+use User;
 
 /* Test for inc/dropdown.class.php */
 
@@ -1412,7 +1416,7 @@ class Dropdown extends DbTestCase
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType())
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0])
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
@@ -1471,7 +1475,7 @@ class Dropdown extends DbTestCase
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType())
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]])
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
@@ -1485,7 +1489,8 @@ class Dropdown extends DbTestCase
        // Put condition in session and post its key
         $condition_key = sha1(serialize($post['condition']));
         $_SESSION['glpicondition'][$condition_key] = $post['condition'];
-        $post['condition'] = $condition_key;
+        $post['condition']   = $condition_key;
+        $post['_idor_token'] = \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
 
@@ -1502,7 +1507,7 @@ class Dropdown extends DbTestCase
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType())
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"'])
         ];
         $values = \Dropdown::getDropdownValue($post);
         $values = (array)json_decode($values);
@@ -1818,5 +1823,71 @@ class Dropdown extends DbTestCase
 
             $this->variable($dropdown_entry['id'])->isEqualTo($expected[$key]);
         }
+    }
+
+    protected function displayWithProvider(): iterable
+    {
+        yield [
+            'item'        => new Computer(),
+            'displaywith' => [],
+            'filtered'    => [],
+        ];
+
+        yield [
+            'item'        => new Computer(),
+            'displaywith' => ['id', 'notavalidfield', 'serial'],
+            'filtered'    => ['id', 'serial'],
+        ];
+
+        $this->login('post-only', 'postonly');
+        yield [
+            'item'        => new Item_DeviceSimcard(),
+            'displaywith' => ['serial', 'pin', 'puk'],
+            'filtered'    => ['serial'], // pin and puk disallowed by profile
+        ];
+
+        $this->login();
+        yield [
+            'item'        => new Item_DeviceSimcard(),
+            'displaywith' => ['serial', 'pin', 'puk'],
+            'filtered'    => ['serial', 'pin', 'puk'], // pin and puk allowed by profile
+        ];
+
+        $this->logOut();
+        yield [
+            'item'        => new Item_DeviceSimcard(),
+            'displaywith' => ['serial', 'pin', 'puk'],
+            'filtered'    => ['serial'], // pin and puk disallowed when not connected
+        ];
+
+        $this->login('post-only', 'postonly');
+        yield [
+            'item'        => new User(),
+            'displaywith' => ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token'],
+            'filtered'    => ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed by profile
+        ];
+
+        $this->login();
+        yield [
+            'item'        => new User(),
+            'displaywith' => ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token'],
+            'filtered'    => ['id', 'firstname', 'password_forget_token'], // password_forget_token allowed by profile
+        ];
+
+        $this->logOut();
+        yield [
+            'item'        => new User(),
+            'displaywith' => ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token'],
+            'filtered'    => ['id', 'firstname'], // all sensitive fields removed, and password_forget_token disallowed when not connected
+        ];
+    }
+
+    /**
+     * @dataProvider displayWithProvider
+     */
+    public function testFilterDisplayWith(CommonDBTM $item, array $displaywith, array $filtered): void
+    {
+        $instance = $this->newTestedInstance();
+        $this->array($this->callPrivateMethod($instance, 'filterDisplayWith', $item, $displaywith))->isEqualTo($filtered);
     }
 }

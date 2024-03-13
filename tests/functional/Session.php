@@ -380,44 +380,200 @@ class Session extends \DbTestCase
         $this->string($result)->isEqualTo($expected);
     }
 
-
-    protected function idorProvider()
+    protected function newIdorParamsProvider()
     {
-        return [
-            ['itemtype' => 'Computer'],
-            ['itemtype' => 'Ticket'],
-            ['itemtype' => 'Glpi\\Dashboard\\Item'],
-            ['itemtype' => 'User', 'add_params' => ['right' => 'all']],
-            ['itemtype' => 'User', 'add_params' => ['entity_restrict' => 0]],
+        // No extra params
+        foreach (['Computer', 'Ticket', 'Glpi\\Dashboard\\Item'] as $itemtype) {
+            yield [
+                'itemtype' => $itemtype,
+            ];
+        }
+
+        // No itemtype
+        yield [
+            'add_params' => ['entity_restrict' => [0, 1, 2, 3, 5, 9, 1578]]
+        ];
+
+        // With itemtype and extra params
+        yield [
+            'itemtype'   => 'User',
+            'add_params' => ['right' => 'all'],
+        ];
+        yield [
+            'itemtype'   => 'User',
+            'add_params' => ['entity_restrict' => 0],
         ];
     }
 
     /**
-     * @dataProvider idorProvider
+     * @dataProvider newIdorParamsProvider
      */
-    public function testIDORToken(string $itemtype = "", array $add_params = [])
+    public function testGetNewIDORToken(string $itemtype = "", array $add_params = [])
     {
-       // generate token
+        $initial_time = time();
+
+        // generate token
         $token = \Session::getNewIDORToken($itemtype, $add_params);
         $this->string($token)->hasLength(64);
 
-       // token exists in session and is valid
-        $this->array($_SESSION['glpiidortokens'][$token])
-         ->string['itemtype']->isEqualTo($itemtype)
-         ->string['expires'];
-
-        if (count($add_params) > 0) {
-            $this->array($_SESSION['glpiidortokens'][$token])->size->isEqualTo(2 + count($add_params));
+        // token exists in session and is valid
+        $this->array($token_data = $_SESSION['glpiidortokens'][$token]);
+        if ($itemtype !== '') {
+            $this->array($token_data)->size->isEqualTo(2 + count($add_params));
+            $this->array($token_data)->string['itemtype']->isEqualTo($itemtype);
+        } else {
+            $this->array($token_data)->size->isEqualTo(1 + count($add_params));
         }
+        $this->array($token_data)->integer['expires']->isGreaterThanOrEqualTo($initial_time + GLPI_IDOR_EXPIRES);
 
-       // validate token with dedicated method
-        $result = \Session::validateIDOR([
+        // validate token
+        $data = [
             '_idor_token' => $token,
             'itemtype'    => $itemtype,
-        ] + $add_params);
-        $this->boolean($result)->isTrue();
+        ] + $add_params;
+        $this->boolean(\Session::validateIDOR($data))->isTrue();
     }
 
+    protected function idorDataProvider()
+    {
+        yield [
+            'data'     => [],
+            'is_valid' => false, // no token provided
+        ];
+
+        $token = \Session::getNewIDORToken(
+            'User',
+            [
+                'test'    => 1,
+                'complex' => ['foo', 'bar', [1, 2]],
+            ]
+        );
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+                'complex'     => ['foo', 'bar', [1, 2]],
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+                'complex'     => ['foo', 'bar', [1, 2]],
+                'displaywith' => [], // empty displaywith is OK
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'complex'     => ['foo', 'bar', [1, 2]],
+            ],
+            'is_valid' => false, // missing `test`
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+            ],
+            'is_valid' => false, // missing `complex`
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'test'        => 1,
+                'complex'     => 'foo,bar,1,2',
+            ],
+            'is_valid' => false, // invalid `complex`
+        ];
+
+        $token = \Session::getNewIDORToken(
+            'User',
+            [
+                'displaywith' => ['id', 'phone'],
+            ]
+        );
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'displaywith' => ['id', 'phone'],
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'displaywith' => ['phone'],
+            ],
+            'is_valid' => false, // id missing in displaywith
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+            ],
+            'is_valid' => false, // missing displaywith
+        ];
+
+        $condition_sha = \Dropdown::addNewCondition(['a' => 5, 'b' => true]);
+        $token = \Session::getNewIDORToken(
+            'User',
+            [
+                'condition' => $condition_sha,
+            ]
+        );
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'condition'   => $condition_sha,
+            ],
+            'is_valid' => true,
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+                'condition'   => \Dropdown::addNewCondition(['a' => 1, 'b' => true]),
+            ],
+            'is_valid' => false, // not the same condition
+        ];
+        yield [
+            'data'     => [
+                'itemtype'    => 'User',
+                '_idor_token' => $token,
+            ],
+            'is_valid' => false, // missing condition
+        ];
+    }
+
+    /**
+     * @dataProvider idorDataProvider
+     */
+    public function testValidateIDOR(array $data, bool $is_valid)
+    {
+        $this->boolean(\Session::validateIDOR($data))->isEqualTo($is_valid);
+    }
+
+    public function testGetNewIDORTokenWithEmptyParams()
+    {
+        $this->when(
+            function () {
+                \Session::getNewIDORToken();
+            }
+        )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('IDOR token cannot be generated with empty criteria.')
+         ->exists();
+    }
 
     public function testDORInvalid()
     {
