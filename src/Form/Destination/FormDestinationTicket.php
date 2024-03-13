@@ -36,6 +36,7 @@
 namespace Glpi\Form\Destination;
 
 use Exception;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Item_Ticket;
@@ -85,6 +86,18 @@ final class FormDestinationTicket extends AbstractFormDestinationType
         }
 
         return [$ticket];
+    }
+
+    #[Override]
+    public function renderConfigForm(): string
+    {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render(
+            'pages/admin/form/form_destination_commonitil_config.html.twig',
+            [
+                'item' => $this,
+            ]
+        );
     }
 
     #[Override]

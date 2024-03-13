@@ -75,7 +75,7 @@
                         <div class="accordion-body pt-0">
                             <form method="POST" action="{{ controller_url }}">
                                 <div>
-                                    {{ __("The created ticket's content is not yet customizable (WIP).") }}
+                                    {{ concrete_destination.renderConfigForm()|raw }}
                                 </div>
 
                                 {# Submit button to delete the destination #}

@@ -242,4 +242,17 @@ abstract class AbstractFormDestinationType extends DbTestCase
             ->isEqualTo($expected);
         ob_end_clean();
     }
+
+    /**
+     * Test the "renderConfigForm" method.
+     *
+     * The HTML content itself is not validated (as it should be done by an E2E
+     * test instead), we just make sure the function run without errors.
+     */
+    final public function testRenderConfigForm(): void
+    {
+        $destination = $this->getTestedInstance();
+        $html = $destination->renderConfigForm();
+        $this->string($html)->isNotEmpty();
+    }
 }

@@ -55,6 +55,14 @@ interface FormDestinationInterface
         AnswersSet $answers_set
     ): array;
 
+
+    /**
+     * Render the configuration form for this destination type.
+     *
+     * @return string The rendered HTML content
+     */
+    public function renderConfigForm(): string;
+
     /**
      * Get itemtype to create
      *
