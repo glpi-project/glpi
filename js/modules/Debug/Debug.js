@@ -307,7 +307,7 @@ window.GLPI.Debug = new class Debug {
         const post_newline_keywords = ['UNION'];
         let clean_query = '';
         window.CodeMirror.runMode(query, 'text/x-sql', (text, style) => {
-            text.replace('>', `&gt;`).replace('<', `&lt;`);
+            text = escapeMarkupText(text);
             if (style !== null && style !== undefined) {
                 if (newline_keywords.includes(text.toUpperCase())) {
                     clean_query += '</br>';
