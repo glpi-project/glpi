@@ -95,18 +95,16 @@ final class FormDestination extends CommonDBChild
             return false;
         }
 
+        $manager = FormDestinationTypeManager::getInstance();
+
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('pages/admin/form/form_destination.html.twig', [
             'icon'                         => self::getIcon(),
             'form'                         => $item,
             'controller_url'               => self::getFormURL(),
-            'default_destination_object'   => new FormDestinationTicket(),
+            'default_destination_object'   => $manager->getDefaultType(),
             'destinations'                 => $item->getDestinations(),
-            'available_destinations_types' => [
-                FormDestinationTicket::class => \Ticket::getTypeName(1),
-                FormDestinationChange::class  => \Change::getTypeName(1),
-                FormDestinationProblem::class  => \Problem::getTypeName(1),
-            ],
+            'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
         ]);
 
         return true;
