@@ -744,7 +744,7 @@ class GlpiFormEditorController
 
             // JS object are passed by reference, we need to clone the config
             // to avoid breaking previous instances
-            const config = { ...window.tinymce_editor_configs[id]};
+            const config = _.cloneDeep(window.tinymce_editor_configs[id]);
 
             // Rename id to ensure it is unique
             const uid = getUUID();
