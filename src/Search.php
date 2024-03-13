@@ -8025,6 +8025,22 @@ HTML;
             }
         }
 
+        $int_params = [
+            'sort'
+        ];
+
+        foreach ($params as $key => &$val) {
+            if (in_array($key, $int_params)) {
+                if (is_array($val)) {
+                    foreach ($val as &$subval) {
+                        $subval = (int)$subval;
+                    }
+                } else {
+                    $val = (int)$val;
+                }
+            }
+        }
+
         return $params;
     }
 
