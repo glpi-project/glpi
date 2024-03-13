@@ -297,8 +297,6 @@ class ContractCost extends CommonDBChild
         }
         $canedit = $contract->can($ID, UPDATE);
 
-        $start = $_GET['start'] ?? 0;
-
         $sort = $_GET['sort'] ?: 'begin_date';
         $order = $_GET['order'] ?: 'ASC';
 
@@ -313,10 +311,6 @@ class ContractCost extends CommonDBChild
             'ORDER'  => ["$sort $order"],
         ];
         $iterator = $DB->request($criteria);
-        $count_criteria = $criteria;
-        unset($count_criteria['START'], $count_criteria['LIMIT']);
-        $count_criteria['COUNT'] = 'cpt';
-        $total_count = $DB->request($count_criteria)->current()['cpt'];
         $rand   = mt_rand();
 
         if (
@@ -417,8 +411,7 @@ TWIG, $twig_params);
                 ]
             ],
             'entries' => $entries,
-            'total_number' => $total_count,
-            'filtered_number' => $total_count,
+            'total_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
