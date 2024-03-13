@@ -367,7 +367,7 @@
     <input type="hidden"   name="{{ name }}" value="0" />
     <input type="checkbox" name="{{ name }}" value="1"
            class="form-check-input {{ options.input_addclass }}"
-           {{ options.id != null ? 'id="' ~ options.id ~ '"' : '' }}
+           {{ (options.id != null ? 'id="' ~ options.id|e('html_attr') ~ '"' : '')|raw }}
            {{ value == 1 ? 'checked' : '' }}
            {{ options.readonly ? 'readonly' : '' }}
            {{ options.required ? 'required' : '' }}
