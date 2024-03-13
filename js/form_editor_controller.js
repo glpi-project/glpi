@@ -90,7 +90,7 @@ class GlpiFormEditorController
         // Adjust container height and init handlers
         this.#adjustContainerHeight();
         this.#initEventHandlers();
-        this.#addFakeDivToEmptySections();
+        this.#refreshUX();
 
         // Adjust dynamics inputs size
         $(this.#target)
@@ -312,6 +312,12 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // No specific instructions for these events.
+            // They must still be kept here as they benefits from the common code
+            // like refreshUX() and glpiUnsavedFormChanges.
+            case "question-sort-update":
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
@@ -320,6 +326,11 @@ class GlpiFormEditorController
         if (unsaved_changes) {
             window.glpiUnsavedFormChanges = true;
         }
+
+        // Refresh all dynamic UX components after every action.
+        // It is a bit less effecient than refreshing only the needed components
+        // per action, but it is much simpler and safer.
+        this.#refreshUX();
     }
 
     /**
@@ -340,7 +351,6 @@ class GlpiFormEditorController
             );
             this.#setItemRank($(section), s_index);
             this.#remplaceEmptyIdByUuid($(section));
-            this.#setKey($(section));
 
             // Find all questions for this section
             const questions = $(section).find("[data-glpi-form-editor-question]");
@@ -354,11 +364,21 @@ class GlpiFormEditorController
                 this.#setItemRank($(question), q_index);
                 this.#remplaceEmptyIdByUuid($(question));
                 this.#setParentSection($(question), $(section));
-                this.#setKey($(question));
 
                 global_q_index++;
             });
         });
+    }
+
+    /**
+     * Refresh all UX items that may be modified by mulitple actions.
+     */
+    #refreshUX() {
+        this.#updateAddSectionActionVisiblity();
+        this.#addFakeDivToEmptySections();
+        this.#updateSectionCountLabels();
+        this.#updateSectionsDetailsVisiblity();
+        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -455,17 +475,6 @@ class GlpiFormEditorController
             question,
             "_use_uuid_for_sections_id",
             this.#getItemInput(section, "_use_uuid")
-        );
-    }
-
-    /**
-     * Must not be called directly, use #computeState() instead.
-     * @param {jQuery} item Section or question
-     */
-    #setKey(item) {
-        item.attr(
-            "data-glpi-form-editor-key",
-            this.#getItemInput(item, "id")
         );
     }
 
@@ -659,9 +668,8 @@ class GlpiFormEditorController
             action
         );
 
-        // Update UX
+        // Mark as active
         this.#setActiveItem(new_question);
-        this.#updateAddSectionActionVisiblity();
 
         // Focus question's name
         new_question
@@ -694,8 +702,6 @@ class GlpiFormEditorController
 
         // Remove question and update UX
         question.remove();
-        this.#updateAddSectionActionVisiblity();
-        this.#addFakeDivToEmptySections();
     }
 
     /**
@@ -981,12 +987,6 @@ class GlpiFormEditorController
             });
         }
 
-        // Update UX
-        this.#updateSectionCountLabels();
-        this.#updateSectionsDetailsVisiblity();
-        this.#updateMergeSectionActionVisibility();
-        this.#addFakeDivToEmptySections();
-
         // Mark new serction as active
         this.#setActiveItem(
             section.find("[data-glpi-form-editor-section-details]")
@@ -1029,9 +1029,6 @@ class GlpiFormEditorController
 
         // Remove question and update UX
         section.remove();
-        this.#updateSectionCountLabels();
-        this.#updateSectionsDetailsVisiblity();
-        this.#updateMergeSectionActionVisibility();
     }
 
     /**
@@ -1158,13 +1155,10 @@ class GlpiFormEditorController
         // Keep track on unsaved changes if the sort order was updated
         sections
             .find("[data-glpi-form-editor-section-questions]")
-            .on('sortupdate', () => {
-                // Would be nice to not have a specific case here where we need
-                // to manually call this
-                // TODO: this event handler should use the main handleEditorAction
-                // method rather than defining its code directly
-                window.glpiUnsavedFormChanges = true;
-                this.#addFakeDivToEmptySections();
+            .on('sortupdate', (e) => {
+                // Trigger an action to make sure we use the main entry point
+                // where common action related functions are excuted
+                this.#handleEditorAction('question-sort-update', null, e);
             });
 
         // Add a special class while a drag and drop is happening
@@ -1214,18 +1208,20 @@ class GlpiFormEditorController
             .find("[data-glpi-form-editor-section]")
             .each((index, section) => {
                 const name = this.#getItemInput($(section), "name");
-                const section_key = $(section).data("glpi-form-editor-key");
 
                 // Copy template
                 const copy = $("[data-glpi-form-editor-move-section-modal-item-template]")
                     .clone();
 
-                // Set section index
+                // Set an unique identifier on both the section and its modal counter part
+                // This will allow us to find the matching sections for each modal list items
+                const uuid = getUUID();
+                $(section).attr("data-glpi-form-editor-move-section-modal-uuid", uuid);
                 copy
                     .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
                     .attr(
                         "data-glpi-form-editor-move-section-modal-item-section-key",
-                        section_key
+                        uuid
                     );
 
                 // Set section name
@@ -1252,13 +1248,6 @@ class GlpiFormEditorController
      * Reorder the sections based on the "move section modal" content.
      */
     #reorderSections() {
-        // Temporary bugfix: state must be manually computed before we can reorder
-        // the sections as we use the data-glpi-form-editor-key parameter to
-        // select the correct section
-        this.#computeState();
-        // TODO: #computeState should not generate keys, it should be handled
-        // somewhere else
-
         // Close modal
         $(this.#target)
             .find("[data-glpi-form-editor-move-section-modal]")
@@ -1268,18 +1257,17 @@ class GlpiFormEditorController
             .find("[data-glpi-form-editor-move-section-modal-items]")
             .children()
             .each((index, item) => {
-                // Find section key
+                // Get the UUID defined in the buildMoveSectionModalContent process
                 const section_key = $(item)
                     .find("[data-glpi-form-editor-move-section-modal-item-section-key]")
                     .data("glpi-form-editor-move-section-modal-item-section-key");
 
                 // Find section by index
-                const by_key_selector = `[data-glpi-form-editor-key=${section_key}]`;
                 const section = $(this.#target)
-                    .find(`[data-glpi-form-editor-section]${by_key_selector}`);
+                    .find(`[data-glpi-form-editor-move-section-modal-uuid=${section_key}]`);
 
                 // Move section at the end of the form
-                // This will naturally sort all sections as there are moved one
+                // This will naturally sort all sections as they are moved one
                 // by one at the end
                 section
                     .remove()
@@ -1288,23 +1276,10 @@ class GlpiFormEditorController
                     );
             });
 
-        // Reinit tiynmce for all richtext inputs
-        // TODO: use #handleItemMove and only reinit the moved sections, not everything
-        $(this.#target)
-            .find("textarea")
-            .each((index, textarea) => {
-                const id = $(textarea).prop("id");
-                const editor = tinymce.get(id);
-
-                if (editor) {
-                    editor.destroy();
-                    tinymce.init(window.tinymce_editor_configs[id]);
-                }
-            });
-
-        // Relabel sections
-        this.#updateSectionCountLabels();
-        this.#updateMergeSectionActionVisibility();
+        // Handle the move for each sections
+        $(this.#target).find("[data-glpi-form-editor-section]").each((index, section) => {
+            this.#handleItemMove($(section));
+        });
     }
 
     /**
@@ -1351,11 +1326,6 @@ class GlpiFormEditorController
 
         // Remove the section
         section.remove();
-
-        // Update UX
-        this.#updateSectionCountLabels();
-        this.#updateSectionsDetailsVisiblity();
-        this.#updateMergeSectionActionVisibility();
     }
 
     /**
