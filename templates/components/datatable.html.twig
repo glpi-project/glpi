@@ -203,7 +203,7 @@
                                         {% elseif formatter == 'number' %}
                                             {{ entry[colkey]|formatted_number }}
                                         {% elseif formatter == 'integer' %}
-                                            {{ entry[colkey]|formatted_number(false, 0) }}
+                                            {{ entry[colkey]|formatted_integer }}
                                         {% elseif formatter == "raw_html" %}
                                             {{ entry[colkey]|raw }}
                                         {% elseif formatter == 'avatar' %}

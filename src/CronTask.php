@@ -628,7 +628,7 @@ class CronTask extends CommonDBTM
             }
 
             if ($next < time()) {
-                $next_run_display = __('As soon as possible') . '<br>(' . Html::convDateTime($next_run_display) . ') ';
+                $next_run_display = __('As soon as possible') . ' (' . Html::convDateTime($next_run_display) . ') ';
             } else {
                 $next_run_display = Html::convDateTime($next_run_display);
             }
@@ -1154,7 +1154,11 @@ class CronTask extends CommonDBTM
             $entries[] = [
                 'itemtype' => CronTaskLog::class,
                 'id'       => $data['id'],
-                'date'     => "<a href='javascript:reloadTab(\"crontasklogs_id={$data['id']}\");'>" . Html::convDateTime($data['date']) . "</a>",
+                'date'     => sprintf(
+                    '<a href="javascript:reloadTab(\'crontasklogs_id=%s\');">%s</a>',
+                    $data['id'],
+                    htmlspecialchars(Html::convDateTime($data['date']))
+                ),
                 'elapsed'  => $data['elapsed'],
                 'volume'   => $data['volume'],
                 'content'  => $data['content']
@@ -1195,7 +1199,7 @@ class CronTask extends CommonDBTM
         global $DB;
 
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div class="mt-2 text-center">
+            <div class="my-2 text-center">
                 <button class="btn btn-outline-secondary" onclick="reloadTab('crontasklogs_id=0')">
                     {{ msg }}
                 </button>
