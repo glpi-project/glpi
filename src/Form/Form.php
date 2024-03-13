@@ -472,11 +472,6 @@ final class Form extends CommonDBTM
                 $uuid = null;
             }
 
-            // Extra data must be JSON encoded
-            if (isset($question_data['extra_data'])) {
-                $question_data['extra_data'] = json_encode($question_data['extra_data']);
-            }
-
             if ($question_data['id'] == 0) {
                 // Add new question
                 unset($question_data['id']);

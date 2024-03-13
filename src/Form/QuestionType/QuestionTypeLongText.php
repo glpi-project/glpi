@@ -50,6 +50,12 @@ final class QuestionTypeLongText implements QuestionTypeInterface
     }
 
     #[Override]
+    public function validateExtraDataInput(?array $input): bool
+    {
+        return $input === null; // No extra data for this question type
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG

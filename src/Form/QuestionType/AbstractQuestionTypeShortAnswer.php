@@ -57,6 +57,12 @@ abstract class AbstractQuestionTypeShortAnswer implements QuestionTypeInterface
     abstract public function getInputType(): string;
 
     #[Override]
+    public function validateExtraDataInput(?array $input): bool
+    {
+        return $input === null; // No extra data for this question type
+    }
+
+    #[Override]
     public function renderAdministrationTemplate(
         ?Question $question = null,
         ?string $input_prefix = null
