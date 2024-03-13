@@ -37,23 +37,23 @@ namespace Glpi\Form\QuestionType;
 
 use Override;
 
-final class QuestionTypeShortAnswerNumber extends QuestionTypeShortAnswer
+final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer
 {
     #[Override]
     public function getInputType(): string
     {
-        return 'number';
+        return 'text';
     }
 
     #[Override]
     public function getName(): string
     {
-        return __("Number");
+        return __("Text");
     }
 
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 10;
     }
 }

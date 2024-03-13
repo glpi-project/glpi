@@ -41,7 +41,7 @@ use Computer;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Impact;
@@ -126,7 +126,7 @@ abstract class AbstractFormDestinationType extends DbTestCase
         // Answers set with no destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -136,7 +136,7 @@ abstract class AbstractFormDestinationType extends DbTestCase
         // Answers set with 3 destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
                 ->addDestination($destination::class, ['name' => 'destination 1'])
                 ->addDestination($destination::class, ['name' => 'destination 2'])
                 ->addDestination($destination::class, ['name' => 'destination 3'])
@@ -195,7 +195,7 @@ abstract class AbstractFormDestinationType extends DbTestCase
         // Answers set with no destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -205,7 +205,7 @@ abstract class AbstractFormDestinationType extends DbTestCase
         // Answers set with 3 destinations
         $form = $this->createForm(
             (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortAnswerText::class)
+                ->addQuestion("Name", QuestionTypeShortText::class)
                 ->addDestination($destination::class, ['name' => 'destination 1'])
                 ->addDestination($destination::class, ['name' => 'destination 2'])
                 ->addDestination($destination::class, ['name' => 'destination 3'])

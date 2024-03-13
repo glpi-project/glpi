@@ -42,7 +42,7 @@ use Override;
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongAnswer implements QuestionTypeInterface
+final class QuestionTypeLongText implements QuestionTypeInterface
 {
     #[Override]
     public function __construct()
@@ -50,7 +50,13 @@ final class QuestionTypeLongAnswer implements QuestionTypeInterface
     }
 
     #[Override]
-    public function renderAdminstrationTemplate(?Question $question): string
+    public function validateExtraDataInput(?array $input): bool
+    {
+        return $input === null; // No extra data for this question type
+    }
+
+    #[Override]
+    public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -77,6 +83,12 @@ TWIG;
             'question'    => $question,
             'placeholder' => __('Long text'),
         ]);
+    }
+
+    #[Override]
+    public function renderAdministrationOptionsTemplate(?Question $question): string
+    {
+        return '';
     }
 
     #[Override]

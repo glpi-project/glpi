@@ -51,6 +51,11 @@ enum QuestionTypeCategory: string
     case LONG_ANSWER = "long_answer";
 
     /**
+     * Question that expect a date and time
+     */
+    case DATE_AND_TIME = "date_and_time";
+
+    /**
      * Get category label
      * @return string
      */
@@ -59,6 +64,7 @@ enum QuestionTypeCategory: string
         return match ($this) {
             self::SHORT_ANSWER => __("Short answer"),
             self::LONG_ANSWER  => __("Long answer"),
+            self::DATE_AND_TIME => __("Date and time"),
         };
     }
 }

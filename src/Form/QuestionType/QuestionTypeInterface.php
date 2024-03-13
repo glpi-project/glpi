@@ -45,6 +45,16 @@ interface QuestionTypeInterface
     public function __construct();
 
     /**
+     * Validate the input for extra data of the question.
+     * This method is called before saving the question.
+     *
+     * @param array $input The input data to validate.
+     *
+     * @return bool
+     */
+    public function validateExtraDataInput(?array $input): bool;
+
+    /**
      * Render the administration template for the given question.
      * This template is used on the form editor page.
      *
@@ -52,7 +62,17 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function renderAdminstrationTemplate(?Question $question): string;
+    public function renderAdministrationTemplate(?Question $question): string;
+
+    /**
+     * Render the administration options template for the given question.
+     * This template is used on the form editor page.
+     *
+     * @param Question|null $question Given question's data. May be null for a new question.
+     *
+     * @return string
+     */
+    public function renderAdministrationOptionsTemplate(?Question $question): string;
 
     /**
      * Render the end up user template for a given question.

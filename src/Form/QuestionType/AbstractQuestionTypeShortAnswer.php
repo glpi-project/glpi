@@ -42,7 +42,7 @@ use Override;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class QuestionTypeShortAnswer implements QuestionTypeInterface
+abstract class AbstractQuestionTypeShortAnswer implements QuestionTypeInterface
 {
     #[Override]
     public function __construct()
@@ -57,7 +57,13 @@ abstract class QuestionTypeShortAnswer implements QuestionTypeInterface
     abstract public function getInputType(): string;
 
     #[Override]
-    public function renderAdminstrationTemplate(
+    public function validateExtraDataInput(?array $input): bool
+    {
+        return $input === null; // No extra data for this question type
+    }
+
+    #[Override]
+    public function renderAdministrationTemplate(
         ?Question $question = null,
         ?string $input_prefix = null
     ): string {
@@ -77,6 +83,12 @@ TWIG;
             'input_type'        => $this->getInputType(),
             'input_placeholder' => $this->getName(),
         ]);
+    }
+
+    #[Override]
+    public function renderAdministrationOptionsTemplate(?Question $question): string
+    {
+        return '';
     }
 
     #[Override]

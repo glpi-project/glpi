@@ -39,10 +39,10 @@ use DbTestCase;
 use Glpi\Form\Question;
 use Glpi\Tests\FormBuilder;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeLongAnswer;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerEmail;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerNumber;
-use Glpi\Form\QuestionType\QuestionTypeShortAnswerText;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormTesterTrait;
 use User;
 
@@ -63,10 +63,10 @@ class AnswersHandler extends DbTestCase
         // Fist form
         $builder = new FormBuilder("Form 1");
         $builder
-            ->addQuestion("First name", QuestionTypeShortAnswerText::class)
-            ->addQuestion("Last name", QuestionTypeShortAnswerText::class)
-            ->addQuestion("Age", QuestionTypeShortAnswerNumber::class)
-            ->addQuestion("Thoughts about GLPI", QuestionTypeLongAnswer::class)
+            ->addQuestion("First name", QuestionTypeShortText::class)
+            ->addQuestion("Last name", QuestionTypeShortText::class)
+            ->addQuestion("Age", QuestionTypeNumber::class)
+            ->addQuestion("Thoughts about GLPI", QuestionTypeLongText::class)
         ;
         $form_1 = $this->createForm($builder);
 
@@ -90,25 +90,25 @@ class AnswersHandler extends DbTestCase
                         'question' => $this->getQuestionId($form_1, "First name"),
                         'value'    => "John",
                         'label'    => "First name",
-                        'type'     => QuestionTypeShortAnswerText::class,
+                        'type'     => QuestionTypeShortText::class,
                     ],
                     [
                         'question' => $this->getQuestionId($form_1, "Last name"),
                         'value'    => "Doe",
                         'label'    => "Last name",
-                        'type'     => QuestionTypeShortAnswerText::class,
+                        'type'     => QuestionTypeShortText::class,
                     ],
                     [
                         'question' => $this->getQuestionId($form_1, "Age"),
                         'value'    => 78,
                         'label'    => "Age",
-                        'type'     => QuestionTypeShortAnswerNumber::class,
+                        'type'     => QuestionTypeNumber::class,
                     ],
                     [
                         'question' => $this->getQuestionId($form_1, "Thoughts about GLPI"),
                         'value'    => "I love GLPI!!!",
                         'label'    => "Thoughts about GLPI",
-                        'type'     => QuestionTypeLongAnswer::class,
+                        'type'     => QuestionTypeLongText::class,
                     ],
                 ],
             ]
@@ -134,25 +134,25 @@ class AnswersHandler extends DbTestCase
                         'question' => $this->getQuestionId($form_1, "First name"),
                         'value'    => "John",
                         'label'    => "First name",
-                        'type'     => QuestionTypeShortAnswerText::class,
+                        'type'     => QuestionTypeShortText::class,
                     ],
                     [
                         'question' => $this->getQuestionId($form_1, "Last name"),
                         'value'    => "Smith",
                         'label'    => "Last name",
-                        'type'     => QuestionTypeShortAnswerText::class,
+                        'type'     => QuestionTypeShortText::class,
                     ],
                     [
                         'question' => $this->getQuestionId($form_1, "Age"),
                         'value'    => 19,
                         'label'    => "Age",
-                        'type'     => QuestionTypeShortAnswerNumber::class,
+                        'type'     => QuestionTypeNumber::class,
                     ],
                     [
                         'question' => $this->getQuestionId($form_1, "Thoughts about GLPI"),
                         'value'    => "GLPI is incredible",
                         'label'    => "Thoughts about GLPI",
-                        'type'     => QuestionTypeLongAnswer::class,
+                        'type'     => QuestionTypeLongText::class,
                     ],
                 ],
             ]
@@ -161,7 +161,7 @@ class AnswersHandler extends DbTestCase
         // Second form
         $builder = new FormBuilder("Form 2");
         $builder
-            ->addQuestion("Contact email", QuestionTypeShortAnswerEmail::class)
+            ->addQuestion("Contact email", QuestionTypeEmail::class)
         ;
         $form_2 = $this->createForm($builder);
 
@@ -181,7 +181,7 @@ class AnswersHandler extends DbTestCase
                         'question' => $this->getQuestionId($form_2, "Contact email"),
                         'value'    => "glpi@teclib.com",
                         'label'    => "Contact email",
-                        'type'     => QuestionTypeShortAnswerEmail::class,
+                        'type'     => QuestionTypeEmail::class,
                     ],
                 ],
             ]
@@ -233,9 +233,9 @@ class AnswersHandler extends DbTestCase
         // Build form
         $builder = new FormBuilder("Form 1");
         $builder
-            ->addQuestion("First name", QuestionTypeShortAnswerText::class)
-            ->addQuestion("Last name", QuestionTypeShortAnswerText::class)
-            ->addQuestion("Age", QuestionTypeShortAnswerNumber::class)
+            ->addQuestion("First name", QuestionTypeShortText::class)
+            ->addQuestion("Last name", QuestionTypeShortText::class)
+            ->addQuestion("Age", QuestionTypeNumber::class)
         ;
         $form_1 = $this->createForm($builder);
 
@@ -255,19 +255,19 @@ class AnswersHandler extends DbTestCase
                     'question' => $this->getQuestionId($form_1, "First name"),
                     'value'    => "Frédéric",
                     'label'    => "First name",
-                    'type'     => new QuestionTypeShortAnswerText(),
+                    'type'     => new QuestionTypeShortText(),
                 ],
                 [
                     'question' => $this->getQuestionId($form_1, "Last name"),
                     'value'    => "Chopin",
                     'label'    => "Last name",
-                    'type'     => new QuestionTypeShortAnswerText(),
+                    'type'     => new QuestionTypeShortText(),
                 ],
                 [
                     'question' => $this->getQuestionId($form_1, "Age"),
                     'value'    => 39,
                     'label'    => "Age",
-                    'type'     => new QuestionTypeShortAnswerNumber(),
+                    'type'     => new QuestionTypeNumber(),
                 ],
             ],
         ];
@@ -275,7 +275,7 @@ class AnswersHandler extends DbTestCase
         // Build form
         $builder = new FormBuilder("Form 2");
         $builder
-            ->addQuestion("Valid question", QuestionTypeShortAnswerText::class)
+            ->addQuestion("Valid question", QuestionTypeShortText::class)
             ->addQuestion("Invalid question", "Not a question type")
         ;
         $form_2 = $this->createForm($builder);
@@ -301,7 +301,7 @@ class AnswersHandler extends DbTestCase
                             'question' => $this->getQuestionId($form_2, "Valid question"),
                             'value'    => "Valid answer",
                             'label'    => "Valid question",
-                            'type'     => new QuestionTypeShortAnswerText(),
+                            'type'     => new QuestionTypeShortText(),
                         ],
                     ],
                 ];

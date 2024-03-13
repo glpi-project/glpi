@@ -84,7 +84,7 @@ final class QuestionTypesManager
      */
     public function getDefaultTypeClass(): string
     {
-        return QuestionTypeShortAnswerText::class;
+        return QuestionTypeShortText::class;
     }
 
     /**

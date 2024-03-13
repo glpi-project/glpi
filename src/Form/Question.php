@@ -98,6 +98,20 @@ final class Question extends CommonDBChild
     }
 
     /**
+     * Get the extra datas for the question.
+     *
+     * @return ?array
+     */
+    public function getExtraDatas(): ?array
+    {
+        if (!isset($this->fields['extra_data'])) {
+            return null;
+        }
+
+        return json_decode($this->fields['extra_data'] ?? "[]", true);
+    }
+
+    /**
      * Get the parent form of this question
      *
      * @return Form
@@ -105,6 +119,34 @@ final class Question extends CommonDBChild
     protected function getForm(): Form
     {
         return $this->getItem()->getItem();
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput(&$input)
+    {
+        $question_type = $this->getQuestionType();
+        if ($question_type) {
+            $is_extra_data_valid = $question_type->validateExtraDataInput($input['extra_data'] ?? null);
+            if (!$is_extra_data_valid) {
+                throw new \InvalidArgumentException("Invalid extra data for question");
+            }
+
+            // Save extra data as JSON
+            if (isset($input['extra_data'])) {
+                $input['extra_data'] = json_encode($input['extra_data']);
+            }
+        }
     }
 
     /**

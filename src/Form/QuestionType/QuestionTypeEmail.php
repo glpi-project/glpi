@@ -38,7 +38,7 @@ namespace Glpi\Form\QuestionType;
 use Override;
 use Session;
 
-final class QuestionTypeShortAnswerEmail extends QuestionTypeShortAnswer
+final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer
 {
     #[Override]
     public function getInputType(): string
