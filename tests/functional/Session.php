@@ -630,4 +630,95 @@ class Session extends \DbTestCase
         \Session::loadLanguage('fr_FR');
         $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
     }
+
+    protected function entitiesRestricProvider(): iterable
+    {
+        // Special case for -1
+        foreach ([-1, "-1", [-1], ["-1"]] as $value) {
+            yield [
+                'entity_restrict' => $value,
+                'active_entities' => [0, 1, 2, 3],
+                'result'          => is_array($value) ? [-1] : -1,
+            ];
+        }
+
+        // Integer input, matching
+        yield [
+            'entity_restrict' => 2,
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => 2,
+        ];
+
+        // String input, matching
+        yield [
+            'entity_restrict' => '2',
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => 2,
+        ];
+
+        // Integer input, NOT matching
+        yield [
+            'entity_restrict' => 7,
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [],
+        ];
+
+        // String input, matching
+        yield [
+            'entity_restrict' => '7',
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [],
+        ];
+
+        // Array input, ALL matching
+        yield [
+            'entity_restrict' => [0, '2', 3],
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [0, 2, 3],
+        ];
+
+        // Array input, PARTIAL matching
+        yield [
+            'entity_restrict' => [0, '2', 3, 12, 54, 96],
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [0, '2', 3],
+        ];
+
+        // Array input, NONE matching
+        yield [
+            'entity_restrict' => [0, '2', 3, 12, 54, 96],
+            'active_entities' => [1, 4],
+            'result'          => [],
+        ];
+
+        // Empty active entities
+        yield [
+            'entity_restrict' => [0, '2', 3, 12, 54, 96],
+            'active_entities' => null,
+            'result'          => [],
+        ];
+
+        // Unexpected unique value
+        yield [
+            'entity_restrict' => 'not a valid value',
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [],
+        ];
+
+        // Unexpected value in an array
+        yield [
+            'entity_restrict' => [0, 'not a valid value', 3],
+            'active_entities' => [0, 1, 2, 3],
+            'result'          => [0, 3],
+        ];
+    }
+
+    /**
+     * @dataProvider entitiesRestricProvider
+     */
+    public function testGetMatchingActiveEntities(/*int|array*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
+    {
+        $_SESSION['glpiactiveentities'] = $active_entities;
+        $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isEqualTo($result);
+    }
 }

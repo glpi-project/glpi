@@ -4948,7 +4948,7 @@ abstract class CommonITILObject extends CommonDBTM
             'right'  => $right,
             'rand'   => $rand,
             'width'  => "95%",
-            'entity' => $options['entities_id'] ?? $options['entity_restrict']
+            'entity' => Session::getMatchingActiveEntities($options['entities_id'] ?? $options['entity_restrict']),
         ];
 
        //only for active ldap and corresponding right

@@ -4617,6 +4617,7 @@ HTML;
         }
 
         $output = '';
+
         if (!($p['entity'] < 0) && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 $output .= "entity_sons options is not available with array of entity";
@@ -4624,6 +4625,7 @@ HTML;
                 $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
             }
         }
+        $p['entity'] = Session::getMatchingActiveEntities($p['entity']);
 
         // Make a select box with all glpi users
         $view_users = self::canView();

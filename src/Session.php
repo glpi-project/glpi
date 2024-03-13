@@ -1958,6 +1958,48 @@ class Session
     }
 
     /**
+     * Filter given entities ID list to return only these tht are matching current active entities in session.
+     *
+     * @since 10.0.13
+     *
+     * @param int|int[] $entities_ids
+     *
+     * @return int|int[]
+     */
+    public static function getMatchingActiveEntities(/*int|array*/ $entities_ids)/*: int|array*/
+    {
+        if (
+            (int)$entities_ids === -1
+            || (is_array($entities_ids) && count($entities_ids) === 1 && (int)reset($entities_ids) === -1)
+        ) {
+            // Special value that is generally used to fallback to all active entities.
+            return $entities_ids;
+        }
+
+        if (!is_array($entities_ids) && !is_int($entities_ids) && !ctype_digit($entities_ids)) {
+            // Unexpected value type.
+            return [];
+        }
+
+        $active_entities_ids = $_SESSION['glpiactiveentities'] ?? [];
+
+        if (!is_array($entities_ids) && in_array((int)$entities_ids, $active_entities_ids, true)) {
+            return (int)$entities_ids;
+        }
+
+        $filtered = [];
+        foreach ((array)$entities_ids as $entity_id) {
+            if (
+                (is_int($entity_id) || ctype_digit($entity_id))
+                && in_array((int)$entity_id, $active_entities_ids, true)
+            ) {
+                $filtered[] = (int)$entity_id;
+            }
+        }
+        return $filtered;
+    }
+
+    /**
      * Get recursive state of active entity selection.
      *
      * @since 9.5.5

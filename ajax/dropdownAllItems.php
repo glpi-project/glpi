@@ -43,6 +43,10 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
+if (isset($_POST['entity_restrict'])) {
+    $_POST['entity_restrict'] = Session::getMatchingActiveEntities($_POST['entity_restrict']);
+}
+
 // Make a select box
 if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    // Link to user for search only > normal users

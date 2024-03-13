@@ -206,7 +206,7 @@ class Consumable extends CommonDBChild
                         'items_id_name'
                                                               => 'give_items_id',
                         'entity_restrict'
-                                                              => $input["entities_id"],
+                                                              => Session::getMatchingActiveEntities($input["entities_id"]),
                         'itemtypes'
                                                               => $CFG_GLPI["consumables_types"]
                     ]);

@@ -51,7 +51,7 @@ if (isset($_POST["projects_id"])) {
     }
 
     $p = ['itemtype'     => ProjectTask::getType(),
-        'entity_restrict' => $_POST['entity_restrict'],
+        'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         'myname'          => $_POST["myname"],
         'condition'       => $condition,
         'rand'            => $_POST["rand"]
