@@ -3,7 +3,7 @@ version: "3.5"
 services:
   app:
     container_name: "app"
-    image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache}"
+    image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache:8.3}"
     environment:
       CODE_COVERAGE: "${CODE_COVERAGE:-false}"
     volumes:
