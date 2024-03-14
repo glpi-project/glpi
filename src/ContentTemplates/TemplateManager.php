@@ -65,7 +65,8 @@ class TemplateManager
     public static function render(
         string $content,
         array $params,
-        bool $expect_html = true
+        bool $expect_html = true,
+        array $extra_extensions = []
     ): string {
         // Init twig
         $loader = new ArrayLoader(['template' => $content]);
@@ -73,6 +74,11 @@ class TemplateManager
 
         // Use sandbox extension to restrict code execution
         $twig->addExtension(new SandboxExtension(self::getSecurityPolicy(), true));
+
+        // Add extra extensions
+        foreach ($extra_extensions as $extension) {
+            $twig->addExtension($extension);
+        }
 
         // Render the template
         $result = $twig->render('template', $params);
@@ -160,8 +166,12 @@ class TemplateManager
      */
     public static function getSecurityPolicy(): SecurityPolicy
     {
-        $tags = ['if', 'for'];
-        $filters = ['escape', 'upper', 'date', 'length', 'round', 'lower', 'trim', 'raw'];
+        $tags = ['apply', 'autoescape', 'block', 'if', 'for', 'macro', 'set'];
+        $filters = [
+            'abs', 'batch', 'capitalize', 'column', 'date', 'default', 'escape', 'filter', 'first', 'format', 'join',
+            'json_encode', 'keys', 'last', 'length', 'lower', 'map', 'merge', 'nl2br', 'raw', 'reduce', 'replace',
+            'reverse', 'round', 'slice', 'sort', 'split', 'striptags', 'title', 'trim', 'upper', 'url_encode'
+        ];
         $methods = [];
         $properties = [];
         $functions = ['date', 'max', 'min','random', 'range'];
