@@ -725,6 +725,9 @@ class NetworkPort extends CommonDBChild
         }
 
         $criteria = [
+            'SELECT' => [
+                $netport_table . '.*'
+            ],
             'FROM'   => $netport_table,
             'WHERE'  => [
                 "$netport_table.items_id"  => $item->getID(),
@@ -752,6 +755,7 @@ class NetworkPort extends CommonDBChild
                 $data["joinparams"],
                 $data["field"]
             );
+            $criteria['SELECT'][] = $data["table"] . '_' . $data["field"] . '.' . $data["field"];
             $criteria['JOIN'][] = new QueryExpression($join);
         }
 
