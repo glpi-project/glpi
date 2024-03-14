@@ -2481,7 +2481,7 @@ final class SQLProvider implements SearchProviderInterface
                     $last_key = array_keys($join_fkey);
                     $last_key = array_pop($last_key);
                     // Append new criteria to the last key
-                    $join_fkey[$last_key][] = [$add_link => $additional_criteria];
+                    $join_fkey[$last_key]['AND'][] = [$add_link => $additional_criteria];
                 }
             };
             $placeholders = [
