@@ -259,7 +259,6 @@ if (!$DB->tableExists('glpi_groups_assets')) {
           `type` tinyint NOT NULL DEFAULT '0',
           PRIMARY KEY (`id`),
           UNIQUE KEY `unicity` (`groups_id`,`itemtype`,`items_id`),
-          KEY `groups_id` (`groups_id`),
           KEY `item` (`itemtype`, `items_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 SQL;
