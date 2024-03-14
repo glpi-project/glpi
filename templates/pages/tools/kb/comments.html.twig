@@ -160,6 +160,7 @@
                         } else {
                             $("<div class='ms-5 w-100'>").append(_form).insertAfter(add_btn.parents('.h_item'));
                         }
+                        $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
                     }, () => {
                         glpi_alert({
                             title: __('Unable to load comment!'),
