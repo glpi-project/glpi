@@ -47,6 +47,7 @@ use User;
 
 abstract class Asset extends CommonDBTM
 {
+    use \Glpi\Features\AssignableAsset;
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
 
