@@ -754,7 +754,10 @@ class GlpiFormEditorController
         copy.find("textarea").each(function() {
             // Get editor config for this field
             let id = $(this).attr("id");
-            const config = window.tinymce_editor_configs[id];
+
+            // JS object are passed by reference, we need to clone the config
+            // to avoid breaking previous instances
+            const config = _.cloneDeep(window.tinymce_editor_configs[id]);
 
             // Rename id to ensure it is unique
             const uid = getUUID();
