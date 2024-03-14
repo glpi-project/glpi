@@ -253,14 +253,14 @@ if (!$DB->tableExists('glpi_groups_assets')) {
     $query = <<<SQL
         CREATE TABLE `glpi_groups_assets` (
           `id` int unsigned NOT NULL AUTO_INCREMENT,
-          `groups_id` int unsigned NOT NULL DEFAULT '0',
+          `groups_id` int {$default_key_sign} NOT NULL DEFAULT '0',
           `itemtype` varchar(255) NOT NULL DEFAULT '',
-          `items_id` int unsigned NOT NULL DEFAULT '0',
+          `items_id` int {$default_key_sign} NOT NULL DEFAULT '0',
           `type` tinyint NOT NULL DEFAULT '0',
           PRIMARY KEY (`id`),
           UNIQUE KEY `unicity` (`groups_id`,`itemtype`,`items_id`),
           KEY `item` (`itemtype`, `items_id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQueryOrDie($query);
 }
@@ -303,7 +303,6 @@ foreach ($assignable_assets as $asset_class => $asset) {
 
     $migration->dropKey($asset['table'], 'groups_id');
     $migration->dropKey($asset['table'], 'groups_id_tech');
-    //TODO uncomment. Commented because it is annoying for devs that use the same DB between PRs/versions.
-    //$migration->dropField($asset['table'], 'groups_id');
-    //$migration->dropField($asset['table'], 'groups_id_tech');
+    $migration->dropField($asset['table'], 'groups_id');
+    $migration->dropField($asset['table'], 'groups_id_tech');
 }
