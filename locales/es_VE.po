@@ -7,8 +7,8 @@
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
-# Francisco Bolivar, 2024
 # Cédric Anne, 2024
+# Francisco Bolivar, 2024
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-03-07 12:23+0000\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Cédric Anne, 2024\n"
+"Last-Translator: Francisco Bolivar, 2024\n"
 "Language-Team: Spanish (Venezuela) (https://app.transifex.com/glpi/teams/1637/es_VE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16801,7 +16801,7 @@ msgstr "Sábados"
 
 #: src/PDU_Rack.php:455 src/Features/DCBreadcrumb.php:89
 msgid "On bottom"
-msgstr ""
+msgstr "En la parte inferior"
 
 #: src/PDU_Rack.php:443 src/Features/DCBreadcrumb.php:80
 msgid "On left"
@@ -16825,7 +16825,7 @@ msgstr "A tiempo"
 
 #: src/PDU_Rack.php:451 src/Features/DCBreadcrumb.php:86
 msgid "On top"
-msgstr ""
+msgstr "En la parte superior"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
