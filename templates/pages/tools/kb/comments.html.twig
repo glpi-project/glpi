@@ -32,59 +32,61 @@
  #}
 
 {% macro kb_comment(comment, level, can_comment) %}
-    <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment"
+    {% set has_answers = comment['answers'] is defined and comment['answers']|length > 0 %}
+    <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
         data-id="{{ comment['id'] }}" data-kbitem_id="{{ comment['knowbaseitems_id'] }}" data-lang="{{ comment['language'] }}">
-        <div class="h_item text-start d-flex timeline-content mb-3 flex-column">
-            <div class="d-flex">
-                {% if level == 0 %}
-                    <hr>
+        <div class="d-flex flex-wrap align-items-start {{ level == 0 ? "mt-6": "mt-3" }}">
+            <a href="{{ comment['user_info']['link'] }}" class="me-3 mt-n2 ms-n2">
+                {% if comment['user_info']['avatar'] is not empty %}
+                    {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
+                {% else %}
+                    {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
                 {% endif %}
-                <div class="h_info ps-4">
-                    <div class="h_date mb-1">{{ comment['date_creation']|formatted_datetime }}</div>
-                    <div class="h_user">
-                        <a href="{{ comment['user_info']['link'] }}">
-                            {% if comment['user_info']['avatar'] is not empty %}
-                                {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
-                            {% else %}
-                                {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
+                <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
+                    {% if comment['user_info']['avatar'] is empty %}
+                        {{ comment['user_info']['initials'] }}
+                    {% endif %}
+                </span>
+            </a>
+            <div class="h_item d-flex timeline-content flex-column">
+                <div class="d-flex flex-column ps-2">
+                    <div class="h_info d-flex">
+                        <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
+                        <div class="d-inline-flex ms-auto">
+                            {% if can_comment %}
+                                <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
+                                    <i class="ti ti-arrow-back-up"></i>
+                                </button>
                             {% endif %}
-                            <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
-                            {% if comment['user_info']['avatar'] is empty %}
-                                {{ comment['user_info']['initials'] }}
+                            {% if can_comment and comment['users_id'] == session('glpiID') %}
+                                <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
+                                    <i class="ti ti-edit"></i>
+                                </button>
                             {% endif %}
-                        </span>
-                        </a>
+                        </div>
                     </div>
-                </div>
-                <div class="h_content KnowbaseItemComment">
-                    <div class="displayed_content ms-2">
-                        <div class="item_content">
-                            <br>
-                            <p>{{ comment['comment'] }}</p>
+                    <div class="h_content KnowbaseItemComment">
+                        <div class="displayed_content">
+                            <div class="item_content">
+                                <p>{{ comment['comment'] }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="d-flex flex-row-reverse p-2">
-                {% if can_comment %}
-                    <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
-                        <i class="ti ti-arrow-back-up"></i>
-                    </button>
-                {% endif %}
-                {% if can_comment and comment['users_id'] == session('glpiID') %}
-                    <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
-                        <i class="ti ti-edit"></i>
-                    </button>
-                {% endif %}
-            </div>
         </div>
-        {% if comment['answers'] is defined and comment['answers']|length > 0 %}
+       {% if has_answers %}
             <input type="checkbox" id="toggle_{{ comment['id'] }}" class="toggle_comments" checked="checked">
             <label for="toggle_{{ comment['id'] }}" class="toggle_label"></label>
-            <ul>
+            {% set nb_sub_answers = 0 %}
+            {% set answers_html %}
                 {% for answer in comment['answers'] %}
                     {{ _self.kb_comment(answer, level + 1, can_comment) }}
+                    {% set nb_sub_answers = nb_sub_answers + answer['answers']|length %}
                 {% endfor %}
+            {% endset %}
+            <ul class="{{ nb_sub_answers > 0 ? "has_sub_answers" : "" }}">
+                {{ answers_html }}
             </ul>
         {% endif %}
     </li>
@@ -117,7 +119,7 @@
     </div>
 {% else %}
     <div class="forcomments timeline_history">
-        <ul class="comments text-start">
+        <ul class="comments">
             {% for comment in comments %}
                 {{ _self.kb_comment(comment, 0, can_comment) }}
             {% endfor %}
@@ -151,9 +153,13 @@
                         cache: false,
                         data: _data,
                     }).then((data) => {
-                        const _form = $(`<div class="newcomment ms-3" id="newcomment${comment.data('id')}">${data}</div>`);
+                        const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
-                        add_btn.parents('.h_item').after(_form);
+                        if (add_btn.closest('.comment').find("ul").length > 0) {
+                            add_btn.closest('.comment').find("ul").append(_form);
+                        } else {
+                            $("<div class='ms-5 w-100'>").append(_form).insertAfter(add_btn.parents('.h_item'));
+                        }
                     }, () => {
                         glpi_alert({
                             title: __('Unable to load comment!'),
@@ -184,8 +190,12 @@
                         const _form = $(`<div class="editcomment" id="editcomment${comment.data('id')}">${data}</div>`);
                         _bindForm(_form);
                         edit_btn
-                            .parents('.displayed_content').hide()
-                            .parent()
+                            .closest('.comment')
+                            .find('.displayed_content').first().hide();
+
+                        edit_btn
+                            .closest('.comment')
+                            .find('.h_content').first()
                             .append(_form);
                     }, () => {
                         glpi_alert({

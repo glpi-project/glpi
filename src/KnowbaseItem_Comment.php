@@ -176,7 +176,8 @@ class KnowbaseItem_Comment extends CommonDBTM
             'language' => $lang,
             'comment_id' => $edit,
             'comment' => $content,
-            'parent_comment_id' => $answer
+            'parent_comment_id' => $answer,
+            'edit' => $edit,
         ]);
     }
 

@@ -579,8 +579,8 @@ $CFG_GLPI['javascript'] = [
     ],
     'tools'     => [
         'project'                 => ['sortable', 'tinymce'],
-        'knowbaseitem'            => ['tinymce'],
-        'knowbaseitemtranslation' => ['tinymce'],
+        'knowbaseitem'            => ['tinymce', 'kb'],
+        'knowbaseitemtranslation' => ['tinymce', 'kb'],
         'reminder'                => ['tinymce'],
         'remindertranslation'     => ['tinymce'],
         'reservationitem'         => $reservations_libs,
