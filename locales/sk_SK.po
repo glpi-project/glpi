@@ -16958,7 +16958,7 @@ msgstr "V sobotu"
 
 #: src/PDU_Rack.php:455 src/Features/DCBreadcrumb.php:89
 msgid "On bottom"
-msgstr ""
+msgstr "Dole"
 
 #: src/PDU_Rack.php:443 src/Features/DCBreadcrumb.php:80
 msgid "On left"
@@ -16982,7 +16982,7 @@ msgstr "Načas"
 
 #: src/PDU_Rack.php:451 src/Features/DCBreadcrumb.php:86
 msgid "On top"
-msgstr ""
+msgstr "Hore"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
