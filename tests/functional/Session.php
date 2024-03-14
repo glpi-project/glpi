@@ -632,21 +632,21 @@ class Session extends \DbTestCase
         $this->string(\Session::getRightNameForError($module, $right))->isEqualTo($expected);
     }
 
-    protected function entitiesRestricProvider(): iterable
+    protected function entitiesRestrictProvider(): iterable
     {
         // Special case for -1
         foreach ([-1, "-1", [-1], ["-1"]] as $value) {
             yield [
                 'entity_restrict' => $value,
                 'active_entities' => [0, 1, 2, 3],
-                'result'          => is_array($value) ? [-1] : -1,
+                'result'          => $value,
             ];
         }
 
         // Integer input, matching
         yield [
             'entity_restrict' => 2,
-            'active_entities' => [0, 1, 2, 3],
+            'active_entities' => [0, 1, '2', 3],
             'result'          => 2,
         ];
 
@@ -682,7 +682,7 @@ class Session extends \DbTestCase
         yield [
             'entity_restrict' => [0, '2', 3, 12, 54, 96],
             'active_entities' => [0, 1, 2, 3],
-            'result'          => [0, '2', 3],
+            'result'          => [0, 2, 3],
         ];
 
         // Array input, NONE matching
@@ -712,14 +712,38 @@ class Session extends \DbTestCase
             'active_entities' => [0, 1, 2, 3],
             'result'          => [0, 3],
         ];
+
+        // Active entity may contain a string value
+        // do not know why, but is is the case when only one entity is selected
+        foreach ([2, '2', [2], ['2']] as $entity_restrict) {
+            yield [
+                'entity_restrict' => $entity_restrict,
+                'active_entities' => [0, 1, '2', 3],
+                'result'          => is_array($entity_restrict) ? [2] : 2,
+            ];
+        }
     }
 
     /**
-     * @dataProvider entitiesRestricProvider
+     * @dataProvider entitiesRestrictProvider
      */
     public function testGetMatchingActiveEntities(/*int|array*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
     {
         $_SESSION['glpiactiveentities'] = $active_entities;
-        $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isEqualTo($result);
+        $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isIdenticalTo($result);
+    }
+
+    public function testGetMatchingActiveEntitiesWithUnexpectedValue(): void
+    {
+        $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', 3];
+
+        $this->when(
+            function () {
+                $this->variable(\Session::getMatchingActiveEntities([2, 3]))->isIdenticalTo([2, 3]);
+            }
+        )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.')
+         ->exists();
     }
 }
