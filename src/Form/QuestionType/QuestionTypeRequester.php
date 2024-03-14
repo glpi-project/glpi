@@ -35,42 +35,26 @@
 
 namespace Glpi\Form\QuestionType;
 
-/**
- * List of valid question types categories
- */
-enum QuestionTypeCategory: string
+use Override;
+use Session;
+
+final class QuestionTypeRequester extends AbstractQuestionTypeActors
 {
-    /**
-     * Questions that expect short single line answers (text, number, ...)
-     */
-    case SHORT_ANSWER = "short_answer";
-
-    /**
-     * Question that expect long detailled answers (textarea)
-     */
-    case LONG_ANSWER = "long_answer";
-
-    /**
-     * Question that expect a date and time
-     */
-    case DATE_AND_TIME = "date_and_time";
-
-    /**
-     * Question that expect actors (users, groups, suppliers or anonymous users)
-     */
-    case ACTORS = "actors";
-
-    /**
-     * Get category label
-     * @return string
-     */
-    public function getLabel(): string
+    #[Override]
+    public function getName(): string
     {
-        return match ($this) {
-            self::SHORT_ANSWER => __("Short answer"),
-            self::LONG_ANSWER  => __("Long answer"),
-            self::DATE_AND_TIME => __("Date and time"),
-            self::ACTORS => __("Actors"),
-        };
+        return _n('Requester', 'Requesters', Session::getPluralNumber());
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 10;
+    }
+
+    #[Override]
+    public function getAllowedActorTypes(): array
+    {
+        return ['User', 'Group'];
     }
 }

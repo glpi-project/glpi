@@ -136,6 +136,14 @@ final class Question extends CommonDBChild
     private function prepareInput(&$input)
     {
         $question_type = $this->getQuestionType();
+
+        if (
+            isset($input['default_value'])
+            && is_array($input['default_value'])
+        ) {
+            $input['default_value'] = implode(',', $input['default_value']);
+        }
+
         if ($question_type) {
             $is_extra_data_valid = $question_type->validateExtraDataInput($input['extra_data'] ?? null);
             if (!$is_extra_data_valid) {

@@ -33,44 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+namespace Glpi\Form\Dropdown;
 
-/**
- * List of valid question types categories
- */
-enum QuestionTypeCategory: string
+use AbstractRightsDropdown;
+use Group;
+use Supplier;
+use User;
+
+final class FormActorsDropdown extends AbstractRightsDropdown
 {
-    /**
-     * Questions that expect short single line answers (text, number, ...)
-     */
-    case SHORT_ANSWER = "short_answer";
-
-    /**
-     * Question that expect long detailled answers (textarea)
-     */
-    case LONG_ANSWER = "long_answer";
-
-    /**
-     * Question that expect a date and time
-     */
-    case DATE_AND_TIME = "date_and_time";
-
-    /**
-     * Question that expect actors (users, groups, suppliers or anonymous users)
-     */
-    case ACTORS = "actors";
-
-    /**
-     * Get category label
-     * @return string
-     */
-    public function getLabel(): string
+    protected static function getAjaxUrl(): string
     {
-        return match ($this) {
-            self::SHORT_ANSWER => __("Short answer"),
-            self::LONG_ANSWER  => __("Long answer"),
-            self::DATE_AND_TIME => __("Date and time"),
-            self::ACTORS => __("Actors"),
-        };
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return $CFG_GLPI['root_doc'] . "/ajax/getFormQuestionActorsDropdownValue.php";
+    }
+
+    protected static function getTypes(): array
+    {
+        $allowed_types = [
+            User::getType(),
+            Group::getType(),
+            Supplier::getType(),
+        ];
+
+        if (isset($_POST['allowed_types'])) {
+            $allowed_types = array_intersect($allowed_types, $_POST['allowed_types']);
+        }
+
+        return $allowed_types;
+    }
+
+    public static function show(string $name, array $values, array $params = []): string
+    {
+        $params['width'] = '100%';
+
+        return parent::show($name, $values, $params);
     }
 }

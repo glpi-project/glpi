@@ -4912,6 +4912,7 @@ JAVASCRIPT
         global $CFG_GLPI;
 
         $default_options = [
+            'init'                => true,
             'value'               => 0,
             'valuename'           => Dropdown::EMPTY_VALUE,
             'multiple'            => false,
@@ -4945,7 +4946,7 @@ JAVASCRIPT
             'selected'  => $value
         ];
 
-       // manage multiple select (with multiple values)
+        // manage multiple select (with multiple values)
         if ($params['multiple']) {
             $values = array_combine($params['values'], $params['valuesnames']);
             $options['multiple'] = 'multiple';
@@ -4953,7 +4954,7 @@ JAVASCRIPT
         } else {
             $values = [];
 
-           // simple select (multiple = no)
+            // simple select (multiple = no)
             if ($value !== null) {
                 $values = ["$value" => $valuename];
             }
@@ -4974,110 +4975,41 @@ JAVASCRIPT
 
         $output = '';
 
-        $js = "
-         var params_$field_id = {";
+        $js_params = "";
         foreach ($params as $key => $val) {
-           // Specific boolean case
+            // Specific boolean case
             if (is_bool($val)) {
-                $js .= "$key: " . ($val ? 1 : 0) . ",\n";
+                $js_params .= "$key: " . ($val ? 1 : 0) . ",\n";
             } else {
-                $js .= "$key: " . json_encode($val) . ",\n";
+                $js_params .= "$key: " . json_encode($val) . ",\n";
             }
         }
-        $js .= "};
 
-         const select2_el = $('#$field_id').select2({
-            width: '$width',
-            multiple: '$multiple',
-            placeholder: " . json_encode($placeholder) . ",
-            allowClear: $allowclear,
-            minimumInputLength: 0,
-            quietMillis: 100,
-            dropdownAutoWidth: true,
-            dropdownParent: $('#$field_id').closest('div.modal, div.dropdown-menu, body'),
-            minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
-            ajax: {
-               url: '$url',
-               dataType: 'json',
-               type: 'POST',
-               data: function (params) {
-                  query = params;
-                  return $.extend({}, params_$field_id, {
-                     searchText: params.term,";
+        $js = <<<JS
+            select2_configs['{$field_id}'] = {
+                field_id: '{$field_id}',
+                width: '{$width}',
+                multiple: '{$multiple}',
+                placeholder: '{$placeholder}',
+                allowclear: {$allowclear},
+                ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
+                dropdown_max: {$CFG_GLPI['dropdown_max']},
+                url: '{$url}',
+                parent_id_field: '{$parent_id_field}',
+                on_change: '{$on_change}',
+                params: {
+                    {$js_params}
+                }
+            };
+JS;
 
-        if ($parent_id_field !== null) {
-            $js .= "
-                     parent_id : document.getElementById('" . $parent_id_field . "').value,";
+        if ($params['init']) {
+            $js .= "setupAjaxDropdown(window.select2_configs['{$field_id}']);";
         }
-        $js .= "
-                     page_limit: " . $CFG_GLPI['dropdown_max'] . ", // page size
-                     page: params.page || 1, // page number
-                  });
-               },
-               processResults: function (data, params) {
-                  params.page = params.page || 1;
-                  var more = (data.count >= " . $CFG_GLPI['dropdown_max'] . ");
-
-                  return {
-                     results: data.results,
-                     pagination: {
-                           more: more
-                     }
-                  };
-               }
-            },
-            templateResult: templateResult,
-            templateSelection: templateSelection
-         })
-         .bind('setValue', function(e, value) {
-            $.ajax('$url', {
-               data: $.extend({}, params_$field_id, {
-                  _one_id: value,
-               }),
-               dataType: 'json',
-               type: 'POST',
-            }).done(function(data) {
-
-               var iterate_options = function(options, value) {
-                  var to_return = false;
-                  $.each(options, function(index, option) {
-                     if (option.hasOwnProperty('id')
-                         && option.id == value) {
-                        to_return = option;
-                        return false; // act as break;
-                     }
-
-                     if (option.hasOwnProperty('children')) {
-                        to_return = iterate_options(option.children, value);
-                     }
-                  });
-
-                  return to_return;
-               };
-
-               var option = iterate_options(data.results, value);
-               if (option !== false) {
-                  var newOption = new Option(option.text, option.id, true, true);
-                   $('#$field_id').append(newOption).trigger('change');
-               }
-            });
-         });
-         ";
-        if (!empty($on_change)) {
-            $js .= " $('#$field_id').on('change', function(e) {" . $on_change . "});";
-        }
-
-        $js .= " $('label[for=$field_id]').on('click', function(){ $('#$field_id').select2('open'); });";
-        $js .= " $('#$field_id').on('select2:open', function(e){";
-        $js .= "    const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);";
-        $js .= "    if (search_input) {";
-        $js .= "       search_input.focus();";
-        $js .= "    }";
-        $js .= " });";
 
         $output .= Html::scriptBlock('$(function() {' . $js . '});');
 
-       // display select tag
+        // display select tag
         $options['class'] = $params['class'] ?? 'form-select';
         $output .= self::select($name, $values, $options);
 

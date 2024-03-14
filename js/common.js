@@ -42,6 +42,11 @@ var timeoutglobalvar;
 // api does not provide any method to get the current configuration
 var tinymce_editor_configs = {};
 
+// Store select2 configurations
+// This is needed if a select2 need to be destroyed and recreated as select2
+// api does not provide any method to get the current configuration
+var select2_configs = {};
+
 /**
  * modifier la propriete display d'un element
  *
@@ -1759,4 +1764,101 @@ function getUUID() {
 /* global GlpiCommonAjaxController */
 if (typeof GlpiCommonAjaxController == "function") {
     new GlpiCommonAjaxController();
+}
+
+function setupAjaxDropdown(config) {
+    // Field ID is used as a selector, so we need to escape special characters
+    // to avoid issues with jQuery.
+    const field_id = config.field_id.replace(/([\[\]])/g, "\\$1");
+
+    const select2_el = $('#' + field_id).select2({
+        width: config.width,
+        multiple: config.multiple,
+        placeholder: config.placeholder,
+        allowClear: config.allowclear,
+        minimumInputLength: 0,
+        quietMillis: 100,
+        dropdownAutoWidth: true,
+        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        minimumResultsForSearch: config.ajax_limit_count,
+        ajax: {
+            url: config.url,
+            dataType: 'json',
+            type: 'POST',
+            data: function (params) {
+                query = params;
+                var data = $.extend({}, config.params, {
+                    searchText: params.term,
+                });
+
+                if (config.parent_id_field !== '') {
+                    data.parent_id = document.getElementById(config.parent_id_field).value;
+                }
+
+                data.page_limit = config.dropdown_max; // page size
+                data.page = params.page || 1; // page number
+
+                return data;
+            },
+            processResults: function (data, params) {
+                params.page = params.page || 1;
+                var more = (data.count >= config.dropdown_max);
+
+                return {
+                    results: data.results,
+                    pagination: {
+                        more: more
+                    }
+                };
+            }
+        },
+        templateResult: templateResult,
+        templateSelection: templateSelection
+    })
+        .bind('setValue', function (e, value) {
+            $.ajax(config.url, {
+                data: $.extend({}, config.params, {
+                    _one_id: value,
+                }),
+                dataType: 'json',
+                type: 'POST',
+            }).done(function (data) {
+
+                var iterate_options = function (options, value) {
+                    var to_return = false;
+                    $.each(options, function (index, option) {
+                        if (Object.prototype.hasOwnProperty.call(option, 'id') && option.id == value) {
+                            to_return = option;
+                            return false; // act as break;
+                        }
+
+                        if (Object.prototype.hasOwnProperty.call(option, 'children')) {
+                            to_return = iterate_options(option.children, value);
+                        }
+                    });
+
+                    return to_return;
+                };
+
+                var option = iterate_options(data.results, value);
+                if (option !== false) {
+                    var newOption = new Option(option.text, option.id, true, true);
+                    $('#' + field_id).append(newOption).trigger('change');
+                }
+            });
+        });
+
+    if (config.on_change !== '') {
+        $('#' + field_id).on('change', function () { eval(config.on_change); });
+    }
+
+    $('label[for=' + field_id + ']').on('click', function () { $('#' + field_id).select2('open'); });
+    $('#' + field_id).on('select2:open', function (e) {
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${e.target.id}-results']`);
+        if (search_input) {
+            search_input.focus();
+        }
+    });
+
+    return select2_el;
 }
