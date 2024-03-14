@@ -248,12 +248,63 @@ $assignable_assets = [
         'rightname' => 'peripheral'
     ]
 ];
-foreach ($assignable_assets as $asset) {
+
+if (!$DB->tableExists('glpi_groups_assets')) {
+    $query = <<<SQL
+        CREATE TABLE `glpi_groups_assets` (
+          `id` int unsigned NOT NULL AUTO_INCREMENT,
+          `groups_id` int unsigned NOT NULL DEFAULT '0',
+          `itemtype` varchar(255) NOT NULL DEFAULT '',
+          `items_id` int unsigned NOT NULL DEFAULT '0',
+          `type` tinyint NOT NULL DEFAULT '0',
+          PRIMARY KEY (`id`),
+          UNIQUE KEY `unicity` (`groups_id`,`itemtype`,`items_id`),
+          KEY `groups_id` (`groups_id`),
+          KEY `item` (`itemtype`, `items_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+    $DB->doQueryOrDie($query);
+}
+
+foreach ($assignable_assets as $asset_class => $asset) {
     $migration->addRight($asset['rightname'], READ_ASSIGNED, [$asset['rightname'] => READ]);
     $migration->addRight($asset['rightname'], UPDATE_ASSIGNED, [$asset['rightname'] => UPDATE]);
-    // groups_id and groups_id_tech are now TEXT fields. We also cannot use indexes on them anymore because of that.
+
+    // move groups to the new link table
+    if ($DB->fieldExists($asset['table'], 'groups_id')) {
+        $DB->insert('glpi_groups_assets', new \Glpi\DBAL\QuerySubQuery([
+            'SELECT' => [
+                new \Glpi\DBAL\QueryExpression('NULL', 'id'),
+                new \Glpi\DBAL\QueryExpression('0', 'type'),
+                'id AS items_id',
+                'groups_id',
+                new \Glpi\DBAL\QueryExpression($DB::quoteValue($asset_class), 'itemtype')
+            ],
+            'FROM'   => $asset['table'],
+            'WHERE'  => [
+                'groups_id' => ['>', 0]
+            ]
+        ]));
+    }
+    if ($DB->fieldExists($asset['table'], 'groups_id_tech')) {
+        $DB->insert('glpi_groups_assets', new \Glpi\DBAL\QuerySubQuery([
+            'SELECT' => [
+                new \Glpi\DBAL\QueryExpression('NULL', 'id'),
+                new \Glpi\DBAL\QueryExpression('1', 'type'),
+                'id AS items_id',
+                'groups_id_tech AS groups_id',
+                new \Glpi\DBAL\QueryExpression($DB::quoteValue($asset_class), 'itemtype')
+            ],
+            'FROM'   => $asset['table'],
+            'WHERE'  => [
+                'groups_id_tech' => ['>', 0]
+            ]
+        ]));
+    }
+
     $migration->dropKey($asset['table'], 'groups_id');
     $migration->dropKey($asset['table'], 'groups_id_tech');
-    $migration->changeField($asset['table'], 'groups_id', 'groups_id', 'TEXT');
-    $migration->changeField($asset['table'], 'groups_id_tech', 'groups_id_tech', 'TEXT');
+    //TODO uncomment. Commented because it is annoying for devs that use the same DB between PRs/versions.
+    //$migration->dropField($asset['table'], 'groups_id');
+    //$migration->dropField($asset['table'], 'groups_id_tech');
 }

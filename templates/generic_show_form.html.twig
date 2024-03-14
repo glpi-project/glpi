@@ -399,7 +399,7 @@
                         ) }}
                      {% endif %}
 
-                     {% if item.isField('groups_id_tech') %}
+                     {% if item.isField('groups_id_tech') or (item is usingtrait('Glpi\\Features\\AssignableAsset') and item.GROUP_TYPE_TECH in item.groupTypes) %}
                         {{ fields.dropdownField(
                            'Group',
                            'groups_id_tech',
@@ -542,7 +542,7 @@
                         ) }}
                      {% endif %}
 
-                     {% if item.isField('groups_id') %}
+                     {% if item.isField('groups_id') or (item is usingtrait('Glpi\\Features\\AssignableAsset') and item.GROUP_TYPE_NORMAL in item.groupTypes) %}
                         {{ fields.dropdownField(
                            'Group',
                            'groups_id',

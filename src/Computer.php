@@ -46,6 +46,7 @@ class Computer extends CommonDBTM
     use Glpi\Features\State;
     use Glpi\Features\AssignableAsset {
         prepareInputForAdd as prepareInputForAddAssignableAsset;
+        post_updateItem as post_updateItemAssignableAsset;
     }
 
    // From CommonDBTM
@@ -307,6 +308,8 @@ class Computer extends CommonDBTM
                 }
             }
         }
+
+        $this->post_updateItemAssignableAsset($history);
     }
 
 
@@ -518,6 +521,17 @@ class Computer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -569,9 +583,20 @@ class Computer extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 

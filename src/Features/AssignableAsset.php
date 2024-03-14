@@ -40,6 +40,9 @@ use Session;
 
 trait AssignableAsset
 {
+    public int $GROUP_TYPE_NORMAL = 0;
+    public int $GROUP_TYPE_TECH = 1;
+
     public static function canView()
     {
         return Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED]);
@@ -119,28 +122,28 @@ trait AssignableAsset
         return $rights;
     }
 
-    private function prepareGroupFields(array $input)
-    {
-        $fields = ['groups_id', 'groups_id_tech'];
-        foreach ($fields as $field) {
-            if (array_key_exists($field, $input)) {
-                if ($input[$field] === null) {
-                    $input[$field] = [];
-                } else if (!is_array($input[$field])) {
-                    $input[$field] = [$input[$field]];
-                }
-                $input[$field] = json_encode($input[$field]);
-            }
-        }
-        return $input;
-    }
+//    private function prepareGroupFields(array $input)
+//    {
+//        $fields = ['groups_id', 'groups_id_tech'];
+//        foreach ($fields as $field) {
+//            if (array_key_exists($field, $input)) {
+//                if ($input[$field] === null) {
+//                    $input[$field] = [];
+//                } else if (!is_array($input[$field])) {
+//                    $input[$field] = [$input[$field]];
+//                }
+//                $input[$field] = json_encode($input[$field]);
+//            }
+//        }
+//        return $input;
+//    }
 
     public function prepareInputForAdd($input): array|false
     {
         if ($input === false) {
             return false;
         }
-        $input = $this->prepareGroupFields($input);
+        //$input = $this->prepareGroupFields($input);
         return parent::prepareInputForAdd($input);
     }
 
@@ -149,8 +152,70 @@ trait AssignableAsset
         if ($input === false) {
             return false;
         }
-        $input = $this->prepareGroupFields($input);
+        //$input = $this->prepareGroupFields($input);
         return parent::prepareInputForUpdate($input);
+    }
+
+    /**
+     * Update the values in the 'glpi_groups_assets' link table as needed based on the groups set in the 'groups_id' and 'groups_id_tech' fields.
+     */
+    private function updateGroupFields()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Find existing links
+        $existing_links = [];
+        if (!$this->isNewItem()) {
+            $it = $DB->request([
+                'SELECT' => ['id', 'groups_id', 'type'],
+                'FROM' => 'glpi_groups_assets',
+                'WHERE' => [
+                    'itemtype' => static::class,
+                    'items_id' => $this->getID(),
+                ],
+            ]);
+            $existing_links = iterator_to_array($it);
+        }
+
+        $fields = [
+            $this->GROUP_TYPE_NORMAL => 'groups_id',
+            $this->GROUP_TYPE_TECH => 'groups_id_tech'
+        ];
+        foreach ($fields as $type => $field) {
+            if (array_key_exists($field, $this->input)) {
+                $new_links = array_diff($this->input[$field], array_column($existing_links, 'groups_id'));
+                $old_links = array_diff(array_column($existing_links, 'groups_id'), $this->input[$field]);
+                foreach ($new_links as $group_id) {
+                    $DB->insert('glpi_groups_assets', [
+                        'itemtype' => static::class,
+                        'items_id' => $this->getID(),
+                        'groups_id' => $group_id,
+                        'type' => $type,
+                    ]);
+                }
+                foreach ($old_links as $group_id) {
+                    $DB->delete('glpi_groups_assets', [
+                        'itemtype' => static::class,
+                        'items_id' => $this->getID(),
+                        'groups_id' => $group_id,
+                        'type' => $type,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+        $this->updateGroupFields();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+        $this->updateGroupFields();
     }
 
     public function getEmpty()
@@ -166,17 +231,55 @@ trait AssignableAsset
 
     public function post_getFromDB()
     {
-        $group_fields = ['groups_id', 'groups_id_tech'];
-        foreach ($group_fields as $field) {
-            if (array_key_exists($field, $this->fields)) {
-                $this->fields[$field] = json_decode($this->fields[$field] ?? '[]', false) ?? [];
-                if ($this->fields[$field] === 0) {
-                    $this->fields[$field] = [];
-                }
-                if (!is_array($this->fields[$field])) {
-                    $this->fields[$field] = [$this->fields[$field]];
-                }
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Find existing links
+        $existing_links = [];
+        if (!$this->isNewItem()) {
+            $it = $DB->request([
+                'SELECT' => ['id', 'groups_id', 'type'],
+                'FROM' => 'glpi_groups_assets',
+                'WHERE' => [
+                    'itemtype' => static::class,
+                    'items_id' => $this->getID(),
+                ],
+            ]);
+            $existing_links = iterator_to_array($it);
+        }
+
+        $group_fields = [
+            $this->GROUP_TYPE_NORMAL => 'groups_id',
+            $this->GROUP_TYPE_TECH => 'groups_id_tech'
+        ];
+        foreach ($group_fields as $type => $field) {
+            if (array_key_exists($type, $this->getGroupTypes())) {
+                $this->fields[$field] = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
             }
         }
     }
+
+    /**
+     * Get the types of groups supported by the asset.
+     * @return array<self::GROUP_TYPE_*>
+     */
+    public function getGroupTypes(): array
+    {
+        return [$this->GROUP_TYPE_NORMAL, $this->GROUP_TYPE_TECH];
+    }
+
+//    /**
+//     * Get all group type labels or a specific label.
+//     * @param self::GROUP_TYPE_*|null $type
+//     * @return array|string
+//     * @phpstan-return $type === null ? array<self::GROUP_TYPE_*, string> : string
+//     */
+//    public static function getGroupTypeLabels(?int $type = null): array|string
+//    {
+//        $labels = [
+//            self::GROUP_TYPE_NORMAL => __('Group'),
+//            self::GROUP_TYPE_TECH => __('Group in charge'),
+//        ];
+//        return $type === null ? $labels : $labels[$type];
+//    }
 }
