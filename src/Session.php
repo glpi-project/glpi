@@ -414,6 +414,8 @@ class Session
                     }
                 }
             } else {
+                $ID = (int)$ID;
+
                /// Check entity validity
                 $ancestors = getAncestorsOf("glpi_entities", $ID);
                 $ok        = false;
