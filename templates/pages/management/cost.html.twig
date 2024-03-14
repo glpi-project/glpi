@@ -45,33 +45,50 @@
     {{ fields.dateField('begin_date', item.fields['begin_date'], __('Begin date'), {
         clearable: true
     }) }}
-    {{ fields.dropdownTimestampField('actiontime', item.fields['actiontime'], __('Duration'), {
-        addfirstminutes: true,
-        min: constant('DAY_TIMESTAMP'),
-        max: constant('DAY_TIMESTAMP') * 50,
-        step: constant('DAY_TIMESTAMP'),
-    }) }}
+    {% if item.isField('actiontime') %}
+        {{ fields.dropdownTimestampField('actiontime', item.fields['actiontime'], __('Duration'), {
+            addfirstminutes: true,
+            min: constant('DAY_TIMESTAMP'),
+            max: constant('DAY_TIMESTAMP') * 50,
+            step: constant('DAY_TIMESTAMP'),
+        }) }}
+    {% endif %}
 
     {{ fields.dateField('end_date', item.fields['end_date'], __('End date'), {
         clearable: true
     }) }}
-    {{ fields.numberField('cost_time', item.fields['cost_time'], __('Time cost'), {
-        min: 0,
-        max: constant('PHP_INT_MAX'),
-        step: 0.0001
-    }) }}
+
+    {% if item.isField('cost_time') %}
+        {{ fields.numberField('cost_time', item.fields['cost_time'], __('Time cost'), {
+            min: 0,
+            max: constant('PHP_INT_MAX'),
+            step: 0.0001
+        }) }}
+    {% endif %}
+
+    {% if item.isField('cost') %}
+        {{ fields.numberField('cost', item.fields['cost'], _n('Cost', 'Costs', 1), {
+            min: 0,
+            max: constant('PHP_INT_MAX'),
+            step: 0.0001
+        }) }}
+    {% endif %}
 
     {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', get_plural_number())) }}
-    {{ fields.numberField('cost_fixed', item.fields['cost_fixed'], __('Fixed cost'), {
-        min: 0,
-        max: constant('PHP_INT_MAX'),
-        step: 0.0001
-    }) }}
+    {% if item.isField('cost_fixed') %}
+        {{ fields.numberField('cost_fixed', item.fields['cost_fixed'], __('Fixed cost'), {
+            min: 0,
+            max: constant('PHP_INT_MAX'),
+            step: 0.0001
+        }) }}
+    {% endif %}
     {{ fields.nullField() }}
-    {{ fields.numberField('cost_material', item.fields['cost_material'], __('Material cost'), {
-        min: 0,
-        max: constant('PHP_INT_MAX'),
-        step: 0.0001
-    }) }}
+    {% if item.isField('cost_material') %}
+        {{ fields.numberField('cost_material', item.fields['cost_material'], __('Material cost'), {
+            min: 0,
+            max: constant('PHP_INT_MAX'),
+            step: 0.0001
+        }) }}
+    {% endif %}
 
 {% endblock %}
