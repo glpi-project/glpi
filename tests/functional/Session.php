@@ -732,4 +732,18 @@ class Session extends \DbTestCase
         $_SESSION['glpiactiveentities'] = $active_entities;
         $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isIdenticalTo($result);
     }
+
+    public function testGetMatchingActiveEntitiesWithUnexpectedValue(): void
+    {
+        $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', 3];
+
+        $this->when(
+            function () {
+                $this->variable(\Session::getMatchingActiveEntities([2, 3]))->isIdenticalTo([2, 3]);
+            }
+        )->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.')
+         ->exists();
+    }
 }

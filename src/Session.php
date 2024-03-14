@@ -1988,6 +1988,10 @@ class Session
             if (!is_int($active_entity_id) && !ctype_digit($active_entity_id)) {
                 // Ensure no unexpected value converted to int
                 // as it would be converted to `0` and would permit access to root entity
+                trigger_error(
+                    sprintf('Unexpected value `%s` found in `$_SESSION[\'glpiactiveentities\']`.', $active_entity_id),
+                    E_USER_WARNING
+                );
                 continue;
             }
             $active_entities_ids[] = (int)$active_entity_id;
