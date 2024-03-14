@@ -131,6 +131,7 @@ class Dropdown
         $params['readonly']             = false;
         $params['parent_id_field']      = null;
         $params['multiple']             = false;
+        $params['init']                 = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -255,6 +256,7 @@ class Dropdown
             'order'                => $params['order'] ?? null,
             'parent_id_field'      => $params['parent_id_field'],
             'multiple'             => $params['multiple'] ?? false,
+            'init'                 => $params['init'] ?? true,
         ];
 
         if ($params['multiple']) {

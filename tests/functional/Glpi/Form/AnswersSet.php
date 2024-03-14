@@ -39,6 +39,9 @@ use CommonGLPI;
 use Computer;
 use DbTestCase;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
@@ -49,8 +52,11 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeTime;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Group;
 use Impact;
+use Supplier;
 use Ticket;
+use User;
 
 class AnswersSet extends DbTestCase
 {
@@ -246,6 +252,9 @@ class AnswersSet extends DbTestCase
                     'is_date_enabled' => 1,
                     'is_time_enabled' => 1
                 ]))
+                ->addQuestion("Requester", QuestionTypeRequester::class)
+                ->addQuestion("Observer", QuestionTypeObserver::class)
+                ->addQuestion("Assignee", QuestionTypeAssignee::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -255,6 +264,19 @@ class AnswersSet extends DbTestCase
             $this->getQuestionId($form, "Date") => "2021-01-01",
             $this->getQuestionId($form, "Time") => "12:00",
             $this->getQuestionId($form, "DateTime") => "2021-01-01 12:00:00",
+            $this->getQuestionId($form, "Requester") => [
+                User::getForeignKeyField() . '-1',
+                Group::getForeignKeyField() . '-1'
+            ],
+            $this->getQuestionId($form, "Observer") => [
+                User::getForeignKeyField() . '-1',
+                Group::getForeignKeyField() . '-1'
+            ],
+            $this->getQuestionId($form, "Assignee") => [
+                User::getForeignKeyField() . '-1',
+                Group::getForeignKeyField() . '-1',
+                Supplier::getForeignKeyField() . '-1'
+            ],
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

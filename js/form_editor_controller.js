@@ -408,7 +408,7 @@ class GlpiFormEditorController
             }
 
             // Format input name
-            const field = $(input).data("glpi-form-editor-original-name");
+            let field = $(input).data("glpi-form-editor-original-name");
             let base_input_index = "";
             if (type === "section") {
                 // The input is for the section itself
@@ -428,9 +428,15 @@ class GlpiFormEditorController
             }
 
             // Update input name
+            let postfix = "";
+            if (field.endsWith("[]")) {
+                field = field.slice(0, -2);
+                postfix = "[]";
+            }
+
             $(input).attr(
                 "name",
-                base_input_index + `[${field}]`
+                base_input_index + `[${field}]${postfix}`
             );
         });
     }
@@ -745,10 +751,15 @@ class GlpiFormEditorController
      * @returns {jQuery} Copy of the template
      */
     #copy_template(target, destination, action = "append") {
+        /* global setupAjaxDropdown */
+
         const copy = target.clone();
 
         // Keep track of rich text editors that will need to be initialized
         const tiny_mce_to_init = [];
+
+        // Keep track of select2 that will need to be initialized
+        const select2_to_init = [];
 
         // Look for tiynmce editor to init
         copy.find("textarea").each(function() {
@@ -775,6 +786,21 @@ class GlpiFormEditorController
             window.tinymce_editor_configs[id] = config;
         });
 
+        // Look for select2 to init
+        copy.find("select").each(function() {
+            const id = $(this).attr("id");
+            const config = window.select2_configs[id];
+
+            // Check if a select2 isn't already initialized
+            // and if a configuration is available
+            if (
+                $(this).hasClass("select2-hidden-accessible") === false
+                && config !== undefined
+            ) {
+                select2_to_init.push(config);
+            }
+        });
+
         // Insert the new question
         switch (action) {
             case "append":
@@ -795,6 +821,9 @@ class GlpiFormEditorController
 
         // Init the editors
         tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
+
+        // Init the select2
+        select2_to_init.forEach((config) => setupAjaxDropdown(config));
 
         // Init tooltips
         const tooltip_trigger_list = copy.find('[data-bs-toggle="tooltip"]');
