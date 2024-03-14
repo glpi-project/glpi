@@ -4223,7 +4223,7 @@ JAVASCRIPT;
             && in_array('Supplier', $post['returned_itemtypes'])
         ) {
             // Bypass checks, idor token validation has already been made earlier in method
-            $supplier_idor = Session::getNewIDORToken('Group', ['entity_restrict' => $entity_restrict]);
+            $supplier_idor = Session::getNewIDORToken('Supplier', ['entity_restrict' => $entity_restrict]);
 
             $suppliers    = Dropdown::getDropdownValue([
                 'itemtype'            => 'Supplier',
