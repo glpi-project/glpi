@@ -33,25 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Asset\AssetDefinition;
-use Glpi\Http\Response;
-use Glpi\Search\SearchEngine;
+namespace tests\units\Glpi\Features;
 
-include('../../inc/includes.php');
+class AssignableAsset extends \DbTestCase
+{
+    protected function itemtypeProvider()
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
 
-$definition = new AssetDefinition();
-$classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
-    ? $definition->getAssetClassName()
-    : null;
+        foreach (['linkuser_types', 'linkgroup_types', 'linkuser_tech_types', 'linkgroup_tech_types'] as $cfg_key) {
+            foreach ($CFG_GLPI[$cfg_key] as $itemtype) {
+                yield[
+                    'class' => $itemtype,
+                ];
+            }
+        }
+    }
 
-if ($classname === null || !class_exists($classname)) {
-    Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
+    /**
+     * @dataProvider itemtypeProvider
+     */
+    public function testClassUsesTrait($class)
+    {
+        $this->boolean(in_array(\Glpi\Features\AssignableAsset::class, class_uses($class, true)));
+    }
 }
-
-Session::checkRightsOr($classname::$rightname, [READ, READ_ASSIGNED]);
-
-Html::header($classname::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', $classname);
-
-SearchEngine::show($classname);
-
-Html::footer();
