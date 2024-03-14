@@ -41,8 +41,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\RichText\RichText;
 
 /**
@@ -3162,35 +3160,6 @@ JAVASCRIPT;
                 ]
             ],
         ];
-
-        $tab[] = [
-            'id'   => 'forms',
-            'name' => __('Forms')
-        ];
-
-        // Search by form answer
-        $tab[] = [
-            'id'                 => '120',
-            'table'              => AnswersSet::getTable(),
-            'field'              => 'name',
-            'name'               => AnswersSet::getTypeName(1),
-            'massiveaction'      => false,
-            'searchtype'         => 'equals',
-            'datatype'           => 'itemlink',
-            'usehaving'          => true,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => AnswersSet_FormDestinationItem::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                        'linkfield'          => 'items_id',
-                        'condition'          => ['NEWTABLE.itemtype' => self::getType()]
-                    ]
-                ]
-            ],
-            'forcegroupby'       => true
-        ];
-
 
        // Filter search fields for helpdesk
         if (

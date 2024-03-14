@@ -63,7 +63,7 @@
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ loop.index }}"
                             aria-expanded="false"
                         >
-                            <i class="{{ concrete_destination.getTargetItemtype().getIcon() }} me-2"></i>
+                            <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
                             {{ destination.getName() }}
                         </button>
                     </h3>
@@ -75,7 +75,7 @@
                         <div class="accordion-body pt-0">
                             <form method="POST" action="{{ controller_url }}">
                                 <div>
-                                    {{ __("The created ticket's content is not yet customizable (WIP).") }}
+                                    {{ concrete_destination.renderConfigForm()|raw }}
                                 </div>
 
                                 {# Submit button to delete the destination #}
@@ -98,14 +98,23 @@
     {% endif %}
 
     <form method="POST" action="{{ controller_url }}">
-        {# Submit button to create a new destination #}
-        <button class="btn btn-primary btn-sm mt-4" name="add" type="submit">
-            <i class="ti ti-plus me-2"></i> {{ __("New item") }}
-        </button>
+
+        <div class="d-flex mt-4">
+            {% do call('Dropdown::showFromArray', [
+                "itemtype",
+                available_destinations_types,
+                {
+                    'value': get_class(default_destination_object),
+                }
+            ]) %}
+
+            {# Submit button to create a new destination #}
+            <button class="btn btn-primary ms-2" name="add" type="submit">
+                <i class="ti ti-plus me-2"></i> {{ __("New item") }}
+            </button>
+        </div>
 
         {# Hidden values #}
-        <input type="hidden" name="itemtype" value="{{ get_class(default_destination_object) }}"/>
-        <input type="hidden" name="name" value="{{ default_destination_object.getTypeName(1) }}"/>
         <input type="hidden" name="{{ form.getForeignKeyField() }}" value="{{ form.getID() }}"/>
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
     <form>

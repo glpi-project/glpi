@@ -35,45 +35,14 @@
 
 namespace Glpi\Form\Destination;
 
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Form;
+use Change;
+use Override;
 
-interface FormDestinationInterface
+final class FormDestinationChange extends AbstractCommonITILFormDestination
 {
-    /**
-     * Create one or multiple items for a given form and its answers
-     *
-     * @param Form       $form
-     * @param AnswersSet $answers_set
-     *
-     * @return \CommonDBTM[]
-     *
-     * @throws \Exception Must be thrown if the item can't be created
-     */
-    public function createDestinationItems(
-        Form $form,
-        AnswersSet $answers_set
-    ): array;
-
-
-    /**
-     * Render the configuration form for this destination type.
-     *
-     * @return string The rendered HTML content
-     */
-    public function renderConfigForm(): string;
-
-    /**
-     * Get itemtype to create
-     *
-     * @return string (Must be a valid CommonDBTM class name)
-     */
-    public static function getTargetItemtype(): string;
-
-    /**
-     * Get the search option used to filter the target itemtype by answers set.
-     *
-     * @return int
-     */
-    public static function getFilterByAnswsersSetSearchOptionID(): int;
+    #[Override]
+    public static function getTargetItemtype(): string
+    {
+        return Change::class;
+    }
 }

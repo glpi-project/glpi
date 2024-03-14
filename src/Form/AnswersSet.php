@@ -41,7 +41,7 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
-use Glpi\Form\Destination\FormDestinationTicket;
+use Glpi\Form\Destination\FormDestinationTypeManager;
 use Log;
 use Override;
 use ReflectionClass;
@@ -73,8 +73,11 @@ final class AnswersSet extends CommonDBChild
     {
         $tabs = parent::defineTabs();
 
-        // TODO: iterate on all possible destinations (for now only ticket exist)
-        $this->addStandardTab(FormDestinationTicket::class, $tabs, []);
+        // Register each possible destination types
+        $types_manager = FormDestinationTypeManager::getInstance();
+        foreach ($types_manager->getDestinationTypes() as $type) {
+            $this->addStandardTab($type::class, $tabs, []);
+        }
         $this->addStandardTab(Log::class, $tabs, []);
 
         return $tabs;
