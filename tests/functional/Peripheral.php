@@ -163,6 +163,7 @@ class Peripheral extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $peripheral = new \Peripheral();
+        $peripheral->getEmpty();
         $this->array($peripheral->fields['groups_id'])->isEmpty();
         $this->array($peripheral->fields['groups_id_tech'])->isEmpty();
     }

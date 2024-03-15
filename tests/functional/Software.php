@@ -561,6 +561,7 @@ class Software extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $software = new \Software();
+        $software->getEmpty();
         $this->array($software->fields['groups_id'])->isEmpty();
         $this->array($software->fields['groups_id_tech'])->isEmpty();
     }

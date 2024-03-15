@@ -163,6 +163,7 @@ class ConsumableItem extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $consumableitem = new \ConsumableItem();
+        $consumableitem->getEmpty();
         $this->array($consumableitem->fields['groups_id'])->isEmpty();
         $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
     }

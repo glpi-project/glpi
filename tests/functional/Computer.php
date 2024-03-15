@@ -916,7 +916,7 @@ class Computer extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => null,
             'groups_id_tech' => null,
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $computers_id_2 = $computer->fields['id'];
         $this->array($computer->fields['groups_id'])->isEmpty();
         $this->array($computer->fields['groups_id_tech'])->isEmpty();
@@ -1018,6 +1018,7 @@ class Computer extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $computer = new \Computer();
+        $computer->getEmpty();
         $this->array($computer->fields['groups_id'])->isEmpty();
         $this->array($computer->fields['groups_id_tech'])->isEmpty();
     }

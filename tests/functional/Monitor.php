@@ -258,6 +258,7 @@ class Monitor extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $monitor = new \Monitor();
+        $monitor->getEmpty();
         $this->array($monitor->fields['groups_id'])->isEmpty();
         $this->array($monitor->fields['groups_id_tech'])->isEmpty();
     }

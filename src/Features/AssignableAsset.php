@@ -122,29 +122,31 @@ trait AssignableAsset
         return $rights;
     }
 
-//    private function prepareGroupFields(array $input)
-//    {
-//        $fields = ['groups_id', 'groups_id_tech'];
-//        foreach ($fields as $field) {
-//            if (array_key_exists($field, $input)) {
-//                if ($input[$field] === null) {
-//                    $input[$field] = [];
-//                } else if (!is_array($input[$field])) {
-//                    $input[$field] = [$input[$field]];
-//                }
-//                $input[$field] = json_encode($input[$field]);
-//            }
-//        }
-//        return $input;
-//    }
+    private function prepareGroupFields(array $input)
+    {
+        $fields = ['groups_id', 'groups_id_tech'];
+        foreach ($fields as $field) {
+            if (array_key_exists($field, $input)) {
+                if ($input[$field] === null || $input[$field] === 0 || $input[$field] === [0]) {
+                    $input[$field] = [];
+                }
+                if (!is_array($input[$field])) {
+                    $input[$field] = [$input[$field]];
+                }
+            }
+            $input['_' . $field] = array_map('intval', $input[$field] ?? []);
+            unset($input[$field]);
+        }
+        return $input;
+    }
 
     public function prepareInputForAdd($input): array|false
     {
         if ($input === false) {
             return false;
         }
-        //$input = $this->prepareGroupFields($input);
-        return parent::prepareInputForAdd($input);
+        $input = parent::prepareInputForAdd($input);
+        return $this->prepareGroupFields($input);
     }
 
     public function prepareInputForUpdate($input): array|false
@@ -152,8 +154,8 @@ trait AssignableAsset
         if ($input === false) {
             return false;
         }
-        //$input = $this->prepareGroupFields($input);
-        return parent::prepareInputForUpdate($input);
+        $input = parent::prepareInputForUpdate($input);
+        return $this->prepareGroupFields($input);
     }
 
     /**
@@ -183,9 +185,14 @@ trait AssignableAsset
             $this->GROUP_TYPE_TECH => 'groups_id_tech'
         ];
         foreach ($fields as $type => $field) {
+            if (array_key_exists('_' . $field, $this->fields)) {
+                $this->fields[$field] = $this->fields['_' . $field];
+                unset($this->fields['_' . $field]);
+            }
+            $existing_for_type = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
             if (array_key_exists($field, $this->input)) {
-                $new_links = array_diff($this->input[$field], array_column($existing_links, 'groups_id'));
-                $old_links = array_diff(array_column($existing_links, 'groups_id'), $this->input[$field]);
+                $new_links = array_diff($this->input[$field], $existing_for_type);
+                $old_links = array_diff($existing_for_type, $this->input[$field]);
                 foreach ($new_links as $group_id) {
                     $DB->insert('glpi_groups_assets', [
                         'itemtype' => static::class,
@@ -227,6 +234,7 @@ trait AssignableAsset
         foreach ($group_fields as $field) {
             $this->fields[$field] = [];
         }
+        return true;
     }
 
     public function post_getFromDB()

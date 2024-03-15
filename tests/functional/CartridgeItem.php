@@ -163,6 +163,7 @@ class CartridgeItem extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $cartridgeitem = new \CartridgeItem();
+        $cartridgeitem->getEmpty();
         $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
         $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
     }

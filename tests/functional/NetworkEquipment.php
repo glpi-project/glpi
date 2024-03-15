@@ -220,6 +220,7 @@ class NetworkEquipment extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $networkequipment = new \NetworkEquipment();
+        $networkequipment->getEmpty();
         $this->array($networkequipment->fields['groups_id'])->isEmpty();
         $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
     }

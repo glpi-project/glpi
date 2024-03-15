@@ -163,6 +163,7 @@ class Phone extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $phone = new \Phone();
+        $phone->getEmpty();
         $this->array($phone->fields['groups_id'])->isEmpty();
         $this->array($phone->fields['groups_id_tech'])->isEmpty();
     }

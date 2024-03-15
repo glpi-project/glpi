@@ -292,6 +292,7 @@ class Printer extends DbTestCase
     public function testGetEmptyMultipleGroups()
     {
         $printer = new \Printer();
+        $printer->getEmpty();
         $this->array($printer->fields['groups_id'])->isEmpty();
         $this->array($printer->fields['groups_id_tech'])->isEmpty();
     }
