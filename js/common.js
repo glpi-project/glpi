@@ -1769,7 +1769,7 @@ if (typeof GlpiCommonAjaxController == "function") {
 function setupAjaxDropdown(config) {
     // Field ID is used as a selector, so we need to escape special characters
     // to avoid issues with jQuery.
-    const field_id = config.field_id.replace(/([\[\]])/g, "\\$1");
+    const field_id = $.escapeSelector(config.field_id);
 
     const select2_el = $('#' + field_id).select2({
         width: config.width,
