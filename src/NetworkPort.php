@@ -1284,11 +1284,11 @@ class NetworkPort extends CommonDBChild
                             }
                             break;
                         default:
-                            if ($option['table'] == $this->getTable()) {
+                            $netport_table = $this->getTable();
+                            if ($option['table'] == $netport_table) {
                                 $output .= $port[$option['field']];
                             } else {
                                 $already_link_tables = [];
-                                $netport_table = $netport->getTable();
                                 $join = Search::addLeftJoin(
                                     __CLASS__,
                                     $netport_table,
