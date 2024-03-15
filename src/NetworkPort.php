@@ -741,24 +741,8 @@ class NetworkPort extends CommonDBChild
         ];
 
         $so = $netport->rawSearchOptions();
-        $already_link_tables = [];
         foreach (Plugin::getAddSearchOptions(__CLASS__) as $key => $data) {
             $so[] = ['id' => $key] + $data;
-            $join = Search::addLeftJoin(
-                __CLASS__,
-                $netport->getTable(),
-                $already_link_tables,
-                $data["table"],
-                $data["linkfield"],
-                0,
-                0,
-                $data["joinparams"],
-                $data["field"]
-            );
-            $pattern = "/AS `([^`]+)`/";
-            preg_match($pattern, $join, $matches);
-            $criteria['SELECT'][] = $matches[1] . '.' . $data["field"];
-            $criteria['JOIN'][] = new QueryExpression($join);
         }
 
         $ports_iterator = $DB->request($criteria);
@@ -1300,7 +1284,33 @@ class NetworkPort extends CommonDBChild
                             }
                             break;
                         default:
-                            $output .= $port[$option['field']];
+                            if ($option['table'] == $this->getTable()) {
+                                $output .= $port[$option['field']];
+                            } else {
+                                $already_link_tables = [];
+                                $netport_table = $netport->getTable();
+                                $join = Search::addLeftJoin(
+                                    __CLASS__,
+                                    $netport_table,
+                                    $already_link_tables,
+                                    $option["table"],
+                                    $option["linkfield"],
+                                    0,
+                                    0,
+                                    $option["joinparams"],
+                                    $option["field"]
+                                );
+                                $iterator = $DB->request([
+                                    'FROM'   => $netport_table,
+                                    'JOIN'   => [new QueryExpression($join)],
+                                    'WHERE'  => [
+                                        "$netport_table.id" => $port['id']
+                                    ]
+                                ]);
+                                foreach ($iterator as $row) {
+                                    $output .= $row[$option['field']];
+                                }
+                            }
                             break;
                     }
                 }
