@@ -189,7 +189,7 @@ class Reservation extends CommonDBChild
         }
         if (
             !Session::haveRight("reservation", UPDATE)
-            && Session::getLoginUserID() !== $input['users_id']
+            && Session::getLoginUserID() !== (int)$input['users_id']
         ) {
             return;
         }
