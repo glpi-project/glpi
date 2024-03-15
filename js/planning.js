@@ -91,6 +91,7 @@ var GLPIPlanning  = {
             timeZone:    'UTC',
             theme:       true,
             weekNumbers: options.full_view ? true : false,
+            defaultView: options.default_view,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
