@@ -161,7 +161,7 @@ class GlpiFormEditorController
                 // Do not submit the form if the state isn't computed
                 event.preventDefault();
                 event.stopPropagation();
-                glpi_toast_error(__("Unexpected error"));
+                glpi_toast_error(__("An unexpected error occurred"));
                 throw e;
             }
         });
@@ -177,7 +177,12 @@ class GlpiFormEditorController
                     const target = $(e.currentTarget);
                     const action = target.attr(attribute);
 
-                    this.#handleEditorAction(action, target, e);
+                    try {
+                        this.#handleEditorAction(action, target, e);
+                    } catch (e) {
+                        glpi_toast_error(__("An unexpected error occurred"));
+                        throw e;
+                    }
                 });
         });
     }
@@ -308,6 +313,13 @@ class GlpiFormEditorController
             // Collapse/uncollapse target section
             case "collapse-section":
                 this.#collaspeSection(
+                    target.closest("[data-glpi-form-editor-section]")
+                );
+                break;
+
+            // Duplicate target section
+            case "duplicate-section":
+                this.#duplicateSection(
                     target.closest("[data-glpi-form-editor-section]")
                 );
                 break;
@@ -1317,17 +1329,8 @@ class GlpiFormEditorController
      */
     #handleItemMove(item) {
         // Reinit tiynmce for all richtext inputs
-        item
-            .find("textarea")
-            .each((index, textarea) => {
-                const id = $(textarea).prop("id");
-                const editor = tinymce.get(id);
-
-                if (editor) {
-                    editor.destroy();
-                    tinymce.init(window.tinymce_editor_configs[id]);
-                }
-            });
+        const ids = this.#disableTinyMce(item);
+        this.#enableTinyMce(ids);
     }
 
     /**
@@ -1367,6 +1370,20 @@ class GlpiFormEditorController
     }
 
     /**
+     * Duplicate the given section
+     * @param {jQuery} section
+     */
+    #duplicateSection(section) {
+        // TinyMCE must be disabled before we can duplicate the section
+        const ids = this.#disableTinyMce(section);
+        const new_section = this.#copy_template(section, section, "after");
+        this.#enableTinyMce(ids);
+
+        this.#setActiveItem(new_section);
+        this.#enableSortable(new_section);
+    }
+
+    /**
      * Add fake div to empty sections to allow drag and drop.
      * This is needed because sortable require at least one item in a list to
      * enable drag and drop.
@@ -1384,6 +1401,40 @@ class GlpiFormEditorController
             if (questions.children().length == 0) {
                 questions.append('<div data-glpi-form-editor-empty-div style="height: 1px"></div>');
             }
+        });
+    }
+
+    /**
+     * Disable all TinyMCE input for the given item
+     *
+     * @param {jQuery} item Section or question
+     * @returns {array}
+     */
+    #disableTinyMce(item) {
+        const ids = [];
+        item
+            .find("textarea")
+            .each((index, textarea) => {
+                const id = $(textarea).prop("id");
+                const editor = tinymce.get(id);
+
+                if (editor) {
+                    editor.destroy();
+                    ids.push(id);
+                }
+            });
+
+        return ids;
+    }
+
+    /**
+     * Enable tinymce for the given items
+     *
+     * @param {array} ids
+     */
+    #enableTinyMce(ids) {
+        ids.forEach((id) => {
+            tinymce.init(window.tinymce_editor_configs[id]);
         });
     }
 }
