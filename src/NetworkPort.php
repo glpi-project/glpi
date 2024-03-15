@@ -755,7 +755,9 @@ class NetworkPort extends CommonDBChild
                 $data["joinparams"],
                 $data["field"]
             );
-            $criteria['SELECT'][] = $data["table"] . '_' . $data["field"] . '.' . $data["field"];
+            $pattern = "/AS `([^`]+)`/";
+            preg_match($pattern, $join, $matches);
+            $criteria['SELECT'][] = $matches[1] . '.' . $data["field"];
             $criteria['JOIN'][] = new QueryExpression($join);
         }
 
