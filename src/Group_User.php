@@ -272,7 +272,7 @@ class Group_User extends CommonDBRelation
      * @param Group    $group            Group object
      * @param array    $members          Array filled on output of member (filtered)
      * @param array    $ids              Array of ids (not filtered)
-     * @param string   $crit             Filter (is_manager, is_userdelegate) (default '')
+     * @param string|array $crit         Filter key (is_manager, is_userdelegate) or array of filters (default '')
      * @param bool|int $tree             True to include member of sub-group (default 0)
      * @param bool     $check_entities   Apply entities restrictions ?
      *
@@ -310,11 +310,27 @@ class Group_User extends CommonDBRelation
             $restrict = $group->getID();
         }
 
+        $group_users_table = self::getTable();
+        $filter_map = [
+            'dynamic' => "$group_users_table.is_dynamic",
+            'manager' => "$group_users_table.is_manager",
+            'delegatee' => "$group_users_table.is_userdelegate",
+            'is_active' => 'glpi_users.is_active',
+        ];
+        if (is_array($crit)) {
+            foreach ($crit as $key => $value) {
+                if (!empty($value) && isset($filter_map[$key])) {
+                    $where_filters[$filter_map[$key]] = $value;
+                }
+            }
+        }
+
         // All group members
         $pu_table = Profile_User::getTable();
         $query = [
             'SELECT' => [
                 'glpi_users.id',
+                'glpi_users.is_active',
                 'glpi_groups_users.id AS linkid',
                 'glpi_groups_users.groups_id',
                 'glpi_groups_users.is_dynamic AS is_dynamic',
@@ -322,11 +338,11 @@ class Group_User extends CommonDBRelation
                 'glpi_groups_users.is_userdelegate AS is_userdelegate'
             ],
             'DISTINCT'  => true,
-            'FROM'      => self::getTable(),
+            'FROM'      => $group_users_table,
             'LEFT JOIN' => [
                 User::getTable() => [
                     'ON' => [
-                        self::getTable() => 'users_id',
+                        $group_users_table => 'users_id',
                         User::getTable() => 'id'
                     ]
                 ],
@@ -338,7 +354,7 @@ class Group_User extends CommonDBRelation
                 ]
             ],
             'WHERE' => [
-                self::getTable() . '.groups_id'  => $restrict,
+                    $group_users_table . '.groups_id'  => $restrict,
             ],
             'ORDERBY' => [
                 User::getTable() . '.realname',
@@ -358,11 +374,26 @@ class Group_User extends CommonDBRelation
 
         foreach ($iterator as $data) {
             // Add to display list, according to criterion
-            if (empty($crit) || $data[$crit]) {
+            $add = true;
+            if (is_array($crit)) {
+                foreach ($crit as $key => $value) {
+                    $add = $value === '' || match ($key) {
+                        'dynamic' => $data['is_dynamic'] === (int) $value,
+                        'manager' => $data['is_manager'] === (int) $value,
+                        'delegatee' => $data['is_userdelegate'] === (int) $value,
+                        'is_active' => $data[$key] === (int) $value,
+                        default => true
+                    };
+                    if (!$add) {
+                        break;
+                    }
+                }
+            }
+            if (empty($crit) || $add || (is_string($crit) && $data[$crit])) {
                 $members[] = $data;
             }
             // Add to member list (member of sub-group are not member)
-            if ($data['groups_id'] == $group->getID()) {
+            if ((int) $data['groups_id'] === $group->getID()) {
                 $ids[]  = $data['id'];
             }
         }
@@ -395,7 +426,7 @@ class Group_User extends CommonDBRelation
 
        // Retrieve member list
        // TODO: migrate to use CommonDBRelation::getListForItem()
-        $entityrestrict = self::getDataForGroup($group, $used, $ids, '', true, false);
+        $entityrestrict = self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], true, false);
 
         // We will load implicits members from parents groups and display
         // them after all the "direct" members
@@ -413,7 +444,8 @@ class Group_User extends CommonDBRelation
         // implicites one, only the firt one will be shown)
         // array_values is used to avoid gaps in the keys, which is needed
         // because some code below do a for loop on the data
-        $used = array_values(self::clearDuplicatedGroupData($used));
+        //TODO The results from this don't seem correct and gives inconsistent results when filtering by columns like manager, dynamic, etc.
+        //$used = array_values(self::clearDuplicatedGroupData($used));
 
         if ($canedit) {
             self::showAddUserForm($group, $ids, $entityrestrict);
@@ -424,7 +456,6 @@ class Group_User extends CommonDBRelation
         if ($start >= $number) {
             $start = 0;
         }
-        //TODO support filters
 
         $tmpgrp = new Group();
         $entries = [];
@@ -455,14 +486,33 @@ class Group_User extends CommonDBRelation
             'limit' => $_SESSION['glpilist_limit'],
             'is_tab' => true,
             'nopager' => false,
-            'nofilter' => true,
+            'nosort' => true,
+            'filters' => $_GET['filters'] ?? [],
             'columns' => [
-                'user' => User::getTypeName(1),
-                'group' => Group::getTypeName(1),
-                'dynamic' => __('Dynamic'),
-                'manager' => _n('Manager', 'Managers', 1),
-                'delegatee' => __('Delegatee'),
-                'active' => __('Active')
+                'user' => [
+                    'label' => User::getTypeName(1),
+                    'no_filter' => true
+                ],
+                'group' => [
+                    'label' => Group::getTypeName(1),
+                    'no_filter' => true
+                ],
+                'dynamic' => [
+                    'label' => __('Dynamic'),
+                    'filter_formatter' => 'yesno'
+                ],
+                'manager' => [
+                    'label' => _n('Manager', 'Managers', 1),
+                    'filter_formatter' => 'yesno'
+                ],
+                'delegatee' => [
+                    'label' => __('Delegatee'),
+                    'filter_formatter' => 'yesno'
+                ],
+                'is_active' => [
+                    'label' => __('Active'),
+                    'filter_formatter' => 'yesno'
+                ]
             ],
             'formatters' => [
                 'user' => 'raw_html',
@@ -470,7 +520,7 @@ class Group_User extends CommonDBRelation
                 'dynamic' => 'raw_html',
                 'manager' => 'raw_html',
                 'delegatee' => 'raw_html',
-                'active' => 'raw_html'
+                'is_active' => 'raw_html'
             ],
             'entries' => $entries,
             'total_number' => $number,
@@ -635,7 +685,7 @@ class Group_User extends CommonDBRelation
         if ($item instanceof Group) {
             $members = [];
             $ids = [];
-            self::getDataForGroup($item, $members, $ids, '', 0, false);
+            self::getDataForGroup($item, $members, $ids, '', true, false);
 
             // We will also count implicits members from parents groups
             $parents_members = self::getParentsMembers($item, '');
@@ -643,7 +693,8 @@ class Group_User extends CommonDBRelation
             foreach ($parents_members as $parent) {
                 $members[] = $parent;
             }
-            $members = self::clearDuplicatedGroupData($members);
+            //TODO The results from this don't seem correct
+            //$members = self::clearDuplicatedGroupData($members);
 
             return count($members);
         }
