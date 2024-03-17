@@ -2330,7 +2330,7 @@ final class DbUtils
      *
      * @param string $fkname Foreign key
      *
-     * @return string ItemType name for the fkname parameter
+     * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
      */
     public function getItemtypeForForeignKeyField($fkname)
     {
