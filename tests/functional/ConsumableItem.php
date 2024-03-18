@@ -51,7 +51,7 @@ class ConsumableItem extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $consumableitems_id_1 = $consumableitem->fields['id'];
         $this->array($consumableitem->fields['groups_id'])->containsValues([1, 2]);
         $this->array($consumableitem->fields['groups_id_tech'])->containsValues([3, 4]);
@@ -61,7 +61,7 @@ class ConsumableItem extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => null,
             'groups_id_tech' => null,
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $consumableitems_id_2 = $consumableitem->fields['id'];
         $this->array($consumableitem->fields['groups_id'])->isEmpty();
         $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
@@ -110,21 +110,12 @@ class ConsumableItem extends DbTestCase
         ]);
         $consumableitems_id = $consumableitem->fields['id'];
 
-        // Manually set the groups_id and groups_id_tech fields to an integer value
-        // The update migration should mvoe all the groups to the new table directly for performance reasons (no changes to array, etc)
+        // Manually set the groups_id_tech field to an integer value
+        // The update migration should move all the groups to the new table directly for performance reasons (no changes to array, etc)
         $DB->delete('glpi_groups_assets', [
             'itemtype' => 'ConsumableItem',
             'items_id' => $consumableitems_id,
         ]);
-        $DB->insert(
-            'glpi_groups_assets',
-            [
-                'itemtype' => 'ConsumableItem',
-                'items_id' => $consumableitems_id,
-                'groups_id' => 1,
-                'type' => 0 // Normal
-            ],
-        );
         $DB->insert(
             'glpi_groups_assets',
             [
@@ -135,9 +126,7 @@ class ConsumableItem extends DbTestCase
             ],
         );
         $consumableitem->getFromDB($consumableitems_id);
-        $this->array($consumableitem->fields['groups_id'])
-            ->hasSize(1)
-            ->containsValues([1]);
+
         $this->array($consumableitem->fields['groups_id_tech'])
             ->hasSize(1)
             ->containsValues([2]);

@@ -722,7 +722,6 @@ $RELATION = [
             'groups_id_tech',
             'groups_id',
         ],
-        'glpi_cartridgeitems'        => 'groups_id_tech',
         'glpi_certificates'          => [
             'groups_id_tech',
             'groups_id',
@@ -730,16 +729,13 @@ $RELATION = [
         '_glpi_changes_groups'       => 'groups_id',
         'glpi_changetasks'           => 'groups_id_tech',
         'glpi_clusters'              => 'groups_id_tech',
-        'glpi_computers'             => [
-            'groups_id_tech',
-            'groups_id',
-        ],
-        'glpi_consumableitems'       => 'groups_id_tech',
         'glpi_databaseinstances'     => 'groups_id_tech',
         'glpi_domains'               => 'groups_id_tech',
         'glpi_domainrecords'         => 'groups_id_tech',
         'glpi_enclosures'            => 'groups_id_tech',
         'glpi_groups'                => 'groups_id',
+        //FIXME I guess cleanup should be manual, or an actual class is needed.
+        //'_glpi_groups_assets'        => 'groups_id',
         '_glpi_groups_knowbaseitems' => 'groups_id',
         '_glpi_groups_problems'      => 'groups_id',
         '_glpi_groups_reminders'     => 'groups_id',
@@ -749,29 +745,9 @@ $RELATION = [
         'glpi_items_devicesimcards'  => 'groups_id',
         'glpi_itilcategories'        => 'groups_id',
         'glpi_lines'                 => 'groups_id',
-        'glpi_monitors'              => [
-            'groups_id_tech',
-            'groups_id',
-        ],
-        'glpi_networkequipments'     => [
-            'groups_id_tech',
-            'groups_id',
-        ],
         'glpi_passivedcequipments'   => 'groups_id_tech',
         'glpi_pdus'                  => 'groups_id_tech',
-        'glpi_peripherals'           => [
-            'groups_id_tech',
-            'groups_id',
-        ],
         'glpi_planningexternalevents' => 'groups_id',
-        'glpi_phones'                 => [
-            'groups_id_tech',
-            'groups_id',
-        ],
-        'glpi_printers'               => [
-            'groups_id_tech',
-            'groups_id',
-        ],
         'glpi_problemtasks'           => 'groups_id_tech',
         'glpi_projects'               => 'groups_id',
         'glpi_racks'                  => [
@@ -779,10 +755,6 @@ $RELATION = [
             'groups_id',
         ],
         'glpi_softwarelicenses'       => [
-            'groups_id_tech',
-            'groups_id',
-        ],
-        'glpi_softwares'              => [
             'groups_id_tech',
             'groups_id',
         ],

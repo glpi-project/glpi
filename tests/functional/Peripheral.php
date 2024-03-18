@@ -51,7 +51,7 @@ class Peripheral extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $peripherals_id_1 = $peripheral->fields['id'];
         $this->array($peripheral->fields['groups_id'])->containsValues([1, 2]);
         $this->array($peripheral->fields['groups_id_tech'])->containsValues([3, 4]);
@@ -61,7 +61,7 @@ class Peripheral extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => null,
             'groups_id_tech' => null,
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $peripherals_id_2 = $peripheral->fields['id'];
         $this->array($peripheral->fields['groups_id'])->isEmpty();
         $this->array($peripheral->fields['groups_id_tech'])->isEmpty();

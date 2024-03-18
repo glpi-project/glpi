@@ -3535,11 +3535,15 @@ class CommonDBTM extends CommonGLPI
             $this->isField('groups_id')
             && ($this->getType() != 'Group')
         ) {
-            $tmp = Dropdown::getDropdownName("glpi_groups", $this->getField('groups_id'));
-            if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-                $toadd[] = ['name'  => Group::getTypeName(1),
-                    'value' => $tmp
-                ];
+            $groups = $this->getField('groups_id');
+            foreach ($groups as $group) {
+                $tmp = Dropdown::getDropdownName("glpi_groups", $group);
+                if ($tmp !== '' && $tmp !== '&nbsp;') {
+                    $toadd[] = [
+                        'name'  => Group::getTypeName(1),
+                        'value' => $tmp
+                    ];
+                }
             }
         }
 

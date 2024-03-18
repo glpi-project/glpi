@@ -55,7 +55,7 @@ trait AssignableAsset
         }
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
-            in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
+            count(array_intersect($this->fields['groups_id_tech'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
 
         if (!Session::haveRight(static::$rightname, READ)) {
             return $is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED);
@@ -77,7 +77,7 @@ trait AssignableAsset
         }
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
-            in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
+            count(array_intersect($this->fields['groups_id_tech'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
 
         if (!Session::haveRight(static::$rightname, UPDATE)) {
             return $is_assigned && Session::haveRight(static::$rightname, UPDATE_ASSIGNED);
@@ -90,20 +90,49 @@ trait AssignableAsset
     public static function getAssignableVisiblityCriteria()
     {
         if (Session::haveRight(static::$rightname, READ)) {
-            return [new QueryExpression('1')];
+            return [];
         }
         if (Session::haveRight(static::$rightname, READ_ASSIGNED)) {
-            $criteria = [
-                'OR' => [
-                    'users_id_tech' => $_SESSION['glpiID'],
-                ],
+            $where = [
+                'users_id_tech' => $_SESSION['glpiID']
             ];
-            if (count($_SESSION['glpigroups'])) {
-                $criteria['OR']['groups_id_tech'] = $_SESSION['glpigroups'];
+            $join = null;
+            $item = new static();
+            if (count($_SESSION['glpigroups']) && in_array($item->GROUP_TYPE_TECH, $item->getGroupTypes(), true)) {
+                $join = [
+                    'LEFT JOIN' => [
+                        'glpi_groups_assets' => [
+                            'ON' => [
+                                static::getTable() => 'id',
+                                'glpi_groups_assets' => 'items_id', [
+                                    'AND' => [
+                                        'glpi_groups_assets.itemtype' => static::class,
+                                    ]
+                                ]
+                            ],
+                        ],
+                    ]
+                ];
+                $where[] = [
+                    [
+                        'glpi_groups_assets.groups_id' => $_SESSION['glpigroups'],
+                        'glpi_groups_assets.type' => 1, //Tech
+                    ]
+                ];
             }
-            return [$criteria];
+            $criteria = [
+                'WHERE' => [
+                    [
+                        'OR' => $where,
+                    ]
+                ]
+            ];
+            if ($join !== null) {
+                $criteria += $join;
+            }
+            return $criteria;
         }
-        return [new QueryExpression('0')];
+        return ['WHERE' => [new QueryExpression('0')]];
     }
 
     /**
@@ -133,9 +162,9 @@ trait AssignableAsset
                 if (!is_array($input[$field])) {
                     $input[$field] = [$input[$field]];
                 }
+                $input['_' . $field] = array_map('intval', $input[$field] ?? []);
+                unset($input[$field]);
             }
-            $input['_' . $field] = array_map('intval', $input[$field] ?? []);
-            unset($input[$field]);
         }
         return $input;
     }

@@ -146,7 +146,7 @@ class Monitor extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $monitors_id_1 = $monitor->fields['id'];
         $this->array($monitor->fields['groups_id'])->containsValues([1, 2]);
         $this->array($monitor->fields['groups_id_tech'])->containsValues([3, 4]);
@@ -156,7 +156,7 @@ class Monitor extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => null,
             'groups_id_tech' => null,
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $monitors_id_2 = $monitor->fields['id'];
         $this->array($monitor->fields['groups_id'])->isEmpty();
         $this->array($monitor->fields['groups_id_tech'])->isEmpty();

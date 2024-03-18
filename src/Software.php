@@ -46,6 +46,7 @@ class Software extends CommonDBTM
     use Glpi\Features\AssignableAsset {
         prepareInputForAdd as prepareInputForAddAssignableAsset;
         prepareInputForUpdate as prepareInputForUpdateAssignableAsset;
+        getEmpty as getEmptyAssignableAsset;
     }
 
    // From CommonDBTM
@@ -143,8 +144,7 @@ class Software extends CommonDBTM
             $input['softwares_id'] = 0;
         }
         $input = $this->managePictures($input);
-        $this->prepareInputForUpdateAssignableAsset($input);
-        return $input;
+        return $this->prepareInputForUpdateAssignableAsset($input);
     }
 
 
@@ -164,8 +164,7 @@ class Software extends CommonDBTM
         $this->handleCategoryRules($input);
 
         $input = $this->managePictures($input);
-        $this->prepareInputForAddAssignableAsset($input);
-        return $input;
+        return $this->prepareInputForAddAssignableAsset($input);
     }
 
 
@@ -244,6 +243,7 @@ class Software extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $this->getEmptyAssignableAsset();
         if (!parent::getEmpty()) {
             return false;
         }

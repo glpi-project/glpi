@@ -3389,10 +3389,6 @@ JAVASCRIPT;
                     }
             }
 
-            if (Toolbox::hasTrait($post['itemtype'], AssignableAsset::class)) {
-                $where[] = $post['itemtype']::getAssignableVisiblityCriteria();
-            }
-
             $criteria = array_merge(
                 $criteria,
                 [
@@ -3402,6 +3398,10 @@ JAVASCRIPT;
                     'LIMIT'    => $limit
                 ]
             );
+
+            if (Toolbox::hasTrait($post['itemtype'], AssignableAsset::class)) {
+                $criteria = array_merge($criteria, $post['itemtype']::getAssignableVisiblityCriteria());
+            }
 
             $order_field = "$table.$field";
             if (isset($post['order']) && !empty($post['order'])) {
@@ -3874,20 +3874,21 @@ JAVASCRIPT;
             $post['page_limit'] = $CFG_GLPI['dropdown_max'];
         }
 
+        $criteria = [
+            'FROM'   => $post['table'],
+            'WHERE'  => $where,
+            'ORDER'  => $item::getNameField(),
+        ];
         if (Toolbox::hasTrait($post['itemtype'], AssignableAsset::class)) {
-            $where[] = $post['itemtype']::getAssignableVisiblityCriteria();
+            $criteria = array_merge_recursive($criteria, $post['itemtype']::getAssignableVisiblityCriteria());
         }
 
         $start = (int) (($post['page'] - 1) * $post['page_limit']);
         $limit = (int) $post['page_limit'];
+        $criteria['START'] = $start;
+        $criteria['LIMIT'] = $limit;
 
-        $iterator = $DB->request([
-            'FROM'   => $post['table'],
-            'WHERE'  => $where,
-            'ORDER'  => $item->getNameField(),
-            'LIMIT'  => $limit,
-            'START'  => $start
-        ]);
+        $iterator = $DB->request($criteria);
 
         $results = [];
 

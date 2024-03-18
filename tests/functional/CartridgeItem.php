@@ -51,7 +51,7 @@ class CartridgeItem extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $cartridgeitems_id_1 = $cartridgeitem->fields['id'];
         $this->array($cartridgeitem->fields['groups_id'])->containsValues([1, 2]);
         $this->array($cartridgeitem->fields['groups_id_tech'])->containsValues([3, 4]);
@@ -61,7 +61,7 @@ class CartridgeItem extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => null,
             'groups_id_tech' => null,
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $cartridgeitems_id_2 = $cartridgeitem->fields['id'];
         $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
         $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
@@ -110,8 +110,8 @@ class CartridgeItem extends DbTestCase
         ]);
         $cartridgeitems_id = $cartridgeitem->fields['id'];
 
-        // Manually set the groups_id and groups_id_tech fields to an integer value.
-        // The update migration should mvoe all the groups to the new table directly for performance reasons (no changes to array, etc)
+        // Manually set the groups_id_tech field to an integer value.
+        // The update migration should move all the groups to the new table directly for performance reasons (no changes to array, etc)
         $DB->delete('glpi_groups_assets', [
             'itemtype' => 'CartridgeItem',
             'items_id' => $cartridgeitems_id,
@@ -121,23 +121,10 @@ class CartridgeItem extends DbTestCase
             [
                 'itemtype' => 'CartridgeItem',
                 'items_id' => $cartridgeitems_id,
-                'groups_id' => 1,
-                'type' => 0 // Normal
-            ],
-        );
-        $DB->insert(
-            'glpi_groups_assets',
-            [
-                'itemtype' => 'CartridgeItem',
-                'items_id' => $cartridgeitems_id,
                 'groups_id' => 2,
                 'type' => 1 // Tech
             ],
         );
-        $cartridgeitem->getFromDB($cartridgeitems_id);
-        $this->array($cartridgeitem->fields['groups_id'])
-            ->hasSize(1)
-            ->containsValues([1]);
         $this->array($cartridgeitem->fields['groups_id_tech'])
             ->hasSize(1)
             ->containsValues([2]);

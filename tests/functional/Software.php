@@ -449,7 +449,7 @@ class Software extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $softwares_id_1 = $software->fields['id'];
         $this->array($software->fields['groups_id'])->containsValues([1, 2]);
         $this->array($software->fields['groups_id_tech'])->containsValues([3, 4]);
@@ -459,7 +459,7 @@ class Software extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => null,
             'groups_id_tech' => null,
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $softwares_id_2 = $software->fields['id'];
         $this->array($software->fields['groups_id'])->isEmpty();
         $this->array($software->fields['groups_id_tech'])->isEmpty();
