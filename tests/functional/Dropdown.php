@@ -391,6 +391,212 @@ class Dropdown extends DbTestCase
             [
                 'params' => [
                     'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory'
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity'
+                        ]
+                    ],
+                    'count' => 3
+                ]
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => 'subcat'
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ]
+                            ],
+                            'itemtype' => 'Entity'
+                        ]
+                    ],
+                    'count' => 1
+                ]
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => '_cat_1 > _subcat'
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ]
+                            ],
+                            'itemtype' => 'Entity'
+                        ]
+                    ],
+                    'count' => 1
+                ]
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'searchText'            => 'R&D'
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity'
+                        ]
+                    ],
+                    'count' => 1
+                ]
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 1,
+                    'emptylabel'            => 'EEEEEE',
+                    'itemtype'              => 'TaskCategory'
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'id'        => 0,
+                            'text'      => 'EEEEEE'
+                        ],
+                        1 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity'
+                        ]
+                    ],
+                    'count' => 3
+                ]
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'TaskCategory',
+                    'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)]
+                ],
+                'expected'  => [
+                    'results' => [
+                        0 => [
+                            'text'      => 'Root entity',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'   => '_cat_1',
+                                    'level'  => 1,
+                                    'disabled' => true
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity'
+                        ]
+                    ],
+                    'count' => 2
+                ]
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
                     'itemtype'              => 'Computer',
                     'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true)
                 ],
