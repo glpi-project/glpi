@@ -43,18 +43,15 @@ class NotificationAjaxSetting extends NotificationSetting
         return __('Browser followups configuration');
     }
 
-
     public function getEnableLabel()
     {
         return __('Enable followups from browser');
     }
 
-
     public static function getMode()
     {
         return Notification_NotificationTemplate::MODE_AJAX;
     }
-
 
     public function showFormConfig()
     {
