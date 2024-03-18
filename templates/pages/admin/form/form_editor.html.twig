@@ -66,7 +66,7 @@
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
     {# Need more elements (questions, sections) before finalizing the design #}
-    <div class="form-editor row">
+    <div class="form-editor row flex-reverse">
 
         <div class="designer col-12 px-4 py-3">
             <div class="row">
@@ -126,6 +126,7 @@
                                             'editor_height': "0",
                                             'rows' : 1,
                                             'toolbar_location': 'bottom',
+                                            'mb': 'mb-0',
                                         })
                                     ) }}
                                 </div>
@@ -336,3 +337,11 @@
         "[data-glpi-form-editor-templates]"
     );
 </script>
+
+<style>
+    /* Fix a weird scrolling issue, can't find a better solution at this time */
+    /* Must be inline style to make sure it is only applied to this page */
+    html {
+        overflow: hidden;
+    }
+</style>
