@@ -725,9 +725,6 @@ class NetworkPort extends CommonDBChild
         }
 
         $criteria = [
-            'SELECT' => [
-                $netport_table . '.*'
-            ],
             'FROM'   => $netport_table,
             'WHERE'  => [
                 "$netport_table.items_id"  => $item->getID(),
@@ -1284,10 +1281,11 @@ class NetworkPort extends CommonDBChild
                             }
                             break;
                         default:
-                            $netport_table = $this->getTable();
-                            if ($option['table'] == $netport_table) {
-                                $output .= $port[$option['field']];
-                            } else {
+                            if (
+                                isset($option["linkfield"])
+                                && isset($option['joinparams'])
+                            ) {
+                                $netport_table = $this->getTable();
                                 $already_link_tables = [];
                                 $join = Search::addLeftJoin(
                                     __CLASS__,
@@ -1310,6 +1308,8 @@ class NetworkPort extends CommonDBChild
                                 foreach ($iterator as $row) {
                                     $output .= $row[$option['field']];
                                 }
+                            } else {
+                                $output .= $port[$option['field']];
                             }
                             break;
                     }
