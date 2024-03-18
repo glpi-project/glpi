@@ -136,7 +136,10 @@ class GlpiFormEditorController
         $(document)
             .on(
                 'click',
-                () => this.#setActiveItem(null)
+                () => {
+                    this.#setActiveItem(null);
+                    $('.simulate-focus').removeClass('simulate-focus');
+                }
             );
 
         // Handle tinymce change event

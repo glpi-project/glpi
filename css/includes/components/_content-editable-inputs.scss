@@ -65,28 +65,7 @@ $inline-input-padding: 2px 4px;
     box-shadow: none;
 }
 
-// Fix some weird margin issue due to the fact that part of a question form
-// is hidden using visibility: hidden and opacity: 0, which cause internal
-// negative margin to have unwanted effect on the parent container
-// TODO: need some E2E tests to make sure these margins are not broken
-[data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce {
-    margin-bottom: 0 !important;
-}
-
-[data-glpi-form-editor-question].active {
-    .content-editable-tinymce.simulate-focus {
-        margin-bottom: 8px !important;
-    }
-}
-
-[data-glpi-form-editor-question].active [data-glpi-form-editor-question-description][data-glpi-form-editor-question-extra-details].content-editable-tinymce:not(.simulate-focus) {
-    margin-bottom: -1rem !important;
-}
-
 .content-editable-tinymce {
-    // Override some hard-set tinymce margins
-    margin-bottom: -1rem !important;
-
     // Remove default border and padding, add similar hover style used on our inputs
     .tox-tinymce {
         border-color: transparent !important;
@@ -113,6 +92,7 @@ $inline-input-padding: 2px 4px;
         opacity: 0;
         height: 0 !important;
         transition: height 0.25s ease !important;
+        padding: 0 !important;
     }
 
     // Override some hard-set tinymce margins
@@ -138,6 +118,7 @@ form:not(.disable-focus) {
             height: 48px !important; // Need to set a fixed height for transition
             transition: height 0.25s ease !important;
             margin-top: 1rem !important;
+            padding: 4px !important;
         }
 
         // Partial revert of margin change in this case as we want to keep the
