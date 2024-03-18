@@ -111,10 +111,15 @@ class Computer extends DbTestCase
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in['id']);
         foreach ($in as $k => $v) {
-           // Check the computer new values
-            $this->variable($computer->getField($k))->isEqualTo($v);
-           // Check the printer and test propagation occurs
-            $this->variable($printer->getField($k))->isEqualTo($v, $k);
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
+            // Check the computer new values
+            $this->variable($computer->getField($k))->isEqualTo($expected);
+            // Check the printer and test propagation occurs
+            $this->variable($printer->getField($k))->isEqualTo($expected, $k);
         }
 
        //reset values
@@ -131,10 +136,15 @@ class Computer extends DbTestCase
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in['id']);
         foreach ($in as $k => $v) {
-           // Check the computer new values
-            $this->variable($computer->getField($k))->isEqualTo($v);
-           // Check the printer and test propagation occurs
-            $this->variable($printer->getField($k))->isEqualTo($v);
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = $v === 0 ? [] : [$v];
+            }
+            // Check the computer new values
+            $this->variable($computer->getField($k))->isEqualTo($expected);
+            // Check the printer and test propagation occurs
+            $this->variable($printer->getField($k))->isEqualTo($expected);
         }
 
        // Change the computer again
@@ -160,10 +170,17 @@ class Computer extends DbTestCase
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in2['id']);
         foreach ($in2 as $k => $v) {
+            $expected = $v;
+            $old_value = $in[$k];
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = $v === 0 ? [] : [$v];
+                $old_value = $old_value === 0 ? [] : [$old_value];
+            }
            // Check the computer new values
-            $this->variable($computer->getField($k))->isEqualTo($v);
+            $this->variable($computer->getField($k))->isEqualTo($expected);
            // Check the printer and test propagation DOES NOT occurs
-            $this->variable($printer->getField($k))->isEqualTo($in[$k]);
+            $this->variable($printer->getField($k))->isEqualTo($old_value);
         }
 
        // Restore configuration
@@ -208,10 +225,15 @@ class Computer extends DbTestCase
         $this->boolean($link->getFromDB($link->getID()))->isTrue();
         unset($in['id']);
         foreach ($in as $k => $v) {
-           // Check the computer new values
-            $this->variable($computer->getField($k))->isEqualTo($v);
-           // Check the printer and test propagation occurs
-            $this->variable($link->getField($k))->isEqualTo($v);
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
+            // Check the computer new values
+            $this->variable($computer->getField($k))->isEqualTo($expected);
+            // Check the printer and test propagation occurs
+            $this->variable($link->getField($k))->isEqualTo($expected);
         }
 
        //reset
@@ -245,10 +267,17 @@ class Computer extends DbTestCase
         $this->boolean($link->getFromDB($link->getID()))->isTrue();
         unset($in2['id']);
         foreach ($in2 as $k => $v) {
-           // Check the computer new values
-            $this->variable($computer->getField($k))->isEqualTo($v);
-           // Check the printer and test propagation DOES NOT occurs
-            $this->variable($link->getField($k))->isEqualTo($in[$k]);
+            $old_value = $in[$k];
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+                $old_value = [$old_value];
+            }
+            // Check the computer new values
+            $this->variable($computer->getField($k))->isEqualTo($expected);
+            // Check the printer and test propagation DOES NOT occurs
+            $this->variable($link->getField($k))->isEqualTo($old_value);
         }
     }
 
@@ -307,10 +336,15 @@ class Computer extends DbTestCase
         $this->boolean($printer->getFromDB($printer->getID()))->isTrue();
         unset($in['id']);
         foreach ($in as $k => $v) {
-           // Check the computer new values
-            $this->variable($computer->getField($k))->isEqualTo($v);
-           // Check the printer and test propagation occurs
-            $this->variable($printer->getField($k))->isEqualTo($v);
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
+            // Check the computer new values
+            $this->variable($computer->getField($k))->isEqualTo($expected);
+            // Check the printer and test propagation occurs
+            $this->variable($printer->getField($k))->isEqualTo($expected);
         }
 
        //create devices
@@ -906,7 +940,7 @@ class Computer extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ]);
+        ], ['groups_id', 'groups_id_tech']);
         $computers_id_1 = $computer->fields['id'];
         $this->array($computer->fields['groups_id'])->containsValues([1, 2]);
         $this->array($computer->fields['groups_id_tech'])->containsValues([3, 4]);
@@ -965,50 +999,33 @@ class Computer extends DbTestCase
         ]);
         $computers_id = $computer->fields['id'];
 
-        // Manually set the groups_id and groups_id_tech fields to an integer value
-        $DB->update(
-            'glpi_computers',
+        // Manually set the groups_id and groups_id_tech fields to an integer value.
+        // The update migration should mvoe all the groups to the new table directly for performance reasons (no changes to array, etc)
+        $DB->delete('glpi_groups_assets', [
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+        ]);
+        $DB->insert(
+            'glpi_groups_assets',
             [
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
                 'groups_id' => 1,
-                'groups_id_tech' => 2,
+                'type' => 0 // Normal
             ],
+        );
+        $DB->insert(
+            'glpi_groups_assets',
             [
-                'id' => $computers_id,
-            ]
+                'itemtype' => 'Computer',
+                'items_id' => $computers_id,
+                'groups_id' => 2,
+                'type' => 1 // Tech
+            ],
         );
         $computer->getFromDB($computers_id);
         $this->array($computer->fields['groups_id'])->containsValues([1]);
         $this->array($computer->fields['groups_id_tech'])->containsValues([2]);
-
-        // Manually set the groups_id and groups_id_tech fields to 0
-        $DB->update(
-            'glpi_computers',
-            [
-                'groups_id' => 0,
-                'groups_id_tech' => 0,
-            ],
-            [
-                'id' => $computers_id,
-            ]
-        );
-        $computer->getFromDB($computers_id);
-        $this->array($computer->fields['groups_id'])->isEmpty();
-        $this->array($computer->fields['groups_id_tech'])->isEmpty();
-
-        // Manually set the groups_id and groups_id_tech fields to NULL (allowed by the DB schema)
-        $DB->update(
-            'glpi_computers',
-            [
-                'groups_id' => null,
-                'groups_id_tech' => null,
-            ],
-            [
-                'id' => $computers_id,
-            ]
-        );
-        $computer->getFromDB($computers_id);
-        $this->array($computer->fields['groups_id'])->isEmpty();
-        $this->array($computer->fields['groups_id_tech'])->isEmpty();
     }
 
     /**
@@ -1021,5 +1038,29 @@ class Computer extends DbTestCase
         $computer->getEmpty();
         $this->array($computer->fields['groups_id'])->isEmpty();
         $this->array($computer->fields['groups_id_tech'])->isEmpty();
+    }
+
+    /**
+     * Check that adding a computer with groups_id and groups_id_tech as an integer still works (minor BC, mainly for API scripts).
+     * @return void
+     */
+    public function testAddWithIntGroups()
+    {
+        $computer = new \Computer();
+        $this->integer($computers_id = $computer->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => 1,
+            'groups_id_tech' => 2,
+        ]))->isGreaterThan(0);
+        // Completely reset computer instance
+        $computer = new \Computer();
+        $computer->getFromDB($computers_id);
+        $this->array($computer->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($computer->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 }

@@ -180,15 +180,12 @@ trait AssignableAsset
             $existing_links = iterator_to_array($it);
         }
 
+        // Group fields are changed to have a '_' prefix to avoid trying to update non-existent fields in the database
         $fields = [
-            $this->GROUP_TYPE_NORMAL => 'groups_id',
-            $this->GROUP_TYPE_TECH => 'groups_id_tech'
+            $this->GROUP_TYPE_NORMAL => '_groups_id',
+            $this->GROUP_TYPE_TECH => '_groups_id_tech'
         ];
         foreach ($fields as $type => $field) {
-            if (array_key_exists('_' . $field, $this->fields)) {
-                $this->fields[$field] = $this->fields['_' . $field];
-                unset($this->fields['_' . $field]);
-            }
             $existing_for_type = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
             if (array_key_exists($field, $this->input)) {
                 $new_links = array_diff($this->input[$field], $existing_for_type);
@@ -211,6 +208,8 @@ trait AssignableAsset
                 }
             }
         }
+
+        $this->loadGroupFields();
     }
 
     public function post_addItem()
@@ -237,7 +236,7 @@ trait AssignableAsset
         return true;
     }
 
-    public function post_getFromDB()
+    private function loadGroupFields()
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -261,10 +260,15 @@ trait AssignableAsset
             $this->GROUP_TYPE_TECH => 'groups_id_tech'
         ];
         foreach ($group_fields as $type => $field) {
-            if (array_key_exists($type, $this->getGroupTypes())) {
+            if (in_array($type, $this->getGroupTypes(), true)) {
                 $this->fields[$field] = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
             }
         }
+    }
+
+    public function post_getFromDB()
+    {
+        $this->loadGroupFields();
     }
 
     /**

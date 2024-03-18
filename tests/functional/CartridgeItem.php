@@ -110,50 +110,33 @@ class CartridgeItem extends DbTestCase
         ]);
         $cartridgeitems_id = $cartridgeitem->fields['id'];
 
-        // Manually set the groups_id and groups_id_tech fields to an integer value
-        $DB->update(
-            'glpi_cartridgeitems',
+        // Manually set the groups_id and groups_id_tech fields to an integer value.
+        // The update migration should mvoe all the groups to the new table directly for performance reasons (no changes to array, etc)
+        $DB->delete('glpi_groups_assets', [
+            'itemtype' => 'CartridgeItem',
+            'items_id' => $cartridgeitems_id,
+        ]);
+        $DB->insert(
+            'glpi_groups_assets',
             [
+                'itemtype' => 'CartridgeItem',
+                'items_id' => $cartridgeitems_id,
                 'groups_id' => 1,
-                'groups_id_tech' => 2,
+                'type' => 0 // Normal
             ],
+        );
+        $DB->insert(
+            'glpi_groups_assets',
             [
-                'id' => $cartridgeitems_id,
-            ]
+                'itemtype' => 'CartridgeItem',
+                'items_id' => $cartridgeitems_id,
+                'groups_id' => 2,
+                'type' => 1 // Tech
+            ],
         );
         $cartridgeitem->getFromDB($cartridgeitems_id);
         $this->array($cartridgeitem->fields['groups_id'])->containsValues([1]);
         $this->array($cartridgeitem->fields['groups_id_tech'])->containsValues([2]);
-
-        // Manually set the groups_id and groups_id_tech fields to 0
-        $DB->update(
-            'glpi_cartridgeitems',
-            [
-                'groups_id' => 0,
-                'groups_id_tech' => 0,
-            ],
-            [
-                'id' => $cartridgeitems_id,
-            ]
-        );
-        $cartridgeitem->getFromDB($cartridgeitems_id);
-        $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
-        $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
-
-        // Manually set the groups_id and groups_id_tech fields to NULL (allowed by the DB schema)
-        $DB->update(
-            'glpi_cartridgeitems',
-            [
-                'groups_id' => null,
-                'groups_id_tech' => null,
-            ],
-            [
-                'id' => $cartridgeitems_id,
-            ]
-        );
-        $cartridgeitem->getFromDB($cartridgeitems_id);
-        $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
-        $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
     }
 
     /**

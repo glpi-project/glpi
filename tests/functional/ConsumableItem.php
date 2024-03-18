@@ -111,45 +111,28 @@ class ConsumableItem extends DbTestCase
         $consumableitems_id = $consumableitem->fields['id'];
 
         // Manually set the groups_id and groups_id_tech fields to an integer value
-        $DB->update(
-            'glpi_consumableitems',
+        // The update migration should mvoe all the groups to the new table directly for performance reasons (no changes to array, etc)
+        $DB->delete('glpi_groups_assets', [
+            'itemtype' => 'ConsumableItem',
+            'items_id' => $consumableitems_id,
+        ]);
+        $DB->insert(
+            'glpi_groups_assets',
             [
+                'itemtype' => 'ConsumableItem',
+                'items_id' => $consumableitems_id,
                 'groups_id' => 1,
-                'groups_id_tech' => 2,
+                'type' => 0 // Normal
             ],
-            [
-                'id' => $consumableitems_id,
-            ]
         );
-        $consumableitem->getFromDB($consumableitems_id);
-        $this->array($consumableitem->fields['groups_id'])->containsValues([1]);
-        $this->array($consumableitem->fields['groups_id_tech'])->containsValues([2]);
-
-        // Manually set the groups_id and groups_id_tech fields to 0
-        $DB->update(
-            'glpi_consumableitems',
+        $DB->insert(
+            'glpi_groups_assets',
             [
-                'groups_id' => 0,
-                'groups_id_tech' => 0,
+                'itemtype' => 'ConsumableItem',
+                'items_id' => $consumableitems_id,
+                'groups_id' => 2,
+                'type' => 1 // Tech
             ],
-            [
-                'id' => $consumableitems_id,
-            ]
-        );
-        $consumableitem->getFromDB($consumableitems_id);
-        $this->array($consumableitem->fields['groups_id'])->isEmpty();
-        $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
-
-        // Manually set the groups_id and groups_id_tech fields to NULL (allowed by the DB schema)
-        $DB->update(
-            'glpi_consumableitems',
-            [
-                'groups_id' => null,
-                'groups_id_tech' => null,
-            ],
-            [
-                'id' => $consumableitems_id,
-            ]
         );
         $consumableitem->getFromDB($consumableitems_id);
         $this->array($consumableitem->fields['groups_id'])->isEmpty();

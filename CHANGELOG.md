@@ -133,6 +133,7 @@ The present file will list all changes made to the project; according to the
 - The `Item_Ticket$1` tab should be used in replacement of the `Ticket$1` tab to display tickets associated with an item.
 - Specifying the `ranking` of a rule during add/update now triggers `RuleCollection::moveRule` to manage the rankings of other rules to try to keep them valid and in order.
 - `Lock::getLocksQueryInfosByItemType()` has been made private.
+- Any class added to `$CFG_GLPI['directconnect_types']` must now use the `Glpi\Features\AssignableAsset` trait as multi-group support is required.
 - For assets, `groups_id` and `groups_id_tech` fields were changed from integers to arrays and are loaded into the `fields` array after `getFromDB`/`getEmpty`.
   If reading directly from the DB, you need to query the new linking table `glpi_groups_assets`.
 

@@ -169,6 +169,8 @@ class Computer extends CommonDBTM
          */
         global $CFG_GLPI, $DB;
 
+        $this->post_updateItemAssignableAsset($history);
+
         $changes = [];
         $update_count = count($this->updates ?? []);
         $input = $this->fields;
@@ -187,12 +189,6 @@ class Computer extends CommonDBTM
             ) {
                 $changes['users_id'] = $input['users_id'];
             }
-            if (
-                $this->updates[$i] == 'groups_id'
-                && Entity::getUsedConfig('is_group_autoupdate', $this->getEntityID())
-            ) {
-                $changes['groups_id'] = $input['groups_id'];
-            }
            // Update state of attached items
             if (
                 ($this->updates[$i] == 'states_id')
@@ -207,6 +203,11 @@ class Computer extends CommonDBTM
             ) {
                 $changes['locations_id'] = $input['locations_id'];
             }
+        }
+
+        // Group is handled differently since the field was changed to support multiple groups and was therefore moved to a separate table
+        if (array_key_exists('_groups_id', $this->input) && Entity::getUsedConfig('is_group_autoupdate', $this->getEntityID())) {
+            $changes['groups_id'] = $this->input['_groups_id'];
         }
 
         if (count($changes)) {
@@ -308,8 +309,6 @@ class Computer extends CommonDBTM
                 }
             }
         }
-
-        $this->post_updateItemAssignableAsset($history);
     }
 
 
