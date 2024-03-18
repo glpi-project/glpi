@@ -533,8 +533,12 @@ class Software extends DbTestCase
             ],
         );
         $software->getFromDB($softwares_id);
-        $this->array($software->fields['groups_id'])->isEmpty();
-        $this->array($software->fields['groups_id_tech'])->isEmpty();
+        $this->array($software->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($software->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

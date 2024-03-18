@@ -230,8 +230,12 @@ class Monitor extends DbTestCase
             ],
         );
         $monitor->getFromDB($monitors_id);
-        $this->array($monitor->fields['groups_id'])->isEmpty();
-        $this->array($monitor->fields['groups_id_tech'])->isEmpty();
+        $this->array($monitor->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($monitor->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

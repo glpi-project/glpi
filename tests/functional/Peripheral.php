@@ -135,8 +135,12 @@ class Peripheral extends DbTestCase
             ],
         );
         $peripheral->getFromDB($peripherals_id);
-        $this->array($peripheral->fields['groups_id'])->isEmpty();
-        $this->array($peripheral->fields['groups_id_tech'])->isEmpty();
+        $this->array($peripheral->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($peripheral->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

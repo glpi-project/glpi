@@ -264,8 +264,12 @@ class Printer extends DbTestCase
             ],
         );
         $printer->getFromDB($printers_id);
-        $this->array($printer->fields['groups_id'])->isEmpty();
-        $this->array($printer->fields['groups_id_tech'])->isEmpty();
+        $this->array($printer->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($printer->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

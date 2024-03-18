@@ -135,8 +135,12 @@ class CartridgeItem extends DbTestCase
             ],
         );
         $cartridgeitem->getFromDB($cartridgeitems_id);
-        $this->array($cartridgeitem->fields['groups_id'])->containsValues([1]);
-        $this->array($cartridgeitem->fields['groups_id_tech'])->containsValues([2]);
+        $this->array($cartridgeitem->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($cartridgeitem->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

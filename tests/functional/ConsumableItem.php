@@ -135,8 +135,12 @@ class ConsumableItem extends DbTestCase
             ],
         );
         $consumableitem->getFromDB($consumableitems_id);
-        $this->array($consumableitem->fields['groups_id'])->isEmpty();
-        $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
+        $this->array($consumableitem->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($consumableitem->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

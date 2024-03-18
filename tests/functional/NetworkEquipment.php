@@ -192,8 +192,12 @@ class NetworkEquipment extends DbTestCase
             ],
         );
         $networkequipment->getFromDB($networkequipments_id);
-        $this->array($networkequipment->fields['groups_id'])->isEmpty();
-        $this->array($networkequipment->fields['groups_id_tech'])->isEmpty();
+        $this->array($networkequipment->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($networkequipment->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**

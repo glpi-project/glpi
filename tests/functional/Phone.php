@@ -135,8 +135,12 @@ class Phone extends DbTestCase
             ],
         );
         $phone->getFromDB($phones_id);
-        $this->array($phone->fields['groups_id'])->isEmpty();
-        $this->array($phone->fields['groups_id_tech'])->isEmpty();
+        $this->array($phone->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($phone->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
     }
 
     /**
