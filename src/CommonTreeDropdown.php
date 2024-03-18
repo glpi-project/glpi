@@ -655,7 +655,7 @@ TWIG, $twig_params);
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
-                'label' => sprintf( __('Sons of %s'), $this->getTreeLink()),
+                'label' => sprintf(__('Sons of %s'), $this->getTreeLink()),
                 'is_raw' => true
             ],
             'columns' => $columns,

@@ -490,7 +490,7 @@ class Location extends CommonTreeDropdown
             $itemtype_criteria = [
                 'SELECT' => [
                     "$table.id",
-                    new QueryExpression($DB::quoteValue($itemtype),'type'),
+                    new QueryExpression($DB::quoteValue($itemtype), 'type'),
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
