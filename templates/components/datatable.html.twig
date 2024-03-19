@@ -54,9 +54,11 @@
         <table id="{{ datatable_id }}" class="table table-hover">
             <thead>
                 {% if super_header is defined and super_header is not empty %}
+                    {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
+                    {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
                     <tr>
                         <th colspan="{{ total_cols }}">
-                            {{ super_header }}
+                            {{ super_header_raw ? super_header_label|raw : super_header_label }}
                         </th>
                     </tr>
                 {% endif %}
@@ -70,7 +72,8 @@
                             </div>
                         </th>
                     {% endif %}
-                    {% for colkey, colum in columns %}
+                    {% for colkey, column in columns %}
+                        {% set column_label = column is array ? column['label'] : column %}
                         {% set sort_icon = '' %}
                         {% set new_order = "DESC" %}
                         {% if sort == colkey %}
@@ -80,10 +83,16 @@
 
                         {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
 
-                        <th><a href="{{ sort_href }}">
-                            <i class="{{ sort_icon }}"></i>
-                            <span>{{ colum }}</span>
-                        </a></th>
+                        <th>
+                            {% if not nosort and not (column is array and column['nosort'] is defined) %}
+                                <a href="{{ sort_href }}">
+                                <i class="{{ sort_icon }}"></i>
+                            {% endif %}
+                            <span>{{ column_label }}</span>
+                            {% if not nosort and not (column is array and column['nosort'] is defined) %}
+                                </a>
+                            {% endif %}
+                        </th>
                     {% endfor %}
 
                    {% if nofilter is not defined or csv_url|length %}
@@ -115,44 +124,46 @@
                             <input type="hidden" name="items_id" value="{{ items_id }}" />
                         </td>
                         {% for colkey, colum in columns %}
-                            {% set formatter = formatters[colkey] ?? "" %}
+                            {% set formatter = colum['filter_formatter']|default(formatters[colkey])|default('') %}
                             <td>
-                                {% if formatter == "array" and columns_values[colkey] is defined %}
-                                       <select name="filters[{{ colkey }}][]"
-                                            class="form-select filter-select-multiple" multiple>
-                                        {% for field, value in columns_values[colkey] %}
-                                            <option value="{{ field }}" {{ filters[colkey] is defined and value in filters[colkey] ? 'selected' : '' }}>
-                                                {{ value }}
-                                            </option>
-                                        {% endfor %}
-                                    </select>
-                                {% elseif formatter == "datetime" %}
-                                    {{ call("Html::showDateTimeField", [
-                                        "filters[" ~ colkey ~ "]",
-                                        {
-                                            'value': filters[colkey],
-                                            'display': false
-                                        }
-                                    ])|raw }}
-                                {% elseif formatter == "date" %}
-                                    {{ call("Html::showDateField", [
-                                        "filters[" ~ colkey ~ "]",
-                                        {
-                                            'value': filters[colkey],
-                                            'display': false
-                                        }
-                                    ])|raw }}
-                                {% elseif formatter starts with "progress" %}
-                                    <input type="range" class="form-range"
-                                        name="filters[{{ colkey }}]"
-                                        value="{{ filters[colkey] ?? 0 }}"
-                                        min="0" max="100" step="1">
-                                {% elseif formatter == 'avatar' %}
-                                    {# Cannot be filtered #}
-                                {% else %}
-                                    <input type="text" class="form-control"
-                                        name="filters[{{ colkey }}]"
-                                        value="{{ filters[colkey] ?? '' }}">
+                                {% if colum is not array or colum['no_filter']|default(false) == false %}
+                                    {% if formatter == "array" and columns_values[colkey] is defined %}
+                                           <select name="filters[{{ colkey }}][]"
+                                                class="form-select filter-select-multiple" multiple>
+                                            {% for field, value in columns_values[colkey] %}
+                                                <option value="{{ field }}" {{ filters[colkey] is defined and field in filters[colkey] ? 'selected' : '' }}>
+                                                    {{ value }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    {% elseif formatter == "datetime" %}
+                                        {{ call("Html::showDateTimeField", [
+                                            "filters[" ~ colkey ~ "]",
+                                            {
+                                                'value': filters[colkey],
+                                                'display': false
+                                            }
+                                        ])|raw }}
+                                    {% elseif formatter == "date" %}
+                                        {{ call("Html::showDateField", [
+                                            "filters[" ~ colkey ~ "]",
+                                            {
+                                                'value': filters[colkey],
+                                                'display': false
+                                            }
+                                        ])|raw }}
+                                    {% elseif formatter starts with "progress" %}
+                                        <input type="range" class="form-range"
+                                            name="filters[{{ colkey }}]"
+                                            value="{{ filters[colkey] ?? 0 }}"
+                                            min="0" max="100" step="1">
+                                    {% elseif formatter == 'avatar' %}
+                                        {# Cannot be filtered #}
+                                    {% else %}
+                                        <input type="text" class="form-control"
+                                            name="filters[{{ colkey }}]"
+                                            value="{{ filters[colkey] ?? '' }}">
+                                    {% endif %}
                                 {% endif %}
                             </td>
                         {% endfor %}
