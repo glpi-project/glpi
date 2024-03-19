@@ -4574,6 +4574,16 @@ abstract class CommonITILObject extends CommonDBTM
             ]
         ];
 
+        $last_solution_condition = new QuerySubQuery([
+            'SELECT' => 'id',
+            'FROM'   => ITILSolution::getTable(),
+            'WHERE'  => [
+                ITILSolution::getTable() . '.items_id' => new QueryExpression($DB::quoteName('REFTABLE.id')),
+                ITILSolution::getTable() . '.itemtype' => static::getType()
+            ],
+            'ORDER'  => ITILSolution::getTable() . '.id DESC',
+            'LIMIT'  => 1
+        ]);
         $tab[] = [
             'id'                  => '39',
             'table'               => ITILSolution::getTable(),
@@ -4588,17 +4598,7 @@ abstract class CommonITILObject extends CommonDBTM
                 'jointype'  => 'itemtype_item',
             // Get only last created solution
                 'condition' => [
-                    'NEWTABLE.id'  => ['=', new QuerySubQuery([
-                        'SELECT' => 'id',
-                        'FROM'   => ITILSolution::getTable(),
-                        'WHERE'  => [
-                            ITILSolution::getTable() . '.items_id' => new QueryExpression($DB->quoteName('REFTABLE.id')),
-                            ITILSolution::getTable() . '.itemtype' => static::getType()
-                        ],
-                        'ORDER'  => ITILSolution::getTable() . '.id DESC',
-                        'LIMIT'  => 1
-                    ])
-                    ]
+                    'NEWTABLE.id'  => new QueryExpression($last_solution_condition->getQuery())
                 ]
             ]
         ];
