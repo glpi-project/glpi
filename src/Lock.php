@@ -671,7 +671,7 @@ class Lock extends CommonGLPI
         $networknames = $DB->request([
             'SELECT' => ['glpi_networknames.*'],
             'FROM'  => $networkname::getTable(),
-            'LEFT JOIN' => [ // These joins are used to filter the network names that are linked to the current item's network ports
+            'INNER JOIN' => [ // These joins are used to filter the network names that are linked to the current item's network ports
                 'glpi_networkports' => [
                     'ON' => [
                         'glpi_networknames' => 'items_id',
@@ -728,7 +728,7 @@ class Lock extends CommonGLPI
         $ipaddresses = $DB->request([
             'SELECT' => ['glpi_ipaddresses.*'],
             'FROM'  => $ipaddress::getTable(),
-            'LEFT JOIN' => [ // These joins are used to filter the IP addresses that are linked to the current item's network ports
+            'INNER JOIN' => [ // These joins are used to filter the IP addresses that are linked to the current item's network ports
                 'glpi_networknames' => [
                     'ON' => [
                         'glpi_ipaddresses' => 'items_id',
@@ -1054,7 +1054,7 @@ class Lock extends CommonGLPI
                 $criteria = [
                     'SELECT' => ['glpi_networknames.id'],
                     'FROM' => 'glpi_networknames',
-                    'LEFT JOIN' => [
+                    'INNER JOIN' => [
                         'glpi_networkports' => [
                             'ON' => [
                                 'glpi_networknames' => 'items_id',
@@ -1079,7 +1079,7 @@ class Lock extends CommonGLPI
                 $criteria = [
                     'SELECT' => ['glpi_ipaddresses.id'],
                     'FROM' => 'glpi_ipaddresses',
-                    'LEFT JOIN' => [
+                    'INNER JOIN' => [
                         'glpi_networknames' => [
                             'ON' => [
                                 'glpi_ipaddresses' => 'items_id',
