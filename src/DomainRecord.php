@@ -444,19 +444,21 @@ TWIG, $twig_params);
 
         $entries = [];
         foreach ($iterator as $data) {
-            $ID = "";
-
-            if ($_SESSION["glpiis_ids_visible"] || empty(self::getDisplayName($domain, $data['name']))) {
-                $ID = " (" . $data["id"] . ")";
+            $name = self::getDisplayName($domain, $data['name']);
+            if ($_SESSION["glpiis_ids_visible"] || $name === '') {
+                $name .= " (" . $data["id"] . ")";
             }
-            $link = Toolbox::getItemTypeFormURL('DomainRecord');
 
             $entries[] = [
                 'itemtype' => self::class,
                 'row_class' => isset($data['is_deleted']) && $data['is_deleted'] ? 'table-danger' : '',
                 'id'       => $data['id'],
                 'type'     => Dropdown::getDropdownName(DomainRecordType::getTable(), $data['domainrecordtypes_id']),
-                'name'     => "<a href='{$link}?id={$data['id']}'>" . self::getDisplayName($domain, $data['name']) . "$ID</a>",
+                'name'     => sprintf(
+                    '<a href="%s">%s</a>',
+                    htmlspecialchars(DomainRecord::getFormURLWithID($data['id'])),
+                    htmlspecialchars($name)
+                ),
                 'ttl'      => $data['ttl'],
                 'data'     => $data['data']
             ];

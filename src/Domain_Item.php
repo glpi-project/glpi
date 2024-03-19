@@ -197,7 +197,8 @@ class Domain_Item extends CommonDBRelation
                 'entity_restrict' => $domain->fields['is_recursive']
                     ? getSonsOf('glpi_entities', $domain->fields['entities_id'])
                     : $domain->fields['entities_id'],
-                'btn_msg' => _sx('button', 'Add')
+                'btn_msg' => _x('button', 'Add'),
+                'items_field_label' => _n('Item', 'Items', 1),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -211,7 +212,7 @@ class Domain_Item extends CommonDBRelation
                         {{ inputs.hidden('domains_id', domain.getID()) }}
 
                         <div class="d-flex">
-                            {{ fields.dropdownItemsFromItemtypes('', _n('Item', 'Items', 1), {
+                            {{ fields.dropdownItemsFromItemtypes('', items_field_label, {
                                 itemtypes: itemtypes,
                                 entity_restrict: entity_restrict,
                                 checkright: true
@@ -282,19 +283,21 @@ TWIG, $twig_params);
             foreach ($linked_iterator as $linked_data) {
                 $item->getFromDB($linked_data["id"]);
 
-                $ID = "";
-                if ($_SESSION["glpiis_ids_visible"] || empty($linked_data["name"])) {
-                    $ID = " (" . $linked_data["id"] . ")";
+                $name = $linked_data["name"];
+                if ($_SESSION["glpiis_ids_visible"] || $name === '') {
+                    $name .= " (" . $linked_data["id"] . ")";
                 }
-                $link = Toolbox::getItemTypeFormURL($itemtype);
 
                 $entry = [
                     'itemtype' => self::class,
                     'id'       => $linked_data['items_id'], // items_id is actually the ID for the link
                     'row_class' => isset($linked_data['is_deleted']) && $linked_data['is_deleted'] ? 'table-danger' : '',
                     'type'     => $itemtype_name,
-                    'name'     => "<a href='{$link}?id={$linked_data["id"]}'>"
-                        . htmlspecialchars($linked_data["name"]) . "$ID</a>",
+                    'name'     => sprintf(
+                        '<a href="%s">%s</a>',
+                        htmlspecialchars($itemtype::getFormURLWithID($linked_data['id'])),
+                        htmlspecialchars($name)
+                    ),
                     'serial'   => $linked_data["serial"] ?? '-',
                     'otherserial' => $linked_data["otherserial"] ?? '-',
                 ];
@@ -546,7 +549,7 @@ TWIG, $twig_params);
                 $relation_names[$data['domainrelations_id']] = Dropdown::getDropdownName(table: "glpi_domainrelations", id: $data['domainrelations_id'], default: '');
             }
 
-            $expiration = $data["date_expiration"];
+            $expiration = htmlspecialchars(Html::convDate($data["date_expiration"]));
             if (
                 !empty($data["date_expiration"])
                 && $data["date_expiration"] <= date('Y-m-d')
@@ -600,6 +603,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'date_creation' => 'date',
+                'date_expiration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
