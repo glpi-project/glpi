@@ -187,10 +187,7 @@ class Reservation extends CommonDBChild
         if (empty($input['users_id'])) {
             $input['users_id'] = Session::getLoginUserID();
         }
-        if (
-            !Session::haveRight("reservation", UPDATE)
-            && Session::getLoginUserID() !== (int)$input['users_id']
-        ) {
+        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
             return;
         }
 
