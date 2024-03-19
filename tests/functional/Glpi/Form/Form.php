@@ -902,7 +902,7 @@ class Form extends DbTestCase
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
+                ->addDestination(FormDestinationTicket::class, 'Destination 1')
         );
 
         // Control subject that we are going to keep, its data shouldn't be deleted
@@ -910,7 +910,7 @@ class Form extends DbTestCase
             (new FormBuilder())
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
+                ->addDestination(FormDestinationTicket::class, 'Destination 1')
         );
 
         // Count items before deletion

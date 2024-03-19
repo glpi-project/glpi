@@ -38,19 +38,22 @@ namespace Glpi\Form\Destination;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Form;
 use Override;
 
 abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
 {
     #[Override]
-    final public function renderConfigForm(): string
+    final public function renderConfigForm(array $config): string
     {
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/form_destination_commonitil_config.html.twig',
             [
-                'item' => $this,
+                'item'   => $this,
+                'config' => $config,
             ]
         );
     }
@@ -64,24 +67,34 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     #[Override]
     final public function createDestinationItems(
         Form $form,
-        AnswersSet $answers_set
+        AnswersSet $answers_set,
+        array $config
     ): array {
         $typename = static::getTypeName(1);
         $itemtype = static::getTargetItemtype();
 
-        // Create a simple commonitil object for now
+        // Mandatory values, we must preset defaults values as it can't be
+        // missing from the input.
         $input = [
-            'name'    => "$typename from form: {$form->fields['name']}",
-            'content' => 'Answers: ' . json_encode($answers_set->fields['answers']),
+            'name'    => '',
+            'content' => '',
         ];
 
+        // Compute input from fields configuration
+        foreach ($this->getConfigurableFields() as $field) {
+            $input = $field->applyConfiguratedValue(
+                $input,
+                $config[$field->getKey()] ?? null
+            );
+        }
+
+        // Create commonitil object
         $itil_object = new $itemtype();
         if (!($itil_object instanceof CommonITILObject)) {
             throw new \RuntimeException(
                 "The target itemtype must be an instance of CommonITILObject"
             );
         }
-
         if (!$itil_object->add($input)) {
             throw new \Exception(
                 "Failed to create $typename: " . json_encode($input)
@@ -111,5 +124,18 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     final public static function getFilterByAnswsersSetSearchOptionID(): int
     {
         return 120;
+    }
+
+    /**
+     * List the configurable fields for this destination type.
+     *
+     * @return \Glpi\Form\Destination\CommonITILField\CommonITILFieldInterface[]
+     */
+    public function getConfigurableFields(): array
+    {
+        return [
+            new TitleField(),
+            new ContentField(),
+        ];
     }
 }

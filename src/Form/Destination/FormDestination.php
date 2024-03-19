@@ -95,6 +95,14 @@ final class FormDestination extends CommonDBChild
             return false;
         }
 
+        // Reopen the active accordion item
+        if (isset($_SESSION['active_destination'])) {
+            $active = $_SESSION['active_destination'];
+            unset($_SESSION['active_destination']);
+        } else {
+            $active = null;
+        }
+
         $manager = FormDestinationTypeManager::getInstance();
 
         $renderer = TemplateRenderer::getInstance();
@@ -105,6 +113,7 @@ final class FormDestination extends CommonDBChild
             'default_destination_object'   => $manager->getDefaultType(),
             'destinations'                 => $item->getDestinations(),
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
+            'active_destination'           => $active,
         ]);
 
         return true;
@@ -151,31 +160,76 @@ final class FormDestination extends CommonDBChild
     #[Override]
     public function prepareInputForAdd($input)
     {
-        // Validate forms fk
-        $form_id = $input[Form::getForeignKeyField()] ?? null;
-        if ($form_id === null) {
-            throw new InvalidArgumentException("Missing form id");
-        }
-
-        // Validate parent Form object
-        $form = Form::getByID($form_id);
-        if (!$form) {
-            throw new InvalidArgumentException("Form not found");
-        }
-
-        // Validate itemtype
-        $type = $input['itemtype'] ?? null;
-        if (
-            $type === null
-            || !is_a($type, AbstractFormDestinationType::class, true)
-            || (new ReflectionClass($type))->isAbstract()
-        ) {
-            throw new InvalidArgumentException("Invalid itemtype");
-        }
+        $input = $this->prepareInput($input);
 
         // Set default name
         if (!isset($input['name'])) {
-            $input['name'] = $type::getTypeName(1);
+            // It is safe to access the 'itemtype' key here as it has been
+            // validated by the "prepareInput" method
+            $input['name'] = $input['itemtype']::getTypeName(1);
+        }
+
+        // Set default config
+        if (!isset($input['config'])) {
+            // Is is safe to access the 'itemtype' key here as it has been
+            // validated by the "prepareInput" method
+            $input['config'] = json_encode([]);
+        }
+
+        return $input;
+    }
+
+    #[Override]
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * Common "prepareInput" checks that need to be applied both on creation and
+     * on update.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
+    public function prepareInput($input): array
+    {
+        // Validate forms fk
+        if (
+            isset($input[Form::getForeignKeyField()])
+            || $this->isNewItem() // Mandatory on creation
+        ) {
+            $form_id = $input[Form::getForeignKeyField()] ?? null;
+            if ($form_id === null) {
+                throw new InvalidArgumentException("Missing form id");
+            }
+
+            // Validate parent Form object
+            $form = Form::getByID($form_id);
+            if (!$form) {
+                throw new InvalidArgumentException("Form not found");
+            }
+        }
+
+        // Validate itemtype
+        if (
+            isset($input['itemtype'])
+            || $this->isNewItem() // Mandatory on creation
+        ) {
+            $type = $input['itemtype'] ?? null;
+            if (
+                $type === null
+                || !is_a($type, AbstractFormDestinationType::class, true)
+                || (new ReflectionClass($type))->isAbstract()
+            ) {
+                throw new InvalidArgumentException("Invalid itemtype");
+            }
+        }
+
+        // Validate extra config
+        if (isset($input['config'])) {
+            $input['config'] = json_encode($input['config']);
         }
 
         return $input;
@@ -246,5 +300,24 @@ final class FormDestination extends CommonDBChild
             self::getTable(),
             ['forms_forms_id' => $form->getID()],
         );
+    }
+
+    /**
+     * Get and decode JSON config.
+     *
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        $config = json_decode($this->fields['config'], true);
+        if (!is_array($config)) {
+            $config = [];
+            trigger_error(
+                "Invalid config: {$this->fields['config']}",
+                E_USER_WARNING
+            );
+        }
+
+        return $config;
     }
 }

@@ -33,49 +33,42 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Form;
-
-interface FormDestinationInterface
+interface CommonITILFieldInterface
 {
     /**
-     * Create one or multiple items for a given form and its answers
+     * Get the unique key used to set/get this field configuration in the
+     * destination JSON configuration.
      *
-     * @param Form       $form
-     * @param AnswersSet $answers_set
-     * @param array      $config
-     *
-     * @return \CommonDBTM[]
-     *
-     * @throws \Exception Must be thrown if the item can't be created
+     * @return string
      */
-    public function createDestinationItems(
-        Form $form,
-        AnswersSet $answers_set,
-        array $config
-    ): array;
-
+    public function getKey(): string;
 
     /**
-     * Render the configuration form for this destination type.
+     * Label to be displayed when configuring this field.
      *
-     * @return string The rendered HTML content
+     * @return string
      */
-    public function renderConfigForm(array $config): string;
+    public function getLabel(): string;
 
     /**
-     * Get itemtype to create
+     * Render the input field for this configuration.
      *
-     * @return string (Must be a valid CommonDBTM class name)
+     * @param array|null $config
+     *
+     * @return string
      */
-    public static function getTargetItemtype(): string;
+    public function renderConfigForm(?array $config): string;
 
     /**
-     * Get the search option used to filter the target itemtype by answers set.
+     * Apply configurated value to the given input.
      *
-     * @return int
+     * @param array      $input
+     * @param array|null $config May be null if there is no configuration for
+     *                           this field.
+     *
+     * @return array
      */
-    public static function getFilterByAnswsersSetSearchOptionID(): int;
+    public function applyConfiguratedValue(array $input, ?array $config): array;
 }

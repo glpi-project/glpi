@@ -71,10 +71,10 @@ class FormDestination extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 1'])
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 2'])
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 3'])
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 4'])
+                ->addDestination(FormDestinationTicket::class, 'destination 1')
+                ->addDestination(FormDestinationTicket::class, 'destination 2')
+                ->addDestination(FormDestinationTicket::class, 'destination 3')
+                ->addDestination(FormDestinationTicket::class, 'destination 4')
         );
         yield [$form, "Items to create 4"];
 
@@ -131,10 +131,10 @@ class FormDestination extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 1'])
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 2'])
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 3'])
-                ->addDestination(FormDestinationTicket::class, ['name' => 'destination 4'])
+                ->addDestination(FormDestinationTicket::class, 'destination 1')
+                ->addDestination(FormDestinationTicket::class, 'destination 2')
+                ->addDestination(FormDestinationTicket::class, 'destination 3')
+                ->addDestination(FormDestinationTicket::class, 'destination 4')
         );
         yield [$form, true];
     }
