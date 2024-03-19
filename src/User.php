@@ -561,13 +561,15 @@ class User extends CommonDBTM
      */
     public function getFromDBbyDn($user_dn)
     {
+        $raw_user_dn = Sanitizer::unsanitize($user_dn);
+
         /**
          * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
          * The 'user_dn_hash' field is a hashed version of the 'user_dn' field
          * and is indexed in the database, making it faster to search.
          */
         return $this->getFromDBByCrit([
-            'user_dn_hash' => md5($user_dn)
+            'user_dn_hash' => md5($raw_user_dn)
         ]);
     }
 
@@ -847,7 +849,7 @@ class User extends CommonDBTM
     {
         // Hash user_dn if set
         if (isset($this->input['user_dn']) && is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0) {
-            $this->input['user_dn_hash'] = md5($this->input['user_dn']);
+            $this->input['user_dn_hash'] = md5(Sanitizer::unsanitize($this->input['user_dn']));
         }
     }
 
@@ -3503,7 +3505,9 @@ HTML;
         // Hash user_dn if is updated
         if (in_array('user_dn', $this->updates)) {
             $this->updates[] = 'user_dn_hash';
-            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0 ? md5($this->input['user_dn']) : null;
+            $this->fields['user_dn_hash'] = is_string($this->input['user_dn']) && strlen($this->input['user_dn']) > 0
+                ? md5(Sanitizer::unsanitize($this->input['user_dn']))
+                : null;
         }
     }
 
