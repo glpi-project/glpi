@@ -110,7 +110,6 @@ interface NotificationEventInterface
      */
     public static function getEntityAdminsData($entity);
 
-
     /**
      * Send notification
      *

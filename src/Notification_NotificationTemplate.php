@@ -69,24 +69,24 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         if (!$withtemplate && Notification::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case Notification::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            $this->getTable(),
+                            static::getTable(),
                             ['notifications_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 break;
                 case NotificationTemplate::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            $this->getTable(),
+                            static::getTable(),
                             ['notificationtemplates_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(Notification::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 break;
             }
         }
@@ -106,7 +106,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         return true;
     }
-
 
     /**
      * Print the notification templates
@@ -133,7 +132,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         if (
             $canedit
-            && !(!empty($withtemplate) && ($withtemplate == 2))
+            && !(!empty($withtemplate) && ((int)$withtemplate === 2))
         ) {
             echo "<div class='center firstbloc'>" .
                "<a class='btn btn-primary' href='" . self::getFormURL() . "?notifications_id=$ID&amp;withtemplate=" .
@@ -207,7 +206,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
         echo "</div>";
     }
 
-
     /**
      * Print associated notifications
      *
@@ -264,14 +262,12 @@ class Notification_NotificationTemplate extends CommonDBRelation
         ]);
     }
 
-
     /**
      * Form for Notification on Massive action
      **/
     public static function showFormMassiveAction()
     {
-
-        echo __('Mode') . "<br>";
+        echo __s('Mode') . "<br>";
         self::dropdownMode(['name' => 'mode']);
         echo "<br><br>";
 
@@ -286,12 +282,10 @@ class Notification_NotificationTemplate extends CommonDBRelation
         echo Html::submit(_x('button', 'Add'), ['name' => 'massiveaction']);
     }
 
-
     public function getName($options = [])
     {
         return $this->getID();
     }
-
 
     /**
      * Print the form
@@ -327,21 +321,17 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return true;
     }
 
-
     /**
      * Get notification method label
      *
      * @param string $mode the mode to use
      *
-     * @return array
+     * @return array|string The mode data if found, otherwise {@link NOT_AVAILABLE}.
      **/
     public static function getMode($mode)
     {
         $tab = self::getModes();
-        if (isset($tab[$mode])) {
-            return $tab[$mode];
-        }
-        return NOT_AVAILABLE;
+        return $tab[$mode] ?? NOT_AVAILABLE;
     }
 
     /**
@@ -397,7 +387,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
         if (!isset($CFG_GLPI['notifications_modes']) || !is_array($CFG_GLPI['notifications_modes'])) {
             $CFG_GLPI['notifications_modes'] = $core_modes;
         } else {
-           //check that core modes are part of the config
+            // check that core modes are part of the config
             foreach ($core_modes as $mode => $conf) {
                 if (!isset($CFG_GLPI['notifications_modes'][$mode])) {
                     $CFG_GLPI['notifications_modes'][$mode] = $conf;
@@ -407,7 +397,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         return $CFG_GLPI['notifications_modes'];
     }
-
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
@@ -427,10 +416,8 @@ class Notification_NotificationTemplate extends CommonDBRelation
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -444,7 +431,6 @@ class Notification_NotificationTemplate extends CommonDBRelation
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
-
 
     /**
      * Display a dropdown with all the available notification modes
@@ -479,24 +465,25 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Get class name for specified mode
      *
      * @param string $mode      Requested mode
-     * @param string $extratype Extra type (either 'event' or 'setting')
+     * @param 'event'|'setting' $extratype Extra type (either 'event' or 'setting')
      *
      * @return string
+     * @phpstan-return $extratype === 'event' ? class-string<NotificationEventInterface> : class-string<NotificationSetting>
      */
     public static function getModeClass($mode, $extratype = '')
     {
-        if ($extratype == 'event') {
+        if ($extratype === 'event') {
             $classname = 'NotificationEvent' . ucfirst($mode);
-        } else if ($extratype == 'setting') {
+        } else if ($extratype === 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
-            if ($extratype != '') {
+            if ($extratype !== '') {
                 throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
             }
             $classname = 'Notification' . ucfirst($mode);
         }
         $conf = self::getMode($mode);
-        if ($conf['from'] != 'core') {
+        if ($conf['from'] !== 'core') {
             $classname = 'Plugin' . ucfirst($conf['from']) . $classname;
         }
         return $classname;

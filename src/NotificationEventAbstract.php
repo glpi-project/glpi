@@ -115,8 +115,8 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 )
                             ) {
                                 //Send notification to the user
-                                if ($label == '') {
-                                    $itemtype = $item->getType();
+                                if ($label === '') {
+                                    $itemtype = $item::class;
                                     $items_id = method_exists($item, "getID") ? max($item->getID(), 0) : 0;
 
                                     $send_data = $template->getDataToSend(
@@ -132,14 +132,15 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['_entities_id']              = $entity;
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;
-                                    $send_data['attach_documents']          = $data['attach_documents'] == NotificationSetting::ATTACH_INHERIT
+                                    $send_data['attach_documents']          = $data['attach_documents'] === NotificationSetting::ATTACH_INHERIT
                                         ? $CFG_GLPI['attach_ticket_documents_to_mail']
                                         : $data['attach_documents'];
-                                    $send_data['itemtype_trigger']          = $trigger !== null ? $trigger->getType() : $itemtype;
+                                    $send_data['itemtype_trigger']          = $trigger !== null ? $trigger::class : $itemtype;
                                     $send_data['items_id_trigger']          = $trigger !== null ? $trigger->getID() : $items_id;
 
                                     Notification::send($send_data);
                                 } else {
+                                    // This is only used in the debug tab of some forms
                                     $notificationtarget->getFromDB($target['id']);
                                     echo "<tr class='tab_bg_2'><td>" . $label . "</td>";
                                     echo "<td>" . $notificationtarget->getNameID() . "</td>";

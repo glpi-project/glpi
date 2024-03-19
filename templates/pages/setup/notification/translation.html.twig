@@ -55,6 +55,7 @@
 
    {{ fields.htmlField('', call('Dropdown::showLanguages', ['language', {
       value: item.fields['language'],
+      used: used_languages,
       display_emptychoice: true,
       emptylabel: __('Default translation'),
       display: false
