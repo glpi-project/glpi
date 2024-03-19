@@ -132,7 +132,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
 
         if (
             $canedit
-            && !(!empty($withtemplate) && ($withtemplate === 2))
+            && !(!empty($withtemplate) && ((int)$withtemplate === 2))
         ) {
             echo "<div class='center firstbloc'>" .
                "<a class='btn btn-primary' href='" . self::getFormURL() . "?notifications_id=$ID&amp;withtemplate=" .
