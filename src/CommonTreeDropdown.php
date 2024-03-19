@@ -537,7 +537,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 'entity' => ($entity_assign && static::getForeignKeyField() !== 'entities_id') ? $_SESSION['glpiactive_entity'] : null,
                 'is_recursive' => $entity_assign && $this->isRecursive() ? 1 : 0,
                 'name_label' => __('Name'),
-                'btn_label' => _sx('button', 'Add'),
+                'btn_label' => _x('button', 'Add'),
                 'fk' => static::getForeignKeyField(),
                 'id' => $ID
             ];
@@ -634,7 +634,8 @@ TWIG, $twig_params);
                         break;
 
                     default:
-                        $entry[$field['name']] =  $data[$field['name']];
+                        $entry[$field['name']] = $data[$field['name']];
+                        break;
                 }
             }
             $entry['comment'] = $data['comment'];
@@ -655,13 +656,10 @@ TWIG, $twig_params);
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
-                'label' => sprintf(__('Sons of %s'), $this->getTreeLink()),
+                'label' => sprintf(__s('Sons of %s'), $this->getTreeLink()),
                 'is_raw' => true
             ],
             'columns' => $columns,
-            'formatters' => [
-                'name' => 'raw_html',
-            ],
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
