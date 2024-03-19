@@ -1333,7 +1333,7 @@ class User extends \DbTestCase
         $this->variable($user->fields['user_dn_hash'])->isNull();
 
         // Create user with dn and check that user_dn_hash is set
-        $dn = 'user=' . __FUNCTION__ . '_created,dc=test,dc=glpi-project,dc=org';
+        $dn = 'user=' . __FUNCTION__ . '_created,dc=R&D,dc=glpi-project,dc=org';
         $user = $this->createItem('User', [
             'name'      => __FUNCTION__ . '_created',
             'user_dn'   => $dn
@@ -1341,7 +1341,7 @@ class User extends \DbTestCase
         $this->string($user->fields['user_dn_hash'])->isEqualTo(md5($dn));
 
         // Update user dn and check that user_dn_hash is updated
-        $dn = 'user=' . __FUNCTION__ . '_updated,dc=test,dc=glpi-project,dc=org';
+        $dn = 'user=' . __FUNCTION__ . '_updated,dc=R&D,dc=glpi-project,dc=org';
         $this->updateItem('User', $user->getID(), [
             'user_dn'   => $dn
         ]);
@@ -1380,7 +1380,7 @@ class User extends \DbTestCase
         $this->boolean($retrievedUser->isNewItem())->isTrue();
 
         // Create a user with a dn
-        $dn = 'user=' . __FUNCTION__ . ',dc=test,dc=glpi-project,dc=org';
+        $dn = 'user=' . __FUNCTION__ . ',dc=R&D,dc=glpi-project,dc=org';
         $user = $this->createItem('User', [
             'name'      => __FUNCTION__,
             'user_dn'   => $dn
@@ -1388,6 +1388,7 @@ class User extends \DbTestCase
 
         // Retrieve the user using getFromDBbyDn method
         $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->getFromDBbyDn(Sanitizer::sanitize($dn)))->isTrue(); // works also with sanitized value
         $this->boolean($retrievedUser->isNewItem())->isFalse();
 
         // Unset user_dn to check that user_dn_hash is used
@@ -1399,6 +1400,7 @@ class User extends \DbTestCase
 
         // Retrieve the user using getFromDBbyDn and check if user_dn_hash is used
         $this->boolean($retrievedUser->getFromDBbyDn($dn))->isTrue();
+        $this->boolean($retrievedUser->getFromDBbyDn(Sanitizer::sanitize($dn)))->isTrue(); // works also with sanitized value
         $this->boolean($retrievedUser->isNewItem())->isFalse();
         $this->string($retrievedUser->fields['user_dn'])->isEmpty();
     }
