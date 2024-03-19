@@ -354,7 +354,7 @@ class Group_User extends CommonDBRelation
                 ]
             ],
             'WHERE' => [
-                    $group_users_table . '.groups_id'  => $restrict,
+                $group_users_table . '.groups_id'  => $restrict,
             ],
             'ORDERBY' => [
                 User::getTable() . '.realname',
