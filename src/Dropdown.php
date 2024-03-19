@@ -1720,7 +1720,7 @@ JAVASCRIPT;
             $out .= $select . $ajax;
         }
 
-        $out .= "<br><span id='$show_id'>&nbsp;</span>\n";
+        $out .= "<br><span id='$show_id'></span>\n";
 
        // We check $options as the caller will set $options['default_itemtype'] only if it needs a
        // default itemtype and the default value can be '' thus empty won't be valid !

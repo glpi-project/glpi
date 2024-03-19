@@ -618,7 +618,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             Html::showSimpleForm(
                 static::$itemtype_1::getFormURL(),
                 '_add_fromitem',
-                sprintf(__("New %s for this item..."), static::$itemtype_1::getTypeName(0)),
+                sprintf(__("New %s for this item"), static::$itemtype_1::getTypeName(0)),
                 [
                     'itemtype' => $item->getType(),
                     'items_id' => $item->getID()
