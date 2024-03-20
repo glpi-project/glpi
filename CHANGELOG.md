@@ -63,6 +63,7 @@ The present file will list all changes made to the project; according to the
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
+- `Search::joinDropdownTranslations()`
 
 ### Removed
 - XML-RPC API.
