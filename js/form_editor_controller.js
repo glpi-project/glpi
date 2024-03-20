@@ -1390,6 +1390,14 @@ class GlpiFormEditorController
         const new_section = this.#copy_template(section, section, "after");
         this.#enableTinyMce(ids);
 
+        this.#setItemInput(new_section, "id", 0);
+        new_section
+            .find("[data-glpi-form-editor-question]")
+            .each((index, question) => {
+                this.#setItemInput($(question), "id", 0);
+            })
+        ;
+
         this.#setActiveItem(new_section);
         this.#enableSortable(new_section);
     }
