@@ -42,13 +42,6 @@
 
 /**
  * @memberof cy
- * @method waitForInputs
- * @description Wait for libraries to replace inputs with their own components
- * @returns Chainable
- */
-
-/**
- * @memberof cy
  * @method selectDate
  * @description Select a date in a flatpickr input
  * @param {string} date - Date to select
@@ -60,8 +53,24 @@
  * @memberof cy
  * @method changeProfile
  * @description Change the profile of the current user. Only supports the default GLPI profiles.
+ * @param {string} profile - Profile to change to
  */
 
+/**
+ * @memberof cy
+ * @method iframe
+ * @description Helper to interact with elements inside an iframe given the complexity of needing to wait for the iframe to load and needing to switch contexts to the iframe's document.
+ *              You can optionally specify a url_pattern to match the iframe's content window location.
+ * @param {string} url_pattern - Optional. A regular expression to match the iframe's content window location. Defaults to the baseUrl.
+ * @example cy.get('iframe').iframe().find('body').type('Hello, World!');
+ * @example cy.get('iframe').iframe('about:srcdoc').find('body').type('Hello, World!');
+ */
+
+/**
+ * @memberof cy
+ * @method isTinyMCE
+ * @description Assert that the subject is a TinyMCE editor and try to wait for tinyMCE to initialize the editor.
+ */
 
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     cy.session(
@@ -106,12 +115,30 @@ Cypress.Commands.add('changeProfile', (profile) => {
     });
 });
 
-/**
- * Wait for libraries to replace inputs with their own components
- */
-Cypress.Commands.add('waitForInputs', () => {
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(1000);
+Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) => {
+    // if no url_pattern is provided, match on baseUrl
+    const base_url = Cypress.config('baseUrl');
+    if (url_pattern === undefined) {
+        url_pattern = new RegExp(`^${base_url}`);
+    }
+    return cy.wrap(new Cypress.Promise(resolve => {
+        // Check if the iframe's content window is already loaded to a page on the same domain
+        if (iframe[0].contentWindow.location.href.match(url_pattern)) {
+            resolve(iframe.contents().find('body'));
+            return;
+        }
+        iframe.on('load', () => {
+            if (iframe[0].contentWindow.location.href.match(url_pattern)) {
+                resolve(iframe.contents().find('body'));
+            }
+        });
+    }));
+});
+
+Cypress.Commands.add('awaitTinyMCE',  {
+    prevSubject: 'element',
+}, (subject) => {
+    cy.wrap(subject).siblings('div.tox-tinymce').should('exist').find('iframe').iframe('about:srcdoc').find('p', {timeout: 10000});
 });
 
 Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
