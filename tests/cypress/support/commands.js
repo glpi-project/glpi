@@ -35,8 +35,8 @@
  * @memberof cy
  * @method login
  * @description Login to GLPI. This command will also reuse the session for subsequent calls when possible rather than logging in again.
- * @param {string} username - Username
- * @param {string} password - Password
+ * @param {string} [username=e2e_tests] - Username
+ * @param {string} [password=glpi] - Password
  * @returns Chainable
  */
 
@@ -56,8 +56,14 @@
  * @returns Chainable
  */
 
+/**
+ * @memberof cy
+ * @method changeProfile
+ * @description Change the profile of the current user. Only supports the default GLPI profiles.
+ */
 
-Cypress.Commands.add('login', (username, password) => {
+
+Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     cy.session(
         username,
         () => {
@@ -83,6 +89,21 @@ Cypress.Commands.add('login', (username, password) => {
             },
         }
     );
+});
+
+Cypress.Commands.add('changeProfile', (profile) => {
+    // If on about:blank, we need to get back to GLPI.
+    // Can happen at the start of a test if the login restored an existing session and therefore no redirect happened.
+    // With testIsolation, cypress starts each test on about:blank.
+    cy.url().then((url) => {
+        if (url === 'about:blank') {
+            cy.visit('/');
+        }
+    });
+    // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
+    cy.get('div.user-menu a[href*="newprofile="]').contains(profile).first().invoke('attr', 'href').then((href) => {
+        cy.visit(href);
+    });
 });
 
 /**

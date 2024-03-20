@@ -9149,11 +9149,59 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ]);
             $tables['glpi_users'][] = $e2e_user;
 
-            // Assign e2e user the super-admin profile on the e2e entity
+            // Assign e2e user all default profiles on the e2e entity
             $tables['glpi_profiles_users'][] = [
                 'id' => 6,
                 'users_id' => 7,
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 7,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 8,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 9,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_ADMIN,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 10,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 11,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 12,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_READ_ONLY,
                 'entities_id' => 1,
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
