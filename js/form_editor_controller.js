@@ -327,6 +327,13 @@ class GlpiFormEditorController
                 );
                 break;
 
+            // Duplicate target question
+            case "duplicate-question":
+                this.#duplicateQuestion(
+                    target.closest("[data-glpi-form-editor-question]")
+                );
+                break;
+
             // No specific instructions for these events.
             // They must still be kept here as they benefits from the common code
             // like refreshUX() and glpiUnsavedFormChanges.
@@ -476,6 +483,7 @@ class GlpiFormEditorController
         if (id == 0) {
             // Replace by UUID
             this.#setItemInput(item, "id", getUUID());
+            this.#setItemInput(item, "_use_uuid", 1);
         }
     }
 
@@ -1377,13 +1385,27 @@ class GlpiFormEditorController
      * @param {jQuery} section
      */
     #duplicateSection(section) {
-        // TinyMCE must be disabled before we can duplicate the section
+        // TinyMCE must be disabled before we can duplicate the section DOM
         const ids = this.#disableTinyMce(section);
         const new_section = this.#copy_template(section, section, "after");
         this.#enableTinyMce(ids);
 
         this.#setActiveItem(new_section);
         this.#enableSortable(new_section);
+    }
+
+    /**
+     * Duplicate the given question
+     * @param {jQuery} section
+     */
+    #duplicateQuestion(question) {
+        // TinyMCE must be disabled before we can duplicate the question DOM
+        const ids = this.#disableTinyMce(question);
+        const new_question = this.#copy_template(question, question, "after");
+        this.#enableTinyMce(ids);
+
+        this.#setItemInput(new_question, "id", 0);
+        this.#setActiveItem(new_question);
     }
 
     /**

@@ -68,7 +68,7 @@
                 ></i>
             </div>
             {# Display question's title #}
-            <div class="d-flex mt-n1">
+            <div class="d-flex mt-n1 align-items-center">
                 <input
                     class="form-control content-editable-h2 mb-0"
                     type="text"
@@ -80,6 +80,14 @@
                     data-glpi-form-editor-question-details-name
                 />
                 <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+                {# Duplicate question #}
+                <i
+                    class="ti ti-copy ms-auto cursor-pointer"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="{{ __("Duplicate question") }}"
+                    data-glpi-form-editor-on-click="duplicate-question"
+                ></i>
             </div>
 
             {# Render the specific question type #}
