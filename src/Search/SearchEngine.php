@@ -37,7 +37,6 @@ namespace Glpi\Search;
 
 use CommonGLPI;
 use CommonITILObject;
-use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Features\TreeBrowse;
@@ -45,15 +44,14 @@ use Glpi\Plugin\Hooks;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Input\SearchInputInterface;
 use Glpi\Search\Output\AbstractSearchOutput;
-use Glpi\Search\Output\CSVSearchOutput;
-use Glpi\Search\Output\ExportSearchOutput;
+use Glpi\Search\Output\Csv;
 use Glpi\Search\Output\GlobalSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
 use Glpi\Search\Output\NamesListSearchOutput;
-use Glpi\Search\Output\PDFLandscapeSearchOutput;
-use Glpi\Search\Output\PDFPortraitSearchOutput;
-use Glpi\Search\Output\SYLKSearchOutput;
+use Glpi\Search\Output\Ods;
+use Glpi\Search\Output\Pdf;
 use Glpi\Search\Output\TableSearchOutput;
+use Glpi\Search\Output\Xlsx;
 use Glpi\Search\Provider\SearchProviderInterface;
 use Glpi\Search\Provider\SQLProvider;
 use Plugin;
@@ -81,13 +79,15 @@ final class SearchEngine
             case \Search::HTML_OUTPUT:
                 return (isset($data['as_map']) && $data['as_map']) ? new MapSearchOutput() : new TableSearchOutput();
             case \Search::PDF_OUTPUT_LANDSCAPE:
-                return new PDFLandscapeSearchOutput();
+                return new Pdf(Pdf::LANDSCAPE);
             case \Search::PDF_OUTPUT_PORTRAIT:
-                return new PDFPortraitSearchOutput();
-            case \Search::SYLK_OUTPUT:
-                return new SYLKSearchOutput();
+                return new Pdf(Pdf::PORTRAIT);
             case \Search::CSV_OUTPUT:
-                return new CSVSearchOutput();
+                return new Csv();
+            case \Search::ODS_OUTPUT:
+                return new Ods();
+            case \Search::XLSX_OUTPUT:
+                return new Xlsx();
             case \Search::NAMES_OUTPUT:
                 return new NamesListSearchOutput();
             default:
@@ -632,6 +632,6 @@ final class SearchEngine
     {
         $output = self::getOutputForLegacyKey($params['display_type'] ?? \Search::HTML_OUTPUT, $params);
         $data = self::getData($itemtype, $params, $forced_display);
-        $output::displayData($data, $params);
+        $output->displayData($data, $params);
     }
 }

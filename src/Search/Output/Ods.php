@@ -35,36 +35,24 @@
 
 namespace Glpi\Search\Output;
 
-/**
- *
- * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
- */
-final class PDFLandscapeSearchOutput extends PDFSearchOutput
+use PhpOffice\PhpSpreadsheet\Writer\Ods\Mimetype;
+
+final class Ods extends Spreadsheet
 {
-    public static function showFooter($title = "", $count = null): string
+    public function __construct()
     {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
+        parent::__construct();
+        $this->writer = new \PhpOffice\PhpSpreadsheet\Writer\Ods($this->spread);
+    }
 
-        $font       = 'helvetica';
-        $fontsize   = 8;
-        if (isset($_SESSION['glpipdffont']) && $_SESSION['glpipdffont']) {
-            $font       = $_SESSION['glpipdffont'];
-        }
+    public function getMime(): string
+    {
+        $mime = new Mimetype($this->writer);
+        return $mime->write();
+    }
 
-        $pdf = new \GLPIPDF(
-            [
-                'font_size'  => $fontsize,
-                'font'       => $font,
-                'orientation'        => 'L',
-            ],
-            $count,
-            $title,
-        );
-
-        $PDF_TABLE .= '</table>';
-        $pdf->writeHTML($PDF_TABLE, true, false, true);
-        $pdf->Output('glpi.pdf', 'I');
-        return '';
+    public function getFileName(): string
+    {
+        return "glpi.ods";
     }
 }

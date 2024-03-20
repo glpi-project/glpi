@@ -34,24 +34,13 @@
  */
 
 use Glpi\DBAL\QueryExpression;
-use Glpi\Application\View\TemplateRenderer;
-use Glpi\Plugin\Hooks;
-use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\Output\AbstractSearchOutput;
-use Glpi\Search\Output\CSVSearchOutput;
 use Glpi\Search\Output\ExportSearchOutput;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
-use Glpi\Search\Output\PDFSearchOutput;
-use Glpi\Search\Output\SYLKSearchOutput;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
-use Glpi\Search\Output\PDFLandscapeSearchOutput;
-use Glpi\Search\Output\PDFPortraitSearchOutput;
-use Glpi\Search\Output\NamesListSearchOutput;
-use Glpi\Search\Output\GlobalSearchOutput;
 
 /**
  * Search Class
@@ -93,12 +82,6 @@ class Search
     const HTML_OUTPUT          = 0;
 
     /**
-     * SYLK export format
-     * @var int
-     */
-    const SYLK_OUTPUT          = 1;
-
-    /**
      * PDF export format (Landscape mode)
      * @var int
      */
@@ -121,6 +104,18 @@ class Search
      * @var int
      */
     const NAMES_OUTPUT         = 5;
+
+    /**
+     * ODS export
+     * @var int
+     */
+    const ODS_OUTPUT = 6;
+
+    /**
+     * XLSX export
+     * @var int
+     */
+    const XLSX_OUTPUT = 7;
 
     /**
      * Placeholder for a <br> line break
@@ -347,7 +342,7 @@ class Search
     {
         /** @var HTMLSearchOutput $output */
         $output = SearchEngine::getOutputForLegacyKey($data['display_type'], $data);
-        return $output::displayData($data, $params);
+        return $output->displayData($data, $params);
     }
 
     /**
@@ -920,7 +915,7 @@ class Search
     /**
      * Print generic Header Column
      *
-     * @param integer          $type     Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer          $type     Display type (see Search::*_OUTPUT constants)
      * @param string           $value    Value to display
      * @param integer          &$num     Column number
      * @param string           $linkto   Link display element (HTML specific) (default '')
@@ -947,7 +942,7 @@ class Search
     /**
      * Print generic normal Item Cell
      *
-     * @param integer $type        Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type        Display type (see Search::*_OUTPUT constants)
      * @param string  $value       Value to display
      * @param integer &$num        Column number
      * @param integer $row         Row number
@@ -972,7 +967,7 @@ class Search
     /**
      * Print generic error
      *
-     * @param integer $type     Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type     Display type (see Search::*_OUTPUT constants)
      * @param string  $message  Message to display, if empty "no item found" will be displayed
      *
      * @return string HTML to display
@@ -991,7 +986,7 @@ class Search
     /**
      * Print generic footer
      *
-     * @param integer $type  Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type  Display type (see Search::*_OUTPUT constants)
      * @param string  $title title of file : used for PDF (default '')
      * @param integer $count Total number of results
      *
@@ -1007,7 +1002,7 @@ class Search
     /**
      * Print generic footer
      *
-     * @param integer         $type   Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer         $type   Display type (see Search::*_OUTPUT constants)
      * @param integer         $rows   Number of rows
      * @param integer         $cols   Number of columns
      * @param boolean|integer $fixed  Used tab_cadre_fixe table for HTML export ? (default 0)
@@ -1024,7 +1019,7 @@ class Search
     /**
      * Print begin of header part
      *
-     * @param integer $type   Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type   Display type (see Search::*_OUTPUT constants)
      *
      * @since 0.85
      *
@@ -1040,7 +1035,7 @@ class Search
     /**
      * Print end of header part
      *
-     * @param integer $type   Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type   Display type (see Search::*_OUTPUT constants)
      *
      * @since 0.85
      *
@@ -1056,7 +1051,7 @@ class Search
     /**
      * Print generic new line
      *
-     * @param integer $type        Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type        Display type (see Search::*_OUTPUT constants)
      * @param boolean $odd         Is it a new odd line ? (false by default)
      * @param boolean $is_deleted  Is it a deleted search ? (false by default)
      *
@@ -1072,7 +1067,7 @@ class Search
     /**
      * Print generic end line
      *
-     * @param integer $type  Display type (0=HTML, 1=Sylk, 2=PDF, 3=CSV)
+     * @param integer $type  Display type (see Search::*_OUTPUT constants)
      *
      * @return string HTML to display
      **/

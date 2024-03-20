@@ -37,21 +37,204 @@ namespace Glpi\Search\Output;
 
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
+use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
+use Session;
 
 /**
- *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
+ * @phpstan-consistent-constructor
  */
-abstract class PDFSearchOutput extends ExportSearchOutput
+abstract class Spreadsheet extends ExportSearchOutput
 {
+    protected \PhpOffice\PhpSpreadsheet\Spreadsheet $spread;
+    protected BaseWriter $writer;
+    protected $count;
+
+    public function __construct()
+    {
+        $this->spread = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    }
+
+    public static function showEndLine(bool $is_header_line): string
+    {
+        //only to satisfy inheritance
+        return "\n";
+    }
+
+    public static function showBeginHeader(): string
+    {
+        //only to satisfy inheritance
+        return '';
+    }
+
+    public static function showHeader($rows, $cols, $fixed = 0): string
+    {
+        //only to satisfy inheritance
+        return '';
+    }
+
+    public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
+    {
+        //only to satisfy inheritance
+        return '';
+    }
+
+    public static function showItem($value, &$num, $row, $extraparam = ''): string
+    {
+        //only to satisfy inheritance
+        return '';
+    }
+
+    public static function showFooter($title = "", $count = null): string
+    {
+        //only to satisfy inheritance
+        return '';
+    }
+
+    public function displayData(array $data, array $params = [])
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (
+            !isset($data['data'])
+            || !isset($data['data']['totalcount'])
+            || $data['data']['count'] <= 0
+            || $data['search']['as_map'] != 0
+        ) {
+            return false;
+        }
+
+        // Clear output buffers
+        $ob_config = ini_get('output_buffering');
+        $max_level = filter_var($ob_config, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
+        while (ob_get_level() > $max_level) {
+            ob_end_clean();
+        }
+        if (ob_get_level() > 0) {
+            ob_clean();
+        }
+
+        $spread = $this->getSpreasheet();
+        $writer = $this->getWriter();
+
+        //set styles
+        $style = $spread->getDefaultStyle();
+        $font = $style->getFont();
+
+        //write metadata
+        $spread->getProperties()
+            ->setCreator("GLPI " . GLPI_VERSION)
+            ->setTitle($this->getTitle($data))
+            ->setCustomProperty('items count', $data['data']['totalcount'])
+        ;
+
+        $worksheet = $spread->getActiveSheet();
+
+        $line_num = 1;
+        $col_num = 0;
+
+        $font->setName($_SESSION['glpipdffont'] ?? 'helvetica');
+        $font->setSize(8);
+
+        // Display column Headers for toview items
+        $metanames = [];
+        foreach ($data['data']['cols'] as $val) {
+            ++$col_num;
+            $name = $val["name"];
+
+            // prefix by group name (corresponding to optgroup in dropdown) if exists
+            if (isset($val['groupname'])) {
+                $groupname = $val['groupname'];
+                if (is_array($groupname)) {
+                    $groupname = $groupname['name'];
+                }
+                $name  = "$groupname - $name";
+            }
+
+            // Not main itemtype add itemtype to display
+            if ($data['itemtype'] != $val['itemtype']) {
+                if (!isset($metanames[$val['itemtype']])) {
+                    if ($metaitem = getItemForItemtype($val['itemtype'])) {
+                        $metanames[$val['itemtype']] = $metaitem->getTypeName();
+                    }
+                }
+                $name = sprintf(
+                    __('%1$s - %2$s'),
+                    $metanames[$val['itemtype']],
+                    $val["name"]
+                );
+            }
+
+            $worksheet->setCellValue([$col_num, $line_num], $name);
+        }
+
+        // Add specific column Header
+        if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+            ++$col_num;
+            $worksheet->setCellValue([$col_num, $line_num], __('Item type'));
+        }
+
+        //column headers in bold
+        $worksheet->getStyle('A1:' . $worksheet->getHighestColumn() . '1')
+            ->getFont()->setBold(true);
+
+        $typenames = [];
+        // Display Loop
+        foreach ($data['data']['rows'] as $row) {
+            $col_num = 0;
+            ++$line_num;
+
+            // Print other toview items
+            foreach ($data['data']['cols'] as $col) {
+                ++$col_num;
+                $colkey = "{$col['itemtype']}_{$col['id']}";
+
+                $value = DataExport::normalizeValueForTextExport($row[$colkey]['displayname'] ?? '');
+                $worksheet->setCellValue([$col_num, $line_num], $value);
+            }
+
+            if (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
+                ++$col_num;
+                if (!isset($typenames[$row["TYPE"]])) {
+                    if ($itemtmp = getItemForItemtype($row["TYPE"])) {
+                        $typenames[$row["TYPE"]] = $itemtmp->getTypeName();
+                    }
+                }
+                $value = DataExport::normalizeValueForTextExport($typenames[$row["TYPE"]] ?? '');
+                $worksheet->setCellValue([$col_num, $line_num], $value);
+            }
+
+            if ($line_num % 2 != 0) {
+                $worksheet->getStyle('A' . $line_num . ':' . $worksheet->getHighestColumn() . $line_num)->getFill()
+                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('FFDDDDDD');
+            }
+        }
+
+        header('Content-Type: ' . $this->getMime());
+        header('Content-Disposition: attachment; filename="' . urlencode($this->getFileName()) . '"');
+        $writer->save('php://output');
+    }
+
+    public function getWriter(): BaseWriter
+    {
+        return $this->writer;
+    }
+
+    public function getSpreasheet(): \PhpOffice\PhpSpreadsheet\Spreadsheet
+    {
+        return $this->spread;
+    }
+
     /**
-     * Compute title (use case of PDF OUTPUT)
+     * Get file title
      *
      * @param array $data Array data of search
      *
      * @return string Title
      **/
-    protected static function computeTitle(array $data): string
+    protected function getTitle(array $data): string
     {
         $title = "";
 
@@ -84,7 +267,7 @@ abstract class PDFSearchOutput extends ExportSearchOutput
                         __('%1$s %2$s (%3$s)'),
                         $titlecontain,
                         $oldlink,
-                        self::computeTitle($newdata)
+                        $this->getTitle($newdata)
                     );
                 } else {
                     if (strlen($criteria['value']) > 0) {
@@ -365,76 +548,21 @@ abstract class PDFSearchOutput extends ExportSearchOutput
                 $title .= $titlecontain2;
             }
         }
-        return $title;
-    }
 
-    public static function showNewLine($odd = false, $is_deleted = false): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $style = "";
-        if ($odd) {
-            $style = " style=\"background-color:#DDDDDD;\" ";
+        if ($title === '') {
+            $itemtype = new $data['itemtype']();
+            $title = sprintf(
+                __('All %1$s'),
+                $itemtype::getTypeName(Session::getPluralNumber())
+            );
         }
-        $PDF_TABLE .= "<tr $style nobr=\"true\">";
-        return '';
+
+        return sprintf(
+            __('Search results for %1$s'),
+            $title
+        );
     }
 
-    public static function showEndLine(bool $is_header_line): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $PDF_TABLE .= '</tr>';
-        return '';
-    }
-
-    public static function showBeginHeader(): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $PDF_TABLE .= "<thead>";
-        return '';
-    }
-
-    public static function showHeader($rows, $cols, $fixed = 0): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $PDF_TABLE = "<table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" >";
-        return '';
-    }
-
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $PDF_TABLE .= "<th $options>";
-        $PDF_TABLE .= htmlspecialchars($value);
-        $PDF_TABLE .= "</th>";
-        $num++;
-        return '';
-    }
-
-    public static function showEndHeader(): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $PDF_TABLE .= "</thead>";
-        return '';
-    }
-
-    public static function showItem($value, &$num, $row, $extraparam = ''): string
-    {
-        /** @var string $PDF_TABLE */
-        global $PDF_TABLE;
-        $value = DataExport::normalizeValueForTextExport($value ?? '');
-        $value = htmlspecialchars($value);
-        $value = preg_replace('/' . \Search::LBBR . '/', '<br>', $value);
-        $value = preg_replace('/' . \Search::LBHR . '/', '<hr>', $value);
-        $PDF_TABLE .= "<td $extraparam valign='top'>";
-        $PDF_TABLE .= $value;
-        $PDF_TABLE .= "</td>";
-        $num++;
-        return '';
-    }
+    abstract public function getMime(): string;
+    abstract public function getFileName(): string;
 }

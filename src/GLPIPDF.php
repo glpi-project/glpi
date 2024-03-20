@@ -60,7 +60,7 @@ class GLPIPDF extends TCPDF
     ];
     private array $config = [];
 
-    public function __construct(array $config = [], int $count = null, string $title = null)
+    public function __construct(array $config = [], int $count = null, string $title = null, bool $addpage = true)
     {
         $config += self::$default_config;
         $this->config = $config;
@@ -95,7 +95,9 @@ class GLPIPDF extends TCPDF
 
         //set auto page breaks
         $this->SetAutoPageBreak(true, $config['margin_bottom']);
-        $this->AddPage();
+        if ($addpage === true) {
+            $this->AddPage();
+        }
     }
 
     /**

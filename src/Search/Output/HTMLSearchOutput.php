@@ -60,7 +60,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
         }
     }
 
-    public static function displayData(array $data, array $params = [])
+    public function displayData(array $data, array $params = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;

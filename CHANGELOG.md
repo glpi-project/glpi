@@ -30,6 +30,7 @@ The present file will list all changes made to the project; according to the
 - Directly capture screenshots or screen recordings from the "Add a document" form in tickets.
 - With a clean install, dashboards now show fake/placeholder data by default with a message indicating you are viewing demonstration data and a button to disable it.
 - Assets that can be assigned to users/groups have new "View assigned" and "Update assigned" rights which give read/update access to users and groups assigned to the asset.
+- `ODS` and `XLS` export of search results.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
@@ -75,6 +76,7 @@ The present file will list all changes made to the project; according to the
 - API URL is no longer customizable within GLPI. Use alias/rewrite rules in your web server configuration instead if needed.
 - `status.php` and `bin/console system:status` no longer supports plain-text output.
 - `Glpi\System\Status\StatusChecker::getServiceStatus()` `as_array` parameter.
+- `Sylk` export of search results.
 
 ### API changes
 
@@ -258,6 +260,7 @@ The present file will list all changes made to the project; according to the
 - `RuleImportComputerCollection` class.
 - `RuleMatchedLog::showFormAgent()`.
 - `RuleMatchedLog::showItemForm()`.
+- `Search::SYLK_OUTPUT` constant.
 - `Search::computeTitle()`
 - `Search::csv_clean()`
 - `Search::findCriteriaInSession()`

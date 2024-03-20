@@ -40,7 +40,7 @@ use Glpi\RichText\RichText;
 class DataExport
 {
     /**
-     * Normalize a value for text export (PDF, CSV, SYLK, ...).
+     * Normalize a value for text export (PDF, CSV, ...).
      *
      * @param string $value
      *

@@ -74,7 +74,7 @@ final class MapSearchOutput extends HTMLSearchOutput
         return $params;
     }
 
-    public static function displayData(array $data, array $params = []): void
+    public function displayData(array $data, array $params = []): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
