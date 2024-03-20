@@ -3170,6 +3170,9 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
         return [
             'LEFT JOIN' => [
                 "glpi_dropdowntranslations AS $alias" => [
@@ -3178,7 +3181,7 @@ final class SQLProvider implements SearchProviderInterface
                         new QueryExpression("'$itemtype'"),
                         [
                             'AND' => [
-                                "$alias.items_id" => "$table.id",
+                                "$alias.items_id" => new QueryExpression($DB::quoteName("$table.id")),
                                 "$alias.language" => $_SESSION['glpilanguage'],
                                 "$alias.field"    => $field
                             ]
