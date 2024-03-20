@@ -9541,6 +9541,19 @@ CREATE TABLE `glpi_forms_destinations_formdestinations` (
     KEY `forms_forms_id` (`forms_forms_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_forms_accesscontrols_formaccesscontrols`;
+CREATE TABLE `glpi_forms_accesscontrols_formaccesscontrols` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+    `strategy` varchar(255) NOT NULL,
+    `config` JSON NOT NULL,
+    `is_active` tinyint NOT NULL DEFAULT '0',
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unicity` (`forms_forms_id`, `strategy`),
+    KEY `forms_forms_id` (`forms_forms_id`),
+    KEY `is_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_items_ticketrecurrents`;
 CREATE TABLE `glpi_items_ticketrecurrents` (
    `id` int unsigned NOT NULL AUTO_INCREMENT,

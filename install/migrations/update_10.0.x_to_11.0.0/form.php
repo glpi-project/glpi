@@ -151,6 +151,21 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
+if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
+    $DB->doQueryOrDie(
+        "CREATE TABLE `glpi_forms_accesscontrols_formaccesscontrols` (
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `strategy` varchar(255) NOT NULL,
+            `config` JSON NOT NULL,
+            `is_active` tinyint NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (`forms_forms_id`, `strategy`),
+            KEY `forms_forms_id` (`forms_forms_id`),
+            KEY `is_active` (`is_active`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+    );
+}
 
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
