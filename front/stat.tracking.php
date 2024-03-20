@@ -76,12 +76,12 @@ if (
 
 $params = [
     'itemtype'  => $_GET["itemtype"] ?? "",
-    'type'      => (string)$_GET["type"] ?? "user",
+    'type'      => (string)($_GET["type"] ?? "user"),
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
     'value2'    => $_GET["value2"] ?? 0,
-    'start'     => (int)$_GET["start"] ?? 0,
-    'showgraph' => (int)$_GET["showgraph"] ?? 0,
+    'start'     => (int)($_GET["start"] ?? 0),
+    'showgraph' => (int)($_GET["showgraph"] ?? 0),
 ];
 
 $values = Stat::getITILStatFields($params['itemtype']);
