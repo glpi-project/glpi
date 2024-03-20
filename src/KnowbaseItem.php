@@ -1621,9 +1621,9 @@ TWIG, $twig_params);
                         'FIELDS' => 'documents_id',
                         'FROM'   => 'glpi_documents_items',
                         'WHERE'  => [
-                                'items_id'  => $data["id"],
-                                'itemtype'  => 'KnowbaseItem'
-                            ] + getEntitiesRestrictCriteria('', '', '', true)
+                            'items_id'  => $data["id"],
+                            'itemtype'  => 'KnowbaseItem'
+                        ] + getEntitiesRestrictCriteria('', '', '', true)
                     ]);
                     foreach ($iterator as $docs) {
                         $doc = new Document();
