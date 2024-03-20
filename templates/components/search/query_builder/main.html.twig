@@ -35,7 +35,7 @@
 {% set rand = random() %}
 {% set mainform = mainform is not defined ? true : mainform %}
 {% set main_block_class = mainform ? '' : 'sub_criteria' %}
-{% set card_class = mainform ? 'search-form card card-sm' : 'border d-inline-block ms-1' %}
+{% set card_class = mainform ? 'search-form card card-sm border mb-3' : 'border d-inline-block ms-1' %}
 {% set hide_criteria = not(p.hide_criteria is defined and not p.hide_criteria) %}
 {% set extra_actions_templates = p.extra_actions_templates|default([]) %}
 {% set hide_controls = p.hide_controls is defined and p.hide_controls %}
