@@ -41,7 +41,7 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
 {
     protected function createExternalWriterInstance($orientation, $unit, $paperSize): \TCPDF
     {
-        $instance = new class(
+        $instance = new class (
             [
                 'orientation' => $orientation,
                 'unit' => $unit,
@@ -54,7 +54,8 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
             null,
             false
         ) extends \GLPIPDF {
-            public function setPrintFooter ($val = true) {
+            public function setPrintFooter($val = true)
+            {
                 //override because \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::save() explicitly calls setPrintFooter(false) -_-
                 $this->print_footer = true;
             }
