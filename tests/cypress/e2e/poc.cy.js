@@ -33,7 +33,7 @@
 
 describe('POC Tests', () => {
     beforeEach(() => {
-        cy.login('glpi', 'glpi');
+        cy.login('e2e_tests', 'glpi');
     });
     it('TinyMCE set content', () => {
         cy.visit('/front/ticket.form.php');
