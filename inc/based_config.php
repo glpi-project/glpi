@@ -212,7 +212,13 @@ if (!isCommandLine()) {
     foreach ($constants_names as $name) {
         $value = $constants[GLPI_ENVIRONMENT_TYPE][$name] ?? $constants['default'][$name];
         if (!defined($name) && (!is_string($value) || !preg_match($inherit_pattern, $value))) {
-            define($name, $value);
+            if (
+                (!is_string($value) && !is_array($value))
+                || (is_string($value) && !preg_match($inherit_pattern, $value))
+                || (is_array($value) && count(preg_grep($inherit_pattern, $value)) === 0)
+            ) {
+                define($name, $value);
+            }
         }
     }
     foreach ($constants_names as $name) {
