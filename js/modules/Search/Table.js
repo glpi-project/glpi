@@ -144,7 +144,9 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
     onLimitChange(target) {
         const new_limit = target.value;
-        $(target).closest('form').find('select.search-limit-dropdown').each(function() {
+        console.log(this.getElement());
+
+        this.getResultsView().getAJAXContainer().find('select.search-limit-dropdown').each(function() {
             $(this).val(new_limit);
         });
 
