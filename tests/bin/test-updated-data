@@ -35,6 +35,7 @@
  */
 
 define('GLPI_ROOT', dirname(dirname(__DIR__)));
+define('GLPI_ENVIRONMENT_TYPE', 'testing');
 define('GLPI_CONFIG_DIR', GLPI_ROOT . '/tests/config');
 define('GLPI_VAR_DIR', GLPI_ROOT . '/tests/files');
 define(
