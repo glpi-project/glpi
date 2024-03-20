@@ -348,8 +348,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
         // Support old "knowbaseitemcategories_id" input
-        // FIXME Deprecate it in GLPI 11.0
         if (isset($this->input['knowbaseitemcategories_id'])) {
+            Toolbox::deprecated('knowbaseitemcategories_id input is deprecated. Use _categories instead');
             $categories = $this->input['knowbaseitemcategories_id'];
             $this->input['_categories'] = is_array($categories) ? $categories : [$categories];
             unset($this->input['knowbaseitemcategories_id']);
