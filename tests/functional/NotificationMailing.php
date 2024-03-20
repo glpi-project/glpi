@@ -100,7 +100,7 @@ class NotificationMailing extends DbTestCase
              'name'                     => 'Test notification',
              'sender'                   => 'glpi@tests',
              'sendername'               => 'TEST',
-             'recipient'                => \Session::getLoginUserID(),
+             'recipient'                => (string) \Session::getLoginUserID(),
              'recipientname'            => '',
              'replyto'                  => null,
              'replytoname'              => null,
