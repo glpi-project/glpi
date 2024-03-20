@@ -41,7 +41,7 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
 {
     protected function createExternalWriterInstance($orientation, $unit, $paperSize): \TCPDF
     {
-        $instance = new \GLPIPDF(
+        $instance = new class(
             [
                 'orientation' => $orientation,
                 'unit' => $unit,
@@ -53,7 +53,12 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
             $this->spreadsheet->getProperties()->getCustomPropertyValue('items count'),
             null,
             false
-        );
+        ) extends \GLPIPDF {
+            public function setPrintFooter ($val = true) {
+                //override because \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::save() explicitly calls setPrintFooter(false) -_-
+                $this->print_footer = true;
+            }
+        };
 
         //remove size considerations so TCPDF do its work.
         $callback = function ($html) {
@@ -74,52 +79,5 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
         $this->setEditHtmlCallback($callback);
 
         return $instance;
-    }
-
-    /**
-     * Fully copy-pasted from \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf to comment setPrintFooter(false) -_-
-     */
-    public function save($filename, int $flags = 0): void
-    {
-        $fileHandle = parent::prepareForSave($filename);
-
-        //  Default PDF paper size
-        $paperSize = 'LETTER'; //    Letter    (8.5 in. by 11 in.)
-
-        //  Check for paper size and page orientation
-        $setup = $this->spreadsheet->getSheet($this->getSheetIndex() ?? 0)->getPageSetup();
-        $orientation = $this->getOrientation() ?? $setup->getOrientation();
-        $orientation = ($orientation === PageSetup::ORIENTATION_LANDSCAPE) ? 'L' : 'P';
-        $printPaperSize = $this->getPaperSize() ?? $setup->getPaperSize();
-        $paperSize = self::$paperSizes[$printPaperSize] ?? PageSetup::getPaperSizeDefault();
-        $printMargins = $this->spreadsheet->getSheet($this->getSheetIndex() ?? 0)->getPageMargins();
-
-        //  Create PDF
-        $pdf = $this->createExternalWriterInstance($orientation, 'pt', $paperSize);
-        $pdf->setFontSubsetting(false);
-        //    Set margins, converting inches to points (using 72 dpi)
-        $pdf->SetMargins($printMargins->getLeft() * 72, $printMargins->getTop() * 72, $printMargins->getRight() * 72);
-        $pdf->SetAutoPageBreak(true, $printMargins->getBottom() * 72);
-
-        $pdf->setPrintHeader(false);
-        //$pdf->setPrintFooter(false);
-
-        $pdf->AddPage();
-
-        //  Set the appropriate font
-        $pdf->SetFont($this->getFont());
-        $pdf->writeHTML($this->generateHTMLAll());
-
-        //  Document info
-        $pdf->SetTitle($this->spreadsheet->getProperties()->getTitle());
-        $pdf->SetAuthor($this->spreadsheet->getProperties()->getCreator());
-        $pdf->SetSubject($this->spreadsheet->getProperties()->getSubject());
-        $pdf->SetKeywords($this->spreadsheet->getProperties()->getKeywords());
-        $pdf->SetCreator($this->spreadsheet->getProperties()->getCreator());
-
-        //  Write to file
-        fwrite($fileHandle, $pdf->output('', 'S'));
-
-        parent::restoreStateAfterSave();
     }
 }
