@@ -217,6 +217,10 @@ Cypress.Commands.add('blockGLPIDashboards', () => {
             return {};
         } else if (req.query['action'] === 'get_dashboard_items') {
             return '';
+        } else if (req.query['action'] === 'get_filter_data') {
+            return {};
+        } else if (req.query['action'] === 'get_dashboard_filters') {
+            return '';
         } else {
             return '';
         }
