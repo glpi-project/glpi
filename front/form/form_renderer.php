@@ -33,18 +33,23 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Form;
 use Glpi\Form\Renderer\FormRenderer;
+use Glpi\Http\Firewall;
 use Glpi\Http\Response;
+
+/** @var array $CFG_GLPI */
+
+// Real security stategy will be handled a bit later as we need the framework and
+// the target form to be loaded.
+$SECURITY_STRATEGY = 'no_check';
 
 include('../../inc/includes.php');
 
 /**
  * Endpoint used to display or preview a form.
  */
-
-// For now form rendering is only used to preview a form by a technician
-Session::checkRight(Form::$rightname, READ);
 
 // Mandatory parameter: id of the form to render
 $id = $_GET['id'] ?? 0;
@@ -58,8 +63,23 @@ if (!$form) {
     Response::sendError(404, __("Form not found"));
 }
 
-// TODO: if displaying a form, check form access configuration (not yet implemented)
-// TODO: if previewing a form, check view rights on forms
+$manager = FormAccessControlManager::getInstance();
+
+// Manual session checks depending on the configurated access
+// This is a separate step from the `canAnswerForm` step to force each
+// access controls to be explicit on this point and avoid opening
+// too much access to unauthenticated users by mistake.
+$firewall = new Firewall($CFG_GLPI['root_doc']);
+if ($manager->canUnauthenticatedUsersAccessForm($form)) {
+    $firewall->applyStrategy($_SERVER['PHP_SELF'], Firewall::STRATEGY_NO_CHECK);
+} else {
+    $firewall->applyStrategy($_SERVER['PHP_SELF'], Firewall::STRATEGY_AUTHENTICATED);
+}
+
+// Validate form access
+if (!$manager->canAnswerForm($form)) {
+    Response::sendError(403, __("You are not allowed to answer this form."));
+}
 
 // Render the requested form
 Html::header(
