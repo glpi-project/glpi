@@ -33,7 +33,6 @@
 
 .comments {
     margin: 0 0 0 1em;
-
     padding: 0;
     list-style: none;
     position: relative;
@@ -46,8 +45,8 @@
         clear: both;
     }
 
-    &:before,
-    ul:before {
+    &::before,
+    ul::before {
         content: "";
         display: block;
         width: 0;
@@ -58,7 +57,7 @@
         border-left: 1px solid #CECECE;
     }
 
-    ul.has_sub_answers:before {
+    ul.has_sub_answers::before {
         bottom: inherit;
         height: 105px;
     }
@@ -73,23 +72,7 @@
         clear: left;
 
         &.has_answers {
-            /*&:before {
-                content: "";
-                display: block;
-                width: 20px;
-
-                // same with indentation
-                height: 0;
-                border-top: 1px solid #CECECE;
-                margin-top: -1px;
-
-                // border top width
-                position: absolute;
-                top: 7.5em;
-                left: 0;
-            }*/
-
-            &:last-child:before {
+            &:last-child::before {
                 // same with body background
                 height: auto;
                 top: 7.5em;
@@ -98,7 +81,7 @@
         }
 
         &:not(.has_answers) {
-            ul:before {
+            ul::before {
                 display: none;
             }
         }
@@ -134,7 +117,7 @@
     min-height: 70px;
 }
 
-input[type=checkbox].toggle_comments {
+input[type="checkbox"].toggle_comments {
     display: none;
 
     +.toggle_label {
@@ -146,7 +129,7 @@ input[type=checkbox].toggle_comments {
         width: 14px;
         height: 14px;
 
-        &:before {
+        &::before {
             content: "";
             display: block;
             width: 12px;
@@ -175,13 +158,14 @@ input[type=checkbox].toggle_comments {
 
     &:not(:checked) {
         +.toggle_label {
-            &:before {
+            &::before {
                 content: "...";
                 border: none;
                 top: -12px;
                 left: 20px;
             }
         }
+
         ~ul {
             display: none;
         }
