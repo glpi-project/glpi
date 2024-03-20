@@ -1605,19 +1605,22 @@ class User extends \DbTestCase
                 ]
             ])
         ]);
-        $this->array($users)->hasSize(3);
-        $this->array(array_column($users, 'name'))->isEqualTo(['glpi', TU_USER, "jsmith123"]);
+        $this->array($users)->hasSize(4);
+        $this->array(array_column($users, 'name'))->containsValues(['glpi', TU_USER, "jsmith123", 'e2e_tests']);
 
         $glpi = getItemByTypeName('User', 'glpi');
         $tu_user = getItemByTypeName('User', TU_USER);
         $jsmith123 = getItemByTypeName('User', 'jsmith123');
+        $e2e_tests = getItemByTypeName('User', 'e2e_tests');
 
-        // Delete 2 users
+        // Delete other users
         $this->login('glpi', 'glpi');
         $this->boolean($tu_user->canDeleteItem())->isTrue();
         $this->boolean($tu_user->delete(['id' => $tu_user->getID()]))->isTrue();
         $this->boolean($jsmith123->canDeleteItem())->isTrue();
         $this->boolean($jsmith123->delete(['id' => $jsmith123->getID()]))->isTrue();
+        $this->boolean($e2e_tests->canDeleteItem())->isTrue();
+        $this->boolean($e2e_tests->delete(['id' => $e2e_tests->getID()]))->isTrue();
 
         // Last user, can't be deleted or disabled
         $this->boolean($glpi->update([
