@@ -784,7 +784,7 @@ class Group extends CommonTreeDropdown
             ]
         ];
         if ($tree || $user) {
-            $columns['field'] = sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1));
+            $columns['field'] = sprintf(__s('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1));
         }
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
@@ -805,7 +805,8 @@ class Group extends CommonTreeDropdown
                 'container'     => 'mass' . static::class . $rand,
                 'check_itemtype'   => 'Group',
                 'check_items_id'   => $ID,
-                'extraparams'      => ['is_tech' => $tech ? 1 : 0,
+                'extraparams'      => [
+                    'is_tech' => $tech ? 1 : 0,
                     'massive_action_fields' => ['field']
                 ],
                 'specific_actions' => [
