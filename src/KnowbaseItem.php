@@ -812,9 +812,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
                         $this->fields['answer'] = $solution->getField('content');
                     }
                     if ($item->isField('itilcategories_id')) {
-                          $ic = new ITILCategory();
-                        if ($ic->getFromDB($item->getField('itilcategories_id'))) {
-                            $this->fields['knowbaseitemcategories_id'] = $ic->getField('knowbaseitemcategories_id');
+                        $ic = new ITILCategory();
+                        if (
+                            $ic->getFromDB($item->getField('itilcategories_id'))
+                            && $ic->fields['knowbaseitemcategories_id'] > 0
+                        ) {
+                            $this->fields['knowbaseitemcategories_id'] = $ic->fields['knowbaseitemcategories_id'];
                         }
                     }
                 }
