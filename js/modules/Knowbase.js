@@ -48,7 +48,7 @@ class Knowbase {
 
             $.ajax({
                 url: `${CFG_GLPI.root_doc}/ajax/getKbRevision.php`,
-                method: 'post',
+                method: 'GET',
                 cache: false,
                 data: {
                     revid: _this.data('revid')
@@ -56,13 +56,15 @@ class Knowbase {
             })
                 .done(function(data) {
                     glpi_html_dialog({
-                        title: __('Show revision %rev').replace(/%rev/, _this.data('rev')),
-                        body: `<div>
-                        <h2>${__('Subject')}</h2>
-                        <div>${data.name}</div>
-                        <h2>${__('Content')}</h2>
-                        <div>${data.answer}</div>
-                     </div>`,
+                        title: __('Show revision %d').replace('%d', _this.data('rev')),
+                        body: `
+                            <div>
+                                <h2>${__('Subject')}</h2>
+                                <div>${data.name}</div>
+                                <h2>${__('Content')}</h2>
+                                <div>${data.answer}</div>
+                            </div>
+                        `,
                     });
                 })
                 .fail(function() {
@@ -75,23 +77,23 @@ class Knowbase {
 
         $(document).on('click', '.compare', (e) => {
             e.preventDefault();
-            const _oldid = $('[name=oldid]:checked').val();
-            let _diffid = $('[name=diff]:checked').val();
+            const _oldid = $('[name="oldid"]:checked').val();
+            let _diffid = $('[name="diff"]:checked').val();
             const kbitem_id = $(e.currentTarget).data('kbitem_id');
             this.#showRevisionComparison(kbitem_id, _oldid, _diffid);
         });
 
-        $('[name=diff]:gt(0)').css('visibility', 'hidden');
-        $('[name=oldid]').on('click', (e) => {
-            const _index = $(e.target).index('[name=oldid]');
+        $('[name="diff"]:gt(0)').css('visibility', 'hidden');
+        $('[name="oldid"]').on('click', (e) => {
+            const _index = $(e.target).index('[name="oldid"]');
 
-            const _checked_index = $('[name=diff]:checked').index('[name=diff]');
+            const _checked_index = $('[name="diff"]:checked').index('[name="diff"]');
             if (_checked_index >= _index) {
-                $('[name=diff]:eq(' + (_index - 1) +')').prop('checked', true);
+                $('[name="diff"]:eq(' + (_index - 1) +')').prop('checked', true);
             }
 
-            $(`[name=diff]:gt(${_index}), [name=diff]:eq(${_index})`).css('visibility', 'hidden');
-            $(`[name=diff]:lt(${_index})`).css('visibility', 'visible');
+            $(`[name="diff"]:gt(${_index}), [name="diff"]:eq(${_index})`).css('visibility', 'hidden');
+            $(`[name="diff"]:lt(${_index})`).css('visibility', 'visible');
         });
     }
 
@@ -100,7 +102,7 @@ class Knowbase {
         // from the server. We can load the library (if it isn't already and the data at the same time and await both promises.
         // The dynamic import will not load the library again if it is already loaded, it will simply resolve immediately.
 
-        const lib_import = import(`../../public/lib/jquery-prettytextdiff.js`);
+        const lib_import = import(`${CFG_GLPI.root_doc}/lib/jquery-prettytextdiff.js`);
         const data_promise = $.ajax({
             url: `${CFG_GLPI.root_doc}/ajax/compareKbRevisions.php`,
             method: 'post',
@@ -118,34 +120,36 @@ class Knowbase {
             }
 
             glpi_html_dialog({
-                title: __('Compare revisions old and diff')
-                    .replace(/old/, old_id)
-                    .replace(/diff/, new_id),
-                body: `<div id='compare_view'>
-                        <table class='table'>
-                           <tr>
-                              <th></th>
-                              <th>${__('Original')}</th>
-                              <th>${__('Changed')}</th>
-                              <th>${__('Differences')}</th>
-                           </tr>
-                           <tr>
-                              <th>${__('Subject')}</th>
-                              <td class='original'>${data['old']['name']}</td>
-                              <td class='changed'>${data['diff']['name']}</td>
-                              <td class='diff'></td>
-                           </tr>
-                           <tr>
-                              <th>${__('Content')}</th>
-                              <td class='original'>${data['old']['answer']}</td>
-                              <td class='changed'>${data['diff']['answer']}</td>
-                              <td class='diff'></td>
-                           </tr>
+                title: __('Compare revisions %1$d and %2$d')
+                    .replace("%1$d", old_id)
+                    .replace("%2$d", new_id),
+                body: `
+                    <div id="compare_view_${kb_item_id}">
+                        <table class="table">
+                            <tr>
+                                <th></th>
+                                <th>${__('Original')}</th>
+                                <th>${__('Changed')}</th>
+                                <th>${__('Differences')}</th>
+                            </tr>
+                            <tr>
+                                <th>${__('Subject')}</th>
+                                <td class="original">${data['old']['name']}</td>
+                                <td class="changed">${data['diff']['name']}</td>
+                                <td class="diff"></td>
+                            </tr>
+                            <tr>
+                                <th>${__('Content')}</th>
+                                <td class="original">${data['old']['answer']}</td>
+                                <td class="changed">${data['diff']['answer']}</td>
+                                <td class="diff"></td>
+                            </tr>
                         </table>
-                     </div>`,
+                    </div>
+                `,
             });
 
-            $('#compare_view tr').prettyTextDiff();
+            $(`#compare_view_${kb_item_id} tr`).prettyTextDiff();
         }, () => {
             glpi_alert({
                 title: __('Contact your GLPI admin!'),
