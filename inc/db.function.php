@@ -112,7 +112,7 @@ function getItemTypeForTable($table)
  *
  * @param string $fkname
  *
- * @return string ItemType name for the fkname parameter
+ * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
  */
 function getItemtypeForForeignKeyField($fkname)
 {
