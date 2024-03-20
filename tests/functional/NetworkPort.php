@@ -386,8 +386,9 @@ class NetworkPort extends DbTestCase
         // Display all columns
         $so = $netport->rawSearchOptions();
         $displaypref = new \DisplayPreference();
+        $so_display = [];
         foreach ($so as $column) {
-            if (isset ($column['field'])) {
+            if (isset($column['field'])) {
                 $input = [
                     'itemtype' => 'NetworkPort',
                     'users_id' => \Session::getLoginUserID(),
