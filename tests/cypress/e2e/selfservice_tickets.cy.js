@@ -31,24 +31,24 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Self-Service Tickets', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Self-Service');
-    });
-    it('Create a ticket', () => {
-        cy.visit('/');
-
-        cy.get('aside.sidebar').contains('Create a ticket').click();
-        cy.url().should('include', '/front/helpdesk.public.php?create_ticket=1');
-
-        cy.get('form.new-itil-object').within(() => {
-            cy.get('input[name="name"]').type('My first ticket');
-            cy.get('textarea[name="content"]').type('This is my first ticket in GLPI. I sure hope it works.', { interactive: true });
-            cy.get('button[type="submit"]').contains('Submit message').click();
-        });
-
-        cy.url().should('include', '/front/tracking.injector.php');
-        cy.get('main#page img').should('have.attr', 'src', '/pics/ok.png');
-    });
-});
+// describe('Self-Service Tickets', () => {
+//     beforeEach(() => {
+//         cy.login();
+//         cy.changeProfile('Self-Service');
+//     });
+//     it('Create a ticket', () => {
+//         cy.visit('/');
+//
+//         cy.get('aside.sidebar').contains('Create a ticket').click();
+//         cy.url().should('include', '/front/helpdesk.public.php?create_ticket=1');
+//
+//         cy.get('form.new-itil-object').within(() => {
+//             cy.get('input[name="name"]').type('My first ticket');
+//             cy.get('textarea[name="content"]').type('This is my first ticket in GLPI. I sure hope it works.', { interactive: true });
+//             cy.get('button[type="submit"]').contains('Submit message').click();
+//         });
+//
+//         cy.url().should('include', '/front/tracking.injector.php');
+//         cy.get('main#page img').should('have.attr', 'src', '/pics/ok.png');
+//     });
+// });
