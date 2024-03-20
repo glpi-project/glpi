@@ -72,10 +72,17 @@
  * @description Assert that the subject is a TinyMCE editor and try to wait for tinyMCE to initialize the editor.
  */
 
+/**
+ * @memberof cy
+ * @method blockGLPIDashboards
+ * @description Block requests to /ajax/dashboard.php to make page ready faster and avoid some JS errors when navigating away during loading.
+ */
+
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     cy.session(
         username,
         () => {
+            cy.blockGLPIDashboards();
             cy.visit('/');
             cy.title().should('eq', 'Authentication - GLPI');
             cy.get('#login_name').type(username);
@@ -104,6 +111,7 @@ Cypress.Commands.add('changeProfile', (profile) => {
     // If on about:blank, we need to get back to GLPI.
     // Can happen at the start of a test if the login restored an existing session and therefore no redirect happened.
     // With testIsolation, cypress starts each test on about:blank.
+    cy.blockGLPIDashboards();
     cy.url().then((url) => {
         if (url === 'about:blank') {
             cy.visit('/');
@@ -201,3 +209,16 @@ Cypress.Commands.add('selectDate', {
     });
 });
 
+Cypress.Commands.add('blockGLPIDashboards', () => {
+    cy.intercept('/ajax/dashboard.php', (req) => {
+        if (req.query['action'] === 'get_card') {
+            return '';
+        } else if (req.query['action'] === 'get_cards') {
+            return {};
+        } else if (req.query['action'] === 'get_dashboard_items') {
+            return '';
+        } else {
+            return '';
+        }
+    });
+});
