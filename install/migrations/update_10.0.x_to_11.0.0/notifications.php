@@ -317,3 +317,6 @@ $migration->addKey(
     "item_trigger"
 );
 /** /Add handling of source item of attached documents in notification */
+
+$migration->addField('glpi_notificationtargets', 'is_exclusion', 'boolean');
+$migration->addKey('glpi_notificationtargets', ['is_exclusion'], 'is_exclusion');

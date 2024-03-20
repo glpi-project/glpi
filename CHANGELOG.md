@@ -60,6 +60,7 @@ The present file will list all changes made to the project; according to the
   Permission checks at the item-level have not been changed.
 - External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
+- Notifications can now specify exclusions for recipients.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -80,6 +81,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 - `phpCAS` library is now bundled in GLPI, to prevent version compatibility issues.
 - `Glpi\DBAL\QueryFunction` class with multiple static methods for building SQL query function strings in an abstract way.
+- `is_exclusion` column added to `glpi_notificationtargets` table.
 
 #### Changes
 - Many methods have their signature changed to specify both their return type and the types of their parameters.

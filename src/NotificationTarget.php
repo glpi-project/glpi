@@ -438,10 +438,21 @@ class NotificationTarget extends CommonDBChild
             $canedit = $notification->can($notifications_id, UPDATE);
 
             $values = [];
+            $allowed_exclusion_types = [
+                Notification::PROFILE_TYPE,
+                Notification::GROUP_TYPE,
+            ];
+            $all_exclusion_targets = [];
             foreach ($this->notification_targets as $key => $val) {
                 [$type, $id] = explode('_', $key);
-                $values[$key] = $this->notification_targets_labels[$type][$id];
+                $label = $this->notification_targets_labels[$type][$id];
+                if (in_array((int) $type, $allowed_exclusion_types, true)) {
+                    $all_exclusion_targets[$key] = $label;
+                } else {
+                    $values[$key] = $label;
+                }
             }
+
             $targets = getAllDataFromTable(
                 self::getTable(),
                 [
@@ -449,16 +460,24 @@ class NotificationTarget extends CommonDBChild
                 ]
             );
             $actives = [];
+            $exclusions = [];
             if (count($targets)) {
                 foreach ($targets as $data) {
-                    $actives[$data['type'] . '_' . $data['items_id']] = $data['type'] . '_' . $data['items_id'];
+                    $target_key = $data['type'] . '_' . $data['items_id'];
+                    if ($data['is_exclusion']) {
+                        $exclusions[$target_key] = $target_key;
+                    } else {
+                        $actives[$target_key] = $target_key;
+                    }
                 }
             }
             TemplateRenderer::getInstance()->display('pages/setup/notification/recipients.html.twig', [
                 'item' => $this,
                 'notification' => $notification,
                 'all_targets' => $values,
+                'all_exclusion_targets' => $all_exclusion_targets,
                 'active_targets' => $actives,
+                'excluded_targets' => $exclusions,
                 'params' => [
                     'canedit' => $canedit
                 ]
@@ -512,7 +531,26 @@ class NotificationTarget extends CommonDBChild
             }
         }
 
-       // Drop others
+        if (isset($input['_exclusions']) && count($input['_exclusions'])) {
+            $input['_exclusions'] = array_unique($input['_exclusions']);
+            // Remove exclusions already set in _targets
+            $input['_exclusions'] = array_diff($input['_exclusions'], $input['_targets'] ?? []);
+            foreach ($input['_exclusions'] as $val) {
+               // Add if not set
+                if (!isset($actives[$val])) {
+                    list($type, $items_id)   = explode("_", $val);
+                    $tmp                     = [];
+                    $tmp['items_id']         = $items_id;
+                    $tmp['type']             = $type;
+                    $tmp['notifications_id'] = $input['notifications_id'];
+                    $tmp['is_exclusion']     = 1;
+                    $target->add($tmp);
+                }
+                unset($actives[$val]);
+            }
+        }
+
+        // Drop others
         if (count($actives)) {
             foreach ($actives as $val) {
                 list($type, $items_id) = explode("_", $val);
@@ -1350,9 +1388,82 @@ class NotificationTarget extends CommonDBChild
 
     final public function getTargets()
     {
-        return $this->target;
+        return $this->removeExcludedTargets($this->target);
     }
 
+    private function removeExcludedTargets(array $target_list)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $exclusions = iterator_to_array($DB->request([
+            'SELECT' => ['type', 'items_id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'is_exclusion'     => 1,
+                'notifications_id' => $this->data['notifications_id']
+            ]
+        ]));
+        if (empty($exclusions)) {
+            // No exclusion, no need to filter
+            return $target_list;
+        }
+        $user_ids = [];
+        foreach ($target_list as $target) {
+            if (isset($target['users_id'])) {
+                $user_ids[] = $target['users_id'];
+            }
+        }
+        if (empty($user_ids)) {
+            // Cannot filter targets without a user id
+            return $target_list;
+        }
+
+        // Criteria to get any user IDs that are excluded
+        $criteria = [
+            'SELECT' => [User::getTableField('id')],
+            'FROM' => User::getTable(),
+            'INNER JOIN' => [
+                Profile_User::getTable() => [
+                    'ON' => [
+                        Profile_User::getTable() => 'users_id',
+                        User::getTable()         => 'id'
+                    ]
+                ],
+                Group_User::getTable() => [
+                    'ON' => [
+                        Group_User::getTable() => 'users_id',
+                        User::getTable()       => 'id'
+                    ]
+                ]
+            ],
+            'WHERE' => [
+                'OR' => [
+                    [
+                        Profile_User::getTableField('profiles_id') => array_column($exclusions, 'items_id'),
+                        Profile_User::getTableField('users_id') => $user_ids
+                    ],
+                    [
+                        Group_User::getTableField('groups_id') => array_column($exclusions, 'items_id'),
+                        Group_User::getTableField('users_id') => $user_ids
+                    ]
+                ],
+            ]
+        ];
+
+        $excluded_user_ids = [];
+        $it = $DB->request($criteria);
+        foreach ($it as $data) {
+            $excluded_user_ids[] = $data['id'];
+        }
+
+        foreach ($target_list as $key => $target) {
+            if (isset($target['users_id']) && in_array($target['users_id'], $excluded_user_ids, true)) {
+                unset($target_list[$key]);
+            }
+        }
+
+        return $target_list;
+    }
 
     public function getEntity()
     {
@@ -1570,7 +1681,8 @@ class NotificationTarget extends CommonDBChild
                     Notification::SUPERVISOR_GROUP_TYPE,
                     Notification::GROUP_TYPE
                 ],
-                'items_id'  => $group->getID()
+                'items_id'  => $group->getID(),
+                'is_exclusion' => 0,
             ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
         ])->current();
         return $count['cpt'];
@@ -1611,7 +1723,8 @@ class NotificationTarget extends CommonDBChild
                     Notification::SUPERVISOR_GROUP_TYPE,
                     Notification::GROUP_TYPE
                 ],
-                'items_id'  => $group->getID()
+                'items_id'  => $group->getID(),
+                'is_exclusion' => 0,
             ] + getEntitiesRestrictCriteria(Notification::getTable(), '', '', true)
         ]);
 

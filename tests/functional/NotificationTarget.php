@@ -568,4 +568,67 @@ class NotificationTarget extends DbTestCase
         $messageid = $this->newTestedInstance()->getMessageIdForEvent($itemtype, $items_id, $event);
         $this->string($messageid)->matches($expected);
     }
+
+    public function testGetTargetsWithExclusions()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $notification_target = new \NotificationTarget();
+        $group = new \Group();
+        $user = new \User();
+
+        // Create new user with a fake email
+        $this->integer($users_id = $user->add([
+            'name'     => __FUNCTION__,
+        ]))->isGreaterThan(0);
+        $useremail = new \UserEmail();
+        $this->integer($useremail->add([
+            'users_id' => $users_id,
+            'email'    => __FUNCTION__ . '@localhost',
+            'is_default' => 1,
+        ]))->isGreaterThan(0);
+        // Create a new group for this user
+        $this->integer($groups_id = $group->add([
+            'name'     => __FUNCTION__,
+        ]))->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer($group_user->add([
+            'groups_id' => $groups_id,
+            'users_id'  => $users_id,
+        ]))->isGreaterThan(0);
+
+        $notification = new \Notification();
+        $this->integer($fake_notification_id = $notification->add([
+            'itemtype' => 'Ticket',
+            'event'    => 'new',
+        ]));
+        $notification_target->data = [
+            'notifications_id' => $fake_notification_id,
+        ];
+        $rc = new \ReflectionClass($notification_target);
+        $rc->getProperty('event')->setValue($notification_target, \NotificationEventMailing::class);
+
+        $notification_target->addToRecipientsList([
+            'users_id' => getItemByTypeName('User', TU_USER, true),
+            'usertype' => \NotificationTarget::GLPI_USER,
+        ]);
+        $notification_target->addToRecipientsList([
+            'users_id' => $users_id,
+            'usertype' => \NotificationTarget::GLPI_USER,
+        ]);
+        $this->array($notification_target->getTargets())->size->isEqualTo(2);
+
+        $this->integer($notification_target->add([
+            'notifications_id' => $fake_notification_id,
+            'type' => \Notification::GROUP_TYPE,
+            'items_id' => $groups_id,
+            'is_exclusion' => 1,
+        ]))->isGreaterThan(0);
+        // Only TU_USER should be in the list
+        $targets = $notification_target->getTargets();
+        $this->array($targets)->size->isEqualTo(1);
+        $target = reset($targets);
+        $this->integer($target['users_id'])->isEqualTo(getItemByTypeName('User', TU_USER, true));
+    }
 }

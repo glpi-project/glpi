@@ -5013,9 +5013,11 @@ CREATE TABLE `glpi_notificationtargets` (
   `items_id` int unsigned NOT NULL DEFAULT '0',
   `type` int NOT NULL DEFAULT '0',
   `notifications_id` int unsigned NOT NULL DEFAULT '0',
+  `is_exclusion` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `items` (`type`,`items_id`),
-  KEY `notifications_id` (`notifications_id`)
+  KEY `notifications_id` (`notifications_id`),
+  KEY `is_exclusion` (`is_exclusion`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
