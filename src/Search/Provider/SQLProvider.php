@@ -3193,26 +3193,6 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Add join for dropdown translations
-     *
-     * @param string $alias    Alias for translation table
-     * @param string $table    Table to join on
-     * @param string $itemtype Item type
-     * @param string $field    Field name
-     *
-     * @return string
-     */
-    public static function joinDropdownTranslations($alias, $table, $itemtype, $field): string
-    {
-        return "LEFT JOIN `glpi_dropdowntranslations` AS `$alias`
-                  ON (`$alias`.`itemtype` = '$itemtype'
-                        AND `$alias`.`items_id` = `$table`.`id`
-                        AND `$alias`.`language` = '" .
-            $_SESSION['glpilanguage'] . "'
-                        AND `$alias`.`field` = '$field')";
-    }
-
-    /**
      * Generic Function to add GROUP BY to a request
      *
      * @param string  $LINK           link to use
