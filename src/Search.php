@@ -1153,10 +1153,20 @@ class Search
      * @param string $field    Field name
      *
      * @return string
+     * @deprecated 11.0.0
      */
     public static function joinDropdownTranslations($alias, $table, $itemtype, $field)
     {
-        return SQLProvider::joinDropdownTranslations($alias, $table, $itemtype, $field);
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        Toolbox::deprecated();
+
+        return "LEFT JOIN " . $DB::quoteName('glpi_dropdowntranslations') . " AS " . $DB::quoteName($alias) . "
+                  ON (" . $DB::quoteName($alias . '.itemtype') . " = " . $DB->quote($itemtype) . "
+                    AND " . $DB::quoteName($alias . '.items_id') . " = " . $DB::quoteName($table . '.id') . "
+                    AND " . $DB::quoteName($alias . '.language') . " = " . $DB->quote($_SESSION['glpilanguage']) . "
+                    AND " . $DB::quoteName($alias . '.field') . " = " . $DB->quote($field) . ")";
     }
 
     /**
