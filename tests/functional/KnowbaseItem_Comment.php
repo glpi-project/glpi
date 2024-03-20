@@ -165,6 +165,7 @@ class KnowbaseItem_Comment extends DbTestCase
 
     public function testDisplayComments()
     {
+        //TODO This should be part of an E2E test
         $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
         $this->addComments($kb1);
 
@@ -172,16 +173,16 @@ class KnowbaseItem_Comment extends DbTestCase
         \KnowbaseItem_Comment::showForItem($kb1);
         $html = ob_get_clean();
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment \"/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(2);
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment\"/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(3);
 
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item\"/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
         $this->array($results[0])->hasSize(4);
 
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->array($results[0])->hasSize(5);
 
         // same tests, from another user
@@ -193,16 +194,16 @@ class KnowbaseItem_Comment extends DbTestCase
         \KnowbaseItem_Comment::showForItem($kb1);
         $html = ob_get_clean();
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment \"/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(2);
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment\"/", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->array($results[0])->hasSize(3);
 
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item\"/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
         $this->array($results[0])->hasSize(1);
 
-        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer/", $html, $results);
+        preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->array($results[0])->hasSize(5);
     }
 }
