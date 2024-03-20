@@ -35,7 +35,7 @@
     {% set has_answers = comment['answers'] is defined and comment['answers']|length > 0 %}
     <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
         data-id="{{ comment['id'] }}" data-kbitem_id="{{ comment['knowbaseitems_id'] }}" data-lang="{{ comment['language'] }}">
-        <div class="d-flex flex-wrap align-items-start {{ level == 0 ? "mt-6": "mt-3" }}">
+        <div class="d-flex flex-wrap align-items-start {{ level == 0 ? "mt-6" : "mt-3" }}">
             <a href="{{ comment['user_info']['link'] }}" class="me-3 mt-n2 ms-n2">
                 {% if comment['user_info']['avatar'] is not empty %}
                     {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
