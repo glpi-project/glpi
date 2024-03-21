@@ -68,6 +68,7 @@ if (class_exists($_POST["itemtype"])) {
         'rand'      => $rand,
         'name'      => "items",
         'entity'    => $_POST["entity_restrict"],
+        'entity_restrict'    => $_POST["entity_restrict"],
         'condition' => [
             'id' => new QuerySubQuery([
                 'SELECT' => 'items_id',
