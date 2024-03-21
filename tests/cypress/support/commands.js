@@ -213,19 +213,8 @@ Cypress.Commands.add('selectDate', {
  * @description Block requests to /ajax/dashboard.php to make page ready faster and avoid some JS errors when navigating away during loading.
  */
 Cypress.Commands.add('blockGLPIDashboards', () => {
-    cy.intercept('/ajax/dashboard.php', (req) => {
-        if (req.query['action'] === 'get_card') {
-            return '';
-        } else if (req.query['action'] === 'get_cards') {
-            return {};
-        } else if (req.query['action'] === 'get_dashboard_items') {
-            return '';
-        } else if (req.query['action'] === 'get_filter_data') {
-            return {};
-        } else if (req.query['action'] === 'get_dashboard_filters') {
-            return '';
-        } else {
-            return '';
-        }
-    });
+    // Intercepts need defined in reverse order
+    // Intercept all other requests to /ajax/dashboard.php and respond with an empty string
+    cy.intercept({path: '/ajax/dashboard.php**'}, { body: '' });
+    cy.intercept({path: '/ajax/dashboard.php?action=get_filter_data**'}, { body: '{}' });
 });

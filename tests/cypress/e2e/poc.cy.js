@@ -92,12 +92,12 @@ describe('POC Tests', () => {
         cy.wait('@search');
         cy.url().should('not.include', 'reset=reset');
         // Wait for the spinner to disappear
-        cy.get('table.search-results div.spinner-overlay').should('not.exist');
-
-        // No results in the table should have text other than "Processing (assigned)" in the status column
-        cy.get('table.search-results thead tr th').contains('Status').invoke('index').then((index) => {
-            cy.get('table.search-results tbody tr td:nth-child(' + (index + 1) + ')').each((cell) => {
-                cy.wrap(cell).contains('Processing (assigned)');
+        cy.get('table.search-results div.spinner-overlay').should('not.exist').then(() => {
+            // No results in the table should have text other than "Processing (assigned)" in the status column
+            cy.get('table.search-results thead tr th').contains('Status').invoke('index').then((index) => {
+                cy.get('table.search-results tbody tr td:nth-child(' + (index + 1) + ')').each((cell) => {
+                    cy.wrap(cell).contains('Processing (assigned)');
+                });
             });
         });
     });
