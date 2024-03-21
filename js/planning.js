@@ -439,7 +439,9 @@ var GLPIPlanning  = {
                 }).done(function() {
                     // indicate to central page we're done rendering
                     if (!options.full_view) {
-                        $(document).trigger('masonry_grid:layout');
+                        setTimeout(function () {
+                            $(document).trigger('masonry_grid:layout');
+                        }, 100);
                     }
                 });
 
