@@ -63,7 +63,8 @@
     {% set massive_action_form_id = "massform" ~ normalized_itemtype ~ rand %}
     <form id="{{ massive_action_form_id }}" method="get" action="{{ path('front/massiveaction.php') }}"
           data-search-itemtype="{{ data['itemtype'] }}"
-          data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once>
+          data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once
+          class="masssearchform">
 
         {% if data['search']['as_map'] == 0 %}
             {{ include('components/search/table.html.twig') }}

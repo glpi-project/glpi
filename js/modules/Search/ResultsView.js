@@ -46,6 +46,10 @@ window.GLPI.Search.ResultsView = class ResultsView {
         }
     }
 
+    setID(id) {
+        this.element_id = id;
+    }
+
     getElement() {
         return $('#'+this.element_id);
     }
