@@ -49,49 +49,39 @@ class ConsumableItem extends DbTestCase
         $consumableitem = $this->createItem(\ConsumableItem::class, [
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ], ['groups_id', 'groups_id_tech']);
+        ], ['groups_id_tech']);
         $consumableitems_id_1 = $consumableitem->fields['id'];
-        $this->array($consumableitem->fields['groups_id'])->containsValues([1, 2]);
         $this->array($consumableitem->fields['groups_id_tech'])->containsValues([3, 4]);
 
         $consumableitem = $this->createItem(\ConsumableItem::class, [
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'groups_id' => null,
             'groups_id_tech' => null,
-        ], ['groups_id', 'groups_id_tech']);
+        ], ['groups_id_tech']);
         $consumableitems_id_2 = $consumableitem->fields['id'];
-        $this->array($consumableitem->fields['groups_id'])->isEmpty();
         $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
 
         // Update both assets. Asset 1 will have the groups set to null and asset 2 will have the groups set to an array.
         $consumableitem->getFromDB($consumableitems_id_1);
         $this->boolean($consumableitem->update([
             'id' => $consumableitems_id_1,
-            'groups_id' => null,
             'groups_id_tech' => null,
         ]))->isTrue();
-        $this->array($consumableitem->fields['groups_id'])->isEmpty();
         $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
 
         $consumableitem->getFromDB($consumableitems_id_2);
         $this->boolean($consumableitem->update([
             'id' => $consumableitems_id_2,
-            'groups_id' => [5, 6],
             'groups_id_tech' => [7, 8],
         ]))->isTrue();
-        $this->array($consumableitem->fields['groups_id'])->containsValues([5, 6]);
         $this->array($consumableitem->fields['groups_id_tech'])->containsValues([7, 8]);
 
         // Test updating array to array
         $this->boolean($consumableitem->update([
             'id' => $consumableitems_id_2,
-            'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
         ]))->isTrue();
-        $this->array($consumableitem->fields['groups_id'])->containsValues([1, 2]);
         $this->array($consumableitem->fields['groups_id_tech'])->containsValues([3, 4]);
     }
 
@@ -140,7 +130,6 @@ class ConsumableItem extends DbTestCase
     {
         $consumableitem = new \ConsumableItem();
         $consumableitem->getEmpty();
-        $this->array($consumableitem->fields['groups_id'])->isEmpty();
         $this->array($consumableitem->fields['groups_id_tech'])->isEmpty();
     }
 }

@@ -1001,7 +1001,10 @@ final class SQLProvider implements SearchProviderInterface
 
         if (Toolbox::hasTrait($itemtype, AssignableAsset::class)) {
             /** @var AssignableAsset $itemtype */
-            $criteria[] = $itemtype::getAssignableVisiblityCriteria();
+            $visibility_criteria = $itemtype::getAssignableVisiblityCriteria();
+            if (count($visibility_criteria)) {
+                $criteria[] = $visibility_criteria;
+            }
         }
 
         /* Hook to restrict user right on current itemtype */

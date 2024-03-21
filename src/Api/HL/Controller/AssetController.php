@@ -52,6 +52,7 @@ use Group;
 use Location;
 use Manufacturer;
 use Network;
+use Software;
 use State;
 use User;
 
@@ -405,7 +406,7 @@ final class AssetController extends AbstractController
             if (\Toolbox::hasTrait($asset_type, AssignableAsset::class)) {
                 // Assignable assets all support multiple groups and the group links are in a separate table
                 if (in_array($asset_type, $CFG_GLPI['linkgroup_types'], true)) {
-                    $schemas[$schema_name]['properties']['groups'] = [
+                    $schemas[$schema_name]['properties']['group'] = [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
@@ -436,7 +437,7 @@ final class AssetController extends AbstractController
                     ];
                 }
                 if (in_array($asset_type, $CFG_GLPI['linkgroup_tech_types'], true)) {
-                    $schemas[$schema_name]['properties']['groups_tech'] = [
+                    $schemas[$schema_name]['properties']['group_tech'] = [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
@@ -699,7 +700,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Software'] = [
-            'x-itemtype' => \Software::class,
+            'x-itemtype' => Software::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
@@ -717,9 +718,65 @@ final class AssetController extends AbstractController
                 'parent' => self::getDropdownTypeSchema(class: \Software::class, full_schema: 'Software'),
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_assets',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => Software::class,
+                                    'type' => 0 // Normal
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_assets',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => Software::class,
+                                    'type' => 1 // Tech
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],

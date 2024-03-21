@@ -49,49 +49,39 @@ class CartridgeItem extends DbTestCase
         $cartridgeitem = $this->createItem(\CartridgeItem::class, [
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
-        ], ['groups_id', 'groups_id_tech']);
+        ], ['groups_id_tech']);
         $cartridgeitems_id_1 = $cartridgeitem->fields['id'];
-        $this->array($cartridgeitem->fields['groups_id'])->containsValues([1, 2]);
         $this->array($cartridgeitem->fields['groups_id_tech'])->containsValues([3, 4]);
 
         $cartridgeitem = $this->createItem(\CartridgeItem::class, [
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'groups_id' => null,
             'groups_id_tech' => null,
-        ], ['groups_id', 'groups_id_tech']);
+        ], ['groups_id_tech']);
         $cartridgeitems_id_2 = $cartridgeitem->fields['id'];
-        $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
         $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
 
         // Update both assets. Asset 1 will have the groups set to null and asset 2 will have the groups set to an array.
         $cartridgeitem->getFromDB($cartridgeitems_id_1);
         $this->boolean($cartridgeitem->update([
             'id' => $cartridgeitems_id_1,
-            'groups_id' => null,
             'groups_id_tech' => null,
         ]))->isTrue();
-        $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
         $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
 
         $cartridgeitem->getFromDB($cartridgeitems_id_2);
         $this->boolean($cartridgeitem->update([
             'id' => $cartridgeitems_id_2,
-            'groups_id' => [5, 6],
             'groups_id_tech' => [7, 8],
         ]))->isTrue();
-        $this->array($cartridgeitem->fields['groups_id'])->containsValues([5, 6]);
         $this->array($cartridgeitem->fields['groups_id_tech'])->containsValues([7, 8]);
 
         // Test updating array to array
         $this->boolean($cartridgeitem->update([
             'id' => $cartridgeitems_id_2,
-            'groups_id' => [1, 2],
             'groups_id_tech' => [3, 4],
         ]))->isTrue();
-        $this->array($cartridgeitem->fields['groups_id'])->containsValues([1, 2]);
         $this->array($cartridgeitem->fields['groups_id_tech'])->containsValues([3, 4]);
     }
 
@@ -125,6 +115,7 @@ class CartridgeItem extends DbTestCase
                 'type' => 1 // Tech
             ],
         );
+        $cartridgeitem->getFromDB($cartridgeitems_id);
         $this->array($cartridgeitem->fields['groups_id_tech'])
             ->hasSize(1)
             ->containsValues([2]);
@@ -138,7 +129,6 @@ class CartridgeItem extends DbTestCase
     {
         $cartridgeitem = new \CartridgeItem();
         $cartridgeitem->getEmpty();
-        $this->array($cartridgeitem->fields['groups_id'])->isEmpty();
         $this->array($cartridgeitem->fields['groups_id_tech'])->isEmpty();
     }
 }
