@@ -230,8 +230,9 @@ class Dropdown
         }
 
         if (!isset($params['entity_restrict'])) {
-            $params['entity_restrict'] = (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity']);
+            $params['entity_restrict'] = $params['entity'];
         }
+
 
         $p = [
             'width'                => $params['width'],
