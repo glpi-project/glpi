@@ -202,7 +202,9 @@ class Dropdown
                 $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
             }
         }
-        $params['entity'] = Session::getMatchingActiveEntities($params['entity']);
+        if ($params['entity'] !== null) {
+            $params['entity'] = Session::getMatchingActiveEntities($params['entity']);
+        }
 
         $field_id = Html::cleanId("dropdown_" . $params['name'] . $params['rand']);
 
