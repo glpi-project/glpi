@@ -722,12 +722,24 @@ class Session extends \DbTestCase
                 'result'          => is_array($entity_restrict) ? [2] : 2,
             ];
         }
+
+        // Invalid null values in input
+        yield [
+            'entity_restrict' => null,
+            'active_entities' => [0, 1, '2', 3],
+            'result'          => [],
+        ];
+        yield [
+            'entity_restrict' => [1, null, 3],
+            'active_entities' => [0, 1, '2', 3],
+            'result'          => [1, 3],
+        ];
     }
 
     /**
      * @dataProvider entitiesRestrictProvider
      */
-    public function testGetMatchingActiveEntities(/*int|array*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
+    public function testGetMatchingActiveEntities(/*mixed*/ $entity_restrict, ?array $active_entities, /*int|array*/ $result): void
     {
         $_SESSION['glpiactiveentities'] = $active_entities;
         $this->variable(\Session::getMatchingActiveEntities($entity_restrict))->isIdenticalTo($result);
@@ -735,7 +747,7 @@ class Session extends \DbTestCase
 
     public function testGetMatchingActiveEntitiesWithUnexpectedValue(): void
     {
-        $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', 3];
+        $_SESSION['glpiactiveentities'] = [0, 1, 2, 'foo', null, 3];
 
         $this->when(
             function () {
@@ -744,6 +756,10 @@ class Session extends \DbTestCase
         )->error
          ->withType(E_USER_WARNING)
          ->withMessage('Unexpected value `foo` found in `$_SESSION[\'glpiactiveentities\']`.')
+         ->exists()
+         ->error
+         ->withType(E_USER_WARNING)
+         ->withMessage('Unexpected value `null` found in `$_SESSION[\'glpiactiveentities\']`.')
          ->exists();
     }
 }
