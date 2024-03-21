@@ -969,7 +969,8 @@ class NetworkPortInstantiation extends CommonDBChild
                             $ID,
                             ['name'        => 'NetworkPortConnect_networkports_id_2',
                                 'entity'      => $device1->fields["entities_id"],
-                                'entity_sons' => $device1->isRecursive()
+                                'entity_sons' => $device1->isRecursive(),
+                                'entity_restrict' => $_SESSION['glpiactiveentities']
                             ]
                         );
                     } else {
@@ -1026,7 +1027,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $rand = Dropdown::showItemTypes('NetworkPortConnect_itemtype', $CFG_GLPI["networkport_types"]);
 
         $params = ['itemtype'           => '__VALUE__',
-            'entity_restrict'    => Session::getMatchingActiveEntities($p['entity']),
+            'entity_restrict'    => $options['entity_restrict'] ?? Session::getMatchingActiveEntities($p['entity']),
             'networkports_id'    => $ID,
             'comments'           => $p['comments'],
             'myname'             => $p['name'],
