@@ -34,7 +34,7 @@
 describe('Self-Service Tickets', () => {
     beforeEach(() => {
         cy.login();
-        cy.changeProfile('Self-Service');
+        cy.changeProfile('Self-Service', true);
     });
     it('Create a ticket', () => {
         cy.visit('/');

@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+import _ from 'lodash';
+
 /**
  * @memberof cy
  * @method login
@@ -39,45 +41,6 @@
  * @param {string} [password=glpi] - Password
  * @returns Chainable
  */
-
-/**
- * @memberof cy
- * @method selectDate
- * @description Select a date in a flatpickr input
- * @param {string} date - Date to select
- * @param {boolean} interactive - Whether to use the flatpickr calendar or type the date
- * @returns Chainable
- */
-
-/**
- * @memberof cy
- * @method changeProfile
- * @description Change the profile of the current user. Only supports the default GLPI profiles.
- * @param {string} profile - Profile to change to
- */
-
-/**
- * @memberof cy
- * @method iframe
- * @description Helper to interact with elements inside an iframe given the complexity of needing to wait for the iframe to load and needing to switch contexts to the iframe's document.
- *              You can optionally specify a url_pattern to match the iframe's content window location.
- * @param {string} url_pattern - Optional. A regular expression to match the iframe's content window location. Defaults to the baseUrl.
- * @example cy.get('iframe').iframe().find('body').type('Hello, World!');
- * @example cy.get('iframe').iframe('about:srcdoc').find('body').type('Hello, World!');
- */
-
-/**
- * @memberof cy
- * @method isTinyMCE
- * @description Assert that the subject is a TinyMCE editor and try to wait for tinyMCE to initialize the editor.
- */
-
-/**
- * @memberof cy
- * @method blockGLPIDashboards
- * @description Block requests to /ajax/dashboard.php to make page ready faster and avoid some JS errors when navigating away during loading.
- */
-
 Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     cy.session(
         username,
@@ -107,22 +70,44 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
     );
 });
 
-Cypress.Commands.add('changeProfile', (profile) => {
+/**
+ * @memberof cy
+ * @method changeProfile
+ * @description Change the profile of the current user. Only supports the default GLPI profiles.
+ * @param {string} profile - Profile to change to
+ * @param {boolean} [verify=false] - Whether to verify that the profile was changed
+ */
+Cypress.Commands.add('changeProfile', (profile, verify = false) => {
     // If on about:blank, we need to get back to GLPI.
     // Can happen at the start of a test if the login restored an existing session and therefore no redirect happened.
     // With testIsolation, cypress starts each test on about:blank.
-    cy.blockGLPIDashboards();
     cy.url().then((url) => {
         if (url === 'about:blank') {
+            cy.blockGLPIDashboards();
             cy.visit('/');
         }
     });
+    // Pattern for the profile link text to match exactly except ignoring surrounding whitespace
+    const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
     // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
-    cy.get('div.user-menu a[href*="newprofile="]').contains(profile).first().invoke('attr', 'href').then((href) => {
+    cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
+        cy.blockGLPIDashboards();
         cy.visit(href);
+        if (verify) {
+            cy.get('a.user-menu-dropdown-toggle').contains(profile_pattern);
+        }
     });
 });
 
+/**
+ * @memberof cy
+ * @method iframe
+ * @description Helper to interact with elements inside an iframe given the complexity of needing to wait for the iframe to load and needing to switch contexts to the iframe's document.
+ *              You can optionally specify a url_pattern to match the iframe's content window location.
+ * @param {string} url_pattern - Optional. A regular expression to match the iframe's content window location. Defaults to the baseUrl.
+ * @example cy.get('iframe').iframe().find('body').type('Hello, World!');
+ * @example cy.get('iframe').iframe('about:srcdoc').find('body').type('Hello, World!');
+ */
 Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) => {
     // if no url_pattern is provided, match on baseUrl
     const base_url = Cypress.config('baseUrl');
@@ -143,6 +128,11 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
     }));
 });
 
+/**
+ * @memberof cy
+ * @method awaitTinyMCE
+ * @description Assert that the subject is a TinyMCE editor and try to wait for tinyMCE to initialize the editor.
+ */
 Cypress.Commands.add('awaitTinyMCE',  {
     prevSubject: 'element',
 }, (subject) => {
@@ -178,6 +168,14 @@ Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
     return originalFn(subject, text, options);
 });
 
+/**
+ * @memberof cy
+ * @method selectDate
+ * @description Select a date in a flatpickr input
+ * @param {string} date - Date to select
+ * @param {boolean} interactive - Whether to use the flatpickr calendar or type the date
+ * @returns Chainable
+ */
 Cypress.Commands.add('selectDate', {
     prevSubject: 'element',
 }, (subject, date, interactive = true) => {
@@ -209,6 +207,11 @@ Cypress.Commands.add('selectDate', {
     });
 });
 
+/**
+ * @memberof cy
+ * @method blockGLPIDashboards
+ * @description Block requests to /ajax/dashboard.php to make page ready faster and avoid some JS errors when navigating away during loading.
+ */
 Cypress.Commands.add('blockGLPIDashboards', () => {
     cy.intercept('/ajax/dashboard.php', (req) => {
         if (req.query['action'] === 'get_card') {
