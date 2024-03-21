@@ -95,22 +95,26 @@
             {% endif %}
         </div>
 
-        <div class="status-area">
-            {% do call([itemtype, 'showSearchStatusArea']) %}
-        </div>
-
         {% if mainform and showaction %}
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
             </form>
         {% endif %}
 
-        {% if user_pref('search_pagination_on_top') %}
-            {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
-                <div class="search-footer flex-grow-1 mx-1 d-none d-xxl-block mb-n2" style="max-width: 650px;">
-                    {{ include('components/pager.html.twig') }}
-                </div>
+        <div class"middle-controls">
+            <div class="status-area">
+                {% do call([itemtype, 'showSearchStatusArea']) %}
+            </div>
+
+            {% if user_pref('search_pagination_on_top') %}
+                {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+                    <div class="search-footer flex-grow-1 mx-1 d-none d-xxl-block mb-n2" style="max-width: 650px;">
+                        {% include('components/pager.html.twig') with {
+                            'short_display': true
+                        } %}
+                    </div>
+                {% endif %}
             {% endif %}
-        {% endif %}
+        </div>
 
         <div class="secondary-controls">
             {% if may_be_located %}

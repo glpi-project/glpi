@@ -63,6 +63,8 @@
 {% set nb_pages = (count / limit)|round(0, 'ceil') %}
 {% set current_page = ((current_start - 1) / limit)|round(0, 'ceil') + 1 %}
 
+{% set short_display = short_display|default(false) %}
+
 {# limit the number of adjacents links displayed #}
 {% set adjacents = 2 %}
 {% set skip_adjacents = false %}
@@ -72,20 +74,26 @@
         'no_onchange': fluid_search|default(false),
         'select_class': 'search-limit-dropdown',
     }) %}
-    <span class="search-limit d-none d-md-block">
-        {{ __('%s rows / page')|format(limitdropdown)|raw }}
-    </span>
-    <span class="search-limit d-block d-md-none">
+    {% if not short_display %}
+        <span class="search-limit d-none d-md-block">
+            {{ __('%s rows / page')|format(limitdropdown)|raw }}
+        </span>
+    {% endif %}
+    <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
         {{ limitdropdown|raw }}
     </span>
-    <p class="m-0 text-muted d-none d-md-block page-infos">
-        {{ __('Showing %s to %s of %s rows')|format(current_start, current_end, count) }}
-    </p>
-    <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2 page-infos">
-        {{ __('%s-%s/%s')|format(current_start, current_end, count) }}
-    </p>
 
-    <ul class="pagination m-0 mt-sm-2 mt-md-0">
+    {% if not short_display %}
+        <p class="m-0 text-muted d-none d-md-block page-infos">
+            {{ __('Showing %s to %s of %s rows')|format(current_start, current_end, count) }}
+        </p>
+
+        <p class="m-0 text-muted d-block d-md-none text-nowrap ms-2 page-infos">
+            {{ __('%s-%s/%s')|format(current_start, current_end, count) }}
+        </p>
+    {% endif %}
+
+    <ul class="pagination m-0 mt-sm-2 mt-md-0 {{ short_display ? "mx-2" : "" }}">
         {% if nb_pages > 1 %}
             {% set is_first_page = start == 0 %}
             {% set is_last_page = forward >= count %}
@@ -100,22 +108,32 @@
                     <i class="ti ti-chevron-left"></i>
                 </a>
             </li>
-            {% for page in range(1, nb_pages) %}
-                {% if current_page - adjacents <= page and current_page + adjacents >= page %}
-                    {% set page_start = (page - 1) * limit %}
-                    <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
-                    <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
-                    </li>
-                    {% if current_page + adjacents == page %}
-                    {% set skip_adjacents = false %}
+
+
+            {% if short_display %}
+                <li class="text-muted mx-2 my-0">
+                    <span class="page-link">
+                        {{ __('%s-%s of %s')|format(current_start, current_end, count) }}
+                    </span>
+                </li>
+            {% else %}
+                {% for page in range(1, nb_pages) %}
+                    {% if current_page - adjacents <= page and current_page + adjacents >= page %}
+                        {% set page_start = (page - 1) * limit %}
+                        <li class="d-none d-sm-block page-item {% if page == current_page %}active selected{% endif %}">
+                            <a class="page-link page-link-num" href="{{ href|replace({'%start%': page_start}) }}" data-start="{{ page_start }}">{{ page }}</a>
+                        </li>
+                        {% if current_page + adjacents == page %}
+                        {% set skip_adjacents = false %}
+                        {% endif %}
+                    {% elseif skip_adjacents == false %}
+                        {% set skip_adjacents = true %}
+                        <li class="d-none d-sm-block page-item disabled">
+                            <a class="page-link" href="#" aria-disabled="true">...</a>
+                        </li>
                     {% endif %}
-                {% elseif skip_adjacents == false %}
-                    {% set skip_adjacents = true %}
-                    <li class="d-none d-sm-block page-item disabled">
-                    <a class="page-link" href="#" aria-disabled="true">...</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
+            {% endif %}
 
             <li class="page-item {% if is_last_page %}disabled{% endif %}">
                 <a class="page-link page-link-next" href="{{ href|replace({'%start%': forward}) }}" title="{{ __('Next') }}" data-start="{{ forward }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
