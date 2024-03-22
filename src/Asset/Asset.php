@@ -248,6 +248,15 @@ abstract class Asset extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
             'datatype'           => 'dropdown'
         ];
 
@@ -295,6 +304,15 @@ abstract class Asset extends CommonDBTM
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge of the hardware'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
             'datatype'           => 'dropdown'
         ];
 

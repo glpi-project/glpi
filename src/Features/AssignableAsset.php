@@ -308,19 +308,4 @@ trait AssignableAsset
     {
         return [$this->GROUP_TYPE_NORMAL, $this->GROUP_TYPE_TECH];
     }
-
-//    /**
-//     * Get all group type labels or a specific label.
-//     * @param self::GROUP_TYPE_*|null $type
-//     * @return array|string
-//     * @phpstan-return $type === null ? array<self::GROUP_TYPE_*, string> : string
-//     */
-//    public static function getGroupTypeLabels(?int $type = null): array|string
-//    {
-//        $labels = [
-//            self::GROUP_TYPE_NORMAL => __('Group'),
-//            self::GROUP_TYPE_TECH => __('Group in charge'),
-//        ];
-//        return $type === null ? $labels : $labels[$type];
-//    }
 }
