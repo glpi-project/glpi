@@ -118,7 +118,7 @@
 
         <div class="secondary-controls">
             {% if may_be_located %}
-                <div class="btn-group me-1 me-xl-2" role="group">
+                <div class="btn-group me-1 me-xl-2 shadow-none" role="group">
                     {% set table_class = (data['search']['as_map'] == 0 ? "btn-ghost-info" : "") %}
                     <input type="radio" class="btn-check" role="button"
                         name="as_map" value="1" autocomplete="off"
