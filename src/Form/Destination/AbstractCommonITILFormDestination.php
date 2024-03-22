@@ -129,7 +129,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
     /**
      * List the configurable fields for this destination type.
      *
-     * @return \Glpi\Form\Destination\CommonITILField\CommonITILFieldInterface[]
+     * @return \Glpi\Form\Destination\ConfigFieldInterface[]
      */
     public function getConfigurableFields(): array
     {

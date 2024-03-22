@@ -33,9 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Form\Destination;
 
-interface CommonITILFieldInterface
+interface ConfigFieldInterface
 {
     /**
      * Get the unique key used to set/get this field configuration in the

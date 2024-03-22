@@ -37,7 +37,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 <div>
-    {# @var Glpi\Form\Destination\CommonITILField\CommonITILFieldInterface field #}
+    {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
     {% for field in item.getConfigurableFields() %}
         {% set input_field %}
             {{ field.renderConfigForm(

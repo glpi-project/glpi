@@ -36,9 +36,10 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Destination\ConfigFieldInterface;
 use Override;
 
-class ContentField implements CommonITILFieldInterface
+class ContentField implements ConfigFieldInterface
 {
     #[Override]
     public function getKey(): string
