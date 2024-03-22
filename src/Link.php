@@ -312,45 +312,13 @@ class Link extends CommonDBTM
         ) {
             $link = str_replace("[SERIAL]", $item->getField('serial'), $link);
         }
+        $model_class = $item->getModelClass() 
 	if (
 	    strstr($link,"[MODEL]")
-	    && $item->isField('computermodels_id')
+	    && $model_class !== null )
 	) {
-            $link = str_replace("[MODEL]",
-		    str_replace(" ", "_", Dropdown::getDropdownName("glpi_computermodels", $item->getField('computermodels_id'))),
-		    $link);
-	}
-	if (
-	    strstr($link,"[MODEL]")
-	    && $item->isField('monitormodels_id')
-	) {
-	    $link = str_replace("[MODEL]",
-	            str_replace(" ", "_", Dropdown::getDropdownName("glpi_monitormodels", $item->getField('monitormodels_id'))),
-		    $link);
-	}
-	if (
-	    strstr($link,"[MODEL]")
-	    && $item->isField('networkequipmentmodels_id')
-	) {
-	    $link = str_replace("[MODEL]",
-	            str_replace(" ", "_", Dropdown::getDropdownName("glpi_networkequipmentmodels", $item->getField('networkequipmentmodels_id'))),
-	            $link);
-	}
-	if (
-	    strstr($link,"[MODEL]")
-	    && $item->isField('peripheralmodels_id')
-	) {
-	    $link = str_replace("[MODEL]",
-		    str_replace(" ", "_", Dropdown::getDropdownName("glpi_peripheralsmodels", $item->getField('peripheralmodels_id'))),
-		    $link);
-	}
-	if (
-	    strstr($link,"[MODEL]")
-	    && $item->isField('printermodels_id')
-	) {
-	    $link = str_replace("[MODEL]",
-		    str_replace(" ", "_", Dropdown::getDropdownName("glpi_printermodels", $item->getField('printermodels_id'))),
-		    $link);
+            $link = str_replace("[MODEL]", 
+		Dropdown::getDropdownName($model_class::getTable(), $item->getField($model_class::getForeignKeyField())), $link); 
 	}
         if (
             strstr($link, "[OTHERSERIAL]")
