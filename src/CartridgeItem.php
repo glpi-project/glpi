@@ -248,6 +248,18 @@ class CartridgeItem extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '10',
+            'table'              => $this->getTable(),
+            'field'              => '_virtual',
+            'name'               => _n('Cartridge', 'Cartridges', Session::getPluralNumber()),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nosort'             => true,
+            'additionalfields'   => ['warn_level']
+        ];
+
+        $tab[] = [
             'id'                 => '17',
             'table'              => 'glpi_cartridges',
             'field'              => 'id',
@@ -316,6 +328,22 @@ class CartridgeItem extends CommonDBTM
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
             'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '6',
+            'table'              => $this->getTable(),
+            'field'              => 'type_tag',
+            'name'               => __('Cartridge Type as reported by inventory'),
+            'datatype'           => 'dropdown'
+        ];
+
+        $tab[] = [
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'warn_level',
+            'name'               => __('Printer Cartridge Warning Level'),
+            'datatype'           => 'number'
         ];
 
         $tab[] = [
@@ -601,8 +629,17 @@ class CartridgeItem extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $printer = new Printer();
+        $asset_cartridge = new Glpi\Inventory\Asset\Cartridge($printer);
+        $known_tags = $asset_cartridge->knownTags(false);
+        $known_tags = array_map(function ($a) {
+            return $a["name"];
+        },
+            $known_tags);
+        unset($known_tags["informations"]);
         TemplateRenderer::getInstance()->display('pages/assets/cartridgeitem.html.twig', [
             'item'   => $this,
+            'asset_cartridge_tags' => $known_tags,
             'params' => $options,
         ]);
         return true;

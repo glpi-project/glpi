@@ -36,6 +36,19 @@
 {% set params  = params ?? [] %}
 
 {% block more_fields %}
+    {% set type_tag = asset_cartridge_tags %}
+    {% if item.isField('type_tag') %}
+        {{ fields.dropdownArrayField(
+            'type_tag',
+            item.fields['type_tag'],
+            {
+              "": constant('Dropdown::EMPTY_VALUE')
+                }|merge(type_tag),
+            __('Type tag')
+
+        ) }}
+    {% endif %}
+
     {% if item.isField('stock_target') %}
         {{ fields.numberField(
             'stock_target',
@@ -47,4 +60,24 @@
             })
         ) }}
     {% endif %}
+
+    {% if item.isField('warn_level') %}
+        {% set dd_warn_level %}
+            {% do call('Dropdown::showNumber', ['warn_level', {
+                 'value': item.fields['warn_level'],
+                 'rand': rand,
+                 'width': '100%',
+                 'min': 0,
+                 'max': 100,
+                 'step': 1,
+                 'toadd': {'-1': __('Never')}
+            }|merge(params)]) %}
+        {% endset %}
+        {{ fields.htmlField(
+             'warn_level',
+             dd_warn_level,
+             __('Remaining level threshold warning')
+            ) }}
+    {% endif %}
+
 {% endblock %}

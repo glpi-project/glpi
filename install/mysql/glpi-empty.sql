@@ -441,6 +441,8 @@ CREATE TABLE `glpi_cartridgeitems` (
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
   `pictures` text,
+  `type_tag` varchar(255),
+  `warn_level` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
@@ -453,7 +455,8 @@ CREATE TABLE `glpi_cartridgeitems` (
   KEY `alarm_threshold` (`alarm_threshold`),
   KEY `groups_id_tech` (`groups_id_tech`),
   KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `type_tag` (`type_tag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_printers_cartridgeinfos`;
@@ -2797,6 +2800,7 @@ CREATE TABLE `glpi_entities` (
   `transfers_strategy` tinyint NOT NULL DEFAULT '-2',
   `transfers_id` int unsigned NOT NULL DEFAULT '0',
   `agent_base_url` varchar(255) DEFAULT NULL,
+  `printer_cartridge_levels_alert_repeat` int NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),

@@ -64,14 +64,49 @@ class Printer_CartridgeInfo extends CommonDBChild
         return $info;
     }
 
+    public function getCartridgeTagInfoForPrinter($id)
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'glpi_cartridgeitems.name AS name',
+                'glpi_cartridgeitems.type_tag AS tag',
+            ],
+            'FROM'      => 'glpi_cartridges',
+            'INNER JOIN' => [
+                'glpi_cartridgeitems'      => [
+                    'ON'   => [
+                        'glpi_cartridges'        => 'cartridgeitems_id',
+                        'glpi_cartridgeitems'        => 'id'
+                    ]
+                ]
+            ],
+            'WHERE'     => [
+                'glpi_cartridges.printers_id' => $id,
+                'glpi_cartridges.date_out' => null
+            ]
+        ]);
+
+        $info = [];
+        foreach ($iterator as $row) {
+             $info[$row['tag']] = $row['name'];
+        }
+
+        return $info;
+    }
+
     public function showForPrinter(Printer $printer)
     {
         $info = $this->getInfoForPrinter($printer);
 
+        $mapping = $this->getCartridgeTagInfoForPrinter($printer->fields['id']);
+
         echo "<h3>" . $this->getTypeName(Session::getPluralNumber()) . "</h3>";
 
         echo "<table class='tab_cadre_fixehov'>";
-        echo "<thead><tr><th>" . __('Property') . "</th><th>" . __('Value') . "</th></tr></thead>";
+        echo "<thead><tr><th>" . __('Property') . "</th><th>" . CartridgeItem::getTypeName(1) . "</th><th> " . __('Value') . "</th></tr></thead>";
 
         $asset = new Glpi\Inventory\Asset\Cartridge($printer);
         $tags = $asset->knownTags();
@@ -86,6 +121,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 
             echo "<tr>";
             echo sprintf("<td>%s</td>", $tags[$property]['name'] ?? $property);
+            echo sprintf("<td> %s </td>", $mapping[$property] ?? __('Unknown'));
 
             if (strstr($value, 'pages')) {
                 $pages = str_replace('pages', '', $value);

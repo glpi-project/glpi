@@ -327,6 +327,7 @@ class Html extends \GLPITestCase
             'KnowbaseItem',
             'ReservationItem',
             'Report',
+            'Alerting',
             'MigrationCleaner',
             'SavedSearch',
             'Impact'
