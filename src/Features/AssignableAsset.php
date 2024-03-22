@@ -151,7 +151,7 @@ trait AssignableAsset
         return $rights;
     }
 
-    private function prepareGroupFields(array $input)
+    protected function prepareGroupFields(array $input)
     {
         $fields = ['groups_id', 'groups_id_tech'];
         foreach ($fields as $field) {
