@@ -63,6 +63,7 @@ class ContentField implements CommonITILFieldInterface
                 value,
                 {
                     'enable_richtext': true,
+                    'enable_images': false,
                 }
             ) }}
 TWIG;

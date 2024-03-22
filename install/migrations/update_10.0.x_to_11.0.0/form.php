@@ -143,7 +143,7 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
             `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `itemtype` varchar(255) NOT NULL,
             `name` varchar(255) NOT NULL,
-            `config` longtext COMMENT 'JSON - Extra configuration field(s) depending on the destination type',
+            `config` JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
             KEY `itemtype` (`itemtype`),
@@ -199,5 +199,5 @@ if (GLPI_VERSION == "11.0.0-dev") {
 
     $migration->addField("glpi_forms_answerssets", "entities_id", "fkey");
     $migration->addKey("glpi_forms_answerssets", "entities_id");
-    $migration->addField("glpi_forms_destinations_formdestinations", "config", "longtext COMMENT 'JSON - Extra configuration field(s) depending on the destination type'");
+    $migration->addField("glpi_forms_destinations_formdestinations", "config", "JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type'");
 }
