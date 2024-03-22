@@ -76,7 +76,7 @@
     }) %}
     {% if not short_display %}
         <span class="search-limit d-none d-md-block">
-            {{ __('%s rows / page')|format(limitdropdown)|raw }}
+            {{ __('%s rows / page')|e|format(limitdropdown)|raw }}
         </span>
     {% endif %}
     <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
