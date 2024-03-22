@@ -124,6 +124,9 @@ describe('Search Table', () => {
 `);
     window.GLPI.Search.Table.prototype.getResultsView = jest.fn(function () {
         return {
+            setID(id) {
+                return id;
+            },
             getElement: () => {
                 return $('#massformComputer');
             },
