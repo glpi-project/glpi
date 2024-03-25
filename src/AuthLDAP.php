@@ -927,7 +927,7 @@ class AuthLDAP extends CommonDBTM
     public function showFormTestLDAP()
     {
 
-        $tests = self::testLDAPServer($this->getField('id'));
+        $tests = $this->testLDAPServer($this->getField('id'));
         $keys  = array_keys($tests);
 
         $index = 0;
@@ -961,7 +961,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array result of tests
      */
-    public static function testLDAPServer($authldaps_id): array
+    private function testLDAPServer($authldaps_id): array
     {
         $tests = [
             'testLDAPSockopen'   => [
@@ -992,7 +992,7 @@ class AuthLDAP extends CommonDBTM
         ];
 
         foreach ($tests as $testFunction => $testLDAP) {
-            $result = self::$testFunction($authldaps_id);
+            $result = $this->$testFunction($authldaps_id);
             $tests[$testFunction]['success'] = $result['success'];
             $tests[$testFunction]['message'] = $result['message'];
             if (!$result['success']) {
@@ -1696,7 +1696,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    public static function testLDAPSockopen($authldaps_id): array
+    private function testLDAPSockopen($authldaps_id): array
     {
 
         $AuthLDAP = new self();
@@ -1739,7 +1739,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    public static function testLDAPBaseDN($authldaps_id): array
+    private function testLDAPBaseDN($authldaps_id): array
     {
 
         $AuthLDAP = new self();
@@ -1768,7 +1768,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    public static function testLDAPURI($authldaps_id): array
+    private function testLDAPURI($authldaps_id): array
     {
 
         $AuthLDAP = new self();
@@ -1797,7 +1797,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    public static function testLDAPBind($authldaps_id): array
+    private function testLDAPBind($authldaps_id): array
     {
         $AuthLDAP = new self();
 
@@ -1832,7 +1832,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    public static function testLDAPSearch($authldaps_id): array
+    private function testLDAPSearch($authldaps_id): array
     {
         $AuthLDAP = new self();
 
