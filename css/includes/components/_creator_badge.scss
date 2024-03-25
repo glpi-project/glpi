@@ -31,10 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-.creator {
+ .creator {
     .badge {
-        background-color: $timeline-badge-bg;
-        color: $timeline-badge-fg;
+        background-color: var(--glpi-timeline-badge-bg);
+        color: var(--glpi-timeline-badge-fg);
 
         @include tabler-badge-fix;
     }
