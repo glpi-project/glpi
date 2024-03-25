@@ -808,11 +808,12 @@ class Search extends DbTestCase
         $search_params = ['is_deleted'   => 0,
             'start'        => 0,
             'search'       => 'Search',
-            'criteria'     => [0 => ['field'      => 'view',
-                'searchtype' => 'contains',
-                'value'      => ''
-            ]
-                //FIXME Yep, metacriteria for Groups won't work either because some have group links in another table
+            'criteria'     => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => ''
+                ]
             ],
                                                      // group is_notify
             'metacriteria' => [0 => ['link'       => 'AND',

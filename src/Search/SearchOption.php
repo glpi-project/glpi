@@ -219,10 +219,9 @@ final class SearchOption implements \ArrayAccess
                     $search[$itemtype][8]['name']           = __('Alternate username number');
                     $search[$itemtype][8]['datatype']       = 'string';
 
-                    //FIXME Yeah... this isn't going to work now that some itemtypes in Global Assets have multiple groups (data in another table) and some dont (field in main table)
-//                    $search[$itemtype][71]['table']         = 'glpi_groups';
-//                    $search[$itemtype][71]['field']         = 'completename';
-//                    $search[$itemtype][71]['name']          = \Group::getTypeName(1);
+                    $search[$itemtype][71]['table']         = 'glpi_groups';
+                    $search[$itemtype][71]['field']         = 'completename';
+                    $search[$itemtype][71]['name']          = \Group::getTypeName(1);
 
                     $search[$itemtype][19]['table']         = 'asset_types';
                     $search[$itemtype][19]['field']         = 'date_mod';
@@ -240,13 +239,12 @@ final class SearchOption implements \ArrayAccess
                     $search[$itemtype][24]['name']          = __('Technician in charge');
                     $search[$itemtype][24]['condition']     = ['is_assign' => 1];
 
-                    //FIXME Yeah... this isn't going to work now that some itemtypes in Global Assets have multiple groups (data in another table) and some dont (field in main table)
-//                    $search[$itemtype][49]['table']          = 'glpi_groups';
-//                    $search[$itemtype][49]['field']          = 'completename';
-//                    $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
-//                    $search[$itemtype][49]['name']           = __('Group in charge');
-//                    $search[$itemtype][49]['condition']      = ['is_assign' => 1];
-//                    $search[$itemtype][49]['datatype']       = 'dropdown';
+                    $search[$itemtype][49]['table']          = 'glpi_groups';
+                    $search[$itemtype][49]['field']          = 'completename';
+                    $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
+                    $search[$itemtype][49]['name']           = __('Group in charge');
+                    $search[$itemtype][49]['condition']      = ['is_assign' => 1];
+                    $search[$itemtype][49]['datatype']       = 'dropdown';
 
                     $search[$itemtype][80]['table']         = 'glpi_entities';
                     $search[$itemtype][80]['field']         = 'completename';

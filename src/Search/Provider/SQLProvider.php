@@ -2368,6 +2368,32 @@ final class SQLProvider implements SearchProviderInterface
         }
         $already_link_tables[] = $tocheck;
 
+        // Handle mixed group case for AllAssets and ReservationItem
+        if ($tocheck === 'glpi_groups' && ($itemtype === \AllAssets::class || $itemtype === \ReservationItem::class)) {
+            $already_link_tables[] = 'glpi_groups_assets';
+            return [
+                'LEFT JOIN' => [
+                    'glpi_groups_assets' => [
+                        'ON' => [
+                            'glpi_groups_assets' => 'items_id',
+                            $rt => 'id', [
+                                'AND' => [
+                                    'glpi_groups_assets.itemtype' => $rt . '_TYPE', // Placeholder to be replaced at the end of the SQL construction during union case handling
+                                    'glpi_groups_assets.type' => 0
+                                ]
+                            ]
+                        ]
+                    ],
+                    'glpi_groups' => [
+                        'ON' => [
+                            'glpi_groups' => 'id',
+                            'glpi_groups_assets' => 'groups_id'
+                        ]
+                    ]
+                ]
+            ];
+        }
+
         $specific_leftjoin_criteria = [];
 
         // Plugin can override core definition for its type
@@ -3983,6 +4009,11 @@ final class SQLProvider implements SearchProviderInterface
                             "FROM `" .
                             $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
                             $replace,
+                            $tmpquery
+                        );
+                        $tmpquery = str_replace(
+                            $CFG_GLPI["union_search_type"][$data['itemtype']] . '_TYPE',
+                            $ctype,
                             $tmpquery
                         );
                         $tmpquery = str_replace(
