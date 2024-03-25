@@ -42,7 +42,7 @@
                                 <i class="ti ti-stethoscope me-1"></i>
                                 {{ __('Test LDAP server: %s')|format(servername) }}
                             </h3>
-                            <ul class="steps steps-counter my-4">
+                            <ul class="steps steps-vertical steps-counter my-4">
                                 {% for test in tests %}
                                     <li class="step-item {{ test['active'] ? 'active' : '' }}">
                                         <div class="h4 m-0">{{ test['title'] }}</div>
