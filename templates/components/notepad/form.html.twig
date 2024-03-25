@@ -95,22 +95,21 @@
 <div class="accordion">
     {% for note in notes %}
         {% set id = "note#{ note['id'] }#{ rand }" %}
-        <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-            <input type="hidden" name="id" value="{{ note['id'] }}" />
+        <div class="accordion-item">
+            <div class="accordion-header">
+                <button class="accordion-button collapsed d-flex align-self-center" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#{{ id }}"
+                        aria-expanded="false" aria-controls="{{ id }}">
+                    <i class="ti ti-notes me-1"></i>
+                    <span>#{{ id }}</span>
+                </button>
+            </div>
 
-            <div class="accordion-item">
-                <div class="accordion-header">
-                    <button class="accordion-button collapsed d-flex align-self-center" type="button"
-                            data-bs-toggle="collapse" data-bs-target="#{{ id }}"
-                            aria-expanded="false" aria-controls="{{ id }}">
-                        <i class="ti ti-notes me-1"></i>
-                        <span>#{{ id }}</span>
-                    </button>
-                </div>
-
-                <div id="{{ id }}" class="accordion-collapse collapse">
-                    <div class="accordion-body pt-0">
+            <div id="{{ id }}" class="accordion-collapse collapse">
+                <div class="accordion-body pt-0">
+                    <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        <input type="hidden" name="id" value="{{ note['id'] }}" />
                         <div class="d-flex justify-content-between mb-2">
                             <span class="d-inline-flex creator">
                                 {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
@@ -197,9 +196,10 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                    </form>
                 </div>
             </div>
-        </form>
+        </div>
     {% endfor %}
 </div>
