@@ -2960,6 +2960,32 @@ final class SQLProvider implements SearchProviderInterface
             return $joins;
         }
 
+        // Hack to support multiple groups for some itemtypes but not others
+        if ($to_type === 'Group' && Toolbox::hasTrait($from_referencetype, AssignableAsset::class)) {
+            return [
+                'LEFT JOIN' => [
+                    'glpi_groups_assets' => [
+                        'ON' => [
+                            'glpi_groups_assets' => 'items_id',
+                            $from_table => 'id',
+                            [
+                                'AND' => [
+                                    'glpi_groups_assets.itemtype' => $from_referencetype,
+                                    'glpi_groups_assets.type' => 0
+                                ] + $to_entity_restrict_criteria + $to_criteria
+                            ]
+                        ]
+                    ],
+                    'glpi_groups' => [
+                        'ON' => [
+                            'glpi_groups' => 'id',
+                            'glpi_groups_assets' => 'groups_id'
+                        ]
+                    ]
+                ]
+            ];
+        }
+
         // Generic JOIN
         $from_obj      = getItemForItemtype($from_referencetype);
         $from_item_obj = null;
