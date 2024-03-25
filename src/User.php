@@ -6184,8 +6184,11 @@ JAVASCRIPT;
         if (!empty($picture)) {
             $tmp = explode(".", $picture);
             if (count($tmp) == 2) {
-                return $CFG_GLPI["root_doc"] . "/front/document.send.php?file=_pictures/" . htmlspecialchars($tmp[0]) .
-                   "_min." . htmlspecialchars($tmp[1]);
+                return $CFG_GLPI["root_doc"]
+                    . "/front/document.send.php?"
+                    . 'file='
+                    . rawurlencode(sprintf('_pictures/%s_min.%s', $tmp[0], $tmp[1]))
+                ;
             }
         }
 

@@ -127,8 +127,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
         // No revisions in database
         if ($number < 1) {
-            $no_txt = __s('No revisions');
-            echo "<div class='alert alert-info'>$no_txt</div>";
+            echo '<div class="alert alert-info">' . __s('No revisions') . '</div>';
             return;
         }
 
@@ -151,14 +150,14 @@ class KnowbaseItem_Revision extends CommonDBTM
                 'actions' => ''
             ]
         ];
-        $show_msg = __('show');
-        $restore_msg = __('restore');
+        $show_msg = __s('show');
+        $restore_msg = __s('restore');
         foreach ($revisions as $revision) {
             if (!isset($author_cache[$revision['users_id']])) {
                 // Before GLPI 9.3.1, author was not stored in revision.
                 // See https://github.com/glpi-project/glpi/issues/4377.
                 $hasRevUser = $user->getFromDB($revision['users_id']);
-                $author_cache[$revision['users_id']] = $hasRevUser ? $user->getLink() : __('Unknown user');
+                $author_cache[$revision['users_id']] = $hasRevUser ? $user->getLink() : __s('Unknown user');
             }
 
             $oldid_checked = $is_checked ? ' checked="checked"' : '';

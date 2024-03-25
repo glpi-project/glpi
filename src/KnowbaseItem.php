@@ -998,7 +998,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
-            <form method='get' action='{{ 'KnowbaseItem'|itemtype_search_path }}' class='d-flex justify-content-center'>
+            <form method="get" action="{{ 'KnowbaseItem'|itemtype_search_path }}" class="d-flex justify-content-center">
                 {{ inputs.text('contains', contains, {additional_attributes: {size: 50}, input_addclass: 'me-1'}) }}
                 {{ inputs.submit('search', btn_msg, 1) }}
                 {% if options.item_itemtype is defined and options.item_items_id is defined %}
@@ -1476,13 +1476,18 @@ TWIG, $twig_params);
             }
 
             // Pager
-            $parameters = "start=" . $params["start"] . "&amp;knowbaseitemcategories_id=" .
-                $params['knowbaseitemcategories_id'] . "&amp;contains=" .
-                $params["contains"] . "&amp;is_faq=" . $params['faq'];
+            $parameters = [
+                'start' => $params["start"],
+                'knowbaseitemcategories_id' => $params['knowbaseitemcategories_id'],
+                'contains' => $params["contains"],
+                'is_faq' => $params['faq'],
+            ];
 
             if (isset($options['item_itemtype'], $options['item_items_id'])) {
-                $parameters .= "&amp;item_items_id=" . $options['item_items_id'] . "&amp;item_itemtype=" .
-                    $options['item_itemtype'];
+                $parameters += [
+                    'item_items_id' => $options['item_items_id'],
+                    'item_itemtype' => $options['item_itemtype'],
+                ];
             }
 
             $pager_url = "";
@@ -1491,7 +1496,13 @@ TWIG, $twig_params);
                 if (!Session::getLoginUserID()) {
                     $pager_url = $CFG_GLPI['root_doc'] . "/front/helpdesk.faq.php";
                 }
-                Html::printPager($params['start'], $rows, $pager_url, $parameters, 'KnowbaseItem');
+                Html::printPager(
+                    $params['start'],
+                    $rows,
+                    $pager_url,
+                    Toolbox::append_params($parameters, '&amp;'),
+                    'KnowbaseItem'
+                );
             }
 
             $nbcols = 1;
@@ -1500,19 +1511,19 @@ TWIG, $twig_params);
 
             echo Search::showNewLine($output_type);
             $header_num = 1;
-            echo Search::showHeaderItem($output_type, __('Subject'), $header_num);
+            echo Search::showHeaderItem($output_type, __s('Subject'), $header_num);
 
             if ($output_type !== Search::HTML_OUTPUT) {
-                echo Search::showHeaderItem($output_type, __('Content'), $header_num);
+                echo Search::showHeaderItem($output_type, __s('Content'), $header_num);
             }
 
             if ($showwriter) {
-                echo Search::showHeaderItem($output_type, __('Writer'), $header_num);
+                echo Search::showHeaderItem($output_type, __s('Writer'), $header_num);
             }
-            echo Search::showHeaderItem($output_type, _n('Category', 'Categories', 1), $header_num);
+            echo Search::showHeaderItem($output_type, _sn('Category', 'Categories', 1), $header_num);
 
             if ($output_type === Search::HTML_OUTPUT) {
-                echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
+                echo Search::showHeaderItem($output_type, _sn('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
             }
 
             if (isset($options['item_itemtype'], $options['item_items_id']) && ($output_type === Search::HTML_OUTPUT)) {
@@ -1572,14 +1583,14 @@ TWIG, $twig_params);
                     }
                     echo Search::showItem(
                         $output_type,
-                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . htmlspecialchars(Html::resume_text($name, 80)) . "</a></div>
-                                       <div class='kb_resume'>" . htmlspecialchars(Html::resume_text(RichText::getTextFromHtml($answer, false, false, true), 600)) . "</div>",
+                        "<div class='kb'>$toadd <i class='fa fa-fw $fa_class' title='$fa_title'></i> <a $href>" . Html::resume_text(htmlspecialchars($name, 80)) . "</a></div>
+                                       <div class='kb_resume'>" . Html::resume_text(htmlspecialchars(RichText::getTextFromHtml($answer, false, false, true), 600)) . "</div>",
                         $item_num,
                         $row_num
                     );
                 } else {
-                    echo Search::showItem($output_type, $name, $item_num, $row_num);
-                    echo Search::showItem($output_type, RichText::getTextFromHtml($answer, true, false, true), $item_num, $row_num);
+                    echo Search::showItem($output_type, htmlspecialchars($name), $item_num, $row_num);
+                    echo Search::showItem($output_type, htmlspecialchars(RichText::getTextFromHtml($answer, true, false, true)), $item_num, $row_num);
                 }
 
                 $showuserlink = 0;
@@ -1672,7 +1683,13 @@ TWIG, $twig_params);
             }
             echo "<br>";
             if ($output_type === Search::HTML_OUTPUT) {
-                Html::printPager($params['start'], $rows, $pager_url, $parameters, 'KnowbaseItem');
+                Html::printPager(
+                    $params['start'],
+                    $rows,
+                    $pager_url,
+                    Toolbox::append_params($parameters, '&amp;'),
+                    'KnowbaseItem'
+                );
             }
         } else {
             echo "<div class='center b'>" . __s('No item found') . "</div>";
@@ -1779,20 +1796,20 @@ TWIG, $twig_params);
             $twig_params = [
                 'title'    => $title,
                 'iterator' => $iterator,
-                'faq_tooltip' => __s("This item is part of the FAQ")
+                'faq_tooltip' => __("This item is part of the FAQ")
             ];
             // language=Twig
             $output .= TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class='col-12 col-lg-4 px-2'>
-                    <table class='table table-sm'>
+                <div class="col-12 col-lg-4 px-2">
+                    <table class="table table-sm">
                         <tr><th>{{ title }}</th></tr>
                         {% for data in iterator %}
                             {% set name = data['transname'] is not empty ? data['transname'] : data['name'] %}
                             <tr>
-                                <td class='text-start'>
-                                    <div class='kb'>
+                                <td class="text-start">
+                                    <div class="kb">
                                         {% if data['is_faq'] %}
-                                            <i class='ti ti-help faq' title='{{ faq_tooltip }}'></i>
+                                            <i class="ti ti-help faq" title="{{ faq_tooltip|e('html_attr') }}"></i>
                                         {% endif %}
                                         <a href="{{ 'KnowbaseItem'|itemtype_form_path(data['id']) }}" class="{{ data['is_faq'] ? 'faq' : 'knowbase' }}"
                                            title="{{ name }}">{{ name|u.truncate(80, '(...)') }}</a>

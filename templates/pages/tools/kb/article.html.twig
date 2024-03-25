@@ -56,7 +56,7 @@
     }) }}
     {% set answer_field %}
         <div class="rich_text_container">
-            {{ answer|raw }}
+            {{ answer|safe_html }}
         </div>
     {% endset %}
     {{ fields.htmlField('', answer_field, __('Content'), {

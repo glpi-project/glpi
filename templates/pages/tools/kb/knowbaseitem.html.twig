@@ -68,9 +68,9 @@
         {{ fields.nullField() }}
     {% endif %}
 
-    {% if linked_item is defined and linked_item is not null and linked_item.isNewItem == false %}
+    {% if linked_item is defined and linked_item is not null and not linked_item.isNewItem() %}
         {{ inputs.hidden('_itemtype', get_class(linked_item)) }}
-        {{ inputs.hidden('_items_id', linked_item.getID) }}
+        {{ inputs.hidden('_items_id', linked_item.getID()) }}
         {{ fields.checkboxField('_do_item_link', 1, __('Link with %1$s')|format(get_item_link(linked_item))) }}
     {% endif %}
 
@@ -88,7 +88,7 @@
         label_class: 'col-1',
         input_class: 'col-11'
     }) }}
-    {{ fields.textareaField('answer', item.fields['answer']|safe_html, __('Content'), {
+    {{ fields.textareaField('answer', item.fields['answer'], __('Content'), {
         full_width: true,
         label_class: 'col-1',
         input_class: 'col-11',

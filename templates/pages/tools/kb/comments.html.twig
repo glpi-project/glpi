@@ -163,8 +163,8 @@
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
                     }, () => {
                         glpi_alert({
-                            title: __('Unable to load comment!'),
-                            message: __('Contact your GLPI admin!'),
+                            title: '{{ __('Unable to load comment!')|e('js') }}',
+                            message: '{{ __('Contact your GLPI admin!')|e('js') }}'
                         });
                     });
                 });
@@ -200,8 +200,8 @@
                             .append(_form);
                     }, () => {
                         glpi_alert({
-                            title: __('Unable to load comment!'),
-                            message: __('Contact your GLPI admin!'),
+                            title: '{{ __('Unable to load comment!')|e('js') }}',
+                            message: '{{ __('Contact your GLPI admin!')|e('js') }}'
                         });
                     });
                 });

@@ -176,24 +176,24 @@ TWIG, $twig_params);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% set rand = random() %}
-                <div id="viewtranslation{{ item.getID ~ rand }}"></div>
+                <div id="viewtranslation{{ item.getID() ~ rand }}"></div>
                 <div class="text-center mb-3">
                     <button name="add_translation{{ rand }}" class="btn btn-primary">{{ btn_msg }}</button>
                 </div>
                 <script>
                     $(() => {
-                        function addTranslation{{ item.getID ~ rand }}() {
-                            $('#viewtranslation{{ item.getID ~ rand }}').load(
+                        function addTranslation{{ item.getID() ~ rand }}() {
+                            $('#viewtranslation{{ item.getID() ~ rand }}').load(
                                 '/ajax/viewsubitem.php',
                                 {
                                     type: 'KnowbaseItemTranslation',
-                                    parenttype: '{{ get_class(item) }}',
-                                    knowbaseitems_id: {{ item.getID }},
+                                    parenttype: '{{ get_class(item)|e('js') }}',
+                                    knowbaseitems_id: {{ item.getID() }},
                                     id: -1
                                 }
                             );
                         }
-                        $('button[name="add_translation{{ rand }}"]').on('click', addTranslation{{ item.getID ~ rand }});
+                        $('button[name="add_translation{{ rand }}"]').on('click', addTranslation{{ item.getID() ~ rand }});
                     });
                 </script>
 TWIG, $twig_params);
@@ -206,7 +206,7 @@ TWIG, $twig_params);
         foreach ($found as $data) {
             $name = htmlspecialchars($data["name"]);
             if ($canedit) {
-                $name = "<a href=\"" . self::getFormURLWithID($data["id"]) . "\">{$name}</a>";
+                $name = "<a href=\"" . htmlspecialchars(self::getFormURLWithID($data["id"])) . "\">{$name}</a>";
             }
             if (!empty($data['answer'])) {
                 $name .= Html::showToolTip(RichText::getEnhancedHtml($data['answer']), [

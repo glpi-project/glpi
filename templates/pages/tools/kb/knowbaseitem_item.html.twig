@@ -37,9 +37,9 @@
 <form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}">
     {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
     {% if get_class(item) == 'KnowbaseItem' %}
-        {{ inputs.hidden('knowbaseitems_id', item.getID) }}
+        {{ inputs.hidden('knowbaseitems_id', item.getID()) }}
     {% else %}
-        {{ inputs.hidden('items_id', item.getID) }}
+        {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
     <div class="d-flex">
@@ -50,11 +50,11 @@
             {% endset %}
             {{ fields.htmlField('', dropdown, __('Add a linked item')) }}
         {% else %}
-            {{ call('KnowbaseItem::dropdown', [{
-                entity: item.getEntity,
-                used: used_knowbase_items,
-                condition: visibility_condition
-            }]) }}
+            {{ 'KnowbaseItem'|itemtype_dropdown({
+                'entity': item.getEntity(),
+                'used': used_knowbase_items,
+                'condition': visibility_condition
+            }) }}
         {% endif %}
     </div>
     <div class="d-flex flex-row-reverse pe-2">
