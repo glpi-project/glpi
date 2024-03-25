@@ -187,6 +187,14 @@ class Dropdown
             }
         }
 
+        if(isset($params['specific_tags']['required'])){
+                if($params['value'] == 0 && $name == $params['emptylabel']){
+                        $params['value'] = "";
+                        $params['placeholder'] = $params['emptylabel'];
+                }
+                $params['display_emptychoice'] = false;
+        }
+
         if ($params['readonly']) {
             $output = '';
             if ($params["multiple"]) {
