@@ -140,6 +140,15 @@ class AuthMail extends CommonDBTM
         ];
 
         $tab[] = [
+            'id'                 => '7',
+            'table'              => $this->getTable(),
+            'field'              => 'is_default',
+            'name'               => __('Default server'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false
+        ];
+
+        $tab[] = [
             'id'                 => '19',
             'table'              => $this->getTable(),
             'field'              => 'date_mod',
@@ -191,6 +200,12 @@ class AuthMail extends CommonDBTM
         echo "<td colspan='3'>";
         Dropdown::showYesNo('is_active', $this->fields['is_active']);
         echo "</td></tr>";
+
+        $defaultrand = mt_rand();
+        echo "<tr class='tab_bg_1'><td><label for='dropdown_is_default$defaultrand'>" . __('Default server') . "</label></td>";
+        echo "<td>";
+        Dropdown::showYesNo('is_default', $this->fields['is_default'], -1, ['rand' => $defaultrand]);
+        echo "</td>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Email domain Name (users email will be login@domain)') . "</td>";
