@@ -247,14 +247,15 @@ class ReservationItem extends CommonDBChild
             'massiveaction'      => false
         ];
 
-        $tab[] = [
-            'id'                 => '71',
-            'table'              => 'glpi_groups',
-            'field'              => 'completename',
-            'name'               => Group::getTypeName(1),
-            'datatype'           => 'dropdown',
-            'massiveaction'      => false
-        ];
+        //FIXME Nope, this won't work either now that some reservable items have multiple groups and therefore exist in another table
+//        $tab[] = [
+//            'id'                 => '71',
+//            'table'              => 'glpi_groups',
+//            'field'              => 'completename',
+//            'name'               => Group::getTypeName(1),
+//            'datatype'           => 'dropdown',
+//            'massiveaction'      => false
+//        ];
 
         $tab[] = [
             'id'                 => '19',

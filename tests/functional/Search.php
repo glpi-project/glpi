@@ -812,6 +812,7 @@ class Search extends DbTestCase
                 'searchtype' => 'contains',
                 'value'      => ''
             ]
+                //FIXME Yep, metacriteria for Groups won't work either because some have group links in another table
             ],
                                                      // group is_notify
             'metacriteria' => [0 => ['link'       => 'AND',
