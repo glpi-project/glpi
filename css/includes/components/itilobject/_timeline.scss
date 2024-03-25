@@ -38,15 +38,6 @@
         margin-top: -0.5rem;
         margin-bottom: 1rem;
 
-        .creator {
-            .badge {
-                background-color: var(--glpi-timeline-badge-bg);
-                color: var(--glpi-timeline-badge-fg);
-
-                @include tabler-badge-fix;
-            }
-        }
-
         .timeline-item-buttons {
             .is-private {
                 color: var(--glpi-timeline-badge-fg);
@@ -199,7 +190,6 @@
     }
 
     &.ITILFollowup,
-    &.NotepadItem,
     &.KnowbaseItemComment {
         .timeline-content {
             background-color: var(--glpi-timeline-fup-bg);
@@ -434,7 +424,6 @@
             &.ITILTask.info,
             &.Document_Item,
             &.Log,
-            &.NotepadItem,
             &.KnowbaseItemComment {
                 display: none;
             }
