@@ -949,7 +949,7 @@ class AuthLDAP extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/ldap/test_form.html.twig', [
-            'servername' => Sanitizer::sanitize($this->getField('name')),
+            'servername' => $this->getField('name'),
             'tests' => $tests,
         ]);
     }
