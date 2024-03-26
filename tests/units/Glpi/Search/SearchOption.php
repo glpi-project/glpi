@@ -42,17 +42,17 @@ class SearchOption extends \GLPITestCase
         yield [
             'string_identifier' => 'any string can be used',
             'plugin'            => null,
-            'generated_id'      => 12835,
+            'generated_id'      => 10013,
         ];
         yield [
             'string_identifier' => 'any string can be used',
             'plugin'            => 'MyPlugin',
-            'generated_id'      => 80255,
+            'generated_id'      => 37205,
         ];
         yield [
             'string_identifier' => 'any string can be used',
             'plugin'            => 'AnotherPlugin',
-            'generated_id'      => 30995,
+            'generated_id'      => 59584,
         ];
     }
 
@@ -70,14 +70,17 @@ class SearchOption extends \GLPITestCase
 
     public function testGenerateAPropbablyUniqueIdRange()
     {
-        for ($i = 'a'; $i < 'aaa'; $i = str_increment($i)) {
-            $core_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($i, null);
+        $str = 'a';
+        for ($i = 0; $i < 10000; $i++) {
+            $core_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($str, null);
             $this->integer($core_result)->isGreaterThanOrEqualTo(10000);
             $this->integer($core_result)->isLessThanOrEqualTo(19999);
 
-            $plugin_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($i, 'MyPlugin');
+            $plugin_result = \Glpi\Search\SearchOption::generateAProbablyUniqueId($str, 'MyPlugin');
             $this->integer($plugin_result)->isGreaterThanOrEqualTo(20000);
             $this->integer($plugin_result)->isLessThanOrEqualTo(99999);
+
+            $str = str_increment($str);
         }
     }
 }

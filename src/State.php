@@ -36,6 +36,7 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\Clonable;
+use Glpi\Search\SearchOption;
 
 /**
  * State Class
@@ -373,369 +374,38 @@ class State extends CommonTreeDropdown
 
     public function rawSearchOptions()
     {
-        $tab = parent::rawSearchOptions();
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
-        $tab[] = [
-            'id'                 => '21',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Computer::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Computer',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
+        $search_options = parent::rawSearchOptions();
+
+        foreach ($CFG_GLPI['state_types'] as $itemtype) {
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+
+            $plugin = null;
+            if ($itemtype_parts = isPluginItemType($itemtype)) {
+                $plugin = $itemtype_parts['plugin'];
+            }
+            $search_options[] = [
+                'id'                 => SearchOption::generateAProbablyUniqueId($itemtype, $plugin),
+                'table'              => DropdownVisibility::getTable(),
+                'field'              => 'is_visible',
+                'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), $itemtype::getTypeName(Session::getPluralNumber())),
+                'datatype'           => 'bool',
+                'joinparams'         => [
+                    'jointype' => 'itemtypeonly',
+                    'table'      => $this->getTable(),
+                    'condition' => [
+                        'NEWTABLE.visible_itemtype' => $itemtype,
+                        'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
+                    ]
                 ]
-            ]
-        ];
+            ];
+        }
 
-        $tab[] = [
-            'id'                 => '22',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                SoftwareVersion::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'SoftwareVersion',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '23',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Monitor',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '24',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Printer::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Printer',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '25',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Peripheral::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Peripheral',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '26',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Phone::getTypeName(Session::getPluralNumber())),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Phone',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '27',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                NetworkEquipment::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'NetworkEquipment',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '28',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                SoftwareLicense::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'SoftwareLicense',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '29',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Certificate::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Certificate',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '30',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Rack::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Rack',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '31',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Line::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Line',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '32',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Enclosure::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Enclosure',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '33',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                PDU::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'PDU',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '34',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Cluster::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Cluster',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '35',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                PassiveDCEquipment::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'PassiveDCEquipment',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '36',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Contract::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Contract',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '37',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Appliance::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Appliance',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '38',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                Cable::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'Cable',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
-            'id'                 => '39',
-            'table'              => DropdownVisibility::getTable(),
-            'field'              => 'is_visible',
-            'name'               => sprintf(
-                __('%1$s - %2$s'),
-                __('Visibility'),
-                DatabaseInstance::getTypeName(Session::getPluralNumber())
-            ),
-            'datatype'           => 'bool',
-            'joinparams'         => [
-                'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
-                'condition' => [
-                    'NEWTABLE.visible_itemtype' => 'DatabaseInstance',
-                    'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
-                ]
-            ]
-        ];
-
-        $tab[] = [
+        $search_options[] = [
             'id'                 => '40',
             'table'              => $this->getTable(),
             'field'              => 'is_helpdesk_visible',
@@ -743,7 +413,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool'
         ];
 
-        return $tab;
+        return $search_options;
     }
 
     public function prepareInputForUpdate($input)
