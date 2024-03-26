@@ -32,3 +32,9 @@
  */
 
 // This palette is literally just the default light palette. See "../includes/palette_light.scss".
+:root[data-glpi-theme="auror"] {
+    --glpi-palette-color-1: #1b2f62;
+    --glpi-palette-color-2: #fff;
+    --glpi-palette-color-3: #3a5693;
+    --glpi-palette-color-4: #fec95c;
+}
