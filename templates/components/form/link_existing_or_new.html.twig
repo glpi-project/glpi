@@ -78,7 +78,7 @@
                {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
                <a href="{{ create_url }}" class="btn btn-primary">
                   <i class="ti ti-plus"></i>
-                  <span>{{ __("Create a %s from this %s")|format(target_itemtype|itemtype_name, source_itemtype|itemtype_name) }}</span>
+                  <span>{{ __("Create a %1$s from this %2$s")|format(target_itemtype|itemtype_name, source_itemtype|itemtype_name) }}</span>
                </a>
             {% endif %}
          </div>
