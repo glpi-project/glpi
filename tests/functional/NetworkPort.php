@@ -409,7 +409,7 @@ class NetworkPort extends DbTestCase
             foreach ($so_display as $column) {
                 $result->contains($column['name']);
                 if (isset($netport->fields[$column['field']])) {
-                    $result->contains($netport->fields[$column['field']]);
+                    $result->contains((string)$netport->fields[$column['field']]);
                 }
             }
         }
