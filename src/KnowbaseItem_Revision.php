@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Class KnowbaseItem_Revision
  * @since 9.2.0
@@ -95,22 +97,18 @@ class KnowbaseItem_Revision extends CommonDBTM
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
-        $item_id = $item->getID();
-        $item_type = $item::getType();
         if (isset($_GET["start"])) {
-            $start = intval($_GET["start"]);
+            $start = (int)$_GET["start"];
         } else {
             $start = 0;
         }
 
-        $kb_item_id = 0;
         $language   = '';
-        if ($item->getType() == KnowbaseItem::getType()) {
+        if ($item::class === KnowbaseItem::class) {
             $kb_item_id = $item->getID();
         } else {
             $kb_item_id = $item->fields['knowbaseitems_id'];
@@ -127,197 +125,99 @@ class KnowbaseItem_Revision extends CommonDBTM
             $where
         );
 
-       // No revisions in database
+        // No revisions in database
         if ($number < 1) {
-            $no_txt = __('No revisions');
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>$no_txt</th></tr>";
-            echo "</table>";
-            echo "</div>";
+            echo '<div class="alert alert-info">' . __s('No revisions') . '</div>';
             return;
         }
-       // Display the pager
-
-        Html::printAjaxPager(self::getTypeName(1), $start, $number);
-       // Output events
-        echo "<table class='tab_cadre_fixehov'>";
-        $header = '<tr>';
-        $header .= "<th title='" . _sn('Revision', 'Revisions', 1) . "'>#</th>";
-        $header .= "<th>&nbsp;</th>";
-        $header .= "<th>" . __('Author')  . "</th>";
-        $header .= "<th>" . __('Creation date') . "</th>";
-        $header .= "<th></th></tr>";
-        echo $header;
 
         $user = new User();
         $user->getFromDB($item->fields['users_id']);
-
-       //current contents
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>(" . __('cur')  . ")</td>" .
-              "<td><input type='radio' name='oldid' value='0' style='visibility:hidden'/>" .
-              "<input type='radio' name='diff' value='0' checked='checked'/></td>" .
-              "<td>" . $user->getLink() . "</td>" .
-              "<td class='tab_date'>" . $item->fields['date_mod'] . "</td>" .
-              "<td></td>" .
-              "</tr>";
-
         $revisions = $DB->request(
             'glpi_knowbaseitems_revisions',
             $where + ['ORDER' => 'id DESC']
         );
-
         $is_checked = true;
+        $author_cache = [
+            $item->fields['users_id'] => $user->getLink()
+        ];
+        $entries = [
+            [
+                'number' => __('cur'),
+                'selections' => '<input type="radio" name="oldid" value="0" style="visibility:hidden"/><input type="radio" name="diff" value="0" checked="checked"/>',
+                'author' => $author_cache[$item->fields['users_id']],
+                'date_creation' => $item->fields['date_mod'],
+                'actions' => ''
+            ]
+        ];
+        $show_msg = __s('show');
+        $restore_msg = __s('restore');
         foreach ($revisions as $revision) {
-           // Before GLPI 9.3.1, author was not stored in revision.
-           // See https://github.com/glpi-project/glpi/issues/4377.
-            $hasRevUser = $user->getFromDB($revision['users_id']);
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . $revision['revision']  . "</td>" .
-                 "<td><input type='radio' name='oldid' value='{$revision['id']}'";
-
-            if ($is_checked) {
-                echo " checked='checked'";
-                $is_checked = false;
+            if (!isset($author_cache[$revision['users_id']])) {
+                // Before GLPI 9.3.1, author was not stored in revision.
+                // See https://github.com/glpi-project/glpi/issues/4377.
+                $hasRevUser = $user->getFromDB($revision['users_id']);
+                $author_cache[$revision['users_id']] = $hasRevUser ? $user->getLink() : __s('Unknown user');
             }
 
-            echo "/> <input type='radio' name='diff' value='{$revision['id']}'/></td>";
+            $oldid_checked = $is_checked ? ' checked="checked"' : '';
+            if ($is_checked) {
+                $is_checked = false;
+            }
+            $selection_controls = <<<HTML
+                <input type='radio' name='oldid' value='{$revision['id']}' $oldid_checked/>
+                <input type='radio' name='diff' value='{$revision['id']}'/>
+HTML;
 
-            echo "<td>" . ($hasRevUser ? $user->getLink() : __('Unknown user')) . "</td>" .
-             "<td class='tab_date'>" . $revision['date'] . "</td>";
-
-            $form = null;
-            if ($item->getType() == KnowbaseItem::getType()) {
+            if ($item::class === KnowbaseItem::class) {
                 $form = KnowbaseItem::getFormURLWithID($revision['knowbaseitems_id']);
             } else {
                 $form = KnowbaseItemTranslation::getFormURLWithID($revision['knowbaseitems_id']);
             }
+            $actions = <<<HTML
+                <a href='#' data-rev='{$revision['revision']}' data-revid="{$revision['id']}" class='show_rev'>
+                    {$show_msg}
+                </a>
+                - <a href='{$form}&to_rev={$revision['id']}' class='restore_rev'>
+                    {$restore_msg}
+                </a>
+HTML;
 
-            echo "<td><a href='#' data-rev='" . $revision['revision']  . "'
-                    data-revid='" . $revision['id']  . "' class='show_rev'>" . __('show') . "</a>
-                 - <a href='$form&to_rev={$revision['id']}' class='restore_rev'>" .
-                    __('restore')  . "</a></td>";
-            echo "</tr>";
+            $entries[] = [
+                'number' => $revision['revision'],
+                'selections' => $selection_controls,
+                'author' => $author_cache[$revision['users_id']],
+                'date_creation' => $revision['date'],
+                'actions' => $actions
+            ];
         }
 
-       // TODO: move script to deferred js loading
-        echo Html::script("public/lib/jquery-prettytextdiff.js");
-        echo Html::scriptBlock("
-         $(function() {
-            $(document).on('click', '.restore_rev', function(e) {
-               lastClickedElement = e.target;
-               return window.confirm(__('Do you want to restore the selected revision?'));
-            });
-
-            $(document).on('click', '.show_rev', function(e) {
-               e.preventDefault();
-               var _this = $(this);
-
-               $.ajax({
-                  url: '{$CFG_GLPI['root_doc']}/ajax/getKbRevision.php',
-                  method: 'post',
-                  cache: false,
-                  data: {
-                     revid: _this.data('revid')
-                  }
-               })
-               .done(function(data) {
-                  glpi_html_dialog({
-                     title: __('Show revision %rev').replace(/%rev/, _this.data('rev')),
-                     body: `<div>
-                        <h2>\${__('Subject')}</h2>
-                        <div>\${data.name}</div>
-                        <h2>\${__('Content')}</h2>
-                        <div>\${data.answer}</div>
-                     </div>`,
-                  });
-               })
-               .fail(function() {
-                  glpi_alert({
-                     title: __('Contact your GLPI admin!'),
-                     message: __('Unable to load revision!'),
-                  });
-               });
-            });
-
-            $(document).on('click', '.compare', function(e) {
-               e.preventDefault();
-               var _oldid = $('[name=oldid]:checked').val();
-               var _diffid = $('[name=diff]:checked').val();
-
-               $.ajax({
-                  url: '{$CFG_GLPI['root_doc']}/ajax/compareKbRevisions.php',
-                  method: 'post',
-                  cache: false,
-                  data: {
-                     oldid :  _oldid,
-                     diffid: _diffid,
-                     kbid  : '{$kb_item_id}'
-                  }
-               }).done(function(data) {
-                  if (_diffid == 0) {
-                     _diffid = __('current');
-                  }
-
-                  glpi_html_dialog({
-                     title: __('Compare revisions old and diff')
-                        .replace(/old/, _oldid)
-                        .replace(/diff/, _diffid),
-                     body: `<div id='compare_view'>
-                        <table class='table'>
-                           <tr>
-                              <th></th>
-                              <th>\${__('Original')}</th>
-                              <th>\${__('Changed')}</th>
-                              <th>\${__('Differences')}</th>
-                           </tr>
-                           <tr>
-                              <th>\${__('Subject')}</th>
-                              <td class='original'>\${data['old']['name']}</td>
-                              <td class='changed'>\${data['diff']['name']}</td>
-                              <td class='diff'></td>
-                           </tr>
-                           <tr>
-                              <th>\${__('Content')}</th>
-                              <td class='original'>\${data['old']['answer']}</td>
-                              <td class='changed'>\${data['diff']['answer']}</td>
-                              <td class='diff'></td>
-                           </tr>
-                        </table>
-                     </div>`,
-                  });
-
-                  $('#compare_view tr').prettyTextDiff();
-               })
-               .fail(function() {
-                  glpi_alert({
-                     title: __('Contact your GLPI admin!'),
-                     message: __('Unable to load diff!'),
-                  });
-               });
-            });
-
-            $('[name=diff]:gt(0)').css('visibility', 'hidden');
-            $('[name=oldid]').on('click', function(e) {
-               var _index = $(this).index('[name=oldid]');
-
-               var _checked_index = $('[name=diff]:checked').index('[name=diff]');
-               if (_checked_index >= _index) {
-                  $('[name=diff]:eq(' + (_index - 1) +')').prop('checked', true);
-               }
-
-               $('[name=diff]:gt(' + _index + '), [name=diff]:eq(' + _index + ')').css('visibility', 'hidden');
-               $('[name=diff]:lt(' + _index + ')').css('visibility', 'visible');
-            });
-         });
-      ");
-
-        echo $header;
-        echo "</table>";
-        echo "<button class='btn btn-sm btn-secondary compare'>" . _sx('button', 'Compare selected revisions') . "</button>";
-        Html::printAjaxPager(self::getTypeName(1), $start, $number);
+        echo Html::script('js/modules/Knowbase.js', ['type' => 'module']);
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'start' => $start,
+            'limit' => $_SESSION['glpilist_limit'],
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'number' => __('#'),
+                'selections' => '',
+                'author' => __('Author'),
+                'date_creation' => __('Creation date'),
+                'actions' => ''
+            ],
+            'formatters' => [
+                'selections' => 'raw_html',
+                'author' => 'raw_html',
+                'date_creation' => 'datetime',
+                'actions' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => $number,
+            'filtered_number' => $number,
+            'showmassiveactions' => false,
+        ]);
+        echo "<button class='btn btn-sm btn-secondary compare' data-kbitem_id='{$kb_item_id}'>" . _sx('button', 'Compare selected revisions') . "</button>";
     }
 
     /**

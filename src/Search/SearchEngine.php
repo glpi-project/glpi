@@ -560,6 +560,12 @@ final class SearchEngine
     }
 
     /**
+     * Show the search engine.
+     *
+     * If you want to override some default parameters, you may need to provide them in $get.
+     * The parameters are handled as follows:
+     * - The $_GET or $get array is passed to the search input class to be parsed and have some default values set.
+     * - The returned parameters are then merged with the $params array. Anything set in both arrays will be overwritten by the result of {@link SearchInputInterface::manageParams()}.
      * @param class-string<CommonGLPI> $itemtype
      * @param array $params Array of options:
      *                       - (bool) init_session_data - default: false

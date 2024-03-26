@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
 use Glpi\RichText\RichText;
 
@@ -134,38 +135,26 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public function showFull($options = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (!$this->can($this->fields['id'], READ)) {
-            return false;
+            return;
         }
 
-        $linkusers_id = true;
-       // show item : question and answer
-        if (
-            ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"])
-            || (Session::getCurrentInterface() == "helpdesk")
-            || !User::canView()
-        ) {
-            $linkusers_id = false;
-        }
-
-        echo "<table class='tab_cadre_fixe'>";
-
-        echo "<tr><td class='left' colspan='4'><h2>" . __('Subject') . "</h2>";
-        echo $this->fields["name"];
-
-        echo "</td></tr>";
-        echo "<tr><td class='left' colspan='4'><h2>" . __('Content') . "</h2>\n";
-
-        echo "<div class='rich_text_container' id='kbanswer'>";
-        echo RichText::getEnhancedHtml($this->fields['answer']);
-        echo "</div>";
-        echo "</td></tr>";
-        echo "</table>";
-
-        return true;
+        $twig_params = [
+            'subject_label' => __('Subject'),
+            'content_label' => __('Content'),
+            'item'          => $this
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <div class="d-flex flex-column">
+                <h2>{{ subject_label }}</h2>
+                <span class="mb-3">{{ item.fields['name'] }}</span>
+                <h2>{{ content_label }}</h2>
+                <div id="kbanswer" class="rich_text_container">
+                    {{ item.fields['answer']|enhanced_html }}
+                </div>
+            </div>
+TWIG, $twig_params);
     }
 
     /**
@@ -177,90 +166,85 @@ class KnowbaseItemTranslation extends CommonDBChild
      **/
     public static function showTranslations(KnowbaseItem $item)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $canedit = $item->can($item->getID(), UPDATE);
         $rand    = mt_rand();
         if ($canedit) {
-            echo "<div id='viewtranslation" . $item->getID() . "$rand'></div>\n";
-            echo "<script type='text/javascript' >\n";
-            echo "function addTranslation" . $item->getID() . "$rand() {\n";
-            $params = ['type'             => __CLASS__,
-                'parenttype'       => get_class($item),
-                'knowbaseitems_id' => $item->fields['id'],
-                'id'               => -1
+            $twig_params = [
+                'item' => $item,
+                'btn_msg' => __('Add a new translation')
             ];
-            Ajax::updateItemJsCode(
-                "viewtranslation" . $item->getID() . "$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "};";
-            echo "</script>\n";
-
-            echo "<div class='center'>" .
-              "<a class='btn btn-primary' href='javascript:addTranslation" . $item->getID() . "$rand();'>" .
-              __('Add a new translation') . "</a></div><br>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% set rand = random() %}
+                <div id="viewtranslation{{ item.getID() ~ rand }}"></div>
+                <div class="text-center mb-3">
+                    <button name="add_translation{{ rand }}" class="btn btn-primary">{{ btn_msg }}</button>
+                </div>
+                <script>
+                    $(() => {
+                        function addTranslation{{ item.getID() ~ rand }}() {
+                            $('#viewtranslation{{ item.getID() ~ rand }}').load(
+                                '/ajax/viewsubitem.php',
+                                {
+                                    type: 'KnowbaseItemTranslation',
+                                    parenttype: '{{ get_class(item)|e('js') }}',
+                                    knowbaseitems_id: {{ item.getID() }},
+                                    id: -1
+                                }
+                            );
+                        }
+                        $('button[name="add_translation{{ rand }}"]').on('click', addTranslation{{ item.getID() ~ rand }});
+                    });
+                </script>
+TWIG, $twig_params);
         }
 
         $obj   = new self();
         $found = $obj->find(['knowbaseitems_id' => $item->getID()], "language ASC");
 
-        if (count($found) > 0) {
+        $entries = [];
+        foreach ($found as $data) {
+            $name = htmlspecialchars($data["name"]);
             if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
-                Html::showMassiveActions($massiveactionparams);
+                $name = "<a href=\"" . htmlspecialchars(self::getFormURLWithID($data["id"])) . "\">{$name}</a>";
+            }
+            if (!empty($data['answer'])) {
+                $name .= Html::showToolTip(RichText::getEnhancedHtml($data['answer']), [
+                    'display' => false
+                ]);
             }
 
-            Session::initNavigateListItems('KnowbaseItemTranslation', __('Entry translations list'));
-
-            echo "<div class='center'>";
-            echo "<table class='tab_cadre_fixehov'><tr class='tab_bg_2'>";
-            echo "<th colspan='4'>" . __("List of translations") . "</th></tr>";
-            if ($canedit) {
-                echo "<th width='10'>";
-                echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                echo "</th>";
-            }
-            echo "<th>" . __("Language") . "</th>";
-            echo "<th>" . __("Subject") . "</th>";
-            foreach ($found as $data) {
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td class='center'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    echo "</td>";
-                }
-                echo "<td>";
-                echo Dropdown::getLanguageName($data['language']);
-                echo "</td><td>";
-                if ($canedit) {
-                    echo "<a href=\"" . KnowbaseItemTranslation::getFormURLWithID($data["id"]) . "\">{$data['name']}</a>";
-                } else {
-                    echo  $data["name"];
-                }
-                if (isset($data['answer']) && !empty($data['answer'])) {
-                    echo "&nbsp;";
-                    Html::showToolTip(RichText::getEnhancedHtml($data['answer']));
-                }
-                echo "</td></tr>";
-            }
-            echo "</table>";
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-        } else {
-            echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-            echo "<th class='b'>" . __("No translation found") . "</th></tr></table>";
+            $entries[] = [
+                'itemtype' => self::class,
+                'id'       => $data['id'],
+                'language' => Dropdown::getLanguageName($data['language']),
+                'name'     => $name
+            ];
         }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'nopager' => true,
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'language' => __('Language'),
+                'name'     => __('Subject'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand
+            ],
+        ]);
         return true;
     }
-
 
     /**
      * Display translation form
@@ -270,7 +254,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      */
     public function showForm($ID = -1, array $options = [])
     {
-        if (!($ID > 0) && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+        if ((!($ID > 0) && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;
@@ -283,51 +267,14 @@ class KnowbaseItemTranslation extends CommonDBChild
             $options['knowbaseitems_id'] = $options['parent']->getID();
             $this->check(-1, CREATE, $options);
         }
-        $this->showFormHeader($options);
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Language') . "&nbsp;:</td>";
-        echo "<td>";
-        echo "<input type='hidden' name='users_id' value=\"" . Session::getLoginUserID() . "\">";
-        echo "<input type='hidden' name='knowbaseitems_id' value='" . $this->fields['knowbaseitems_id'] . "'>";
-        if ($ID > 0) {
-            echo Dropdown::getLanguageName($this->fields['language']);
-        } else {
-            Dropdown::showLanguages(
-                "language",
-                ['display_none' => false,
-                    'value'        => $_SESSION['glpilanguage'],
-                    'used'         => self::getAlreadyTranslatedForItem($options['parent'])
-                ]
-            );
-        }
-        echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Subject') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<textarea class='form-control' name='name'>" . $this->fields["name"] . "</textarea>";
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Content') . "</td>";
-        echo "<td colspan='3'>";
-        Html::textarea(
-            [
-                'name'              => 'answer',
-                'value'             => RichText::getSafeHtml($this->fields['answer'], true),
-                'editor_id'         => 'answer',
-                'enable_fileupload' => false,
-                'enable_richtext'   => true,
-                'cols'              => 100,
-                'rows'              => 30
-            ]
-        );
-        echo "</td></tr>\n";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/tools/kb/translation.html.twig', [
+            'item' => $this,
+            'no_header' => true,
+            'used_languages' => $ID <= 0 ? self::getAlreadyTranslatedForItem($options['parent']) : []
+        ]);
         return true;
     }
-
 
     /**
      * Get a translation for a value

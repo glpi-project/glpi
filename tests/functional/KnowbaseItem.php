@@ -754,7 +754,7 @@ HTML,
         ]);
 
         // Create KB item with category
-        $kb_item = $this->createItem(\KnowbaseItem::class, [
+        $kb_item = @$this->createItem(\KnowbaseItem::class, [
             'name' => __FUNCTION__ . '_1',
             'answer' => __FUNCTION__ . '_1',
             'knowbaseitemcategories_id' => $category->getID(),
