@@ -83,5 +83,6 @@ if (isset($_POST["add"])) {
     Html::back();
 } else {
     $menus = ["helpdesk", "planning", "external"];
-    PlanningExternalEvent::displayFullPageForItem($_GET["id"], $menus);
+    unset($_POST['rrule']);
+    PlanningExternalEvent::displayFullPageForItem($_GET["id"], $menus, $_POST);
 }
