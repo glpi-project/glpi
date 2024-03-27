@@ -445,7 +445,7 @@ final class Search
                 getEntitiesRestrictCriteria('_'),
             ];
         }
-        if (!empty($entity_restrict)) {
+        if (!empty($entity_restrict) && $entity_restrict !== [0 => []]) {
             $criteria['WHERE'][] = ['AND' => $entity_restrict];
         }
 
@@ -1252,7 +1252,7 @@ final class Search
      * @param mixed $value The unique field value
      * @return int|null The ID or null if not found
      */
-    private static function getIDForOtherUniqueFieldBySchema(array $schema, string $field, mixed $value): ?int
+    public static function getIDForOtherUniqueFieldBySchema(array $schema, string $field, mixed $value): ?int
     {
         /** @var \DBmysql $DB */
         global $DB;

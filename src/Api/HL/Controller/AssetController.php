@@ -941,40 +941,7 @@ final class AssetController extends AbstractController
         $asset_schemas = array_filter($asset_schemas, static function ($key) use ($asset_types) {
             return !str_starts_with($key, '_') && in_array($key, $asset_types, true);
         }, ARRAY_FILTER_USE_KEY);
-
-        $shared_properties = [];
-        $subtype_info = [];
-        foreach ($asset_schemas as $schema_name => $schema) {
-            $itemtype = $schema['x-itemtype'];
-            // Need to check rights for each asset type
-            if (!$itemtype::canView()) {
-                continue;
-            }
-            $subtype_info[] = [
-                'schema_name' => $schema_name,
-                'itemtype' => $itemtype,
-            ];
-            if (empty($shared_properties)) {
-                $shared_properties = $schema['properties'];
-                // Remove array properties (complex handling may be required. No support added for now)
-                $shared_properties = array_filter($shared_properties, static function ($property) {
-                    return !isset($property['type']) || $property['type'] !== Doc\Schema::TYPE_ARRAY;
-                });
-            } else {
-                $props = Doc\Schema::flattenProperties($schema['properties']);
-                foreach ($shared_properties as $key => $value) {
-                    if (!array_key_exists($key, $props)) {
-                        unset($shared_properties[$key]);
-                    }
-                }
-            }
-        }
-
-        return [
-            'x-subtypes' => $subtype_info,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => $shared_properties,
-        ];
+        return Doc\Schema::getUnionSchema($asset_schemas);
     }
 
     #[Route(path: '/Global', methods: ['GET'], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]

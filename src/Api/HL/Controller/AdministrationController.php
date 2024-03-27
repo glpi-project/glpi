@@ -694,13 +694,88 @@ final class AdministrationController extends AbstractController
 
     #[Route(path: '/User/username/{username}', methods: ['DELETE'], requirements: ['username' => '[a-zA-Z0-9_]+'])]
     #[Doc\Route(description: 'Delete a user by username')]
-    /**
-     * @param Request $request
-     * @return Response
-     */
     public function deleteUserByUsername(Request $request): Response
     {
         return Search::deleteBySchema($this->getKnownSchema('User'), $request->getAttributes(), $request->getParameters(), 'username');
+    }
+
+    private function getUsedOrManagedItems(int $users_id, bool $is_managed, array $request_params): Response
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        // Create a union schema with all relevant item types
+        $types = $is_managed ? $CFG_GLPI['linkuser_tech_types'] : $CFG_GLPI['linkuser_types'];
+        $schema = Doc\Schema::getUnionSchemaForItemtypes($types);
+        $rsql_filter = $request_params['filter'] ?? '';
+        if (!empty($rsql_filter)) {
+            $rsql_filter = "($rsql_filter);";
+        }
+        $user_field = $is_managed ? 'user_tech.id' : 'user.id';
+        $rsql_filter .= "$user_field==$users_id";
+        $request_params['filter'] = $rsql_filter;
+        return Search::searchBySchema($schema, $request_params);
+    }
+
+    #[Route(path: '/User/Me/UsedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the used items for the current user',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+    )]
+    public function getMyUsedItems(Request $request): Response
+    {
+        return $this->getUsedOrManagedItems($this->getMyUserID(), false, $request->getParameters());
+    }
+
+    #[Route(path: '/User/{id}/UsedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the used items for a user by ID',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+    )]
+    public function getUserUsedItemsByID(Request $request): Response
+    {
+        return $this->getUsedOrManagedItems($request->getAttribute('id'), false, $request->getParameters());
+    }
+
+    #[Route(path: '/User/username/{username}/UsedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the used items for a user by username',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+    )]
+    public function getUserUsedItemsByUsername(Request $request): Response
+    {
+        $users_id = Search::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User'), 'username', $request->getAttribute('username'));
+        return $this->getUsedOrManagedItems($users_id, false, $request->getParameters());
+    }
+
+    #[Route(path: '/User/Me/ManagedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the managed items for the current user',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+    )]
+    public function getMyManagedItems(Request $request): Response
+    {
+        return $this->getUsedOrManagedItems($this->getMyUserID(), true, $request->getParameters());
+    }
+
+    #[Route(path: '/User/{id}/ManagedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the managed items for a user by ID',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+    )]
+    public function getUserManagedItemsByID(Request $request): Response
+    {
+        return $this->getUsedOrManagedItems($request->getAttribute('id'), true, $request->getParameters());
+    }
+
+    #[Route(path: '/User/username/{username}/ManagedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the managed items for a user by username',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+    )]
+    public function getUserManagedItemsByUsername(Request $request): Response
+    {
+        $users_id = Search::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User'), 'username', $request->getAttribute('username'));
+        return $this->getUsedOrManagedItems($users_id, true, $request->getParameters());
     }
 
     #[Route(path: '/Group', methods: ['POST'])]
