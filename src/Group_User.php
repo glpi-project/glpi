@@ -745,14 +745,6 @@ class Group_User extends CommonDBRelation
 
         parent::post_addItem();
 
-        Event::log(
-            $this->fields['groups_id'],
-            "groups",
-            4,
-            "setup",
-            sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"])
-        );
-
         // add new user to plannings
         $groups_id  = $this->fields['groups_id'];
         $planning_k = 'group_' . $groups_id . '_users';
