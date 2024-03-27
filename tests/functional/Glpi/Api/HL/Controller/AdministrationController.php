@@ -481,7 +481,7 @@ class AdministrationController extends \HLAPITestCase
             'entities_id' => $entity_id,
             'users_id' => \Session::getLoginUserID()
         ])->getID();
-        $computers_id_2= $this->createItem('Computer', [
+        $computers_id_2 = $this->createItem('Computer', [
             'name' => __FUNCTION__ . '_tech',
             'entities_id' => $entity_id,
             'users_id_tech' => \Session::getLoginUserID()
