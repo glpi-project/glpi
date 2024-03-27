@@ -235,7 +235,15 @@ class FormAccessControlManager extends DbTestCase
         $controls = $manager->getAccessControlsForForm($form, $only_active);
         $this->array($controls)->hasSize(count($expected_access_controls));
 
-        foreach (array_values($controls) as $i => $control) {
+        // Ensure both array are sorted in the same way to get a proper comparison.
+        usort($controls, function ($a, $b) {
+            return $a->fields['strategy'] <=> $b->fields['strategy'];
+        });
+        usort($expected_access_controls, function ($a, $b) {
+            return $a['strategy'] <=> $b['strategy'];
+        });
+
+        foreach ($controls as $i => $control) {
             $this->object($control)->isInstanceOf(FormAccessControl::class);
 
             // Unset fields that can't be compared properly, such as IDs.
