@@ -48,6 +48,24 @@ try {
         if (!$destination->add($_POST)) {
             throw new RuntimeException("Failed to create destination item");
         }
+    } elseif (isset($_POST["update"])) {
+        // ID is mandatory
+        $id = $_POST['id'] ?? null;
+        if ($id === null) {
+            // Invalid request
+            throw new InvalidArgumentException("Missing id");
+        }
+
+        // Right check
+        $destination->check($id, UPDATE, $_POST);
+
+        // Update destination item
+        if (!$destination->update($_POST)) {
+            throw new RuntimeException("Failed to update destination item");
+        }
+
+        // Save the ID to reopen the correct accordion item
+        $_SESSION['active_destination'] = $id;
     } elseif (isset($_POST["purge"])) {
         // ID is mandatory
         $id = $_POST['id'] ?? null;

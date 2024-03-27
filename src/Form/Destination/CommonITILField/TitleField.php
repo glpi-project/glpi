@@ -33,49 +33,55 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination;
+namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\AnswersSet;
-use Glpi\Form\Form;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Destination\ConfigFieldInterface;
+use Override;
 
-interface FormDestinationInterface
+class TitleField implements ConfigFieldInterface
 {
-    /**
-     * Create one or multiple items for a given form and its answers
-     *
-     * @param Form       $form
-     * @param AnswersSet $answers_set
-     * @param array      $config
-     *
-     * @return \CommonDBTM[]
-     *
-     * @throws \Exception Must be thrown if the item can't be created
-     */
-    public function createDestinationItems(
-        Form $form,
-        AnswersSet $answers_set,
-        array $config
-    ): array;
+    #[Override]
+    public function getKey(): string
+    {
+        return 'title';
+    }
 
+    #[Override]
+    public function getLabel(): string
+    {
+        return __("Title");
+    }
 
-    /**
-     * Render the configuration form for this destination type.
-     *
-     * @return string The rendered HTML content
-     */
-    public function renderConfigForm(array $config): string;
+    #[Override]
+    public function renderConfigForm(?array $config): string
+    {
+        $template = <<<TWIG
+            {% import 'components/form/basic_inputs_macros.html.twig' as fields %}
 
-    /**
-     * Get itemtype to create
-     *
-     * @return string (Must be a valid CommonDBTM class name)
-     */
-    public static function getTargetItemtype(): string;
+            {{ fields.input(
+                "config[" ~ key ~ "][value]",
+                value,
+                {}
+            ) }}
+TWIG;
 
-    /**
-     * Get the search option used to filter the target itemtype by answers set.
-     *
-     * @return int
-     */
-    public static function getFilterByAnswsersSetSearchOptionID(): int;
+        $twig = TemplateRenderer::getInstance();
+        return $twig->renderFromStringTemplate($template, [
+            'key' => $this->getKey(),
+            'value' => $config['value'] ?? '',
+        ]);
+    }
+
+    #[Override]
+    public function applyConfiguratedValue(array $input, ?array $config): array
+    {
+        if (is_null($config)) {
+            return $input;
+        }
+
+        $input['name'] = $config['value'];
+
+        return $input;
+    }
 }

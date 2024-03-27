@@ -137,9 +137,9 @@ abstract class AbstractFormDestinationType extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination($destination::class, ['name' => 'destination 1'])
-                ->addDestination($destination::class, ['name' => 'destination 2'])
-                ->addDestination($destination::class, ['name' => 'destination 3'])
+                ->addDestination($destination::class, 'destination 1')
+                ->addDestination($destination::class, 'destination 2')
+                ->addDestination($destination::class, 'destination 3')
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -206,9 +206,9 @@ abstract class AbstractFormDestinationType extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination($destination::class, ['name' => 'destination 1'])
-                ->addDestination($destination::class, ['name' => 'destination 2'])
-                ->addDestination($destination::class, ['name' => 'destination 3'])
+                ->addDestination($destination::class, 'destination 1')
+                ->addDestination($destination::class, 'destination 2')
+                ->addDestination($destination::class, 'destination 3')
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -252,7 +252,7 @@ abstract class AbstractFormDestinationType extends DbTestCase
     final public function testRenderConfigForm(): void
     {
         $destination = $this->getTestedInstance();
-        $html = $destination->renderConfigForm();
+        $html = $destination->renderConfigForm([]);
         $this->string($html)->isNotEmpty();
     }
 }

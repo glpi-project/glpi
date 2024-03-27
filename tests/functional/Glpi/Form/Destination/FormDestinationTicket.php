@@ -64,19 +64,30 @@ class FormDestinationTicket extends AbstractFormDestinationType
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(\Glpi\Form\Destination\FormDestinationTicket::class, ['name' => 'test'])
+                ->addDestination(
+                    \Glpi\Form\Destination\FormDestinationTicket::class,
+                    'test',
+                    [
+                        'title'   => ['value' => 'Ticket title'],
+                        'content' => ['value' => 'Ticket content'],
+                    ]
+                )
         );
 
         // There are no tickets in the database named after this form
-        $tickets = (new Ticket())->find(['name' => 'Ticket from form: Test form 1']);
+        $tickets = (new Ticket())->find(['name' => 'Ticket title']);
         $this->array($tickets)->hasSize(0);
 
         // Submit form, a single ticket should be created
         $answers = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "My name",
         ], \Session::getLoginUserID());
-        $tickets = (new Ticket())->find(['name' => 'Ticket from form: Test form 1']);
+        $tickets = (new Ticket())->find(['name' => 'Ticket title']);
         $this->array($tickets)->hasSize(1);
+
+        // Check fields
+        $ticket = current($tickets);
+        $this->string($ticket['content'])->isEqualTo('Ticket content');
 
         // Make sure link with the form answers was created too
         $ticket = array_pop($tickets);

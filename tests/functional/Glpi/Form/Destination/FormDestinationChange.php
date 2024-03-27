@@ -64,19 +64,30 @@ class FormDestinationChange extends AbstractFormDestinationType
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(\Glpi\Form\Destination\FormDestinationChange::class, ['name' => 'test'])
+                ->addDestination(
+                    \Glpi\Form\Destination\FormDestinationChange::class,
+                    'test',
+                    [
+                        'title'   => ['value' => 'Change title'],
+                        'content' => ['value' => 'Change content'],
+                    ]
+                )
         );
 
         // There are no change in the database named after this form
-        $changes = (new Change())->find(['name' => 'Change from form: Test form 1']);
+        $changes = (new Change())->find(['name' => 'Change title']);
         $this->array($changes)->hasSize(0);
 
         // Submit form, a single change should be created
         $answers = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "My name",
         ], \Session::getLoginUserID());
-        $changes = (new Change())->find(['name' => 'Change from form: Test form 1']);
+        $changes = (new Change())->find(['name' => 'Change title']);
         $this->array($changes)->hasSize(1);
+
+        // Check fields
+        $change = current($changes);
+        $this->string($change['content'])->isEqualTo('Change content');
 
         // Make sure link with the form answers was created too
         $change = array_pop($changes);

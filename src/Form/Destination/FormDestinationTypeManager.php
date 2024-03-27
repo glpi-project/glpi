@@ -88,7 +88,7 @@ final class FormDestinationTypeManager
     {
         $values = [];
         foreach ($this->getDestinationTypes() as $type) {
-            $values[get_class($type)] = $type->getTypeName();
+            $values[get_class($type)] = $type->getTypeName(1);
         }
 
         return $values;
