@@ -369,6 +369,7 @@ class Document extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/management/document.html.twig', [
             'item'  => $this,
             'uploader' => $this->fields['users_id'] > 0 ? getUserName($this->fields["users_id"], $showuserlink) : '',
+            'uploaded_files' => self::getUploadedFiles(),
             'params' => [
                 'canedit' => $this->canUpdateItem(),
             ]
@@ -1296,34 +1297,23 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Show dropdown of uploaded files
-     *
-     * @param string $myname dropdown name
-     **/
-    public static function showUploadedFilesDropdown($myname)
+     * @return array Array of uploaded files to be used in a dropdown
+     */
+    private static function getUploadedFiles()
     {
-        if (is_dir(GLPI_UPLOAD_DIR)) {
-            $uploaded_files = [];
-            if ($handle = opendir(GLPI_UPLOAD_DIR)) {
-                while (false !== ($file = readdir($handle))) {
-                    if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
-                        $dir = self::isValidDoc($file);
-                        if (!empty($dir)) {
-                            $uploaded_files[$file] = $file;
-                        }
+        $uploaded_files = [];
+        if ($handle = opendir(GLPI_UPLOAD_DIR)) {
+            while (false !== ($file = readdir($handle))) {
+                if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
+                    $dir = self::isValidDoc($file);
+                    if (!empty($dir)) {
+                        $uploaded_files[$file] = $file;
                     }
                 }
-                closedir($handle);
             }
-
-            if (count($uploaded_files)) {
-                Dropdown::showFromArray($myname, $uploaded_files, ['display_emptychoice' => true]);
-            } else {
-                echo __s('No file available');
-            }
-        } else {
-            echo __s("Upload directory doesn't exist");
+            closedir($handle);
         }
+        return $uploaded_files;
     }
 
     /**

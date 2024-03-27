@@ -35,8 +35,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 <div class="mb-3">
-    <form name="documentitem_form{{ rand }}" id="documentitem_form{{ rand }}" method="post"
-          action="{{ 'Document'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once>
+    <form method="post" action="{{ 'Document'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once>
 
         <div class="d-flex">
             {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', item.fields['documentcategories_id'], 'DocumentCategory'|itemtype_name, {
@@ -57,11 +56,11 @@
             }) }}
 
             {{ inputs.hidden('entities_id', entity) }}
-            {{ inputs.hidden('is_recursive', item.isRecursive) }}
-            {{ inputs.hidden('itemtype', item.getType) }}
-            {{ inputs.hidden('items_id', item.getID) }}
+            {{ inputs.hidden('is_recursive', item.isRecursive()) }}
+            {{ inputs.hidden('itemtype', item.getType()) }}
+            {{ inputs.hidden('items_id', item.getID()) }}
             {% if item.getType == 'Ticket' %}
-                {{ inputs.hidden('tickets_id', item.getID) }}
+                {{ inputs.hidden('tickets_id', item.getID()) }}
             {% endif %}
             {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
         </div>
@@ -69,8 +68,7 @@
 
     {% if canview and nb > used|length %}
         <hr class="my-2">
-        <form name="document_form{{ rand }}" id="document_form{{ rand }}" method="post"
-              action="{{ 'Document_Item'|itemtype_form_path }}" data-submit-once>
+        <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}" data-submit-once>
             <div class="d-flex">
                 {{ fields.dropdownField('Document', 'documents_id', null, null, {
                     no_label: true,
@@ -85,10 +83,10 @@
                     field_class: 'col-12 col-sm-4 text-end align-self-center',
                     no_label: true
                 }) }}
-                {{ inputs.hidden('itemtype', item.getType) }}
-                {{ inputs.hidden('items_id', item.getID) }}
-                {% if item.getType == 'Ticket' %}
-                    {{ inputs.hidden('tickets_id', item.getID) }}
+                {{ inputs.hidden('itemtype', item.getType()) }}
+                {{ inputs.hidden('items_id', item.getID()) }}
+                {% if item.getType() == 'Ticket' %}
+                    {{ inputs.hidden('tickets_id', item.getID()) }}
                     {{ inputs.hidden('documentcategories_id', config('documentcategories_id_forticket')) }}
                 {% endif %}
                 {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}

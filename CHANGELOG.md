@@ -232,6 +232,8 @@ The present file will list all changes made to the project; according to the
 - `Config::getCurrentDBVersion()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Document::uploadDocument()`
+- `Document::showUploadedFilesDropdown()`
+- `Document_Item::showSimpleAddForItem()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`

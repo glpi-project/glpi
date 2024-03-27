@@ -336,6 +336,7 @@ class Document_Item extends CommonDBRelation
         if ($canedit) {
             $twig_params = [
                 'doc' => $doc,
+                'entity_restrict' => $doc->fields['is_recursive'] ? getSonsOf('glpi_entities', $doc->fields['entities_id']) : $doc->fields['entities_id'],
                 'add_item_msg' => __('Add an item'),
                 'add_btn_msg' => _x('button', 'Add'),
             ];
@@ -345,13 +346,12 @@ class Document_Item extends CommonDBRelation
                 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
                 {% set rand = random() %}
                 <div class="mb-3">
-                    <form name="documentitem_form{{ rand }}" id="documentitem_form{{ rand }}" method="post"
-                          action="{{ 'Document_Item'|itemtype_form_path }}">
+                    <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}">
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('documents_id', doc.fields['id']) }}
                         {{ fields.dropdownItemsFromItemtypes('', add_item_msg, {
                             'itemtypes': doc.getItemtypesThatCanHave(),
-                            'entity_restrict': doc.fields['is_recursive'] ? doc.getSonsOf('glpi_entities', doc.fields['entities_id']) : doc.fields['entities_id'],
+                            'entity_restrict': entity_restrict,
                             'checkright': true
                         }) }}
                         <div class="d-flex px-3 flex-row-reverse">
@@ -428,7 +428,7 @@ TWIG, $twig_params);
                     }
 
                     $link     = $itemtype::getFormURLWithID($data['id']);
-                    $name = "<a href='$link'>" . htmlspecialchars($linkname) . ' ' . htmlspecialchars($linkname_extra) . "</a>";
+                    $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . ' ' . htmlspecialchars($linkname_extra) . "</a>";
 
                     $entity_name = '-';
                     if (isset($data['entity'])) {
@@ -682,7 +682,9 @@ TWIG, $twig_params);
                 Session::addToNavigateListItems(Document::class, $docID);
             }
 
-            $link = !empty($data["link"]) ? "<a target=_blank href='" . Toolbox::formatOutputWebLink($data["link"]) . "'>" . htmlspecialchars($data["link"]) . "</a>" : '';
+            $link = !empty($data["link"])
+                ? '<a target="_blank" href="' . htmlspecialchars(Toolbox::formatOutputWebLink($data["link"])) . '">' . htmlspecialchars($data["link"]) . "</a>"
+                : '';
 
             if (!isset($category_names[$data["documentcategories_id"]])) {
                 $category_names[$data["documentcategories_id"]] = Dropdown::getDropdownName(
@@ -713,7 +715,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'filename' => 'raw_html',
-                'headings' => 'raw_html',
+                'link' => 'raw_html',
                 'assocdate' => 'datetime'
             ],
             'entries' => $entries,
