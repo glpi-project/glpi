@@ -48,6 +48,7 @@ use Glpi\Http\Response;
 use Glpi\Socket;
 use Glpi\SocketModel;
 use Group;
+use GuzzleHttp\Psr7\Utils;
 use Location;
 use Manufacturer;
 use Network;
@@ -1019,6 +1020,39 @@ final class AssetController extends AbstractController
     {
         $itemtype = $request->getAttribute('itemtype');
         return Search::getOneBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getAssetTypes'],
+        'id' => '\d+'
+    ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Doc\Route(
+        description: 'Get the financial and administration information for a specific asset',
+        responses: [
+            ['schema' => 'Infocom']
+        ]
+    )]
+    public function getItemInfocom(Request $request): Response
+    {
+        if (!\Infocom::canView()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $params = $request->getParameters();
+        $itemtype = $request->getAttribute('itemtype');
+        $items_id = $request->getAttribute('id');
+        $filter = 'itemtype==' . $itemtype . ';items_id==' . $items_id;
+        $params['filter'] = $filter;
+        $management_controller = new ManagementController();
+        $result = Search::searchBySchema($management_controller->getKnownSchema('Infocom'), $params);
+        if ($result->getStatusCode() !== 200) {
+            return $result;
+        }
+        $results = json_decode((string) $result->getBody(), true);
+        if (empty($results)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $results = reset($results);
+        return $result->withBody(Utils::streamFor(json_encode($results)));
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [

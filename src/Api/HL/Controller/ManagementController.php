@@ -295,6 +295,97 @@ final class ManagementController extends AbstractController
             ]
         ];
 
+        $schemas['Infocom'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => 'Infocom',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'itemtype' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-readonly' => true,
+                ],
+                'items_id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_buy' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'buy_date',
+                ],
+                'date_use' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'use_date',
+                ],
+                'date_order' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'order_date',
+                ],
+                'date_delivery' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'delivery_date',
+                ],
+                'date_inventory' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'inventory_date',
+                ],
+                'date_warranty' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'warranty_date',
+                ],
+                'date_decommission' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                    'x-field' => 'decommission_date',
+                ],
+                'warranty_info' => ['type' => Doc\Schema::TYPE_STRING],
+                'warranty_value' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
+                'warranty_duration' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Warranty duration in months',
+                ],
+                'budget' => self::getDropdownTypeSchema(Budget::class),
+                'supplier' => self::getDropdownTypeSchema(Supplier::class),
+                'order_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'delivery_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'immo_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'invoice_number' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'bill'],
+                'value' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
+                'amortization_type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['None', 'Decreasing', 'Linear'],
+                    'x-field' => 'sink_type'
+                ],
+                'amortization_time' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Amortization duration in years',
+                    'x-field' => 'sink_time'
+                ],
+                'amortization_coeff' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'description' => 'Amortization coefficient',
+                    'x-field' => 'sink_coeff'
+                ],
+                'business_criticity' => self::getDropdownTypeSchema(\BusinessCriticity::class),
+            ]
+        ];
+
         return $schemas;
     }
 
