@@ -311,19 +311,6 @@ class Group_User extends CommonDBRelation
         }
 
         $group_users_table = self::getTable();
-        $filter_map = [
-            'dynamic' => "$group_users_table.is_dynamic",
-            'manager' => "$group_users_table.is_manager",
-            'delegatee' => "$group_users_table.is_userdelegate",
-            'is_active' => 'glpi_users.is_active',
-        ];
-        if (is_array($crit)) {
-            foreach ($crit as $key => $value) {
-                if (!empty($value) && isset($filter_map[$key])) {
-                    $where_filters[$filter_map[$key]] = $value;
-                }
-            }
-        }
 
         // All group members
         $pu_table = Profile_User::getTable();
