@@ -424,6 +424,8 @@ class Session
                     }
                 }
             } else {
+                $ID = (int)$ID;
+
                /// Check entity validity
                 $ancestors = getAncestorsOf("glpi_entities", $ID);
                 $ok        = false;
@@ -2129,12 +2131,31 @@ class Session
             return $entities_ids;
         }
 
-        if (!is_array($entities_ids) && !is_int($entities_ids) && !ctype_digit($entities_ids)) {
+        if (
+            !is_array($entities_ids)
+            && !is_int($entities_ids)
+            && (!is_string($entities_ids) || !ctype_digit($entities_ids))
+        ) {
             // Unexpected value type.
             return [];
         }
 
-        $active_entities_ids = $_SESSION['glpiactiveentities'] ?? [];
+        $active_entities_ids = [];
+        foreach ($_SESSION['glpiactiveentities'] ?? [] as $active_entity_id) {
+            if (
+                !is_int($active_entity_id)
+                && (!is_string($active_entity_id) || !ctype_digit($active_entity_id))
+            ) {
+                // Ensure no unexpected value converted to int
+                // as it would be converted to `0` and would permit access to root entity
+                trigger_error(
+                    sprintf('Unexpected value `%s` found in `$_SESSION[\'glpiactiveentities\']`.', $active_entity_id ?? 'null'),
+                    E_USER_WARNING
+                );
+                continue;
+            }
+            $active_entities_ids[] = (int)$active_entity_id;
+        }
 
         if (!is_array($entities_ids) && in_array((int)$entities_ids, $active_entities_ids, true)) {
             return (int)$entities_ids;
@@ -2143,7 +2164,7 @@ class Session
         $filtered = [];
         foreach ((array)$entities_ids as $entity_id) {
             if (
-                (is_int($entity_id) || ctype_digit($entity_id))
+                (is_int($entity_id) || (is_string($entity_id) && ctype_digit($entity_id)))
                 && in_array((int)$entity_id, $active_entities_ids, true)
             ) {
                 $filtered[] = (int)$entity_id;

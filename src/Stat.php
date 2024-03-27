@@ -712,6 +712,7 @@ class Stat extends CommonGLPI
                     if ($value[$i]['id'] > 0) {
                         $url = 'stat.graph.php?' . Toolbox::append_params(
                             [
+                                'id' => $value[$i]['id'],
                                 'date1'    => $date1,
                                 'date2'    => $date2,
                                 'itemtype' => $itemtype,

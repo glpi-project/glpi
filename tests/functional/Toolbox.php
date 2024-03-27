@@ -1008,6 +1008,36 @@ class Toolbox extends DbTestCase
          ->withType(E_USER_DEPRECATED)
          ->withMessage('Calling this function is deprecated')
          ->exists();
+
+        // Test planned deprecation in the past
+        $this->when(
+            function () {
+                \Toolbox::deprecated('Calling this function is deprecated', true, '10.0');
+            }
+        )->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Calling this function is deprecated')
+            ->exists();
+
+        // Test planned deprecation in current version
+        $this->when(
+            function () {
+                \Toolbox::deprecated('Calling this function is deprecated', true, GLPI_VERSION);
+            }
+        )->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Calling this function is deprecated')
+            ->exists();
+
+        // Test planned deprecation in the future
+        $this->when(
+            function () {
+                \Toolbox::deprecated('Calling this function is deprecated', true, '99.0');
+            }
+        )->error()
+            ->withType(E_USER_DEPRECATED)
+            ->withMessage('Calling this function is deprecated')
+            ->notExists();
     }
 
     public function hasTraitProvider()

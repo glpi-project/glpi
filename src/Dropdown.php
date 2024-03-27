@@ -218,7 +218,9 @@ class Dropdown
                 $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
             }
         }
-        $params['entity'] = Session::getMatchingActiveEntities($params['entity']);
+        if ($params['entity'] !== null) {
+            $params['entity'] = Session::getMatchingActiveEntities($params['entity']);
+        }
 
         $field_id = Html::cleanId("dropdown_" . $params['name'] . $params['rand']);
 
@@ -4297,7 +4299,7 @@ JAVASCRIPT;
             && in_array('Supplier', $post['returned_itemtypes'])
         ) {
             // Bypass checks, idor token validation has already been made earlier in method
-            $supplier_idor = Session::getNewIDORToken('Group', ['entity_restrict' => $entity_restrict]);
+            $supplier_idor = Session::getNewIDORToken('Supplier', ['entity_restrict' => $entity_restrict]);
 
             $suppliers    = Dropdown::getDropdownValue([
                 'itemtype'            => 'Supplier',

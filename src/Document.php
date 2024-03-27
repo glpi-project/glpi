@@ -496,8 +496,7 @@ class Document extends CommonDBTM
         $link_params = '';
         if (is_string($linked_item)) {
             // Old behaviour.
-            // TODO: Deprecate it in GLPI 11.0.
-            // Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.');
+            Toolbox::deprecated('Passing additionnal URL parameters in Document::getDownloadLink() is deprecated.', true, '11.0');
             $linked_item = null;
             $link_params = $linked_item;
         } elseif ($linked_item !== null && !($linked_item instanceof CommonDBTM)) {
