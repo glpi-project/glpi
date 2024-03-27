@@ -388,4 +388,37 @@ class AssetController extends \HLAPITestCase
                 });
         });
     }
+
+    public function testGetItemInfocom()
+    {
+        $this->loginWeb();
+        $computers_id = $this->createItem('Computer', [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->login();
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computers_id . '/Infocom'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotFoundError();
+        });
+
+        $this->createItem('Infocom', [
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
+            'buy_date' => '2020-01-01',
+        ]);
+
+        $this->api->call(new Request('GET', '/Assets/Computer/' . $computers_id . '/Infocom'), function ($call) use ($computers_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($computers_id) {
+                    $this->string($content['itemtype'])->isEqualTo('Computer');
+                    $this->integer($content['items_id'])->isEqualTo($computers_id);
+                    $this->string($content['date_buy'])->isEqualTo('2020-01-01');
+                });
+        });
+    }
 }
