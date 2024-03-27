@@ -33,44 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\QuestionType;
+use Glpi\Form\Dropdown\FormActorsDropdown;
 
-/**
- * List of valid question types categories
- */
-enum QuestionTypeCategory: string
-{
-    /**
-     * Questions that expect short single line answers (text, number, ...)
-     */
-    case SHORT_ANSWER = "short_answer";
+include(__DIR__ . '/getAbstractRightDropdownValue.php');
 
-    /**
-     * Question that expect long detailled answers (textarea)
-     */
-    case LONG_ANSWER = "long_answer";
+// TODO: Add right check
 
-    /**
-     * Question that expect a date and time
-     */
-    case DATE_AND_TIME = "date_and_time";
-
-    /**
-     * Question that expect actors (users, groups, suppliers or anonymous users)
-     */
-    case ACTORS = "actors";
-
-    /**
-     * Get category label
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return match ($this) {
-            self::SHORT_ANSWER => __("Short answer"),
-            self::LONG_ANSWER  => __("Long answer"),
-            self::DATE_AND_TIME => __("Date and time"),
-            self::ACTORS => __("Actors"),
-        };
-    }
-}
+show_rights_dropdown(FormActorsDropdown::class);
