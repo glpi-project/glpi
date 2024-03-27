@@ -52,7 +52,8 @@ class Parameter implements \ArrayAccess
         private string $location,
         private Schema|SchemaReference $schema,
         private ?string $example = null,
-        private bool $required = false
+        private bool $required = false,
+        private string $content_type = 'application/json'
     ) {
     }
 
@@ -113,6 +114,14 @@ class Parameter implements \ArrayAccess
     public function getRequired(): bool
     {
         return $this->required;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType(): string
+    {
+        return $this->content_type;
     }
 
     public function offsetExists(mixed $offset): bool
