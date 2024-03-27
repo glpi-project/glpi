@@ -3851,7 +3851,7 @@ JS;
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
 
-        $invalid_elements = 'applet,canvas,embed,form,object';
+        $invalid_elements = 'applet,canvas,form';
         if (!$enable_images) {
             $invalid_elements .= ',img';
         }
@@ -3934,10 +3934,13 @@ JS;
 
                // Content settings
                entity_encoding: 'raw',
-               invalid_elements: '{$invalid_elements}',
                readonly: {$readonlyjs},
                relative_urls: false,
                remove_script_host: false,
+
+               // Security settings
+               convert_unsafe_embeds: true,
+               invalid_elements: '{$invalid_elements}',
 
                // Misc options
                browser_spellcheck: true,
