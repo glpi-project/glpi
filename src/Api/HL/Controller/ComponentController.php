@@ -624,7 +624,7 @@ class ComponentController extends AbstractController
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the component definitions of the specified type',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => '{component_type}']
         ]
@@ -678,7 +678,7 @@ class ComponentController extends AbstractController
     ], tags: ['Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the components of a specific component definition',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => '{component_type}']
         ]
@@ -765,7 +765,7 @@ class ComponentController extends AbstractController
     ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get all components for an asset',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => '{component_type}Item']
         ]

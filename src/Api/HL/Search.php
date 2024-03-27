@@ -456,6 +456,29 @@ final class Search
         if (isset($this->request_params['limit']) && is_numeric($this->request_params['limit'])) {
             $criteria['LIMIT'] = (int) $this->request_params['limit'];
         }
+
+        // Handle sorting
+        if (isset($this->request_params['sort'])) {
+            $sorts = array_map(static fn ($s) => trim($s), explode(',', $this->request_params['sort']));
+            $orderby = [];
+            foreach ($sorts as $s) {
+                if ($s === '') {
+                    // Ignore empty sorts. probably a trailing comma.
+                    continue;
+                }
+                $sort_parts = explode(':', $s);
+                $property = $sort_parts[0];
+                $direction = strtoupper($sort_parts[1] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
+                // Verify the property is valid
+                if (!isset($this->flattened_properties[$property])) {
+                    throw new APIException('Invalid property for sorting: ' . $property, 'Invalid property for sorting: ' . $property);
+                }
+                $sql_field = $this->getSQLFieldForProperty($property);
+                $orderby[] = "{$sql_field} {$direction}";
+            }
+            $criteria['ORDERBY'] = $orderby;
+        }
+
         return $criteria;
     }
 

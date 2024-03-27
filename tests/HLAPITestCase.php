@@ -533,10 +533,11 @@ final class HLAPIHelper
         $this->test->variable($response_schema)->isNotNull('No response schema found for GET route for endpoint "' . $endpoint . '"');
         $this->test->string($response_schema['type'])->isEqualTo('array', 'Response schema for GET route for endpoint "' . $endpoint . '" is not for an array');
 
-        // Search routes should allow filtering and pagination
+        // Search routes should allow filtering, pagination, and sorting
         $this->test->boolean($this->routePathHasParameter($search_route, 'filter', 'query'))->isTrue('No "filter" query parameter found for GET route for endpoint "' . $endpoint . '"');
         $this->test->boolean($this->routePathHasParameter($search_route, 'start', 'query'))->isTrue('No "start" query parameter found for GET route for endpoint "' . $endpoint . '"');
         $this->test->boolean($this->routePathHasParameter($search_route, 'limit', 'query'))->isTrue('No "limit" query parameter found for GET route for endpoint "' . $endpoint . '"');
+        $this->test->boolean($this->routePathHasParameter($search_route, 'sort', 'query'))->isTrue('No "sort" query parameter found for GET route for endpoint "' . $endpoint . '"');
 
         // Search routes should specify the ResultFormatterMiddleware to allow optionally returning results as CSV or XML
         $this->test->boolean($this->routePathHasMiddleware($search_route, ResultFormatterMiddleware::class))->isTrue('ResultFormatterMiddleware not found on GET route for endpoint "' . $endpoint . '"');
@@ -626,6 +627,53 @@ final class HLAPIHelper
                     $fail_msg .= ' (filter: ' . $unique_field . '==' . $content[0][$unique_field] . ')';
                     $fail_msg .= "\n" . var_export($content, true);
                     $this->test->array($content)->hasSize(1, $fail_msg);
+                });
+        });
+
+        // Test sorting
+        $sorted_dataset = $dataset;
+        // Sort by the $unique_field DESC
+        usort($sorted_dataset, static function ($a, $b) use ($unique_field) {
+            return $b[$unique_field] <=> $a[$unique_field];
+        });
+
+        $request = new Request('GET', $endpoint);
+        $request->setParameter('filter', $unique_field . '=in=(' . implode(',', array_column($dataset, $unique_field)) . ')');
+        $sort = $unique_field . ':desc';
+        $request->setParameter('sort', $sort);
+        $this->call($request, function ($call) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
+                    $fail_msg = 'The response for the GET route path of endpoint "' . $endpoint . '" does not have the correct results when sorting with ' . $sort;
+                    $fail_msg .= "\n" . var_export($content, true);
+                    $this->test->array($content)->hasSize(count($sorted_dataset), $fail_msg);
+                    // Compare the results with the sorted dataset
+                    foreach ($sorted_dataset as $i => $entry) {
+                        $this->test->variable($content[$i][$unique_field])->isEqualTo($entry[$unique_field], $fail_msg);
+                    }
+                });
+        });
+
+        $sort = $unique_field . ':asc';
+        $request->setParameter('sort', $sort);
+        // Re-sort the dataset to match the new sort order
+        usort($sorted_dataset, static function ($a, $b) use ($unique_field) {
+            return $a[$unique_field] <=> $b[$unique_field];
+        });
+        $this->call($request, function ($call) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($sorted_dataset, $endpoint, $sort, $unique_field) {
+                    $fail_msg = 'The response for the GET route path of endpoint "' . $endpoint . '" does not have the correct results when sorting with ' . $sort;
+                    $fail_msg .= "\n" . var_export($content, true);
+                    $this->test->array($content)->hasSize(count($sorted_dataset), $fail_msg);
+                    // Compare the results with the sorted dataset
+                    foreach ($sorted_dataset as $i => $entry) {
+                        $this->test->variable($content[$i][$unique_field])->isEqualTo($entry[$unique_field], $fail_msg);
+                    }
                 });
         });
 

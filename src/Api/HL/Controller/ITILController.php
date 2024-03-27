@@ -603,7 +603,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/{itemtype}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search Tickets, Changes or Problems',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => '{itemtype}[]']
         ]
@@ -1357,7 +1357,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/RecurringTicket', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search recurring tickets',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => 'RecurringTicket[]']
         ]
@@ -1429,7 +1429,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/RecurringChange', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search recurring changes',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => 'RecurringChange[]']
         ]
@@ -1501,7 +1501,7 @@ final class ITILController extends AbstractController
     #[Route(path: '/ExternalEvent', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search external events',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => 'ExternalEvent[]']
         ]
