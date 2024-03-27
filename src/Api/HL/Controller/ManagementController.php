@@ -338,7 +338,7 @@ final class ManagementController extends AbstractController
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search management items',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             ['schema' => '{itemtype}[]']
         ]

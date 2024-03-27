@@ -451,7 +451,7 @@ final class RuleController extends AbstractController
     #[Route(path: '/Collection/{collection}/Rule', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search rules in a collection',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             '200' => [
                 'description' => 'List of rules',
@@ -475,7 +475,7 @@ final class RuleController extends AbstractController
     #[Route(path: '/Collection/{collection}/Rule/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get a rule from a collection',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
             '200' => [
                 'description' => 'The rule',

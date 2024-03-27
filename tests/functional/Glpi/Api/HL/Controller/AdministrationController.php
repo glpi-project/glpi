@@ -421,4 +421,53 @@ class AdministrationController extends \HLAPITestCase
                 'parent' => getItemByTypeName('Entity', '_test_root_entity', true)
             ]);
     }
+
+    public function testMultisort()
+    {
+        $this->loginWeb();
+
+        $this->createItem('User', [
+            'name'  => 'testuser1',
+            'firstname' => 'John',
+            'realname'  => 'User1',
+        ]);
+        $this->createItem('User', [
+            'name'  => 'testuser2',
+            'firstname' => 'Mary',
+            'realname'  => 'User2',
+        ]);
+        $this->createItem('User', [
+            'name'  => 'testuser3',
+            'firstname' => 'John',
+            'realname'  => 'User3',
+        ]);
+
+        $this->login();
+        $request = new Request('GET', '/Administration/User');
+        $request->setParameter('filter', 'username=in=(testuser1,testuser2,testuser3)');
+        $request->setParameter('sort', 'firstname,username');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasSize(3);
+                    $this->string($content[0]['username'])->isEqualTo('testuser1');
+                    $this->string($content[1]['username'])->isEqualTo('testuser3');
+                    $this->string($content[2]['username'])->isEqualTo('testuser2');
+                });
+        });
+        $request->setParameter('sort', 'firstname:desc,username');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->array($content)->hasSize(3);
+                    $this->string($content[0]['username'])->isEqualTo('testuser2');
+                    $this->string($content[1]['username'])->isEqualTo('testuser1');
+                    $this->string($content[2]['username'])->isEqualTo('testuser3');
+                });
+        });
+    }
 }

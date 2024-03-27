@@ -105,6 +105,16 @@ abstract class AbstractController
         ]
     ];
 
+    protected const PARAMETER_SORT = [
+        'name' => 'sort',
+        'description' => 'One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc.
+                          If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
+        'location' => 'query',
+        'schema' => [
+            'type' => Doc\Schema::TYPE_STRING,
+        ]
+    ];
+
     /**
      * @return array<string, Doc\Schema>
      */
