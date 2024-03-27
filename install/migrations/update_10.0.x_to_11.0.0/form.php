@@ -161,7 +161,6 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
             `is_active` tinyint NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             UNIQUE KEY `unicity` (`forms_forms_id`, `strategy`),
-            KEY `forms_forms_id` (`forms_forms_id`),
             KEY `is_active` (`is_active`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
