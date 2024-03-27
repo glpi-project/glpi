@@ -715,6 +715,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'name' => 'raw_html',
                 'filename' => 'raw_html',
+                'headings' => 'raw_html',
                 'link' => 'raw_html',
                 'assocdate' => 'datetime'
             ],
