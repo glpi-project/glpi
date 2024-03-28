@@ -1,0 +1,167 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-25 11:49+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: sources/end-of-lesson.md:block 2 (quote)
+msgid ""
+"**NOTE:** If you feel the need, you can restart this lesson by clicking on "
+"the \"Restart lesson\" button on the lessons page."
+msgstr ""
+
+#: sources/introduction.md:block 5 (paragraph)
+msgid ""
+"Already familiar with GLPI? No problem! You can navigate directly to the "
+"chapter you're interested in by clicking below:"
+msgstr ""
+
+#: sources/introduction.md:block 3 (paragraph)
+msgid ""
+"Each time you successfully configure GLPI, you'll earn points towards "
+"becoming a master of the tool."
+msgstr ""
+
+#: sources/introduction.md:block 1 (paragraph)
+msgid ""
+"Hello 👋 and welcome to GLPI! This is the beginning of your adventure into "
+"the world of Free and OpenSource ITSM software designed and written by "
+"Teclib'. Throughout this wizard, I'll guide you step by step so that you get"
+" off to a good start and don't feel lost in this ocean of settings :)."
+msgstr ""
+
+#: sources/introduction.md:block 4 (paragraph)
+msgid "See you soon!"
+msgstr ""
+
+#: sources/assistance/empty-ticket-page.md:block 1 (paragraph)
+msgid ""
+"This is the page with all your tickets. You can see the tickets you have "
+"created, those to which you are assigned, ..."
+msgstr ""
+
+#: sources/assistance/ticket-search.md:block 1 (paragraph)
+msgid "This section allows you to filter and search the ticket list."
+msgstr ""
+
+#: sources/assistance/ticket-list.md:block 1 (paragraph)
+msgid "This section contains all the tickets to which you have access."
+msgstr ""
+
+#: sources/assistance/ticket-dashboard.md:block 1 (paragraph)
+msgid ""
+"This section groups together several indicators in the form of a dashboard. "
+"Indicators can be edited by clicking on the \"Modify\" button at the top "
+"right of the page. It is also possible to switch the dashboard to night mode"
+" and refresh the indicators."
+msgstr ""
+
+#: sources/introduction.md:block 2 (paragraph)
+msgid ""
+"This wizard will unfold in several steps, which you can then complete in "
+"several stages. You'll be able to stop and resume later, at your convenience"
+" and according to the time you have available."
+msgstr ""
+
+#: sources/assistance/create-ticket.md:block 1 (paragraph)
+msgid "You can now create a ticket by clicking on this button."
+msgstr ""
+
+#: sources/end-of-lesson.md:block 1 (paragraph)
+msgid "You have completed this lesson. You can now move on to the next one."
+msgstr ""
+
+#: sources/end-of-lesson.md:block 3 (paragraph)
+msgid ""
+"🔗 [Click here to return to the lessons "
+"page](http://localhost/front/discover.php)."
+msgstr ""
+
+#~ msgid "Assets"
+#~ msgstr ""
+
+#~ msgid "Assistance"
+#~ msgstr ""
+
+#~ msgid "Create a ticket"
+#~ msgstr ""
+
+#~ msgid "Create our first ticket"
+#~ msgstr ""
+
+#~ msgid "Empty ticket page"
+#~ msgstr ""
+
+#~ msgid "Introduction"
+#~ msgstr ""
+
+#~ msgid "Lessons Entry"
+#~ msgstr ""
+
+#~ msgid "Let discover the menus of GLPI"
+#~ msgstr ""
+
+#~ msgid "Menu"
+#~ msgstr ""
+
+#~ msgid "Menus of GLPI"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This is a key feature in the interface, located at the top right corner. It "
+#~ "serves as a gateway to the user menu, providing access to various user-"
+#~ "related functionalities."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This is the global menu of GLPI. It allows you to navigate through the "
+#~ "different sections of the application."
+#~ msgstr ""
+
+#~ msgid "This menu contains all the **assets** management"
+#~ msgstr ""
+
+#~ msgid "This menu contains all things related to **assistance**"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This menu is a hub for numerous functionalities related to the user. It "
+#~ "includes options for account settings, profile information, and more. One of"
+#~ " the most important entries in this menu is **My Lessons**. This is where "
+#~ "users can access all their lessons, track their progress, and continue "
+#~ "learning. It's important to focus on finding the **My Lessons** entry as it "
+#~ "is the gateway to the user's learning journey."
+#~ msgstr ""
+
+#~ msgid "Ticket Dashboard"
+#~ msgstr ""
+
+#~ msgid "Ticket List"
+#~ msgstr ""
+
+#~ msgid "Ticket Search"
+#~ msgstr ""
+
+#~ msgid "User Menu"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Vous pouvez accéder à la page d'accueil en cliquant sur le logo GLPI en haut"
+#~ " à gauche."
+#~ msgstr ""
+
+#~ msgid "🎉 Congratulations!"
+#~ msgstr ""
