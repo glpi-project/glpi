@@ -66,17 +66,17 @@ class NetworkPort extends CommonDBChild
      * Subset of input that will be used for NetworkPortInstantiation.
      * @var array|null
      */
-    private ?array $input_for_instantiation;
+    private ?array $input_for_instantiation = null;
     /**
      * Subset of input that will be used for NetworkName.
      * @var array|null
      */
-    private ?array $input_for_NetworkName;
+    private ?array $input_for_NetworkName = null;
     /**
      * Subset of input that will be used for NetworkPort_NetworkPort.
      * @var array|null
      */
-    private ?array $input_for_NetworkPortConnect;
+    private ?array $input_for_NetworkPortConnect = null;
 
     public function __get(string $property)
     {
