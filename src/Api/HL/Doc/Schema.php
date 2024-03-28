@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use CommonGLPI;
+use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
 
 /**
@@ -419,5 +421,48 @@ class Schema implements \ArrayAccess
             }
         }
         return $content;
+    }
+
+    /**
+     * Combine multiple schemas into a single 'union' schema that allows searching across all of them
+     * @param non-empty-array<string, array> $schemas
+     * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
+     * @see getUnionSchemaForItemtypes
+     */
+    public static function getUnionSchema(array $schemas): array
+    {
+        $shared_properties = array_intersect_key(...array_column($schemas, 'properties'));
+        $subtype_info = [];
+        foreach ($schemas as $n => $s) {
+            $subtype_info[] = [
+                'schema_name' => $n,
+                'itemtype' => $s['x-itemtype']
+            ];
+        }
+        return [
+            'x-subtypes' => $subtype_info,
+            'type' => self::TYPE_OBJECT,
+            'properties' => $shared_properties
+        ];
+    }
+
+    /**
+     * Combine schemas related to multiple GLPI itemtypes into a single 'union' schema that allows searching across all of them
+     * @param non-empty-array<string, class-string<CommonGLPI>> $itemtypes
+     * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
+     * @see getUnionSchema
+     */
+    public static function getUnionSchemaForItemtypes(array $itemtypes): array
+    {
+        $schemas = [];
+        $controllers = Router::getInstance()->getControllers();
+        foreach ($controllers as $controller) {
+            foreach ($controller::getKnownSchemas() as $schema_name => $schema) {
+                if (array_key_exists('x-itemtype', $schema) && in_array($schema['x-itemtype'], $itemtypes, true)) {
+                    $schemas[$schema_name] = $schema;
+                }
+            }
+        }
+        return self::getUnionSchema($schemas);
     }
 }

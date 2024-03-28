@@ -427,19 +427,19 @@ class AdministrationController extends \HLAPITestCase
         $this->loginWeb();
 
         $this->createItem('User', [
-            'name'  => 'testuser1',
+            'name' => 'testuser1',
             'firstname' => 'John',
-            'realname'  => 'User1',
+            'realname' => 'User1',
         ]);
         $this->createItem('User', [
-            'name'  => 'testuser2',
+            'name' => 'testuser2',
             'firstname' => 'Mary',
-            'realname'  => 'User2',
+            'realname' => 'User2',
         ]);
         $this->createItem('User', [
-            'name'  => 'testuser3',
+            'name' => 'testuser3',
             'firstname' => 'John',
-            'realname'  => 'User3',
+            'realname' => 'User3',
         ]);
 
         $this->login();
@@ -469,5 +469,73 @@ class AdministrationController extends \HLAPITestCase
                     $this->string($content[2]['username'])->isEqualTo('testuser3');
                 });
         });
+    }
+
+    public function testGetUsedManagedItems()
+    {
+        $this->loginWeb();
+
+        $entity_id = $this->getTestRootEntity(true);
+        $computers_id_1 = $this->createItem('Computer', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entity_id,
+            'users_id' => \Session::getLoginUserID()
+        ])->getID();
+        $computers_id_2 = $this->createItem('Computer', [
+            'name' => __FUNCTION__ . '_tech',
+            'entities_id' => $entity_id,
+            'users_id_tech' => \Session::getLoginUserID()
+        ])->getID();
+        $monitors_id_1 = $this->createItem('Monitor', [
+            'name' => __FUNCTION__,
+            'entities_id' => $entity_id,
+            'users_id' => \Session::getLoginUserID()
+        ])->getID();
+        $monitors_id_2 = $this->createItem('Monitor', [
+            'name' => __FUNCTION__ . '_tech',
+            'entities_id' => $entity_id,
+            'users_id_tech' => \Session::getLoginUserID()
+        ])->getID();
+
+        $expected_used = [
+            'Computer' => [$computers_id_1],
+            'Monitor' => [$monitors_id_1]
+        ];
+
+        $expected_managed = [
+            'Computer' => [$computers_id_2],
+            'Monitor' => [$monitors_id_2]
+        ];
+
+        $used_endpoints = ['/Administration/User/me/UsedItem', "/Administration/User/username/" . TU_USER . "/UsedItem", "/Administration/User/" . \Session::getLoginUserID() . "/UsedItem"];
+        $managed_endpoints = ['/Administration/User/me/ManagedItem', "/Administration/User/username/" . TU_USER . "/ManagedItem", "/Administration/User/" . \Session::getLoginUserID() . "/ManagedItem"];
+
+        $this->login();
+        foreach ($used_endpoints as $endpoint) {
+            $this->api->call(new Request('GET', $endpoint), function ($call) use ($expected_used) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($expected_used) {
+                        $this->integer(count($content))->isGreaterThanOrEqualTo(count($expected_used));
+                        foreach ($expected_used as $type => $ids) {
+                            $this->array(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'))->containsValues($ids);
+                        }
+                    });
+            });
+        }
+        foreach ($managed_endpoints as $endpoint) {
+            $this->api->call(new Request('GET', $endpoint), function ($call) use ($expected_managed) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($expected_managed) {
+                        $this->integer(count($content))->isGreaterThanOrEqualTo(count($expected_managed));
+                        foreach ($expected_managed as $type => $ids) {
+                            $this->array(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'))->containsValues($ids);
+                        }
+                    });
+            });
+        }
     }
 }
