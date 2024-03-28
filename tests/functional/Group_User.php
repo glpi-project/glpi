@@ -41,6 +41,7 @@ class Group_User extends \DbTestCase
 {
     public function testGetGroupUsers()
     {
+        $this->login();
         $group = new \Group();
         $gid = (int)$group->add([
             'name' => 'Test group'
@@ -82,6 +83,7 @@ class Group_User extends \DbTestCase
 
     public function testGetUserGroups()
     {
+        $this->login();
         $uid = (int)getItemByTypeName('User', 'normal', true);
 
         $group = new \Group();
