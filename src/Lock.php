@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
@@ -79,23 +80,31 @@ class Lock extends CommonGLPI
         global $CFG_GLPI, $DB;
 
         $ID       = $item->getID();
-        $itemtype = $item->getType();
-        $header   = false;
+        $itemtype = $item::class;
 
         //If user doesn't have update right on the item, lock form must not be displayed
         if (!$item->isDynamic() || !$item->can($item->fields['id'], UPDATE)) {
             return false;
         }
 
-        echo "<div class='alert alert-primary d-flex align-items-center' role='alert'>";
-        echo "<i class='fas fa-info-circle fa-xl'></i>";
-        echo "<span class='ms-2'>";
-        echo __("A locked field is a manually modified field.");
-        echo "<br>";
-        echo __("The automatic inventory will no longer modify this field, unless you unlock it.");
-        echo "</span>";
-        echo "</div>";
+        // language=Twig
+        $list_info_alert_template = <<<TWIG
+            <div class="alert alert-info d-flex align-items-center" role="alert">
+                <i class="fas fa-info-circle fa-xl"></i>
+                <span class="ms-2">
+                    <span class="alert-title">{{ alert_title }}</span>
+                    <br>
+                    {{ alert_content }}
+                </span>
+            </div>
+TWIG;
 
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate($list_info_alert_template, [
+            'alert_title' => __("A locked field is a manually modified field."),
+            'alert_content' => __("The automatic inventory will no longer modify this field, unless you unlock it."),
+        ]);
+
+        $entries = [];
         $lockedfield = new Lockedfield();
         $lockedfield_table = $lockedfield::getTable();
         if ($lockedfield->isHandled($item)) {
@@ -189,204 +198,210 @@ class Lock extends CommonGLPI
                 'FROM' => $union
             ]);
 
-            if (count($locked_iterator)) {
-                $rand = mt_rand();
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = [
-                    'container'      => 'mass' . __CLASS__ . $rand,
-                ];
-                Html::showMassiveActions($massiveactionparams);
+            //get fields labels
+            $search_options = SearchOption::getOptionsForItemtype($itemtype);
+            foreach ($search_options as $search_option) {
+                //exclude SO added by dropdown part (to get real name)
+                //ex : Manufacturer != Firmware : Manufacturer
+                if (isset($search_option['table']) && $search_option['table'] === getTableForItemType($itemtype)) {
+                    if (isset($search_option['linkfield'])) {
+                        $so_fields[$search_option['linkfield']] = $search_option['name'];
+                    } else if (isset($search_option['field'])) {
+                        $so_fields[$search_option['field']] = $search_option['name'];
+                    }
+                }
+            }
 
-                echo "<table class='tab_cadre_fixehov'>";
-
-                echo "<tr>";
-                echo "<tr><th colspan='5'  class='center'>" . __('Locked fields') . "</th></tr>";
-                echo "<th width='10'>";
-                Html::showCheckbox(['criterion' => ['tag_for_massive' => 'select_' . $lockedfield::getType()]]);
-                echo "</th>";
-                echo "<th>" . _n('Field', 'Fields', Session::getPluralNumber())  . "</th>";
-                echo "<th>" . __('Itemtype') . "</th>";
-                echo "<th>" . _n('Link', 'Links', Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('Last inventoried value')  . "</th></tr>";
-
-
-                //get fields labels
-                $search_options = SearchOption::getOptionsForItemtype($itemtype);
-                foreach ($search_options as $search_option) {
-                    //exclude SO added by dropdown part (to get real name)
-                    //ex : Manufacturer != Firmware : Manufacturer
-                    if (isset($search_option['table']) && $search_option['table'] === getTableForItemType($itemtype)) {
-                        if (isset($search_option['linkfield'])) {
-                            $so_fields[$search_option['linkfield']] = $search_option['name'];
-                        } else if (isset($search_option['field'])) {
-                            $so_fields[$search_option['field']] = $search_option['name'];
-                        }
+            foreach ($locked_iterator as $row) {
+                $field_label = $row['field'];
+                if (isset($so_fields[$row['field']])) {
+                    $field_label = $so_fields[$row['field']];
+                } else if (isForeignKeyField($row['field'])) {
+                    // on fkey, we can try to retrieve the object
+                    $object = getItemtypeForForeignKeyField($row['field']);
+                    if ($object !== 'UNKNOWN') {
+                        $field_label = $object::getTypeName(1);
                     }
                 }
 
-                foreach ($locked_iterator as $row) {
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td class='center' width='10'>";
-                    if ($row['is_global'] === 0 && ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE))) {
-                        $header = true;
-                        echo Html::getMassiveActionCheckBox(Lockedfield::class, $row['id'], ['massive_tags' => 'select_' . $lockedfield::getType()]);
-                    }
-                    echo "</td>";
-                    $field_label = $row['field'];
-                    if (isset($so_fields[$row['field']])) {
-                        $field_label = $so_fields[$row['field']];
-                    } else if (isForeignKeyField($row['field'])) {
-                    //on fkey, we can try to retrieve the object
-                        $object = getItemtypeForForeignKeyField($row['field']);
-                        if ($object !== 'UNKNOWN') {
-                            $field_label = $object::getTypeName(1);
-                        }
-                    }
+                if ($row['is_global']) {
+                    $field_label .= ' (' . __('Global') . ')';
+                }
 
-                    if ($row['is_global']) {
-                        $field_label .= ' (' . __('Global') . ')';
-                    }
-                    echo "<td class='left'>" . $field_label . "</td>";
+                //load object
+                $object = new $row['itemtype']();
+                $object->getFromDB($row['items_id']);
 
-                    //load object
-                    $object = new $row['itemtype']();
-                    $object->getFromDB($row['items_id']);
+                $default_itemtype_label = $row['itemtype']::getTypeName();
+                $default_object_link    = $object->getLink();
+                $default_itemtype       = $row['itemtype'];
+                $default_items_id       = null;
 
-                    $default_itemtype_label = $row['itemtype']::getTypeName();
-                    $default_object_link    = $object->getLink();
-                    $default_itemtype       = $row['itemtype'];
-                    $default_items_id       = null;
+                // get real type name from Item_Devices
+                // ex: get 'Hard drives' instead of 'Hard drive items'
+                if (get_parent_class($row['itemtype']) === Item_Devices::class) {
+                    $default_itemtype =  $row['itemtype']::$itemtype_2;
+                    $default_items_id =  $row['itemtype']::$items_id_2;
+                    $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
+                    // get real type name from CommonDBRelation
+                    // ex: get 'Operating System' instead of 'Item operating systems'
+                } elseif (get_parent_class($row['itemtype']) === CommonDBRelation::class) {
+                    // For CommonDBRelation
+                    // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
 
-                    // get real type name from Item_Devices
-                    // ex: get 'Hard drives' instead of 'Hard drive items'
-                    if (get_parent_class($row['itemtype']) === Item_Devices::class) {
+                    // ex: Item_Software have
+                    // $itemtype_1 = 'itemtype';
+                    // $items_id_1 = 'items_id';
+                    // $itemtype_2 = 'SoftwareVersion';
+                    // $items_id_2 = 'softwareversions_id';
+                    if (str_starts_with($row['itemtype']::$itemtype_1, 'itemtype')) {
                         $default_itemtype =  $row['itemtype']::$itemtype_2;
                         $default_items_id =  $row['itemtype']::$items_id_2;
                         $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
-                    // get real type name from CommonDBRelation
-                    // ex: get 'Operating System' instead of 'Item operating systems'
-                    } elseif (get_parent_class($row['itemtype']) === CommonDBRelation::class) {
-                        // For CommonDBRelation
-                        // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
-
-                        // ex: Item_Software have
-                        // $itemtype_1 = 'itemtype';
-                        // $items_id_1 = 'items_id';
-                        // $itemtype_2 = 'SoftwareVersion';
-                        // $items_id_2 = 'softwareversions_id';
-                        if (str_starts_with($row['itemtype']::$itemtype_1, 'itemtype')) {
-                            $default_itemtype =  $row['itemtype']::$itemtype_2;
-                            $default_items_id =  $row['itemtype']::$items_id_2;
-                            $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
-                        } else {
-                            // ex: Item_OperatingSystem have
-                            // $itemtype_1 = 'OperatingSystem';
-                            // $items_id_1 = 'operatingsystems_id';
-                            // $itemtype_2 = 'itemtype';
-                            // $items_id_2 = 'items_id';
-                            $default_itemtype =  $row['itemtype']::$itemtype_1;
-                            $default_items_id =  $row['itemtype']::$items_id_1;
-                            $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
-                        }
+                    } else {
+                        // ex: Item_OperatingSystem have
+                        // $itemtype_1 = 'OperatingSystem';
+                        // $items_id_1 = 'operatingsystems_id';
+                        // $itemtype_2 = 'itemtype';
+                        // $items_id_2 = 'items_id';
+                        $default_itemtype =  $row['itemtype']::$itemtype_1;
+                        $default_items_id =  $row['itemtype']::$items_id_1;
+                        $default_itemtype_label = $row['itemtype']::$itemtype_1::getTypeName();
                     }
-
-                    // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
-                    // get 'real' object name inside URL name
-                    // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
-                    if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true)) {
-                        $related_object = new $default_itemtype();
-                        $related_object->getFromDB($object->fields[$default_items_id]);
-                        $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $related_object->getName() . ">" . $related_object->getName() . "</a>";
-                    }
-
-                    echo "<td class='left'>" . $default_itemtype_label . "</td>";
-                    echo "<td class='left'>" . $default_object_link . "</td>";
-                    echo "<td class='left'>" . $row['value'] . "</td>";
-                    echo "</tr>\n";
                 }
 
-                echo "</table>";
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            } else {
-                echo "<table class='tab_cadre_fixehov'>";
-                echo "<tbody>";
-                echo "<tr><th colspan='5' class='center'>" . _n('Locked field', 'Locked fields', Session::getPluralNumber()) . "</th></tr>";
-                echo "<tr class='tab_bg_2'><td class='center' colspan='5'>" . __('No locked fields') . "</td></tr>";
-                echo "</tbody>";
-                echo "</table>";
+                // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
+                // get 'real' object name inside URL name
+                // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
+                if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true)) {
+                    $related_object = new $default_itemtype();
+                    $related_object->getFromDB($object->fields[$default_items_id]);
+                    $name = htmlspecialchars($related_object->getName());
+                    $default_object_link = "<a href='" . $object->getLinkURL() . "'" . $name . ">" . $name . "</a>";
+                }
+
+                $entries[] = [
+                    'itemtype' => Lockedfield::class,
+                    'id'       => $row['id'],
+                    'showmassiveactions' => $row['is_global'] === 0 && ($lockedfield->can($row['id'], UPDATE) || $lockedfield->can($row['id'], PURGE)),
+                    'field'    => $field_label,
+                    'type'     => $default_itemtype_label,
+                    'link'     => $default_object_link,
+                    'value'    => $row['value']
+                ];
             }
         }
-        echo "</br><div width='100%'>";
-        echo "<form method='post' id='lock_form' name='lock_form' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-        echo "<input type='hidden' name='id' value='$ID'>\n";
-        echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr><th colspan='5' class='center'>" . __('Locked items') . "</th></tr>";
 
-        //reset_header
-        $header = false;
-        //Use a hook to allow external inventory tools to manage per field lock
-        $results =  Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, ['item'   => $item,
-            'header' => $header
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => _n('Locked field', 'Locked fields', Session::getPluralNumber()),
+            'columns' => [
+                'field' => _n('Field', 'Fields', 1),
+                'type' => __('Itemtype'),
+                'link' => _n('Link', 'Links', 1),
+                'value' => __('Last inventoried value')
+            ],
+            'formatters' => [
+                'link' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => count(array_filter($entries, static function ($entry) {
+                return $entry['showmassiveactions'];
+            })) > 0,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand()
+            ]
         ]);
-        $header |= $results['header'];
 
-        echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
-        echo "<i class='fas fa-info-circle fa-xl'></i>";
-        echo "<span class='ms-2'>";
-        echo __("A locked item is a manually deleted item, for example a monitor.");
-        echo "<br>";
-        echo __("The automatic inventory will no longer handle this item, unless you unlock it.");
-        echo "</span>";
-        echo "</div>";
+        // Open the form used for the custom checkboxes to unlock items (Not using massive actions)
+        $twig_params = [
+            'itemtype' => $itemtype,
+            'id'       => $ID
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <form method="post" id="lock_form" name="lock_form" class="mt-5" action="{{ 'Lock'|itemtype_form_path }}">
+                <input type="hidden" name="id" value="{{ id }}">
+                <input type="hidden" name="itemtype" value="{{ itemtype }}">
+TWIG, $twig_params);
 
-        //TODO We already get a lot of data from the DB so we may as well display links to the different items rather than just the names.
-        //TODO Since a lot of data is loaded from the DB, try to cache as much as possible to avoid multiple queries
+        $subtables = [];
+        //Use a hook to allow external inventory tools to manage per field lock
+        ob_start();
+        Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, [
+            'item'   => $item,
+            'header' => false
+        ]);
+        $results = ob_get_clean();
+        $subtables[] = [
+            'raw_body' => $results
+        ];
+
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate($list_info_alert_template, [
+            'alert_title' => __("A locked item is a manually deleted connection, for example a monitor."),
+            'alert_content' => __("The automatic inventory will no longer handle this item, unless you unlock it."),
+        ]);
+
         //Special locks for computers only
-        if ($itemtype === Computer::class) {
+        if ($itemtype === Computer::class && count($CFG_GLPI['directconnect_types'])) {
             //computer_item
             $computer_item = new Computer_Item();
             $types = $CFG_GLPI['directconnect_types'];
-            foreach ($types as $type) {
-                $params = ['is_dynamic'    => 1,
-                    'is_deleted'    => 1,
-                    'computers_id'  => $ID,
-                    'itemtype'      => $type
+            $it = $DB->request([
+                'SELECT' => ['id', 'itemtype', 'items_id'],
+                'FROM'   => 'glpi_computers_items',
+                'WHERE' => [
+                    'computers_id' => $ID,
+                    'is_dynamic'   => 1,
+                    'is_deleted'   => 1,
+                    'itemtype'    => $CFG_GLPI['directconnect_types']
+                ]
+            ]);
+            $results = iterator_to_array($it);
+            // Calculate reverse lookup array to avoid array_search in the callback
+            $types_flipped = array_flip($types);
+            // Sort results to match the order of the types in $CFG_GLPI['directconnect_types']
+            usort($results, static function ($a, $b) use ($types_flipped) {
+                return $types_flipped[$a['itemtype']] - $types_flipped[$b['itemtype']];
+            });
+
+            $subtable = [
+                'columns' => [
+                    'chk' => '',
+                    'type' => __('Asset type'),
+                    'item' => _n('Item', 'Items', 1),
+                    'serial' => __('Serial number'),
+                    'inventory' => __('Inventory number'),
+                    'is_dynamic' => __('Automatic inventory')
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => []
+            ];
+
+            foreach ($results as $result) {
+                /** @var CommonDBTM $asset */
+                $asset = new $result['itemtype']();
+                $asset->getFromDB($result['items_id']);
+                $show_checkbox = $computer_item->can($result['id'], UPDATE) || $computer_item->can($result['id'], PURGE);
+                $subtable['entries'][] = [
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Computer_Item[{$result['id']}]'>" : '',
+                    'type' => $asset::getTypeName(),
+                    'item' => $asset->getLink(),
+                    'serial' => $asset->fields['serial'],
+                    'inventory' => $asset->fields['otherserial'],
+                    'is_dynamic' => Dropdown::getYesNo($asset->fields['is_dynamic'])
                 ];
-                $params['FIELDS'] = ['id', 'items_id'];
-                $first  = true;
-                foreach ($DB->request('glpi_computers_items', $params) as $line) {
-                    /** @var CommonDBTM $asset */
-                    $asset = new $type();
-                    $asset->getFromDB($line['items_id']);
-                    if ($first) {
-                        echo "<tr>";
-                        echo "<th width='10'></th>";
-                        echo "<th>" . $asset::getTypeName(Session::getPluralNumber()) . "</th>";
-                        echo "<th>" . __('Serial number') . "</th>";
-                        echo "<th>" . __('Inventory number') . "</th>";
-                        echo "<th>" . __('Automatic inventory') . "</th>";
-                        echo "</tr>";
-                        $first = false;
-                    }
-
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td class='center' width='10'>";
-                    if ($computer_item->can($line['id'], UPDATE) || $computer_item->can($line['id'], PURGE)) {
-                        $header = true;
-                        echo "<input type='checkbox' name='Computer_Item[" . $line['id'] . "]'>";
-                    }
-                    echo "</td>";
-
-                    echo "<td class='left'>" . $asset->getLink() . "</td>";
-                    echo "<td class='left'>" . $asset->fields['serial'] . "</td>";
-                    echo "<td class='left'>" . $asset->fields['otherserial'] . "</td>";
-                    echo "<td class='left'>" . Dropdown::getYesNo($asset->fields['is_dynamic']) . "</td>";
-                    echo "</tr>";
-                }
             }
+            $subtables[] = $subtable;
 
             //items disks
             $item_disk = new Item_Disk();
@@ -399,33 +414,36 @@ class Lock extends CommonGLPI
                     'itemtype'     => $itemtype
                 ]
             ]);
-            $first  = true;
-            foreach ($item_disks as $line) {
-                if ($first) {
-                    echo "<tr>";
-                    echo "<th width='10'></th>";
-                    echo "<th>" . $item_disk::getTypeName(Session::getPluralNumber()) . "</th>";
-                    echo "<th>" . __('Partition') . "</th>";
-                    echo "<th>" . __('Mount point') . "</th>";
-                    echo "<th>" . __('Automatic inventory') . "</th>";
-                    echo "</tr>";
-                    $first = false;
-                }
+            $subtable = [
+                'nopager' => true,
+                'nosort' => true,
+                'nofilter' => true,
+                'columns' => [
+                    'chk' => '',
+                    'item' => $item_disk::getTypeName(1),
+                    'partition' => __('Partition'),
+                    'mountpoint' => __('Mount point'),
+                    'is_dynamic' => __('Automatic inventory')
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => []
+            ];
 
+            foreach ($item_disks as $line) {
                 $item_disk->getFromResultSet($line);
-                echo "<tr class='tab_bg_1'>";
-                echo "<td class='center' width='10'>";
-                if ($item_disk->can($line['id'], UPDATE) || $item_disk->can($item_disk->getID(), PURGE)) {
-                    $header = true;
-                    echo "<input type='checkbox' name='Item_Disk[" . $item_disk->getID() . "]'>";
-                }
-                echo "</td>";
-                echo "<td class='left'>" . $item_disk->getLink() . "</td>";
-                echo "<td class='left'>" . $item_disk->fields['device'] . "</td>";
-                echo "<td class='left'>" . $item_disk->fields['mountpoint'] . "</td>";
-                echo "<td class='left'>" . Dropdown::getYesNo($item_disk->fields['is_dynamic']) . "</td>";
-                echo "</tr>\n";
+                $show_checkbox = $item_disk->can($line['id'], UPDATE) || $item_disk->can($item_disk->getID(), PURGE);
+                $subtable['entries'][] = [
+                    'chk' => $show_checkbox ? "<input type='checkbox' name='Item_Disk[{$item_disk->getID()}]'>" : '',
+                    'item' => $item_disk->getLink(),
+                    'partition' => $item_disk->fields['device'],
+                    'mountpoint' => $item_disk->fields['mountpoint'],
+                    'is_dynamic' => Dropdown::getYesNo($item_disk->fields['is_dynamic'])
+                ];
             }
+            $subtables[] = $subtable;
         }
 
         $item_vm = new ItemVirtualMachine();
@@ -438,57 +456,57 @@ class Lock extends CommonGLPI
                 'items_id'     => $ID
             ]
         ]);
-        $first  = true;
-        foreach ($item_vms as $line) {
-            if ($first) {
-                echo "<tr>";
-                echo "<th width='10'></th>";
-                echo "<th>" . $item_vm::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('UUID') . "</th>";
-                echo "<th>" . __('Machine') . "</th>";
-                echo "<th>" . __('Automatic inventory') . "</th>";
-                echo "</tr>";
-                $first = false;
-            }
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'type' => $item_vm::getTypeName(1),
+                'uuid' => __('UUID'),
+                'machine' => __('Machine'),
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+                'machine' => 'raw_html',
+            ],
+            'entries' => []
+        ];
 
+        foreach ($item_vms as $line) {
             $item_vm->getFromResultSet($line);
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($item_vm->can($line['id'], UPDATE) || $item_vm->can($item_vm->getID(), PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='ItemVirtualMachine[" . $item_vm->getID() . "]'>";
-            }
-            echo "</td>";
-            echo "<td class='left'>" . $item_vm->getLink() . "</td>";
-            echo "<td class='left'>" . $item_vm->fields['uuid'] . "</td>";
+            $show_checkbox = $item_vm->can($line['id'], UPDATE) || $item_vm->can($item_vm->getID(), PURGE);
 
             $url = "";
             if ($link_item = ItemVirtualMachine::findVirtualMachine($item_vm->fields)) {
                 $item = new $itemtype();
                 if ($item->can($link_item, READ)) {
                     $url  = "<a href='" . $item->getFormURLWithID($link_item) . "'>";
-                    $url .= $item->fields["name"] . "</a>";
+                    $url .= htmlspecialchars($item->fields["name"]) . "</a>";
 
-                    $tooltip = "<table><tr><td>" . __('Name') . "</td><td>" . $item->fields['name'] .
+                    $tooltip = "<table><tr><td>" . __s('Name') . "</td><td>" . htmlspecialchars($item->fields['name']) .
                         '</td></tr>';
                     if (isset($item->fields['serial'])) {
-                        $tooltip .= "<tr><td>" . __('Serial number') . "</td><td>" . $item->fields['serial'] .
+                        $tooltip .= "<tr><td>" . __s('Serial number') . "</td><td>" . htmlspecialchars($item->fields['serial']) .
                             '</td></tr>';
                     }
                     if (isset($item->fields['comment'])) {
-                        $tooltip .= "<tr><td>" . __('Comments') . "</td><td>" . $item->fields['comment'] .
+                        $tooltip .= "<tr><td>" . __s('Comments') . "</td><td>" . htmlspecialchars($item->fields['comment']) .
                             '</td></tr></table>';
                     }
 
                     $url .= "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]);
                 } else {
-                    $url = $item->fields['name'];
+                    $url = htmlspecialchars($item->fields['name']);
                 }
             }
-            echo "<td class='left'>" . $url . "</td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($item_vm->fields['is_dynamic']) . "</td>";
-            echo "</tr>\n";
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='ItemVirtualMachine[{$item_vm->getID()}]'>" : '',
+                'type' => $item_vm::getTypeName(),
+                'uuid' => $item_vm->fields['uuid'],
+                'machine' => $url,
+                'is_dynamic' => Dropdown::getYesNo($item_vm->fields['is_dynamic'])
+            ];
         }
+        $subtables[] = $subtable;
 
         // Software versions
         $item_sv = new Item_SoftwareVersion();
@@ -522,34 +540,33 @@ class Lock extends CommonGLPI
                 'isv.itemtype'    => $itemtype,
             ]
         ]);
-        $first  = true;
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'software' => Software::getTypeName(1),
+                'version' => SoftwareVersion::getTypeName(1),
+                'date_install' => __('Installation date'),
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+                'date_install' => 'datetime',
+            ],
+            'entries' => []
+        ];
+
         foreach ($iterator as $data) {
-            if ($first) {
-                echo "<tr>";
-                echo "<th width='10'></th>";
-                echo "<th>" . Software::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . SoftwareVersion::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('Installation date') . "</th>";
-                echo "<th>" . __('Automatic inventory') . "</th>";
-                echo "</tr>";
-                $first = false;
-            }
-
             $item_sv->getFromDB($data['id']);
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($item_sv->can($item_sv->getID(), UPDATE) || $item_sv->can($item_sv->getID(), PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='Item_SoftwareVersion[" . $item_sv->getID() . "]'>";
-            }
-
-            echo "</td>";
-            echo "<td class='left'>" . $data['software'] . "</td>"; //no form for item software version
-            echo "<td class='left'>" . $data['version'] . "</td>";
-            echo "<td class='left'>" . Html::convDateTime($item_sv->fields['date_install']) . "</td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($item_sv->fields['is_dynamic']) . "</td>";
-            echo "</tr>";
+            $show_checkbox = $item_sv->can($data['id'], UPDATE) || $item_sv->can($data['id'], PURGE);
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='Item_SoftwareVersion[{$item_sv->getID()}]'>" : '',
+                'software' => $data['software'],
+                'version' => $data['version'],
+                'date_install' => $item_sv->fields['date_install'],
+                'is_dynamic' => Dropdown::getYesNo($item_sv->fields['is_dynamic'])
+            ];
         }
+        $subtables[] = $subtable;
 
         //Software licenses
         $item_sl = new Item_SoftwareLicense();
@@ -584,51 +601,47 @@ class Lock extends CommonGLPI
             ]
         ]);
 
-        $first = true;
-        foreach ($iterator as $data) {
-            if ($first) {
-                echo "<tr>";
-                echo "<th width='10'></th>";
-                echo "<th>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('Version in use') . "</th>";
-                echo "<th>" . Software::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('Automatic inventory') . "</th>";
-                echo "</tr>";
-                $first = false;
-            }
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'license' => SoftwareLicense::getTypeName(1),
+                'software' => Software::getTypeName(1),
+                'version' => __('Version in use'),
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+            ],
+            'entries' => []
+        ];
 
+        foreach ($iterator as $data) {
             $item_sl->getFromDB($data['id']);
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($item_sl->can($data['id'], UPDATE) || $item_sl->can($data['id'], PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='Item_SoftwareLicense[" . $data['id'] . "]'>";
-            }
+            $show_checkbox = $item_sl->can($data['id'], UPDATE) || $item_sl->can($data['id'], PURGE);
 
             $slicence = new SoftwareLicense();
             $slicence->getFromDB($item_sl->fields['softwarelicenses_id']);
-
-            echo "</td>";
-            echo "<td class='left'>" . $slicence->fields['name'] . "</td>"; //no form for item software license
-
             $software = new Software();
             $software_name = "";
             if ($software->getFromDB($slicence->fields['softwares_id'])) {
                 $software_name = $software->fields['name'];
             }
-            echo "<td class='left'>" . $software_name . "</td>";
-
             $sversion = new SoftwareVersion();
             $version_name = "";
             if ($sversion->getFromDB($slicence->fields['softwareversions_id_use'])) {
                 $version_name = $sversion->fields['name'];
             }
-            echo "<td class='left'>" . $version_name . "</td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($item_sl->fields['is_dynamic']) . "</td>";
-            echo "</tr>";
-        }
 
-        $first  = true;
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='Item_SoftwareLicense[{$item_sl->getID()}]'>" : '',
+                'license' => $slicence->fields['name'],
+                'software' => $software_name,
+                'version' => $version_name,
+                'is_dynamic' => Dropdown::getYesNo($item_sl->fields['is_dynamic'])
+            ];
+        }
+        $subtables[] = $subtable;
+
         $networkport = new NetworkPort();
         $networkports = $DB->request([
             'FROM'  => $networkport::getTable(),
@@ -639,34 +652,34 @@ class Lock extends CommonGLPI
                 'itemtype'   => $itemtype
             ]
         ]);
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'item' => NetworkPort::getTypeName(1),
+                'port_type' => NetworkPortType::getTypeName(1),
+                'mac' => __('MAC'),
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+                'item' => 'raw_html',
+            ],
+            'entries' => []
+        ];
+
         foreach ($networkports as $line) {
             $networkport->getFromResultSet($line);
-            if ($first) {
-                echo "<tr>";
-                echo "<th width='10'></th>";
-                echo "<th>" . $networkport->getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . NetworkPortType::getTypeName(1) . "</th>";
-                echo "<th>" . __('MAC') . "</th>";
-                echo "<th>" . __('Automatic inventory') . "</th>";
-                echo "</tr>";
-                $first = false;
-            }
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($networkport->can($networkport->getID(), UPDATE) || $networkport->can($networkport->getID(), PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='NetworkPort[" . $networkport->getID() . "]'>";
-            }
-            echo "</td>";
-            echo "<td class='left'>" . $networkport->getLink() . "</td>";
-            echo "<td class='left'>" . $networkport->fields['instantiation_type'] . "</td>";
-            echo "<td class='left'>" . $networkport->fields['mac'] . "</td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($networkport->fields['is_dynamic']) . "</td>";
-            echo "</tr>\n";
+            $show_checkbox = $networkport->can($networkport->getID(), UPDATE) || $networkport->can($networkport->getID(), PURGE);
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='NetworkPort[{$networkport->getID()}]'>" : '',
+                'item' => $networkport->getLink(),
+                'port_type' => $networkport->fields['instantiation_type'],
+                'mac' => $networkport->fields['mac'],
+                'is_dynamic' => Dropdown::getYesNo($networkport->fields['is_dynamic'])
+            ];
         }
+        $subtables[] = $subtable;
 
-        $first = true;
         $networkname = new NetworkName();
         $networknames = $DB->request([
             'SELECT' => ['glpi_networknames.*'],
@@ -690,40 +703,40 @@ class Lock extends CommonGLPI
                 'glpi_networknames.itemtype'   => 'NetworkPort',
             ]
         ]);
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'item' => NetworkName::getTypeName(1),
+                'fqdn' => __('FQDN'),
+                'placeholder' => '',
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+                'item' => 'raw_html',
+            ],
+            'entries' => []
+        ];
+
         foreach ($networknames as $line) {
             $networkname->getFromResultSet($line);
-            if ($first) {
-                echo "<tr>";
-                echo "<th width='10'></th>";
-                echo "<th>" . $networkname::getTypeName(Session::getPluralNumber()) . "</th>";
-                echo "<th>" . __('FQDN') . "</th>";
-                echo "<th></th>";
-                echo "<th>" . __('Automatic inventory') . "</th>";
-                echo "</tr>";
-                $first = false;
-            }
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($networkname->can($networkname->getID(), UPDATE) || $networkname->can($networkname->getID(), PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='NetworkName[" . $networkname->getID() . "]'>";
-            }
-            echo "</td>";
-            echo "<td class='left'>" . $networkname->getLink() . "</td>";
-
+            $show_checkbox = $networkname->can($networkname->getID(), UPDATE) || $networkname->can($networkname->getID(), PURGE);
             $fqdn = new FQDN();
             $fqdn_name = "";
             if ($fqdn->getFromDB($networkname->fields['fqdns_id'])) {
                 $fqdn_name = $fqdn->fields['name'];
             }
-            echo "<td class='left'>" . $fqdn_name . "</td>";
-            echo "<td class='left'></td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($networkname->fields['is_dynamic']) . "</td>";
-            echo "</tr>\n";
-        }
 
-        $first  = true;
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='NetworkName[{$networkname->getID()}]'>" : '',
+                'item' => $networkname->getLink(),
+                'fqdn' => $fqdn_name,
+                'placeholder' => '',
+                'is_dynamic' => Dropdown::getYesNo($networkname->fields['is_dynamic'])
+            ];
+        }
+        $subtables[] = $subtable;
+
         $ipaddress = new IPAddress();
         $ipaddresses = $DB->request([
             'SELECT' => ['glpi_ipaddresses.*'],
@@ -757,39 +770,40 @@ class Lock extends CommonGLPI
                 'glpi_ipaddresses.itemtype'   => 'NetworkName',
             ]
         ]);
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'item' => IPAddress::getTypeName(1),
+                'version' => _n('Version', 'Versions', 1),
+                'placeholder' => '',
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+            ],
+            'entries' => []
+        ];
+
         foreach ($ipaddresses as $line) {
             $ipaddress->getFromResultSet($line);
-            if ($first) {
-                echo "<tr>";
-                echo "<th width='10'></th>";
-                echo "<th>" . $ipaddress::getTypeName(1) . "</th>";
-                echo "<th>" . _n('Version', 'Versions', 1) . "</th>";
-                echo "<th></th>";
-                echo "<th>" . __('Automatic inventory') . "</th>";
-                echo "</tr>";
-                $first = false;
-            }
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($ipaddress->can($ipaddress->getID(), UPDATE) || $ipaddress->can($ipaddress->getID(), PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='IPAddress[" . $ipaddress->getID() . "]'>";
-            }
-            echo "</td>";
-            echo "<td class='left'>" . $ipaddress->fields['name'] . "</td>"; //no form for IP address
-            echo "<td class='left'>" . $ipaddress->fields['version'] . "</td>";
-            echo "<td class='left'></td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($ipaddress->fields['is_dynamic']) . "</td>";
-            echo "</tr>\n";
+            $show_checkbox = $ipaddress->can($ipaddress->getID(), UPDATE) || $ipaddress->can($ipaddress->getID(), PURGE);
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='IPAddress[{$ipaddress->getID()}]'>" : '',
+                'item' => $ipaddress->fields['name'],
+                'version' => $ipaddress->fields['version'],
+                'placeholder' => '',
+                'is_dynamic' => Dropdown::getYesNo($ipaddress->fields['is_dynamic'])
+            ];
         }
+        $subtables[] = $subtable;
 
         $types = Item_Devices::getDeviceTypes();
         $nb    = 0;
         foreach ($types as $type) {
             $nb += countElementsInTable(
                 getTableForItemType($type),
-                ['items_id'   => $ID,
+                [
+                    'items_id'   => $ID,
                     'itemtype'   => $itemtype,
                     'is_dynamic' => 1,
                     'is_deleted' => 1
@@ -797,13 +811,21 @@ class Lock extends CommonGLPI
             );
         }
         if ($nb) {
-            echo "<tr>";
-            echo "<th width='10'></th>";
-            echo "<th>" . _n('Component', 'Components', Session::getPluralNumber()) . "</th>";
-            echo "<th></th>";
-            echo "<th></th>";
-            echo "<th>" . __('Automatic inventory') . "</th>";
-            echo "</tr>";
+            $subtable = [
+                'columns' => [
+                    'chk' => '',
+                    'item' => _n('Component', 'Components', 1),
+                    'placeholder_1' => '',
+                    'placeholder_2' => '',
+                    'is_dynamic' => __('Automatic inventory')
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => []
+            ];
+
             foreach ($types as $type) {
                 $type_item = new $type();
 
@@ -834,27 +856,22 @@ class Lock extends CommonGLPI
                 ]);
 
                 foreach ($iterator as $data) {
-                    echo "<tr class='tab_bg_1'>";
-                    echo "<td class='center' width='10'>";
-                    if ($type_item->can($data['id'], UPDATE) || $type_item->can($data['id'], PURGE)) {
-                        $header = true;
-                        echo "<input type='checkbox' name='" . $type . "[" . $data['id'] . "]'>";
-                    }
-                    echo "</td>";
+                    $show_checkbox = $type_item->can($data['id'], UPDATE) || $type_item->can($data['id'], PURGE);
                     $object_item_type = new $type();
                     $object_item_type->getFromDB($data['id']);
-                    $object_link = "<a href='" . $object_item_type->getLinkURL() . "'" . $data['name'] . ">" . $data['name'] . "</a>";
+                    $object_name = htmlspecialchars($data['name']);
+                    $object_link = "<a href='" . $object_item_type->getLinkURL() . "'>{$object_name}</a>";
 
-                    echo "<td class='left'>";
-                    echo $object_link;
-                    echo "</td>";
-                    echo "<td></td>";
-                    echo "<td></td>";
-                    echo "<td class='left'>" . Dropdown::getYesNo($object_item_type->fields['is_dynamic']) . "</td>";
-
-                    echo "</tr>\n";
+                    $subtable['entries'][] = [
+                        'chk' => $show_checkbox ? "<input type='checkbox' name='{$type}[{$data['id']}]'>" : '',
+                        'type' => $object_link,
+                        'placeholder_1' => '',
+                        'placeholder_2' => '',
+                        'is_dynamic' => Dropdown::getYesNo($object_item_type->fields['is_dynamic'])
+                    ];
                 }
             }
+            $subtables[] = $subtable;
         }
 
         // Show deleted DatabaseInstance
@@ -868,35 +885,37 @@ class Lock extends CommonGLPI
                 DatabaseInstance::getTableField('itemtype')   => $itemtype,
             ]
         ]);
-        if (count($data)) {
-            // Print header
-            echo "<tr>";
-            echo "<th width='10'></th>";
-            echo "<th>" . DatabaseInstance::getTypeName(Session::getPluralNumber()) . "</th>";
-            echo "<th>" . __('Name') . "</th>";
-            echo "<th>" . _n('Version', 'Versions', 1) . "</th>";
-            echo "<th>" . __('Automatic inventory') . "</th>";
-            echo "</tr>";
-        }
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'item' => DatabaseInstance::getTypeName(1),
+                'name' => __('Name'),
+                'version' => _n('Version', 'Versions', 1),
+                'is_dynamic' => __('Automatic inventory')
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+                'item' => 'raw_html',
+            ],
+            'entries' => []
+        ];
 
         foreach ($data as $row) {
             $database_instance = DatabaseInstance::getById($row['id']);
             if ($database_instance === false) {
                 continue;
             }
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($database_instance->can($database_instance->getID(), UPDATE) || $database_instance->can($database_instance->getID(), PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='DatabaseInstance[" . $database_instance->getID() . "]'>";
-            }
-            echo "</td>";
-            echo "<td class='left'>" . $database_instance->getLink() . "</td>";
-            echo "<td class='left'>" . $database_instance->getName() . "</td>";
-            echo "<td class='left'>" . $database_instance->fields['version'] . "</td>";
-            echo "<td class='left'>" . Dropdown::getYesNo($database_instance->fields['is_dynamic']) . "</td>";
-            echo "</tr>\n";
+
+            $show_checkbox = $database_instance->can($database_instance->getID(), UPDATE) || $database_instance->can($database_instance->getID(), PURGE);
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='DatabaseInstance[{$database_instance->getID()}]'>" : '',
+                'item' => $database_instance->getLink(),
+                'name' => $database_instance->getName(),
+                'version' => $database_instance->fields['version'],
+                'is_dynamic' => Dropdown::getYesNo($database_instance->fields['is_dynamic'])
+            ];
         }
+        $subtables[] = $subtable;
 
         // Show deleted Domain_Item
         $data = $DB->request([
@@ -909,15 +928,20 @@ class Lock extends CommonGLPI
                 Domain_Item::getTableField('itemtype')   => $itemtype,
             ]
         ]);
-        if (count($data)) {
-            // Print header
-            echo "<tr>";
-            echo "<th width='10'></th>";
-            echo "<th>" . Domain::getTypeName(Session::getPluralNumber()) . "</th>";
-            echo "<th>" . DomainRelation::getTypeName(1) . "</th>";
-            echo "<th></th><th></th>";
-            echo "</tr>";
-        }
+        $subtable = [
+            'columns' => [
+                'chk' => '',
+                'item' => Domain::getTypeName(1),
+                'relation' => DomainRelation::getTypeName(1),
+                'placeholder_1' => '',
+                'placeholder_2' => '',
+            ],
+            'formatters' => [
+                'chk' => 'raw_html',
+                'item' => 'raw_html',
+            ],
+            'entries' => []
+        ];
 
         foreach ($data as $row) {
             $domain_item = new Domain_Item();
@@ -934,53 +958,84 @@ class Lock extends CommonGLPI
                 $relation_name = $domain_relation->getName();
             }
 
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='center' width='10'>";
-            if ($domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE)) {
-                $header = true;
-                echo "<input type='checkbox' name='Domain_Item[" . $row['id'] . "]'>";
+            $show_checkbox = $domain_item->can($row['id'], UPDATE) || $domain_item->can($row['id'], PURGE);
+            $subtable['entries'][] = [
+                'chk' => $show_checkbox ? "<input type='checkbox' name='Domain_Item[{$row['id']}]'>" : '',
+                'item' => $link,
+                'relation' => $relation_name,
+                'placeholder_1' => '',
+                'placeholder_2' => '',
+            ];
+        }
+        $subtables[] = $subtable;
+
+        // This list is unique in that it has different sections for different item types.
+        // So, we are using nested datatables.
+        $rendered_subtables = array_map(static function ($datatable_params) {
+            if (isset($datatable_params['raw_body'])) {
+                return !empty($datatable_params['raw_body']) ? ['subtable' => $datatable_params['raw_body']] : '';
             }
-            echo "</td>";
-            echo "<td class='left'>" . $link . "</td>";
-            echo "<td class='left'>" . $relation_name . "</td>";
-            echo "<td></td>";
-            echo "<td></td>";
-            echo "</tr>\n";
+            if (count($datatable_params['entries']) === 0) {
+                return '';
+            }
+            // Common Params
+            $datatable_params['is_tab'] = true;
+            $datatable_params['nosort'] = true;
+            $datatable_params['nopager'] = true;
+            $datatable_params['nofilter'] = true;
+            $datatable_params['total_number'] = count($datatable_params['entries']);
+            $datatable_params['filtered_number'] = count($datatable_params['entries']);
+            return ['subtable' => TemplateRenderer::getInstance()->render('components/datatable.html.twig', $datatable_params)];
+        }, $subtables);
+        // Remove empty subtables
+        $rendered_subtables = array_filter($rendered_subtables);
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'table_class_style' => 'table-sm',
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => __('Locked items'),
+            'no_header' => true, // Only affects the regular columns, not the super header. We don't want column headers for the parent table.
+            'columns' => [
+                'subtable' => ''
+            ],
+            'formatters' => [
+                'subtable' => 'raw_html'
+            ],
+            'entries' => $rendered_subtables,
+            'total_number' => count($rendered_subtables),
+            'filtered_number' => count($rendered_subtables),
+            'showmassiveactions' => false,
+        ]);
+
+        $twig_params = [
+            'check_all_msg' => __('Check all'),
+            'uncheck_all_msg' => __('Uncheck all'),
+            'unlock_msg' => _sx('button', 'Unlock'),
+            'purge_msg' => _sx('button', 'Delete permanently')
+        ];
+        if (count($rendered_subtables) > 0) {
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div>
+                    <i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>
+                    <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
+                    <span>/</span>
+                    <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
+                    <button type="submit" name="unlock" class="btn btn-primary">{{ unlock_msg }}</button>
+                    <button type="submit" name="purge" class="btn btn-danger">{{ purge_msg }}</button>
+                </div>
+TWIG, $twig_params);
         }
 
-        if ($header) {
-            echo "<tr><th>";
-            echo "</th><th colspan='4'>&nbsp</th></tr>\n";
-            echo "</table>";
-
-            $formname = 'lock_form';
-            echo "<table width='950px'>";
-            $arrow = "fas fa-level-up-alt";
-
-            echo "<tr>";
-            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
-            echo "<td class='center' style='white-space:nowrap;'>";
-            echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
-            echo "<td>/</td>";
-            echo "<td class='center' style='white-space:nowrap;'>";
-            echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
-            echo "<td class='left' width='80%'>";
-
-            echo "<input type='submit' name='unlock' ";
-            echo "value=\"" . _sx('button', 'Unlock') . "\" class='btn btn-primary'>&nbsp;";
-
-            echo "<input type='submit' name='purge' ";
-            echo "value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>&nbsp;";
-            echo "</td></tr>";
-            echo "</table>";
-        } else {
-            echo "<tr class='tab_bg_2'>";
-            echo "<td class='center' colspan='5'>" . __('No locked item') . "</td></tr>";
-            echo "</table>";
-        }
-        Html::closeForm();
-
-        echo "</div>\n";
+        // Close the custom form used for the unlock item checkboxes (not using massive actions)
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </form>
+TWIG);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -1213,7 +1268,7 @@ class Lock extends CommonGLPI
                     'ItemVirtualMachine'     => ItemVirtualMachine::getTypeName(Session::getPluralNumber())
                 ];
 
-                echo __('Select the type of the item that must be unlock');
+                echo __s('Select the type of the item that must be unlock');
                 echo "<br><br>\n";
 
                 Dropdown::showFromArray(
