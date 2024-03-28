@@ -796,13 +796,15 @@ class Group_User extends CommonDBRelation
 
         parent::post_purgeItem();
 
-        Event::log(
-            $this->fields['groups_id'],
-            "groups",
-            4,
-            "setup",
-            sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"])
-        );
+        if (Session::getLoginUserID() !== false) {
+            Event::log(
+                $this->fields['groups_id'],
+                "groups",
+                4,
+                "setup",
+                sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"])
+            );
+        }
 
         // remove user from plannings
         $groups_id  = $this->fields['groups_id'];
