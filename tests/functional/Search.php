@@ -423,7 +423,7 @@ class Search extends DbTestCase
          // match where parts
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
+         ->contains("`glpi_computers`.`entities_id` IN ('2', '3', '4')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
          ->contains("`glpi_computers`.`name` LIKE '%test%'")
@@ -458,7 +458,7 @@ class Search extends DbTestCase
         $this->string($data['sql']['search'])
          ->contains("`glpi_computers`.`is_deleted` = 0")
          ->contains("AND `glpi_computers`.`is_template` = 0")
-         ->contains("`glpi_computers`.`entities_id` IN ('1', '2', '3')")
+         ->contains("`glpi_computers`.`entities_id` IN ('2', '3', '4')")
          ->contains("OR (`glpi_computers`.`is_recursive`='1'" .
                     " AND `glpi_computers`.`entities_id` IN (0))")
          ->matches("/`glpi_computers`\.`name` LIKE '%test%'/")
@@ -2287,7 +2287,7 @@ class Search extends DbTestCase
             $this->string($data['sql']['search'])
             ->contains("`$type`.`is_deleted` = 0")
             ->contains("AND `$type`.`is_template` = 0")
-            ->contains("`$type`.`entities_id` IN ('1', '2', '3')")
+            ->contains("`$type`.`entities_id` IN ('2', '3', '4')")
             ->contains("OR (`$type`.`is_recursive`='1'" .
                         " AND `$type`.`entities_id` IN (0))")
              ->matches("/`$type`\.`name` LIKE '%test%'/");

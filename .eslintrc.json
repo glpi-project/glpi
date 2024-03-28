@@ -95,12 +95,11 @@
                     "switchCase": 1
                 }],
                 "vue/multi-word-component-names": "off",
-                // do not use regular indent rule. Handled by the vue rules instead
                 "indent": "off"
             }
         },
         {
-            "files": [".stylelintrc.js", ".webpack.config.js"],
+            "files": [".stylelintrc.js", ".webpack.config.js", "tests/cypress.config.js"],
             "env": {
                 "node": true
             }
@@ -115,6 +114,14 @@
             "parserOptions": {
                 "sourceType": "module"
             }
+        },
+        {
+            "files": ["tests/cypress/**"],
+            "env": {
+                "node": true,
+                "es2021": true
+            },
+            "extends": ["plugin:cypress/recommended"]
         }
     ]
 }

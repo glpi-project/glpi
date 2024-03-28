@@ -53,28 +53,39 @@ class Profile_User extends DbTestCase
         $super_admin = getItemByTypeName('Profile', 'Super-Admin');
         $this->boolean($super_admin->isLastSuperAdminProfile())->isTrue();
 
-        // Default: 3 super admin account authorizations
+        // Default: 4 super admin account authorizations
         $authorizations = (new \Profile_User())->find([
             'profiles_id' => $super_admin->fields['id']
         ]);
-        $this->array($authorizations)->hasSize(3);
-        $this->array(array_column($authorizations, 'id'))->isEqualTo([
-            2, // glpi
-            6, // TU_USER
-            7, // jsmith123
+        $this->array($authorizations)->hasSize(4);
+        $glpi_users_id = getItemByTypeName('User', 'glpi', true);
+        $tu_users_id = getItemByTypeName('User', TU_USER, true);
+        $jsmith_users_id = getItemByTypeName('User', 'jsmith123', true);
+        $e2e_tests_users_id = getItemByTypeName('User', 'e2e_tests', true);
+        $this->array(array_column($authorizations, 'users_id'))->containsValues([
+            $glpi_users_id,
+            $tu_users_id,
+            $jsmith_users_id,
+            $e2e_tests_users_id,
         ]);
+        $authorizations_by_user_id = [];
+        foreach ($authorizations as $authorization) {
+            $authorizations_by_user_id[$authorization['users_id']] = $authorization['id'];
+        }
 
         // Delete 2 authorizations
         $this->login('glpi', 'glpi');
-        $this->boolean(\Profile_User::getById(6)->canPurgeItem())->isTrue();
-        $this->boolean((new \Profile_User())->delete(['id' => 6], 1))->isTrue();
-        $this->boolean(\Profile_User::getById(7)->canPurgeItem())->isTrue();
-        $this->boolean((new \Profile_User())->delete(['id' => 7], 1))->isTrue();
+        $this->boolean(\Profile_User::getById($authorizations_by_user_id[$tu_users_id])->canPurgeItem())->isTrue();
+        $this->boolean((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1))->isTrue();
+        $this->boolean(\Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem())->isTrue();
+        $this->boolean((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$jsmith_users_id]], 1))->isTrue();
+        $this->boolean(\Profile_User::getById($authorizations_by_user_id[$e2e_tests_users_id])->canPurgeItem())->isTrue();
+        $this->boolean((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1))->isTrue();
 
         // Last user, can't be purged
-        $this->boolean(\Profile_User::getById(2)->canPurgeItem())->isFalse();
+        $this->boolean(\Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem())->isFalse();
         // Can still be purged by calling delete, maybe it should not be possible ?
-        $this->boolean((new \Profile_User())->delete(['id' => 2], 1))->isTrue();
+        $this->boolean((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1))->isTrue();
     }
 
     public function testLogOperationOnAddAndDelete(): void

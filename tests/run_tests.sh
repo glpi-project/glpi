@@ -53,6 +53,7 @@ TESTS_SUITES=(
   "imap"
   "web"
   "javascript"
+  "e2e"
 )
 
 # Extract named options
@@ -78,6 +79,9 @@ SELECTED_METHODS="all"
 
 # Extract list of tests suites to run
 SELECTED_TESTS_TO_RUN=()
+
+# Flag to indicate the DB needs to be reinstalled. Required after e2e tests are run before functional or unit tests can be run.
+NEED_DB_REINSTALL=true
 
 if [[ $# -gt 0 ]]; then
   ARGS=("$@")
@@ -154,6 +158,7 @@ Available tests suites:
  - imap
  - web
  - javascript
+ - e2e
 EOF
 
   exit 0
@@ -208,8 +213,16 @@ INSTALL_TESTS_RUN=false
 run_single_test () {
   local TEST_TO_RUN=$1
   local TESTS_WITHOUT_INSTALL=("install", "lint" "lint_php" "lint_js" "lint_scss" "lint_twig" "javascript")
-  if [[ $INSTALL_TESTS_RUN == false && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
+  #Need reinstall if current test is not e2e and $NEED_DB_REINSTALL is true
+  #e2e tests are written to not care about extra data in the database
+  local REINSTALL_NOW=false
+  if [[ $NEED_DB_REINSTALL == true && $TEST_TO_RUN != "e2e" ]]; then
+    REINSTALL_NOW=true
+  fi
+  if [[ ($INSTALL_TESTS_RUN == false || $REINSTALL_NOW == true) && ! " ${TESTS_WITHOUT_INSTALL[@]} " =~ $TEST_TO_RUN ]]; then
     echo "The requested test suite \"$TEST_TO_RUN\" requires the \"install\" test suite to be run first."
+    echo "Install tests run status: $INSTALL_TESTS_RUN"
+    echo "Reinstall now status: $REINSTALL_NOW"
     # Run install test suite before any other test suite
     run_single_test "install"
   fi
@@ -295,13 +308,23 @@ run_single_test () {
          docker-compose exec -T app .github/actions/test_javascript.sh \
       || LAST_EXIT_CODE=$?
       ;;
+    "e2e")
+         docker-compose exec -T app .github/actions/test_tests-e2e.sh \
+      || LAST_EXIT_CODE=$?
+      ;;
   esac
+
+  if [[ $TEST_TO_RUN == "e2e" ]]; then
+    NEED_DB_REINSTALL=true
+  fi
+
   if [[ $LAST_EXIT_CODE -ne 0 ]]; then
     echo -e "\e[1;39;41m Tests \"$TEST_TO_RUN\" failed \e[0m\n"
   else
     echo -e "\e[1;30;42m Tests \"$TEST_TO_RUN\" passed \e[0m\n"
     if [[ $TEST_TO_RUN == "install" ]]; then
       INSTALL_TESTS_RUN=true
+      NEED_DB_REINSTALL=false
     fi
   fi
 }

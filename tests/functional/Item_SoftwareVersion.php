@@ -78,7 +78,7 @@ class Item_SoftwareVersion extends DbTestCase
             'name'                  => 'A name',
             'is_template_item'      => $computer1->getField('is_template'),
             'is_deleted_item'       => $computer1->getField('is_deleted'),
-            'entities_id'           => 1,
+            'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
             'is_recursive'          => 0
         ];
 

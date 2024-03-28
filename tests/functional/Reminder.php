@@ -45,14 +45,15 @@ class Reminder extends DbTestCase
     {
          //first, as a super-admin
          $this->login();
-         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '7'
-               OR `glpi_reminders_users`.`users_id` = '7'
+         $users_id = \Session::getLoginUserID();
+         $expected = preg_replace('/\s+/', ' ', "(`glpi_reminders`.`users_id` = '$users_id'
+               OR `glpi_reminders_users`.`users_id` = '$users_id'
                OR (`glpi_profiles_reminders`.`profiles_id` = '4'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR ((`glpi_profiles_reminders`.`entities_id` IN ('1', '2', '3')
+                         OR ((`glpi_profiles_reminders`.`entities_id` IN ('2', '3', '4')
                                    OR (`glpi_profiles_reminders`.`is_recursive` = '1'
                                         AND `glpi_profiles_reminders`.`entities_id` IN ('0'))))))
-               OR ((`glpi_entities_reminders`.`entities_id` IN ('1', '2', '3')
+               OR ((`glpi_entities_reminders`.`entities_id` IN ('2', '3', '4')
                          OR (`glpi_entities_reminders`.`is_recursive` = '1'
                               AND `glpi_entities_reminders`.`entities_id` IN ('0')))))");
          $this->string(\Reminder::addVisibilityRestrict())
@@ -63,8 +64,8 @@ class Reminder extends DbTestCase
                OR `glpi_reminders_users`.`users_id` = '5'
                OR (`glpi_profiles_reminders`.`profiles_id` = '2'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
-               OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
+                         OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '2', '1', '3', '4'))))
+               OR (`glpi_entities_reminders`.`entities_id` IN ('0', '2', '1', '3', '4')))");
          $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
               ->isIdenticalTo($expected);
 
@@ -73,8 +74,8 @@ class Reminder extends DbTestCase
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_profiles_reminders`.`profiles_id` = '6'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
-               OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
+                         OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '2', '1', '3', '4'))))
+               OR (`glpi_entities_reminders`.`entities_id` IN ('0', '2', '1', '3', '4')))");
          $this->string(trim(preg_replace('/\s+/', ' ', \Reminder::addVisibilityRestrict())))
               ->isIdenticalTo($expected);
 
@@ -86,11 +87,11 @@ class Reminder extends DbTestCase
                OR `glpi_reminders_users`.`users_id` = '4'
                OR (`glpi_groups_reminders`.`groups_id` IN ('42', '1337')
                     AND (`glpi_groups_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_groups_reminders`.`entities_id` IN ('0', '1', '2', '3')))) 
+                         OR (`glpi_groups_reminders`.`entities_id` IN ('0', '2', '1', '3', '4')))) 
                OR (`glpi_profiles_reminders`.`profiles_id` = '6'
                     AND (`glpi_profiles_reminders`.`no_entity_restriction` = '1'
-                         OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '1', '2', '3'))))
-               OR (`glpi_entities_reminders`.`entities_id` IN ('0', '1', '2', '3')))");
+                         OR (`glpi_profiles_reminders`.`entities_id` IN ('0', '2', '1', '3', '4'))))
+               OR (`glpi_entities_reminders`.`entities_id` IN ('0', '2', '1', '3', '4')))");
          $this->string(trim(preg_replace('/\s+/', ' ', $str)))
               ->isIdenticalTo($expected);
     }
