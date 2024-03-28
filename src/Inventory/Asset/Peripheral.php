@@ -36,7 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
-use Computer_Item;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
@@ -143,7 +143,6 @@ class Peripheral extends InventoryAsset
 
         $rule = new RuleImportAssetCollection();
         $peripheral = new GPeripheral();
-        $computer_Item = new Computer_Item();
 
         $peripherals = [];
         $value = $this->data;
@@ -191,24 +190,27 @@ class Peripheral extends InventoryAsset
         }
 
         $db_peripherals = [];
+
+        $relation_table = Asset_PeripheralAsset::getTable();
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_peripherals.id',
-                'glpi_computers_items.id AS link_id',
-                'glpi_computers_items.is_dynamic',
+                $relation_table . '.id AS link_id',
+                $relation_table . '.is_dynamic',
             ],
-            'FROM'      => 'glpi_computers_items',
+            'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_peripherals' => [
                     'FKEY' => [
-                        'glpi_peripherals'      => 'id',
-                        'glpi_computers_items'  => 'items_id'
+                        'glpi_peripherals' => 'id',
+                        $relation_table    => 'items_id_peripheral'
                     ]
                 ]
             ],
             'WHERE'     => [
-                'itemtype' => 'Peripheral',
-                'computers_id' => $this->item->fields['id'],
+                'itemtype_peripheral' => \Peripheral::class,
+                'itemtype_asset' => \Computer::class,
+                'items_id_asset' => $this->item->fields['id'],
                 'entities_id' => $this->entities_id,
                 'glpi_peripherals.is_global' => 0
             ]
@@ -226,7 +228,7 @@ class Peripheral extends InventoryAsset
                     if ($peripherals_id == $data['id']) {
                         unset($peripherals[$key]);
                         unset($db_peripherals[$keydb]);
-                        $computer_Item->update(['id' => $keydb, 'is_dynamic' => 1], false);
+                        (new Asset_PeripheralAsset())->update(['id' => $keydb, 'is_dynamic' => 1], false);
                         break;
                     }
                 }
@@ -237,16 +239,17 @@ class Peripheral extends InventoryAsset
            // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {
-                    $computer_Item->delete(['id' => $keydb], true);
+                    (new Asset_PeripheralAsset())->delete(['id' => $keydb], true);
                 }
             }
         }
         if (count($peripherals)) {
             foreach ($peripherals as $peripherals_id) {
                 $input = [
-                    'computers_id'    => $this->item->fields['id'],
-                    'itemtype'        => 'Peripheral',
-                    'items_id'        => $peripherals_id,
+                    'itemtype_asset' => \Computer::class,
+                    'items_id_asset' => $this->item->fields['id'],
+                    'itemtype_peripheral' => \Peripheral::class,
+                    'items_id_peripheral' => $peripherals_id,
                     'is_dynamic'      => 1,
                 ];
                 $this->addOrMoveItem($input);

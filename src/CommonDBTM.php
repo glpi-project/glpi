@@ -34,7 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Event;
@@ -43,7 +43,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
-use Glpi\Search\FilterableTrait;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
 
@@ -1105,7 +1104,7 @@ class CommonDBTM extends CommonGLPI
             Appliance_Item_Relation::class => $CFG_GLPI['appliance_relation_types'],
             Certificate_Item::class        => $CFG_GLPI['certificate_types'],
             Change_Item::class             => $CFG_GLPI['ticket_types'],
-            Computer_Item::class           => $CFG_GLPI['directconnect_types'],
+            Asset_PeripheralAsset::class   => $CFG_GLPI['directconnect_types'],
             Consumable::class              => $CFG_GLPI['consumables_types'],
             Contract_Item::class           => $CFG_GLPI['contract_types'],
             Document_Item::class           => \Document::getItemtypesThatCanHave(),
@@ -2680,10 +2679,12 @@ class CommonDBTM extends CommonGLPI
         }
        // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
-       // check connections of a computer
-        $connectcomputer = $CFG_GLPI["directconnect_types"];
-        if ($this->getType() === Computer::class || in_array($this->getType(), $connectcomputer)) {
-            return Computer_Item::canUnrecursSpecif($this, $entities);
+        // check connections between assets
+        if (
+            in_array($this->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
+            || in_array($this->getType(), $CFG_GLPI["directconnect_types"])
+        ) {
+            return Asset_PeripheralAsset::canUnrecursSpecif($this, $entities);
         }
         return true;
     }
@@ -3411,7 +3412,7 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Return the linked items (in computers_items)
+     * Return the linked items (`Asset_PeripheralAsset` relations)
      *
      * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
@@ -3423,7 +3424,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Return the count of linked items (in computers_items)
+     * Return the count of linked items (`Asset_PeripheralAsset` relations)
      *
      * @return integer number of linked items
      * @since 0.84.4

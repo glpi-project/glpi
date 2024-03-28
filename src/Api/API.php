@@ -51,6 +51,7 @@ use Contract;
 use Document;
 use Dropdown;
 use Glpi\Api\HL\Router;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchOption;
@@ -745,35 +746,38 @@ abstract class API
         if (
             isset($params['with_connections'])
             && $params['with_connections']
-            && $itemtype == "Computer"
+            && in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
         ) {
             $fields['_connections'] = [];
             foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
                 $connect_item = new $connect_type();
                 if ($connect_item->canView()) {
-                    $connect_table = getTableForItemType($connect_type);
+                    $connect_table  = getTableForItemType($connect_type);
+                    $relation_table = Asset_PeripheralAsset::getTable();
                     $iterator = $DB->request([
                         'SELECT'    => [
-                            'glpi_computers_items.id AS assoc_id',
-                            'glpi_computers_items.computers_id AS assoc_computers_id',
-                            'glpi_computers_items.itemtype AS assoc_itemtype',
-                            'glpi_computers_items.items_id AS assoc_items_id',
-                            'glpi_computers_items.is_dynamic AS assoc_is_dynamic',
-                            "$connect_table.*"
+                            $relation_table . '.id AS assoc_id',
+                            $relation_table . '.itemtype_item',
+                            $relation_table . '.items_id_item',
+                            $relation_table . '.itemtype_peripheral',
+                            $relation_table . '.items_id_peripheral',
+                            $relation_table . '.is_dynamic AS assoc_is_dynamic',
+                            $connect_table  . '.*',
                         ],
-                        'FROM'      => 'glpi_computers_items',
+                        'FROM'      => $relation_table,
                         'LEFT JOIN' => [
                             $connect_table => [
                                 'ON' => [
-                                    'glpi_computers_items'  => 'items_id',
-                                    $connect_table          => 'id'
+                                    $relation_table => 'items_id_peripheral',
+                                    $connect_table  => 'id',
                                 ]
                             ]
                         ],
                         'WHERE'     => [
-                            'computers_id'                      => $id,
-                            'itemtype'                          => $connect_type,
-                            'glpi_computers_items.is_deleted'   => 0
+                            $relation_table . '.itemtype_item' => $itemtype,
+                            $relation_table . '.items_id_item' => $id,
+                            $relation_table . '.itemtype_peripheral' => $connect_type,
+                            $relation_table . '.is_deleted' => 0,
                         ]
                     ]);
                     foreach ($iterator as $data) {

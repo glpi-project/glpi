@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use Blacklist;
 use CommonDBTM;
+use Glpi\Asset\Asset_PeripheralAsset;
 use IPAddress;
 use Printer as GPrinter;
 use PrinterLog;
@@ -219,12 +220,13 @@ class Printer extends NetworkEquipment
         $lclass = null;
         if (class_exists($this->item->getType() . '_Item')) {
             $lclass = $this->item->getType() . '_Item';
-        } else if (class_exists('Item_' . $this->item->getType())) {
+        } elseif (class_exists('Item_' . $this->item->getType())) {
             $lclass = 'Item_' . $this->item->getType();
+        } elseif (in_array($this->item->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
+            $lclass = Asset_PeripheralAsset::class;
         } else {
             throw new \RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
         }
-        $link_item = new $lclass();
 
         foreach ($this->data as $key => $val) {
             $input = [
@@ -265,26 +267,28 @@ class Printer extends NetworkEquipment
             }
         }
         $db_printers = [];
+        $relation_table = Asset_PeripheralAsset::getTable();
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_printers.id',
-                'glpi_computers_items.id AS link_id'
+                $relation_table . '.id AS link_id'
             ],
-            'FROM'      => 'glpi_computers_items',
+            'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_printers' => [
                     'FKEY' => [
-                        'glpi_printers'         => 'id',
-                        'glpi_computers_items'  => 'items_id'
+                        'glpi_printers' => 'id',
+                        $relation_table => 'items_id_peripheral'
                     ]
                 ]
             ],
             'WHERE'     => [
-                'itemtype'                          => 'Printer',
-                'computers_id'                      => $this->item->fields['id'],
-                'entities_id'                       => $entities_id,
-                'glpi_computers_items.is_dynamic'   => 1,
-                'glpi_printers.is_global'           => 0
+                'itemtype_peripheral'           => \Printer::class,
+                'itemtype_asset'                => \Computer::class,
+                'items_id_asset'                => $this->item->fields['id'],
+                'entities_id'                   => $entities_id,
+                $relation_table . '.is_dynamic' => 1,
+                'glpi_printers.is_global'       => 0
             ]
         ]);
 
@@ -307,16 +311,17 @@ class Printer extends NetworkEquipment
 
            // Delete printers links in DB
             foreach ($db_printers as $idtmp => $data) {
-                $link_item->delete(['id' => $idtmp], true);
+                (new $lclass())->delete(['id' => $idtmp], true);
             }
         }
 
         foreach ($printers as $printers_id) {
             $input = [
                 'entities_id'  => $entities_id,
-                'computers_id' => $this->item->fields['id'],
-                'itemtype'     => 'Printer',
-                'items_id'     => $printers_id,
+                'itemtype_asset' => \Computer::class,
+                'items_id_asset' => $this->item->fields['id'],
+                'itemtype_peripheral' => \Printer::class,
+                'items_id_peripheral' => $printers_id,
                 'is_dynamic'   => 1
             ];
             $this->addOrMoveItem($input);

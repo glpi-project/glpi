@@ -38,6 +38,7 @@ namespace Glpi\Search;
 use CommonGLPI;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Features\TreeBrowse;
 use Glpi\Plugin\Hooks;
@@ -177,7 +178,7 @@ final class SearchEngine
 
         $key_to_itemtypes = [
             'appliance_types'      => ['Appliance'],
-            'directconnect_types'  => ['Computer'],
+            'directconnect_types'  => Asset_PeripheralAsset::getPeripheralHostItemtypes(),
             'infocom_types'        => ['Budget', 'Infocom'],
             'linkgroup_types'      => ['Group'],
             // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
