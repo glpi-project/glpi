@@ -231,6 +231,11 @@ class Dropdown
             $params['condition'] = static::addNewCondition($params['condition']);
         }
 
+        if (!isset($params['entity_restrict'])) {
+            $params['entity_restrict'] = $params['entity'];
+        }
+
+
         $p = [
             'width'                => $params['width'],
             'itemtype'             => $itemtype,
@@ -241,7 +246,7 @@ class Dropdown
             'condition'            => $params['condition'],
             'used'                 => $params['used'],
             'toadd'                => $params['toadd'],
-            'entity_restrict'      => ($entity_restrict = (is_array($params['entity']) ? json_encode(array_values($params['entity'])) : $params['entity'])),
+            'entity_restrict'      => $params['entity_restrict'],
             'on_change'            => $params['on_change'],
             'permit_select_parent' => $params['permit_select_parent'],
             'specific_tags'        => $params['specific_tags'],
@@ -249,7 +254,7 @@ class Dropdown
             '_idor_token'          => Session::getNewIDORToken(
                 $itemtype,
                 [
-                    'entity_restrict' => $entity_restrict,
+                    'entity_restrict' => $params['entity_restrict'],
                     'displaywith'     => $params['displaywith'],
                     'condition'       => $params['condition'],
                 ],
