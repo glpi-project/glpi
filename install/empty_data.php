@@ -351,6 +351,7 @@ $empty_data_builder = new class
             '2fa_grace_days' => 0,
             'is_notif_enable_default' => 1,
             'show_search_form' => 0,
+            'search_pagination_on_top' => 0,
             'is_demo_dashboards' => 1, // Not configurable by users except to disable via a button on the dashboards. Switches dashboard data provider to demo data when enabled.
             'projecttask_unstarted_states_id' => 0,
             'projecttask_inprogress_states_id' => 0,

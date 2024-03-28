@@ -144,7 +144,8 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
     onLimitChange(target) {
         const new_limit = target.value;
-        $(target).closest('form').find('select.search-limit-dropdown').each(function() {
+
+        this.getResultsView().getAJAXContainer().find('select.search-limit-dropdown').each(function() {
             $(this).val(new_limit);
         });
 
@@ -221,6 +222,10 @@ window.GLPI.Search.Table = class Table extends GenericView {
                     return;
                 }
                 ajax_container.html(content);
+
+                // Rebind the search form from the new content
+                this.getResultsView().setID(ajax_container.find(".masssearchform").attr('id'));
+
                 this.getElement().trigger('search_refresh', [this.getElement()]);
                 this.hideLoadingSpinner();
                 this.shiftSelectAllCheckbox();
