@@ -719,7 +719,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User/Me/UsedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the used items for the current user',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getMyUsedItems(Request $request): Response
     {
@@ -729,7 +729,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User/{id}/UsedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the used items for a user by ID',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserUsedItemsByID(Request $request): Response
     {
@@ -739,7 +739,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User/username/{username}/UsedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the used items for a user by username',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserUsedItemsByUsername(Request $request): Response
     {
@@ -750,7 +750,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User/Me/ManagedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the managed items for the current user',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getMyManagedItems(Request $request): Response
     {
@@ -760,7 +760,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User/{id}/ManagedItem', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the managed items for a user by ID',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserManagedItemsByID(Request $request): Response
     {
@@ -770,7 +770,7 @@ final class AdministrationController extends AbstractController
     #[Route(path: '/User/username/{username}/ManagedItem', methods: ['GET'], requirements: ['username' => '[a-zA-Z0-9_]+'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'Get the managed items for a user by username',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT],
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
     )]
     public function getUserManagedItemsByUsername(Request $request): Response
     {
