@@ -51,7 +51,6 @@ class Monitor extends DbTestCase
             'contact' => null,
             'contact_num' => null,
             'users_id_tech' => 0,
-            'groups_id_tech' => 0,
             'comment' => null,
             'serial' => null,
             'otherserial' => null,
@@ -73,7 +72,6 @@ class Monitor extends DbTestCase
             'is_template' => 0,
             'template_name' => null,
             'users_id' => 0,
-            'groups_id' => 0,
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 0,
@@ -81,6 +79,8 @@ class Monitor extends DbTestCase
             'date_creation' => $date,
             'is_recursive' => 0,
             'uuid' => null,
+            'groups_id' => [],
+            'groups_id_tech' => [],
         ];
     }
 
@@ -132,5 +132,121 @@ class Monitor extends DbTestCase
         unset($clonedMonitor->fields['name'], $expected['name']);
 
         $this->array($clonedMonitor->fields)->isEqualTo($expected);
+    }
+
+    /**
+     * Test adding an asset with the groups_id and groups_id_tech fields as an array and null.
+     * Test updating an asset with the groups_id and groups_id_tech fields as an array and null.
+     * @return void
+     */
+    public function testAddAndUpdateMultipleGroups()
+    {
+        $monitor = $this->createItem(\Monitor::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ], ['groups_id', 'groups_id_tech']);
+        $monitors_id_1 = $monitor->fields['id'];
+        $this->array($monitor->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($monitor->fields['groups_id_tech'])->containsValues([3, 4]);
+
+        $monitor = $this->createItem(\Monitor::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ], ['groups_id', 'groups_id_tech']);
+        $monitors_id_2 = $monitor->fields['id'];
+        $this->array($monitor->fields['groups_id'])->isEmpty();
+        $this->array($monitor->fields['groups_id_tech'])->isEmpty();
+
+        // Update both assets. Asset 1 will have the groups set to null and asset 2 will have the groups set to an array.
+        $monitor->getFromDB($monitors_id_1);
+        $this->boolean($monitor->update([
+            'id' => $monitors_id_1,
+            'groups_id' => null,
+            'groups_id_tech' => null,
+        ]))->isTrue();
+        $this->array($monitor->fields['groups_id'])->isEmpty();
+        $this->array($monitor->fields['groups_id_tech'])->isEmpty();
+
+        $monitor->getFromDB($monitors_id_2);
+        $this->boolean($monitor->update([
+            'id' => $monitors_id_2,
+            'groups_id' => [5, 6],
+            'groups_id_tech' => [7, 8],
+        ]))->isTrue();
+        $this->array($monitor->fields['groups_id'])->containsValues([5, 6]);
+        $this->array($monitor->fields['groups_id_tech'])->containsValues([7, 8]);
+
+        // Test updating array to array
+        $this->boolean($monitor->update([
+            'id' => $monitors_id_2,
+            'groups_id' => [1, 2],
+            'groups_id_tech' => [3, 4],
+        ]))->isTrue();
+        $this->array($monitor->fields['groups_id'])->containsValues([1, 2]);
+        $this->array($monitor->fields['groups_id_tech'])->containsValues([3, 4]);
+    }
+
+    /**
+     * Test the loading assets which still have integer values for groups_id and groups_id_tech (0 for no group).
+     * The value should be automatically normalized to an array. If the group was '0', the array should be empty.
+     * @return void
+     */
+    public function testLoadOldItemsSingleGroup()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $monitor = $this->createItem(\Monitor::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $monitors_id = $monitor->fields['id'];
+
+        // Manually set the groups_id and groups_id_tech fields to an integer value
+        // The update migration should mvoe all the groups to the new table directly for performance reasons (no changes to array, etc)
+        $DB->delete('glpi_groups_assets', [
+            'itemtype' => 'Monitor',
+            'items_id' => $monitors_id,
+        ]);
+        $DB->insert(
+            'glpi_groups_assets',
+            [
+                'itemtype' => 'Monitor',
+                'items_id' => $monitors_id,
+                'groups_id' => 1,
+                'type' => 0 // Normal
+            ],
+        );
+        $DB->insert(
+            'glpi_groups_assets',
+            [
+                'itemtype' => 'Monitor',
+                'items_id' => $monitors_id,
+                'groups_id' => 2,
+                'type' => 1 // Tech
+            ],
+        );
+        $monitor->getFromDB($monitors_id);
+        $this->array($monitor->fields['groups_id'])
+            ->hasSize(1)
+            ->containsValues([1]);
+        $this->array($monitor->fields['groups_id_tech'])
+            ->hasSize(1)
+            ->containsValues([2]);
+    }
+
+    /**
+     * An empty asset object should have the groups_id and groups_id_tech fields initialized as an empty array.
+     * @return void
+     */
+    public function testGetEmptyMultipleGroups()
+    {
+        $monitor = new \Monitor();
+        $monitor->getEmpty();
+        $this->array($monitor->fields['groups_id'])->isEmpty();
+        $this->array($monitor->fields['groups_id_tech'])->isEmpty();
     }
 }

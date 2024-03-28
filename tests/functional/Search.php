@@ -43,6 +43,7 @@ use DbTestCase;
 use Document;
 use Document_Item;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
+use Glpi\Features\AssignableAsset;
 use Group_User;
 use Psr\Log\LogLevel;
 use Ticket;
@@ -807,10 +808,12 @@ class Search extends DbTestCase
         $search_params = ['is_deleted'   => 0,
             'start'        => 0,
             'search'       => 'Search',
-            'criteria'     => [0 => ['field'      => 'view',
-                'searchtype' => 'contains',
-                'value'      => ''
-            ]
+            'criteria'     => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => ''
+                ]
             ],
                                                      // group is_notify
             'metacriteria' => [0 => ['link'       => 'AND',
@@ -1721,6 +1724,10 @@ class Search extends DbTestCase
             $table = getTableForItemType($itemtype);
 
             foreach ($needed_fields as $field) {
+                if (\Toolbox::hasTrait($itemtype, AssignableAsset::class) && str_starts_with($field, 'groups_id')) {
+                    // The group fields don't exist in the main table for these assets
+                    continue;
+                }
                 $this->boolean($DB->fieldExists($table, $field))
                  ->isTrue("$table.$field is missing");
             }

@@ -44,7 +44,9 @@ class Monitor extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -122,7 +124,6 @@ class Monitor extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
@@ -132,6 +133,7 @@ class Monitor extends CommonDBTM
         unset($input['id']);
         unset($input['withtemplate']);
 
+        $input = $this->prepareInputForAddAssignableAsset($input);
         return $input;
     }
 
@@ -297,6 +299,17 @@ class Monitor extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -420,9 +433,20 @@ class Monitor extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 

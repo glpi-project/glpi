@@ -236,7 +236,11 @@ class RuleAsset extends Rule
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
                     case "assign":
-                         $output[$action->fields["field"]] = $action->fields["value"];
+                        if (in_array($action->fields['field'], ['groups_id', 'groups_id_tech'])) {
+                            $output['_' . $action->fields["field"]] = [$action->fields["value"]];
+                        } else {
+                            $output[$action->fields["field"]] = $action->fields["value"];
+                        }
                         break;
 
                     case "append":
@@ -298,7 +302,7 @@ class RuleAsset extends Rule
                             ($action->fields['field'] == 'groups_id')
                              && isset($input['_default_groups_id_of_user'])
                         ) {
-                            $output['groups_id'] = $input['_default_groups_id_of_user'];
+                            $output['_groups_id'] = [$input['_default_groups_id_of_user']];
                         }
                         break;
 
@@ -307,7 +311,7 @@ class RuleAsset extends Rule
                             ($action->fields['field'] == 'groups_id')
                             && isset($input['_groups_id_of_user'])
                         ) {
-                            $output['groups_id'] = reset($input['_groups_id_of_user']);
+                            $output['_groups_id'] = [reset($input['_groups_id_of_user'])];
                         }
                         break;
 

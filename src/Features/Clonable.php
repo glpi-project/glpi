@@ -154,16 +154,20 @@ trait Clonable
 
     /**
      * Prepare input datas for cloning the item.
-     * This empty method is meant to be redefined in objects that need a specific prepareInputForClone logic.
-     *
-     * @since 10.0.0
+     * The default implementation handles specific cases when the class uses the following trait(s):
+     * - {@link AssignableAsset}
      *
      * @param array $input datas used to add the item
      *
      * @return array the modified $input array
+     * @since 10.0.0
+     *
      */
     public function prepareInputForClone($input)
     {
+        if (\Toolbox::hasTrait(static::class, AssignableAsset::class)) {
+            $input = $this->prepareGroupFields($input);
+        }
         return $input;
     }
 
@@ -311,12 +315,16 @@ trait Clonable
 
     /**
      * Post clone logic.
-     * This empty method is meant to be redefined in objects that need a specific post_clone logic.
+     * The default implementation handles specific cases when the class uses the following trait(s):
+     * - {@link AssignableAsset}
      *
      * @param $source
      * @param $history
      */
     public function post_clone($source, $history)
     {
+        if (\Toolbox::hasTrait(static::class, AssignableAsset::class)) {
+            $this->updateGroupFields();
+        }
     }
 }

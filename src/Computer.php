@@ -44,7 +44,10 @@ class Computer extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\Inventoriable;
     use Glpi\Features\State;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+        post_updateItem as post_updateItemAssignableAsset;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -166,6 +169,8 @@ class Computer extends CommonDBTM
          */
         global $CFG_GLPI, $DB;
 
+        $this->post_updateItemAssignableAsset($history);
+
         $changes = [];
         $update_count = count($this->updates ?? []);
         $input = $this->fields;
@@ -184,12 +189,6 @@ class Computer extends CommonDBTM
             ) {
                 $changes['users_id'] = $input['users_id'];
             }
-            if (
-                $this->updates[$i] == 'groups_id'
-                && Entity::getUsedConfig('is_group_autoupdate', $this->getEntityID())
-            ) {
-                $changes['groups_id'] = $input['groups_id'];
-            }
            // Update state of attached items
             if (
                 ($this->updates[$i] == 'states_id')
@@ -204,6 +203,11 @@ class Computer extends CommonDBTM
             ) {
                 $changes['locations_id'] = $input['locations_id'];
             }
+        }
+
+        // Group is handled differently since the field was changed to support multiple groups and was therefore moved to a separate table
+        if (array_key_exists('_groups_id', $this->input) && Entity::getUsedConfig('is_group_autoupdate', $this->getEntityID())) {
+            $changes['groups_id'] = $this->input['_groups_id'];
         }
 
         if (count($changes)) {
@@ -310,13 +314,13 @@ class Computer extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
         unset($input['id']);
         unset($input['withtemplate']);
 
+        $input = $this->prepareInputForAddAssignableAsset($input);
         return $input;
     }
 
@@ -516,6 +520,17 @@ class Computer extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -567,9 +582,20 @@ class Computer extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 

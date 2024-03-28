@@ -50,7 +50,10 @@ class ConsumableItem extends CommonDBTM
     use Glpi\Features\Clonable;
 
     use AssetImage;
-    use AssignableAsset;
+    use AssignableAsset {
+        prepareInputForAdd as prepareInputForAddAssignableAsset;
+        prepareInputForUpdate as prepareInputForUpdateAssignableAsset;
+    }
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Consumable', 'Infocom'];
@@ -97,13 +100,13 @@ class ConsumableItem extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $input = parent::prepareInputForAdd($input);
+        $input = $this->prepareInputForAddAssignableAsset($input);
         return $this->managePictures($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        $input = parent::prepareInputForUpdate($input);
+        $input = $this->prepareInputForUpdateAssignableAsset($input);
         return $this->managePictures($input);
     }
 
@@ -256,9 +259,20 @@ class ConsumableItem extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_assets',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => $this->GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -483,5 +497,10 @@ class ConsumableItem extends CommonDBTM
     public static function getIcon()
     {
         return Consumable::getIcon();
+    }
+
+    public function getGroupTypes(): array
+    {
+        return [$this->GROUP_TYPE_TECH];
     }
 }
