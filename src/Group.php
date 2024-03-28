@@ -34,7 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Search\Provider\SQLProvider;
 
 /**
  * Group class
@@ -530,10 +532,11 @@ class Group extends CommonTreeDropdown
      * @param boolean $user  Include members (users)
      * @param integer $start First row to retrieve
      * @param array $res     Result filled on ouput
+     * @param array $extra_criteria
      *
      * @return integer total of items
      **/
-    public function getDataItems(array $types, $field, $tree, $user, $start, array &$res)
+    public function getDataItems(array $types, $field, $tree, $user, $start, array &$res, $extra_criteria = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -634,19 +637,21 @@ class Group extends CommonTreeDropdown
                 $start -= $nb[$itemtype];
             } else {
                 $request = [
-                    'SELECT' => 'id',
+                    'SELECT' => [
+                        $itemtype === 'Consumable' ? 'glpi_consumableitems.id' : 'id',
+                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype')
+                    ],
                     'FROM'   => $item::getTable(),
                     'WHERE'  => $restrict[$itemtype],
                     'LIMIT'  => $max,
                     'START'  => $start
-                ];
+                ] + $extra_criteria;
 
                 if ($item->isField('name')) {
                     $request['ORDER'] = 'name';
                 }
 
                 if ($itemtype === 'Consumable') {
-                    $request['SELECT'] = 'glpi_consumableitems.id';
                     $request['LEFT JOIN'] = [
                         'glpi_consumableitems' => [
                             'FKEY'   => [
@@ -690,172 +695,125 @@ class Group extends CommonTreeDropdown
         if ($tech) {
             $types = $CFG_GLPI['linkgroup_tech_types'];
             $field = 'groups_id_tech';
-            $title = __('Managed items');
         } else {
             $types = $CFG_GLPI['linkgroup_types'];
             $field = 'groups_id';
-            $title = __('Used items');
         }
 
-        $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
-        $user = Session::getSavedOption(__CLASS__, 'user', 0);
-        $type = Session::getSavedOption(__CLASS__, 'onlytype', '');
-        if (!in_array($type, $types, true)) {
-            $type = '';
-        }
-        echo "<div class='spaced'>";
-       // Mini Search engine
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_1'><th colspan='3'>$title</tr>";
-        echo "<tr class='tab_bg_1'><td class='center'>";
-        echo _n('Type', 'Types', 1) . "&nbsp;";
-        Dropdown::showItemType(
-            $types,
-            ['value'      => $type,
-                'name'       => 'onlytype',
-                'plural'     => true,
-                'on_change'  => 'reloadTab("start=0&onlytype="+this.value)',
-                'checkright' => true
-            ]
-        );
-        if ($this->haveChildren()) {
-            echo "</td><td class='center'>" . __('Child groups') . "&nbsp;";
-            Dropdown::showYesNo(
-                'tree',
-                $tree,
-                -1,
-                ['on_change' => 'reloadTab("start=0&tree="+this.value)']
-            );
-        } else {
-            $tree = 0;
-        }
-        if ($this->getField('is_usergroup')) {
-            echo "</td><td class='center'>" . User::getTypeName(Session::getPluralNumber()) . "&nbsp;";
-            Dropdown::showYesNo(
-                'user',
-                $user,
-                -1,
-                ['on_change' => 'reloadTab("start=0&user="+this.value)']
-            );
-        } else {
-            $user = 0;
-        }
-        echo "</td></tr></table>";
-
+        $tree = true;
+        $user = true;
         $datas = [];
-        if ($type) {
-            $types = [$type];
-        }
-        $start  = (isset($_GET['start']) ? intval($_GET['start']) : 0);
-        $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
-        $nbcan  = 0;
-
-        if ($nb) {
-            Html::printAjaxPager('', $start, $nb);
-            $show_massive_actions = false;
-            if (self::canUpdate()) {
-                foreach ($datas as $data) {
-                    if (!($item = getItemForItemtype($data['itemtype']))) {
-                        continue;
-                    }
-                    if ($item->canUpdate($data['items_id']) || $item->canView($data['items_id'])) {
-                        // Show massive actions if there is at least one viewable/updatable item.
-                        $show_massive_actions = true;
-                        break;
-                    }
+        $start  = (isset($_GET['start']) ? (int)$_GET['start'] : 0);
+        $filters     = $_GET['filters'] ?? [];
+        $extra_criteria = [];
+        foreach ($filters as $f => $value) {
+            // This was the only filter before
+            //TODO More can be added later as time permits (requires SQL query changes and changes to datatables template)
+            if (!empty($value)) {
+                if ($f === 'type') {
+                    $extra_criteria['HAVING']['itemtype'] = ['LIKE', SQLProvider::makeTextSearchValue($value)];
                 }
             }
-            if ($show_massive_actions) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                echo Html::hidden('field', ['value'                 => $field,
-                    'data-glpicore-ma-tags' => 'common'
-                ]);
+        }
+        $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas, $extra_criteria);
 
-                $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
-                    'check_itemtype'   => 'Group',
-                    'check_items_id'   => $ID,
-                    'container'        => 'mass' . __CLASS__ . $rand,
-                    'extraparams'      => ['is_tech' => $tech ? 1 : 0,
-                        'massive_action_fields' => ['field']
-                    ],
-                    'specific_actions' => [__CLASS__ .
-                                                                    MassiveAction::CLASS_ACTION_SEPARATOR .
-                                                                    'changegroup' => __('Move')
-                    ]
-                ];
-                Html::showMassiveActions($massiveactionparams);
+        $show_massive_actions = false;
+
+        $tuser = new User();
+        $group = new Group();
+
+        // Some caches to avoid redundant DB requests
+        $itemtype_names = [];
+        $entity_names = [];
+        $group_links = [];
+        $user_links = [];
+
+        $entries = [];
+        foreach ($datas as $data) {
+            if (!($item = getItemForItemtype($data['itemtype']))) {
+                continue;
             }
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr><th width='10'>";
-            if ($show_massive_actions) {
-                $header_top    = Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom = Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
+            $item->getFromDB($data['items_id']);
+            if (!isset($itemtype_names[$data['itemtype']])) {
+                $itemtype_names[$data['itemtype']] = $item::getTypeName(1);
+            }
+            if (!isset($entity_names[$item->getEntityID()])) {
+                $entity_names[$item->getEntityID()] = Dropdown::getDropdownName(table: "glpi_entities", id: $item->getEntityID(), default: '');
+            }
+
+            $entry = [
+                'itemtype' => self::class,
+                'id'       => $ID,
+                'type'     => $itemtype_names[$data['itemtype']],
+                'name'     => $item->getLink(['comments' => true]),
+                'entity'   => $entity_names[$item->getEntityID()],
+            ];
+            if ($item->canViewItem() || ($item->canViewItem() && self::canUpdate())) {
+                // Show massive actions if there is at least one viewable/updatable item.
+                $show_massive_actions = true;
             } else {
-                $header_top = $header_bottom = '';
+                // This row cannot have massive actions due to lack of rights.
+                $entry['skip_ma'] = true;
             }
-            $header_end    = '</th>';
 
-            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th><th>" . __('Name') . "</th><th>" . Entity::getTypeName(1) . "</th>";
             if ($tree || $user) {
-                $header_end .= "<th>" .
-                             sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)) .
-                           "</th>";
-            }
-            $header_end .= "</tr>";
-            echo $header_begin . $header_top . $header_end;
-
-            $tuser = new User();
-            $group = new Group();
-
-            foreach ($datas as $data) {
-                if (!($item = getItemForItemtype($data['itemtype']))) {
-                    continue;
-                }
-                $item->getFromDB($data['items_id']);
-                echo "<tr class='tab_bg_1'><td>";
-                if (
-                    $item->canUpdate($data['items_id'])
-                    || ($item->canView($data['items_id'])
-                    && self::canUpdate())
-                ) {
-                    Html::showMassiveActionCheckBox($data['itemtype'], $data['items_id']);
-                }
-                echo "</td><td>" . $item->getTypeName(1);
-                echo "</td><td>" . $item->getLink(['comments' => true]);
-                echo "</td><td>" . Dropdown::getDropdownName("glpi_entities", $item->getEntityID());
-                if ($tree || $user) {
-                    echo "</td><td>";
-                    if ($grp = $item->getField($field)) {
-                        if ($group->getFromDB($grp)) {
-                             echo $group->getLink(['comments' => true]);
-                        }
-                    } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
-                        if ($tuser->getFromDB($usr)) {
-                            echo $tuser->getLink(['comments' => true]);
-                        }
+                if ($grp = $item->getField($field)) {
+                    if (!isset($group_links[$grp]) && $group->getFromDB($grp)) {
+                        $group_links[$grp] = $group->getLink(['comments' => true]);
                     }
+                    $entry['field'] = $group_links[$grp] ?? '';
+                } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
+                    if (!isset($user_links[$usr]) && $tuser->getFromDB($usr)) {
+                        $user_links[$usr] = $tuser->getLink(['comments' => true]);
+                    }
+                    $entry['field'] = $user_links[$usr] ?? '';
                 }
-                echo "</td></tr>";
             }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>";
-        } else {
-            echo "<p class='center b'>" . __('No item found') . "</p>";
+            $entries[] = $entry;
         }
 
-        if ($nb) {
-            if ($show_massive_actions) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-            }
+        $columns = [
+            'type' => _n('Type', 'Types', 1),
+            'name' => [
+                'label' => __('Name'),
+                'no_filter' => true,
+            ],
+            'entity' => [
+                'label' => Entity::getTypeName(1),
+                'no_filter' => true,
+            ]
+        ];
+        if ($tree || $user) {
+            $columns['field'] = sprintf(__s('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1));
         }
-        Html::closeForm();
-
-        if ($nb) {
-            Html::printAjaxPager('', $start, $nb);
-        }
-
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'start' => $start,
+            'limit' => $_SESSION['glpilist_limit'],
+            'filters' => $filters,
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+                'field' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => $nb,
+            'filtered_number' => $nb,
+            'showmassiveactions' => self::canUpdate() && $show_massive_actions,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . $rand,
+                'check_itemtype'   => 'Group',
+                'check_items_id'   => $ID,
+                'extraparams'      => [
+                    'is_tech' => $tech ? 1 : 0,
+                    'massive_action_fields' => ['field']
+                ],
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'changegroup' => __('Move')
+                ]
+            ],
+        ]);
     }
 
     public function cleanRelationData()
@@ -985,7 +943,7 @@ class Group extends CommonTreeDropdown
 
     public function post_updateItem($history = 1)
     {
-        parent::post_updateItem();
+        parent::post_updateItem($history);
         // Changing a group's parent might invalidate the group cache if recursive
         // membership is enabled
         $parent_changed =

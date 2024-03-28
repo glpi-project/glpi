@@ -660,6 +660,9 @@ TWIG, $twig_params);
                 'is_raw' => true
             ],
             'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),

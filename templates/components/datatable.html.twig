@@ -159,6 +159,16 @@
                                             min="0" max="100" step="1">
                                     {% elseif formatter == 'avatar' %}
                                         {# Cannot be filtered #}
+                                    {% elseif formatter == 'yesno' %}
+                                        <select name="filters[{{ colkey }}]" class="form-select">
+                                            <option value="">{{ __('All') }}</option>
+                                            <option value="1" {{ filters[colkey] == '1' ? 'selected' : '' }}>
+                                                {{ __('Yes') }}
+                                            </option>
+                                            <option value="0" {{ filters[colkey] == '0' ? 'selected' : '' }}>
+                                                {{ __('No') }}
+                                            </option>
+                                        </select>
                                     {% else %}
                                         <input type="text" class="form-control"
                                             name="filters[{{ colkey }}]"
@@ -176,9 +186,11 @@
                         <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
                             {% if showmassiveactions %}
                                 <td style="width: 10px">
-                                    <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                        value="1" aria-label=""
-                                        name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                    {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
+                                        <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                               value="1" aria-label=""
+                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                    {% endif %}
                                 </td>
                             {% endif %}
                             {% for colkey, colum in columns %}
