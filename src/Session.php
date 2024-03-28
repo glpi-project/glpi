@@ -2306,4 +2306,19 @@ class Session
             );
         }
     }
+
+    /**
+     * Get a SessionInfo object with the current session information.
+     *
+     * @return SessionInfo
+     */
+    public static function getSessionInfo(): SessionInfo
+    {
+        $session_info = new SessionInfo(
+            user_id   : self::getLoginUserID(),
+            group_ids : $_SESSION['glpigroups'] ?? [],
+            profile_id: $_SESSION['glpiactiveprofile']['id'],
+        );
+        return $session_info;
+    }
 }

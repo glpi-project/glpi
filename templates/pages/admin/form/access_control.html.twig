@@ -1,0 +1,177 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var \Glpi\Form\Form form #}
+{# @var \Glpi\Form\AccessControl\FormAccessControl[] access_controls #}
+
+<div class="py-2 px-3">
+    <div class="col-12 col-lg-6">
+        {% set is_form_disabled = not form.fields.is_active == true %}
+        {% set are_all_controls_disabled = access_controls|filter(control => control.fields.is_active == true)|length == 0 %}
+
+        {# Display warning/info if the form is disabled or has no active access control policies #}
+        <div class="{{ is_form_disabled or are_all_controls_disabled ? "mb-5" : "" }}">
+            {% if is_form_disabled %}
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <i class="ti ti-alert-triangle me-2"></i>
+                    {{ __("This form is not visible to anyone because it is not active.") }}
+                </div>
+            {% elseif are_all_controls_disabled %}
+                <div class="alert alert-info d-flex align-items-center" role="alert">
+                    <i class="ti ti-alert-circle me-2"></i>
+                    {{ __("There are currently no access controls defined.") }}
+                    {{ __("This form is visible to all authenticated users.") }}
+                </div>
+            {% endif %}
+        </div>
+
+        {# Display each access control policies #}
+        {% for access_control in access_controls %}
+            {% set strategy = access_control.getStrategy() %}
+            {% set config = access_control.getConfig() %}
+
+            {# One form per policy as it is an individual item in the database #}
+            <form
+                method="POST"
+                action="{{ path('/ajax/form/access_control.form.php') }}"
+                data-glpi-acess-control-form
+                data-track-changes="true"
+                data-glpi-submitted-by="access-controls"
+                data-submit-once="true"
+            >
+                <div
+                    class="mb-5"
+                >
+                    <div
+                        {# Disabled item are showed with a lower opacity #}
+                        style="{{ access_control.fields.is_active == false ? "opacity: 0.5" : "" }}"
+                        data-glpi-toggle-control-target
+                    >
+                        <h3 class="d-flex align-items-center">
+                            <i class="{{ strategy.getIcon() }} me-2"></i>
+                            {{ strategy.getLabel() }}
+                            <label class="form-check mb-0 ms-auto form-switch">
+                                <input type="hidden" value="0" name="is_active">
+                                <input
+                                    data-glpi-toggle-control
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    name="is_active"
+                                    value="1"
+                                    {{ access_control.fields.is_active == true ? "checked" : "" }}
+                                >
+                            </label>
+                        </h3>
+                        <div>
+                            {# Render custom config form #}
+                            {{ strategy.renderConfigForm(config)|raw }}
+                        </div>
+                    </div>
+
+                    {# Hidden inputs #}
+                    <input type="hidden" name="id" value="{{ access_control.fields.id }}"/>
+                </div>
+            </form>
+        {% endfor %}
+
+        {% if form.canUpdate() and form.canUpdateItem() %}
+            {#  Dummy form wrapper to trigger the `data-submit-once` process #}
+            <form data-submit-once>
+                {# Submit button #}
+                <div class="d-flex flex-row-reverse">
+                    {# This button will submit the others forms using a custom script #}
+                    <button
+                        data-glpi-submit-id="access-controls"
+                        type="submit"
+                        class="btn btn-primary"
+                        name="update"
+                    >
+                        <i class="ti ti-device-floppy me-2"></i>
+                        {{ __("Save changes") }}
+                    </button>
+                </div>
+            </form>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Toggle disabled state
+    $("[data-glpi-toggle-control]").on("change", function() {
+        $(this).closest("[data-glpi-toggle-control-target]")
+            .css("opacity", this.checked ? 1 : 0.5)
+        ;
+    });
+
+    // Toggle state if any input is modified
+    $("form[data-glpi-acess-control-form] :input").on("change", function(e) {
+        // Do not trigger on this is_active checkbox itself
+        if ($(this).prop("name") === "is_active") {
+            return;
+        }
+
+        $(this).closest("form").find("[data-glpi-toggle-control]").prop("checked", true);
+        $(this).closest("[data-glpi-toggle-control-target]")
+            .css("opacity", 1)
+        ;
+    });
+
+    // Submit multiple forms.
+    // This is needed as each strategy is a dedicated item in the database.
+    $("[data-glpi-submit-id]").closest('form').on("submit", async function(e) {
+        e.preventDefault();
+
+        const submitted_forms = [];
+        const submit = $(this).find("[type=submit]");
+        const submit_id = submit.data("glpi-submit-id");
+
+        $(`[data-glpi-submitted-by="${submit_id}"]`).each(function() {
+            const form = $(this);
+
+            // Get form data with the submit button value manually set.
+            const data = form.serializeArray();
+            data.push({'name': submit.prop("name"), 'value': true});
+
+            submitted_forms.push(
+                $.post({
+                    url: form.prop("action"),
+                    data: $.param(data),
+                })
+            );
+        });
+
+        await Promise.all(submitted_forms);
+        window.glpiUnsavedFormChanges = false;
+        location.reload();
+    });
+</script>

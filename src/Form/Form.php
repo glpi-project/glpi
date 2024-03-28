@@ -38,6 +38,7 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Html;
 use Glpi\DBAL\QuerySubQuery;
@@ -83,6 +84,7 @@ final class Form extends CommonDBTM
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(AnswersSet::getType(), $tabs, $options);
+        $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
         $this->addStandardTab(FormDestination::getType(), $tabs, $options);
         $this->addStandardTab(Log::getType(), $tabs, $options);
         return $tabs;
@@ -226,6 +228,7 @@ final class Form extends CommonDBTM
             [
                 Section::class,
                 FormDestination::class,
+                FormAccessControl::class,
             ]
         );
     }
