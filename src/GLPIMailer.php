@@ -34,7 +34,7 @@
  */
 
 use Glpi\Mail\SMTP\OauthConfig;
-use PHPMailer\PHPMailer\OAuth;
+use Glpi\Mail\SMTP\OAuthTokenProvider;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
@@ -77,7 +77,7 @@ class GLPIMailer extends PHPMailer
                     $refresh_token = (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token']);
 
                     $this->setOAuth(
-                        new OAuth(
+                        new OAuthTokenProvider(
                             [
                                 'provider'     => $provider,
                                 'clientId'     => $client_id,
@@ -126,6 +126,32 @@ class GLPIMailer extends PHPMailer
                 );
             };
         }
+    }
+
+    public function smtpConnect($options = null)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $result = parent::smtpConnect($options);
+
+        if (
+            $this->oauth instanceof OAuthTokenProvider
+            && $result === true
+            && ($refresh_token = $this->oauth->getOauthToken()->getRefreshToken() ?? null) !== (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token'])
+        ) {
+            // The refresh token may be refreshed itself.
+            // Be sure to always store any new refresh token.
+            Config::setConfigurationValues(
+                'core',
+                [
+                    'smtp_oauth_refresh_token' => $refresh_token,
+                ]
+            );
+            $CFG_GLPI['smtp_oauth_refresh_token'] = (new GLPIKey())->encrypt($refresh_token);
+        }
+
+        return $result;
     }
 
     public static function validateAddress($address, $patternselect = "pcre8")
