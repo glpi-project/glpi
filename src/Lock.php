@@ -89,7 +89,7 @@ class Lock extends CommonGLPI
 
         // language=Twig
         $list_info_alert_template = <<<TWIG
-            <div class="alert alert-primary d-flex align-items-center" role="alert">
+            <div class="alert alert-info d-flex align-items-center" role="alert">
                 <i class="fas fa-info-circle fa-xl"></i>
                 <span class="ms-2">
                     <span class="alert-title">{{ alert_title }}</span>
@@ -326,8 +326,7 @@ TWIG;
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <br>
-            <form method="post" id="lock_form" name="lock_form" action="{{ 'Lock'|itemtype_form_path }}">
+            <form method="post" id="lock_form" name="lock_form" class="mt-5" action="{{ 'Lock'|itemtype_form_path }}">
                 <input type="hidden" name="id" value="{{ id }}">
                 <input type="hidden" name="itemtype" value="{{ itemtype }}">
 TWIG, $twig_params);
@@ -345,7 +344,7 @@ TWIG, $twig_params);
         ];
 
         echo TemplateRenderer::getInstance()->renderFromStringTemplate($list_info_alert_template, [
-            'alert_title' => __("A locked item is a manually deleted item, for example a monitor."),
+            'alert_title' => __("A locked item is a manually deleted connection, for example a monitor."),
             'alert_content' => __("The automatic inventory will no longer handle this item, unless you unlock it."),
         ]);
 
