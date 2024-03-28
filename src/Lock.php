@@ -1011,29 +1011,23 @@ TWIG, $twig_params);
         ]);
 
         $twig_params = [
-
+            'check_all_msg' => __('Check all'),
+            'uncheck_all_msg' => __('Uncheck all'),
+            'unlock_msg' => _sx('button', 'Unlock'),
+            'purge_msg' => _sx('button', 'Delete permanently')
         ];
         if (count($rendered_subtables) > 0) {
-            $formname = 'lock_form';
-            echo "<table width='950px'>";
-            $arrow = "fas fa-level-up-alt";
-
-            echo "<tr>";
-            echo "<td><i class='$arrow fa-flip-horizontal fa-lg mx-2'></i></td>";
-            echo "<td class='center' style='white-space:nowrap;'>";
-            echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\" href='#'>" . __('Check all') . "</a></td>";
-            echo "<td>/</td>";
-            echo "<td class='center' style='white-space:nowrap;'>";
-            echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\" href='#'>" . __('Uncheck all') . "</a></td>";
-            echo "<td class='left' width='80%'>";
-
-            echo "<input type='submit' name='unlock' ";
-            echo "value=\"" . _sx('button', 'Unlock') . "\" class='btn btn-primary'>&nbsp;";
-
-            echo "<input type='submit' name='purge' ";
-            echo "value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>&nbsp;";
-            echo "</td></tr>";
-            echo "</table>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div>
+                    <i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>
+                    <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
+                    <span>/</span>
+                    <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
+                    <button type="submit" name="unlock" class="btn btn-primary">{{ unlock_msg }}</button>
+                    <button type="submit" name="purge" class="btn btn-danger">{{ purge_msg }}</button>
+                </div>
+TWIG, $twig_params);
         }
 
         // Close the custom form used for the unlock item checkboxes (not using massive actions)
