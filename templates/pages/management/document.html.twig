@@ -1,0 +1,74 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% block form_fields %}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {% if item.isNewItem %}
+        {{ fields.nullField() }}
+    {% else %}
+        {% set file_info %}
+            {{ item.getDownloadLink(null, 45)|raw }}
+            {% if item.fields['users_id'] > 0 %}
+                <br>
+                {{ __('Added by %s')|e|format(uploader)|raw }}
+            {% endif %}
+        {% endset %}
+        {{ fields.htmlField('', file_info, __('Current file')) }}
+        {{ inputs.hidden('current_filepath', item.fields['filepath']) }}
+        {{ inputs.hidden('current_filename', item.fields['filename']) }}
+    {% endif %}
+
+    {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', item.fields['documentcategories_id'], 'DocumentCategory'|itemtype_name) }}
+    {% if item.isNewItem %}
+        {{ fields.nullField() }}
+    {% else %}
+        {{ fields.htmlField('', item.fields['sha1sum']|e, __('%1$s (%2$s)')|format(__('Checksum'), __('SHA1'))) }}
+    {% endif %}
+
+    {{ fields.textField('link', item.fields['link'], __('Web link')) }}
+    {{ fields.textareaField('comment', item.fields['comment'], _n('Comment', 'Comments', get_plural_number())) }}
+
+    {{ fields.textField('mime', item.fields['mime'], __('MIME type')) }}
+    {{ fields.dropdownYesNo('is_blacklisted', item.fields['is_blacklisted'], __('Blacklisted for import')) }}
+
+    {{ fields.dropdownArrayField('upload_file', 0, uploaded_files, __('Use a file uploaded on server'), {
+        display_emptychoice: true,
+    }) }}
+    {{ fields.fileField('filename', null, null, {
+        no_label: true,
+    }) }}
+{% endblock %}
