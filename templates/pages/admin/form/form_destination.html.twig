@@ -111,7 +111,7 @@
                 </button>
 
                 {# Hidden values #}
-                <input type="hidden" name="itemtype" value="{{ get_class(default_destination_object) }}"/>
+                <input type="hidden" name="itemtype" value="{{ type }}"/>
                 <input type="hidden" name="{{ form.getForeignKeyField() }}" value="{{ form.getID() }}"/>
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
             </form>
