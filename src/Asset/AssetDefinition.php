@@ -187,6 +187,10 @@ final class AssetDefinition extends CommonDBTM
     private function showCapacitiesForm(): void
     {
         $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
+        usort(
+            $capacities,
+            fn (CapacityInterface $a, CapacityInterface $b) => strcasecmp($a->getLabel(), $b->getLabel())
+        );
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/capacities.html.twig',
