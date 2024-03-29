@@ -94,7 +94,7 @@ class Item_OperatingSystem extends DbTestCase
         $this->boolean($ios->getFromDB($ios->getID()))->isTrue();
 
         $this->string($ios->getTabNameForItem($computer))
-         ->isIdenticalTo("<span><i class='ti ti-edit me-2'></i>Operating systems</span> <span class='badge glpi-badge'>1</span>");
+         ->isIdenticalTo("<span><i class='ti ti-device-desktop-cog me-2'></i>Operating systems</span> <span class='badge glpi-badge'>1</span>");
         $this->integer(
             (int)\Item_OperatingSystem::countForItem($computer)
         )->isIdenticalTo(1);
