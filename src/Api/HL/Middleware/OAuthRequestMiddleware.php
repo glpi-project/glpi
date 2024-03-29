@@ -76,6 +76,10 @@ class OAuthRequestMiddleware extends AbstractMiddleware implements RequestMiddle
         if ($client === null) {
             $input->response = AbstractController::getAccessDeniedErrorResponse();
             return;
+        } else if ($client['client_id'] === 'internal') {
+            // No scope restrictions for internal clients
+            $next($input);
+            return;
         }
         foreach ($scopes_required['OR'] as $scope) {
             if (in_array($scope, $client['scopes'], true)) {

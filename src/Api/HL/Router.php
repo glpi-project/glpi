@@ -612,6 +612,7 @@ EOT;
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
             $this->doAuthMiddleware($middleware_input);
             $auth_from_middleware = $middleware_input->response === null;
+            $this->current_client = $this->current_client ?? $middleware_input->client;
 
             if ($requires_auth && !$auth_from_middleware) {
                 if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {

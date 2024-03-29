@@ -51,6 +51,11 @@ class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareI
             Session::start();
             // unset the response to indicate a successful auth
             $input->response = null;
+            $input->client = [
+                'client_id' => 'internal', // Internal just means the user was authenticated internally either by cookie or an already existing session.
+                'users_id'  => Session::getLoginUserID(),
+                'scopes' => []
+            ];
         } else {
             $next($input);
         }
