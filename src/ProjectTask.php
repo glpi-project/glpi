@@ -1509,7 +1509,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @param array $groups_id The group IDs.
      * @return array The list of projecttask IDs.
      */
-    public static function getActiveProjectTaskIDsForGroup(array $groups_id): array {
+    public static function getActiveProjectTaskIDsForGroup(array $groups_id): array
+    {
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -1555,7 +1556,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @param bool $search_in_groups Whether to search in groups.
      * @return array The list of projecttask IDs.
      */
-    public static function getActiveProjectTaskIDsForUser(array $users_id, bool $search_in_groups = true): array {
+    public static function getActiveProjectTaskIDsForUser(array $users_id, bool $search_in_groups = true): array
+    {
         /** @var \DBmysql $DB */
         global $DB;
 
@@ -2088,7 +2090,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         } else {
             $state_id = $config['projecttask_inprogress_states_id'] ?? 0;
         }
-        return ProjectState::getById($state_id);
+        $state = ProjectState::getById($state_id);
+        if (!$state) {
+            return false;
+        }
+        return $state->getID();
     }
 
     public static function getGroupItemsAsVCalendars($groups_id)
