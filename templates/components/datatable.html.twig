@@ -33,9 +33,24 @@
 
 {% set datatable_id = datatable_id|default('datatable' ~ random()) %}
 {% if total_number < 1 and filters|length == 0 %}
-   <div class="alert alert-info">
-      {{ __('No data') }}
-   </div>
+    <table id="{{ datatable_id }}" class="table">
+        <thead>
+        {% if super_header is defined and super_header is not empty %}
+            <tr>
+                <th>{{ super_header }}</th>
+            </tr>
+        {% endif %}
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div class="alert alert-info">
+                        {{ __('No data') }}
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 {% else %}
     {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + (nofilter ? 0 : 1) %}
     {% if not nopager %}
@@ -51,7 +66,7 @@
                 {% do call('Html::showMassiveActions', [massiveactionparams]) %}
             </div>
         {% endif %}
-        <table id="{{ datatable_id }}" class="table table-hover">
+        <table id="{{ datatable_id }}" class="table {{ table_class_style|default('table-hover') }}">
             <thead>
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
@@ -62,58 +77,60 @@
                         </th>
                     </tr>
                 {% endif %}
-                <tr>
-                    {% if showmassiveactions %}
-                        <th style="width: 30px;">
-                            <div>
-                                <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
-                                    value="" aria-label="{{ __('Check all') }}"
-                                    onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
-                            </div>
-                        </th>
-                    {% endif %}
-                    {% for colkey, column in columns %}
-                        {% set column_label = column is array ? column['label'] : column %}
-                        {% set sort_icon = '' %}
-                        {% set new_order = "DESC" %}
-                        {% if sort == colkey %}
-                            {% set sort_icon = order == 'ASC' ? 'ti ti-sort-ascending' : (order == 'DESC' ? 'ti ti-sort-descending' : '') %}
-                            {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
+                {% if no_header is not defined or no_header == false %}
+                    <tr>
+                        {% if showmassiveactions %}
+                            <th style="width: 30px;">
+                                <div>
+                                    <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
+                                        value="" aria-label="{{ __('Check all') }}"
+                                        onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container'] }}', '.massive_action_checkbox');" />
+                                </div>
+                            </th>
                         {% endif %}
-
-                        {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
-
-                        <th>
-                            {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                <a href="{{ sort_href }}">
-                                <i class="{{ sort_icon }}"></i>
+                        {% for colkey, column in columns %}
+                            {% set column_label = column is array ? column['label'] : column %}
+                            {% set sort_icon = '' %}
+                            {% set new_order = "DESC" %}
+                            {% if sort == colkey %}
+                                {% set sort_icon = order == 'ASC' ? 'ti ti-sort-ascending' : (order == 'DESC' ? 'ti ti-sort-descending' : '') %}
+                                {% set new_order = (order == 'ASC' ? 'DESC' : 'ASC') %}
                             {% endif %}
-                            <span>{{ column_label }}</span>
-                            {% if not nosort and not (column is array and column['nosort'] is defined) %}
-                                </a>
-                            {% endif %}
-                        </th>
-                    {% endfor %}
 
-                   {% if nofilter is not defined or csv_url|length %}
-                       <th>
-                           <span class="float-end log-toolbar mb-0">
-                               {% if nofilter is not defined %}
-                                   <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
-                                       <i class="fas fa-filter"></i>
-                                       <span class="d-none d-xl-block">{{ __('Filter') }}</span>
-                                   </button>
-                               {% endif %}
-                               {% if csv_url|length %}
-                                   <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
-                                       <i class="fas fa-file-download"></i>
-                                       <span class="d-none d-xl-block">{{ __('Export') }}</span>
-                                   </a>
-                               {% endif %}
-                           </span>
-                       </th>
-                     {% endif %}
-                </tr>
+                            {% set sort_href = "javascript:reloadTab('sort=" ~ colkey ~ "&order=" ~ new_order ~ "&" ~ additional_params ~ "');" %}
+
+                            <th>
+                                {% if not nosort and not (column is array and column['nosort'] is defined) %}
+                                    <a href="{{ sort_href }}">
+                                    <i class="{{ sort_icon }}"></i>
+                                {% endif %}
+                                <span>{{ column_label }}</span>
+                                {% if not nosort and not (column is array and column['nosort'] is defined) %}
+                                    </a>
+                                {% endif %}
+                            </th>
+                        {% endfor %}
+
+                       {% if nofilter is not defined or csv_url|length %}
+                           <th>
+                               <span class="float-end log-toolbar mb-0">
+                                   {% if nofilter is not defined %}
+                                       <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
+                                           <i class="fas fa-filter"></i>
+                                           <span class="d-none d-xl-block">{{ __('Filter') }}</span>
+                                       </button>
+                                   {% endif %}
+                                   {% if csv_url|length %}
+                                       <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
+                                           <i class="fas fa-file-download"></i>
+                                           <span class="d-none d-xl-block">{{ __('Export') }}</span>
+                                       </a>
+                                   {% endif %}
+                               </span>
+                           </th>
+                         {% endif %}
+                    </tr>
+                {% endif %}
                 {% if filters|length > 0  %}
                     <tr class="filter_row">
                         {% if showmassiveactions %}
@@ -184,7 +201,8 @@
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
                         <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}" data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}">
-                            {% if showmassiveactions %}
+                            {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+                            {% if row_massiveactions %}
                                 <td style="width: 10px">
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
                                         <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
