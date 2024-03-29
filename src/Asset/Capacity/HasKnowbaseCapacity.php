@@ -47,6 +47,12 @@ class HasKnowbaseCapacity extends AbstractCapacity
     {
         return Knowbase::getTypeName(Session::getPluralNumber());
     }
+
+    public function getIcon(): string
+    {
+        return KnowbaseItem::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

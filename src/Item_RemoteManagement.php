@@ -395,6 +395,6 @@ class Item_RemoteManagement extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-laptop-house";
+        return "ti ti-screen-share";
     }
 }

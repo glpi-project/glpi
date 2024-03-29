@@ -46,6 +46,11 @@ class HasRemoteManagementCapacity extends AbstractCapacity
         return Item_RemoteManagement::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Item_RemoteManagement::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

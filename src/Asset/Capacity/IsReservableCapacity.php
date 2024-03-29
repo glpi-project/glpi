@@ -47,6 +47,11 @@ class IsReservableCapacity extends AbstractCapacity
         return \Reservation::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Reservation::getIcon();
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

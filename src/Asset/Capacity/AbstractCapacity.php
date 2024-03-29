@@ -62,6 +62,11 @@ abstract class AbstractCapacity implements CapacityInterface
         return '';
     }
 
+    public function getIcon(): string
+    {
+        return 'ti ti-puzzle';
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return [];

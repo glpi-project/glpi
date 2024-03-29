@@ -47,6 +47,11 @@ class HasOperatingSystemCapacity extends AbstractCapacity
         return OperatingSystem::getTypeName();
     }
 
+    public function getIcon(): string
+    {
+        return OperatingSystem::getIcon();
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
