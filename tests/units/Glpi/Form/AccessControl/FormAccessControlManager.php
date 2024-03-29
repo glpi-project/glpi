@@ -311,13 +311,43 @@ class FormAccessControlManager extends DbTestCase
         $form_2 = $this->createForm(
             (new FormBuilder())
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'allow_unauthenticated' => true, // Enabled
+                    'allow_unauthenticated' => true,         // Enabled
+                    'token'                 => 'my_token',
                 ]))
         );
         yield [
             'form'     => $form_2,
-            'expected' => true,
+            'expected' => false, // No token is supplied
         ];
+
+        // Form with a DirectAccess policy that allow unauthenticated users.
+        $form_2 = $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
+                    'allow_unauthenticated' => true,         // Enabled
+                    'token'                 => 'my_token',
+                ]))
+        );
+        $_GET['token'] = 'invalid_token';
+        yield [
+            'form'     => $form_2,
+            'expected' => false, // Invalid token is supplied
+        ];
+
+        // Form with a DirectAccess policy that allow unauthenticated users.
+        $form_2 = $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
+                    'allow_unauthenticated' => true,         // Enabled
+                    'token'                 => 'my_token',
+                ]))
+        );
+        $_GET['token'] = 'my_token';
+        yield [
+            'form'     => $form_2,
+            'expected' => true, // Valid token is supplied
+        ];
+        unset($_GET['token']);
     }
 
     /**

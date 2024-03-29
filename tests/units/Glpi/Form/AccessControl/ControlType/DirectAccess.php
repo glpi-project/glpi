@@ -164,15 +164,34 @@ class DirectAccess extends \GLPITestCase
     {
         $direct_access = new \Glpi\Form\AccessControl\ControlType\DirectAccess();
 
-        // Allow unauthenticated users
+        // Allow unauthenticated users and a correct token was supplied
+        $_GET['token'] = "my_token";
         $allow = new DirectAccessConfig([
             'allow_unauthenticated' => true,
+            'token'                 => 'my_token',
         ]);
         $this->boolean($direct_access->allowUnauthenticatedUsers($allow))->isTrue();
+
+        // Allow unauthenticated users and an invalid token was supplied
+        $_GET['token'] = "invalid_token";
+        $allow = new DirectAccessConfig([
+            'allow_unauthenticated' => true,
+            'token'                 => 'my_token',
+        ]);
+        $this->boolean($direct_access->allowUnauthenticatedUsers($allow))->isFalse();
+
+        // Allow unauthenticated users but no token was supplied
+        unset($_GET['token']);
+        $allow = new DirectAccessConfig([
+            'allow_unauthenticated' => true,
+            'token'                 => 'my_token',
+        ]);
+        $this->boolean($direct_access->allowUnauthenticatedUsers($allow))->isFalse();
 
         // Deny unauthenticated users
         $deny = new DirectAccessConfig([
             'allow_unauthenticated' => false,
+            'token'                 => 'my_token',
         ]);
         $this->boolean($direct_access->allowUnauthenticatedUsers($deny))->isFalse();
 

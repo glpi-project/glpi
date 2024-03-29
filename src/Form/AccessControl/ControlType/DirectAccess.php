@@ -37,7 +37,6 @@ namespace Glpi\Form\AccessControl\ControlType;
 
 use FreeJsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
 use Override;
 use SessionInfo;
 
@@ -105,6 +104,11 @@ final class DirectAccess implements ControlTypeInterface
     {
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
+        }
+
+        // Token must always be supplied for unauthenticated users
+        if (!isset($_GET['token']) || $config->token !== $_GET['token']) {
+            return false;
         }
 
         return $config->allow_unauthenticated;
