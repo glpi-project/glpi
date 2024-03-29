@@ -420,7 +420,7 @@
               data-bs-toggle="popover"
               data-bs-placement="top"
               data-bs-html="true"
-              data-bs-content="{{ options.helper|nl2br|escape('html_attr') }}">
+              data-bs-content="{{ options.helper|raw|nl2br|escape('html_attr') }}">
             ?
         </span>
         {% endset %}

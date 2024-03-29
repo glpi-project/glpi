@@ -127,39 +127,19 @@ class NotificationTemplateTranslation extends CommonDBChild
         $canedit = Config::canUpdate();
 
         if ($canedit) {
-            echo "<div class='center'>" .
-              "<a class='btn btn-primary' href='" . Toolbox::getItemTypeFormURL('NotificationTemplateTranslation') .
-                "?notificationtemplates_id=" . $nID . "'>" . __('Add a new translation') . "</a></div><br>";
+            $twig_params = [
+                'id' => $nID,
+                'add_msg' => __('Add a new translation'),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="text-center mb-3">
+                    <a class="btn btn-primary" href="{{ 'NotificationTemplateTranslation'|itemtype_form_path }}?notificationtemplates_id={{ id }}">{{ add_msg }}</a>
+                </div>
+TWIG, $twig_params);
         }
 
-        echo "<div class='center' id='tabsbody'>";
-
-        Session::initNavigateListItems(
-            'NotificationTemplateTranslation',
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         NotificationTemplate::getTypeName(1),
-                                         $template->getName()
-                                     )
-        );
-
-        if ($canedit) {
-            $rand = mt_rand();
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_1'>";
-        if ($canedit) {
-            echo "<th width='10'>";
-            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            echo "</th>";
-        }
-        echo "<th>" . __('Language') . "</th></tr>";
-
+        $entries = [];
         foreach (
             $DB->request(
                 'glpi_notificationtemplatetranslations',
@@ -167,34 +147,37 @@ class NotificationTemplateTranslation extends CommonDBChild
             ) as $data
         ) {
             if ($this->getFromDB($data['id'])) {
-                Session::addToNavigateListItems('NotificationTemplateTranslation', $data['id']);
-                echo "<tr class='tab_bg_1'>";
-                if ($canedit) {
-                    echo "<td class='center'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["id"]);
-                    echo "</td>";
-                }
-                echo "<td class='center'>";
-                echo "<a href='" . Toolbox::getItemTypeFormURL('NotificationTemplateTranslation') .
-                  "?id=" . $data['id'] . "&amp;notificationtemplates_id=" . $nID . "'>";
+                $href = self::getFormURL() . "?id=" . $data['id'] . "&notificationtemplates_id=" . $nID;
+                $lang = $data['language'] !== '' ? $CFG_GLPI['languages'][$data['language']][0] : __('Default translation');
 
-                if ($data['language'] !== '') {
-                    echo $CFG_GLPI['languages'][$data['language']][0];
-                } else {
-                    echo __('Default translation');
-                }
-
-                echo "</a></td></tr>";
+                $entries[] = [
+                    'itemtype' => self::class,
+                    'id' => $data['id'],
+                    'language' => '<a href="' . htmlspecialchars($href) . '">' . htmlspecialchars($lang) . '</a>',
+                ];
             }
         }
-        echo "</table>";
 
-        if ($canedit) {
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'language' => __('Language'),
+            ],
+            'formatters' => [
+                'language' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ]
+        ]);
     }
 
     /**
