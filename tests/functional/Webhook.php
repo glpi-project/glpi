@@ -225,4 +225,23 @@ JSON;
         $this->string($headers['X-Test-Item-ID'])->isEqualTo($fup->getID());
         $this->string($headers['X-Test-Mixed'])->isEqualTo('new-ext1234-' . $fup->getID());
     }
+
+    public function testGetResultForPath()
+    {
+        $this->login();
+        /** @var \Webhook $webhook */
+        $webhook = $this->createItem('Webhook', [
+            'name' => 'Test webhook',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+            'url' => 'http://localhost',
+            'itemtype' => 'User',
+            'event' => 'new',
+            'is_active' => 1,
+            'use_default_payload' => 1,
+        ]);
+        $users_id = \Session::getLoginUserID();
+        // Make sure we get at least something as a response.
+        // The main purpose is to test the internal authentication middleware.
+        $this->variable($webhook->getResultForPath('/Administration/User/' . $users_id, 'new', 'User', $users_id))->isNotNull();
+    }
 }

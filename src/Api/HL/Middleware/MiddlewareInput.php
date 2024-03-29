@@ -44,7 +44,8 @@ final class MiddlewareInput
     public function __construct(
         public Request $request,
         public RoutePath $route_path,
-        public ?Response $response
+        public ?Response $response,
+        public ?array $client = null,
     ) {
     }
 }
