@@ -36,6 +36,7 @@
 {# @var \Glpi\Form\Desination\AbstractFormDestination default_destination_object #}
 {# @var \Glpi\Form\Form                               form #}
 {# @var \Glpi\Form\Desination\FormDestination         destinations #}
+{# @var int|null                                      active_destination #}
 
 <div class="py-2 px-3">
     <h2 class="d-flex">
@@ -57,11 +58,11 @@
                 >
                     <h3 class="accordion-header">
                         <button
-                            class="accordion-button collapsed"
+                            class="accordion-button {{ active_destination == destination.getID() ? '' : 'collapsed' }}"
                             type="button"
                             data-bs-toggle="collapse"
                             data-bs-target="#glpi-destinations-accordion-collapse-{{ loop.index }}"
-                            aria-expanded="false"
+                            aria-expanded="{{ active_destination == destination.getID() ? 'true' : 'false' }}"
                         >
                             <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
                             {{ destination.getName() }}
@@ -69,20 +70,24 @@
                     </h3>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ loop.index }}"
-                        class="accordion-collapse collapse"
+                        class="accordion-collapse collapse {{ active_destination == destination.getID() ? 'show' : '' }}"
                         data-bs-parent="#glpi-destinations-accordion"
                     >
                         <div class="accordion-body pt-0">
                             <form method="POST" action="{{ controller_url }}">
                                 <div>
-                                    {{ concrete_destination.renderConfigForm()|raw }}
+                                    {{ concrete_destination.renderConfigForm(destination.getConfig())|raw }}
                                 </div>
 
                                 {# Submit button to delete the destination #}
-                                <div class="d-flex">
-                                    <button class="btn btn-danger btn-sm mt-3" name="purge" type="submit">
+                                <div class="d-flex flex-row-reverse mt-3">
+                                    <button class="btn btn-primary ms-2" name="update" type="submit">
+                                        <i class="ti ti-device-floppy me-2"></i>
+                                        {{ __("Update item") }}
+                                    </button>
+                                    <button class="btn btn-ghost-danger" name="purge" type="submit">
                                         <i class="ti ti-trash me-2"></i>
-                                        {{ __("Delete item") }}
+                                        {{ __("Delete") }}
                                     </button>
                                 </div>
 
@@ -97,32 +102,29 @@
         </div>
     {% endif %}
 
-    <form method="POST" action="{{ controller_url }}">
+    <div class="d-flex mt-4">
+        {% for type, label in available_destinations_types %}
+            <form method="POST" action="{{ controller_url }}">
+                {# Submit button to create a new destination #}
+                <button class="btn btn-ligh-secondary ms-2" name="add" type="submit">
+                    <i class="ti ti-plus me-2"></i> {{ __("Add %s"|format(label|lower)) }}
+                </button>
 
-        <div class="d-flex mt-4">
-            {% do call('Dropdown::showFromArray', [
-                "itemtype",
-                available_destinations_types,
-                {
-                    'value': get_class(default_destination_object),
-                }
-            ]) %}
-
-            {# Submit button to create a new destination #}
-            <button class="btn btn-primary ms-2" name="add" type="submit">
-                <i class="ti ti-plus me-2"></i> {{ __("New item") }}
-            </button>
-        </div>
-
-        {# Hidden values #}
-        <input type="hidden" name="{{ form.getForeignKeyField() }}" value="{{ form.getID() }}"/>
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
-    <form>
+                {# Hidden values #}
+                <input type="hidden" name="itemtype" value="{{ type }}"/>
+                <input type="hidden" name="{{ form.getForeignKeyField() }}" value="{{ form.getID() }}"/>
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+            </form>
+        {% endfor %}
+    </div>
 </div>
 
 <style>
     /* Should be handled by tabler but it doesn't seem to be active */
     .accordion-header {
+        color: var(--tblr-dark);
+    }
+    .accordion-item {
         color: var(--tblr-dark);
     }
 </style>

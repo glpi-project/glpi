@@ -64,19 +64,30 @@ class FormDestinationProblem extends AbstractFormDestinationType
         $form = $this->createForm(
             (new FormBuilder("Test form 1"))
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addDestination(\Glpi\Form\Destination\FormDestinationProblem::class, ['name' => 'test'])
+                ->addDestination(
+                    \Glpi\Form\Destination\FormDestinationProblem::class,
+                    'test',
+                    [
+                        'title'   => ['value' => 'Problem title'],
+                        'content' => ['value' => 'Problem content'],
+                    ]
+                )
         );
 
         // There are no problems in the database named after this form
-        $problems = (new Problem())->find(['name' => 'Problem from form: Test form 1']);
+        $problems = (new Problem())->find(['name' => 'Problem title']);
         $this->array($problems)->hasSize(0);
 
         // Submit form, a single problem should be created
         $answers = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "My name",
         ], \Session::getLoginUserID());
-        $problems = (new Problem())->find(['name' => 'Problem from form: Test form 1']);
+        $problems = (new Problem())->find(['name' => 'Problem title']);
         $this->array($problems)->hasSize(1);
+
+        // Check fields
+        $problem = current($problems);
+        $this->string($problem['content'])->isEqualTo('Problem content');
 
         // Make sure link with the form answers was created too
         $problem = array_pop($problems);

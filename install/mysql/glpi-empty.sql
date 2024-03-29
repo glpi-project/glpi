@@ -9532,6 +9532,7 @@ CREATE TABLE `glpi_forms_destinations_formdestinations` (
     `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
     `itemtype` varchar(255) NOT NULL,
     `name` varchar(255) NOT NULL,
+    `config` JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
     KEY `itemtype` (`itemtype`),

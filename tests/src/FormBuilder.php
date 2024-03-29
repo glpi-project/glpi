@@ -315,18 +315,25 @@ class FormBuilder
      * Add a destination to the form
      *
      * @param string $itemtype Destination itemtype
-     * @param array  $values   Input values
+     * @param array  $name     Destination name
+     * @param array  $config   Config values
      *
      * @return self To allow chain calls
      */
-    public function addDestination(string $itemtype, array $values): self
-    {
+    public function addDestination(
+        string $itemtype,
+        string $name,
+        array $config = []
+    ): self {
         // If first destination of the given itemtype, init its key
         if (!isset($this->destinations[$itemtype])) {
             $this->destinations[$itemtype] = [];
         }
 
-        $this->destinations[$itemtype][] = $values;
+        $this->destinations[$itemtype][] = [
+            'name'   => $name,
+            'config' => $config,
+        ];
         return $this;
     }
 }

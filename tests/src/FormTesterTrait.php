@@ -91,12 +91,12 @@ trait FormTesterTrait
         // Create destinations
         foreach ($builder->getDestinations() as $itemtype => $destinations) {
             foreach ($destinations as $destination_data) {
-                $name = $destination_data['name'];
                 $this->createItem(FormDestination::class, [
                     'forms_forms_id' => $form->getID(),
                     'itemtype'       => $itemtype,
-                    'name'           => $name,
-                ]);
+                    'name'           => $destination_data['name'],
+                    'config'         => $destination_data['config'],
+                ], ['config']);
             }
         }
 
