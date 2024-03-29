@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+use Gettext\Languages\CldrData as Language_CldrData;
+use Gettext\Languages\Category as Language_Category;
+
+include('../inc/includes.php');
+
+header("Content-Type: application/json; charset=UTF-8");
+Html::header_nocache();
+Session::writeClose();
+
+$cldrLanguage = Language_CldrData::getLanguageInfo($_GET['language']);
+$cldrCategories = $cldrLanguage['categories'] ?? [];
+
+$languageCategories = [];
+foreach ($cldrCategories as $cldrCategoryId => $cldrFormulaAndExamples) {
+    $category = new Language_Category($cldrCategoryId, $cldrFormulaAndExamples);
+    $languageCategories[] = $category;
+}
+
+echo json_encode($languageCategories);
+

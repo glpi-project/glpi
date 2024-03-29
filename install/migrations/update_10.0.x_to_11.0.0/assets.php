@@ -53,6 +53,7 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
             `is_active` tinyint NOT NULL DEFAULT '0',
             `capacities` JSON NOT NULL,
             `profiles` JSON NOT NULL,
+            `translations` JSON NOT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -65,6 +66,7 @@ SQL;
     $DB->doQueryOrDie($query);
 } else {
     $migration->addField('glpi_assets_assetdefinitions', 'profiles', 'JSON NOT NULL');
+    $migration->addField('glpi_assets_assetdefinitions', 'translations', 'JSON NOT NULL');
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [3, 4, 5, 6];

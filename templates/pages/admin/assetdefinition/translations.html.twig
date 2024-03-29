@@ -1,0 +1,108 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params = {} %}
+{# do not display delete button #}
+{% set params = params|merge({'candel': false}) %}
+{# do not display footer with dates #}
+{% set params = params|merge({'formfooter': false}) %}
+
+{% block form_fields %}
+
+<div class="modal fade" id="newTranslation" tabindex="-1" role="dialog" aria-labelledby="newTranslationLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">{{ __("Add translation") }}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label" for="dropdown_language">{{ __('Language') }}</label>
+                    {{ languages_dropdown|raw }}
+                </div>
+
+                <div class="mb-3" id="translations_panel">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newTranslation">
+        {{ __("New translation") }}
+    </button>
+</div>
+
+<script>
+    var getLanguagePlural = function(language) {
+        $.get("{{ path('ajax/getPlurals.php') }}", {
+            id: "{{ item.fields['system_name'] }}",
+            language: language
+        }, function(data) {
+            $('#translations_panel').empty();
+
+            // Append new input for each language in data
+            data.forEach(function(pluralForm) {
+                let helper = pluralForm.examples;
+                if (pluralForm.formula) {
+                    helper = pluralForm.formula + ' (' + pluralForm.examples + ')';
+                }
+
+                var plural_html = `
+                    <div class="mb-2">
+                        <label class="form-label" for="plural_${pluralForm.id}">
+                            ${pluralForm.id}
+                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
+                                  data-bs-content="${helper}">
+                                <i class="ti ti-help"></i>
+                            </span>
+                        </label>
+                        <input type="text" class="form-control" id="plural_${pluralForm.id}" name="plural_${pluralForm.id}" value="">
+                    </div>
+                `;
+                $('#translations_panel').append(plural_html);
+            });
+        });
+    };
+</script>
+
+{% endblock %}

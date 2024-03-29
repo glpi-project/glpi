@@ -37,6 +37,7 @@ namespace Glpi\Asset;
 
 use CommonDBTM;
 use CommonGLPI;
+use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
@@ -115,6 +116,12 @@ final class AssetDefinition extends CommonDBTM
                     self::class,
                     'ti ti-user-check'
                 ),
+                4 => self::createTabEntry(
+                    _n('Translation', 'Translations', Session::getPluralNumber()),
+                    0,
+                    self::class,
+                    'ti ti-language'
+                ),
             ];
         }
 
@@ -133,6 +140,9 @@ final class AssetDefinition extends CommonDBTM
                     break;
                 case 3:
                     $item->showProfilesForm();
+                    break;
+                case 4:
+                    $item->showTranslationForm();
                     break;
             }
         }
@@ -274,6 +284,28 @@ final class AssetDefinition extends CommonDBTM
                 'nb_cb_per_row'  => $nb_cb_per_row,
             ]
         );
+    }
+
+
+    private function showTranslationForm(): void
+    {
+        $translations = $this->getDecodedTranslationsField();
+
+        TemplateRenderer::getInstance()->display(
+            'pages/admin/assetdefinition/translations.html.twig',
+            [
+                'item' => $this,
+                'classname' => $this->getAssetClassName(),
+                'capacities' => $translations,
+                'languages_dropdown' => Dropdown::showLanguages('language', [
+                    'display' => false,
+                    'value'   => $_SESSION['glpilanguage'],
+                    'width'   => '100%',
+                    'on_change' => 'getLanguagePlural(this.value);'
+                ])
+            ]
+        );
+
     }
 
     public function prepareInputForAdd($input)
@@ -843,6 +875,35 @@ TWIG, ['name' => $name, 'value' => $value]);
                 break;
             }
         }
+
+        return $is_valid;
+    }
+
+
+    private function getDecodedTranslationsField(): array
+    {
+        if ($this->fields['translations'] === 'null') {
+            return [];
+        }
+        $translations = @json_decode($this->fields['translations'], associative: true);
+        if (!$this->validateTranslationsArray($translations, false)) {
+            trigger_error(
+                sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),
+                E_USER_WARNING
+            );
+            $this->fields['translations'] = '[]'; // prevent warning to be triggered on each method call
+            $translations = [];
+        }
+        return $translations;
+    }
+
+    private function validateTranslationsArray(mixed $translations): bool
+    {
+        if (!is_array($translations)) {
+            return false;
+        }
+
+        $is_valid = true;
 
         return $is_valid;
     }
