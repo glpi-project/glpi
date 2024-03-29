@@ -158,19 +158,18 @@ TWIG, $twig_params);
         $notiftpl = new self();
         $entries = [];
         foreach ($iterator as $data) {
-             $notiftpl->getFromDB($data['id']);
-             $tpl = new NotificationTemplate();
-             $tpl->getFromDB($data['notificationtemplates_id']);
+            $notiftpl->getFromDB($data['id']);
+            $tpl = new NotificationTemplate();
+            $tpl->getFromDB($data['notificationtemplates_id']);
 
-             $tpl_link = $tpl->getLink();
+            $tpl_link = $tpl->getLink();
             if (empty($tpl_link)) {
                 $tpl_link = "<i class='fa fa-exclamation-triangle red'></i>
                         <a href='" . htmlspecialchars($notiftpl->getLinkUrl()) . "'>" .
                          __s("No template selected") .
                       "</a>";
             }
-;
-             $mode = self::getMode($data['mode']);
+            $mode = self::getMode($data['mode']);
             if ($mode === NOT_AVAILABLE) {
                 $mode = "{$data['mode']} ($mode)";
             } else {
