@@ -45,9 +45,13 @@ try {
         $destination->check(-1, CREATE, $_POST);
 
         // Create destination item
-        if (!$destination->add($_POST)) {
+        $id = $destination->add($_POST);
+        if (!$id) {
             throw new RuntimeException("Failed to create destination item");
         }
+
+        // Save the ID to reopen the correct accordion item
+        $_SESSION['active_destination'] = $id;
     } elseif (isset($_POST["update"])) {
         // ID is mandatory
         $id = $_POST['id'] ?? null;
