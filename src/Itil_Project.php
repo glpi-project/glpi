@@ -47,13 +47,11 @@ class Itil_Project extends CommonDBRelation
 
     public static function getTypeName($nb = 0)
     {
-
         return _n('Link Project/Itil', 'Links Project/Itil', $nb);
     }
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -61,12 +59,11 @@ class Itil_Project extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         $label = '';
 
         if (static::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case Change::class:
                 case Problem::class:
                 case Ticket::class:
@@ -101,8 +98,7 @@ class Itil_Project extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
+        switch ($item::class) {
             case Change::class:
             case Problem::class:
             case Ticket::class:
@@ -115,7 +111,6 @@ class Itil_Project extends CommonDBRelation
         }
         return true;
     }
-
 
     /**
      * Show ITIL items for a project.
@@ -182,18 +177,12 @@ class Itil_Project extends CommonDBRelation
                         action="' . Toolbox::getItemTypeFormURL(__CLASS__) . '">';
                 echo '<table class="tab_cadre_fixe">';
 
-                $label = null;
-                switch ($itemtype) {
-                    case Change::class:
-                        $label = __('Add a change');
-                        break;
-                    case Problem::class:
-                        $label = __('Add a problem');
-                        break;
-                    case Ticket::class:
-                         $label = __('Add a ticket');
-                        break;
-                }
+                $label = match ($itemtype) {
+                    Change::class => __('Add a change'),
+                    Problem::class => __('Add a problem'),
+                    Ticket::class => __('Add a ticket'),
+                    default => null
+                };
                 echo '<tr class="tab_bg_2"><th colspan="2">' . $label . '</th></tr>';
                 echo '<tr class="tab_bg_2">';
                 echo '<td>';

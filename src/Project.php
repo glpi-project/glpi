@@ -88,12 +88,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return _n('Project', 'Projects', $nb);
     }
 
-
     public static function canView()
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }
-
 
     /**
      * Is the current user have right to show the current project ?
@@ -102,7 +100,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function canViewItem()
     {
-
         if (!parent::canViewItem()) {
             return false;
         }
@@ -115,7 +112,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
               );
     }
 
-
     /**
      * Is the current user have right to create the current change ?
      *
@@ -123,22 +119,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function canCreateItem()
     {
-
         if (!Session::haveAccessToEntity($this->getEntityID())) {
             return false;
         }
         return Session::haveRight(self::$rightname, CREATE);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see commonDBTM::getRights()
-     **/
     public function getRights($interface = 'central')
     {
-
         $values = parent::getRights();
         unset($values[READ]);
 
@@ -148,25 +136,23 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return $values;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (static::canView() && !$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case __CLASS__:
                     $ong    = [];
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
-                            $this->getTable(),
+                            static::getTable(),
                             [
-                                $this->getForeignKeyField() => $item->getID(),
+                                static::getForeignKeyField() => $item->getID(),
                                 'is_deleted'                => 0
                             ]
                         );
                     }
-                    $ong[1] = self::createTabEntry($this->getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    $ong[1] = self::createTabEntry(static::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     $ong[3] = self::createTabEntry(__('Kanban'));
                     return $ong;
             }
@@ -175,12 +161,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        switch ($item->getType()) {
-            case __CLASS__:
+        switch ($item::class) {
+            case self::class:
                 switch ($tabnum) {
                     case 1:
                         $item->showChildren();
@@ -195,10 +179,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
-
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
@@ -217,23 +199,20 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return $ong;
     }
 
-
     public static function getAdditionalMenuContent()
     {
-
-       // No view to project by right on tasks add it
+        // No view to project by right on tasks add it
         if (
             !static::canView()
             && Session::haveRight('projecttask', ProjectTask::READMY)
         ) {
-            $menu['project']['title'] = Project::getTypeName(Session::getPluralNumber());
+            $menu['project']['title'] = self::getTypeName(Session::getPluralNumber());
             $menu['project']['page']  = ProjectTask::getSearchURL(false);
 
             return $menu;
         }
         return false;
     }
-
 
     public static function getAdditionalMenuOptions()
     {
@@ -246,40 +225,31 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             ]
         ];
-        return false;
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuLinks()
-     **/
     public static function getAdditionalMenuLinks()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $links = [];
         if (
             static::canView()
             || Session::haveRight('projecttask', ProjectTask::READMY)
         ) {
             $pic_validate = '
-            <i class="ti ti-eye-check" title="' . __('My tasks') . '"></i>
+            <i class="ti ti-eye-check" title="' . __s('My tasks') . '"></i>
             <span class="d-none d-xxl-block">
-               ' . __('My tasks') . '
+               ' . __s('My tasks') . '
             </span>
          ';
 
             $links[$pic_validate] = ProjectTask::getSearchURL(false);
 
-            $links['summary_kanban'] = Project::getFormURL(false) . '?showglobalkanban=1';
+            $links['summary_kanban'] = self::getFormURL(false) . '?showglobalkanban=1';
         }
         if (count($links)) {
             return $links;
         }
         return false;
     }
-
 
     public function post_updateItem($history = true)
     {
@@ -291,28 +261,27 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name'          => 'content',
         ]);
 
-        if (in_array('auto_percent_done', $this->updates) && $this->input['auto_percent_done'] == 1) {
-           // Auto-calculate was toggled. Force recalculation of this and parents
+        if (in_array('auto_percent_done', $this->updates, true) && (int) $this->input['auto_percent_done'] === 1) {
+            // Auto-calculate was toggled. Force recalculation of this and parents
             self::recalculatePercentDone($this->getID());
         } else {
             if ($this->fields['projects_id'] > 0) {
-               // Update parent percent_done
+                // Update parent percent_done
                 self::recalculatePercentDone($this->fields['projects_id']);
             }
         }
 
         if (isset($this->input['_old_projects_id'])) {
-           // Recalculate previous parent percent done
+            // Recalculate previous parent percent done
             self::recalculatePercentDone($this->input['_old_projects_id']);
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Read again project to be sure that all data are up to date
+            // Read again project to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
             NotificationEvent::raiseEvent("update", $this);
         }
     }
-
 
     public function post_addItem()
     {
@@ -324,57 +293,51 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name'          => 'content',
         ]);
 
-       // Update parent percent_done
+        // Update parent percent_done
         if (isset($this->fields['projects_id']) && $this->fields['projects_id'] > 0) {
             self::recalculatePercentDone($this->fields['projects_id']);
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-           // Clean reload of the project
+            // Clean reload of the project
             $this->getFromDB($this->fields['id']);
 
             NotificationEvent::raiseEvent('new', $this);
         }
     }
 
-
     public function post_deleteItem()
     {
-       // Update parent percent_done
+        // Update parent percent_done
         if ($this->fields['projects_id'] > 0) {
             self::recalculatePercentDone($this->fields['projects_id']);
         }
     }
-
 
     public function post_restoreItem()
     {
-       // Update parent percent_done
+        // Update parent percent_done
         if ($this->fields['projects_id'] > 0) {
             self::recalculatePercentDone($this->fields['projects_id']);
         }
     }
 
-
     public function post_getEmpty()
     {
-
         $this->fields['priority']     = 3;
         $this->fields['percent_done'] = 0;
 
-       // Set as manager to be able to see it after creation
+        // Set as manager to be able to see it after creation
         if (!Session::haveRight(self::$rightname, self::READALL)) {
             $this->fields['users_id'] = Session::getLoginUserID();
         }
     }
 
-
     public function post_getFromDB()
     {
-       // Team
-        $this->team    = ProjectTeam::getTeamFor($this->fields['id']);
+        // Team
+        $this->team = ProjectTeam::getTeamFor($this->fields['id']);
     }
-
 
     public function pre_deleteItem()
     {
@@ -387,10 +350,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
-
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Item_Project::class,
@@ -403,7 +364,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         parent::cleanDBonPurge();
     }
-
 
     /**
      * Return visibility joins to add to DBIterator parameters
@@ -460,6 +420,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         return $criteria;
     }
+
     /**
      * Is the current user in the team?
      *
@@ -467,22 +428,21 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function isInTheTeam()
     {
-
         if (isset($this->team['User']) && count($this->team['User'])) {
             foreach ($this->team['User'] as $data) {
-                if ($data['items_id'] == Session::getLoginUserID()) {
+                if ((int) $data['items_id'] === Session::getLoginUserID()) {
                     return true;
                 }
             }
         }
 
         if (
-            isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
-            && isset($this->team['Group']) && count($this->team['Group'])
+            isset($_SESSION['glpigroups'], $this->team['Group'])
+            && count($_SESSION['glpigroups']) && count($this->team['Group'])
         ) {
             foreach ($_SESSION['glpigroups'] as $groups_id) {
                 foreach ($this->team['Group'] as $data) {
-                    if ($data['items_id'] == $groups_id) {
+                    if ((int) $data['items_id'] === (int) $groups_id) {
                         return true;
                     }
                 }
@@ -491,7 +451,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return false;
     }
 
-
     /**
      * Is the current user in manager group?
      *
@@ -499,13 +458,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      **/
     public function isInTheManagerGroup()
     {
-
         if (
             isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
             && $this->fields['groups_id']
         ) {
             foreach ($_SESSION['glpigroups'] as $groups_id) {
-                if ($this->fields['groups_id'] == $groups_id) {
+                if ((int) $this->fields['groups_id'] === (int) $groups_id) {
                     return true;
                 }
             }
@@ -513,24 +471,21 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return false;
     }
 
-
     /**
      * Get team member count
      *
-     * @return number
+     * @return integer
      **/
     public function getTeamCount()
     {
-
         $nb = 0;
         if (is_array($this->team) && count($this->team)) {
             foreach ($this->team as $val) {
-                $nb +=  count($val);
+                $nb += count($val);
             }
         }
         return $nb;
     }
-
 
     public function rawSearchOptions()
     {
@@ -546,7 +501,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
@@ -556,7 +511,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -565,7 +520,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'code',
             'name'               => __('Code'),
             'massiveaction'      => false,
@@ -574,7 +529,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Father'),
             'datatype'           => 'itemlink',
@@ -586,7 +541,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '21',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'content',
             'name'               => __('Description'),
             'massiveaction'      => false,
@@ -596,7 +551,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'priority',
             'name'               => __('Priority'),
             'searchtype'         => 'equals',
@@ -622,7 +577,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '15',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
@@ -631,7 +586,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'percent_done',
             'name'               => __('Percent done'),
             'datatype'           => 'number',
@@ -645,7 +600,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         if ($plugin->isActivated('gantt')) {
             $tab[] = [
                 'id'                 => '6',
-                'table'              => $this->getTable(),
+                'table'              => static::getTable(),
                 'field'              => 'show_on_global_gantt',
                 'name'               => __('Show on global Gantt'),
                 'datatype'           => 'bool'
@@ -674,7 +629,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '7',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime'
@@ -682,7 +637,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '8',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime'
@@ -690,7 +645,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => '_virtual_planned_duration',
             'name'               => __('Planned duration'),
             'datatype'           => 'specific',
@@ -701,7 +656,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'real_start_date',
             'name'               => __('Real start date'),
             'datatype'           => 'datetime'
@@ -709,7 +664,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '10',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'real_end_date',
             'name'               => __('Real end date'),
             'datatype'           => 'datetime'
@@ -717,7 +672,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '18',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => '_virtual_effective_duration',
             'name'               => __('Effective duration'),
             'datatype'           => 'specific',
@@ -728,7 +683,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -736,7 +691,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '19',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
@@ -745,7 +700,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '50',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'template_name',
             'name'               => __('Template name'),
             'datatype'           => 'text',
@@ -756,7 +711,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '121',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
@@ -773,7 +728,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '86',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
             'datatype'           => 'bool'
@@ -791,9 +746,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'joinparams'         => [
                 'jointype'           => 'child',
                 'specific_itemtype'  => 'ProjectCost',
-                'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB->quoteName('REFTABLE.id'))],
+                'condition'          => ['NEWTABLE.projects_id' => new QueryExpression($DB::quoteName('REFTABLE.id'))],
                 'beforejoin'         => [
-                    'table'        => $this->getTable(),
+                    'table'        => static::getTable(),
                     'joinparams'   => [
                         'jointype'  => 'child'
                     ],
@@ -1158,17 +1113,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return $tab;
     }
 
-
     /**
-     * @param $output_type     (default 'Search::HTML_OUTPUT')
-     * @param $mass_id         id of the form to check all (default '')
+     * @param integer $output_type     (default 'Search::HTML_OUTPUT')
+     * @param string $mass_id         id of the form to check all (default '')
      */
     public static function commonListHeader($output_type = Search::HTML_OUTPUT, $mass_id = '')
     {
-
-       // New Line for Header Items Line
+        // New Line for Header Items Line
         echo Search::showNewLine($output_type);
-       // $show_sort if
+        // $show_sort if
         $header_num                      = 1;
 
         $items                           = [];
@@ -1196,14 +1149,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo Search::showEndLine($output_type);
     }
 
-
     /**
      * Display a line for an object
      *
      * @since 0.85 (befor in each object with differents parameters)
      *
-     * @param $id                 Integer  ID of the object
-     * @param $options            array    of options
+     * @param integer $id ID of the object
+     * @param array $options of options
      *      output_type            : Default output type (see Search class / default Search::HTML_OUTPUT)
      *      row_num                : row num used for display
      *      type_for_massiveaction : itemtype for massive action
@@ -1404,20 +1356,17 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function prepareInputForAdd($input)
     {
-
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
         }
-        if (isset($input['withtemplate']) && (int) $input['withtemplate'] == 2) {
+        if (isset($input['withtemplate']) && (int) $input['withtemplate'] === 2) {
             // Remove dates for template from input. Keep date_creation because it can be overridden
             unset($input['date'], $input['date_mod']);
         }
-        unset($input['id']);
-        unset($input['withtemplate']);
+        unset($input['id'], $input['withtemplate']);
 
         return $input;
     }
-
 
     public function prepareInputForUpdate($input)
     {
@@ -1427,7 +1376,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         if (isset($input['projects_id']) && $input['projects_id'] > 0) {
             if (self::checkCircularRelation($input['id'], $input['projects_id'])) {
                 Session::addMessageAfterRedirect(
-                    __('Circular relation found. Parent not updated.'),
+                    __s('Circular relation found. Parent not updated.'),
                     false,
                     ERROR
                 );
@@ -1436,48 +1385,39 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
         if (
             $this->fields['projects_id'] > 0 && isset($input['projects_id'])
-            && ($input['projects_id'] != $this->fields['projects_id'])
+            && ((int) $input['projects_id'] !== (int) $this->fields['projects_id'])
         ) {
             $input['_old_projects_id'] = $this->fields['projects_id'];
         }
         return self::checkPlanAndRealDates($input);
     }
 
-
     public static function checkPlanAndRealDates($input)
     {
-
         if (
-            isset($input['plan_start_date']) && !empty($input['plan_start_date'])
-            && isset($input['plan_end_date']) && !empty($input['plan_end_date'])
-            && (($input['plan_end_date'] < $input['plan_start_date'])
-              || empty($input['plan_start_date']))
+            !empty($input['plan_start_date']) && !empty($input['plan_end_date'])
+            && (($input['plan_end_date'] < $input['plan_start_date']))
         ) {
             Session::addMessageAfterRedirect(
-                __('Invalid planned dates. Dates not updated.'),
+                __s('Invalid planned dates. Dates not updated.'),
                 false,
                 ERROR
             );
-            unset($input['plan_start_date']);
-            unset($input['plan_end_date']);
+            unset($input['plan_start_date'], $input['plan_end_date']);
         }
         if (
-            isset($input['real_start_date']) && !empty($input['real_start_date'])
-            && isset($input['real_end_date']) && !empty($input['real_end_date'])
-            && (($input['real_end_date'] < $input['real_start_date'])
-              || empty($input['real_start_date']))
+            !empty($input['real_start_date']) && !empty($input['real_end_date'])
+            && (($input['real_end_date'] < $input['real_start_date']))
         ) {
             Session::addMessageAfterRedirect(
-                __('Invalid real dates. Dates not updated.'),
+                __s('Invalid real dates. Dates not updated.'),
                 false,
                 ERROR
             );
-            unset($input['real_start_date']);
-            unset($input['real_end_date']);
+            unset($input['real_start_date'], $input['real_end_date']);
         }
         return $input;
     }
-
 
     /**
      * Print the HTML array children of a TreeDropdown
@@ -1494,9 +1434,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $rand = mt_rand();
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [
-                $this->getForeignKeyField()   => $ID,
+                static::getForeignKeyField()   => $ID,
                 'is_deleted'                  => 0
             ]
         ]);
@@ -1542,16 +1482,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "</div>\n";
     }
 
-
     /**
-     * Print the computer form
+     * Print the Project form
      *
-     * @param $ID        integer ID of the item
-     * @param $options   array
+     * @param integer $ID ID of the item
+     * @param array $options
      *     - target for the Form
      *     - withtemplate template or basic computer
      *
-     *@return void
+     * @return void
      **/
     public function showForm($ID, array $options = [])
     {
@@ -1775,32 +1714,19 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return true;
     }
 
-
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
-        switch ($field) {
-            case 'priority':
-                return CommonITILObject::getPriorityName($values[$field]);
-        }
-        return parent::getSpecificValueToDisplay($field, $values, $options);
+        return match ($field) {
+            'priority' => CommonITILObject::getPriorityName($values[$field]),
+            default => parent::getSpecificValueToDisplay($field, $values, $options),
+        };
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param $options   array
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -1816,7 +1742,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
     /**
      * Show team for a project
      **/
@@ -1828,7 +1753,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         echo "<div class='center'>";
 
         $rand = mt_rand();
-        $nb   = 0;
         $nb   = $project->getTeamCount();
 
         if ($canedit) {
@@ -1989,11 +1913,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     {
         $result = [];
 
-        if ($column_field === null || $column_field == 'projectstates_id') {
+        if ($column_field === null || $column_field === 'projectstates_id') {
             /** @var \DBmysql $DB */
             global $DB;
 
-            $projectstate = new ProjectState();
             $restrict = [];
             if (!empty($column_ids) && !$get_default) {
                 $restrict = ['id' => $column_ids];
@@ -2040,9 +1963,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             }
 
             // sort by name ASC
-            uasort($result, function ($a, $b) {
-                return strnatcasecmp($a['name'], $b['name']);
-            });
+            uasort($result, static fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
         }
 
         return $result;
@@ -2051,14 +1972,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $items      = [];
 
-       // Get sub-projects
+        // Get sub-projects
         $projectteam = new ProjectTeam();
         $project = new Project();
         $project_visibility = self::getVisibilityCriteria();
@@ -2099,12 +2019,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         foreach ($iterator as $data) {
             $projects[$data['id']] = $data;
         }
-        $project_ids = array_map(static function ($e) {
-            return $e['id'];
-        }, array_filter($projects, static function ($e) use ($ID) {
-          // Filter tasks of closed projects in Global view
-            return ($ID > 0 || !$e['is_finished']);
-        }));
+        $project_ids = array_map(
+            static fn ($e) => $e['id'],
+            array_filter($projects, static function ($e) use ($ID) {
+                // Filter tasks of closed projects in Global view
+                return ($ID > 0 || !$e['is_finished']);
+            })
+        );
         $projectteams = count($project_ids) ? $projectteam->find(['projects_id' => $project_ids]) : [];
 
        // Get sub-tasks
@@ -2115,12 +2036,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'projects_id' => ($ID <= 0 && count($project_ids)) ? $project_ids : $ID,
         ];
         $projecttasks = $projecttask->find($project_task_criteria + $criteria);
-        $projecttask_ids = array_map(static function ($e) {
-            return $e['id'];
-        }, $projecttasks);
+        $projecttask_ids = array_map(static fn ($e) => $e['id'], $projecttasks);
         $projecttaskteams = count($projecttask_ids) ? $projecttaskteam->find(['projecttasks_id' => $projecttask_ids]) : [];
 
-       // Build team member data
+        // Build team member data
+        /** @var array<class-string<CommonDBTM>, string[]> $supported_teamtypes */
         $supported_teamtypes = [
             'User' => ['id', 'name', 'firstname', 'realname'],
             'Group' => ['id', 'name'],
@@ -2129,11 +2049,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         ];
         $all_members = [];
         foreach ($supported_teamtypes as $itemtype => $fields) {
-            $all_ids = array_map(static function ($e) {
-                return $e['items_id'];
-            }, array_filter(array_merge($projectteams, $projecttaskteams), static function ($e) use ($itemtype) {
-                return ($e['itemtype'] === $itemtype);
-            }));
+            $all_ids = array_map(
+                static fn ($e) => $e['items_id'],
+                array_filter(array_merge($projectteams, $projecttaskteams), static function ($e) use ($itemtype) {
+                    return ($e['itemtype'] === $itemtype);
+                })
+            );
             if (count($all_ids)) {
                 $itemtable = $itemtype::getTable();
                 $all_items = $DB->request([
@@ -2170,14 +2091,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
 
             $subproject_teams = array_filter($projectteams, static function ($e) use ($subproject) {
-                return $e['projects_id'] == $subproject['id'];
+                return $e['projects_id'] === $subproject['id'];
             });
             foreach ($subproject_teams as $teammember) {
                 switch ($teammember['itemtype']) {
                     case 'Group':
                     case 'Supplier':
                         $matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] == $teammember['items_id']);
+                            return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($matches)) {
                              $item['_team'][] = array_merge($teammember, reset($matches));
@@ -2186,7 +2107,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     case 'User':
                     case 'Contact':
                         $contact_matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] == $teammember['items_id']);
+                            return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($contact_matches)) {
                               $match = reset($contact_matches);
@@ -2226,7 +2147,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     case 'Group':
                     case 'Supplier':
                         $matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] == $teammember['items_id']);
+                            return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($matches)) {
                              $item['_team'][] = array_merge($teammember, reset($matches));
@@ -2235,7 +2156,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     case 'User':
                     case 'Contact':
                         $contact_matches = array_filter($all_members[$teammember['itemtype']], static function ($e) use ($teammember) {
-                            return ($e['id'] == $teammember['items_id']);
+                            return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($contact_matches)) {
                               $match = reset($contact_matches);
@@ -2257,13 +2178,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false)
     {
-
         if ($column_field !== 'projectstates_id') {
             return [];
         }
 
         $columns = [];
-        if (empty($column_ids) || $get_default || in_array(0, $column_ids)) {
+        if (empty($column_ids) || $get_default || in_array(0, $column_ids, false)) {
             $columns[0] = [
                 'name'         => __('No status'),
                 '_protected'   => true
@@ -2286,7 +2206,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         foreach ($items as $item) {
-            if (!in_array($item['projectstates_id'], array_keys($columns))) {
+            if (!array_key_exists($item['projectstates_id'], $columns)) {
                 continue;
             }
             $itemtype = $item['_itemtype'];
@@ -2312,23 +2232,21 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 $parentname = $item['_parent_name'] ?? $item['_parents_id'];
 
                 $content .= "<div>";
-                $content .= Html::link(sprintf(__('%s of %s'), $childref, $parentname), Project::getFormURLWithID($item['_parents_id']));
+                $content .= Html::link(htmlspecialchars(sprintf(__('%s of %s'), $childref, $parentname)), Project::getFormURLWithID($item['_parents_id']));
                 $content .= "</div>";
             }
             $content .= "<div class='flex-break'></div>";
             if ($itemtype === 'ProjectTask' && $item['projecttasktypes_id'] !== 0) {
-                $typematches = array_filter($alltypes, function ($t) use ($item) {
+                $typematches = array_filter($alltypes, static function ($t) use ($item) {
                     return $t['id'] === $item['projecttasktypes_id'];
                 });
                 $content .= reset($typematches)['name'] . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
-                $content .= "&nbsp;<i class='fas fa-map-signs' title='" . __('Milestone') . "'></i>&nbsp;";
+                $content .= "&nbsp;<i class='fas fa-map-signs' title='" . __s('Milestone') . "'></i>&nbsp;";
             }
             if (isset($item['_steps']) && count($item['_steps'])) {
-                $done = count(array_filter($item['_steps'], function ($step) {
-                    return $step['percent_done'] == 100;
-                }));
+                $done = count(array_filter($item['_steps'], static fn ($step) => (int) $step['percent_done'] === 100));
                 $total = count($item['_steps']);
                 $content .= "<div class='flex-break'></div>";
                 $content .= sprintf(__('%s / %s tasks complete'), $done, $total);
@@ -2384,13 +2302,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function canModifyGlobalState()
     {
-       // Only project manager (or managing group) may change the Kanban's state
+        // Only project manager (or managing group) may change the Kanban's state
         return $this->fields["users_id"] === Session::getLoginUserID() || $this->isInTheManagerGroup();
     }
 
     public function forceGlobalState()
     {
-       // All users must be using the global state unless viewing the global Kanban
+        // All users must be using the global state unless viewing the global Kanban
         return $this->getID() > 0;
     }
 
@@ -2403,8 +2321,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     {
         $project = new Project();
         if (
-            ($ID <= 0 && !Project::canView()) ||
-            ($ID > 0 && (!$project->getFromDB($ID) || !$project->canView()))
+            ($ID <= 0 && !self::canView()) ||
+            ($ID > 0 && (!$project->getFromDB($ID) || !$project->canViewItem()))
         ) {
             return false;
         }
@@ -2420,8 +2338,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         unset($team_roles[Team::ROLE_OWNER]);
 
         $supported_itemtypes['Project'] = [
-            'name'   => Project::getTypeName(1),
-            'icon'   => Project::getIcon(),
+            'name'   => self::getTypeName(1),
+            'icon'   => self::getIcon(),
             'fields' => [
                 'projects_id'  => [
                     'type'   => 'hidden',
@@ -2447,9 +2365,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
                 ]
             ],
-            'team_itemtypes'  => Project::getTeamItemtypes(),
+            'team_itemtypes'  => self::getTeamItemtypes(),
             'team_roles'      => $team_roles,
-            'allow_create'    => Project::canCreate()
+            'allow_create'    => self::canCreate()
         ];
 
         $team_role_ids = static::getTeamRoles();
@@ -2501,7 +2419,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
                 'type'   => 'raw',
-                'value'  => Project::dropdown([
+                'value'  => self::dropdown([
                     'display' => false,
                     'width' => '90%',
                     'condition' => [
@@ -2529,12 +2447,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ]
         ];
 
-        $canmodify_view = ($ID == 0 || $project->canModifyGlobalState());
+        $canmodify_view = ($ID === 0 || $project->canModifyGlobalState());
         $rights = [
             'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
             'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
             'create_column'                  => (bool)ProjectState::canCreate(),
-            'modify_view'                    => $ID == 0 || $project->canModifyGlobalState(),
+            'modify_view'                    => $ID === 0 || $project->canModifyGlobalState(),
             'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
             'create_card_limited_columns'    => $canmodify_view ? [] : [0]
         ];
@@ -2612,13 +2530,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
     public static function getTeamRoleName(int $role, int $nb = 1): string
     {
-        switch ($role) {
-            case Team::ROLE_OWNER:
-                return _n('Manager', 'Managers', $nb);
-            case Team::ROLE_MEMBER:
-                return _n('Member', 'Members', $nb);
-        }
-        return '';
+        return match ($role) {
+            Team::ROLE_OWNER => _n('Manager', 'Managers', $nb),
+            Team::ROLE_MEMBER => _n('Member', 'Members', $nb),
+            default => '',
+        };
     }
 
     public static function getTeamItemtypes(): array
@@ -2651,7 +2567,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     public function getTeam(): array
     {
         $team = ProjectTeam::getTeamFor($this->getID(), true);
-       // Flatten the array
+        // Flatten the array
         $result = [];
         foreach ($team as $itemtype_members) {
             foreach ($itemtype_members as $member) {
@@ -2688,13 +2604,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         $req = [
-            'SELECT' => Project::getTable() . '.id',
-            'FROM' => Project::getTable(),
+            'SELECT' => self::getTable() . '.id',
+            'FROM' => self::getTable(),
             'LEFT JOIN' => [
                 ProjectState::getTable() => [
                     'FKEY' => [
                         ProjectState::getTable() => 'id',
-                        Project::getTable() => 'projectstates_id'
+                        self::getTable() => 'projectstates_id'
                     ]
                 ]
             ],
@@ -2711,7 +2627,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         ];
 
         if ($search_in_team) {
-            $team_sub_query = new \Glpi\DBAL\QuerySubQuery([
+            $team_sub_query = new QuerySubQuery([
                 'SELECT' => [
                     'projects_id'
                 ],
@@ -2723,7 +2639,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             ]);
 
-            $req['WHERE'][0]['OR'][Project::getTable() . '.id'] = $team_sub_query;
+            $req['WHERE'][0]['OR'][self::getTable() . '.id'] = $team_sub_query;
         }
 
         return iterator_to_array($DB->request($req), false);
@@ -2750,13 +2666,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
 
         $req = [
-            'SELECT' => Project::getTable() . '.id',
-            'FROM' => Project::getTable(),
+            'SELECT' => self::getTable() . '.id',
+            'FROM' => self::getTable(),
             'LEFT JOIN' => [
                 ProjectState::getTable() => [
                     'FKEY' => [
                         ProjectState::getTable() => 'id',
-                        Project::getTable() => 'projectstates_id'
+                        self::getTable() => 'projectstates_id'
                     ]
                 ]
             ],
@@ -2772,7 +2688,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             ]
         ];
 
-        $groups_sub_query = new \Glpi\DBAL\QuerySubQuery([
+        $groups_sub_query = new QuerySubQuery([
             'SELECT' => [
                 'groups_id'
             ],
@@ -2795,7 +2711,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
             }
 
-            $team_sub_query = new \Glpi\DBAL\QuerySubQuery([
+            $team_sub_query = new QuerySubQuery([
                 'SELECT' => [
                     'projects_id'
                 ],
@@ -2805,7 +2721,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 ]
             ]);
 
-            $req['WHERE'][0]['OR'][Project::getTable() . '.id'] = $team_sub_query;
+            $req['WHERE'][0]['OR'][self::getTable() . '.id'] = $team_sub_query;
         }
 
         return iterator_to_array($DB->request($req), false);
@@ -2816,6 +2732,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @param string $itemtype The itemtype (User or Group)
      * @return void
+     * @used-by Central
      */
     public static function showListForCentral(string $itemtype): void
     {
@@ -3002,9 +2919,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => '450',
-            'table'              => Project::getTable(),
+            'table'              => self::getTable(),
             'field'              => 'name',
-            'name'               => Project::getTypeName(1),
+            'name'               => self::getTypeName(1),
             'massiveaction'      => false,
             'searchtype'         => ['equals', 'notequals'],
             'datatype'           => 'dropdown',
