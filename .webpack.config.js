@@ -174,7 +174,7 @@ var filesToCopy = [
     },
     {
         package: '@tabler/icons-webfont',
-        from: '{fonts/*,tabler-icons.scss}',
+        from: 'dist/{fonts/*,tabler-icons.scss}',
         to: scssOutputPath,
     },
     {
