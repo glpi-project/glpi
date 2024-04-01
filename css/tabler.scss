@@ -53,6 +53,6 @@ $fontDir: "../css/lib/fontsource/inter/files";
     --tblr-font-sans-serif: inter, -apple-system, blinkmacsystemfont, san francisco, segoe ui, roboto, helvetica neue, sans-serif;
 }
 
-$ti-font-path: "../css/lib/tabler/icons-webfont/fonts";
+$ti-font-path: "../css/lib/tabler/icons-webfont/dist/fonts";
 
-@import "~@tabler/icons-webfont/tabler-icons";
+@import "~@tabler/icons-webfont/dist/tabler-icons";
