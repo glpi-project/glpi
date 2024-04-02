@@ -189,7 +189,7 @@ final class AssetDefinition extends CommonDBTM
         $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
         usort(
             $capacities,
-            fn (CapacityInterface $a, CapacityInterface $b) => strcasecmp($a->getLabel(), $b->getLabel())
+            fn (CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
         );
 
         TemplateRenderer::getInstance()->display(
