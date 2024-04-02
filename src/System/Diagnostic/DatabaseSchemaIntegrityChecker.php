@@ -531,6 +531,9 @@ class DatabaseSchemaIntegrityChecker
             '/(UNIQUE|FULLTEXT)\s*(`|\()/' => '$1 KEY $2',
             // Always have a key identifier (except on PRIMARY key)
             '/(?<!PRIMARY )KEY\s*\((`\w+`)\)/' => 'KEY $1 ($1)',
+            // Ignore length on indexes when value is `250`
+            // MariaDB in some recent version (at least 10.11.7) seems to mention it on some indexes, but we do not know why.
+            '/(`\w+`)\(250\)/' => '$1',
         ];
         $indexes = preg_replace(array_keys($indexes_replacements), array_values($indexes_replacements), $indexes);
         if (!$this->strict) {
