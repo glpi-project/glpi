@@ -3910,6 +3910,7 @@ JS;
                   : CFG_GLPI['root_doc']+'/public/lib/tinymce/skins/ui/oxide',
                body_class: 'rich_text_container',
                content_css: '{$content_css}',
+               highlight_on_focus: false,
 
                min_height: 150,
                resize: true,
@@ -3942,6 +3943,10 @@ JS;
                // Misc options
                browser_spellcheck: true,
                cache_suffix: '{$cache_suffix}',
+
+               // Security options
+               // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
+               sandbox_iframes: false,
 
                setup: function(editor) {
                   // "required" state handling
