@@ -47,6 +47,7 @@ use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeTime;
@@ -257,6 +258,7 @@ class AnswersSet extends DbTestCase
                 ->addQuestion("Observer", QuestionTypeObserver::class)
                 ->addQuestion("Assignee", QuestionTypeAssignee::class)
                 ->addQuestion("Urgency", QuestionTypeUrgency::class)
+                ->addQuestion("Request type", QuestionTypeRequestType::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -279,7 +281,8 @@ class AnswersSet extends DbTestCase
                 Group::getForeignKeyField() . '-1',
                 Supplier::getForeignKeyField() . '-1'
             ],
-            $this->getQuestionId($form, "Urgency") => 2
+            $this->getQuestionId($form, "Urgency") => 2,
+            $this->getQuestionId($form, "Request type") => 1
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

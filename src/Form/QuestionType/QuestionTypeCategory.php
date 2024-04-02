@@ -66,6 +66,11 @@ enum QuestionTypeCategory: string
     case URGENCY = "urgency";
 
     /**
+     * Question that expect a request type
+     */
+    case REQUEST_TYPE = "request_type";
+
+    /**
      * Get category label
      * @return string
      */
@@ -77,6 +82,7 @@ enum QuestionTypeCategory: string
             self::DATE_AND_TIME => __("Date and time"),
             self::ACTORS => __("Actors"),
             self::URGENCY => __("Urgency"),
+            self::REQUEST_TYPE => __("Request type"),
         };
     }
 }
