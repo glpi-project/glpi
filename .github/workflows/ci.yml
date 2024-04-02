@@ -192,11 +192,12 @@ jobs:
         run: |
           docker-compose exec -T app .github/actions/test_javascript.sh
       - name: "E2E tests"
+        id: "e2e"
         if: env.skip != 'true'
         run: |
           docker-compose exec -T app .github/actions/test_tests-e2e.sh
       - name: "Upload Cypress screenshots"
-        if: env.skip != 'true' && failure()
+        if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
         uses: actions/upload-artifact@v2
         with:
           name: cypress-screenshots
