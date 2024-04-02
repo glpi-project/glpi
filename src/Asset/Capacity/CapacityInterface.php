@@ -55,6 +55,14 @@ interface CapacityInterface
     public function getDescription(): string;
 
     /**
+     * Get the icon of the capacity.
+     * This icon is displayed in the capacity management interface along the label.
+     *
+     * @return string
+     */
+    public function getIcon(): string;
+
+    /**
      * Get the search options related to the capacity.
      *
      * @param class-string<\Glpi\Asset\Asset> $classname
