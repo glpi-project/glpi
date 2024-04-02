@@ -1114,6 +1114,87 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'datatype'           => 'bool'
         ];
 
+        $tab[] = [
+            'id'                 => 'projecttask_team',
+            'name'               => ProjectTaskTeam::getTypeName(),
+        ];
+
+        $tab[] = [
+            'id'                 => '87',
+            'table'              => User::getTable(),
+            'field'              => 'name',
+            'name'               => User::getTypeName(2),
+            'forcegroupby'       => true,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'          => 'itemtype_item_revert',
+                'specific_itemtype' => 'User',
+                'beforejoin'        => [
+                    'table'      => ProjectTaskTeam::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'child',
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '88',
+            'table'              => Group::getTable(),
+            'field'              => 'completename',
+            'name'               => Group::getTypeName(2),
+            'forcegroupby'       => true,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'          => 'itemtype_item_revert',
+                'specific_itemtype' => 'Group',
+                'beforejoin'        => [
+                    'table'      => ProjectTaskTeam::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'child',
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '89',
+            'table'              => Supplier::getTable(),
+            'field'              => 'name',
+            'name'               => Supplier::getTypeName(2),
+            'forcegroupby'       => true,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'          => 'itemtype_item_revert',
+                'specific_itemtype' => 'Supplier',
+                'beforejoin'        => [
+                    'table'      => ProjectTaskTeam::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'child',
+                    ]
+                ]
+            ]
+        ];
+
+        $tab[] = [
+            'id'                 => '90',
+            'table'              => Contact::getTable(),
+            'field'              => 'name',
+            'name'               => Contact::getTypeName(2),
+            'forcegroupby'       => true,
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'          => 'itemtype_item_revert',
+                'specific_itemtype' => 'Contact',
+                'beforejoin'        => [
+                    'table'      => ProjectTaskTeam::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'child',
+                    ]
+                ]
+            ]
+        ];
+
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
@@ -1695,6 +1776,31 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             return;
         }
 
+        $options = [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => ($itemtype === 'User') ? 87 : 88, // 87 = ProjectTask teams - Users, 88 = ProjectTask teams - Groups
+                    'searchtype' => 'equals',
+                    'value' => ($itemtype === 'User') ? 'myself' : 'mygroups' // 'myself' or 'mygroups'
+                ]
+            ]
+        ];
+
+        // Retrieve finished project states to exclude them from the search
+        $project_states = (new ProjectState())->find([
+            'is_finished' => 1
+        ]);
+
+        foreach ($project_states as $state) {
+            $options['criteria'][] = [
+                'link' => 'AND',
+                'field' => 12,
+                'searchtype' => 'notequals',
+                'value' => $state['id']
+            ];
+        }
+
         $displayed_row_count = min(count($projecttasks_id), (int)$_SESSION['glpidisplay_count_on_home']);
 
         $twig_params = [
@@ -1705,7 +1811,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                         'colspan' => 4,
                         'content' => sprintf(
                             '<a href="%s">%s</a>',
-                            htmlspecialchars(self::getSearchURL()),
+                            htmlspecialchars(self::getSearchURL() . '?' . Toolbox::append_params($options)),
                             Html::makeTitle(__('Ongoing projects tasks'), $displayed_row_count, count($projecttasks_id))
                         ),
                     ]
