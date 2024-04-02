@@ -1714,6 +1714,8 @@ class AuthLDAP extends CommonDBTM
             $host = $hostname;
         }
 
+        $errno = null;
+        $errstr = null;
         if (empty($hostname)) {
             $errno = 0;
             $errstr = __('No hostname provided');
