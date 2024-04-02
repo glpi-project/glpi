@@ -9127,6 +9127,88 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ]
         ];
 
+        // Test environment data
+        if (GLPI_ENVIRONMENT_TYPE === 'testing') {
+            $root_entity = array_filter($tables['glpi_entities'], static fn ($e) => $e['id'] === 0);
+            $e2e_entity = array_shift($root_entity);
+            $e2e_entity = array_replace($e2e_entity, [
+                'id' => 1,
+                'name' => 'E2ETestEntity',
+                'entities_id' => 0,
+                'completename' => __('Root entity') . ' > E2ETestEntity',
+                'level' => 2,
+            ]);
+            $tables['glpi_entities'][] = $e2e_entity;
+
+            // New e2e super-admin user (login: e2e_tests, password: glpi)
+            $default_glpi_user = array_filter($tables['glpi_users'], static fn ($u) => $u['id'] === self::USER_GLPI);
+            $e2e_user = array_shift($default_glpi_user);
+            $e2e_user = array_replace($e2e_user, [
+                'id' => 7,
+                'name' => 'e2e_tests',
+                'realname' => 'E2E Tests',
+            ]);
+            $tables['glpi_users'][] = $e2e_user;
+
+            // Assign e2e user all default profiles on the e2e entity
+            $tables['glpi_profiles_users'][] = [
+                'id' => 6,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 7,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 8,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 9,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_ADMIN,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 10,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 11,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+            $tables['glpi_profiles_users'][] = [
+                'id' => 12,
+                'users_id' => 7,
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'entities_id' => 1,
+                'is_recursive' => 1,
+                'is_dynamic' => 0,
+            ];
+        }
+
         return $tables;
     }
 };

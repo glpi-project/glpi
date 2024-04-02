@@ -20,6 +20,7 @@
 phpunit.xml
 /tests/code-coverage/
 /tests/coverage-*/
+/tests/cypress/screenshots/
 /tests/files/
 /tests/.env
 /nbproject
