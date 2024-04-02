@@ -137,7 +137,6 @@ class Auth extends CommonGLPI
                 'links' => [
                     'search' => AuthLDAP::getSearchURL(false),
                     'add'    => AuthLDAP::getFormURL(false),
-                    '<i class="ti ti-stethoscope" title="' . __('LDAP Tests') . '"></i><span class="d-none d-xxl-block">' . __('LDAP Tests') . '</span>' => '/front/authldap.test.php',
                 ],
             ];
 
