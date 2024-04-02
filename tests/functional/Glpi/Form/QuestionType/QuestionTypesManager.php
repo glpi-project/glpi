@@ -81,6 +81,7 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::LONG_ANSWER,
             QuestionTypeCategory::DATE_AND_TIME,
             QuestionTypeCategory::ACTORS,
+            QuestionTypeCategory::URGENCY,
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -127,6 +128,13 @@ class QuestionTypesManager extends DbTestCase
                 new \Glpi\Form\QuestionType\QuestionTypeRequester(),
                 new \Glpi\Form\QuestionType\QuestionTypeObserver(),
                 new \Glpi\Form\QuestionType\QuestionTypeAssignee(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::URGENCY,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeUrgency(),
             ]
         ];
     }

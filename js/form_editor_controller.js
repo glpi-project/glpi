@@ -844,7 +844,13 @@ class GlpiFormEditorController
         tiny_mce_to_init.forEach((config) => tinyMCE.init(config));
 
         // Init the select2
-        select2_to_init.forEach((config) => setupAjaxDropdown(config));
+        select2_to_init.forEach((config) => {
+            if (config.type === "ajax") {
+                setupAjaxDropdown(config);
+            } else if (config.type === "adapt") {
+                setupAdaptDropdown(config);
+            }
+        });
 
         // Init tooltips
         const tooltip_trigger_list = copy.find('[data-bs-toggle="tooltip"]');

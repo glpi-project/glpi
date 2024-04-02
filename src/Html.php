@@ -4788,106 +4788,22 @@ JAVASCRIPT
         $templateresult    = $params["templateResult"] ?? "templateResult";
         $templateselection = $params["templateSelection"] ?? "templateSelection";
 
-        $js = "$(function() {
-         const select2_el = $('#$id').select2({
-            $placeholder
-            width: '$width',
-            dropdownAutoWidth: true,
-            dropdownParent: $('#$id').closest('div.modal, div.dropdown-menu, body'),
-            quietMillis: 100,
-            minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
-            matcher: function(params, data) {
-               // store last search in the global var
-               query = params;
+        $js = <<<JS
+            select2_configs['{$id}'] = {
+                type: 'adapt',
+                field_id: '{$id}',
+                width: '{$width}',
+                placeholder: '{$placeholder}',
+                ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
+                templateresult: {$templateresult},
+                templateselection: {$templateselection}
+            };
+JS;
 
-               // If there are no search terms, return all of the data
-               if ($.trim(params.term) === '') {
-                  return data;
-               }
+        if ($params['init']) {
+            $js .= "setupAdaptDropdown(window.select2_configs['{$id}']);";
+        }
 
-               var searched_term = getTextWithoutDiacriticalMarks(params.term);
-               var data_text = typeof(data.text) === 'string'
-                  ? getTextWithoutDiacriticalMarks(data.text)
-                  : '';
-               var select2_fuzzy_opts = {
-                  pre: '<span class=\"select2-rendered__match\">',
-                  post: '</span>',
-               };
-
-               if (data_text.indexOf('>') !== -1 || data_text.indexOf('<') !== -1) {
-                  // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                  data_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data_text);
-               }
-
-               // Skip if there is no 'children' property
-               if (typeof data.children === 'undefined') {
-                  var match  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
-                  if (match == null) {
-                     return false;
-                  }
-                  data.rendered_text = match.rendered_text;
-                  data.score = match.score;
-                  return data;
-               }
-
-               // `data.children` contains the actual options that we are matching against
-               // also check in `data.text` (optgroup title)
-               var filteredChildren = [];
-
-               $.each(data.children, function (idx, child) {
-                  var child_text = typeof(child.text) === 'string'
-                     ? getTextWithoutDiacriticalMarks(child.text)
-                     : '';
-
-                  if (child_text.indexOf('>') !== -1 || child_text.indexOf('<') !== -1) {
-                     // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                     child_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child_text);
-                  }
-
-                  var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
-                  var match_text  = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
-                  if (match_child !== null || match_text !== null) {
-                     if (match_text !== null) {
-                        data.score         = match_text.score;
-                        data.rendered_text = match_text.rendered;
-                     }
-
-                     if (match_child !== null) {
-                        child.score         = match_child.score;
-                        child.rendered_text = match_child.rendered;
-                     }
-                     filteredChildren.push(child);
-                  }
-               });
-
-               // If we matched any of the group's children, then set the matched children on the group
-               // and return the group object
-               if (filteredChildren.length) {
-                  var modifiedData = $.extend({}, data, true);
-                  modifiedData.children = filteredChildren;
-
-                  // You can return modified objects from here
-                  // This includes matching the `children` how you want in nested data sets
-                  return modifiedData;
-               }
-
-               // Return `null` if the term should not be displayed
-               return null;
-            },
-            templateResult: $templateresult,
-            templateSelection: $templateselection,
-         })
-         .bind('setValue', function(e, value) {
-            $('#$id').val(value).trigger('change');
-         })
-         $('label[for=$id]').on('click', function(){ $('#$id').select2('open'); });
-         $('#$id').on('select2:open', function(e){
-            const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
-            if (search_input) {
-               search_input.focus();
-            }
-         });
-      });";
         return Html::scriptBlock($js);
     }
 
@@ -5002,6 +4918,7 @@ JAVASCRIPT
 
         $js = <<<JS
             select2_configs['{$field_id}'] = {
+                type: 'ajax',
                 field_id: '{$field_id}',
                 width: '{$width}',
                 multiple: '{$multiple}',
