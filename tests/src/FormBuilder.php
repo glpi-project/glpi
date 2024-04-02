@@ -323,7 +323,7 @@ class FormBuilder
      * Add a destination to the form
      *
      * @param string $itemtype Destination itemtype
-     * @param array  $name     Destination name
+     * @param string $name     Destination name
      * @param array  $config   Config values
      *
      * @return self To allow chain calls

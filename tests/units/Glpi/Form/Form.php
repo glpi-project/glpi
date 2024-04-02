@@ -909,7 +909,6 @@ class Form extends DbTestCase
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
                 ->addAccessControl(AllowList::class, new AllowListConfig())
-                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
@@ -919,7 +918,6 @@ class Form extends DbTestCase
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
-                ->addDestination(FormDestinationTicket::class, ['name' => 'Destination 1'])
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
