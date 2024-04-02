@@ -1280,6 +1280,76 @@ DIFF,
                 'ignore_unsigned_keys_migration' => true
             ]
         );
+
+        // Always ignore key length when value is `250`,
+        // but detect differences when value is not `250`.
+        yield $convert_to_provider_entry(
+            [
+                [
+                    'name' => sprintf('table_%s', ++$table_increment),
+                    'raw_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `key` (`key`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB
+SQL,
+                    'normalized_sql' => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `key` (`key`),
+  KEY `uid` (`uid`)
+) ENGINE=InnoDB
+SQL,
+                    'effective_sql'  => <<<SQL
+CREATE TABLE `table_{$table_increment}` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `key` varchar(255) NOT NULL,
+  `uid` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`(250)),
+  KEY `key` (`key`),
+  KEY `uid` (`uid`(100))
+) ENGINE=InnoDB
+SQL,
+                    'differences'    => [
+                        'type' => 'altered_table',
+                        'diff' => <<<DIFF
+--- Expected database schema
++++ Current database schema
+@@ @@
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `key` (`key`),
+-  KEY `uid` (`uid`)
++  KEY `uid` (`uid`(100))
+ ) ENGINE=InnoDB
+
+DIFF,
+                    ],
+                ],
+            ],
+            [
+                'strict' => true,
+                'allow_signed_keys' => false,
+                'ignore_innodb_migration' => false,
+                'ignore_timestamps_migration' => false,
+                'ignore_utf8mb4_migration' => false,
+                'ignore_dynamic_row_format_migration' => false,
+                'ignore_unsigned_keys_migration' => false,
+            ]
+        );
     }
 
     /**
