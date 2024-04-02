@@ -141,15 +141,6 @@ class Auth extends CommonGLPI
                 ],
             ];
 
-            $menu['options']['ldaptest'] = [
-                'icon'  => 'ti ti-stethoscope',
-                'title' => __('LDAP Tests'),
-                'page'  => '/front/authldap.test.php',
-                'links' => [
-                    '<i class="' . AuthLDAP::getIcon() . '" title="' . AuthLDAP::getTypeName(Session::getPluralNumber()) . '"></i><span class="d-none d-xxl-block">' . AuthLDAP::getTypeName(Session::getPluralNumber()) . '</span>' => AuthLDAP::getSearchURL(false),
-                ],
-            ];
-
             $menu['options']['imap'] = [
                 'icon'  => AuthMail::getIcon(),
                 'title' => AuthMail::getTypeName(Session::getPluralNumber()),
