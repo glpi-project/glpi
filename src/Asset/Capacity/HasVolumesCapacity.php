@@ -46,6 +46,11 @@ class HasVolumesCapacity extends AbstractCapacity
         return Item_Disk::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Item_Disk::getIcon();
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Item_Disk::rawSearchOptionsToAdd($classname::getType());

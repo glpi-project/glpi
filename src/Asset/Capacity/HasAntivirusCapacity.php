@@ -46,6 +46,11 @@ class HasAntivirusCapacity extends AbstractCapacity
         return ItemAntivirus::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return ItemAntivirus::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

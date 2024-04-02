@@ -48,6 +48,11 @@ class HasNotepadCapacity extends AbstractCapacity
         return Notepad::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Notepad::getIcon();
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Notepad::rawSearchOptionsToAdd();

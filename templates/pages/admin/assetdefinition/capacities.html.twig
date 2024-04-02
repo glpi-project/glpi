@@ -50,7 +50,10 @@
     <input type="hidden" name="_update_capacities" value="1" />
     {% for capacity in capacities %}
         {% set label %}
-            <span>{{ capacity.getLabel() }}</span>
+            <span class="d-inline-flex align-items-center">
+                <span>{{ capacity.getLabel() }}</span>
+                <i class="ms-1 {{ capacity.getIcon() }}"></i>
+            </span>
             {% if capacity.getDescription() is not empty %}
                 <small class="form-hint">
                     {{ capacity.getDescription() }}

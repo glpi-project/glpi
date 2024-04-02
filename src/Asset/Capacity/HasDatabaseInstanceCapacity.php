@@ -36,6 +36,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Database;
 use DatabaseInstance;
 use Session;
 
@@ -44,6 +45,11 @@ class HasDatabaseInstanceCapacity extends AbstractCapacity
     public function getLabel(): string
     {
         return DatabaseInstance::getTypeName(Session::getPluralNumber());
+    }
+
+    public function getIcon(): string
+    {
+        return Database::getIcon();
     }
 
     public function isUsed(string $classname): bool

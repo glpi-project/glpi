@@ -46,6 +46,11 @@ class HasNetworkPortCapacity extends AbstractCapacity
         return NetworkPort::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return NetworkPort::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

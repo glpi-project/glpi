@@ -47,6 +47,11 @@ class HasDocumentsCapacity extends AbstractCapacity
         return Document::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Document::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

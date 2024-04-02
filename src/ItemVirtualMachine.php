@@ -61,7 +61,7 @@ class ItemVirtualMachine extends CommonDBChild
 
     public static function getIcon()
     {
-        return 'ti ti-cpu';
+        return 'ti ti-box';
     }
 
     public function useDeletedToLockIfDynamic()

@@ -46,6 +46,11 @@ class HasVirtualMachineCapacity extends AbstractCapacity
         return ItemVirtualMachine::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return ItemVirtualMachine::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

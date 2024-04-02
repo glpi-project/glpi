@@ -47,6 +47,11 @@ class HasAppliancesCapacity extends AbstractCapacity
         return Appliance::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Appliance::getIcon();
+    }
+
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)

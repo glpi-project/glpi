@@ -47,6 +47,11 @@ class HasHistoryCapacity extends AbstractCapacity
         return Log::getTypeName();
     }
 
+    public function getIcon(): string
+    {
+        return Log::getIcon();
+    }
+
     #[Override]
     public function getDescription(): string
     {

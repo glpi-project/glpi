@@ -46,6 +46,11 @@ class IsRackableCapacity extends AbstractCapacity
         return Rack::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Rack::getIcon();
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Rack::rawSearchOptionsToAdd($classname::getType());

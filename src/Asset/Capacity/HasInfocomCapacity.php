@@ -45,6 +45,11 @@ class HasInfocomCapacity extends AbstractCapacity
         return Infocom::getTypeName();
     }
 
+    public function getIcon(): string
+    {
+        return Infocom::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [

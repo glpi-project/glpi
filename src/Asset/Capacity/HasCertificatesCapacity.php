@@ -47,6 +47,11 @@ class HasCertificatesCapacity extends AbstractCapacity
         return Certificate::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Certificate::getIcon();
+    }
+
     public function getSearchOptions(string $classname): array
     {
         return Certificate::rawSearchOptionsToAdd($classname);
