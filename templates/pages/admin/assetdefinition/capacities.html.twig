@@ -52,9 +52,7 @@
         {% set label %}
             <span class="d-inline-flex align-items-center">
                 <span>{{ capacity.getLabel() }}</span>
-                {% if capacity.getIcon() is not empty %}
-                    <i class="ms-1 {{ capacity.Icon() }}"></i>
-                {% endif %}
+                <i class="ms-1 {{ capacity.getIcon() }}"></i>
             </span>
             {% if capacity.getDescription() is not empty %}
                 <small class="form-hint">
