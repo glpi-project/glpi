@@ -64,7 +64,7 @@ GLPI.RichText.ContentTemplatesParameters = class {
         this.editor.ui.registry.addAutocompleter(
             'content_templates',
             {
-                ch: '{',
+                trigger: '{',
                 minChars: 0,
                 fetch: function (pattern) {
                     return that.fetchItems(pattern);
