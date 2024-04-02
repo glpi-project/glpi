@@ -125,10 +125,10 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
                 'itemtype'        => 'User',
-                'projecttasks_id' => $this->obj->fields['id']
+                'projects_id' => $this->obj->fields['projects_id']
             ]
         ]);
 
@@ -157,10 +157,10 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
                 'itemtype'        => 'Group',
-                'projecttasks_id' => $this->obj->fields['id']
+                'projects_id' => $this->obj->fields['projects_id']
             ]
         ]);
 
@@ -185,10 +185,10 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
                 'itemtype'        => 'Contact',
-                'projecttasks_id' => $this->obj->fields['id']
+                'projects_id' => $this->obj->fields['projects_id']
             ]
         ]);
 
@@ -220,10 +220,10 @@ class NotificationTargetProjectTask extends NotificationTarget
 
         $iterator = $DB->request([
             'SELECT' => 'items_id',
-            'FROM'   => 'glpi_projecttaskteams',
+            'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
                 'itemtype'        => 'Supplier',
-                'projecttasks_id' => $this->obj->fields['id']
+                'projecttasks_id' => $this->obj->fields['projects_id']
             ]
         ]);
 
@@ -345,7 +345,7 @@ class NotificationTargetProjectTask extends NotificationTarget
 
        // Team infos
         $restrict = ['projecttasks_id' => $item->getField('id')];
-        $items    = getAllDataFromTable('glpi_projecttaskteams', $restrict);
+        $items    = getAllDataFromTable('glpi_projectteams', $restrict);
 
         $this->data['teammembers'] = [];
         if (count($items)) {
