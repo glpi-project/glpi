@@ -229,8 +229,9 @@ class DbTestCase extends \GLPITestCase
      *
      * @param string $itemtype
      * @param array $input
+     * @param array $skip_fields Fields that wont be checked after update
      */
-    protected function updateItem($itemtype, $id, $input)
+    protected function updateItem($itemtype, $id, $input, $skip_fields = [])
     {
         $item = new $itemtype();
         $input['id'] = $id;
@@ -238,9 +239,9 @@ class DbTestCase extends \GLPITestCase
         $success = $item->update($input);
         $this->boolean($success)->isTrue();
 
-       // Remove special fields
-        $input = array_filter($input, function ($key) {
-            return strpos($key, '_') !== 0;
+        // Remove special fields
+        $input = array_filter($input, function ($key) use ($skip_fields) {
+            return !in_array($key, $skip_fields) && strpos($key, '_') !== 0;
         }, ARRAY_FILTER_USE_KEY);
 
         $this->checkInput($item, $id, $input);
