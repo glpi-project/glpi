@@ -1291,6 +1291,7 @@ class Ticket extends CommonITILObject
                 ],
                 [
                     'condition'     => RuleTicket::ONUPDATE,
+                    'only_criteria' => $changes,
                 ]
             );
             $input = Toolbox::stripslashes_deep($input);
