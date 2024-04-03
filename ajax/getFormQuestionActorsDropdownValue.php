@@ -34,9 +34,29 @@
  */
 
 use Glpi\Form\Dropdown\FormActorsDropdown;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
 
 include(__DIR__ . '/getAbstractRightDropdownValue.php');
 
-// TODO: Add right check
+Session::checkLoginUser();
+
+if (Session::getCurrentInterface() !== 'central') {
+    $questions = (new Question())->find([
+        'type' => [
+            QuestionTypeAssignee::class,
+            QuestionTypeObserver::class,
+            QuestionTypeRequester::class
+        ]
+    ]);
+
+    // Check if the user can view at least one question
+    if (array_reduce($questions, fn($acc, $question) => $acc || $question->canViewItem(), false)) {
+        http_response_code(403);
+        exit();
+    }
+}
 
 show_rights_dropdown(FormActorsDropdown::class);

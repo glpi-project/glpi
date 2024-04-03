@@ -38,7 +38,6 @@ namespace Glpi\Form\QuestionType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use Override;
-use User;
 
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
@@ -58,15 +57,21 @@ abstract class AbstractQuestionTypeActors implements QuestionTypeInterface
     abstract public function getAllowedActorTypes(): array;
 
     #[Override]
-    public function validateExtraDataInput(?array $input): bool
+    public static function formatDefaultValueForDB(mixed $value): ?string
+    {
+        if (is_array($value)) {
+            return implode(',', $value);
+        }
+
+        return $value;
+    }
+
+    #[Override]
+    public static function validateExtraDataInput(array $input): bool
     {
         $allowed_keys = [
             'is_multiple_actors'
         ];
-
-        if ($input === null) {
-            return false;
-        }
 
         return empty(array_diff(array_keys($input), $allowed_keys))
             && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
@@ -104,12 +109,18 @@ abstract class AbstractQuestionTypeActors implements QuestionTypeInterface
             return [];
         }
 
-        $default_values = explode(',', $question->fields['default_value']);
+        $default_values = [];
+        $raw_default_values = explode(',', $question->fields['default_value']);
+        foreach ($raw_default_values as $raw_default_value) {
+            $entry = explode('-', $raw_default_value);
+            $default_values[$entry[0]][] = $entry[1];
+        }
+
         if ($multiple) {
             return $default_values;
         }
 
-        return [$default_values[0]];
+        return [key($default_values) => current($default_values)];
     }
 
     #[Override]

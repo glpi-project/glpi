@@ -37,11 +37,13 @@ namespace Glpi\Form\Dropdown;
 
 use AbstractRightsDropdown;
 use Group;
+use Override;
 use Supplier;
 use User;
 
 final class FormActorsDropdown extends AbstractRightsDropdown
 {
+    #[Override]
     protected static function getAjaxUrl(): string
     {
         /** @var array $CFG_GLPI */
@@ -50,6 +52,7 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         return $CFG_GLPI['root_doc'] . "/ajax/getFormQuestionActorsDropdownValue.php";
     }
 
+    #[Override]
     protected static function getTypes(): array
     {
         $allowed_types = [
@@ -65,6 +68,7 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         return $allowed_types;
     }
 
+    #[Override]
     public static function show(string $name, array $values, array $params = []): string
     {
         $params['width'] = '100%';

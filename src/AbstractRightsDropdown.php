@@ -80,12 +80,8 @@ abstract class AbstractRightsDropdown
         // Flatten values
         $dropdown_values = [];
         foreach ($values as $fkey => $ids) {
-            if (is_array($ids) || is_string($fkey)) {
-                foreach ($ids as $id) {
-                    $dropdown_values[] = $fkey . "-" . $id;
-                }
-            } else {
-                $dropdown_values[] = $ids;
+            foreach ($ids as $id) {
+                $dropdown_values[] = $fkey . "-" . $id;
             }
         }
 

@@ -57,9 +57,15 @@ abstract class AbstractQuestionTypeShortAnswer implements QuestionTypeInterface
     abstract public function getInputType(): string;
 
     #[Override]
-    public function validateExtraDataInput(?array $input): bool
+    public static function formatDefaultValueForDB(mixed $value): ?string
     {
-        return $input === null; // No extra data for this question type
+        return $value;
+    }
+
+    #[Override]
+    public static function validateExtraDataInput(array $input): bool
+    {
+        return empty($input); // No extra data for this question type
     }
 
     #[Override]

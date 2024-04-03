@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error, bootstrap */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_error, bootstrap, setupAjaxDropdown */
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -774,8 +774,6 @@ class GlpiFormEditorController
      * @returns {jQuery} Copy of the template
      */
     #copy_template(target, destination, action = "append") {
-        /* global setupAjaxDropdown */
-
         const copy = target.clone();
 
         // Keep track of rich text editors that will need to be initialized

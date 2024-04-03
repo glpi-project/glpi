@@ -51,6 +51,12 @@ class QuestionTypeDateTime implements QuestionTypeInterface
     }
 
     #[Override]
+    public static function formatDefaultValueForDB(mixed $value): ?string
+    {
+        return $value;
+    }
+
+    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::DATE_AND_TIME;
@@ -169,17 +175,13 @@ class QuestionTypeDateTime implements QuestionTypeInterface
     }
 
     #[Override]
-    public function validateExtraDataInput(?array $input): bool
+    public static function validateExtraDataInput(array $input): bool
     {
         $allowed_keys = [
             'is_default_value_current_time',
             'is_date_enabled',
             'is_time_enabled'
         ];
-
-        if ($input === null) {
-            return false;
-        }
 
         return empty(array_diff(array_keys($input), $allowed_keys))
             && array_reduce($input, fn($carry, $value) => $carry && preg_match('/^[01]$/', $value), true);
