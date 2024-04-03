@@ -221,4 +221,93 @@ class RuleRight extends DbTestCase
        // Clean session
         $this->login();
     }
+
+    public function testDefaultEntitygroupProfil()
+    {
+        $group = new \Group();
+        $groups_id = $group->add([
+            'name' => '_test_group_1',
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+
+       //prepare rules
+        $rules = new \RuleRight();
+        $rules_id = $rules->add([
+            'sub_type'     => 'RuleRight',
+            'name'         => 'test default entity group profil',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $criteria = new \RuleCriteria();
+        $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => TU_USER,
+        ]);
+        $criteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'MAIL_EMAIL',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => TU_USER . '@glpi.com',
+        ]);
+
+        $actions = new \RuleAction();
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // assign 'normal' profile
+        ]);
+
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_profiles_id_default',
+            'value'       => 5, // assign 'normal' default profile
+        ]);
+
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => 1, // assign '_test_child_1' entity
+        ]);
+
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => '_entities_id_default',
+            'value'       => 1, // assign '_test_child_1' default entity
+        ]);
+
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'specific_groups_id',
+            'value'       => $groups_id, //assign specific group
+        ]);
+
+        $actions->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'groups_id',
+            'value'       => $groups_id, // assign specifi default group
+        ]);
+
+       // login the user to force a real synchronisation and get it's glpi id
+        $this->login(TU_USER, TU_PASS, false);
+        $users_id = \User::getIdByName(TU_USER);
+        $users = \User::getById($users_id);
+        $this->integer($users_id);
+
+        // check default profile / Entity
+        $this->integer($users->fields['entities_id'])->isEqualTo(1);
+        $this->integer($users->fields['profiles_id'])->isEqualTo(5);
+        $this->integer($users->fields['groups_id'])->isEqualTo($groups_id);
+    }
 }
