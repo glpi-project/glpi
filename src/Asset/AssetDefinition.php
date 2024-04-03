@@ -105,20 +105,20 @@ final class AssetDefinition extends CommonDBTM
             return [
                 1 => self::createTabEntry(
                     __('Capacities'),
-                    0,
+                    count($item->getDecodedCapacitiesField()),
                     self::class,
                     'ti ti-adjustments'
                 ),
                 // 2 is reserved for "Fields"
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
-                    0,
+                    count($item->getDecodedProfilesField()),
                     self::class,
                     'ti ti-user-check'
                 ),
                 4 => self::createTabEntry(
                     _n('Translation', 'Translations', Session::getPluralNumber()),
-                    0,
+                    count($item->getDecodedTranslationsField()),
                     self::class,
                     'ti ti-language'
                 ),
@@ -289,19 +289,25 @@ final class AssetDefinition extends CommonDBTM
 
     private function showTranslationForm(): void
     {
+        global $CFG_GLPI;
+
         $translations = $this->getDecodedTranslationsField();
+        uksort(
+            $translations,
+            fn (string $lang_a, string $lang_b) => strnatcasecmp($CFG_GLPI['languages'][$lang_a][0], $CFG_GLPI['languages'][$lang_b][0])
+        );
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/translations.html.twig',
             [
                 'item' => $this,
                 'classname' => $this->getAssetClassName(),
-                'capacities' => $translations,
+                'translations' => $translations,
                 'languages_dropdown' => Dropdown::showLanguages('language', [
                     'display' => false,
                     'display_emptychoice' => true,
                     'width'   => '100%',
-                    'on_change' => 'getLanguagePlural(this.value);'
+                    'on_change' => 'setModalLanguagePlural(this.value);'
                 ])
             ]
         );
@@ -880,7 +886,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     }
 
 
-    private function getDecodedTranslationsField(): array
+    public function getDecodedTranslationsField(): array
     {
         if ($this->fields['translations'] === 'null') {
             return [];

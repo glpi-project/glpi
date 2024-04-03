@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2024 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,7 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set params = {} %}
@@ -40,53 +38,141 @@
 {# do not display footer with dates #}
 {% set params = params|merge({'formfooter': false}) %}
 
-{% block form_fields %}
-
-<div class="modal fade" id="newTranslation" tabindex="-1" role="dialog" aria-labelledby="newTranslationLabel">
+<div class="modal fade" id="TranslationModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">{{ __("Add translation") }}</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <label class="form-label" for="dropdown_language">{{ __('Language') }}</label>
-                    {{ languages_dropdown|raw }}
-                </div>
+            <form method="POST" action="{{ path("front/asset/assetdefinition.form.php") }}">
+                <input type="hidden" name="id" value="{{ item.fields['id'] }}">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
-                <div class="mb-3" id="translations_panel">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">{{ __("Add translation") }}</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                 </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label" for="dropdown_language">{{ __('Language') }}</label>
+                        {{ languages_dropdown|raw }}
+                    </div>
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save</button>
-            </div>
+                    <div class="mb-3" id="translations_panel">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" name="_save_translation">
+                        <i id="translation-modal-button-icon"></i>
+                        <span id="translation-modal-button-text"></span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <div class="d-flex">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newTranslation">
-        {{ __("New translation") }}
+    <button type="button" class="btn btn-primary add-translation" data-bs-toggle="modal" data-bs-target="#TranslationModal">
+        <i class="ti ti-plus"></i>
+        <span>{{ __("New translation") }}</span>
     </button>
 </div>
 
+<div class="table-responsive mt-3">
+    {% if translations|length == 0 %}
+        <span class="text-muted">{{ __("No translation has been added yet") }}</span>
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><i class="ti ti-language me-1"></i>{{ __("Language") }}</th>
+                    <th># {{ __("Translations") }}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for language, plurals in translations %}
+                <tr data-language="{{ language }}" data-plurals="{{ plurals|json_encode }}">
+                    <td>{{ config('languages')[language][0] }}</td>
+                    <td>
+                        {% include "pages/admin/assetdefinition/plurals.html.twig" with {
+                            'plurals': plurals,
+                        } only %}
+                    </td>
+                    <td>
+                        <span title="{{ __("Edit translation") }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <button type="button" class="btn btn-icon btn-ghost-secondary edit-translation" data-bs-toggle="modal">
+                                <i class="ti ti-pencil"></i>
+                            </button>
+                        </span>
+                        <span title="{{ __("Delete translation") }}" data-bs-toggle="tooltip" data-bs-placement="top">
+                            <a href="{{ path("front/asset/assetdefinition.form.php?id=" ~ item.fields['id'] ~ "&_delete_translation=1&language=" ~ language) }}" class="btn btn-icon btn-ghost-danger">
+                                <i class="ti ti-trash-x"></i>
+                            </button>
+                        </span>
+                    </td>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
 <script>
-    var getLanguagePlural = function(language) {
+    $(document).ready(function() {
+        $('.add-translation').click(function() {
+            // empty the old plural inputs
+            $('#translations_panel').html("");
+
+            // reset the language dropdown
+            $('#TranslationModal select[name=language]').val('').trigger('change');
+
+            $('#translation-modal-button-icon').attr('class', '').addClass('ti ti-plus');
+            $('#translation-modal-button-text').text("{{ __("Add") }}");
+        });
+
+        $('.edit-translation').click(function() {
+            var language = $(this).closest('tr').data('language');
+            var plurals = $(this).closest('tr').data('plurals');
+
+            $('#dropdown_language').val(language);
+            setModalLanguagePlural(language, plurals);
+
+            $('#translation-modal-button-icon').attr('class', '').addClass('ti ti-device-floppy');
+            $('#translation-modal-button-text').text("{{ __("Save") }}");
+
+            $('#TranslationModal').modal('show');
+        });
+
+    });
+
+    let avoid_language_recursion = false;
+    const setModalLanguagePlural = function(language, plurals_values) {
+        if (avoid_language_recursion) {
+            return;
+        }
+
+        plurals_values = plurals_values || {};
+        console.log(language, plurals_values)
+
+        // empty the old plural inputs
+        $('#translations_panel').html("");
+
+        // Set the language dropdown value (we redo it for edit case)
+        avoid_language_recursion = true;
+        $('#TranslationModal select[name=language]').val(language).trigger('change');
+        avoid_language_recursion = false;
+
         $.get("{{ path('ajax/getPlurals.php') }}", {
             id: "{{ item.fields['system_name'] }}",
             language: language
         }, function(data) {
-            $('#translations_panel').empty();
-
-            // Append new input for each language in data
+            // Append new input for each plural in data
             data.forEach(function(pluralForm) {
                 let helper = pluralForm.examples;
                 if (pluralForm.formula) {
                     helper = pluralForm.formula + ' (' + pluralForm.examples + ')';
                 }
 
+                const plural_value = plurals_values[pluralForm.id] || '';
                 var plural_html = `
                     <div class="mb-2">
                         <label class="form-label" for="plural_${pluralForm.id}">
@@ -96,13 +182,12 @@
                                 <i class="ti ti-help"></i>
                             </span>
                         </label>
-                        <input type="text" class="form-control" id="plural_${pluralForm.id}" name="plural_${pluralForm.id}" value="">
+                        <input type="text" class="form-control" id="plural_${pluralForm.id}" name="plurals[${pluralForm.id}]" value="${plural_value}">
                     </div>
                 `;
                 $('#translations_panel').append(plural_html);
+
             });
         });
     };
 </script>
-
-{% endblock %}
