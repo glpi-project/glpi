@@ -39,6 +39,7 @@ use DbTestCase;
 use Glpi\Plugin\Hooks;
 use Log;
 use PHPMailer\PHPMailer\PHPMailer;
+use Profile;
 use Session;
 
 /* Test for inc/config.class.php */
@@ -930,5 +931,48 @@ class Config extends DbTestCase
         $this->integer($config_id)->isGreaterThan(0);
         $total_number = countElementsInTable("glpi_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);
         $this->integer($total_number)->isGreaterThan(0);
+    }
+
+    /**
+     * Test the `prepareInputForUpdate` method.
+     *
+     * @return void
+     */
+    public function testPrepareInputForUpdate(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Ensure the profile used for locks is valid.
+        $config = new \Config();
+        $default_lock_profile = $CFG_GLPI['lock_lockprofile_id']; // 8
+
+        // Invalid profile 1: simplified interface
+        $config->prepareInputForUpdate([
+            'lock_lockprofile_id' => getItemByTypeName(Profile::class, "Self-Service", true),
+        ]);
+        $this->integer((int) $CFG_GLPI['lock_lockprofile_id'])->isEqualTo($default_lock_profile);
+        $this->hasSessionMessages(ERROR, [
+            "The specified profile doesn't exist or is not allowed to access the central interface."
+        ]);
+
+        // Invalid profile 2: doesn't exist
+        $config->prepareInputForUpdate([
+            'lock_lockprofile_id' => 674568,
+        ]);
+        $this->integer((int) $CFG_GLPI['lock_lockprofile_id'])->isEqualTo($default_lock_profile);
+        $this->hasSessionMessages(ERROR, [
+            "The specified profile doesn't exist or is not allowed to access the central interface."
+        ]);
+
+        // Valid profile
+        $super_admin = getItemByTypeName(Profile::class, "Super-Admin", true);
+        $this->integer((int) $CFG_GLPI['lock_lockprofile_id'])->isNotEqualTo($super_admin);
+        $config->prepareInputForUpdate([
+            'lock_lockprofile_id' => $super_admin,
+        ]);
+        $this->integer((int) $CFG_GLPI['lock_lockprofile_id'])->isEqualTo($super_admin);
     }
 }
