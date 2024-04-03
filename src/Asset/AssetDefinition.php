@@ -299,7 +299,7 @@ final class AssetDefinition extends CommonDBTM
                 'capacities' => $translations,
                 'languages_dropdown' => Dropdown::showLanguages('language', [
                     'display' => false,
-                    'value'   => $_SESSION['glpilanguage'],
+                    'display_emptychoice' => true,
                     'width'   => '100%',
                     'on_change' => 'getLanguagePlural(this.value);'
                 ])
