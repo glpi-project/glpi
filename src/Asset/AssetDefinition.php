@@ -672,6 +672,14 @@ final class AssetDefinition extends CommonDBTM
         ];
 
         $search_options[] = [
+            'id'            => 8,
+            'table'         => self::getTable(),
+            'field'         => 'translations',
+            'name'          => __('Translations'),
+            'datatype'      => 'specific'
+        ];
+
+        $search_options[] = [
             'id'   => 'capacities',
             'name' => __('Capacities')
         ];
@@ -703,6 +711,8 @@ final class AssetDefinition extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
+        global $CFG_GLPI;
+
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -711,6 +721,18 @@ final class AssetDefinition extends CommonDBTM
             case 'icon':
                 $value = htmlspecialchars($values[$field]);
                 return sprintf('<i class="ti %s"></i>', $value);
+            case 'translations':
+                $translations = json_decode($values[$field], associative: true);
+                $langs_list = "";
+                foreach ($translations as $language => $plurals) {
+                    $langs_list .= "<li class='mb-1'>" . $CFG_GLPI['languages'][$language][0] . ":" . TemplateRenderer::getInstance()->render(
+                        'pages/admin/assetdefinition/plurals.html.twig',
+                        [
+                            'plurals' => $plurals,
+                        ]
+                    ) . "</li>";
+                }
+                return "<ul>$langs_list</ul>";
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
