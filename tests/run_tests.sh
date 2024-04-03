@@ -201,7 +201,7 @@ $APPLICATION_ROOT/.github/actions/init_containers-start.sh
 $APPLICATION_ROOT/.github/actions/init_show-versions.sh
 
 # Install dependencies if required
-[[ "$BUILD" = false ]] || docker-compose exec -T app .github/actions/init_build.sh
+[[ "$BUILD" = false ]] || docker compose exec -T app .github/actions/init_build.sh
 
 INSTALL_TESTS_RUN=false
 
@@ -232,67 +232,67 @@ run_single_test () {
       # Misc lint (licence headers and locales) is not executed here as their output is not configurable yet
       # and it would be a pain to handle rolling back of their changes.
       # TODO Add ability to simulate locales extact without actually modifying locale files.
-         docker-compose exec -T app .github/actions/lint_php-lint.sh \
-      && docker-compose exec -T app .github/actions/lint_js-lint.sh \
-      && docker-compose exec -T app .github/actions/lint_scss-lint.sh \
-      && docker-compose exec -T app .github/actions/lint_twig-lint.sh \
+         docker compose exec -T app .github/actions/lint_php-lint.sh \
+      && docker compose exec -T app .github/actions/lint_js-lint.sh \
+      && docker compose exec -T app .github/actions/lint_scss-lint.sh \
+      && docker compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "lint_php")
-         docker-compose exec -T app .github/actions/lint_php-lint.sh \
+         docker compose exec -T app .github/actions/lint_php-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "lint_js")
-         docker-compose exec -T app .github/actions/lint_js-lint.sh \
+         docker compose exec -T app .github/actions/lint_js-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "lint_scss")
-         docker-compose exec -T app .github/actions/lint_scss-lint.sh \
+         docker compose exec -T app .github/actions/lint_scss-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "lint_twig")
-         docker-compose exec -T app .github/actions/lint_twig-lint.sh \
+         docker compose exec -T app .github/actions/lint_twig-lint.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "install")
-         docker-compose exec -T app .github/actions/test_install.sh \
+         docker compose exec -T app .github/actions/test_install.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "update")
          $APPLICATION_ROOT/.github/actions/init_initialize-0.80-db.sh \
       && $APPLICATION_ROOT/.github/actions/init_initialize-9.5-db.sh \
-      && docker-compose exec -T app .github/actions/test_update-from-older-version.sh \
-      && docker-compose exec -T app .github/actions/test_update-from-9.5.sh \
+      && docker compose exec -T app .github/actions/test_update-from-older-version.sh \
+      && docker compose exec -T app .github/actions/test_update-from-9.5.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "units")
-         docker-compose exec -T app .github/actions/test_tests-units.sh $TEST_ARGS \
+         docker compose exec -T app .github/actions/test_tests-units.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker-compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
+         docker compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")
-         docker-compose exec -T app .github/actions/test_tests-cache.sh \
+         docker compose exec -T app .github/actions/test_tests-cache.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "ldap")
          $APPLICATION_ROOT/.github/actions/init_initialize-ldap-fixtures.sh \
-      && docker-compose exec -T app .github/actions/test_tests-ldap.sh \
+      && docker compose exec -T app .github/actions/test_tests-ldap.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "imap")
          $APPLICATION_ROOT/.github/actions/init_initialize-imap-fixtures.sh \
-      && docker-compose exec -T app .github/actions/test_tests-imap.sh \
+      && docker compose exec -T app .github/actions/test_tests-imap.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "web")
-         docker-compose exec -T app .github/actions/test_tests-web.sh \
+         docker compose exec -T app .github/actions/test_tests-web.sh \
       || LAST_EXIT_CODE=$?
       ;;
     "javascript")
-         docker-compose exec -T app .github/actions/test_javascript.sh \
+         docker compose exec -T app .github/actions/test_javascript.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac
@@ -338,7 +338,7 @@ cleanup_and_exit () {
   find "$BACKUP_DIR" -mindepth 1 -exec mv -f {} $APPLICATION_ROOT/tests/config \;
 
   # Stop containers
-  docker-compose down --volumes
+  docker compose down --volumes
 
   exit $LAST_EXIT_CODE
 }

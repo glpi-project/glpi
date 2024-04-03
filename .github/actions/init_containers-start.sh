@@ -3,9 +3,9 @@ set -e -u -x -o pipefail
 
 mkdir -p $APP_CONTAINER_HOME
 
-docker-compose pull --quiet
-docker-compose up --no-start
-docker-compose start
+docker compose pull --quiet
+docker compose up --no-start
+docker compose start
 
 if [[ "$UPDATE_FILES_ACL" = true ]]; then
   # Change files rights to give write access to app container user
@@ -15,7 +15,7 @@ if [[ "$UPDATE_FILES_ACL" = true ]]; then
 fi
 
 # Check services health
-for CONTAINER_ID in `docker-compose ps -a -q`; do
+for CONTAINER_ID in `docker compose ps -a -q`; do
   CONTAINER_NAME=`/usr/bin/docker inspect --format='{{print .Name}}{{if .Config.Image}} ({{print .Config.Image}}){{end}}' $CONTAINER_ID`
   HEALTHY=false
   TOTAL_COUNT=0
