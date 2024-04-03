@@ -165,8 +165,8 @@ EOF
 fi
 
 # Check for system dependencies
-if [[ ! -x "$(command -v docker)" || ! -x "$(command -v docker-compose)" ]]; then
-  echo "This scripts requires both \"docker\" and \"docker-compose\" utilities to be installed"
+if [[ ! -x "$(command -v docker)" ]]; then
+  echo "This scripts requires the \"docker\" utility to be installed"
   exit 1
 fi
 
@@ -191,7 +191,7 @@ APPLICATION_ROOT=$(readlink -f "$WORKING_DIR/..")
 BACKUP_DIR=$(mktemp -d -t glpi-tests-backup-XXXXXXXXXX)
 find "$APPLICATION_ROOT/tests/config" -mindepth 1 ! -iname ".gitignore" -exec mv {} $BACKUP_DIR \;
 
-# Export variables to env (required for docker-compose) and start containers
+# Export variables to env (required for docker compose) and start containers
 export COMPOSE_FILE="$APPLICATION_ROOT/.github/actions/docker-compose-app.yml"
 if [[ "$USE_SERVICES_CONTAINERS" ]]; then
   export COMPOSE_FILE="$COMPOSE_FILE:$APPLICATION_ROOT/.github/actions/docker-compose-services.yml"
@@ -309,7 +309,7 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "e2e")
-         docker-compose exec -T app .github/actions/test_tests-e2e.sh \
+         docker compose exec -T app .github/actions/test_tests-e2e.sh \
       || LAST_EXIT_CODE=$?
       ;;
   esac
