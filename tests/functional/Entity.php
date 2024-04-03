@@ -891,18 +891,26 @@ class Entity extends DbTestCase
        // Case 1: removed (test values recovered from CommonITILObject::showUsersAssociated())
 
        // Case 2: test values recovered from CommonITILObject:::showShort()
-        ob_start();
-        Ticket::showShort($tickets_id);
-        $html = ob_get_clean();
+        $entries = Ticket::getDatatableEntries([
+            [
+                'item_id' => $tickets_id,
+                'id' => $tickets_id,
+                'itemtype' => 'Ticket',
+            ]
+        ]);
+        $entry = $entries[0];
 
+        $entry_contents = array_reduce(array_keys($entry), static function ($carry, $key) use ($entry) {
+            return $carry . $entry[$key];
+        }, '');
         foreach ($possible_values as $value) {
-            if ($value == $expected) {
-                $this->string($html)->contains(
+            if ($value === $expected) {
+                $this->string($entry_contents)->contains(
                     $value,
-                    "Ticket showShort must contains '$value' in interface '$interface' with settings '$setting'"
+                    "Ticket getDatatableEntries must contains '$value' in interface '$interface' with settings '$setting'"
                 );
             } else {
-                $this->string($html)->notContains(
+                $this->string($entry_contents)->notContains(
                     $value,
                     "Ticket form must not contains '$value' (expected '$expected') in interface '$interface' with settings '$setting'"
                 );

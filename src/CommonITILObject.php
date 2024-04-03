@@ -6621,12 +6621,14 @@ abstract class CommonITILObject extends CommonDBTM
      *      id_for_massaction      : default 0 means no massive action
      *
      * @since 10.0.0 "followups" option has been dropped
+     * @deprecated 11.0 Use {@link self::getDatatableEntries()} instead
      */
     public static function showShort($id, $options = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
+        //Toolbox::deprecated('Use CommonITILObject::getDatatableEntries() instead');
         $p = [
             'output_type'            => Search::HTML_OUTPUT,
             'row_num'                => 0,
@@ -6988,12 +6990,14 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * @param integer $output_type Output type
      * @param string  $mass_id     id of the form to check all
+     * @deprecated 11.0 Use {@link self::getCommonDatatableColumns()}
      */
     public static function commonListHeader(
         $output_type = Search::HTML_OUTPUT,
         $mass_id = '',
         array $params = []
     ) {
+        //Toolbox::deprecated('Use CommonITILObject::getCommonDatatableColumns() instead');
         $ticket_stats = $params['ticket_stats'] ?? false;
 
        // New Line for Header Items Line
@@ -7039,6 +7043,306 @@ abstract class CommonITILObject extends CommonDBTM
         echo Search::showEndLine($output_type);
     }
 
+    /**
+     * @param array{ticket_stats: bool} $params
+     * @return array{columns: array, formatters: array} Array of columns and formatters to be used in datatables (templates/components/datatable.html.twig) that are common to all ITIL objects.
+     * @see CommonITILObject::getDatatableEntries()
+     * @note If hte columns are changed, you must also update the `getDatatableEntries` method to match the new columns.
+     */
+    final public static function getCommonDatatableColumns(array $params = []): array
+    {
+        $params = array_replace([
+            'ticket_stats' => false,
+        ], $params);
+
+        $columns = [
+            'item_id' => __('ID'), // Not using 'id' as it is used internally by the datatable to signify the ID of the item listed (which is probably a link)
+            'name'    => __('Title'),
+            'status'  => __('Status'),
+            'date'    => _n('Date', 'Dates', 1),
+            'date_mod' => __('Last update'),
+        ];
+        if (count($_SESSION["glpiactiveentities"]) > 1) {
+            $columns['entity'] = Entity::getTypeName(1);
+        }
+        $columns['priority'] = __('Priority');
+        $columns['requester'] = _n('Requester', 'Requesters', 1);
+        $columns['assigned'] = __('Assigned');
+        if (!$params['ticket_stats']) {
+            $columns['associated_elements'] = _n('Associated element', 'Associated elements', Session::getPluralNumber());
+            $columns['category'] = _n('Category', 'Categories', 1);
+            $columns['planification'] = __('Planification');
+        } else {
+            $columns['take_into_account'] = __('Take into account');
+            $columns['resolution'] = __('Resolution');
+            $columns['pending'] = __('Pending');
+        }
+        return [
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+                'status' => 'raw_html',
+                'date_mod' => 'datetime',
+                'priority' => 'raw_html',
+                'requester' => 'raw_html',
+                'assigned' => 'raw_html',
+                'planification' => 'raw_html',
+                'associated_elements' => 'raw_html',
+                'take_into_account' => 'duration',
+                'resolution' => 'duration',
+                'pending' => 'duration',
+            ],
+        ];
+    }
+
+    /**
+     * @param array{item_id: int, id: int, itemtype: class-string<CommonITILObject>}[] $data
+     *        - item_id: The ID of the ITIL object
+     *        - id: The ID of the entry in the datatable (probably the ID of the link between the ITIL item and another item)
+     *       - itemtype: The class name of the ITIL object
+     * @param array{ticket_stats: bool} $params
+     * @return array The data with the other required fields added
+     * @see CommonITILObject::getCommonDatatableColumns()
+     */
+    public static function getDatatableEntries(array $data, $params = []): array
+    {
+        $params = array_replace([
+            'ticket_stats' => false,
+        ], $params);
+
+        $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate_task = [];
+        $rand = mt_rand();
+        // Cache of entity names
+        $entity_cache = [];
+        // Cache of user names
+        $user_cache = [];
+        // Cache of group names
+        $group_cache = [];
+        // Cache of supplier names
+        $supplier_cache = [];
+        // Cache of asset links
+        $asset_cache = [];
+        // Cache of category names
+        $category_cache = [];
+
+        foreach ($data as &$entry) {
+            $itemtype = $entry['itemtype'];
+            /** @var CommonITILObject $item */
+            $item = new $itemtype();
+            if (!$item->getFromDB($entry['item_id'])) {
+                unset($entry);
+                continue;
+            }
+            $name_link_id = $entry['id'] . $rand;
+
+            if (!isset($showprivate_task[$itemtype])) {
+                /** @var CommonITILTask $taskclass */
+                $taskclass = $itemtype::getTaskClass();
+                $showprivate_task[$itemtype] = Session::haveRight($taskclass::$rightname, CommonITILTask::SEEPRIVATE);
+            }
+
+            $name = '<span class="fw-bold">' . htmlspecialchars($item->getName()) . '</span>';
+            if ($item->canViewItem()) {
+                $name  = sprintf(
+                    __s('%1$s (%2$s)'),
+                    '<a id="' . $name_link_id . '" href="' . htmlspecialchars($item->getLinkURL()) . '">' . $name . '</a><br>',
+                    sprintf(
+                        __s('%1$s - %2$s'),
+                        $item->numberOfFollowups($showprivate_fup),
+                        $item->numberOfTasks($showprivate_task[$itemtype])
+                    )
+                );
+                $name = sprintf(
+                    __s('%1$s %2$s'),
+                    $name,
+                    Html::showToolTip(
+                        RichText::getEnhancedHtml($item->fields['content']),
+                        [
+                            'display' => false,
+                            'applyto' => $name_link_id
+                        ]
+                    )
+                );
+            }
+            $entry['name'] = $name;
+            $entry['status'] = static::getStatusIcon($item->fields["status"]);
+            $entry['date'] = match (true) {
+                $item->fields['status'] === static::CLOSED => sprintf(
+                    __s('Closed on %s'),
+                    Html::convDateTime($item->fields['closedate'])
+                ),
+                $item->fields['status'] === static::SOLVED => sprintf(
+                    __s('Solved on %s'),
+                    Html::convDateTime($item->fields['solvedate'])
+                ),
+                $item->fields['begin_waiting_date'] => sprintf(
+                    __s('Put on hold on %s'),
+                    Html::convDateTime($item->fields['begin_waiting_date'])
+                ),
+                $item->fields['time_to_resolve'] => sprintf(
+                    __s('%1$s: %2$s'),
+                    __s('Time to resolve'),
+                    Html::convDateTime($item->fields['time_to_resolve'])
+                ),
+                default => sprintf(
+                    __s('Opened on %s'),
+                    Html::convDateTime($item->fields['date'])
+                ),
+            };
+            $entry['date_mod'] = $item->fields["date_mod"];
+
+            if (count($_SESSION["glpiactiveentities"]) > 1) {
+                if (!isset($entity_cache[$item->fields['entities_id']])) {
+                    $entity_cache[$item->fields['entities_id']] = Dropdown::getDropdownName(
+                        table: 'glpi_entities',
+                        id: $item->fields['entities_id'],
+                        default: ''
+                    );
+                }
+                $entry['entity'] = $entity_cache[$item->fields['entities_id']];
+            }
+
+            $priority_name = static::getPriorityName($item->fields["priority"]);
+            $priority_color = $_SESSION["glpipriority_" . $item->fields["priority"]];
+            $entry['priority'] = '<span class="fw-bold badge text-body" style="background-color: ' . $priority_color . '">' . $priority_name . '</span>';
+
+            $entry['requester'] = '';
+            foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
+                if (!isset($user_cache[$d["users_id"]])) {
+                    $userdata = getUserName($d["users_id"], 2);
+                    $user_value = sprintf(
+                        __('%1$s %2$s'),
+                        htmlspecialchars($userdata['name']),
+                        Html::showToolTip(
+                            $userdata["comment"],
+                            [
+                                'link'    => $userdata["link"],
+                                'display' => false
+                            ]
+                        )
+                    );
+                    $user_cache[$d['users_id']] = $user_value;
+                }
+                $entry['requester'] .= $user_cache[$d['users_id']] . '<br>';
+            }
+            foreach ($item->getGroups(CommonITILActor::REQUESTER) as $d) {
+                if (!isset($group_cache[$d['groups_id']])) {
+                    $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'glpi_groups', id: $d['groups_id'], default: '');
+                }
+                $entry['requester'] .= $group_cache[$d['groups_id']] . '<br>';
+            }
+
+            $entry['assigned'] = '';
+            foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
+                if (Session::getCurrentInterface() === 'helpdesk' && !empty($anon_name = User::getAnonymizedNameForUser($d['users_id'], $item->getEntityID()))) {
+                    $entry['assigned'] .= $anon_name . '<br>';
+                } else {
+                    if (!isset($user_cache[$d['users_id']])) {
+                        $user_cache[$d['users_id']] = getUserName($d['users_id'], 2);
+                    }
+                    $entry['assigned'] .= $user_cache[$d['users_id']]['name'] . '<br>';
+
+                }
+            }
+            foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
+                if (Session::getCurrentInterface() === 'helpdesk' && !empty($anon_name = Group::getAnonymizedName($item->getEntityID()))) {
+                    $entry['assigned'] .= $anon_name . '<br>';
+                } else {
+                    if (!isset($group_cache[$d['groups_id']])) {
+                        $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'glpi_groups', id: $d['groups_id'], default: '');
+                    }
+                    $entry['assigned'] .= $group_cache[$d['groups_id']] . '<br>';
+                }
+            }
+            foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
+                if (!isset($supplier_cache[$d['suppliers_id']])) {
+                    $supplier_cache[$d['suppliers_id']] = Dropdown::getDropdownName(table: 'glpi_suppliers', id: $d['suppliers_id'], default: '');
+                }
+                $entry['assigned'] .= $supplier_cache[$d['suppliers_id']] . '<br>';
+            }
+
+            if (!$params['ticket_stats']) {
+                $item_itil = new (static::getItemLinkClass())();
+                $linked_items = $item_itil->find([
+                    $itemtype::getForeignKeyField() => $item->getID(),
+                ]);
+                $linked_items = array_filter($linked_items, static fn ($val) => !empty($val["itemtype"]) && $val["items_id"] > 0);
+                foreach ($linked_items as $val) {
+                    if (!isset($asset_cache[$val['itemtype']][$val['items_id']])) {
+                        $object = getItemForItemtype($val["itemtype"]);
+                        if ($object && $object->getFromDB($val["items_id"])) {
+                            $asset_cache[$val['itemtype']][$val['items_id']] = $object::canView() ? $object->getLink() : $object->getNameID();
+                        }
+                    }
+                    if (isset($asset_cache[$val['itemtype']][$val['items_id']])) {
+                        $entry['associated_elements'] .= $asset_cache[$val['itemtype']][$val['items_id']] . '<br>';
+                    }
+                }
+
+                if (!isset($category_cache[$item->fields['itilcategories_id']])) {
+                    $category_cache[$item->fields['itilcategories_id']] = Dropdown::getDropdownName(
+                        table: 'glpi_itilcategories',
+                        id: $item->fields['itilcategories_id'],
+                        default: ''
+                    );
+                }
+                $entry['category'] = $category_cache[$item->fields['itilcategories_id']];
+
+                $planned_infos = '';
+
+                $tasktype      = $itemtype::getTaskClass();
+                $plan          = new $tasktype();
+                $items         = [];
+
+                /** @var DBmysql $DB */
+                global $DB;
+                $result = $DB->request(
+                    [
+                        'FROM'  => $plan->getTable(),
+                        'WHERE' => [
+                            $itemtype::getForeignKeyField() => $item->getID(),
+                        ],
+                    ]
+                );
+                foreach ($result as $plan) {
+                    if (isset($plan['begin']) && $plan['begin']) {
+                        $items[$plan['id']] = $plan['id'];
+                        $planned_infos .= sprintf(__s('From %s'), Html::convDateTime($plan['begin']));
+                        $planned_infos .= sprintf(__s('To %s'), Html::convDateTime($plan['end']));
+                        if ($plan['users_id_tech']) {
+                            if (!isset($user_cache[$plan['users_id_tech']])) {
+                                $user_cache[$plan['users_id_tech']] = getUserName($plan['users_id_tech'], 2);
+                            }
+                            $planned_infos .= sprintf(__s('By %s'), $user_cache[$plan['users_id_tech']]['name']);
+                        }
+                        $planned_infos .= "<br>";
+                    }
+                }
+
+                if (count($items)) {
+                    $entry['planification'] = "<span class='pointer' id='{$itemtype}{$item->fields["id"]}planning{$rand}'>" . count($items) . '</span>';
+                    $entry['planification'] = sprintf(
+                        __('%1$s %2$s'),
+                        $entry['planification'],
+                        Html::showToolTip(
+                            $planned_infos,
+                            [
+                                'display' => false,
+                                'applyto' => "{$itemtype}{$item->fields["id"]}planning{$rand}"
+                            ]
+                        )
+                    );
+                }
+            } else {
+                $entry['take_into_account'] = $item->fields['takeintoaccount_delay_stat'];
+                $entry['resolution'] = $item->fields['solve_delay_stat'];
+                $entry['pending'] = $item->fields['waiting_duration'];
+            }
+        }
+        unset($entry);
+        return $data;
+    }
 
     /**
      * Get correct Calendar: Entity or Sla

@@ -1700,6 +1700,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @param string $itemtype The itemtype (User or Group)
      * @return void
+     * @used-by Central
      */
     public static function showListForCentral(string $itemtype): void
     {

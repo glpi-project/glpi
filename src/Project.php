@@ -2249,7 +2249,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 $done = count(array_filter($item['_steps'], static fn ($step) => (int) $step['percent_done'] === 100));
                 $total = count($item['_steps']);
                 $content .= "<div class='flex-break'></div>";
-                $content .= sprintf(__('%s / %s tasks complete'), $done, $total);
+                $content .= sprintf(__s('%s / %s tasks complete'), $done, $total);
             }
            // Percent Done
             $content .= "<div class='flex-break'></div>";

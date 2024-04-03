@@ -148,7 +148,9 @@ The present file will list all changes made to the project; according to the
 - Usage of `verbatim_value` Twig filter.
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
+- `CommonITILObject::commonListHeader()`
 - `CommonITILObject::isValidator()`
+- `CommonITILObject::showShort()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
 - `ComputerAntivirus` has been deprecated and replaced by `ItemAntivirus`
