@@ -35,37 +35,73 @@
 
 <div class="px-3 py-2 search-no-forced-height">
     <form method="POST" action="{{ item.getFormURL() }}">
-        <h2 class="mb-4">
-            <span class="me-2">
-                {{ __("Total: %s, New: %s, Used: %s"|format(
-                    count_unused + count_used,
-                    count_unused,
-                    count_used
-                )) }}
-            </span>
-            {% if can_edit %}
-                <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}" />
-                {{ fields.dropdownNumberField(
-                    'to_add',
-                    1,
-                    '',
-                    {
-                        min: 1,
-                        max: 100,
-                        step: 1,
-                        include_field: false,
-                        width: '',
-                    }
-                ) }}
-                <input
-                    type="submit"
-                    name="add_several"
-                    value="{{ _x('button', 'Add consumables') }}"
-                    class='btn btn-primary'
-                />
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-            {% endif %}
-        </h2>
+
+        <div class="d-flex flex-wrap">
+            <div class="col-12 col-xxl-12 flex-column">
+                <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                    <div class="row flex-row align-items-start flex-grow-1">
+                        <div class="row flex-row">
+
+                            {% set label %}
+                                <h2>
+                                    <span class="me-2">
+                                        {{ __("Total: %s, New: %s, Used: %s"|format(
+                                            count_unused + count_used,
+                                            count_unused,
+                                            count_used
+                                        )) }}
+                                    </span>
+                                </h2>
+                            {% endset %}
+
+                            {{ fields.htmlField(
+                                '',
+                                label,
+                                '',
+                                {
+                                    field_class: 'col-12 col-sm-3',
+                                    label_class: ' ',
+                                }
+                            ) }}
+
+                        {% if can_edit %}
+                            <input type="hidden" name="consumableitems_id" value="{{ parent.getID() }}" />
+                            {{ fields.numberField(
+                                'to_add',
+                                1,
+                                '',
+                                {
+                                    min: 1,
+                                    step: 1,
+                                    field_class: 'col-12 col-sm-2',
+                                    label_class: 'col-xxl-2',
+                                }
+                            ) }}
+
+                            {% set add_several %}
+                                <input
+                                    type="submit"
+                                    name="add_several"
+                                    value="{{ _x('button', 'Add consumables') }}"
+                                    class='btn btn-primary'
+                                />
+                            {% endset %}
+
+                            {{ fields.htmlField(
+                                '',
+                                add_several,
+                                '',
+                                {
+                                    field_class: 'col-12 col-sm-2',
+                                    label_class: 'col-xxl-2',
+                                }
+                            ) }}
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 
     {% if count_unused > 0 %}
