@@ -2755,18 +2755,37 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'criteria' => [
                 [
                     'link' => 'AND',
-                    'field' => 87,
-                    'searchtype' => 'equals',
-                    'value' => 'myself'
-                ],
-                [
-                    'link' => 'OR',
-                    'field' => 24,
-                    'searchtype' => 'equals',
-                    'value' => 'myself'
+                    'criteria' => [
+                        [
+                            'link' => 'AND',
+                            'field' => ($itemtype === 'User') ? 87 : 88, // 87 = Project teams - Users, 88 = Project teams - Groups
+                            'searchtype' => 'equals',
+                            'value' => ($itemtype === 'User') ? 'myself' : 'mygroups'
+                        ],
+                        [
+                            'link' => 'OR',
+                            'field' => ($itemtype === 'User') ? 24 : 49, // 24 = Project Manager, 49 = Project Manager group
+                            'searchtype' => 'equals',
+                            'value' => ($itemtype === 'User') ? 'myself' : 'mygroups'
+                        ]
+                    ]
                 ]
             ]
         ];
+
+        // Retrieve finished project states to exclude them from the search
+        $project_states = (new ProjectState())->find([
+            'is_finished' => 1
+        ]);
+
+        foreach ($project_states as $state) {
+            $options['criteria'][] = [
+                'link' => 'AND',
+                'field' => 12,
+                'searchtype' => 'notequals',
+                'value' => $state['id']
+            ];
+        }
 
         $displayed_row_count = min(count($projects_id), (int)$_SESSION['glpidisplay_count_on_home']);
 
