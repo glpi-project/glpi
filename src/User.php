@@ -1083,28 +1083,6 @@ class User extends CommonDBTM
             $_SESSION["glpidefault_entity"] = $input["entities_id"];
         }
 
-       // Security on default profile update
-        if (isset($input['profiles_id'])) {
-            if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))) {
-                unset($input['profiles_id']);
-            }
-        }
-
-       // Security on default entity  update
-        if (isset($input['entities_id'])) {
-            if (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))) {
-                unset($input['entities_id']);
-            }
-        }
-
-       // Security on default group  update
-        if (
-            isset($input['groups_id'])
-            && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
-        ) {
-            unset($input['groups_id']);
-        }
-
         if (
             isset($input['_reset_personal_token'])
             && $input['_reset_personal_token']
@@ -1362,7 +1340,27 @@ class User extends CommonDBTM
                     $right->delete($db_profile);
                 }
             }
+
+            $default_option = [];
+            // Security on default entity update
+            if (isset($this->input['entities_id']) && $this->input['entities_id'] != $this->fields['entities_id']) {
+                if (in_array($this->input['entities_id'], Profile_User::getUserEntities($this->input['id']))) {
+                    $default_option['entities_id'] = $this->input['entities_id'];
+                }
+            }
+
+            // Security on default profile update
+            if (isset($this->input['profiles_id']) && $this->input['profiles_id'] != $this->fields['profiles_id']) {
+                if (in_array($this->input['profiles_id'], Profile_User::getUserProfiles($this->input['id']))) {
+                    $default_option['profiles_id'] = $this->input['profiles_id'];
+                }
+            }
+
+            if (count($default_option)) {
+                $this->update(['id' =>  $this->input['id']] + $default_option);
+            }
         }
+
         return $return;
     }
 
@@ -6519,6 +6517,15 @@ HTML;
             if (!$group_user->getFromDBByCrit($data)) {
                 $group_user->add($data);
             }
+        }
+
+        // Security on default group update
+        if (
+            isset($this->input['groups_id'])
+            && $this->input['groups_id'] != $this->fields['groups_id']
+            && Group_User::isUserInGroup($this->input['id'], $this->input['groups_id'])
+        ) {
+            $this->update(['id' =>  $this->input['id']] + ['groups_id' => $this->input['groups_id']]);
         }
     }
 
