@@ -1764,7 +1764,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $projecttasks_id = [];
         switch ($itemtype) {
             case 'User':
-                $projecttasks_id = self::getActiveProjectTaskIDsForUser([Session::getLoginUserID()]);
+                $projecttasks_id = self::getActiveProjectTaskIDsForUser([Session::getLoginUserID()], false);
                 break;
             case 'Group':
                 $projecttasks_id = self::getActiveProjectTaskIDsForGroup($_SESSION['glpigroups']);
