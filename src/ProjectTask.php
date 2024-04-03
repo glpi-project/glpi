@@ -581,11 +581,11 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             return $input;
         } else {
             // Set automatically the real start date if not set
-            if ($real_start_date === null && $percent_done > 0) {
+            if (empty($real_start_date) && $percent_done > 0) {
                 $input['real_start_date'] = Session::getCurrentTime();
             }
             // Set automatically the real end date if not set
-            if ($real_end_date === null && $percent_done === 100) {
+            if (empty($real_end_date) && $percent_done === 100) {
                 $input['real_end_date'] = Session::getCurrentTime();
             }
             // Set automatically the effective duration if not set

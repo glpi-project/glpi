@@ -502,6 +502,25 @@ class ProjectTask extends DbTestCase
         ]);
 
         yield [
+            /**
+             * The real_start_date can be an empty string value because the form
+             * may have already been saved without a defined start time.
+             *
+             * Setting an empty value for the real_start_date field allows
+             * to reproduce the behavior of the interface.
+             */
+            'input' => [ // Task with percent_done < 100 and > 0
+                'projects_id'  => $project->getID(),
+                'name'         => 'Task 1',
+                'percent_done' => '5',
+                'real_start_date' => '',
+            ],
+            'result' => [
+                'real_start_date' => \Session::getCurrentTime(),
+                'real_end_date'   => null,
+            ]
+        ];
+        yield [
             'input' => [ // Task with percent_done < 100 and > 0
                 'projects_id'  => $project->getID(),
                 'name'         => 'Task 1',
@@ -596,8 +615,15 @@ class ProjectTask extends DbTestCase
      */
     public function testAutoSetDateForAdd($input, $result)
     {
+        // Some logic can change the fields values, so we need to skip them
+        // if the values are different between the input and the result
+        $skip_fields = array_filter(
+            array_intersect(array_keys($input), array_keys($result)),
+            fn ($key) => $input[$key] !== $result[$key],
+        );
+
         // Create a project task with percent_done < 100 and > 0
-        $task = $this->createItem('ProjectTask', $input);
+        $task = $this->createItem('ProjectTask', $input, $skip_fields);
 
         // Check if the task has been added with the current date
         $this->variable($task->fields['real_start_date'])->isEqualTo($result['real_start_date']);
