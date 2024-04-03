@@ -1289,8 +1289,8 @@ class Ticket extends CommonITILObject
                 ['recursive'   => true,
                     'entities_id' => $entid
                 ],
-                ['condition'     => RuleTicket::ONUPDATE,
-                    'only_criteria' => $changes
+                [
+                    'condition'     => RuleTicket::ONUPDATE,
                 ]
             );
             $input = Toolbox::stripslashes_deep($input);

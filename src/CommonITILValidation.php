@@ -449,11 +449,18 @@ abstract class CommonITILValidation extends CommonDBChild
 
             //if status is updated, update global approval status
             if (in_array("status", $this->updates)) {
-                $input = [
-                    'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::computeValidationStatus($item),
-                    '_from_itilvalidation'  => true,
-                ];
+                $input = [];
+                foreach ($item->fields as $key => $value) {
+                    $input[$key] = $value;
+                }
+                $input = array_merge(
+                    $input,
+                    [
+                        'id'                    => $this->fields[static::$items_id],
+                        'global_validation'     => self::computeValidationStatus($item),
+                        '_from_itilvalidation'  => true,
+                    ]
+                );
                 $item->update($input);
             }
         }
