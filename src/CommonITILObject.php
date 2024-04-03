@@ -7242,7 +7242,6 @@ abstract class CommonITILObject extends CommonDBTM
                         $user_cache[$d['users_id']] = getUserName($d['users_id'], 2);
                     }
                     $entry['assigned'] .= $user_cache[$d['users_id']]['name'] . '<br>';
-
                 }
             }
             foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
