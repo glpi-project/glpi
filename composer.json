@@ -94,7 +94,7 @@
         "glpi-project/tools": "^0.7",
         "maglnet/composer-require-checker": "^4.2",
         "mikey179/vfsstream": "^1.6",
-        "php-parallel-lint/php-parallel-lint": "^1.3",
+        "php-parallel-lint/php-parallel-lint": "^1.4",
         "phpstan/extension-installer": "^1.3",
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-deprecation-rules": "^1.1",

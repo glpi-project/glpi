@@ -130,6 +130,17 @@ class GLPIMailer
                             ]
                         );
                         $password = $token->getToken();
+                        if (($new_refresh_token = $token->getRefreshToken()) !== $refresh_token) {
+                            // The refresh token may be refreshed itself.
+                            // Be sure to always store any new refresh token.
+                            Config::setConfigurationValues(
+                                'core',
+                                [
+                                    'smtp_oauth_refresh_token' => $new_refresh_token,
+                                ]
+                            );
+                            $CFG_GLPI['smtp_oauth_refresh_token'] = (new GLPIKey())->encrypt($new_refresh_token);
+                        }
                     }
                 } else {
                     $password = (new GLPIKey())->decrypt($CFG_GLPI['smtp_passwd']);

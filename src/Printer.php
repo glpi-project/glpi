@@ -668,6 +668,14 @@ class Printer extends CommonDBTM
             'massiveaction'      => false
         ];
 
+        $tab[] = [
+            'id'                 => '47',
+            'table'              => static::getTable(),
+            'field'              => 'uuid',
+            'name'               => __('UUID'),
+            'datatype'           => 'string',
+        ];
+
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         $tab = array_merge($tab, Item_Devices::rawSearchOptionsToAdd(get_class($this)));
