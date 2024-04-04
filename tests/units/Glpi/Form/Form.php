@@ -56,6 +56,32 @@ class Form extends DbTestCase
     use FormTesterTrait;
 
     /**
+     * Some questions require extra data to be rendered
+     * This provider provides extra data for each question type
+     *
+     * @return array
+     */
+    public function renderProvider(): array
+    {
+        return [
+            [
+                [
+                    \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
+                        'options' => [
+                            123 => 'Radio 1',
+                        ]
+                    ],
+                    \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
+                        'options' => [
+                            123 => 'Checkbox 1',
+                        ]
+                    ],
+                ]
+            ]
+        ];
+    }
+
+    /**
      * Test the showForm method
      *
      * Note: the HTML content itself is not verified here as it would be too
@@ -64,9 +90,11 @@ class Form extends DbTestCase
      * Any error while rendering the tab will still be caught by this tests so
      * we must try to send a vey complex form.
      *
+     * @dataProvider renderProvider
+     *
      * @return void
      */
-    public function testShowForm(): void
+    public function testShowForm(array $extra_datas): void
     {
         $this->login();
         $types_manager = QuestionTypesManager::getInstance();
@@ -89,6 +117,7 @@ class Form extends DbTestCase
             $form_builder->addQuestion(
                 name: "Question $i",
                 type: $type::class,
+                extra_data: isset($extra_datas[$type::class]) ? json_encode($extra_datas[$type::class]) : "",
                 description: $i % 4 === 0 ? "Description of question $i" : "", // Add a description every 4 questions
                 is_mandatory: $i % 2 === 0, // Half of the questions are mandatory
             );

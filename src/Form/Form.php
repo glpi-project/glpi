@@ -105,12 +105,23 @@ final class Form extends CommonDBTM
         // We will be editing forms from this page
         echo Html::script("js/form_editor_controller.js");
 
+        $types_manager = QuestionTypesManager::getInstance();
+        $js_files = [];
+        foreach ($types_manager->getQuestionTypes() as $type) {
+            foreach ($type::loadJavascriptFiles() as $file) {
+                if (!in_array($file, $js_files)) {
+                    $js_files[] = $file;
+                    echo Html::script($file);
+                }
+            }
+        }
+
         // Render twig template
         $twig = TemplateRenderer::getInstance();
         $twig->display('pages/admin/form/form_editor.html.twig', [
             'item'                   => $this,
             'params'                 => $options,
-            'question_types_manager' => QuestionTypesManager::getInstance(),
+            'question_types_manager' => $types_manager,
         ]);
         return true;
     }
@@ -569,7 +580,7 @@ final class Form extends CommonDBTM
                         'forms_forms_id' => $this->fields['id'],
                     ],
                 ]),
-                 // Was not found in the submitted data
+                // Was not found in the submitted data
                 'id' => ['NOT IN', $found_questions],
             ]);
 

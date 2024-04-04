@@ -169,9 +169,12 @@ final class Question extends CommonDBChild
 
             $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
 
-            if (!$is_extra_data_valid) {
+            if ($extra_data === false) {
                 throw new \InvalidArgumentException("Invalid extra data for question");
             }
+
+            // Prepare extra data
+            $extra_data = $question_type::prepareExtraData($extra_data);
 
             // Save extra data as JSON
             if (!empty($extra_data)) {

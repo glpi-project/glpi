@@ -45,6 +45,32 @@ class FormRenderer extends DbTestCase
     use FormTesterTrait;
 
     /**
+     * Some questions require extra data to be rendered
+     * This provider provides extra data for each question type
+     *
+     * @return array
+     */
+    public function renderProvider(): array
+    {
+        return [
+            [
+                [
+                    \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
+                        'options' => [
+                            123 => 'Radio 1',
+                        ]
+                    ],
+                    \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
+                        'options' => [
+                            123 => 'Checkbox 1',
+                        ]
+                    ],
+                ]
+            ]
+        ];
+    }
+
+    /**
      * Test the `render` method
      *
      * Note: the HTML content itself is not verified here as it would be too
@@ -52,11 +78,13 @@ class FormRenderer extends DbTestCase
      * It should be verified using a separate E2E test instead.
      *
      * Any error while rendering the form will still be caught by this tests so
-     * we must try to send a vey complex form.
+     * we must try to send a very complex form.
+     *
+     * @dataProvider renderProvider
      *
      * @return void
      */
-    public function testRender(): void
+    public function testRender(array $extra_datas): void
     {
         $this->login();
         $types_manager = QuestionTypesManager::getInstance();
@@ -82,6 +110,7 @@ class FormRenderer extends DbTestCase
             $form_builder->addQuestion(
                 name: "Question $i",
                 type: $type::class,
+                extra_data: isset($extra_datas[$type::class]) ? json_encode($extra_datas[$type::class]) : "",
                 description: $i % 4 === 0 ? "Description of question $i" : "", // Add a description every 4 questions
                 is_mandatory: $i % 2 === 0, // Half of the questions are mandatory
             );

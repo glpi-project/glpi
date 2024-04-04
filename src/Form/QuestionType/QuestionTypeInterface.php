@@ -45,6 +45,14 @@ interface QuestionTypeInterface
     public function __construct();
 
     /**
+     * Load the required JS files for this question type.
+     * This method is called when the form editor page is loaded.
+     *
+     * @return array List of JS files to load.
+     */
+    public static function loadJavascriptFiles(): array;
+
+    /**
      * Format the default value for the database.
      * This method is called before saving the question.
      *
@@ -72,6 +80,15 @@ interface QuestionTypeInterface
      * @return mixed The prepared answer data.
      */
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed;
+
+    /**
+     * Prepare the extra data for the question.
+     * This method is called before saving the question.
+     *
+     * @param array $input The input data to prepare.
+     * @return array The prepared extra data.
+     */
+    public static function prepareExtraData(array $input): array;
 
     /**
      * Render the administration template for the given question.
