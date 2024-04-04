@@ -257,6 +257,10 @@ The present file will list all changes made to the project; according to the
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
 - `Netpoint` class
+- `NetworkAlias::getInternetNameFromID()`
+- `NetworkName::getInternetNameFromID()`
+- `NetworkPort::getNetworkPortInstantiationsWithNames()`
+- `NetworkPort::resetConnections()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
