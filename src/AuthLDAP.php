@@ -927,24 +927,15 @@ class AuthLDAP extends CommonDBTM
     public function showFormTestLDAP()
     {
         $tests = $this->testLDAPServer();
-        $keys  = array_keys($tests);
 
-        $index = 0;
+        // Mark the last checked test as "active"
+        $previous_test = null;
         foreach ($tests as $test => $result) {
-            // break if message is empty (leave all next result as active false)
-            if (empty($result['message'])) {
-                continue;
+            if (!$result['checked'] && $previous_test !== null) {
+                $tests[$previous_test]['active'] = true;
+                break;
             }
-
-            // set current active result as true
-            $tests[$test]['active'] = true;
-
-            // set previous active result as false
-            if (array_key_exists($index - 1, $keys)) {
-                $tests[$keys[$index - 1]]['active'] = false;
-            }
-
-            $index++;
+            $previous_test = $test;
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/ldap/test_form.html.twig', [
@@ -962,27 +953,32 @@ class AuthLDAP extends CommonDBTM
     {
         $tests = [
             'testLDAPSockopen'   => [
-                'title' => __('TCP stream'),
+                'title'   => __('TCP stream'),
+                'checked' => false,
                 'success' => false,
                 'message' => '',
             ],
             'testLDAPBaseDN'     => [
-                'title' => __('Base DN'),
+                'title'   => __('Base DN'),
+                'checked' => false,
                 'success' => false,
                 'message' => '',
             ],
             'testLDAPURI'        => [
-                'title' => __('LDAP URI'),
+                'title'   => __('LDAP URI'),
+                'checked' => false,
                 'success' => false,
                 'message' => '',
             ],
             'testLDAPBind'       => [
-                'title' => __('Bind connection'),
+                'title'   => __('Bind connection'),
+                'checked' => false,
                 'success' => false,
                 'message' => '',
             ],
             'testLDAPSearch'     => [
-                'title' => __('Search (50 first entries)'),
+                'title'   => __('Search (50 first entries)'),
+                'checked' => false,
                 'success' => false,
                 'message' => '',
             ],
@@ -990,6 +986,7 @@ class AuthLDAP extends CommonDBTM
 
         foreach (array_keys($tests) as $testFunction) {
             $result = $this->$testFunction();
+            $tests[$testFunction]['checked'] = true;
             $tests[$testFunction]['success'] = $result['success'];
             $tests[$testFunction]['message'] = $result['message'];
             if (!$result['success']) {
