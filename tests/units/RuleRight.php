@@ -309,5 +309,61 @@ class RuleRight extends DbTestCase
         $this->integer($users->fields['entities_id'])->isEqualTo(1);
         $this->integer($users->fields['profiles_id'])->isEqualTo(5);
         $this->integer($users->fields['groups_id'])->isEqualTo($groups_id);
+
+        //disbale the rule to test manuall update
+        $rules->update([
+            'id' => $rules_id,
+            'is_active' => 0,
+        ]);
+
+        //manually update the user (to check if security check about group / entity / profile is ok)
+        $user = new \User();
+        $user->update([
+            'id' => $users_id,
+            'entities_id' => 99, // user does not have this entity
+            'profiles_id' => 99, // user does not have this profile
+            'groups_id' => 99, // user is not in this group
+        ]);
+
+        $users = \User::getById($users_id);
+        $this->integer($users->fields['entities_id'])->isEqualTo(1); //no change
+        $this->integer($users->fields['profiles_id'])->isEqualTo(5); //no change
+        $this->integer($users->fields['groups_id'])->isEqualTo($groups_id); //no change
+
+        // add User_Profile
+        $user_profile = new \Profile_User();
+        $user_profile->add([
+            'users_id' => $users_id,
+            'entities_id' => 0,
+            'profiles_id' => 4,
+        ]);
+
+        // create new group
+        $group = new \Group();
+        $new_groups_id = $group->add([
+            'name' => '_test_group_2',
+            'entities_id' => 0,
+            'is_recursive' => 1,
+        ]);
+
+        //add user to group
+        $group_user = new \Group_User();
+        $group_user->add([
+            'groups_id' => $new_groups_id,
+            'users_id' => $users_id,
+        ]);
+
+        $user->update([
+            'id' => $users_id,
+            'entities_id' => 0,
+            'profiles_id' => 4,
+            'groups_id' => $new_groups_id,
+        ]);
+
+        $users = \User::getById($users_id);
+        $this->integer($users->fields['entities_id'])->isEqualTo(0);
+        $this->integer($users->fields['profiles_id'])->isEqualTo(4);
+        $this->integer($users->fields['groups_id'])->isEqualTo($new_groups_id);
+
     }
 }

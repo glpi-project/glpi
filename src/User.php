@@ -1083,6 +1083,30 @@ class User extends CommonDBTM
             $_SESSION["glpidefault_entity"] = $input["entities_id"];
         }
 
+        // Security on default profile update
+        if (!isset($input['_ruleright_process'])) {
+            if (isset($input['profiles_id'])) {
+                if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))) {
+                    unset($input['profiles_id']);
+                }
+            }
+
+            // Security on default entity  update
+            if (isset($input['entities_id'])) {
+                if (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))) {
+                    unset($input['entities_id']);
+                }
+            }
+
+            // Security on default group  update
+            if (
+                isset($input['groups_id'])
+                && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
+            ) {
+                unset($input['groups_id']);
+            }
+        }
+
         if (
             isset($input['_reset_personal_token'])
             && $input['_reset_personal_token']
