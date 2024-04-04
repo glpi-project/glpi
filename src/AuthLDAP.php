@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Filesystem;
+use LDAP\Connection;
 
 /**
  *  Class used to manage Auth LDAP config
@@ -991,8 +992,9 @@ class AuthLDAP extends CommonDBTM
             ],
         ];
 
+        $connection = null;
         foreach (array_keys($tests) as $testFunction) {
-            $result = $this->$testFunction();
+            $result = $this->$testFunction($connection);
             $tests[$testFunction]['checked'] = true;
             $tests[$testFunction]['success'] = $result['success'];
             $tests[$testFunction]['message'] = $result['message'];
@@ -1684,18 +1686,18 @@ class AuthLDAP extends CommonDBTM
             $config_ldap->fields['tls_version']
         );
         if ($ds) {
-            self::$conn_cache[$auths_id] = $ds;
             return true;
         }
         return false;
     }
+
 
     /**
      * Test if a socket connection is possible towards the LDAP server.
      *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPSockopen(): array
+    private function testLDAPSockopen(?Connection &$connection): array
     {
         $hostname = $this->fields['host'] ?? '';
         $port_num = $this->fields['port'];
@@ -1733,7 +1735,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPBaseDN(): array
+    private function testLDAPBaseDN(?Connection &$connection): array
     {
         if (!empty($this->fields['basedn'])) {
             return [
@@ -1753,7 +1755,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPURI(): array
+    private function testLDAPURI(?Connection &$connection): array
     {
         if (@ldap_connect($this->fields['host'], $this->fields['port'])) {
             return [
@@ -1773,10 +1775,25 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPBind(): array
+    private function testLDAPBind(?Connection &$connection): array
     {
         if ($this->fields['use_bind']) {
-            if ($this->testLDAPConnection($this->getID())) {
+            $connection_result = self::connectToServer(
+                $this->fields['host'],
+                $this->fields['port'],
+                $this->fields['rootdn'],
+                (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+                $this->fields['use_tls'],
+                $this->fields['deref_option'],
+                $this->fields['tls_certfile'],
+                $this->fields['tls_keyfile'],
+                $this->fields['use_bind'],
+                $this->fields['timeout'],
+                $this->fields['tls_version'],
+                true
+            );
+            if ($connection_result !== false) {
+                $connection = $connection_result;
                 return [
                     'success' => true,
                     'message' => __('Authentication succeeded')
@@ -1800,22 +1817,35 @@ class AuthLDAP extends CommonDBTM
      *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPSearch(): array
+    private function testLDAPSearch(?Connection &$connection): array
     {
-        if (isset(self::$conn_cache[$this->fields['id']])) {
-            $ds = self::$conn_cache[$this->fields['id']];
-        } else {
-            $ds = $this->connect();
+        if ($connection === null) {
+            $connection_result = self::connectToServer(
+                $this->fields['host'],
+                $this->fields['port'],
+                $this->fields['rootdn'],
+                (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+                $this->fields['use_tls'],
+                $this->fields['deref_option'],
+                $this->fields['tls_certfile'],
+                $this->fields['tls_keyfile'],
+                $this->fields['use_bind'],
+                $this->fields['timeout'],
+                $this->fields['tls_version'],
+                true
+            );
+            if ($connection_result !== false) {
+                $connection = $connection_result;
+            }
         }
-        if ($ds) {
-            self::$conn_cache[$this->fields['id']] = $ds;
+        if ($connection) {
             $filter = $this->fields['condition'];
             if (empty($filter)) {
                 $filter = '(objectclass=*)';
             }
-            $sr = @ldap_search($ds, $this->fields['basedn'], $filter, [], 0, 50);
+            $sr = @ldap_search($connection, $this->fields['basedn'], $filter, [], 0, 50);
             if ($sr) {
-                $info = @ldap_get_entries($ds, $sr);
+                $info = @ldap_get_entries($connection, $sr);
                 if ($info['count'] > 0) {
                     return [
                         'success' => true,
@@ -1824,19 +1854,19 @@ class AuthLDAP extends CommonDBTM
                 } else {
                     return [
                         'success' => false,
-                        'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($ds), ldap_errno($ds))
+                        'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
                     ];
                 }
             } else {
                 return [
                     'success' => false,
-                    'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($ds), ldap_errno($ds))
+                    'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
                 ];
             }
         } else {
             return [
                 'success' => false,
-                'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($ds), ldap_errno($ds))
+                'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
             ];
         }
     }
@@ -3382,6 +3412,7 @@ class AuthLDAP extends CommonDBTM
 
         return $ds;
     }
+
 
     /**
      * Try to connect to a ldap server
