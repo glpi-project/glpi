@@ -46,7 +46,7 @@ class Link extends CommonDBTM
     public static $rightname = 'link';
     public static $tags      = ['[LOGIN]', '[ID]', '[NAME]', '[LOCATION]', '[LOCATIONID]', '[IP]',
         '[MAC]', '[NETWORK]', '[DOMAIN]', '[SERIAL]', '[OTHERSERIAL]',
-        '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]'
+        '[USER]', '[GROUP]', '[REALNAME]', '[FIRSTNAME]', '[MODEL]'
     ];
 
 
@@ -308,6 +308,16 @@ class Link extends CommonDBTM
             && $item->isField('serial')
         ) {
             $link = str_replace("[SERIAL]", $item->getField('serial'), $link);
+        }
+        if (
+            strstr($link, "[MODEL]")
+            && ($model_class = $item->getModelClass()) !== null
+        ) {
+            $link = str_replace(
+                "[MODEL]",
+                Dropdown::getDropdownName($model_class::getTable(), $item->getField($model_class::getForeignKeyField())),
+                $link
+            );
         }
         if (
             strstr($link, "[OTHERSERIAL]")
