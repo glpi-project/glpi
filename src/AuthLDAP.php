@@ -166,9 +166,16 @@ class AuthLDAP extends CommonDBTM
         'rootdn_passwd',
     ];
 
-    // Latests error (string and number)
-    public static $last_error = '';
-    public static $last_errno = 0;
+    /**
+     * Message of last error occured during connection.
+     * @var string
+     */
+    private static ?string $last_error;
+    /**
+     * Numero of last error occured during connection.
+     * @var int
+     */
+    private static ?int $last_errno;
 
     public static function getTypeName($nb = 0)
     {
@@ -1777,7 +1784,7 @@ class AuthLDAP extends CommonDBTM
             } else {
                 return [
                     'success' => false,
-                    'message' => sprintf(__('Authentication failed: %s(%s)'), self::getLastError(), self::getLastErrno())
+                    'message' => sprintf(__('Authentication failed: %s(%s)'), self::$last_error, self::$last_errno)
                 ];
             }
         } else {
@@ -3248,6 +3255,8 @@ class AuthLDAP extends CommonDBTM
         $tls_version = "",
         bool $silent_bind_errors = false
     ) {
+        self::$last_errno = null;
+        self::$last_error = null;
 
         $ds = @ldap_connect($host, intval($port));
 
@@ -3321,7 +3330,9 @@ class AuthLDAP extends CommonDBTM
 
         if ($use_tls) {
             if (!@ldap_start_tls($ds)) {
-                self::setLastError($ds);
+                self::$last_errno = ldap_errno($ds);
+                self::$last_error = ldap_error($ds);
+
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -3349,6 +3360,9 @@ class AuthLDAP extends CommonDBTM
             $b = @ldap_bind($ds);
         }
         if ($b === false) {
+            self::$last_errno = ldap_errno($ds);
+            self::$last_error = ldap_error($ds);
+
             if ($silent_bind_errors === false) {
                 trigger_error(
                     static::buildError(
@@ -3363,44 +3377,10 @@ class AuthLDAP extends CommonDBTM
                     E_USER_WARNING
                 );
             }
-            self::setLastError($ds);
             return false;
         }
 
         return $ds;
-    }
-
-    /**
-     * Set last error
-     *
-     * @param resource $ds LDAP link identifier
-     *
-     * @return void
-     */
-    public static function setLastError($ds)
-    {
-        self::$last_error = @ldap_error($ds);
-        self::$last_errno = @ldap_errno($ds);
-    }
-
-    /**
-     * Get last error
-     *
-     * @return string
-     */
-    public static function getLastError()
-    {
-        return self::$last_error;
-    }
-
-    /**
-     * Get last error number
-     *
-     * @return integer
-     */
-    public static function getLastErrno()
-    {
-        return self::$last_errno;
     }
 
     /**
