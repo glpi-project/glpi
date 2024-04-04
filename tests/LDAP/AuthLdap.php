@@ -549,7 +549,7 @@ class AuthLDAP extends DbTestCase
         $ldap   = getItemByTypeName('AuthLDAP', 'LDAP1');
         $result = $ldap->getTabNameForItem($ldap);
         $expected = [
-            1 => "<span><i class='far fa-address-book me-2'></i>Test</span>",
+            1 => "<span><i class='ti ti-stethoscope me-2'></i>Test</span>",
             2 => "<span><i class='ti ti-user me-2'></i>Users</span>",
             3 => "<span><i class='ti ti-user me-2'></i>Groups</span>",
             5 => "<span><i class='far fa-address-book me-2'></i>Advanced information</span>",

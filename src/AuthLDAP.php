@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Toolbox\Filesystem;
+use LDAP\Connection;
 
 /**
  *  Class used to manage Auth LDAP config
@@ -165,6 +166,17 @@ class AuthLDAP extends CommonDBTM
     public static $undisclosedFields = [
         'rootdn_passwd',
     ];
+
+    /**
+     * Message of last error occured during connection.
+     * @var string
+     */
+    private static ?string $last_error;
+    /**
+     * Numero of last error occured during connection.
+     * @var int
+     */
+    private static ?int $last_errno;
 
     public static function getTypeName($nb = 0)
     {
@@ -916,37 +928,82 @@ class AuthLDAP extends CommonDBTM
     }
 
     /**
-     * Show ldap test form
+     * Show ldap test form results.
      *
      * @return void
      */
     public function showFormTestLDAP()
     {
+        $tests = $this->testLDAPServer();
 
-        $ID = $this->getField('id');
-
-        if ($ID > 0) {
-            echo "<div class='center'>";
-            echo "<form method='post' action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-            echo "<input type='hidden' name='id' value='$ID'>";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>" . __('Test of connection to LDAP directory') . "</th></tr>";
-
-            if (isset($_SESSION["LDAP_TEST_MESSAGE"])) {
-                echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-                echo $_SESSION["LDAP_TEST_MESSAGE"];
-                echo"</td></tr>";
-                unset($_SESSION["LDAP_TEST_MESSAGE"]);
+        // Mark the last checked test as "active"
+        $previous_test = null;
+        foreach ($tests as $test => $result) {
+            if (!$result['checked'] && $previous_test !== null) {
+                $tests[$previous_test]['active'] = true;
+                break;
             }
-
-            echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-            echo "<input type='submit' name='test_ldap' class='btn btn-primary' value=\"" .
-                _sx('button', 'Test') . "\">";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            $previous_test = $test;
         }
+
+        TemplateRenderer::getInstance()->display('pages/setup/ldap/test_form.html.twig', [
+            'servername' => $this->getField('name'),
+            'tests' => $tests,
+        ]);
+    }
+
+    /**
+     * Performs many tests on the specified LDAP server.
+     *
+     * @return array result of tests
+     */
+    private function testLDAPServer(): array
+    {
+        $tests = [
+            'testLDAPSockopen'   => [
+                'title'   => __('TCP stream'),
+                'checked' => false,
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPBaseDN'     => [
+                'title'   => __('Base DN'),
+                'checked' => false,
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPURI'        => [
+                'title'   => __('LDAP URI'),
+                'checked' => false,
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPBind'       => [
+                'title'   => __('Bind connection'),
+                'checked' => false,
+                'success' => false,
+                'message' => '',
+            ],
+            'testLDAPSearch'     => [
+                'title'   => __('Search (50 first entries)'),
+                'checked' => false,
+                'success' => false,
+                'message' => '',
+            ],
+        ];
+
+        $connection = null;
+        foreach (array_keys($tests) as $testFunction) {
+            $result = $this->$testFunction($connection);
+            $tests[$testFunction]['checked'] = true;
+            $tests[$testFunction]['success'] = $result['success'];
+            $tests[$testFunction]['message'] = $result['message'];
+            if (!$result['success']) {
+                break;
+            }
+        }
+
+        return $tests;
     }
 
     /**
@@ -1634,6 +1691,185 @@ class AuthLDAP extends CommonDBTM
         return false;
     }
 
+
+    /**
+     * Test if a socket connection is possible towards the LDAP server.
+     *
+     * @return array [success => boolean, message => string]
+     */
+    private function testLDAPSockopen(?Connection &$connection): array
+    {
+        $hostname = $this->fields['host'] ?? '';
+        $port_num = $this->fields['port'];
+
+        $matches = [];
+        if (preg_match('/(ldaps?:\/\/)(?<host>.+)/', $hostname, $matches)) {
+            $host = $matches['host'];
+        } else {
+            $host = $hostname;
+        }
+
+        $errno = null;
+        $errstr = null;
+
+        if ($host === '') {
+            $errno = 0;
+            $errstr = __('No hostname provided');
+        }
+
+        if (@fsockopen($host, $port_num, $errno, $errstr, 5)) {
+            return [
+                'success' => true,
+                'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num)
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => sprintf(__('%s (ERR: %s) to %s on port %s'), $errstr, $errno, $host, $port_num)
+            ];
+        }
+    }
+
+    /**
+     * Test if basedn field is correctly configured.
+     *
+     * @return array [success => boolean, message => string]
+     */
+    private function testLDAPBaseDN(?Connection &$connection): array
+    {
+        if (!empty($this->fields['basedn'])) {
+            return [
+                'success' => true,
+                'message' => sprintf(__('Base DN "%s" is configured'), $this->fields['basedn'])
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => __('Base DN is not configured')
+            ];
+        }
+    }
+
+    /**
+     * Test if a LDAP connect object initialisation is possible.
+     *
+     * @return array [success => boolean, message => string]
+     */
+    private function testLDAPURI(?Connection &$connection): array
+    {
+        if (@ldap_connect($this->fields['host'], $this->fields['port'])) {
+            return [
+                'success' => true,
+                'message' => __('LDAP URI check succeeded')
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => sprintf(__('LDAP URI was not parseable (%s:%s)'), $this->fields['host'], $this->fields['port'])
+            ];
+        }
+    }
+
+    /**
+     * Test if a LDAP bind is possible.
+     *
+     * @return array [success => boolean, message => string]
+     */
+    private function testLDAPBind(?Connection &$connection): array
+    {
+        if ($this->fields['use_bind']) {
+            $connection_result = self::connectToServer(
+                $this->fields['host'],
+                $this->fields['port'],
+                $this->fields['rootdn'],
+                (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+                $this->fields['use_tls'],
+                $this->fields['deref_option'],
+                $this->fields['tls_certfile'],
+                $this->fields['tls_keyfile'],
+                $this->fields['use_bind'],
+                $this->fields['timeout'],
+                $this->fields['tls_version'],
+                true
+            );
+            if ($connection_result !== false) {
+                $connection = $connection_result;
+                return [
+                    'success' => true,
+                    'message' => __('Authentication succeeded')
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => sprintf(__('Authentication failed: %s(%s)'), self::$last_error, self::$last_errno)
+                ];
+            }
+        } else {
+            return [
+                'success' => true,
+                'message' => __('Bind user / password authentication is disabled.')
+            ];
+        }
+    }
+
+    /**
+     * Test if a LDAP search is possible.
+     *
+     * @return array [success => boolean, message => string]
+     */
+    private function testLDAPSearch(?Connection &$connection): array
+    {
+        if ($connection === null) {
+            $connection_result = self::connectToServer(
+                $this->fields['host'],
+                $this->fields['port'],
+                $this->fields['rootdn'],
+                (new GLPIKey())->decrypt($this->fields['rootdn_passwd']),
+                $this->fields['use_tls'],
+                $this->fields['deref_option'],
+                $this->fields['tls_certfile'],
+                $this->fields['tls_keyfile'],
+                $this->fields['use_bind'],
+                $this->fields['timeout'],
+                $this->fields['tls_version'],
+                true
+            );
+            if ($connection_result !== false) {
+                $connection = $connection_result;
+            }
+        }
+        if ($connection) {
+            $filter = $this->fields['condition'];
+            if (empty($filter)) {
+                $filter = '(objectclass=*)';
+            }
+            $sr = @ldap_search($connection, $this->fields['basedn'], $filter, [], 0, 50);
+            if ($sr) {
+                $info = @ldap_get_entries($connection, $sr);
+                if ($info['count'] > 0) {
+                    return [
+                        'success' => true,
+                        'message' => sprintf(__('Search succeeded (%d entries found)'), $info['count'])
+                    ];
+                } else {
+                    return [
+                        'success' => false,
+                        'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
+                    ];
+                }
+            } else {
+                return [
+                    'success' => false,
+                    'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
+                ];
+            }
+        } else {
+            return [
+                'success' => false,
+                'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
+            ];
+        }
+    }
 
     /**
      * Display a warnign about size limit
@@ -3049,6 +3285,8 @@ class AuthLDAP extends CommonDBTM
         $tls_version = "",
         bool $silent_bind_errors = false
     ) {
+        self::$last_errno = null;
+        self::$last_error = null;
 
         $ds = @ldap_connect($host, intval($port));
 
@@ -3122,6 +3360,9 @@ class AuthLDAP extends CommonDBTM
 
         if ($use_tls) {
             if (!@ldap_start_tls($ds)) {
+                self::$last_errno = ldap_errno($ds);
+                self::$last_error = ldap_error($ds);
+
                 trigger_error(
                     static::buildError(
                         $ds,
@@ -3149,6 +3390,9 @@ class AuthLDAP extends CommonDBTM
             $b = @ldap_bind($ds);
         }
         if ($b === false) {
+            self::$last_errno = ldap_errno($ds);
+            self::$last_error = ldap_error($ds);
+
             if ($silent_bind_errors === false) {
                 trigger_error(
                     static::buildError(
@@ -4460,7 +4704,7 @@ class AuthLDAP extends CommonDBTM
             && $item->can($item->getField('id'), READ)
         ) {
             $ong     = [];
-            $ong[1]  = self::createTabEntry(_sx('button', 'Test'));                     // test connexion
+            $ong[1]  = self::createTabEntry(_sx('button', 'Test'), 0, $item::getType(), "ti ti-stethoscope"); // test connexion
             $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::getType(), User::getIcon());
             $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::getType(), User::getIcon());
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config

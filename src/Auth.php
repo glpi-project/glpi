@@ -122,30 +122,47 @@ class Auth extends CommonGLPI
 
         $menu = [];
         if (Config::canUpdate()) {
-            $menu['title']                              = __('Authentication');
-            $menu['page']                               = '/front/setup.auth.php';
-            $menu['icon']                               = self::getIcon();
+            $menu = [
+                'title'   => __('Authentication'),
+                'page'    => '/front/setup.auth.php',
+                'icon'    => static::getIcon(),
+                'options' => [],
+                'links'   => [],
+            ];
 
-            $menu['options']['ldap']['icon']            = AuthLDAP::getIcon();
-            $menu['options']['ldap']['title']           = AuthLDAP::getTypeName(Session::getPluralNumber());
-            $menu['options']['ldap']['page']            = AuthLDAP::getSearchURL(false);
-            $menu['options']['ldap']['links']['search'] = AuthLDAP::getSearchURL(false);
-            $menu['options']['ldap']['links']['add']    = AuthLDAP::getFormURL(false);
+            $menu['options']['ldap'] = [
+                'icon'  => AuthLDAP::getIcon(),
+                'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
+                'page'  => AuthLDAP::getSearchURL(false),
+                'links' => [
+                    'search' => AuthLDAP::getSearchURL(false),
+                    'add'    => AuthLDAP::getFormURL(false),
+                ],
+            ];
 
-            $menu['options']['imap']['icon']            = AuthMail::getIcon();
-            $menu['options']['imap']['title']           = AuthMail::getTypeName(Session::getPluralNumber());
-            $menu['options']['imap']['page']            = AuthMail::getSearchURL(false);
-            $menu['options']['imap']['links']['search'] = AuthMail::getSearchURL(false);
-            $menu['options']['imap']['links']['add']    = AuthMail::getFormURL(false);
+            $menu['options']['imap'] = [
+                'icon'  => AuthMail::getIcon(),
+                'title' => AuthMail::getTypeName(Session::getPluralNumber()),
+                'page'  => AuthMail::getSearchURL(false),
+                'links' => [
+                    'search' => AuthMail::getSearchURL(false),
+                    'add'    => AuthMail::getFormURL(false),
+                ],
+            ];
 
-            $menu['options']['others']['icon']          = 'ti ti-login';
-            $menu['options']['others']['title']         = __('Others');
-            $menu['options']['others']['page']          = '/front/auth.others.php';
+            $menu['options']['others'] = [
+                'icon'  => 'ti ti-login',
+                'title' => __('Others'),
+                'page'  => '/front/auth.others.php',
+            ];
 
-            $menu['options']['settings']['icon']        = 'ti ti-adjustments';
-            $menu['options']['settings']['title']       = __('Setup');
-            $menu['options']['settings']['page']        = '/front/auth.settings.php';
+            $menu['options']['settings'] = [
+                'icon'  => 'ti ti-adjustments',
+                'title' => __('Setup'),
+                'page'  => '/front/auth.settings.php',
+            ];
         }
+
         if (count($menu)) {
             return $menu;
         }
