@@ -926,8 +926,7 @@ class AuthLDAP extends CommonDBTM
      */
     public function showFormTestLDAP()
     {
-
-        $tests = $this->testLDAPServer($this->getField('id'));
+        $tests = $this->testLDAPServer();
         $keys  = array_keys($tests);
 
         $index = 0;
@@ -955,13 +954,11 @@ class AuthLDAP extends CommonDBTM
     }
 
     /**
-     * Performs many tests on the specified LDAP server
-     *
-     * @param integer $authldaps_id ID of the authldaps
+     * Performs many tests on the specified LDAP server.
      *
      * @return array result of tests
      */
-    private function testLDAPServer($authldaps_id): array
+    private function testLDAPServer(): array
     {
         $tests = [
             'testLDAPSockopen'   => [
@@ -991,8 +988,8 @@ class AuthLDAP extends CommonDBTM
             ],
         ];
 
-        foreach ($tests as $testFunction => $testLDAP) {
-            $result = $this->$testFunction($authldaps_id);
+        foreach (array_keys($tests) as $testFunction) {
+            $result = $this->$testFunction();
             $tests[$testFunction]['success'] = $result['success'];
             $tests[$testFunction]['message'] = $result['message'];
             if (!$result['success']) {
@@ -1692,36 +1689,29 @@ class AuthLDAP extends CommonDBTM
     /**
      * Test if a socket connection is possible towards the LDAP server.
      *
-     * @param integer $authldaps_id ID of the LDAP server
-     *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPSockopen($authldaps_id): array
+    private function testLDAPSockopen(): array
     {
+        $hostname = $this->fields['host'] ?? '';
+        $port_num = $this->fields['port'];
 
-        $AuthLDAP = new self();
-
-        if (!$AuthLDAP->getFromDB($authldaps_id)) {
-            return false;
-        }
-
-        $hostname = $AuthLDAP->getField('host');
-        $port_num = intval($AuthLDAP->getField('port'));
-
-        if (preg_match_all("/(ldap:\/\/|ldaps:\/\/)(.*)/", $hostname, $matches)) {
-            $host = $matches[2][0];
+        $matches = [];
+        if (preg_match('/(ldaps?:\/\/)(?<host>.+)/', $hostname, $matches)) {
+            $host = $matches['host'];
         } else {
             $host = $hostname;
         }
 
         $errno = null;
         $errstr = null;
-        if (empty($hostname)) {
+
+        if ($host === '') {
             $errno = 0;
             $errstr = __('No hostname provided');
         }
 
-        if (!empty($hostname) && @fsockopen($host, $port_num, $errno, $errstr, 5)) {
+        if (@fsockopen($host, $port_num, $errno, $errstr, 5)) {
             return [
                 'success' => true,
                 'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num)
@@ -1737,23 +1727,14 @@ class AuthLDAP extends CommonDBTM
     /**
      * Test if basedn field is correctly configured.
      *
-     * @param integer $authldaps_id ID of the LDAP server
-     *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPBaseDN($authldaps_id): array
+    private function testLDAPBaseDN(): array
     {
-
-        $AuthLDAP = new self();
-
-        if (!$AuthLDAP->getFromDB($authldaps_id)) {
-            return false;
-        }
-
-        if ($AuthLDAP->getField('basedn')) {
+        if (!empty($this->fields['basedn'])) {
             return [
                 'success' => true,
-                'message' => sprintf(__('Base DN %s is configured'), $AuthLDAP->getField('basedn'))
+                'message' => sprintf(__('Base DN "%s" is configured'), $this->fields['basedn'])
             ];
         } else {
             return [
@@ -1766,28 +1747,19 @@ class AuthLDAP extends CommonDBTM
     /**
      * Test if a LDAP connect object initialisation is possible.
      *
-     * @param integer $authldaps_id ID of the LDAP server
-     *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPURI($authldaps_id): array
+    private function testLDAPURI(): array
     {
-
-        $AuthLDAP = new self();
-
-        if (!$AuthLDAP->getFromDB($authldaps_id)) {
-            return false;
-        }
-
-        if (@ldap_connect($AuthLDAP->getField('host'), $AuthLDAP->getField('port'))) {
+        if (@ldap_connect($this->fields['host'], $this->fields['port'])) {
             return [
                 'success' => true,
-                'message' => __('LDAP-URI check succeeded')
+                'message' => __('LDAP URI check succeeded')
             ];
         } else {
             return [
                 'success' => false,
-                'message' => sprintf(__('LDAP-URI was not parseable (%s:%s)'), $AuthLDAP->getField('host'), $AuthLDAP->getField('port'))
+                'message' => sprintf(__('LDAP URI was not parseable (%s:%s)'), $this->fields['host'], $this->fields['port'])
             ];
         }
     }
@@ -1795,20 +1767,12 @@ class AuthLDAP extends CommonDBTM
     /**
      * Test if a LDAP bind is possible.
      *
-     * @param integer $authldaps_id ID of the LDAP server
-     *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPBind($authldaps_id): array
+    private function testLDAPBind(): array
     {
-        $AuthLDAP = new self();
-
-        if (!$AuthLDAP->getFromDB($authldaps_id)) {
-            return false;
-        }
-
-        if ($AuthLDAP->getField('use_bind')) {
-            if ($AuthLDAP->testLDAPConnection($AuthLDAP->getID())) {
+        if ($this->fields['use_bind']) {
+            if ($this->testLDAPConnection($this->getID())) {
                 return [
                     'success' => true,
                     'message' => __('Authentication succeeded')
@@ -1830,30 +1794,22 @@ class AuthLDAP extends CommonDBTM
     /**
      * Test if a LDAP search is possible.
      *
-     * @param integer $authldaps_id ID of the LDAP server
-     *
      * @return array [success => boolean, message => string]
      */
-    private function testLDAPSearch($authldaps_id): array
+    private function testLDAPSearch(): array
     {
-        $AuthLDAP = new self();
-
-        if (!$AuthLDAP->getFromDB($authldaps_id)) {
-            return false;
-        }
-
-        if (isset(self::$conn_cache[$authldaps_id])) {
-            $ds = self::$conn_cache[$authldaps_id];
+        if (isset(self::$conn_cache[$this->fields['id']])) {
+            $ds = self::$conn_cache[$this->fields['id']];
         } else {
-            $ds = $AuthLDAP->connect();
+            $ds = $this->connect();
         }
         if ($ds) {
-            self::$conn_cache[$authldaps_id] = $ds;
-            $filter = $AuthLDAP->getField('condition');
+            self::$conn_cache[$this->fields['id']] = $ds;
+            $filter = $this->fields['condition'];
             if (empty($filter)) {
                 $filter = '(objectclass=*)';
             }
-            $sr = @ldap_search($ds, $AuthLDAP->getField('basedn'), $filter, [], 0, 50);
+            $sr = @ldap_search($ds, $this->fields['basedn'], $filter, [], 0, 50);
             if ($sr) {
                 $info = @ldap_get_entries($ds, $sr);
                 if ($info['count'] > 0) {
