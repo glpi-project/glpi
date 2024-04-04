@@ -362,26 +362,6 @@ class NetworkName extends FQDNLabel
     }
 
     /**
-     * Get the full name (internet name) of a NetworkName
-     *
-     * @param integer $ID  ID of the NetworkName
-     *
-     * @return string  its internet name, or empty string if invalid NetworkName
-     **/
-    public static function getInternetNameFromID($ID)
-    {
-        $networkName = new self();
-
-        if ($networkName->can($ID, READ)) {
-            return FQDNLabel::getInternetNameFromLabelAndDomainID(
-                $networkName->fields["name"],
-                $networkName->fields["fqdns_id"]
-            );
-        }
-        return "";
-    }
-
-    /**
      * @param integer $networkPortID
      **/
     public static function showFormForNetworkPort($networkPortID)
@@ -508,8 +488,7 @@ class NetworkName extends FQDNLabel
         ) {
             $delete_all_column = $base->addHeader(
                 'delete',
-                Html::getCheckAllAsCheckbox('mass' . __CLASS__ .
-                                                                            $options['rand']),
+                Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $options['rand']),
                 $super,
                 $father
             );
@@ -518,7 +497,9 @@ class NetworkName extends FQDNLabel
         if (!isset($options['dont_display'][$column_name])) {
             $content = htmlspecialchars(self::getTypeName());
             if (isset($options['column_links'][$column_name])) {
-                $content = "<a href='" . $options['column_links'][$column_name] . "'>$content</a>";
+                $content = '<a href="' . htmlspecialchars($options['column_links'][$column_name]) . '">'
+                    . $content
+                    . '</a>';
             }
             $father = $base->addHeader($column_name, $content, $super, $father);
             $father->setItemType('NetworkName');
@@ -684,7 +665,9 @@ class NetworkName extends FQDNLabel
                 }
                 $content  = htmlspecialchars($internetName);
                 if (Session::haveRight('internet', READ)) {
-                    $content  = "<a href='" . $address->getLinkURL() . "'>" . $internetName . "</a>";
+                    $content  = '<a href="' . $address->getLinkURL() . '">'
+                        . htmlspecialchars($internetName)
+                        . '</a>';
                 }
 
                 if (!isset($options['dont_display'][$column_name])) {

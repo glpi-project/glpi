@@ -554,20 +554,6 @@ class NetworkPort extends CommonDBChild
     }
 
     /**
-     * Delete All connection of the given network port
-     *
-     * @param integer $ID ID of the port
-     *
-     * @return boolean true on success
-     **/
-    public function resetConnections($ID)
-    {
-        // Never used in core, but maybe a plugin used it?
-        Toolbox::deprecated();
-        return false;
-    }
-
-    /**
      * Get available display options array
      *
      * @since 0.84
@@ -989,13 +975,13 @@ class NetworkPort extends CommonDBChild
                                 $td_class = 'aggregated';
                             }
 
-                             $name = $port['name'];
-                             $url = NetworkPort::getFormURLWithID($port['id']);
+                            $name = $port['name'];
+                            $url = NetworkPort::getFormURLWithID($port['id']);
                             if ($_SESSION["glpiis_ids_visible"] || empty($name)) {
                                 $name = sprintf(__('%1$s (%2$s)'), $name, $port['id']);
                             }
 
-                            $output .= "<a href='$url'>" . htmlspecialchars($name) . "</a>";
+                            $output .= '<a href="' . htmlspecialchars($url) . '">' . htmlspecialchars($name) . '</a>';
                             break;
                         case 31:
                             $speed = $port[$option['field']];
@@ -1029,7 +1015,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                             }
                             $output .= sprintf(
-                                "<i class='fas fa-circle %s' title='%s'></i> <span class='sr-only'>%s</span>",
+                                '<i class="fas fa-circle %s" title="%s"></i> <span class="sr-only">%s</span>',
                                 htmlspecialchars($state_class),
                                 htmlspecialchars($state_title),
                                 htmlspecialchars($state_title)
@@ -1109,15 +1095,18 @@ class NetworkPort extends CommonDBChild
                                  );
                             } else {
                                 foreach ($vlans as $row) {
-                                        $output .= $row['name'];
+                                    $output .= $row['name'];
                                     if (!empty($row['tag'])) {
                                         $output .= ' [' . $row['tag'] . ']';
                                     }
-                                        $output .= ($row['tagged'] == 1 ? 'T' : 'U');
+                                    $output .= ($row['tagged'] == 1 ? 'T' : 'U');
                                     if ($canedit) {
-                                        $output .= "<a title='" . __s('Delete') . "' href='" . NetworkPort::getFormURLWithID($row['id']) . "&unassign_vlan=unassigned'> <i class='fas fa-trash'></i> <span class='sr-only'>" . __s('Delete') . "</span></a>";
+                                        $output .= '<a title="' . __s('Delete') . '" href="' . NetworkPort::getFormURLWithID($row['id']) . '&amp;unassign_vlan=unassigned">'
+                                            . '<i class="fas fa-trash"></i>'
+                                            . '<span class="sr-only">' . __s('Delete') . '</span>'
+                                            . '</a>';
                                     }
-                                       $output .= '<br/>';
+                                    $output .= '<br/>';
                                 }
                             }
                             break;
@@ -1222,7 +1211,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                             }
                             $output .= sprintf(
-                                "<i class='fas %s' title='%s'></i> <span class='sr-only'>%s</span>",
+                                '<i class="fas %s" title="%s"></i> <span class="sr-only">%s</span>',
                                 htmlspecialchars($co_class),
                                 htmlspecialchars($title),
                                 htmlspecialchars($title)

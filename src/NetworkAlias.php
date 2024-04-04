@@ -153,7 +153,7 @@ class NetworkAlias extends FQDNLabel
 
         $content = htmlspecialchars(self::getTypeName());
         if (isset($options['column_links'][$column_name])) {
-            $content = "<a href='" . $options['column_links'][$column_name] . "'>$content</a>";
+            $content = "<a href='" . htmlspecialchars($options['column_links'][$column_name]) . "'>$content</a>";
         }
         $this_header = $base->addHeader($column_name, $content, $super, $father);
         $this_header->setItemType('NetworkAlias');
@@ -212,7 +212,9 @@ class NetworkAlias extends FQDNLabel
                     $row = $row->createRow();
                 }
 
-                $content = "<a href='" . $alias->getLinkURL() . "'>" . htmlspecialchars($alias->getInternetName()) . "</a>";
+                $content = '<a href="' . htmlspecialchars($alias->getLinkURL()) . '">'
+                    . htmlspecialchars($alias->getInternetName())
+                    . '</a>';
                 $row->addCell($header, $content, $father, $alias);
             }
         }
