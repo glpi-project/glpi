@@ -46,7 +46,6 @@ use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
-use Glpi\System\Requirement\MysqliMysqlnd;
 use Glpi\System\Requirement\PhpSupportedVersion;
 use Glpi\System\Requirement\PhpVersion;
 use Glpi\System\Requirement\SeLinux;
@@ -76,8 +75,6 @@ class RequirementsManager
 
         $requirements[] = new MemoryLimit(64 * 1024 * 1024);
 
-        $requirements[] = new MysqliMysqlnd();
-
         // Mandatory PHP extensions that are defaultly enabled but can be disabled
         $requirements[] = new ExtensionGroup(
             __('PHP core extensions'),
@@ -94,6 +91,11 @@ class RequirementsManager
         );
 
         // Mandatory PHP extensions that are NOT defaultly enabled
+        $requirements[] = new Extension(
+            'mysqli',
+            false,
+            __('Required for database access.')
+        );
         $requirements[] = new Extension(
             'curl',
             false,

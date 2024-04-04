@@ -242,6 +242,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Socket::showNetworkPortForm()`
 - `Glpi\System\Requirement\DataDirectoriesProtectedPath` class.
 - `Glpi\System\Requirement\ProtectedWebAccess` class.
+- `Glpi\System\Requirement\MysqliMysqlnd` class.
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
