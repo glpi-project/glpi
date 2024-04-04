@@ -1065,10 +1065,6 @@ class Config extends CommonDBTM
                 'check'   => 'mb_list_encodings'
             ],
             [
-                'name'  => 'symfony/polyfill-php82',
-                'check' => 'ini_parse_quantity'
-            ],
-            [
                 'name'  => 'symfony/polyfill-php83',
                 'check' => 'json_validate'
             ],

@@ -36,10 +36,10 @@
 // Check PHP version not to have trouble
 // Need to be the very fist step before any include
 if (
-    version_compare(PHP_VERSION, '8.1.0', '<') ||
+    version_compare(PHP_VERSION, '8.2.0', '<') ||
     version_compare(PHP_VERSION, '8.3.999', '>')
 ) {
-    die('PHP version must be between 8.1 and 8.3.');
+    die('PHP version must be between 8.2 and 8.3.');
 }
 
 use Glpi\Application\View\TemplateRenderer;
