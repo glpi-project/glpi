@@ -1384,7 +1384,7 @@ class Entity extends CommonTreeDropdown
         $tab[] = [
             'id'                 => '51',
             'table'              => $this->getTable(),
-            'field'              => 'name',
+            'field'              => 'entities_id_software',
             'linkfield'          => 'entities_id_software', // not a dropdown because of special value
                                  //TRANS: software in plural
             'name'               => __('Entity for software creation'),
