@@ -328,7 +328,7 @@ final class AssetDefinition extends CommonDBTM
             return false;
         }
 
-        foreach (['capacities', 'profiles'] as $json_field) {
+        foreach (['capacities', 'profiles', 'translations'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {
                 // ensure default value of JSON fields will be a valid array
                 $input[$json_field] = [];
