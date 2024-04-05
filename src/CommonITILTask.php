@@ -499,6 +499,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         '_disablenotif' => true,
                     ];
                     $item->update($input2);
+                } elseif (
+                    $item->isStatusExists(CommonITILObject::ASSIGNED)
+                    && ($item->fields["status"] == CommonITILObject::PLANNED)
+                ) {
+                    $input2 = [
+                        'id'            => $item->getID(),
+                        'status'        => CommonITILObject::ASSIGNED,
+                        '_disablenotif' => false,
+                    ];
+                    $item->update($input2);
                 }
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
