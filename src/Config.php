@@ -979,6 +979,9 @@ class Config extends CommonDBTM
             [ 'name'    => 'elvanto/litemoji',
                 'check'   => 'LitEmoji\\LitEmoji'
             ],
+            [ 'name'    => 'gettext/languages',
+                'check'   => 'Gettext\\Languages\\Language'
+            ],
             [ 'name'    => 'symfony/console',
                 'check'   => 'Symfony\\Component\\Console\\Application'
             ],
