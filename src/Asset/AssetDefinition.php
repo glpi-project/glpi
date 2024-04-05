@@ -38,6 +38,8 @@ namespace Glpi\Asset;
 use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
+use Gettext\Languages\CldrData as Language_CldrData;
+use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
@@ -952,6 +954,27 @@ TWIG, ['name' => $name, 'value' => $value]);
         $is_valid = true;
 
         return $is_valid;
+    }
+
+    public static function getPluralFormsForLanguage(string $language): array
+    {
+        global $CFG_GLPI;
+
+        // check language exists in GLPI configuration
+        if (!array_key_exists($language, $CFG_GLPI['languages'])) {
+            return [];
+        }
+
+        $cldrLanguage = Language_CldrData::getLanguageInfo($_GET['language']);
+        $cldrCategories = $cldrLanguage['categories'] ?? [];
+
+        $languageCategories = [];
+        foreach ($cldrCategories as $cldrCategoryId => $cldrFormulaAndExamples) {
+            $category = new Language_Category($cldrCategoryId, $cldrFormulaAndExamples);
+            $languageCategories[] = $category;
+        }
+
+        return $languageCategories;
     }
 
     /**

@@ -33,8 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Gettext\Languages\CldrData as Language_CldrData;
-use Gettext\Languages\Category as Language_Category;
+use Glpi\Asset\AssetDefinition;
 
 include('../inc/includes.php');
 
@@ -42,14 +41,4 @@ header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 Session::writeClose();
 
-$cldrLanguage = Language_CldrData::getLanguageInfo($_GET['language']);
-$cldrCategories = $cldrLanguage['categories'] ?? [];
-
-$languageCategories = [];
-foreach ($cldrCategories as $cldrCategoryId => $cldrFormulaAndExamples) {
-    $category = new Language_Category($cldrCategoryId, $cldrFormulaAndExamples);
-    $languageCategories[] = $category;
-}
-
-echo json_encode($languageCategories);
-
+echo json_encode(AssetDefinition::getPluralFormsForLanguage($_GET['language']));
