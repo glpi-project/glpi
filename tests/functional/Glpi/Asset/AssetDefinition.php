@@ -511,7 +511,8 @@ class AssetDefinition extends DbTestCase
     }
 
 
-    public function testGetTranslatedName() {
+    public function testGetTranslatedName()
+    {
         /** @var \Glpi\Asset\AssetDefinition $definition */
         $definition = $this->createItem(
             \Glpi\Asset\AssetDefinition::class,
