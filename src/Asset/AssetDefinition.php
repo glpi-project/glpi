@@ -292,6 +292,7 @@ final class AssetDefinition extends CommonDBTM
 
     private function showTranslationForm(): void
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $translations = $this->getDecodedTranslationsField();
@@ -744,6 +745,7 @@ final class AssetDefinition extends CommonDBTM
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($values)) {
@@ -947,7 +949,7 @@ TWIG, ['name' => $name, 'value' => $value]);
             return [];
         }
         $translations = @json_decode($this->fields['translations'], associative: true);
-        if (!$this->validateTranslationsArray($translations, false)) {
+        if (!$this->validateTranslationsArray($translations)) {
             trigger_error(
                 sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),
                 E_USER_WARNING
@@ -971,6 +973,7 @@ TWIG, ['name' => $name, 'value' => $value]);
 
     public static function getPluralFormsForLanguage(string $language): array
     {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // check language exists in GLPI configuration
