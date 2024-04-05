@@ -30,14 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
-{% set params = {} %}
-{# do not display delete button #}
-{% set params = params|merge({'candel': false}) %}
-{# do not display footer with dates #}
-{% set params = params|merge({'formfooter': false}) %}
-
 <div class="modal fade" id="TranslationModal" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
