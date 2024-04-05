@@ -949,7 +949,7 @@ TWIG, ['name' => $name, 'value' => $value]);
             return [];
         }
         $translations = @json_decode($this->fields['translations'], associative: true);
-        if (!$this->validateTranslationsArray($translations)) {
+        if (!is_array($translations)) {
             trigger_error(
                 sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),
                 E_USER_WARNING
@@ -960,16 +960,6 @@ TWIG, ['name' => $name, 'value' => $value]);
         return $translations;
     }
 
-    private function validateTranslationsArray(mixed $translations): bool
-    {
-        if (!is_array($translations)) {
-            return false;
-        }
-
-        $is_valid = true;
-
-        return $is_valid;
-    }
 
     public static function getPluralFormsForLanguage(string $language): array
     {
