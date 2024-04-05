@@ -44,6 +44,7 @@
             <form method="POST" action="{{ path("front/asset/assetdefinition.form.php") }}">
                 <input type="hidden" name="id" value="{{ item.fields['id'] }}">
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                <input type="hidden" name="_save_translation" value="1" />
 
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel">{{ __("Add translation") }}</h4>
@@ -60,7 +61,7 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" name="_save_translation">
+                    <button type="submit" class="btn btn-primary" name="update">
                         <i id="translation-modal-button-icon"></i>
                         <span id="translation-modal-button-text"></span>
                     </button>
@@ -105,9 +106,15 @@
                             </button>
                         </span>
                         <span title="{{ __("Delete translation") }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <a href="{{ path("front/asset/assetdefinition.form.php?id=" ~ item.fields['id'] ~ "&_delete_translation=1&language=" ~ language) }}" class="btn btn-icon btn-ghost-danger">
-                                <i class="ti ti-trash-x"></i>
-                            </button>
+                            <form method="POST" action="{{ path("front/asset/assetdefinition.form.php") }}" class="d-inline">
+                                <input type="hidden" name="id" value="{{ item.fields['id'] }}">
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                <input type="hidden" name="_delete_translation" value="1" />
+                                <input type="hidden" name="language" value="{{ language }}" />
+                                <button type="submit" name="update" class="btn btn-icon btn-ghost-danger">
+                                    <i class="ti ti-trash-x"></i>
+                                </button>
+                            </form>
                         </span>
                     </td>
             {% endfor %}

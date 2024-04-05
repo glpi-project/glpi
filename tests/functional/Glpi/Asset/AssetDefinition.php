@@ -420,6 +420,62 @@ class AssetDefinition extends DbTestCase
         );
     }
 
+    public function testUpdateTranslations()
+    {
+        $definition = $this->createItem(
+            \Glpi\Asset\AssetDefinition::class,
+            [
+                'system_name' => 'test',
+            ]
+        );
+
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            '_save_translation' => true,
+            'language' => 'en_US',
+            'plurals' => [
+                'one' => 'Test',
+                'other' => 'Tests',
+            ]
+        ]))->isTrue();
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            '_save_translation' => true,
+            'language' => 'fr_FR',
+            'plurals' => [
+                'one' => 'Test FR',
+                'other' => 'Tests FR',
+            ]
+        ]))->isTrue();
+
+        $definition->getFromDB($definition->getID());
+        $this->array(json_decode($definition->fields['translations'], true))->isEqualTo([
+            'en_US' => [
+                'one' => 'Test',
+                'other' => 'Tests',
+            ],
+            'fr_FR' => [
+                'one' => 'Test FR',
+                'other' => 'Tests FR',
+            ],
+        ]);
+
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            '_delete_translation' => true,
+            'language' => 'en_US',
+
+        ]))->isTrue();
+
+        $definition->getFromDB($definition->getID());
+        $this->array(json_decode($definition->fields['translations'], true))->isEqualTo([
+            'fr_FR' => [
+                'one' => 'Test FR',
+                'other' => 'Tests FR',
+            ],
+        ]);
+    }
+
     /**
      * Check that actual profile rights matches expected ones.
      *

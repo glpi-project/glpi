@@ -113,58 +113,6 @@ if (isset($_POST['add'])) {
         );
     }
     $asset_definition->redirectToList();
-} elseif (isset($_GET['_delete_translation'])) {
-    $asset_definition->check($_GET['id'], UPDATE);
-
-    // get existing translations
-    $asset_definition->getFromDB($_GET['id']);
-    $translations = $asset_definition->getDecodedTranslationsField();
-
-    if (isset($_GET['language'])) {
-        unset($translations[$_GET['language']]);
-    }
-
-    $update_data = [
-        'id' => $_GET['id'],
-        'translations' => json_encode($translations),
-    ];
-
-    if ($asset_definition->update($update_data)) {
-        Event::log(
-            $_GET['id'],
-            AssetDefinition::class,
-            4,
-            'setup',
-            sprintf(__('%s updates an item'), $_SESSION['glpiname'])
-        );
-    }
-    Html::back();
-} elseif (isset($_POST['_save_translation'])) {
-    $asset_definition->check($_POST['id'], UPDATE);
-
-    // get existing translations
-    $asset_definition->getFromDB($_POST['id']);
-    $translations = $asset_definition->getDecodedTranslationsField();
-
-    if (isset($_POST['language']) && isset($_POST['plurals']) && is_array($_POST['plurals'])) {
-        $translations[$_POST['language']] = $_POST['plurals'];
-    }
-
-    $update_data = [
-        'id' => $_POST['id'],
-        'translations' => json_encode($translations),
-    ];
-
-    if ($asset_definition->update($update_data)) {
-        Event::log(
-            $_POST['id'],
-            AssetDefinition::class,
-            4,
-            'setup',
-            sprintf(__('%s updates an item'), $_SESSION['glpiname'])
-        );
-    }
-    Html::back();
 } else {
     $menus = ['config', AssetDefinition::class];
     AssetDefinition::displayFullPageForItem($_GET['id'] ?? 0, $menus);

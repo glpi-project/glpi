@@ -351,6 +351,20 @@ final class AssetDefinition extends CommonDBTM
             return false;
         }
 
+        if (isset($input['_save_translation']) && isset($input['language']) && isset($input['plurals']) && is_array($input['plurals'])) {
+            $translations = $this->getDecodedTranslationsField();
+            $translations[$input['language']] = $input['plurals'];
+            unset($input['_save_translation'], $input['language'], $input['plurals']);
+            $input['translations'] = json_encode($translations);
+        }
+
+        if (isset($input['_delete_translation']) && isset($input['language'])) {
+            $translations = $this->getDecodedTranslationsField();
+            unset($translations[$input['language']]);
+            unset($input['_delete_translation'], $input['language']);
+            $input['translations'] = json_encode($translations);
+        }
+
         return $this->prepareInput($input);
     }
 
@@ -928,7 +942,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     }
 
 
-    public function getDecodedTranslationsField(): array
+    private function getDecodedTranslationsField(): array
     {
         if ($this->fields['translations'] === 'null') {
             return [];
