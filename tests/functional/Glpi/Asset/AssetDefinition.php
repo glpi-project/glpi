@@ -420,6 +420,40 @@ class AssetDefinition extends DbTestCase
         );
     }
 
+    /**
+     * Check that actual profile rights matches expected ones.
+     *
+     * @param string $rightname
+     * @param array $expected_profilerights
+     * @return void
+     */
+    private function checkProfileRights(string $rightname, array $expected_profilerights): void
+    {
+        $actual_profilerights = getAllDataFromTable('glpi_profilerights', ['name' => $rightname]);
+
+        $get_actual_profileright_for_profile = static function (int $profile_id) use ($actual_profilerights): ?array {
+            foreach ($actual_profilerights as $actual_profileright) {
+                if ($profile_id === $actual_profileright['profiles_id']) {
+                    unset($actual_profileright['id']);
+                    return $actual_profileright;
+                }
+            }
+            return null;
+        };
+
+        foreach ($expected_profilerights as $profile_id => $rights) {
+            $actual_profileright = $get_actual_profileright_for_profile($profile_id);
+            $this->array($actual_profileright)->isEqualTo(
+                [
+                    'profiles_id' => $profile_id,
+                    'name'        => $rightname,
+                    'rights'      => $rights,
+                ]
+            );
+        }
+    }
+
+
     public function testUpdateTranslations()
     {
         $definition = $this->createItem(
@@ -476,36 +510,37 @@ class AssetDefinition extends DbTestCase
         ]);
     }
 
-    /**
-     * Check that actual profile rights matches expected ones.
-     *
-     * @param string $rightname
-     * @param array $expected_profilerights
-     * @return void
-     */
-    private function checkProfileRights(string $rightname, array $expected_profilerights): void
-    {
-        $actual_profilerights = getAllDataFromTable('glpi_profilerights', ['name' => $rightname]);
 
-        $get_actual_profileright_for_profile = static function (int $profile_id) use ($actual_profilerights): ?array {
-            foreach ($actual_profilerights as $actual_profileright) {
-                if ($profile_id === $actual_profileright['profiles_id']) {
-                    unset($actual_profileright['id']);
-                    return $actual_profileright;
-                }
-            }
-            return null;
-        };
+    public function testGetTranslatedName() {
+        /** @var \Glpi\Asset\AssetDefinition $definition */
+        $definition = $this->createItem(
+            \Glpi\Asset\AssetDefinition::class,
+            [
+                'system_name' => 'test',
+                'translations' => json_encode([
+                    'en_US' => [
+                        'one' => 'Test',
+                        'other' => 'Tests',
+                    ],
+                    'fr_FR' => [
+                        'one' => 'Test FR',
+                        'other' => 'Tests FR',
+                    ],
+                ]),
+            ]
+        );
 
-        foreach ($expected_profilerights as $profile_id => $rights) {
-            $actual_profileright = $get_actual_profileright_for_profile($profile_id);
-            $this->array($actual_profileright)->isEqualTo(
-                [
-                    'profiles_id' => $profile_id,
-                    'name'        => $rightname,
-                    'rights'      => $rights,
-                ]
-            );
-        }
+        $_SESSION['glpilanguage'] = 'en_US';
+        $this->string($definition->getTranslatedName(1))->isEqualTo('Test');
+        $this->string($definition->getTranslatedName(10))->isEqualTo('Tests');
+
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $this->string($definition->getTranslatedName(1))->isEqualTo('Test FR');
+        $this->string($definition->getTranslatedName(10))->isEqualTo('Tests FR');
+
+        // untranslated language
+        $_SESSION['glpilanguage'] = 'es_ES';
+        $this->string($definition->getTranslatedName(1))->isEqualTo("test");
+        $this->string($definition->getTranslatedName(10))->isEqualTo('test');
     }
 }
