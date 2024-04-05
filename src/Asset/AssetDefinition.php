@@ -314,7 +314,6 @@ final class AssetDefinition extends CommonDBTM
                 ])
             ]
         );
-
     }
 
     public function prepareInputForAdd($input)
