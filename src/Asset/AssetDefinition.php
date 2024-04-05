@@ -38,6 +38,7 @@ namespace Glpi\Asset;
 use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
+use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
@@ -601,8 +602,25 @@ final class AssetDefinition extends CommonDBTM
      */
     public function getTranslatedName(int $count = 1): string
     {
-        // TODO Return translated plural form.
-        return $this->fields['system_name'];
+        $translations = $this->getDecodedTranslationsField();
+        $language = Session::getLanguage();
+        $current_translation = $translations[$language] ?? null;
+        if ($current_translation === null) {
+            return $this->fields['system_name'];
+        }
+
+        // retrieve the formulas associated to the language
+        $gettext_language = Language::getById($language);
+
+        // compute the formula with the paramater count
+        $formula_to_compute = str_replace('n', $count, $gettext_language->formula);
+        $category_index_number = eval("return $formula_to_compute;");
+
+        // retrieve the category index string (one, few, many, other) based on the index
+        $found_category = $gettext_language->categories[$category_index_number] ?? $gettext_language->categories[0];
+        $category_index_string = $found_category->id;
+
+        return $current_translation[$category_index_string] ?? $this->fields['system_name'];
     }
 
     /**
