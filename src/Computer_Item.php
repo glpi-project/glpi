@@ -890,7 +890,7 @@ class Computer_Item extends CommonDBRelation
                 if (!class_exists($data['itemtype'])) {
                     continue;
                 }
-                if (countElementsInTable($data['itemtype']::getTable(), ['id' => $data['ids'], 'NOT' => ['entities_id' => $entities]]) > 0) {
+                if (countElementsInTable($data['itemtype']::getTable(), ['id' => explode(',', $data['ids']), 'NOT' => ['entities_id' => $entities]]) > 0) {
                     return false;
                 }
             }
