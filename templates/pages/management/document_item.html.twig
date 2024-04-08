@@ -1,0 +1,96 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+<div class="mb-3">
+    <form method="post" action="{{ 'Document'|itemtype_form_path }}" enctype="multipart/form-data" data-submit-once>
+
+        <div class="d-flex">
+            {{ fields.dropdownField('DocumentCategory', 'documentcategories_id', item.fields['documentcategories_id'], 'DocumentCategory'|itemtype_name, {
+                field_class: 'col-12 col-sm-5 pe-2',
+                entity: entities
+            }) }}
+            {{ fields.fileField('filename', null, null, {
+                no_label: true,
+                field_class: 'col-12 col-sm-5 pe-2',
+                multiple: true
+            }) }}
+            {% set btn %}
+                {{ inputs.submit('add', _x('button', 'Add a new file'), 1) }}
+            {% endset %}
+            {{ fields.htmlField('', btn, null, {
+                field_class: 'col-12 col-sm-2 text-end align-self-center',
+                no_label: true
+            }) }}
+
+            {{ inputs.hidden('entities_id', entity) }}
+            {{ inputs.hidden('is_recursive', item.isRecursive()) }}
+            {{ inputs.hidden('itemtype', item.getType()) }}
+            {{ inputs.hidden('items_id', item.getID()) }}
+            {% if item.getType == 'Ticket' %}
+                {{ inputs.hidden('tickets_id', item.getID()) }}
+            {% endif %}
+            {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+        </div>
+    </form>
+
+    {% if canview and nb > used|length %}
+        <hr class="my-2">
+        <form method="post" action="{{ 'Document_Item'|itemtype_form_path }}" data-submit-once>
+            <div class="d-flex">
+                {{ fields.dropdownField('Document', 'documents_id', null, null, {
+                    no_label: true,
+                    field_class: 'col-12 col-sm-8',
+                    entity: entities,
+                    used: used
+                }) }}
+                {% set btn %}
+                    {{ inputs.submit('add', _x('button', 'Associate an existing document'), 1) }}
+                {% endset %}
+                {{ fields.htmlField('', btn, null, {
+                    field_class: 'col-12 col-sm-4 text-end align-self-center',
+                    no_label: true
+                }) }}
+                {{ inputs.hidden('itemtype', item.getType()) }}
+                {{ inputs.hidden('items_id', item.getID()) }}
+                {% if item.getType() == 'Ticket' %}
+                    {{ inputs.hidden('tickets_id', item.getID()) }}
+                    {{ inputs.hidden('documentcategories_id', config('documentcategories_id_forticket')) }}
+                {% endif %}
+                {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
+            </div>
+        </form>
+    {% endif %}
+</div>

@@ -145,7 +145,7 @@ class Dropdown extends DbTestCase
         $encoded_separator = ' &gt; ';
 
         $ret = \Dropdown::getDropdownName('not_a_known_table', 1);
-        $this->string($ret)->isIdenticalTo('&nbsp;');
+        $this->string($ret)->isIdenticalTo('');
 
         $cat = getItemByTypeName('TaskCategory', '_cat_1');
 

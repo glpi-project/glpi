@@ -492,7 +492,7 @@ class Dropdown
      *
      * @return string the value of the dropdown
      **/
-    public static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true, string $default = '&nbsp;')
+    public static function getDropdownName($table, $id, $withcomment = 0, $translate = true, $tooltip = true, string $default = '')
     {
         /** @var \DBmysql $DB */
         global $DB;

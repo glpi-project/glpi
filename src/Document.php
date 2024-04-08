@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Http\Response;
@@ -357,98 +358,23 @@ class Document extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
-        $this->initForm($ID, $options);
-       // $options['formoptions'] = " enctype='multipart/form-data'";
-        $this->showFormHeader($options);
-
+        if ($ID > 0) {
+            $this->check($ID, READ);
+        }
         $showuserlink = 0;
         if (Session::haveRight('user', READ)) {
             $showuserlink = 1;
         }
-        if ($ID > 0) {
-            echo "<tr><th colspan='2'>";
-            if ($this->fields["users_id"] > 0) {
-                printf(__('Added by %s'), getUserName($this->fields["users_id"], $showuserlink));
-            } else {
-                echo "&nbsp;";
-            }
-            echo "</th>";
-            echo "<th colspan='2'>";
 
-           //TRANS: %s is the datetime of update
-            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
-
-            echo "</th></tr>\n";
-        }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "</td>";
-        if ($ID > 0) {
-            echo "<td>" . __('Current file') . "</td>";
-            echo "<td>" . $this->getDownloadLink(null, 45);
-            echo "<input type='hidden' name='current_filepath' value='" . $this->fields["filepath"] . "'>";
-            echo "<input type='hidden' name='current_filename' value='" . $this->fields["filename"] . "'>";
-            echo "</td>";
-        } else {
-            echo "<td colspan=2>&nbsp;</td>";
-        }
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Heading') . "</td>";
-        echo "<td>";
-        DocumentCategory::dropdown(['value' => $this->fields["documentcategories_id"]]);
-        echo "</td>";
-        if ($ID > 0) {
-            echo "<td>" . sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1')) . "</td>";
-            echo "<td>" . $this->fields["sha1sum"];
-            echo "</td>";
-        } else {
-            echo "<td colspan=2>&nbsp;</td>";
-        }
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Web link') . "</td>";
-        echo "<td>";
-        echo Html::input('link', ['value' => $this->fields['link']]);
-        echo "</td>";
-        echo "<td rowspan='3' class='middle'>" . __('Comments') . "</td>";
-        echo "<td class='middle' rowspan='3'>";
-        echo "<textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('MIME type') . "</td>";
-        echo "<td>";
-        echo Html::input('mime', ['value' => $this->fields['mime']]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Blacklisted for import') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo("is_blacklisted", $this->fields["is_blacklisted"]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Use a FTP installed file') . "</td>";
-        echo "<td>";
-        $this->showUploadedFilesDropdown("upload_file");
-        echo "</td>";
-
-        echo "<td>" . sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize()) . "</td>";
-        echo "<td>";
-        Html::file();
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
-
-        return true;
+        TemplateRenderer::getInstance()->display('pages/management/document.html.twig', [
+            'item'  => $this,
+            'uploader' => $this->fields['users_id'] > 0 ? getUserName($this->fields["users_id"], $showuserlink) : '',
+            'uploaded_files' => self::getUploadedFiles(),
+            'params' => [
+                'canedit' => $this->canUpdateItem(),
+            ]
+        ]);
     }
-
 
     /**
      * Get max upload size from php config
@@ -515,10 +441,12 @@ class Document extends CommonDBTM
             $fileout = $this->fields['filename'];
         }
 
-        $initfileout = htmlspecialchars($fileout);
-
-        if ($fileout !== null && Toolbox::strlen($fileout) > $len) {
-            $fileout = Toolbox::substr($fileout, 0, $len) . "&hellip;";
+        $initfileout = null;
+        if ($fileout !== null) {
+            $initfileout = htmlspecialchars($fileout);
+            $fileout     = Toolbox::strlen($fileout) > $len
+                ? htmlspecialchars(Toolbox::substr($fileout, 0, $len)) . "&hellip;"
+                : htmlspecialchars($fileout);
         }
 
         $out   = '';
@@ -558,7 +486,7 @@ class Document extends CommonDBTM
                               $CFG_GLPI["typedoc_icon_dir"] . "/$icon'>";
             }
         }
-        $out .= "$open<span class='fw-bold'>" . htmlspecialchars($fileout) . "</span>$close";
+        $out .= "$open<span class='fw-bold'>" . $fileout . "</span>$close";
 
         return $out;
     }
@@ -1371,34 +1299,23 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Show dropdown of uploaded files
-     *
-     * @param string $myname dropdown name
-     **/
-    public static function showUploadedFilesDropdown($myname)
+     * @return array Array of uploaded files to be used in a dropdown
+     */
+    private static function getUploadedFiles()
     {
-        if (is_dir(GLPI_UPLOAD_DIR)) {
-            $uploaded_files = [];
-            if ($handle = opendir(GLPI_UPLOAD_DIR)) {
-                while (false !== ($file = readdir($handle))) {
-                    if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
-                        $dir = self::isValidDoc($file);
-                        if (!empty($dir)) {
-                            $uploaded_files[$file] = $file;
-                        }
+        $uploaded_files = [];
+        if ($handle = opendir(GLPI_UPLOAD_DIR)) {
+            while (false !== ($file = readdir($handle))) {
+                if (!in_array($file, ['.', '..', '.gitkeep', 'remove.txt'])) {
+                    $dir = self::isValidDoc($file);
+                    if (!empty($dir)) {
+                        $uploaded_files[$file] = $file;
                     }
                 }
-                closedir($handle);
             }
-
-            if (count($uploaded_files)) {
-                Dropdown::showFromArray($myname, $uploaded_files, ['display_emptychoice' => true]);
-            } else {
-                echo __s('No file available');
-            }
-        } else {
-            echo __s("Upload directory doesn't exist");
+            closedir($handle);
         }
+        return $uploaded_files;
     }
 
     /**
