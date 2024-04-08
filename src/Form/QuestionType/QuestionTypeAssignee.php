@@ -35,8 +35,11 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Group;
 use Override;
 use Session;
+use Supplier;
+use User;
 
 final class QuestionTypeAssignee extends AbstractQuestionTypeActors
 {
@@ -55,6 +58,6 @@ final class QuestionTypeAssignee extends AbstractQuestionTypeActors
     #[Override]
     public function getAllowedActorTypes(): array
     {
-        return ['User', 'Group', 'Supplier'];
+        return [User::class, Group::class, Supplier::class];
     }
 }

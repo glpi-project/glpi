@@ -4985,6 +4985,12 @@ JAVASCRIPT
             }
         }
 
+        // Some variables need to be json encoded
+        $on_change = json_encode($on_change);
+        if (!empty($placeholder)) {
+            $placeholder = json_encode($placeholder);
+        }
+
         $js = <<<JS
             select2_configs['{$field_id}'] = {
                 field_id: '{$field_id}',

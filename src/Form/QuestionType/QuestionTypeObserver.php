@@ -35,8 +35,10 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Group;
 use Override;
 use Session;
+use User;
 
 final class QuestionTypeObserver extends AbstractQuestionTypeActors
 {
@@ -55,6 +57,6 @@ final class QuestionTypeObserver extends AbstractQuestionTypeActors
     #[Override]
     public function getAllowedActorTypes(): array
     {
-        return ['User', 'Group'];
+        return [User::class, Group::class];
     }
 }
