@@ -441,10 +441,12 @@ class Document extends CommonDBTM
             $fileout = $this->fields['filename'];
         }
 
-        $initfileout = htmlspecialchars($fileout);
-
-        if ($fileout !== null && Toolbox::strlen($fileout) > $len) {
-            $fileout = Toolbox::substr($fileout, 0, $len) . "&hellip;";
+        $initfileout = null;
+        if ($fileout !== null) {
+            $initfileout = htmlspecialchars($fileout);
+            $fileout     = Toolbox::strlen($fileout) > $len
+                ? htmlspecialchars(Toolbox::substr($fileout, 0, $len)) . "&hellip;"
+                : htmlspecialchars($fileout);
         }
 
         $out   = '';
@@ -484,7 +486,7 @@ class Document extends CommonDBTM
                               $CFG_GLPI["typedoc_icon_dir"] . "/$icon'>";
             }
         }
-        $out .= "$open<span class='fw-bold'>" . htmlspecialchars($fileout) . "</span>$close";
+        $out .= "$open<span class='fw-bold'>" . $fileout . "</span>$close";
 
         return $out;
     }
