@@ -289,7 +289,11 @@ final class AssetDefinition extends CommonDBTM
         );
     }
 
-
+    /**
+     * Display translation form.
+     *
+     * @return void
+     */
     private function showTranslationForm(): void
     {
         /** @var array $CFG_GLPI */
@@ -971,7 +975,11 @@ TWIG, ['name' => $name, 'value' => $value]);
         return $is_valid;
     }
 
-
+    /**
+     * Return the decoded value of the `translations` field.
+     *
+     * @return array
+     */
     private function getDecodedTranslationsField(): array
     {
         $translations = @json_decode($this->fields['translations'], associative: true);
@@ -1028,7 +1036,12 @@ TWIG, ['name' => $name, 'value' => $value]);
         return $is_valid;
     }
 
-
+    /**
+     * Gel plural form list for given language.
+     *
+     * @param string $language
+     * @return \Gettext\Languages\Category[]
+     */
     public static function getPluralFormsForLanguage(string $language): array
     {
         /** @var array $CFG_GLPI */
