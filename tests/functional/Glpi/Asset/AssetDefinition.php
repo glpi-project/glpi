@@ -204,7 +204,6 @@ class AssetDefinition extends DbTestCase
                 ],
             ],
         ];
-
     }
 
     /**

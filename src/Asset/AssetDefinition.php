@@ -783,7 +783,8 @@ final class AssetDefinition extends CommonDBTM
             case 'translations':
                 $translations = json_decode($values[$field], associative: true);
 
-                return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                return TemplateRenderer::getInstance()->renderFromStringTemplate(
+                    <<<TWIG
                     {% if translations is not empty %}
                         <ul>
                             {% for language, plurals in translations %}
