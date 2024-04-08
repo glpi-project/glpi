@@ -134,6 +134,76 @@ class AssetDefinition extends DbTestCase
                 ],
             ],
         ];
+
+        // Translations input
+        $valid_translations_input = [
+            'en_US' => [
+                'one'   => 'Computer',
+                'other' => 'Computers',
+            ],
+            'fr_FR' => [
+                'one'   => 'Ordinateur',
+                'many'  => 'Ordinateurs',
+                'other' => 'Ordinateurs',
+            ],
+        ];
+        yield [
+            'input'    => [
+                'translations' => $valid_translations_input,
+            ],
+            'output'   => [
+                'translations' => json_encode($valid_translations_input),
+            ],
+            'messages' => [],
+        ];
+        yield [
+            'input'    => [
+                'translations' => [
+                    'invalid_lang' => [ // invalid language
+                        'one'   => 'Computer',
+                        'other' => 'Computers',
+                    ],
+                ],
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "Translations".',
+                ],
+            ],
+        ];
+        yield [
+            'input'    => [
+                'translations' => [
+                    'en_US' => [
+                        'one'       => 'Computer',
+                        'very-much' => 'Computers', // invalid category
+                    ],
+                ],
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "Translations".',
+                ],
+            ],
+        ];
+        yield [
+            'input'    => [
+                'translations' => [
+                    'en_US' => [
+                        'one'   => 'Computer',
+                        'other' => 15, // invalid value
+                    ],
+                ],
+            ],
+            'output'   => false,
+            'messages' => [
+                ERROR => [
+                    'The following field has an incorrect value: "Translations".',
+                ],
+            ],
+        ];
     }
 
     /**
@@ -180,9 +250,10 @@ class AssetDefinition extends DbTestCase
                         'system_name' => $system_name,
                     ],
                     'output'   => [
-                        'system_name' => $system_name,
-                        'capacities'  => '[]',
-                        'profiles'    => '[]',
+                        'system_name'  => $system_name,
+                        'capacities'   => '[]',
+                        'profiles'     => '[]',
+                        'translations' => '[]',
                     ],
                     'messages' => [],
                 ];
@@ -220,9 +291,10 @@ class AssetDefinition extends DbTestCase
                     'system_name' => 'My' . $system_name,
                 ],
                 'output'   => [
-                    'system_name' => 'My' . $system_name,
-                    'capacities'  => '[]',
-                    'profiles'    => '[]',
+                    'system_name'  => 'My' . $system_name,
+                    'capacities'   => '[]',
+                    'profiles'     => '[]',
+                    'translations' => '[]',
                 ],
                 'messages' => [],
             ];
@@ -232,9 +304,10 @@ class AssetDefinition extends DbTestCase
                     'system_name' => $system_name . 'NG',
                 ],
                 'output'   => [
-                    'system_name' => $system_name . 'NG',
-                    'capacities'  => '[]',
-                    'profiles'    => '[]',
+                    'system_name'  => $system_name . 'NG',
+                    'capacities'   => '[]',
+                    'profiles'     => '[]',
+                    'translations' => '[]',
                 ],
                 'messages' => [],
             ];
@@ -258,9 +331,10 @@ class AssetDefinition extends DbTestCase
                 'system_name' => 'TestAssetModeling',
             ],
             'output'   => [
-                'system_name' => 'TestAssetModeling',
-                'capacities'  => '[]',
-                'profiles'    => '[]',
+                'system_name'  => 'TestAssetModeling',
+                'capacities'   => '[]',
+                'profiles'     => '[]',
+                'translations' => '[]',
             ],
             'messages' => [],
         ];
@@ -283,9 +357,10 @@ class AssetDefinition extends DbTestCase
                 'system_name' => 'TestAssetTyped',
             ],
             'output'   => [
-                'system_name' => 'TestAssetTyped',
-                'capacities'  => '[]',
-                'profiles'    => '[]',
+                'system_name'  => 'TestAssetTyped',
+                'capacities'   => '[]',
+                'profiles'     => '[]',
+                'translations' => '[]',
             ],
             'messages' => [],
         ];
@@ -305,6 +380,10 @@ class AssetDefinition extends DbTestCase
             if (is_array($data['output']) && !array_key_exists('profiles', $data['output'])) {
                 // default value for `profiles`
                 $data['output']['profiles'] = '[]';
+            }
+            if (is_array($data['output']) && !array_key_exists('translations', $data['output'])) {
+                // default value for `translations`
+                $data['output']['translations'] = '[]';
             }
             yield $data;
         }
@@ -450,6 +529,140 @@ class AssetDefinition extends DbTestCase
                     'rights'      => $rights,
                 ]
             );
+        }
+    }
+
+
+    public function testUpdateTranslations()
+    {
+        $definition = $this->createItem(
+            \Glpi\Asset\AssetDefinition::class,
+            [
+                'system_name' => 'test',
+            ]
+        );
+
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            '_save_translation' => true,
+            'language' => 'en_US',
+            'plurals' => [
+                'one' => 'Test',
+                'other' => 'Tests',
+            ]
+        ]))->isTrue();
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            '_save_translation' => true,
+            'language' => 'fr_FR',
+            'plurals' => [
+                'one' => 'Test FR',
+                'other' => 'Tests FR',
+            ]
+        ]))->isTrue();
+
+        $definition->getFromDB($definition->getID());
+        $this->array(json_decode($definition->fields['translations'], true))->isEqualTo([
+            'en_US' => [
+                'one' => 'Test',
+                'other' => 'Tests',
+            ],
+            'fr_FR' => [
+                'one' => 'Test FR',
+                'other' => 'Tests FR',
+            ],
+        ]);
+
+        $this->boolean($definition->update([
+            'id' => $definition->getID(),
+            '_delete_translation' => true,
+            'language' => 'en_US',
+
+        ]))->isTrue();
+
+        $definition->getFromDB($definition->getID());
+        $this->array(json_decode($definition->fields['translations'], true))->isEqualTo([
+            'fr_FR' => [
+                'one' => 'Test FR',
+                'other' => 'Tests FR',
+            ],
+        ]);
+    }
+
+
+    public function testGetTranslatedName()
+    {
+        /** @var \Glpi\Asset\AssetDefinition $definition */
+        $definition = $this->createItem(
+            \Glpi\Asset\AssetDefinition::class,
+            [
+                'system_name' => 'test',
+                'translations' => [
+                    'en_US' => [
+                        'one' => 'Test',
+                        'other' => 'Tests',
+                    ],
+                    'fr_FR' => [
+                        'one' => 'Test FR',
+                        'other' => 'Tests FR',
+                    ],
+                ],
+            ],
+            ['translations']
+        );
+
+        $_SESSION['glpilanguage'] = 'en_US';
+        $this->string($definition->getTranslatedName(1))->isEqualTo('Test');
+        $this->string($definition->getTranslatedName(10))->isEqualTo('Tests');
+
+        $_SESSION['glpilanguage'] = 'fr_FR';
+        $this->string($definition->getTranslatedName(1))->isEqualTo('Test FR');
+        $this->string($definition->getTranslatedName(10))->isEqualTo('Tests FR');
+
+        // untranslated language
+        $_SESSION['glpilanguage'] = 'es_ES';
+        $this->string($definition->getTranslatedName(1))->isEqualTo("test");
+        $this->string($definition->getTranslatedName(10))->isEqualTo('test');
+    }
+
+    protected function pluralFormProvider(): iterable
+    {
+        yield [
+            'language' => 'not a valid language',
+            'expected' => [
+            ]
+        ];
+
+        yield [
+            'language' => 'en_US',
+            'expected' => [
+                ["id" => "one", "formula" => "n == 1", "examples" => "1"],
+                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"]
+            ]
+        ];
+
+        yield [
+            'language' => 'fr_FR',
+            'expected' => [
+                ["id" => "one", "formula" => "(n == 0 || n == 1)", "examples" => "0, 1"],
+                ["id" => "many", "formula" => "n != 0 && n % 1000000 == 0", "examples" => "1000000, 1c6, 2c6, 3c6, 4c6, 5c6, 6c6, …"],
+                ["id" => "other", "formula" => null, "examples" => "2~17, 100, 1000, 10000, 100000, 1c3, 2c3, 3c3, 4c3, 5c3, 6c3, …"],
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider pluralFormProvider
+     */
+    public function testGetPluralFormsForLanguage(string $language, array $expected)
+    {
+        $result = \Glpi\Asset\AssetDefinition::getPluralFormsForLanguage($language);
+        $this->array($result)->hasSize(count($expected));
+        foreach ($result as $index => $category) {
+            $this->object($category)->isInstanceOf(\Gettext\Languages\Category::class);
+            $this->variable($category->id)->isEqualTo($expected[$index]['id']);
+            $this->variable($category->formula)->isEqualTo($expected[$index]['formula']);
+            $this->variable($category->examples)->isEqualTo($expected[$index]['examples']);
         }
     }
 }
