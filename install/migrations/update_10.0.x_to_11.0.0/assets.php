@@ -65,8 +65,9 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
 SQL;
     $DB->doQueryOrDie($query);
 } else {
-    $migration->addField('glpi_assets_assetdefinitions', 'profiles', 'JSON NOT NULL');
-    $migration->addField('glpi_assets_assetdefinitions', 'translations', 'JSON NOT NULL');
+    foreach (['profiles', 'translations'] as $field) {
+        $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
+    }
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [3, 4, 5, 6];

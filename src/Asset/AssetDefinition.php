@@ -355,14 +355,14 @@ final class AssetDefinition extends CommonDBTM
             $translations = $this->getDecodedTranslationsField();
             $translations[$input['language']] = $input['plurals'];
             unset($input['_save_translation'], $input['language'], $input['plurals']);
-            $input['translations'] = json_encode($translations);
+            $input['translations'] = $translations;
         }
 
         if (isset($input['_delete_translation']) && isset($input['language'])) {
             $translations = $this->getDecodedTranslationsField();
             unset($translations[$input['language']]);
             unset($input['_delete_translation'], $input['language']);
-            $input['translations'] = json_encode($translations);
+            $input['translations'] = $translations;
         }
 
         return $this->prepareInput($input);
@@ -438,6 +438,22 @@ final class AssetDefinition extends CommonDBTM
                 $has_errors = true;
             } else {
                 $input['profiles'] = json_encode($input['profiles']);
+            }
+        }
+
+        if (array_key_exists('translations', $input)) {
+            if (!$this->validateTranslationsArray($input['translations'])) {
+                Session::addMessageAfterRedirect(
+                    sprintf(
+                        __('The following field has an incorrect value: "%s".'),
+                        _n('Translation', 'Translations', Session::getPluralNumber())
+                    ),
+                    false,
+                    ERROR
+                );
+                $has_errors = true;
+            } else {
+                $input['translations'] = json_encode($input['translations']);
             }
         }
 
@@ -950,7 +966,7 @@ TWIG, ['name' => $name, 'value' => $value]);
     private function getDecodedTranslationsField(): array
     {
         $translations = @json_decode($this->fields['translations'], associative: true);
-        if (!is_array($translations)) {
+        if (!$this->validateTranslationsArray($translations)) {
             trigger_error(
                 sprintf('Invalid `translations` value (`%s`).', $this->fields['translations']),
                 E_USER_WARNING
@@ -959,6 +975,49 @@ TWIG, ['name' => $name, 'value' => $value]);
             $translations = [];
         }
         return $translations;
+    }
+
+    /**
+     * Validate that the given translations array contains valid values.
+     *
+     * @param mixed $profiles
+     * @return bool
+     */
+    private function validateTranslationsArray(mixed $translations): bool
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        if (!is_array($translations)) {
+            return false;
+        }
+
+        $is_valid = true;
+
+        foreach ($translations as $language => $values) {
+            if (!in_array($language, array_keys($CFG_GLPI['languages']), true)) {
+                var_dump($language);
+                $is_valid = false;
+                break;
+            }
+
+            $available_categories = array_map(
+                fn (Language_Category $category) => $category->id,
+                self::getPluralFormsForLanguage($language)
+            );
+            foreach ($values as $category => $translation) {
+                if (!in_array($category, $available_categories, true)) {
+                    $is_valid = false;
+                    break 2;
+                }
+                if (!is_string($translation)) {
+                    $is_valid = false;
+                    break 2;
+                }
+            }
+        }
+
+        return $is_valid;
     }
 
 
@@ -972,7 +1031,7 @@ TWIG, ['name' => $name, 'value' => $value]);
             return [];
         }
 
-        $cldrLanguage = Language_CldrData::getLanguageInfo($_GET['language']);
+        $cldrLanguage = Language_CldrData::getLanguageInfo($language);
         $cldrCategories = $cldrLanguage['categories'] ?? [];
 
         $languageCategories = [];
