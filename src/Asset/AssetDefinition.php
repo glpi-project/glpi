@@ -1005,7 +1005,6 @@ TWIG, ['name' => $name, 'value' => $value]);
 
         foreach ($translations as $language => $values) {
             if (!in_array($language, array_keys($CFG_GLPI['languages']), true)) {
-                var_dump($language);
                 $is_valid = false;
                 break;
             }
