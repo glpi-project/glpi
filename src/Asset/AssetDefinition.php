@@ -355,7 +355,7 @@ final class AssetDefinition extends CommonDBTM
             return false;
         }
 
-        if (isset($input['_save_translation']) && isset($input['language']) && isset($input['plurals']) && is_array($input['plurals'])) {
+        if (isset($input['_save_translation']) && isset($input['language']) && isset($input['plurals'])) {
             $translations = $this->getDecodedTranslationsField();
             $translations[$input['language']] = $input['plurals'];
             unset($input['_save_translation'], $input['language'], $input['plurals']);
