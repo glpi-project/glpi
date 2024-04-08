@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="modal fade" id="TranslationModal" tabindex="-1" role="dialog">
+<div class="modal fade" id="TranslationModal{{ rand }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form method="POST" action="{{ path("front/asset/assetdefinition.form.php") }}">
@@ -39,23 +39,23 @@
                 <input type="hidden" name="_save_translation" value="1" />
 
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">{{ __("Add translation") }}</h4>
+                    <h4 class="modal-title">{{ __("Add translation") }}</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label" for="dropdown_language">{{ __('Language') }}</label>
+                        <label class="form-label" for="dropdown_language{{ rand }}">{{ __('Language') }}</label>
                         {{ languages_dropdown|raw }}
                     </div>
 
-                    <div class="mb-3" id="translations_panel">
+                    <div class="mb-3" id="translations_panel{{ rand }}">
                     </div>
 
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" name="update">
-                        <i id="translation-modal-button-icon"></i>
-                        <span id="translation-modal-button-text"></span>
+                        <i id="translation-modal-button-icon{{ rand }}"></i>
+                        <span id="translation-modal-button-text{{ rand }}"></span>
                     </button>
                 </div>
             </form>
@@ -64,7 +64,7 @@
 </div>
 
 <div class="d-flex">
-    <button type="button" class="btn btn-primary add-translation" data-bs-toggle="modal" data-bs-target="#TranslationModal">
+    <button type="button" class="btn btn-primary add-translation" data-bs-toggle="modal" data-bs-target="#TranslationModal{{ rand }}">
         <i class="ti ti-plus"></i>
         <span>{{ __("New translation") }}</span>
     </button>
@@ -119,26 +119,26 @@
     $(document).ready(function() {
         $('.add-translation').click(function() {
             // empty the old plural inputs
-            $('#translations_panel').html("");
+            $('#translations_panel{{ rand }}').html("");
 
             // reset the language dropdown
-            $('#TranslationModal select[name=language]').val('').trigger('change');
+            $('#TranslationModal{{ rand }} select[name=language]').val('').trigger('change');
 
-            $('#translation-modal-button-icon').attr('class', '').addClass('ti ti-plus');
-            $('#translation-modal-button-text').text("{{ __("Add") }}");
+            $('#translation-modal-button-icon{{ rand }}').attr('class', '').addClass('ti ti-plus');
+            $('#translation-modal-button-text{{ rand }}').text("{{ __("Add") }}");
         });
 
         $('.edit-translation').click(function() {
             var language = $(this).closest('tr').data('language');
             var plurals = $(this).closest('tr').data('plurals');
 
-            $('#dropdown_language').val(language);
+            $('#dropdown_language{{ rand }}').val(language);
             setModalLanguagePlural(language, plurals);
 
-            $('#translation-modal-button-icon').attr('class', '').addClass('ti ti-device-floppy');
-            $('#translation-modal-button-text').text("{{ __("Save") }}");
+            $('#translation-modal-button-icon{{ rand }}').attr('class', '').addClass('ti ti-device-floppy');
+            $('#translation-modal-button-text{{ rand }}').text("{{ __("Save") }}");
 
-            $('#TranslationModal').modal('show');
+            $('#TranslationModal{{ rand }}').modal('show');
         });
 
     });
@@ -152,11 +152,11 @@
         plurals_values = plurals_values || {};
 
         // empty the old plural inputs
-        $('#translations_panel').html("");
+        $('#translations_panel{{ rand }}').html("");
 
         // Set the language dropdown value (we redo it for edit case)
         avoid_language_recursion = true;
-        $('#TranslationModal select[name=language]').val(language).trigger('change');
+        $('#TranslationModal{{ rand }} select[name="language"]').val(language).trigger('change');
         avoid_language_recursion = false;
 
         $.get("{{ path('ajax/getPlurals.php') }}", {
@@ -173,17 +173,17 @@
                 const plural_value = plurals_values[pluralForm.id] || '';
                 var plural_html = `
                     <div class="mb-2">
-                        <label class="form-label" for="plural_${pluralForm.id}">
+                        <label class="form-label" for="plural_${pluralForm.id}{{ rand }}">
                             ${pluralForm.id}
                             <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
                                   data-bs-content="${helper}">
                                 <i class="ti ti-help"></i>
                             </span>
                         </label>
-                        <input type="text" class="form-control" id="plural_${pluralForm.id}" name="plurals[${pluralForm.id}]" value="${plural_value}">
+                        <input type="text" class="form-control" id="plural_${pluralForm.id}{{ rand }}" name="plurals[${pluralForm.id}]" value="${plural_value}">
                     </div>
                 `;
-                $('#translations_panel').append(plural_html);
+                $('#translations_panel{{ rand }}').append(plural_html);
 
             });
         });

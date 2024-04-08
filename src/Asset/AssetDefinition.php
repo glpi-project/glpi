@@ -301,6 +301,8 @@ final class AssetDefinition extends CommonDBTM
             fn (string $lang_a, string $lang_b) => strnatcasecmp($CFG_GLPI['languages'][$lang_a][0], $CFG_GLPI['languages'][$lang_b][0])
         );
 
+        $rand = mt_rand();
+
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/translations.html.twig',
             [
@@ -308,11 +310,13 @@ final class AssetDefinition extends CommonDBTM
                 'classname' => $this->getAssetClassName(),
                 'translations' => $translations,
                 'languages_dropdown' => Dropdown::showLanguages('language', [
-                    'display' => false,
+                    'display'             => false,
                     'display_emptychoice' => true,
-                    'width'   => '100%',
-                    'on_change' => 'setModalLanguagePlural(this.value);'
-                ])
+                    'width'               => '100%',
+                    'on_change'           => 'setModalLanguagePlural(this.value);',
+                    'rand'                => $rand,
+                ]),
+                'rand' => $rand,
             ]
         );
     }
