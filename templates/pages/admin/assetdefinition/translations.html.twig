@@ -160,7 +160,6 @@
         avoid_language_recursion = false;
 
         $.get("{{ path('ajax/getPlurals.php') }}", {
-            id: "{{ item.fields['system_name'] }}",
             language: language
         }, function(data) {
             // Append new input for each plural in data
