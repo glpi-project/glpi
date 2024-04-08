@@ -778,16 +778,25 @@ final class AssetDefinition extends CommonDBTM
                 return sprintf('<i class="ti %s"></i>', $value);
             case 'translations':
                 $translations = json_decode($values[$field], associative: true);
-                $langs_list = "";
-                foreach ($translations as $language => $plurals) {
-                    $langs_list .= "<li class='mb-1'>" . $CFG_GLPI['languages'][$language][0] . ":" . TemplateRenderer::getInstance()->render(
-                        'pages/admin/assetdefinition/plurals.html.twig',
-                        [
-                            'plurals' => $plurals,
-                        ]
-                    ) . "</li>";
-                }
-                return "<ul>$langs_list</ul>";
+
+                return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                    {% if translations is not empty %}
+                        <ul>
+                            {% for language, plurals in translations %}
+                                <li>
+                                    {{ config('languages')[language][0] }}:
+                                    {% include "pages/admin/assetdefinition/plurals.html.twig" with {
+                                        'plurals': plurals,
+                                    } only %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+TWIG,
+                    [
+                        'translations' => $translations,
+                    ]
+                );
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
