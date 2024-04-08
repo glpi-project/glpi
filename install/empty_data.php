@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetMenu;
 use Glpi\Form\Form;
 use Glpi\Inventory\Conf;
 use Glpi\Socket;
@@ -9206,6 +9207,14 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'entities_id' => 1,
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
+            ];
+        }
+
+        $tables[AssetMenu::getTable()] = [];
+        foreach (AssetMenu::reservedEntries() as $reserved_id => $reserved_name) {
+            $tables[AssetMenu::getTable()][] = [
+                'id'   => $reserved_id,
+                'name' => $reserved_name,
             ];
         }
 

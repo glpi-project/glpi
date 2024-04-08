@@ -146,4 +146,14 @@
         item.fields['icon'],
         __('Icon'),
     ) }}
+
+    {{ fields.dropdownField(
+        'Glpi\\Asset\\AssetMenu',
+        'assets_assetmenus_id',
+        item.fields['assets_assetmenus_id'],
+        __('Menu'),
+        {
+            'display_emptychoice': 0
+        }
+    ) }}
 {% endblock %}

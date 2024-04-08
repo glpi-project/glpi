@@ -92,6 +92,15 @@ final class AssetDefinition extends CommonDBTM
         return $this->getFromDBByCrit(['system_name' => $system_name]);
     }
 
+
+    /*public function post_getEmpty()
+    {
+        $this->fields['assets_assetmenus_id'] = 1; // Assets menu
+
+        return parent::post_getEmpty();
+    }*/
+
+
     public function defineTabs($options = [])
     {
         $tabs = [];

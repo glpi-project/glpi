@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Asset\AssetMenu;
+
 /**
  * @var array $ADDTODISPLAYPREF
  * @var DB $DB
@@ -56,11 +58,13 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
             `translations` JSON NOT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
+            `assets_assetmenus_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             UNIQUE `system_name` (`system_name`),
             KEY `is_active` (`is_active`),
             KEY `date_creation` (`date_creation`),
-            KEY `date_mod` (`date_mod`)
+            KEY `date_mod` (`date_mod`),
+            KEY `assets_assetmenus_id` (`assets_assetmenus_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQueryOrDie($query);
@@ -68,6 +72,8 @@ SQL;
     foreach (['profiles', 'translations'] as $field) {
         $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
     }
+
+    $migration->addField('glpi_assets_assetdefinitions', 'assets_assetmenus_id', 'fkey');
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [3, 4, 5, 6];
@@ -176,6 +182,41 @@ if (!$DB->tableExists('glpi_assets_assettypes')) {
           KEY `date_creation` (`date_creation`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
+    $DB->doQueryOrDie($query);
+}
+
+if (!$DB->tableExists('glpi_assets_assetmenus')) {
+    $query = <<<SQL
+        CREATE TABLE `glpi_assets_assetmenus` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `entities_id` int unsigned NOT NULL DEFAULT '0',
+            `is_recursive` tinyint NOT NULL DEFAULT '0',
+            `assets_assetmenus_id` int unsigned NOT NULL DEFAULT '1',
+            `name` varchar(255) DEFAULT NULL,
+            `completename` text,
+            `comment` text,
+            `level` int NOT NULL DEFAULT '0',
+            `ancestors_cache` longtext,
+            `sons_cache` longtext,
+            `date_mod` timestamp NULL DEFAULT NULL,
+            `date_creation` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (`entities_id`,`assets_assetmenus_id`,`name`),
+            KEY `name` (`name`),
+            KEY `is_recursive` (`is_recursive`),
+            KEY `date_mod` (`date_mod`),
+            KEY `date_creation` (`date_creation`),
+            KEY `assets_assetmenus_id` (`assets_assetmenus_id`),
+            KEY `level` (`level`)
+        ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
+SQL;
+    $DB->doQueryOrDie($query);
+}
+
+$reserved_menus = AssetMenu::reservedEntries();
+foreach ($reserved_menus as $reserved_id => $reserved_name) {
+    $query = "REPLACE INTO `glpi_assets_assetmenus`
+                       (`id`, `name`) VALUES ($reserved_id, '$reserved_name')";
     $DB->doQueryOrDie($query);
 }
 
