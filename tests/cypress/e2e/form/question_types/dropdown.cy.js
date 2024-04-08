@@ -1,0 +1,370 @@
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2024 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+describe('Dropdown form question type', () => {
+    beforeEach(() => {
+        cy.createWithAPI('Glpi\\Form\\Form', {
+            'name': 'Tests form for the dropdown form question type suite',
+        }).as('form_id');
+
+        cy.login();
+        cy.changeProfile('Super-Admin', true);
+
+        cy.get('@form_id').then((form_id) => {
+            const tab = 'Glpi\\Form\\Form$main';
+            cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
+
+            // Add a new question
+            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+
+            // Set the question name
+            cy.findByRole("textbox", { name: "Question title" }).should('exist').type("Test dropdown question");
+
+            // Store the question section
+            cy.findByRole("option", { name: /New question|Test dropdown question/ }).should('exist').as('question');
+
+            // Change question type
+            cy.findByRole("combobox", { name: "Question type" }).should('exist').select("Dropdown");
+
+            // Check presence of the dropdown and the empty option
+            cy.findByRole("combobox", { name: "-----" }).should('exist');
+            cy.findByRole("textbox", { name: "Selectable option" }).should('exist');
+        });
+    });
+
+    function checkOptionLabels(labels, multiple = false) {
+        // Check if the option labels are correct
+        cy.findAllByRole("textbox", { name: "Selectable option" })
+            .should('have.length', labels.length + 1)
+            .each((el, i) => {
+                if (i < labels.length) {
+                    cy.wrap(el).should('have.value', labels[i]);
+                }
+            });
+
+        // Check in the select preview
+        const selector = multiple ? ".multiple-preview-dropdown select" : ".single-preview-dropdown select";
+        cy.get('@question').find(selector).find("option")
+            .should('have.length', labels.length + (!multiple ? 1 : 0))
+            .each((el, i) => {
+                // Skip the empty option
+                if (i === 0 && !multiple) return;
+
+                cy.wrap(el).should('have.text', labels[i - (!multiple ? 1 : 0)]);
+            });
+
+        // Check if the last option label is empty
+        cy.findAllByRole("textbox", { name: "Selectable option" }).last().should('have.value', '');
+    }
+
+    function checkSelectedOptions(role, indexes, multiple = false) {
+        // Check if the selected options are correct
+        cy.findAllByRole(role, { name: "Default option" }).each((el, i) => {
+            if (indexes.includes(i)) {
+                cy.wrap(el).should('be.checked');
+            } else {
+                cy.wrap(el).should('not.be.checked');
+            }
+        });
+
+        // Check in the select preview
+        const selector = multiple ? ".multiple-preview-dropdown select" : ".single-preview-dropdown select";
+        cy.get('@question').find(selector).find("option").each((el, i) => {
+            // Skip the empty option
+            if (i === 0 && !multiple) return;
+
+            if (indexes.includes(i - (!multiple ? 1 : 0))) {
+                cy.wrap(el).should('be.selected');
+            } else {
+                cy.wrap(el).should('not.be.selected');
+            }
+        });
+
+        // Check if the last option isn't checked and disabled
+        cy.findAllByRole(role, { name: "Default option" }).last().should('not.be.checked').should('be.disabled');
+    }
+
+    it('test adding and selecting options (simple)', () => {
+        // Add a new option
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).should('exist');
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", []);
+        checkOptionLabels(["Option 1"]);
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", []);
+        checkOptionLabels(["Option 1", "Option 2"]);
+
+        // Select the first option
+        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [0]);
+        checkOptionLabels(["Option 1", "Option 2"]);
+
+        // Add a new option
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [0]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Select the second option
+        cy.findAllByRole("radio", { name: "Default option" }).eq(1).should('exist').check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [1]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Select the third option in the select preview
+        cy.findByRole("combobox", { name: "Option 2" }).closest(".single-preview-dropdown").find("select").select("Option 3", { force: true });
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [2]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Save the form (force is required because the button is hidden by a toast message)
+        cy.findByRole("button", { name: "Save" }).click({ force: true });
+
+        // Reload the page to check if the options are still selected
+        cy.reload();
+
+        // Update the question alias
+        cy.findByRole("option", { name: /New question|Test dropdown question/ }).should('exist').as('question');
+
+        // Click on the question
+        cy.get("@question").click('top');
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [2]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+    });
+
+    it('test adding and selecting options (multiple)', () => {
+        // Change the question type to "Dropdown (multiple)"
+        cy.findByRole("checkbox", { name: "Allow multiple options" }).check();
+
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Select the first option
+        cy.findAllByRole("checkbox", { name: "Default option" }).eq(0).check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [0], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Select the second option
+        cy.findAllByRole("checkbox", { name: "Default option" }).eq(1).check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [0, 1], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Unselect the first option
+        cy.findAllByRole("checkbox", { name: "Default option" }).eq(0).uncheck();
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [1], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Select the third option in the select preview
+        cy.get('@question').find(".multiple-preview-dropdown span.select2-selection--multiple").click();
+
+        cy.get('@question').find('.multiple-preview-dropdown select').invoke('attr', 'id').then((id) => {
+            cy.get(`#select2-${id}-results`).findByRole('option', { name: 'Option 3' }).should('exist').click();
+        });
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [1, 2], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Save the form (force is required because the button is hidden by a toast message)
+        cy.findByRole("button", { name: "Save" }).click({ force: true });
+
+        // Reload the page to check if the options are still selected
+        cy.reload();
+
+        // Update the question alias
+        cy.findByRole("option", { name: /New question|Test dropdown question/ }).should('exist').as('question');
+
+        // Click on the question
+        cy.get("@question").click('top');
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [1, 2], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+    });
+
+    it('test transferring options from simple to multiple and vice versa', () => {
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Select the first option
+        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [0]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Change the question type to "Dropdown (multiple)"
+        cy.findByRole("checkbox", { name: "Allow multiple options" }).check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [0], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Select the second option
+        cy.findAllByRole("checkbox", { name: "Default option" }).eq(1).check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [0, 1], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Change the question type to "Dropdown (simple)"
+        cy.findByRole("checkbox", { name: "Allow multiple options" }).uncheck();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [1]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+    });
+
+    it('test deleting options', () => {
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Select the first option
+        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [0]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Delete the first option
+        cy.findAllByRole("button", { name: "Remove option" }).eq(0).click();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", []);
+        checkOptionLabels(["Option 2", "Option 3"]);
+    });
+
+    it('test end user view (simple)', () => {
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Select the first option
+        cy.findAllByRole("radio", { name: "Default option" }).eq(0).should('exist').check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("radio", [0]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Save the form (force is required because the button is hidden by a toast message)
+        cy.findByRole("button", { name: "Save" }).click({ force: true });
+
+        // Go to preview page (remove the target="_blank" attribute to stay in the same window)
+        cy.findByRole("link", { name: "Preview" })
+            .invoke('attr', 'target', '_self')
+            .click();
+
+        // Check the question title
+        cy.findByRole("heading", { name: "Test dropdown question" }).should('exist');
+
+        // Open the dropdown
+        cy.findByRole("combobox", { name: "Option 1" }).should('exist').click();
+
+        // Check the question options
+        cy.findByRole("combobox", { name: "Option 1" }).should('exist');
+        cy.findByRole("option", { name: "Option 2" }).should('exist');
+        cy.findByRole("option", { name: "Option 3" }).should('exist');
+    });
+
+    it('test end user view (multiple)', () => {
+        // Change the question type to "Dropdown (multiple)"
+        cy.findByRole("checkbox", { name: "Allow multiple options" }).check();
+
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Select the first and third option
+        cy.findAllByRole("checkbox", { name: "Default option" }).eq(0).should('exist').check();
+        cy.findAllByRole("checkbox", { name: "Default option" }).eq(2).should('exist').check();
+
+        // Check selected options and option labels
+        checkSelectedOptions("checkbox", [0, 2], true);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"], true);
+
+        // Save the form (force is required because the button is hidden by a toast message)
+        cy.findByRole("button", { name: "Save" }).click({ force: true });
+
+        // Go to preview page (remove the target="_blank" attribute to stay in the same window)
+        cy.findByRole("link", { name: "Preview" })
+            .invoke('attr', 'target', '_self')
+            .click();
+
+        // Check the question title
+        cy.findByRole("heading", { name: "Test dropdown question" }).should('exist');
+
+        // Check if the default options are selected
+        cy.findByRole("listitem", { name: "Option 1" }).should('exist');
+        cy.findByRole("listitem", { name: "Option 2" }).should('not.exist');
+        cy.findByRole("listitem", { name: "Option 3" }).should('exist');
+
+        // Open the dropdown
+        cy.findByRole("listitem", { name: "Option 1" }).should('exist').click();
+
+        // Check the question options
+        cy.findByRole("option", { name: "Option 1" }).should('exist');
+        cy.findByRole("option", { name: "Option 2" }).should('exist');
+        cy.findByRole("option", { name: "Option 3" }).should('exist');
+    });
+});

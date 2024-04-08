@@ -35,12 +35,13 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Glpi\Form\Question;
 use Override;
 
 final class QuestionTypeCheckbox extends AbstractQuestionTypeSelectable
 {
     #[Override]
-    public function getInputType(): string
+    public function getInputType(?Question $question): string
     {
         return 'checkbox';
     }

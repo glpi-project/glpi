@@ -53,9 +53,41 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     /**
      * Specific input type for child classes
      *
+     * @param ?Question $question
      * @return string
      */
-    abstract public function getInputType(): string;
+    abstract public function getInputType(?Question $question): string;
+
+    /**
+     * Get javascript to be added in the footer
+     * Some twig variables are available:
+     * - question: the question object
+     * - input_type: the input type
+     * - question_type: the question type class
+     * - rand: a random number
+     *
+     * @return string
+     */
+    public function getFooterScript(): string
+    {
+        $js = <<<TWIG
+            $(document).ready(function() {
+                {% if question is not null %}
+                    const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
+                    new GlpiFormQuestionTypeSelectable('{{ input_type }}', container);
+                {% else %}
+                    $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
+                        if (type === '{{ question_type|escape('js') }}') {
+                            const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
+                            new GlpiFormQuestionTypeSelectable('{{ input_type }}', container);
+                        }
+                    });
+                {% endif %}
+            });
+TWIG;
+
+        return $js;
+    }
 
     #[Override]
     public function loadJavascriptFiles(): array
@@ -95,6 +127,11 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
         return $input;
     }
 
+    public function hideOptionsContainerWhenUnfocused(): bool
+    {
+        return false;
+    }
+
     /**
      * Retrieve the options
      *
@@ -114,7 +151,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
      * Retrieve the values
      *
      * @param ?Question $question
-     * @return int
+     * @return array
      */
     public function getValues(?Question $question): array
     {
@@ -128,6 +165,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
         $default_values = explode(',', $question->fields['default_value'] ?? '');
         foreach ($options as $uuid => $option) {
             $values[] = [
+                'uuid' => $uuid,
                 'value' => $option,
                 'checked' => (int) in_array($uuid, $default_values),
             ];
@@ -137,21 +175,23 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     }
 
     #[Override]
-    public function renderAdministrationTemplate(
-        ?Question $question = null,
-        ?string $input_prefix = null
-    ): string {
+    public function renderAdministrationTemplate(?Question $question = null): string
+    {
         $template = <<<TWIG
         {% set rand = random() %}
 
-        {% macro addOption(input_type, rand, checked, value, placeholder, extra_details = false, disabled = false) %}
-            {% set uuid = random() %}
+        {% macro addOption(input_type, checked, value, placeholder, uuid = null, extra_details = false, disabled = false) %}
+            {% if uuid is null %}
+                {% set uuid = random() %}
+            {% endif %}
 
             <div
                 class="d-flex gap-1 align-items-center mb-2"
                 {{ extra_details ? 'data-glpi-form-editor-question-extra-details' : '' }}
             >
                 <i
+                    role="button"
+                    aria-label="{{ __('Move option') }}"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-handle
                     class="ti ti-grip-horizontal cursor-grab ms-auto me-1"
@@ -163,6 +203,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
                     name="default_value[]"
                     value="{{ uuid }}"
                     class="form-check-input" {{ checked ? 'checked' : '' }}
+                    aria-label="{{ __('Default option') }}"
                     {{ disabled ? 'disabled' : '' }}
                 >
                 <input
@@ -173,8 +214,11 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
                     name="options[{{ uuid }}]"
                     value="{{ value }}"
                     placeholder="{{ placeholder }}"
+                    aria-label="{{ __('Selectable option') }}"
                 >
                 <i
+                    role="button"
+                    aria-label="{{ __('Remove option') }}"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-remove
                     class="ti ti-x fa-lg text-muted ml-2 {{ value ? '' : 'd-none' }}"
@@ -184,31 +228,22 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
         {% endmacro %}
 
         <template>
-            {{ _self.addOption(input_type, rand, false, '', input_placeholder, true, true) }}
+            {{ _self.addOption(input_type, false, '', input_placeholder, null, true, true) }}
         </template>
 
-        <div data-glpi-form-editor-selectable-question-options="{{ rand }}">
+        <div
+            data-glpi-form-editor-selectable-question-options="{{ rand }}"
+            {{ hide_container_when_unfocused ? 'data-glpi-form-editor-question-extra-details' : '' }}
+        >
             {% for value in values %}
-                {{ _self.addOption(input_type, rand, value.checked, value.value, input_placeholder) }}
+                {{ _self.addOption(input_type, value.checked, value.value, input_placeholder, value.uuid) }}
             {% endfor %}
         </div>
 
-        {{ _self.addOption(input_type, rand, false, '', input_placeholder, true, true) }}
+        {{ _self.addOption(input_type, false, '', input_placeholder, null, true, true) }}
 
         <script>
-            $(document).ready(function() {
-                {% if question is not null %}
-                    const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    new GlpiFormQuestionTypeSelectable('{{ input_type }}', container);
-                {% else %}
-                    $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
-                        if (type === '{{ question_type|escape('js') }}') {
-                            const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            new GlpiFormQuestionTypeSelectable('{{ input_type }}', container);
-                        }
-                    });
-                {% endif %}
-            });
+            {$this->getFooterScript()}
         </script>
 TWIG;
 
@@ -217,8 +252,9 @@ TWIG;
             'question'          => $question,
             'question_type'     => $this::class,
             'values'            => $this->getValues($question),
-            'input_type'        => $this->getInputType(),
+            'input_type'        => $this->getInputType($question),
             'input_placeholder' => __('Enter an option'),
+            'hide_container_when_unfocused' => $this->hideOptionsContainerWhenUnfocused(),
         ]);
     }
 
@@ -244,7 +280,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'   => $question,
             'values'     => $this->getValues($question),
-            'input_type' => $this->getInputType(),
+            'input_type' => $this->getInputType($question),
         ]);
     }
 

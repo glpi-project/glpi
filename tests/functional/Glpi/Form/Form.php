@@ -99,6 +99,11 @@ class Form extends DbTestCase
                     123 => 'Checkbox 1',
                 ]
             ],
+            \Glpi\Form\QuestionType\QuestionTypeDropdown::class => [
+                'options' => [
+                    123 => 'Dropdown 1',
+                ]
+            ],
         ];
 
         foreach ($questions as $type) {

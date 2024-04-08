@@ -46,10 +46,12 @@
     'no_label'     : true,
 } %}
 
-<div
+<section
+    role="option"
     class="mb-3"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
+    aria-label="{{ question is not null ? question.fields.name|e('html_attr') : __('New question') }}"
 >
     <section
         data-glpi-form-editor-on-click="set-active"
@@ -78,6 +80,7 @@
                     name="name"
                     value="{{ question is not null ? question.fields.name : '' }}"
                     placeholder="{{ __("New question") }}"
+                    aria-label="{{ __("Question title") }}"
                     data-glpi-form-editor-dynamic-input
                     data-glpi-form-editor-on-input="compute-dynamic-input"
                     data-glpi-form-editor-question-details-name
@@ -246,4 +249,4 @@
             'form': form,
         }, with_context = false) }}
     </div>
-</div>
+</section>

@@ -159,8 +159,7 @@ final class Question extends CommonDBChild implements BlockInterface
         // The question type can be null when the question is created
         // We need to instantiate the question type to format and validate attributes
         if (
-            $question_type === null
-            && isset($input['type'])
+            isset($input['type'])
             && class_exists($input['type'])
         ) {
             $question_type = new $input['type']();
