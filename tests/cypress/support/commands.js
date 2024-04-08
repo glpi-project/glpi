@@ -89,6 +89,10 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
     });
     // Pattern for the profile link text to match exactly except ignoring surrounding whitespace
     const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
+    // Check if we are already on the desired profile
+    if (document.querySelector('a.user-menu-dropdown-toggle') && document.querySelector('a.user-menu-dropdown-toggle').innerText.contains(profile)) {
+        return;
+    }
     // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
     cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
         cy.blockGLPIDashboards();
@@ -217,4 +221,36 @@ Cypress.Commands.add('blockGLPIDashboards', () => {
     // Intercept all other requests to /ajax/dashboard.php and respond with an empty string
     cy.intercept({path: '/ajax/dashboard.php**'}, { body: '' });
     cy.intercept({path: '/ajax/dashboard.php?action=get_filter_data**'}, { body: '{}' });
+});
+
+/**
+ * @memberof cy
+ * @method validateSelect2Loading
+ * @description Verify that the results for a Select2 dropdown can load. Only works for dropdowns that call an AJAX endpoint for results.
+ */
+Cypress.Commands.add('validateSelect2Loading', {prevSubject: true}, (subject) => {
+    let trigger_arrow = subject.siblings('.select2').find('.select2-selection__arrow');
+    let mouse_event = 'mousedown';
+    if (trigger_arrow.length === 0) {
+        trigger_arrow = subject.siblings('.select2').find('.select2-selection--multiple');
+        mouse_event = 'click';
+        if (trigger_arrow.length === 0) {
+            throw new Error('Could not find the select2 trigger arrow or multiple selection element.');
+        }
+    }
+
+    cy.intercept('/ajax/**').as('ajax');
+    cy.get(trigger_arrow).trigger(mouse_event, {which: 1, force: true});
+    cy.wait('@ajax').then(() => {
+        // change context to the window's document body
+        cy.document().then((doc) => {
+            cy.wrap(doc.body).find('.select2-dropdown').should('have.length', 1).within((container) => {
+                Cypress.log({name: 'validateSelect2Loading', displayName: 'Select2 Loading', message: container.html()});
+                cy.get('li:not(.select2-results__message)').should('exist').then(() => {
+                    // Close the dropdown
+                    cy.get(trigger_arrow).trigger(mouse_event, {which: 1, force: true});
+                });
+            });
+        });
+    });
 });
