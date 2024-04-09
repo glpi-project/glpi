@@ -6621,7 +6621,6 @@ abstract class CommonITILObject extends CommonDBTM
      *      id_for_massaction      : default 0 means no massive action
      *
      * @since 10.0.0 "followups" option has been dropped
-     * @deprecated 11.0 Use {@link self::getDatatableEntries()} instead
      */
     public static function showShort($id, $options = [])
     {
@@ -6990,7 +6989,6 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * @param integer $output_type Output type
      * @param string  $mass_id     id of the form to check all
-     * @deprecated 11.0 Use {@link self::getCommonDatatableColumns()}
      */
     public static function commonListHeader(
         $output_type = Search::HTML_OUTPUT,
