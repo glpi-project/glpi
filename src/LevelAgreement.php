@@ -584,7 +584,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * @param $tickets_id
      * @param $type
-     * @return false|iterable
+     * @return false|Generator
      */
     public function getDataForTicket($tickets_id, $type)
     {
@@ -1042,6 +1042,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         if ($ticket->fields[$ticketfield] > 0) {
             $levelticket = new static::$levelticketclass();
+            $levelticket->delete(['tickets_id' => $ticket->fields["id"]]);
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $levelticket::getTable(),

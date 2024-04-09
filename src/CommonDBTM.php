@@ -337,7 +337,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param DBmysqlIterator $iter Iterator instance
      *
-     * @return iterable
+     * @return Generator
      */
     public static function getFromIter(DBmysqlIterator $iter)
     {
