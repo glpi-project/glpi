@@ -65,6 +65,7 @@
 
     &.cotrunk {
         background-color: silver;
+
         @if $is-dark {
             color: $dark;
         }
@@ -102,6 +103,7 @@
         text-align: center;
         width: 25%;
     }
+
     @if $is_dark {
         color: $dark
     } @else {

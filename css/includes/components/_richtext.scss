@@ -86,6 +86,7 @@ body.mce-content-body {
         max-height: 350px;
         position: relative;
         overflow: hidden;
+
         .read_more {
             @if not $is_dark {
                 background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, #f1f4e3 100%);
