@@ -51,7 +51,7 @@ class SLA extends LevelAgreement
 
     public static function getTypeName($nb = 0)
     {
-       // Acronymous, no plural
+        // Acronym, no plural
         return __('SLA');
     }
 
@@ -64,9 +64,10 @@ class SLA extends LevelAgreement
     {
     }
 
-    public function getAddConfirmation()
+    public function getAddConfirmation(): array
     {
-        return [__("The assignment of a SLA to a ticket causes the recalculation of the date."),
+        return [
+            __("The assignment of a SLA to a ticket causes the recalculation of the date."),
             __("Escalations defined in the SLA will be triggered under this new date.")
         ];
     }

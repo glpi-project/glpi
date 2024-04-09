@@ -51,25 +51,22 @@ class SlaLevel extends LevelAgreementLevel
         return CommonDBTM::getTable(__CLASS__);
     }
 
-
     public function cleanDBonPurge()
     {
         parent::cleanDBonPurge();
 
-       // SlaLevel_Ticket does not extends CommonDBConnexity
+        // SlaLevel_Ticket does not extends CommonDBConnexity
         $slt = new SlaLevel_Ticket();
         $slt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
-
 
     public function showForParent(SLA $sla)
     {
         return $this->showForSLA($sla);
     }
 
-
     /**
-     * @param $sla SLA object
+     * @param SLA $sla SLA object
      *
      * @since 9.1 (before showForSLA)
      **/
@@ -206,10 +203,8 @@ class SlaLevel extends LevelAgreementLevel
         echo "</div>";
     }
 
-
     public function getActions()
     {
-
         $actions = parent::getActions();
 
         unset($actions['slas_id']);
@@ -222,16 +217,12 @@ class SlaLevel extends LevelAgreementLevel
 
 
     /**
-     * Show the rule
+     * Show the SLA rule form
      *
-     * @param $ID              ID of the rule
-     * @param $options   array of possible options
-     *
-     * @return void
+     * {@inheritdoc}
      **/
     public function showForm($ID, array $options = [])
     {
-
         $canedit = $this->can('sla', UPDATE);
 
         $this->initForm($ID, $options);
@@ -312,7 +303,6 @@ class SlaLevel extends LevelAgreementLevel
         }
         return 0;
     }
-
 
     /**
      * Get next level for a SLA
