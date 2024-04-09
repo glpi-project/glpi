@@ -7203,7 +7203,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             $priority_name = static::getPriorityName($item->fields["priority"]);
             $priority_color = $_SESSION["glpipriority_" . $item->fields["priority"]];
-            $entry['priority'] = '<span class="fw-bold badge text-body" style="background-color: ' . $priority_color . '">' . $priority_name . '</span>';
+            $entry['priority'] = '<span class="fw-bold badge text-body" style="background-color: ' . htmlspecialchars($priority_color) . '">' . htmlspecialchars($priority_name) . '</span>';
 
             $entry['requester'] = '';
             foreach ($item->getUsers(CommonITILActor::REQUESTER) as $d) {
@@ -7228,35 +7228,35 @@ abstract class CommonITILObject extends CommonDBTM
                 if (!isset($group_cache[$d['groups_id']])) {
                     $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'glpi_groups', id: $d['groups_id'], default: '');
                 }
-                $entry['requester'] .= $group_cache[$d['groups_id']] . '<br>';
+                $entry['requester'] .= htmlspecialchars($group_cache[$d['groups_id']]) . '<br>';
             }
 
             $entry['assigned'] = '';
             foreach ($item->getUsers(CommonITILActor::ASSIGN) as $d) {
                 if (Session::getCurrentInterface() === 'helpdesk' && !empty($anon_name = User::getAnonymizedNameForUser($d['users_id'], $item->getEntityID()))) {
-                    $entry['assigned'] .= $anon_name . '<br>';
+                    $entry['assigned'] .= htmlspecialchars($anon_name) . '<br>';
                 } else {
                     if (!isset($user_cache[$d['users_id']])) {
                         $user_cache[$d['users_id']] = getUserName($d['users_id'], 2);
                     }
-                    $entry['assigned'] .= $user_cache[$d['users_id']]['name'] . '<br>';
+                    $entry['assigned'] .= htmlspecialchars($user_cache[$d['users_id']]['name']) . '<br>';
                 }
             }
             foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
                 if (Session::getCurrentInterface() === 'helpdesk' && !empty($anon_name = Group::getAnonymizedName($item->getEntityID()))) {
-                    $entry['assigned'] .= $anon_name . '<br>';
+                    $entry['assigned'] .= htmlspecialchars($anon_name) . '<br>';
                 } else {
                     if (!isset($group_cache[$d['groups_id']])) {
                         $group_cache[$d['groups_id']] = Dropdown::getDropdownName(table: 'glpi_groups', id: $d['groups_id'], default: '');
                     }
-                    $entry['assigned'] .= $group_cache[$d['groups_id']] . '<br>';
+                    $entry['assigned'] .= htmlspecialchars($group_cache[$d['groups_id']]) . '<br>';
                 }
             }
             foreach ($item->getSuppliers(CommonITILActor::ASSIGN) as $d) {
                 if (!isset($supplier_cache[$d['suppliers_id']])) {
                     $supplier_cache[$d['suppliers_id']] = Dropdown::getDropdownName(table: 'glpi_suppliers', id: $d['suppliers_id'], default: '');
                 }
-                $entry['assigned'] .= $supplier_cache[$d['suppliers_id']] . '<br>';
+                $entry['assigned'] .= htmlspecialchars($supplier_cache[$d['suppliers_id']]) . '<br>';
             }
 
             if (!$params['ticket_stats']) {
@@ -7269,7 +7269,7 @@ abstract class CommonITILObject extends CommonDBTM
                     if (!isset($asset_cache[$val['itemtype']][$val['items_id']])) {
                         $object = getItemForItemtype($val["itemtype"]);
                         if ($object && $object->getFromDB($val["items_id"])) {
-                            $asset_cache[$val['itemtype']][$val['items_id']] = $object::canView() ? $object->getLink() : $object->getNameID();
+                            $asset_cache[$val['itemtype']][$val['items_id']] = $object::canView() ? $object->getLink() : htmlspecialchars($object->getNameID());
                         }
                     }
                     if (isset($asset_cache[$val['itemtype']][$val['items_id']])) {
@@ -7305,13 +7305,13 @@ abstract class CommonITILObject extends CommonDBTM
                 foreach ($result as $plan) {
                     if (isset($plan['begin']) && $plan['begin']) {
                         $items[$plan['id']] = $plan['id'];
-                        $planned_infos .= sprintf(__s('From %s'), Html::convDateTime($plan['begin']));
-                        $planned_infos .= sprintf(__s('To %s'), Html::convDateTime($plan['end']));
+                        $planned_infos .= htmlspecialchars(sprintf(__('From %s'), Html::convDateTime($plan['begin'])));
+                        $planned_infos .= htmlspecialchars(sprintf(__('To %s'), Html::convDateTime($plan['end'])));
                         if ($plan['users_id_tech']) {
                             if (!isset($user_cache[$plan['users_id_tech']])) {
                                 $user_cache[$plan['users_id_tech']] = getUserName($plan['users_id_tech'], 2);
                             }
-                            $planned_infos .= sprintf(__s('By %s'), $user_cache[$plan['users_id_tech']]['name']);
+                            $planned_infos .= htmlspecialchars(sprintf(__('By %s'), $user_cache[$plan['users_id_tech']]['name']));
                         }
                         $planned_infos .= "<br>";
                     }
