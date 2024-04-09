@@ -144,7 +144,6 @@ class Itil_Project extends CommonDBRelation
                     "$link_table.id AS linkid",
                     "$link_table.items_id AS id",
                     new \Glpi\DBAL\QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
-                    new \Glpi\DBAL\QueryExpression($DB::quoteValue($itemtype::getTypeName(1)), 'itemtype_label'),
                 ],
                 'DISTINCT'        => true,
                 'FROM'            => $link_table,
@@ -175,7 +174,7 @@ class Itil_Project extends CommonDBRelation
                 'id'             => $data['linkid'],
                 'itemtype'       => $data['itemtype'],
                 'item_id'        => $data['id'],
-                'itemtype_label' => $data['itemtype_label'],
+                'itemtype_label' => $data['itemtype']::getTypeName(1),
             ];
         }
 
