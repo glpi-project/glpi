@@ -60,10 +60,8 @@ class SoftwareVersion extends CommonDBChild
         return Software::getIcon();
     }
 
-
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Item_SoftwareVersion::class,
@@ -71,10 +69,8 @@ class SoftwareVersion extends CommonDBChild
         );
     }
 
-
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
@@ -83,15 +79,8 @@ class SoftwareVersion extends CommonDBChild
         return $ong;
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @see CommonDBTM::getPreAdditionalInfosForName
-     **/
     public function getPreAdditionalInfosForName()
     {
-
         $soft = new Software();
         if ($soft->getFromDB($this->fields['softwares_id'])) {
             return $soft->getName();
@@ -99,16 +88,15 @@ class SoftwareVersion extends CommonDBChild
         return '';
     }
 
-
     /**
      * Print the Software / version form
      *
-     * @param $ID        integer  Id of the version or the template to print
-     * @param $options   array    of possible options:
+     * @param integer $ID Id of the version or the template to print
+     * @param array $options of possible options:
      *     - target form target
      *     - softwares_id ID of the software for add process
      *
-     * @return true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      *
      **/
     public function showForm($ID, array $options = [])
@@ -125,7 +113,7 @@ class SoftwareVersion extends CommonDBChild
 
         echo "<tr class='tab_bg_1'><td>" . _n('Software', 'Software', Session::getPluralNumber()) . "</td>";
         echo "<td>";
-        if ($this->isNewID($ID)) {
+        if (static::isNewID($ID)) {
             echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
         }
         echo "<a href='" . Software::getFormURLWithID($softwares_id) . "'>" .
@@ -148,11 +136,11 @@ class SoftwareVersion extends CommonDBChild
         echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
         State::dropdown(['value'     => $this->fields["states_id"],
             'entity'    => $this->fields["entities_id"],
-            'condition' => self::getStateVisibilityCriteria()
+            'condition' => $this->getStateVisibilityCriteria()
         ]);
         echo "</td></tr>\n";
 
-       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
+        // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
         if (
             (SoftwareLicense::countForVersion($ID) > 0)
             || (Item_SoftwareVersion::countForVersion($ID) > 0)
@@ -165,7 +153,6 @@ class SoftwareVersion extends CommonDBChild
         return true;
     }
 
-
     public function rawSearchOptions()
     {
         $tab = [];
@@ -177,7 +164,7 @@ class SoftwareVersion extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'string',
@@ -185,7 +172,7 @@ class SoftwareVersion extends CommonDBChild
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => 'glpi_operatingsystems',
+            'table'              => OperatingSystem::getTable(),
             'field'              => 'name',
             'name'               => OperatingSystem::getTypeName(1),
             'datatype'           => 'dropdown'
@@ -193,7 +180,7 @@ class SoftwareVersion extends CommonDBChild
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -205,12 +192,12 @@ class SoftwareVersion extends CommonDBChild
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => self::getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria()
         ];
 
         $tab[] = [
             'id'                 => '121',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
@@ -220,11 +207,10 @@ class SoftwareVersion extends CommonDBChild
         return $tab;
     }
 
-
     /**
      * Make a select box for  software to install
      *
-     * @param $options array of possible options:
+     * @param array $options Array of possible options:
      *    - name          : string / name of the select (default is softwareversions_id)
      *    - softwares_id  : integer / ID of the software (mandatory)
      *    - value         : integer / value of the selected version
@@ -239,7 +225,6 @@ class SoftwareVersion extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       //$softwares_id,$value=0
         $p['softwares_id']          = 0;
         $p['value']                 = 0;
         $p['name']                  = 'softwareversions_id';
@@ -252,7 +237,7 @@ class SoftwareVersion extends CommonDBChild
             }
         }
 
-       // Make a select box
+        // Make a select box
         $criteria = [
             'SELECT'    => [
                 'glpi_softwareversions.*',
@@ -296,11 +281,10 @@ class SoftwareVersion extends CommonDBChild
         return Dropdown::showFromArray($p['name'], $values, $p);
     }
 
-
     /**
      * Show Versions of a software
      *
-     * @param $soft Software object
+     * @param Software $soft Software object
      *
      * @return void
      **/
@@ -402,28 +386,24 @@ class SoftwareVersion extends CommonDBChild
         echo "</div>";
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
-            switch (get_class($item)) {
+            switch ($item::class) {
                 case Software::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = countElementsInTable($this->getTable(), ['softwares_id' => $item->getID()]);
+                        $nb = countElementsInTable(static::getTable(), ['softwares_id' => $item->getID()]);
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == 'Software') {
+        if ($item::class === Software::class) {
             self::showForSoftware($item);
         }
         return true;
