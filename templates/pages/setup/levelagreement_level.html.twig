@@ -1,0 +1,60 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+
+    {% if not item.isNewItem() %}
+        {{ fields.htmlField('', la.getLink(), parent_class|itemtype_name(1)) }}
+    {% endif %}
+    {% set execution_time_dropdown %}
+        {% do call([item, 'dropdownExecutionTime'], ['execution_time', {
+            max_time: la.getTime(),
+            used: call([item, 'getAlreadyUsedExecutionTime'], [la.fields['id']]),
+            value: item.fields['execution_time'],
+            type: la.fields['type']
+        }]) %}
+    {% endset %}
+    {{ fields.htmlField('', execution_time_dropdown, __('Execution')) }}
+
+    {% if not item.isNewItem() %}
+        {{ fields.dropdownArrayField('match', item.fields['match'], operators, __('Logical operator')) }}
+    {% else %}
+        {#  Not sure why the old UI had this hard-coded to AND #}
+        <input type="hidden" name="match" value="AND">
+    {% endif %}
+{% endblock %}

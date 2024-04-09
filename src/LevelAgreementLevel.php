@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * LevelAgreementLevel class
  *
@@ -47,7 +49,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * LevelAgreement parent class.
      * Have to be redefined by concrete class.
-     * @var string
+     * @var class-string<LevelAgreement>
      */
     protected static $parentclass;
     /**
@@ -65,7 +67,6 @@ abstract class LevelAgreementLevel extends RuleTicket
        // Override in order not to use glpi_rules table.
     }
 
-
     /**
      * @since 0.85
      **/
@@ -75,24 +76,20 @@ abstract class LevelAgreementLevel extends RuleTicket
         return [];
     }
 
-
     /**
      * @since 0.84
      **/
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Escalation level', 'Escalation levels', $nb);
     }
-
 
     public function rawSearchOptions()
     {
@@ -172,7 +169,6 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
-
         switch ($field) {
             case 'execution_time':
                 $possible_values = self::getExecutionTimes();
@@ -186,7 +182,6 @@ abstract class LevelAgreementLevel extends RuleTicket
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
-
         if (!is_array($values)) {
             $values = [$field => $values];
         }
@@ -203,15 +198,11 @@ abstract class LevelAgreementLevel extends RuleTicket
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
-
-
     public function getActions()
     {
-
         $actions = parent::getActions();
 
-       // Only append actors
+        // Only append actors
         $actions['_users_id_requester']['force_actions']  = ['append'];
         $actions['_groups_id_requester']['force_actions'] = ['append'];
         $actions['_users_id_assign']['force_actions']     = ['append'];
@@ -223,11 +214,6 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $actions;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @see RuleTicket::getCriterias()
-     **/
     public function getCriterias()
     {
 
@@ -246,7 +232,6 @@ abstract class LevelAgreementLevel extends RuleTicket
         $actions['status']['type']    = 'dropdown_status';
         return $actions;
     }
-
 
     public static function getExecutionTimes($options = [])
     {
@@ -314,12 +299,11 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $possible_values;
     }
 
-
     /**
      * Dropdown execution time for SLA
      *
-     * @param $name      string   name of the select
-     * @param $options   array    of possible options:
+     * @param string $name name of the select
+     * @param array $options Array of possible options:
      *       - value : default value
      *       - max_time : max time to use
      *       - used : already used values
@@ -355,7 +339,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * Get already used execution time for a OLA
      *
-     * @param $olas_id   integer  id of the OLA
+     * @param integer $las_id id of the OLA
      *
      * @return array of already used execution times
      **/
@@ -381,10 +365,8 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $result;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
@@ -398,11 +380,9 @@ abstract class LevelAgreementLevel extends RuleTicket
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == static::$parentclass) {
+        if ($item::class === static::$parentclass) {
             $level = new static();
             $level->showForParent($item);
         }
@@ -414,10 +394,143 @@ abstract class LevelAgreementLevel extends RuleTicket
      * the "work_in_day" parameter set to true ?
      *
      * @return bool
+     * @used-by LevelAgreement::computeExecutionDate()
      */
     public function shouldUseWorkInDayMode(): bool
     {
         // No definition time here so we must guess the unit from the raw seconds value
         return abs($this->fields['execution_time']) >= DAY_TIMESTAMP;
+    }
+
+    /**
+     * Show the Level Agreement rule form
+     *
+     * {@inheritdoc}
+     **/
+    public function showForm($ID, array $options = [])
+    {
+        /** @var class-string<LevelAgreement> $parent_class */
+        $parent_class = static::$parentclass;
+        $canedit = $this->can($parent_class::$rightname, UPDATE);
+        $la = new $parent_class();
+        $la->getFromDB($this->fields[$parent_class::getForeignKeyField()]);
+
+        TemplateRenderer::getInstance()->display('pages/setup/levelagreement_level.html.twig', [
+            'item' => $this,
+            'no_header' => $options['no_header'] ?? false,
+            'parent_class' => $parent_class,
+            'la' => $la,
+            'operators' => $this->getRulesMatch(is_string($this->restrict_matching) ? $this->restrict_matching : null),
+            'params' => $options + [
+                'canedit' => $canedit,
+            ],
+        ]);
+    }
+
+    /**
+     * @param LevelAgreement $la The Level Agreement object (SLA or OLA)
+     * @return void
+     */
+    public function showForLA(LevelAgreement $la): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $ID = $la->getField('id');
+        if (!$la->can($ID, READ)) {
+            return;
+        }
+
+        $parent_class = static::$parentclass;
+        $canedit = $la->can($ID, UPDATE);
+
+        if ($canedit) {
+            $this->showForm(0, [
+                'no_header' => true,
+            ]);
+        }
+
+        $iterator = $DB->request([
+            'FROM'   => static::getTable(),
+            'WHERE'  => [
+                $parent_class::getForeignKeyField()   => $ID
+            ],
+            'ORDER'  => 'execution_time'
+        ]);
+
+        $entries = [];
+        $la_level = new static();
+        foreach ($iterator as $data) {
+            $la_level->getFromResultSet($data);
+            $la_level->getRuleWithCriteriasAndActions($la_level->getID(), 1, 1);
+
+            if ($la_level->fields["execution_time"] !== 0) {
+                $execution_time = Html::timestampToString($la_level->fields["execution_time"], false);
+            } else {
+                $execution_time = $la->fields['type'] === 1
+                    ? __('Time to own')
+                    : __('Time to resolve');
+            }
+
+            // language=Twig
+            $criteria_list = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <table class="table table-sm table-borderless table-striped">
+                    {% for criterion in la_level.criterias %}
+                        <tr>
+                            {{ la_level.getMinimalCriteriaText(criterion.fields, 'class="pt-0 pb-2"')|raw }}
+                        </tr>
+                    {% endfor %}
+                </table>
+TWIG, ['la_level' => $la_level]);
+
+            // language=Twig
+            $actions_list = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <table class="table table-sm table-borderless table-striped">
+                    {% for action in la_level.actions %}
+                        <tr>
+                            {{ la_level.getMinimalActionText(action.fields, 'class="pt-0 pb-2"')|raw }}
+                        </tr>
+                    {% endfor %}
+                </table>
+TWIG, ['la_level' => $la_level]);
+
+
+            $entries[] = [
+                'itemtype' => static::class,
+                'id'       => $la_level->getID(),
+                'name'     => $la_level->getLink(),
+                'execution_time' => $execution_time,
+                'is_active' => Dropdown::getYesNo($la_level->fields['is_active']),
+                'criteria' => $criteria_list,
+                'actions' => $actions_list
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'execution_time' => __('Execution'),
+                'is_active' => __('Active'),
+                'criteria' => _n('Criterion', 'Criteria', Session::getPluralNumber()),
+                'actions' => _n('Action', 'Actions', Session::getPluralNumber())
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'criteria' => 'raw_html',
+                'actions' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ]
+        ]);
     }
 }
