@@ -1083,16 +1083,16 @@ class User extends CommonDBTM
             $_SESSION["glpidefault_entity"] = $input["entities_id"];
         }
 
-        // Security on default profile update
-        if (!isset($input['_ruleright_process'])) {
-            if (isset($input['profiles_id'])) {
+        // Security on default values (manually update)
+        if (!isset($input['_ruleright_process'])) { // if no rule right process
+            if (isset($input['profiles_id'])) { //check if desired profile can be set (depending on user's profiles)
                 if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))) {
                     unset($input['profiles_id']);
                 }
             }
 
             // Security on default entity  update
-            if (isset($input['entities_id'])) {
+            if (isset($input['entities_id'])) { //check if desired entity can be set (depending on user's entities)
                 if (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))) {
                     unset($input['entities_id']);
                 }
@@ -1100,7 +1100,7 @@ class User extends CommonDBTM
 
             // Security on default group  update
             if (
-                isset($input['groups_id'])
+                isset($input['groups_id']) //check if desired group can be set (depending on user's groups)
                 && !Group_User::isUserInGroup($input['id'], $input['groups_id'])
             ) {
                 unset($input['groups_id']);
@@ -1366,15 +1366,19 @@ class User extends CommonDBTM
             }
 
             $default_option = [];
-            // Security on default entity update
+            // Security on default entity update by rule
+            // if input contain default entity and if it not user's entity
             if (isset($this->input['entities_id']) && $this->input['entities_id'] != $this->fields['entities_id']) {
+                // Check if the entity is in the user's entities
                 if (in_array($this->input['entities_id'], Profile_User::getUserEntities($this->input['id']))) {
                     $default_option['entities_id'] = $this->input['entities_id'];
                 }
             }
 
-            // Security on default profile update
+            // Security on default profile update by rule
+             // if input contain default profile and if it not user's profile
             if (isset($this->input['profiles_id']) && $this->input['profiles_id'] != $this->fields['profiles_id']) {
+                // Check if the profile is in the user's profiles
                 if (in_array($this->input['profiles_id'], Profile_User::getUserProfiles($this->input['id']))) {
                     $default_option['profiles_id'] = $this->input['profiles_id'];
                 }
