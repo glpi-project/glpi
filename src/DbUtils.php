@@ -162,7 +162,7 @@ final class DbUtils
             'sses$'              => 'ss', // Case like addresses
             'ss$'                => 'ss', // Special case (addresses) when getSingular is called on already singular form
             'uses$'              => 'us', // Case like statuses
-            'us$'                => 'us', // Case like status
+            'tus$'               => 'tus', // Case like status
             '([aeiou]{2})ses$'   => '\1s', // Case like aliases
             'lias$'              => 'lias', // Special case (aliases) when getSingular is called on already singular form
             '([^aeiou])ies$'     => '\1y', // special case : category

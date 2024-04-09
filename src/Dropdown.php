@@ -1119,7 +1119,7 @@ JAVASCRIPT;
                     'Blacklist' => null,
                     'BlacklistedMailContent' => null,
                     'DefaultFilter' => null,
-                    'Glpi\Asset\AssetMenu' => null,
+                    'Glpi\\Asset\\AssetMenu' => null,
                 ],
 
                 __('Assistance') => [

@@ -216,7 +216,7 @@ SQL;
 $reserved_menus = AssetMenu::reservedEntries();
 foreach ($reserved_menus as $reserved_id => $reserved_name) {
     $query = "REPLACE INTO `glpi_assets_assetmenus`
-                       (`id`, `name`) VALUES ($reserved_id, '$reserved_name')";
+                (`id`, `name`, `completename`) VALUES ($reserved_id, '$reserved_name', '$reserved_name')";
     $DB->doQueryOrDie($query);
 }
 
