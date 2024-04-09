@@ -364,6 +364,5 @@ class RuleRight extends DbTestCase
         $this->integer($users->fields['entities_id'])->isEqualTo(0);
         $this->integer($users->fields['profiles_id'])->isEqualTo(4);
         $this->integer($users->fields['groups_id'])->isEqualTo($new_groups_id);
-
     }
 }
