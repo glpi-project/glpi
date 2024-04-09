@@ -65,12 +65,14 @@
 
     &.cotrunk {
         background-color: silver;
+        @if $is-dark {
+            color: $dark;
+        }
     }
 
     &.aggregated,
     .aggregated {
         background-color: teal;
-        color: white;
         padding-left: 2em;
 
         a {
@@ -99,5 +101,10 @@
     td.netport {
         text-align: center;
         width: 25%;
+    }
+    @if $is_dark {
+        color: $dark
+    } @else {
+        color: $light
     }
 }

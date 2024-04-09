@@ -46,7 +46,7 @@ $secondary-fg: #f3f3f3;
 $dark: #242323;
 $light: #aaa;
 $link-color: #888;
-$text-muted: #757d91;
+$text-muted: $dark;
 $mainmenu_bg: #414141;
 $mainmenu_fg: #f4f6fa;
 $logo: "../pics/logos/logo-GLPI-100-white.png";
@@ -74,5 +74,6 @@ $border-color: rgba(101, 109, 119, 16%);
 $table-head-bg: #2c3b4f;
 $table-head-color: $light;
 $itil-secondary-bg: #222121 !default;
+$code-color: rgb(180, 180, 180);
 
 @import "../includes/palette_dark";

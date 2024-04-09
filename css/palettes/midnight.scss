@@ -48,7 +48,7 @@ $dark-mode-darken: #000;
 $color-contrast-dark: #1a1a1a;
 $light: #e6e6e6;
 $link-color: #b6c3e0;
-$text-muted: #c6cad2;
+$text-muted: $dark;
 $mainmenu_bg: #2f3f64;
 $mainmenu_fg: #f4f6fa;
 $logo: "../pics/logos/logo-GLPI-100-white.png";
@@ -82,5 +82,6 @@ $itil-secondary-bg: #1d2531 !default;
 $timeline-fup-bg: #1c2430 !default;
 $timeline-fup-fg: #8892a8 !default;
 $timeline-fup-border: #2f3d50 !default;
+$code-color: rgb(180, 180, 180);
 
 @import "../includes/palette_dark";
