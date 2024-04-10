@@ -106,10 +106,10 @@ class Item_SoftwareVersion extends CommonDBRelation
         return $tab;
     }
 
-    private function prepareInputForAddAndUpdate(array $input): array|false
+    private function prepareInputForAddAndUpdate(array $input, bool $is_add): array|false
     {
         if (!isset($input['itemtype'], $input['items_id'])) {
-            return false;
+            return $is_add ? false : $input;
         }
         $itemtype = $input['itemtype'];
         $item = new $itemtype();
@@ -133,7 +133,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
-        $input = $this->prepareInputForAddAndUpdate($input);
+        $input = $this->prepareInputForAddAndUpdate($input, true);
         if ($input === false) {
             return false;
         }
@@ -142,7 +142,7 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function prepareInputForUpdate($input)
     {
-        $input = $this->prepareInputForAddAndUpdate($input);
+        $input = $this->prepareInputForAddAndUpdate($input, false);
         if ($input === false) {
             return false;
         }
