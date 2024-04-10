@@ -290,7 +290,7 @@ class Item_SoftwareLicense extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => ['itemtype'],
             'DISTINCT'  => true,
-            'FROM'      => self::getTable(__CLASS__),
+            'FROM'      => static::getTable(),
             'WHERE'     => [
                 'softwarelicenses_id'   => $softwarelicenses_id
             ]
@@ -317,7 +317,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                             $itemtable                    => 'id',
                             'glpi_items_softwarelicenses' => 'items_id', [
                                 'AND' => [
-                                    'glpi_items_softwarelicenses.itemtype' => $itemtype
+                                    'glpi_items_softwarelicenses.itemtype' => $taget_itemtype
                                 ]
                             ]
                         ]
