@@ -57,11 +57,27 @@
                         {{ __('Password') }}
 
                         {% if show_lost_password %}
-                            <span class="form-label-description">
+                            <span class="form-label-description forgot_password {{ config('display_login_source') ? 'd-none' : '' }}">
                                 <a href="{{ path('front/lostpassword.php?lostpassword=1') }}">
                                     {{ __('Forgotten password?') }}
                                 </a>
                             </span>
+                            {% if config('display_login_source') %}
+                                <script>
+                                    $(() => {
+                                        if ($('select[name="auth"]').val() === 'local') {
+                                            $('.forgot_password').removeClass('d-none');
+                                        }
+                                        $('select[name="auth"]').on('change', function () {
+                                            if ($(this).val() === 'local') {
+                                                $('.forgot_password').removeClass('d-none');
+                                            } else {
+                                                $('.forgot_password').addClass('d-none');
+                                            }
+                                        });
+                                    });
+                                </script>
+                            {% endif %}
                         {% endif %}
                     </label>
                     <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
