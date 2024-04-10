@@ -229,7 +229,7 @@ class Software extends CommonDBTM
         ) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
             = "<i class='fas fa-calculator'></i>" .
-              __('Recalculate the category');
+              __s('Recalculate the category');
         }
 
         if (
@@ -238,7 +238,7 @@ class Software extends CommonDBTM
         ) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
             = "<i class='fas fa-undo'></i>" .
-              __('Replay the dictionary rules');
+              __s('Replay the dictionary rules');
         }
 
         if ($isadmin) {
@@ -890,9 +890,7 @@ class Software extends CommonDBTM
 
         $ID   = $this->getField('id');
         $this->check($ID, UPDATE);
-        $rand = mt_rand();
 
-        echo "<div class='center'>";
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_softwares.id',
@@ -923,46 +921,45 @@ class Software extends CommonDBTM
         ]);
         $nb = count($iterator);
 
-        if ($nb) {
-            $link = Toolbox::getItemTypeFormURL('Software');
-            Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-            $massiveactionparams
-              = ['num_displayed' => min($_SESSION['glpilist_limit'], $nb),
-                  'container'     => 'mass' . __CLASS__ . $rand,
-                  'specific_actions'
-                                    => [__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'
-                                                => __('Merge')
-                                    ],
-                  'item'          => $this
-              ];
-            Html::showMassiveActions($massiveactionparams);
-
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr><th width='10'>";
-            echo Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            echo "</th>";
-            echo "<th>" . __('Name') . "</th>";
-            echo "<th>" . Entity::getTypeName(1) . "</th>";
-            echo "<th>" . _n('Installation', 'Installations', Session::getPluralNumber()) . "</th>";
-            echo "<th>" . SoftwareLicense::getTypeName(Session::getPluralNumber()) . "</th></tr>";
-
-            foreach ($iterator as $data) {
-                echo "<tr class='tab_bg_2'>";
-                echo "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $data["id"]) . "</td>";
-                echo "<td><a href='" . $link . "?id=" . $data["id"] . "'>" . $data["name"] . "</a></td>";
-                echo "<td>" . $data["entity"] . "</td>";
-                echo "<td class='right'>" . Item_SoftwareVersion::countForSoftware($data["id"]) . "</td>";
-                echo "<td class='right'>" . SoftwareLicense::countForSoftware($data["id"]) . "</td></tr>\n";
-            }
-            echo "</table>\n";
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-            Html::closeForm();
-        } else {
-            echo __('No item found');
+        $entries = [];
+        $software = new self();
+        foreach ($iterator as $data) {
+            $software->getFromDB($data["id"]);
+            $entries[] = [
+                'name' => $software->getLink(),
+                'entity' => $data["entity"],
+                'installations' => Item_SoftwareVersion::countForSoftware($data["id"]),
+                'licenses' => SoftwareLicense::countForSoftware($data["id"])
+            ];
         }
 
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'entity' => Entity::getTypeName(1),
+                'installations' => _n('Installation', 'Installations', Session::getPluralNumber()),
+                'licenses' => SoftwareLicense::getTypeName(Session::getPluralNumber())
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+                'specific_actions' => [
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge' => __('Merge')
+                ],
+                'item'          => $this
+            ]
+        ]);
     }
 
     /**
@@ -981,16 +978,26 @@ class Software extends CommonDBTM
         $ID = $this->getField('id');
 
         if ($html) {
-            echo "<div class='center'>";
-            echo "<table class='tab_cadrehov'><tr><th>" . __('Merging') . "</th></tr>";
-            echo "<tr class='tab_bg_2'><td>";
-            Html::createProgressBar(__('Work in progress...'));
-            echo "</td></tr></table></div>\n";
+            $twig_params = [
+                'merge_msg' => __('Merging'),
+                'progress' => Html::progressBar('doaction_progress', [
+                    'message' =>__('Work in progress...'),
+                    'create' => true,
+                    'display' => false
+                ])
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="text-center">
+                    {{ fields.htmlField('', progress, merge_msg) }}
+                </div>
+TWIG, $twig_params);
         }
 
         $item = array_keys($item);
 
-       // Search for software version
+        // Search for software version
         $req = $DB->request(['FROM' => "glpi_softwareversions", 'WHERE' => ["softwares_id" => $item]]);
         $i   = 0;
 

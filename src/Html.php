@@ -839,8 +839,8 @@ class Html
      *
      * @since 0.85
      *
-     * @param $id                 HTML ID of the progress bar
-     * @param $options    array   progress status
+     * @param string $id HTML ID of the progress bar
+     * @param array $options progress status options
      *                    - create    do we have to create it ?
      *                    - message   add or change the message
      *                    - percent   current level
@@ -850,7 +850,6 @@ class Html
      **/
     public static function progressBar($id, array $options = [])
     {
-
         $params = [
             'create'    => false,
             'message'   => null,
@@ -938,17 +937,21 @@ HTML;
      * Create a Dynamic Progress Bar
      *
      * @param string $msg  initial message (under the bar)
+     * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      *
-     * @return void
+     * @return string|void
      **/
-    public static function createProgressBar($msg = "&nbsp;")
+    public static function createProgressBar($msg = null, array $options = [])
     {
+        $options = array_replace([
+            'create' => true,
+            'display' => true
+        ], $options);
+        $options['message'] = $msg;
 
-        $options = ['create' => true];
-        if ($msg != "&nbsp;") {
-            $options['message'] = $msg;
+        if (!$options['display']) {
+            return self::progressBar('doaction_progress', $options);
         }
-
         self::progressBar('doaction_progress', $options);
     }
 
