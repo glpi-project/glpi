@@ -403,13 +403,17 @@ if (typeof tinyMCE != 'undefined') {
                 const image = $(this);
                 let src = image.attr('src');
                 const file_pattern = '^file://';
+                const url_pattern = '^(https?)://';
 
                 if (src.match(file_pattern) !== null && base64_img_contents.length > 0) {
                     const rtf_content = base64_img_contents.shift();
                     src = `data:${rtf_content['type']};base64,` + rtf_content['content'];
                     image.attr('src', src);
                 }
-                if (src.match(new RegExp('^(data|blob):')) !== null) {
+                if (
+                    src.match(new RegExp('^(data|blob):')) !== null
+                    || src.match(url_pattern) !== null
+                ) {
                     const upload_id = Math.random().toString();
                     image.attr('data-upload_id', upload_id);
                     fetch(src).then(
