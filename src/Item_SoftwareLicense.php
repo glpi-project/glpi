@@ -666,7 +666,7 @@ JAVASCRIPT;
             if ($DB->fieldExists($itemtable, 'serial')) {
                 $query['SELECT'][] = $itemtable . '.serial';
             } else {
-                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''),$itemtable . ".serial");
+                $query['SELECT'][] = new QueryExpression($DB::quoteValue(''), $itemtable . ".serial");
             }
             if ($DB->fieldExists($itemtable, 'otherserial')) {
                 $query['SELECT'][] = $itemtable . '.otherserial';
