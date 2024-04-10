@@ -3747,7 +3747,7 @@ class Entity extends CommonTreeDropdown
 
             case 'tickettemplates_id':
                 $strategy = $values['tickettemplates_strategy'] ?? $values[$field];
-                if ($values['tickettemplates_strategy'] == self::CONFIG_PARENT) {
+                if ($strategy == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
                 return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
