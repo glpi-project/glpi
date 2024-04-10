@@ -88,7 +88,11 @@ body.mce-content-body {
         overflow: hidden;
 
         .read_more {
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, #f1f4e3 100%);
+            @if not $is_dark {
+                background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, #f1f4e3 100%);
+            } @else {
+                background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, $dark 100%);
+            }
         }
     }
 }
