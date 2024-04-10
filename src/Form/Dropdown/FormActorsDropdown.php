@@ -72,7 +72,88 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     public static function show(string $name, array $values, array $params = []): string
     {
         $params['width'] = '100%';
+        $params['templateSelection'] = <<<JS
+            function (data) {
+                let icon = '';
+                let text = data.text;
+                let title = data.title;
+                if (data.id != undefined && data.id.startsWith('users_id-') || data.text === 'User') {
+                    icon = '<i class="ti fa-fw ti-user mx-1" title="User"></i>';
+                } else if (data.id != undefined && data.id.startsWith('groups_id-') || data.text === 'Group') {
+                    icon = '<i class="ti fa-fw ti-users mx-1" title="Group"></i>';
+                } else if (data.id != undefined && data.id.startsWith('suppliers_id-') || data.text === 'Supplier') {
+                    icon = '<i class="ti fa-fw ti-package mx-1" title="Supplier"></i>';
+                }
+
+                return $('<span class="actor_entry">' + icon + text + '</span>');
+            }
+        JS;
+        $params['templateResult'] = $params['templateSelection'];
 
         return parent::show($name, $values, $params);
+    }
+
+    #[Override]
+    protected static function getUsers(string $text): array
+    {
+        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
+        $users_items = [];
+        foreach ($users as $user) {
+            $new_key = 'users_id-' . $user['id'];
+            $text = formatUserName($user["id"], $user["name"], $user["realname"], $user["firstname"]);
+            $users_items[$new_key] = [
+                'text' => $text,
+                'title' => sprintf(__('%1$s - %2$s'), $text, $user['name']),
+            ];
+        }
+
+        return $users_items;
+    }
+
+    #[Override]
+    public static function fetchValues(string $text = ""): array
+    {
+        $possible_rights = [];
+
+        // Add users if enabled
+        if (self::isTypeEnabled(User::getType())) {
+            $possible_rights[User::getType()] = self::getUsers($text);
+        }
+
+        // Add groups if enabled
+        if (self::isTypeEnabled(Group::getType())) {
+            $possible_rights[Group::getType()] = self::getGroups($text);
+        }
+
+        // Add suppliers if enabled
+        if (self::isTypeEnabled(Supplier::getType())) {
+            $possible_rights[Supplier::getType()] = self::getSuppliers($text);
+        }
+
+        $results = [];
+        foreach ($possible_rights as $itemtype => $ids) {
+            $new_group = [];
+            foreach ($ids as $id => $labels) {
+                $text = $labels['text'] ?? $labels;
+                $title = $labels['title'] ?? $text;
+                $new_group[] = [
+                    'id' => $id,
+                    'text' => $text,
+                    'title' => $title,
+                    "selection_text" => "$itemtype - $text",
+                ];
+            }
+            $results[] = [
+                "text" => $itemtype::getTypeName(1),
+                "children" => $new_group,
+            ];
+        }
+
+        $ret = [
+            'results' => $results,
+            'count' =>  count($results)
+        ];
+
+        return $ret;
     }
 }

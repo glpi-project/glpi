@@ -4924,6 +4924,8 @@ JAVASCRIPT
             'display_emptychoice' => false,
             'specific_tags'       => [],
             'parent_id_field'     => null,
+            'templateResult'      => null,
+            'templateSelection'   => null,
         ];
         $params = array_merge($default_options, $params);
 
@@ -4933,6 +4935,8 @@ JAVASCRIPT
         $on_change = $params["on_change"];
         $placeholder = $params['placeholder'] ?? '';
         $multiple = $params['multiple'];
+        $templateResult = $params['templateResult'];
+        $templateSelection = $params['templateSelection'];
         unset($params["on_change"]);
         unset($params["width"]);
 
@@ -5003,6 +5007,8 @@ JAVASCRIPT
                 url: '{$url}',
                 parent_id_field: '{$parent_id_field}',
                 on_change: '{$on_change}',
+                templateResult: {$templateResult},
+                templateSelection: {$templateSelection},
                 params: {
                     {$js_params}
                 }

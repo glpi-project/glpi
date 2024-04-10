@@ -1812,8 +1812,8 @@ function setupAjaxDropdown(config) {
                 };
             }
         },
-        templateResult: templateResult,
-        templateSelection: templateSelection
+        templateResult: config.templateResult,
+        templateSelection: config.templateSelection
     })
         .bind('setValue', function (e, value) {
             $.ajax(config.url, {
