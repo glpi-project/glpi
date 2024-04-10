@@ -69,30 +69,24 @@ class Planning extends CommonGLPI
 
     public static $directgroup_itemtype = ['PlanningExternalEvent', 'ProjectTask', 'TicketTask', 'ProblemTask', 'ChangeTask'];
 
-    const READMY    =    1;
-    const READGROUP = 1024;
-    const READALL   = 2048;
+    public const READMY    =    1;
+    public const READGROUP = 1024;
+    public const READALL   = 2048;
 
-    const INFO = 0;
-    const TODO = 1;
-    const DONE = 2;
+    public const INFO = 0;
+    public const TODO = 1;
+    public const DONE = 2;
 
-    /**
-     * @since 0.85
-     *
-     * @param $nb
-     **/
     public static function getTypeName($nb = 0)
     {
         return __('Planning');
     }
 
-
     public static function getMenuContent()
     {
         $menu = [];
 
-        if (Planning::canView()) {
+        if (self::canView()) {
             $menu = [
                 'title'    => static::getMenuName(),
                 'shortcut' => static::getMenuShorcut(),
@@ -112,25 +106,21 @@ class Planning extends CommonGLPI
         return $menu;
     }
 
-
     public static function getAdditionalMenuLinks()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $links = [];
 
-        if (Planning::canView()) {
-            $title     = Planning::getTypeName(Session::getPluralNumber());
+        if (self::canView()) {
+            $title     = htmlspecialchars(self::getTypeName(Session::getPluralNumber()));
             $planning  = "<i class='fa far fa-calendar-alt pointer' title='$title'>
                         <span class='sr-only'>$title</span>
                        </i>";
 
-            $links[$planning] = Planning::getSearchURL(false);
+            $links[$planning] = self::getSearchURL(false);
         }
 
         if (PlanningExternalEvent::canView()) {
-            $ext_title = PlanningExternalEvent::getTypeName(Session::getPluralNumber());
+            $ext_title = htmlspecialchars(PlanningExternalEvent::getTypeName(Session::getPluralNumber()));
             $external  = "<i class='fa fas fa-calendar-week pointer' title='$ext_title'>
                         <span class='sr-only'>$ext_title</span>
                        </i>";
@@ -138,8 +128,8 @@ class Planning extends CommonGLPI
             $links[$external] = PlanningExternalEvent::getSearchURL(false);
         }
 
-        if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            $caldav_title = __('CalDAV browser interface');
+        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            $caldav_title = __s('CalDAV browser interface');
             $caldav  = "<i class='fa fas fa-sync pointer' title='$caldav_title'>
                         <span class='sr-only'>$caldav_title</span>
                        </i>";
@@ -149,7 +139,6 @@ class Planning extends CommonGLPI
 
         return $links;
     }
-
 
     public static function getAdditionalMenuOptions()
     {
@@ -168,33 +157,20 @@ class Planning extends CommonGLPI
         return false;
     }
 
-
-    /**
-     * @see CommonGLPI::getMenuShorcut()
-     *
-     * @since 0.85
-     **/
     public static function getMenuShorcut()
     {
         return 'p';
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canView()
     {
-
         return Session::haveRightsOr(self::$rightname, [self::READMY, self::READGROUP,
             self::READALL
         ]);
     }
 
-
     public function defineTabs($options = [])
     {
-
         $ong               = [];
         $ong['no_all_tab'] = true;
 
@@ -203,11 +179,9 @@ class Planning extends CommonGLPI
         return $ong;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             $tabs[1] = self::getTypeName();
 
             return $tabs;
@@ -215,109 +189,84 @@ class Planning extends CommonGLPI
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1: // all
-                    Planning::showPlanning($_SESSION['glpiID']);
+                    self::showPlanning($_SESSION['glpiID']);
                     break;
             }
         }
         return true;
     }
 
-
     /**
      * Get planning state name
      *
-     * @param $value status ID
+     * @param int $value status ID
      **/
     public static function getState($value)
     {
-
-        switch ($value) {
-            case static::INFO:
-                return _n('Information', 'Information', 1);
-
-            case static::TODO:
-                return __('To do');
-
-            case static::DONE:
-                return __('Done');
-
-            default:
-                return '';
-        }
+        return match ($value) {
+            static::INFO => _n('Information', 'Information', 1),
+            static::TODO => __('To do'),
+            static::DONE => __('Done'),
+            default      => '',
+        };
     }
-
 
     /**
      * Get status icon
      *
-     * @since 10.0.9
-     *
+     * @param int $status status ID
      * @return string
+     * @since 10.0.9
      */
     public static function getStatusIcon($status): string
     {
-        $label = htmlspecialchars(Planning::getState($status), ENT_QUOTES);
+        $label = htmlspecialchars(self::getState($status), ENT_QUOTES);
         if (empty($label)) {
             return '';
         }
-        $class = Planning::getStatusClass($status);
-        $color = Planning::getStatusColor($status);
+        $class = self::getStatusClass($status);
+        $color = self::getStatusColor($status);
         return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
     }
-
 
     /**
      * Get status class
      *
-     * @since 10.0.9
-     *
+     * @param int $status status ID
      * @return string
+     * @since 10.0.9
      */
     public static function getStatusClass($status): string
     {
-        switch ($status) {
-            case Planning::INFO:
-                return "ti ti-info-square-filled";
-
-            case Planning::TODO:
-                return "ti ti-alert-square-filled";
-
-            case Planning::DONE:
-                return "ti ti-square-check-filled";
-        }
-        return '';
+        return match ($status) {
+            static::INFO => 'ti ti-info-square-filled',
+            static::TODO => 'ti ti-alert-square-filled',
+            static::DONE => 'ti ti-square-check-filled',
+            default      => '',
+        };
     }
-
 
     /**
      * Get status color
      *
-     * @since 10.0.9
-     *
+     * @param int $status status ID
      * @return string
+     * @since 10.0.9
      */
     public static function getStatusColor($status): string
     {
-        switch ($status) {
-            case Planning::INFO:
-                return "planned";
-
-            case Planning::TODO:
-                return "waiting";
-
-            case Planning::DONE:
-                return "new";
-        }
-        return '';
+        return match ($status) {
+            static::INFO => 'text-info',
+            static::TODO => 'text-warning',
+            static::DONE => 'text-success',
+            default      => '',
+        };
     }
-
 
     /**
      * Dropdown of planning state
@@ -353,7 +302,6 @@ class Planning extends CommonGLPI
         }
 JAVASCRIPT;
 
-
         $p = [
             'value'             => $value,
             'showtype'          => 'normal',
@@ -362,14 +310,14 @@ JAVASCRIPT;
             'templateSelection' => $js,
         ];
 
-        $values = [static::INFO => _n('Information', 'Information', 1),
+        $values = [
+            static::INFO => _n('Information', 'Information', 1),
             static::TODO => __('To do'),
             static::DONE => __('Done')
         ];
 
         return Dropdown::showFromArray($name, $values, array_merge($p, $options));
     }
-
 
     /**
      * Check already planned user for a period
@@ -397,11 +345,7 @@ JAVASCRIPT;
                 'check_planned' => true
             ]);
             if (isPluginItemType($itemtype)) {
-                if (isset($data['items'])) {
-                    $data = $data['items'];
-                } else {
-                    $data = [];
-                }
+                $data = $data['items'] ?? [];
             }
 
             if (
@@ -425,8 +369,8 @@ JAVASCRIPT;
             $user->getFromDB($users_id);
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('The user %1$s is busy at the selected timeframe.'),
-                    '<a href="' . $user->getFormURLWithID($users_id) . '">' . $user->getName() . '</a>'
+                    __s('The user %1$s is busy at the selected timeframe.'),
+                    '<a href="' . htmlspecialchars($user::getFormURLWithID($users_id)) . '">' . htmlspecialchars($user->getName()) . '</a>'
                 ) . '<br/>' . $message,
                 false,
                 WARNING
@@ -435,13 +379,12 @@ JAVASCRIPT;
         return $planned;
     }
 
-
     /**
      * Show the availability of a user
      *
      * @since 0.83
      *
-     * @param $params   array of params
+     * @param array $params   array of params
      *    must contain :
      *          - begin: begin date to check (default '')
      *          - end: end date to check (default '')
@@ -458,16 +401,16 @@ JAVASCRIPT;
         global $CFG_GLPI;
 
         if (!isset($params['itemtype'])) {
-            return false;
+            return;
         }
         if (!($item = getItemForItemtype($params['itemtype']))) {
-            return false;
+            return;
         }
         if (
             !isset($params[$item->getForeignKeyField()])
             || !$item->getFromDB($params[$item->getForeignKeyField()])
         ) {
-            return false;
+            return;
         }
        // No limit by default
         if (!isset($params['limitto'])) {
@@ -495,8 +438,8 @@ JAVASCRIPT;
 
         $users = [];
 
-        switch ($item->getType()) {
-            case 'User':
+        switch ($item::class) {
+            case User::class:
                 $users[$item->getID()] = $item->getName();
                 break;
 
@@ -728,7 +671,6 @@ JAVASCRIPT;
         echo "</table></div>";
     }
 
-
     /**
      * Show the planning
      *
@@ -740,7 +682,7 @@ JAVASCRIPT;
     public static function showPlanning($fullview = true)
     {
         if (!static::canView()) {
-            return false;
+            return;
         }
 
         self::initSessionForCurrentUser();
@@ -789,7 +731,7 @@ JAVASCRIPT;
     {
         $resources = [];
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning) {
-            if ($planning['type'] == 'external') {
+            if ($planning['type'] === 'external') {
                 $resources[] = [
                     'id'         => $planning_id,
                     'title'      => $planning['name'],
@@ -802,7 +744,7 @@ JAVASCRIPT;
             }
 
             $exploded = explode('_', $planning_id);
-            if ($planning['type'] == 'group_users') {
+            if ($planning['type'] === 'group_users') {
                 $group_exploded = explode('_', $planning_id);
                 $group_id = (int) $group_exploded[1];
                 $group = new Group();
@@ -865,7 +807,6 @@ JAVASCRIPT;
 
         return false;
     }
-
 
     /**
      * Return an hexa color from a palette
@@ -942,14 +883,13 @@ JAVASCRIPT;
        // compute color index for plannings
         $_SESSION['glpi_plannings_color_index'] = 0;
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning) {
-            if ($planning['type'] == 'group_users') {
+            if ($planning['type'] === 'group_users') {
                 $_SESSION['glpi_plannings_color_index'] += count($planning['users']);
             } else {
                 $_SESSION['glpi_plannings_color_index']++;
             }
         }
     }
-
 
     /**
      * Display left part of planning who contains filters and planning with delete/toggle buttons
@@ -1004,7 +944,6 @@ JAVASCRIPT;
         echo "</div>"; // #planning_filter
     }
 
-
     /**
      * Display a single line of planning filter.
      * See self::showPlanningFilter function
@@ -1022,7 +961,7 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Invalid data, skip
+        // Invalid data, skip
         if (!isset($filter_data['type'])) {
             return;
         }
@@ -1041,7 +980,7 @@ JAVASCRIPT;
         $expanded = '';
         $title = '';
         $caldav_item_url = '';
-        if ($filter_data['type'] == 'user') {
+        if ($filter_data['type'] === 'user') {
             $uID = $actor[1];
             $user = new User();
             $user_exists = $user->getFromDB($actor[1]);
@@ -1049,7 +988,7 @@ JAVASCRIPT;
             if ($user_exists) {
                 $caldav_item_url = self::getCaldavBaseCalendarUrl($user);
             }
-        } else if ($filter_data['type'] == 'group_users') {
+        } else if ($filter_data['type'] === 'group_users') {
             $group = new Group();
             $group_exists = $group->getFromDB($actor[1]);
             $title = $group->getName(); // Will return N/A if it doesn't exist anymore
@@ -1068,7 +1007,7 @@ JAVASCRIPT;
             if ($enabled > 0 && $disabled > 0) {
                 $expanded = ' expanded';
             }
-        } else if ($filter_data['type'] == 'group') {
+        } else if ($filter_data['type'] === 'group') {
             $gID = $actor[1];
             $group = new Group();
             $group_exists = $group->getFromDB($actor[1]);
@@ -1076,18 +1015,18 @@ JAVASCRIPT;
             if ($group_exists) {
                 $caldav_item_url = self::getCaldavBaseCalendarUrl($group);
             }
-        } else if ($filter_data['type'] == 'external') {
+        } else if ($filter_data['type'] === 'external') {
             $title = $filter_data['name'];
-        } else if ($filter_data['type'] == 'event_filter') {
-            if ($filter_key == 'NotPlanned') {
+        } else if ($filter_data['type'] === 'event_filter') {
+            if ($filter_key === 'NotPlanned') {
                 $title = __('Not planned tasks');
-            } else if ($filter_key == 'OnlyBgEvents') {
+            } else if ($filter_key === 'OnlyBgEvents') {
                 $title = __('Only background events');
             } else {
                 if (!getItemForItemtype($filter_key)) {
-                    return false;
+                    return;
                 } else if (!$filter_key::canView()) {
-                    return false;
+                    return;
                 }
                 $title = $filter_key::getTypeName();
             }
@@ -1104,7 +1043,7 @@ JAVASCRIPT;
             'checked'       => $filter_data['display']
         ]);
 
-        if ($filter_data['type'] != 'event_filter') {
+        if ($filter_data['type'] !== 'event_filter') {
             $exploded = explode('_', $filter_data['type']);
             $icon = "user";
             if ($exploded[0] === 'group') {
@@ -1115,14 +1054,13 @@ JAVASCRIPT;
 
         echo "<label for='$filter_key'>";
         echo $title;
-        if ($filter_data['type'] == 'external' && !Toolbox::isUrlSafe($filter_data['url'] ?? '')) {
+        if ($filter_data['type'] === 'external' && !Toolbox::isUrlSafe($filter_data['url'] ?? '')) {
             $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
             echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
         }
         echo "</label>";
 
-        $color = self::$palette_bg[$params['filter_color_index']];
-        if (isset($filter_data['color']) && !empty($filter_data['color'])) {
+        if (!empty($filter_data['color'])) {
             $color = $filter_data['color'];
         } else {
             $params['filter_color_index']++;
@@ -1131,7 +1069,7 @@ JAVASCRIPT;
 
         echo "<span class='ms-auto d-flex align-items-center'>";
        // colors not for groups
-        if ($filter_data['type'] != 'group_users' && $filter_key != 'OnlyBgEvents') {
+        if ($filter_data['type'] !== 'group_users' && $filter_key !== 'OnlyBgEvents') {
             echo "<span class='color_input'>";
             Html::showColorField(
                 $filter_key . "_color",
@@ -1140,23 +1078,23 @@ JAVASCRIPT;
             echo "</span>";
         }
 
-        if ($filter_data['type'] == 'group_users') {
+        if ($filter_data['type'] === 'group_users') {
             echo "<span class='toggle pointer'></span>";
         }
 
-        if ($filter_data['type'] != 'event_filter') {
+        if ($filter_data['type'] !== 'event_filter') {
             echo "<span class='filter_option dropstart'>";
             echo "<i class='fas fa-ellipsis-v'></i>";
             echo "<ul class='dropdown-menu '>";
             if ($params['show_delete']) {
-                echo "<li class='delete_planning dropdown-item' value='$filter_key'>" . __("Delete") . "</li>";
+                echo "<li class='delete_planning dropdown-item' value='$filter_key'>" . __s("Delete") . "</li>";
             }
-            if ($caldav_item_url !== '' && $filter_data['type'] != 'group_users' && $filter_data['type'] != 'external') {
+            if ($caldav_item_url !== '' && $filter_data['type'] !== 'group_users' && $filter_data['type'] !== 'external') {
                 $url = parse_url($CFG_GLPI["url_base"]);
                 $port = 80;
                 if (isset($url['port'])) {
                     $port = $url['port'];
-                } else if (isset($url['scheme']) && ($url["scheme"] == 'https')) {
+                } else if (isset($url['scheme']) && ($url["scheme"] === 'https')) {
                     $port = 443;
                 }
 
@@ -1172,7 +1110,7 @@ JAVASCRIPT;
                  _sx("button", "Export") . " - " . __("Ical") . "</a></li>";
 
                 echo "<li class='dropdown-item'><a target='_blank' href='webcal://" . $url['host'] . ":$port" .
-                 (isset($url['path']) ? $url['path'] : '') . "$cal_url'>" .
+                 ($url['path'] ?? '') . "$cal_url'>" .
                  _sx("button", "Export") . " - " . __("Webcal") . "</a></li>";
 
                 echo "<li class='dropdown-item'><a target='_blank' href='" . $CFG_GLPI['root_doc'] .
@@ -1192,7 +1130,7 @@ JAVASCRIPT;
         }
         echo "</span>";
 
-        if ($caldav_item_url !== '' && $filter_data['type'] == 'group_users') {
+        if ($caldav_item_url !== '' && $filter_data['type'] === 'group_users') {
             echo "<ul class='group_listofusers filters'>";
             foreach ($filter_data['users'] as $user_key => $userdata) {
                 self::showSingleLinePlanningFilter(
@@ -1209,7 +1147,6 @@ JAVASCRIPT;
         echo "</li>";
     }
 
-
     /**
      * Display ajax form to add actor on planning
      *
@@ -1222,7 +1159,7 @@ JAVASCRIPT;
 
         $rand = mt_rand();
         echo "<form action='" . self::getFormURL() . "'>";
-        echo __("Actor") . ": <br>";
+        echo __s("Actor") . ": <br>";
 
         $planning_types = ['user' => User::getTypeName(1)];
 
@@ -1253,7 +1190,6 @@ JAVASCRIPT;
         Html::closeForm();
     }
 
-
     /**
      * Display 'User' part of self::showAddPlanningForm spcified by planning type dropdown.
      * Actually called by ajax/planning.php
@@ -1265,7 +1201,7 @@ JAVASCRIPT;
         $used = [];
         foreach (array_keys($_SESSION['glpi_plannings']) as $actor) {
             $actor = explode("_", $actor);
-            if ($actor[0] == "user") {
+            if ($actor[0] === "user") {
                 $used[] = $actor[1];
             }
         }
@@ -1295,16 +1231,15 @@ JAVASCRIPT;
         echo Html::submit(_sx('button', 'Add'));
     }
 
-
     /**
      * Recieve 'User' data from self::showAddPlanningForm and save them to session and DB
      *
-     * @param $params (array) : must contais form data (typically $_REQUEST)
+     * @param array $params Must contain form data (typically $_REQUEST)
      */
     public static function sendAddUserForm($params = [])
     {
         if (!isset($params['users_id']) || (int) $params['users_id'] <= 0) {
-            Session::addMessageAfterRedirect(__('A user selection is required'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('A user selection is required'), false, ERROR);
             return;
         }
         $_SESSION['glpi_plannings']['plannings']["user_" . $params['users_id']]
@@ -1316,7 +1251,6 @@ JAVASCRIPT;
         $_SESSION['glpi_plannings_color_index']++;
     }
 
-
     /**
      * Display 'All users of a group' part of self::showAddPlanningForm spcified by planning type dropdown.
      * Actually called by ajax/planning.php
@@ -1325,7 +1259,7 @@ JAVASCRIPT;
      */
     public static function showAddGroupUsersForm()
     {
-        echo Group::getTypeName(1) . " : <br>";
+        echo htmlspecialchars(Group::getTypeName(1)) . " : <br>";
 
         $condition = [];
        // filter groups
@@ -1343,22 +1277,22 @@ JAVASCRIPT;
         echo Html::submit(_sx('button', 'Add'));
     }
 
-
     /**
      * Recieve 'All users of a group' data from self::showAddGroupUsersForm and save them to session and DB
      *
      * @since 9.1
      *
-     * @param $params (array) : must contais form data (typically $_REQUEST)
+     * @param array $params Must contain form data (typically $_REQUEST)
      */
     public static function sendAddGroupUsersForm($params = [])
     {
         if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
-            Session::addMessageAfterRedirect(__('A group selection is required'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('A group selection is required'), false, ERROR);
             return;
         }
         $current_group = &$_SESSION['glpi_plannings']['plannings']["group_" . $params['groups_id'] . "_users"];
-        $current_group = ['display' => true,
+        $current_group = [
+            'display' => true,
             'type'    => 'group_users',
             'users'   => []
         ];
@@ -1390,7 +1324,6 @@ JAVASCRIPT;
         self::savePlanningsInDB();
     }
 
-
     public static function editEventForm($params = [])
     {
         $item = getItemForItemtype($params['itemtype']);
@@ -1398,7 +1331,7 @@ JAVASCRIPT;
             echo "<div class='center'>";
             echo "<a href='" . $params['url'] . "' class='btn btn-outline-secondary'>" .
                 "<i class='ti ti-eye'></i>" .
-                "<span>" . __("View this item in its context") . "</span>" .
+                "<span>" . __s("View this item in its context") . "</span>" .
             "</a>";
             echo "</div>";
             echo "<hr>";
@@ -1421,7 +1354,6 @@ JAVASCRIPT;
         }
     }
 
-
     /**
      * Display 'Group' part of self::showAddPlanningForm spcified by planning type dropdown.
      * Actually called by ajax/planning.php
@@ -1432,9 +1364,8 @@ JAVASCRIPT;
      */
     public static function showAddGroupForm()
     {
-
         $condition = ['is_task' => 1];
-       // filter groups
+        // filter groups
         if (!Session::haveRight('planning', self::READALL)) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
@@ -1450,13 +1381,12 @@ JAVASCRIPT;
         echo Html::submit(_sx('button', 'Add'));
     }
 
-
     /**
      * Recieve 'Group' data from self::showAddGroupForm and save them to session and DB
      *
      * @since 9.1
      *
-     * @param $params (array) : must contais form data (typically $_REQUEST)
+     * @param array $params Must contain form data (typically $_REQUEST)
      */
     public static function sendAddGroupForm($params = [])
     {
@@ -1476,7 +1406,6 @@ JAVASCRIPT;
         $_SESSION['glpi_plannings_color_index']++;
     }
 
-
     /**
      * Display 'External' part of self::showAddPlanningForm specified by planning type dropdown.
      * Actually called by ajax/planning.php
@@ -1487,10 +1416,9 @@ JAVASCRIPT;
      */
     public static function showAddExternalForm()
     {
-
         $rand = mt_rand();
 
-        echo '<label for ="name' . $rand . '">' . __("Calendar name") . ' : </label> ';
+        echo '<label for ="name' . $rand . '">' . __s("Calendar name") . ' : </label> ';
         echo '<br />';
         echo Html::input(
             'name',
@@ -1502,7 +1430,7 @@ JAVASCRIPT;
         echo '<br />';
         echo '<br />';
 
-        echo '<label for ="url' . $rand . '">' . __("Calendar URL") . ' : </label> ';
+        echo '<label for ="url' . $rand . '">' . __s("Calendar URL") . ' : </label> ';
         echo '<br />';
         echo '<input type="url" name="url" id="url' . $rand . '" required>';
         echo '<br /><br />';
@@ -1510,7 +1438,6 @@ JAVASCRIPT;
         echo Html::hidden('action', ['value' => 'send_add_external_form']);
         echo Html::submit(_sx('button', 'Add'));
     }
-
 
     /**
      * Receive 'External' data from self::showAddExternalForm and save them to session and DB
@@ -1524,13 +1451,13 @@ JAVASCRIPT;
     public static function sendAddExternalForm($params = [])
     {
         if (empty($params['url'])) {
-            Session::addMessageAfterRedirect(__('A url is required'), false, ERROR);
+            Session::addMessageAfterRedirect(__s('A url is required'), false, ERROR);
             return;
         }
 
         if (!Toolbox::isUrlSafe($params['url'])) {
             Session::addMessageAfterRedirect(
-                sprintf(__('URL "%s" is not allowed by your administrator.'), $params['url']),
+                sprintf(__s('URL "%s" is not allowed by your administrator.'), $params['url']),
                 false,
                 ERROR
             );
@@ -1548,13 +1475,12 @@ JAVASCRIPT;
         $_SESSION['glpi_plannings_color_index']++;
     }
 
-
     public static function showAddEventForm($params = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (count($CFG_GLPI['planning_add_types']) == 1) {
+        if (count($CFG_GLPI['planning_add_types']) === 1) {
             $params['itemtype'] = $CFG_GLPI['planning_add_types'][0];
             self::showAddEventSubForm($params);
         } else {
@@ -1563,7 +1489,7 @@ JAVASCRIPT;
             foreach ($CFG_GLPI['planning_add_types'] as $add_types) {
                 $select_options[$add_types] = $add_types::getTypeName(1);
             }
-            echo __("Event type") . " : <br>";
+            echo __s("Event type") . " : <br>";
             Dropdown::showFromArray(
                 'itemtype',
                 $select_options,
@@ -1588,13 +1514,12 @@ JAVASCRIPT;
         }
     }
 
-
     /**
      * Display form after selecting date range in planning
      *
      * @since 9.1
      *
-     * @param $params (array): must contains this keys :
+     * @param array $params Must contain these keys:
      *  - begin : start of selection range.
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      *  - end : end of selection range.
@@ -1604,7 +1529,6 @@ JAVASCRIPT;
      */
     public static function showAddEventSubForm($params = [])
     {
-
         $rand   = mt_rand();
         $params = self::cleanDates($params);
 
@@ -1626,14 +1550,13 @@ JAVASCRIPT;
         }
     }
 
-
     /**
      * Former front/planning.php before 9.1.
      * Display a classic form to plan an event (with begin fiel and duration)
      *
      * @since 9.1
      *
-     * @param $params (array): array of parameters whou should contain :
+     * @param array $params Array of parameters whou should contain :
      *   - id (integer): id of item who receive the planification
      *   - itemtype (string): itemtype of item who receive the planification
      *   - begin (string) : start date of event
@@ -1651,15 +1574,10 @@ JAVASCRIPT;
             echo "<input type='hidden' name='plan[id]' value='" . $params["id"] . "'>";
         }
 
-        $rand = mt_rand();
-        if (isset($params['rand'])) {
-            $rand = $params['rand'];
-        }
-
+        $rand = $params['rand'] ?? mt_rand();
         $display_dates = $params['_display_dates'] ?? true;
-
         $mintime = $CFG_GLPI["planning_begin"];
-        if (isset($params["begin"]) && !empty($params["begin"])) {
+        if (!empty($params["begin"])) {
             $begin = $params["begin"];
             $begintime = date("H:i:s", strtotime($begin));
             if ($begintime < $mintime) {
@@ -1672,7 +1590,7 @@ JAVASCRIPT;
             $begin = date("Y-m-d H:i", $time);
         }
 
-        if (isset($params["end"]) && !empty($params["end"])) {
+        if (!empty($params["end"])) {
             $end = $params["end"];
         } else {
             $end = date("Y-m-d H:i:s", strtotime($begin) + HOUR_TIMESTAMP);
@@ -1681,7 +1599,7 @@ JAVASCRIPT;
         echo "<table class='planning_classic_card'>";
 
         if ($display_dates) {
-            echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td>";
+            echo "<tr class='tab_bg_2'><td>" . __s('Start date') . "</td><td>";
             Html::showDateTimeField("plan[begin]", [
                 'value'      => $begin,
                 'maybeempty' => false,
@@ -1695,7 +1613,7 @@ JAVASCRIPT;
             echo "</td></tr>";
         }
 
-        echo "<tr class='tab_bg_2'><td>" . __('Period') . "&nbsp;";
+        echo "<tr class='tab_bg_2'><td>" . __s('Period') . "&nbsp;";
 
         if (isset($params["rand_user"])) {
             $_POST['parent_itemtype'] = $params["parent_itemtype"] ?? '';
@@ -1740,7 +1658,7 @@ JAVASCRIPT;
                 $event_options
             );
 
-            if ($default_delay == 0) {
+            if ($default_delay === 0) {
                 $params['duration'] = 0;
                 Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"] . "/ajax/planningend.php", $params);
             }
@@ -1749,11 +1667,11 @@ JAVASCRIPT;
         echo "</td></tr>\n";
 
         if (
-            (!isset($params["id"]) || ($params["id"] == 0))
+            (!isset($params["id"]) || ((int) $params["id"] === 0))
             && isset($params['itemtype'])
             && PlanningRecall::isAvailable()
         ) {
-            echo "<tr class='tab_bg_2'><td>" . _x('Planning', 'Reminder') . "</td><td>";
+            echo "<tr class='tab_bg_2'><td>" . _sx('Planning', 'Reminder') . "</td><td>";
             PlanningRecall::dropdown([
                 'itemtype' => $params['itemtype'],
                 'items_id' => $params['items_id'],
@@ -1764,7 +1682,6 @@ JAVASCRIPT;
         echo "</table>\n";
     }
 
-
     /**
      * Clone an event
      *
@@ -1772,7 +1689,7 @@ JAVASCRIPT;
      *
      * @param array $event the event to clone
      *
-     * @return mixed the id (integer) or false if it failed
+     * @return integer|false the id (integer) or false if it failed
      */
     public static function cloneEvent(array $event = [])
     {
@@ -1792,22 +1709,12 @@ JAVASCRIPT;
         }
 
        // manage change of assigment for CommonITILTask
-        if (
-            $item instanceof CommonITILTask
-            && isset($event['actor']['itemtype'])
-            && isset($event['actor']['items_id'])
-        ) {
-            switch ($event['actor']['itemtype']) {
-                case "group":
-                    $key = "groups_id_tech";
-                    break;
-                case "user":
-                    $key = isset($item->fields['users_id_tech']) ? "users_id_tech" : "users_id";
-                    break;
-                default:
-                    throw new \RuntimeException(sprintf('Unexpected event actor itemtype `%s`.', $event['actor']['itemtype']));
-                    break;
-            }
+        if (isset($event['actor']['itemtype'], $event['actor']['items_id']) && $item instanceof CommonITILTask) {
+            $key = match ($event['actor']['itemtype']) {
+                "group" => "groups_id_tech",
+                "user" => isset($item->fields['users_id_tech']) ? "users_id_tech" : "users_id",
+                default => throw new \RuntimeException(sprintf('Unexpected event actor itemtype `%s`.', $event['actor']['itemtype'])),
+            };
 
             unset(
                 $input['users_id_tech'],
@@ -1822,11 +1729,7 @@ JAVASCRIPT;
         $new_items_id = $item->add($input);
 
        // manage all assigments for ProjectTask
-        if (
-            $item instanceof ProjectTask
-            && isset($event['actor']['itemtype'])
-            && isset($event['actor']['items_id'])
-        ) {
+        if (isset($event['actor']['itemtype'], $event['actor']['items_id']) && $item instanceof ProjectTask) {
             $team = new ProjectTaskTeam();
             $team->add([
                 'projecttasks_id' => $new_items_id,
@@ -1852,26 +1755,24 @@ JAVASCRIPT;
         $item = new $event['itemtype']();
 
         if (
-            isset($event['day'])
-            && isset($event['instance'])
+            isset($event['day'], $event['instance'])
             && $event['instance']
             && method_exists($item, "deleteInstance")
         ) {
             return $item->deleteInstance((int) $event['items_id'], $event['day']);
-        } else {
-            return $item->delete([
-                'id' => (int) $event['items_id']
-            ]);
         }
-    }
 
+        return $item->delete([
+            'id' => (int) $event['items_id']
+        ]);
+    }
 
     /**
      * toggle display for selected line of $_SESSION['glpi_plannings']
      *
      * @since 9.1
      *
-     * @param  array $options: should contains :
+     * @param  array $options: should contain :
      *  - type : event type, can be event_filter, user, group or group_users
      *  - parent : in case of type=users_group, must contains the id of the group
      *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
@@ -1880,17 +1781,12 @@ JAVASCRIPT;
      */
     public static function toggleFilter($options = [])
     {
-
         $key = 'filters';
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
             $key = 'plannings';
         }
-        if (
-            !isset($options['parent'])
-            || empty($options['parent'])
-        ) {
-            $_SESSION['glpi_plannings'][$key][$options['name']]['display']
-            = ($options['display'] === 'true');
+        if (empty($options['parent'])) {
+            $_SESSION['glpi_plannings'][$key][$options['name']]['display'] = ($options['display'] === 'true');
         } else {
             $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
             [$options['name']]['display']
@@ -1899,13 +1795,12 @@ JAVASCRIPT;
         self::savePlanningsInDB();
     }
 
-
     /**
      * change color for selected line of $_SESSION['glpi_plannings']
      *
      * @since 9.1
      *
-     * @param  array $options: should contains :
+     * @param  array $options: should contain:
      *  - type : event type, can be event_filter, user, group or group_users
      *  - parent : in case of type=users_group, must contains the id of the group
      *  - name : contains a string with type and id concatened with a '_' char (ex user_41).
@@ -1918,10 +1813,7 @@ JAVASCRIPT;
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
             $key = 'plannings';
         }
-        if (
-            !isset($options['parent'])
-            || empty($options['parent'])
-        ) {
+        if (empty($options['parent'])) {
             $_SESSION['glpi_plannings'][$key][$options['name']]['color'] = $options['color'];
         } else {
             $_SESSION['glpi_plannings']['plannings'][$options['parent']]['users']
@@ -1930,22 +1822,20 @@ JAVASCRIPT;
         self::savePlanningsInDB();
     }
 
-
     /**
      * delete selected line in $_SESSION['glpi_plannings']
      *
      * @since 9.1
      *
-     * @param  array $options: should contains :
+     * @param  array $options: should contain:
      *  - type : event type, can be event_filter, user, group or group_users
      *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
      * @return void
      */
     public static function deleteFilter($options = [])
     {
-
         $current = $_SESSION['glpi_plannings']['plannings'][$options['filter']];
-        if ($current['type'] == 'group_users') {
+        if ($current['type'] === 'group_users') {
             $_SESSION['glpi_plannings_color_index'] -= count($current['users']);
         } else {
             $_SESSION['glpi_plannings_color_index']--;
@@ -1955,16 +1845,13 @@ JAVASCRIPT;
         self::savePlanningsInDB();
     }
 
-
     public static function savePlanningsInDB()
     {
-
         $user = new User();
         $user->update(['id' => $_SESSION['glpiID'],
             'plannings' => exportArrayToDB($_SESSION['glpi_plannings'])
         ]);
     }
-
 
     /**
      * Prepare a set of events for jquery fullcalendar.
@@ -1972,7 +1859,7 @@ JAVASCRIPT;
      *
      * @since 9.1
      *
-     * @param array $options with this keys:
+     * @param array $options with these keys:
      *  - begin: mandatory, planning start.
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      *  - end: mandatory, planning end.
@@ -2007,7 +1894,7 @@ JAVASCRIPT;
        // we must avoid at all cost to calculate rrules events on a big range
         if (
             !$param['force_all_events']
-            && $param['view_name'] != "listFull"
+            && $param['view_name'] !== "listFull"
             && ($time_end - $time_begin) > (2 * MONTH_TIMESTAMP)
         ) {
             $param['view_name'] = "listFull";
@@ -2026,7 +1913,7 @@ JAVASCRIPT;
             if ($_SESSION['glpi_plannings']['filters'][$planning_type]['display']) {
                 $event_type_color = $_SESSION['glpi_plannings']['filters'][$planning_type]['color'];
                 foreach ($_SESSION['glpi_plannings']['plannings'] as $actor => $actor_params) {
-                    if ($actor_params['type'] == 'external') {
+                    if ($actor_params['type'] === 'external') {
                         continue; // Ignore external calendars
                     }
                     $actor_params['event_type_color'] = $event_type_color;
@@ -2044,10 +1931,10 @@ JAVASCRIPT;
        //handle not planned events
         $raw_events = array_merge($raw_events, $not_planned);
 
-       // get external calendars events (ical)
-       // and on list view, only get future events
+        // get external calendars events (ical)
+        // and on list view, only get future events
         $begin_ical = $param['begin'];
-        if ($param['view_name'] == "listFull") {
+        if ($param['view_name'] === "listFull") {
             $begin_ical = date('Y-m-d 00:00:00');
         }
         $raw_events = array_merge(
@@ -2055,7 +1942,7 @@ JAVASCRIPT;
             self::getExternalCalendarRawEvents($begin_ical, $param['end'])
         );
 
-       // construct events (in fullcalendar format)
+        // construct events (in fullcalendar format)
         $events = [];
         foreach ($raw_events as $event) {
             if (
@@ -2065,26 +1952,26 @@ JAVASCRIPT;
                 continue;
             }
 
-            $users_id = (isset($event['users_id_tech']) && !empty($event['users_id_tech']) ?
+            $users_id = (!empty($event['users_id_tech']) ?
                         $event['users_id_tech'] :
                         $event['users_id']);
-            $content = Planning::displayPlanningItem($event, $users_id, 'in', false) ?: ($event['content'] ?? "");
-            $tooltip = Planning::displayPlanningItem($event, $users_id, 'in', true) ?: ($event['tooltip'] ?? "");
+            $content = self::displayPlanningItem($event, $users_id, 'in', false) ?: ($event['content'] ?? "");
+            $tooltip = self::displayPlanningItem($event, $users_id, 'in', true) ?: ($event['tooltip'] ?? "");
 
-           // dates should be set with the user timezone
+            // dates should be set with the user timezone
             $begin = $event['begin'];
             $end   = $event['end'];
 
-           // retreive all day events
+            // retreive all day events
             if (
-                strpos($event['begin'], "00:00:00") != false
-                && (strtotime($event['end']) - strtotime($event['begin'])) % DAY_TIMESTAMP == 0
+                strpos($event['begin'], "00:00:00")
+                && (strtotime($event['end']) - strtotime($event['begin'])) % DAY_TIMESTAMP === 0
             ) {
                  $begin = date('Y-m-d', strtotime($event['begin']));
                  $end = date('Y-m-d', strtotime($event['end']));
             }
 
-           // get duration in milliseconds
+            // get duration in milliseconds
             $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
 
             $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
@@ -2103,12 +1990,12 @@ JAVASCRIPT;
                               ? 'background'
                               : '',
                 'color'       => (empty($event['color']) ?
-                              Planning::$palette_bg[$index_color] :
+                              self::$palette_bg[$index_color] :
                               $event['color']),
                 'borderColor' => (empty($event['event_type_color']) ?
                               self::getPaletteColor('ev', $event['itemtype']) :
                               $event['event_type_color']),
-                'textColor'   => Planning::$palette_fg[$index_color],
+                'textColor'   => self::$palette_fg[$index_color],
                 'typeColor'   => (empty($event['event_type_color']) ?
                               self::getPaletteColor('ev', $event['itemtype']) :
                               $event['event_type_color']),
@@ -2122,25 +2009,25 @@ JAVASCRIPT;
                 'state'       => $event['state'] ?? "",
             ];
 
-           // if we can't update the event, pass the editable key
+            // if we can't update the event, pass the editable key
             if (!$event['editable']) {
                 $new_event['editable'] = false;
             }
 
-           // override color if view is ressource and category color exists
-           // maybe we need a better way for displaying categories color
+            // override color if view is ressource and category color exists
+            // maybe we need a better way for displaying categories color
             if (
-                $param['view_name'] == "resourceWeek"
+                $param['view_name'] === "resourceWeek"
                 && !empty($event['event_cat_color'])
             ) {
                 $new_event['color'] = $event['event_cat_color'];
             }
 
-           // manage reccurent events
+            // manage reccurent events
             if (isset($event['rrule']) && count($event['rrule'])) {
                 $rrule = $event['rrule'];
 
-               // the fullcalencard plugin waits for integer types for number (not strings)
+                // the fullcalencard plugin waits for integer types for number (not strings)
                 if (isset($rrule['interval'])) {
                     $rrule['interval'] = (int) $rrule['interval'];
                 }
@@ -2148,17 +2035,17 @@ JAVASCRIPT;
                     $rrule['count'] = (int) $rrule['count'];
                 }
 
-               // clean empty values in rrule
+                // clean empty values in rrule
                 foreach ($rrule as $key => $value) {
-                    if (is_null($value) || $value == '') {
+                    if (is_null($value) || $value === '') {
                         unset($rrule[$key]);
                     }
                 }
 
                 $rset = PlanningExternalEvent::getRsetFromRRuleField($rrule, $new_event['start']);
 
-               // append icon to distinguish reccurent event in views
-               // use UTC datetime to avoid some issues with rlan/phprrule
+                // append icon to distinguish reccurent event in views
+                // use UTC datetime to avoid some issues with rlan/phprrule
                 $dtstart_datetime  = new \DateTime($new_event['start']);
                 unset($rrule['exceptions']); // remove exceptions key (as libraries throw exception for unknow keys)
                 $hr_rrule_o = new RRule(
@@ -2174,12 +2061,12 @@ JAVASCRIPT;
                     'icon_alt' => $hr_rrule_o->humanReadable(),
                 ]);
 
-               // for fullcalendar, we need to pass start in the rrule key
+                // for fullcalendar, we need to pass start in the rrule key
                 unset($new_event['start'], $new_event['end']);
 
-               // For list view, only display only the next occurence
-               // to avoid issues performances (range in list view can be 10 years long)
-                if ($param['view_name'] == "listFull") {
+                // For list view, only display only the next occurence
+                // to avoid issues performances (range in list view can be 10 years long)
+                if ($param['view_name'] === "listFull") {
                      $next_date = $rset->getNthOccurrenceAfter(new DateTime(), 1);
                     if ($next_date) {
                         $new_event = array_merge($new_event, [
@@ -2195,9 +2082,9 @@ JAVASCRIPT;
                     }
                     $ex_dates = [];
                     foreach ($rset->getExDates() as $occurence) {
-                       // we forge the ex date with only the date part of the exception
-                       // and the hour of the dtstart.
-                       // This to presents only date selection to the user
+                        // we forge the ex date with only the date part of the exception
+                        // and the hour of the dtstart.
+                        // This to presents only date selection to the user
                         $ex_dates[] = "EXDATE:" . $occurence->format('Ymd\THis');
                     }
 
@@ -2219,7 +2106,6 @@ JAVASCRIPT;
         return $events;
     }
 
-
     /**
      * construct a single line for self::constructEventsArray()
      * Recursively called to construct $raw_events param.
@@ -2240,10 +2126,9 @@ JAVASCRIPT;
      */
     public static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = [], &$not_planned = [])
     {
-
         if ($params['display']) {
             $actor_array = explode("_", $actor);
-            if ($params['type'] == "group_users") {
+            if ($params['type'] === "group_users") {
                 $subparams = $params;
                 unset($subparams['users']);
                 $subparams['from_group_users'] = true;
@@ -2255,8 +2140,8 @@ JAVASCRIPT;
                 $params['who']       = $actor_array[1];
                 $params['whogroup']  = 0;
                 if (
-                    $params['type'] == "group"
-                    && in_array($params['planning_type'], self::$directgroup_itemtype)
+                    $params['type'] === "group"
+                    && in_array($params['planning_type'], self::$directgroup_itemtype, true)
                 ) {
                     $params['who']       = 0;
                     $params['whogroup']  = $actor_array[1];
@@ -2280,12 +2165,12 @@ JAVASCRIPT;
         }
 
        // fill type of planning
-        $raw_events = array_map(function ($arr) use ($actor) {
+        $raw_events = array_map(static function ($arr) use ($actor) {
             return $arr + ['resourceId' => $actor];
         }, $raw_events);
 
         if ($_SESSION['glpi_plannings']['filters']['NotPlanned']['display']) {
-            $not_planned = array_map(function ($arr) use ($actor) {
+            $not_planned = array_map(static function ($arr) use ($actor) {
                 return $arr + [
                     'not_planned' => true,
                     'resourceId' => $actor,
@@ -2298,17 +2183,20 @@ JAVASCRIPT;
     /**
      * Return events fetched from user external calendars.
      *
+     * @param string $limit_begin
+     * @param string $limit_end
      * @return array
+     * @throws Exception
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupr JSON output
+        ErrorHandler::getInstance()->suspendOutput(); // Suspend error output to prevent warnings to corrupt JSON output
 
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
-                continue; // Ignore non external and inactive calendars
+                continue; // Ignore non-external and inactive calendars
             }
             $calendar_data = Toolbox::getURLContent($planning_params['url']);
             if (empty($calendar_data)) {
@@ -2381,14 +2269,13 @@ JAVASCRIPT;
         return $raw_events;
     }
 
-
     /**
      * Change dates of a selected event.
      * Called from a drag&drop in planning
      *
      * @since 9.1
      *
-     * @param array $options: must contains this keys :
+     * @param array $params must contains this keys :
      *  - items_id : integer to identify items
      *  - itemtype : string to identify items
      *  - begin : planning start .
@@ -2455,12 +2342,7 @@ JAVASCRIPT;
                      }
 
                      // manage moving event between resource (actors)
-                     if (
-                         isset($params['new_actor_itemtype'])
-                         && isset($params['new_actor_items_id'])
-                         && !empty($params['new_actor_itemtype'])
-                         && !empty($params['new_actor_items_id'])
-                     ) {
+                     if (!empty($params['new_actor_itemtype']) && !empty($params['new_actor_items_id'])) {
                          $new_actor_itemtype = strtolower($params['new_actor_itemtype']);
 
                          // reminders don't have group assignement for planning
@@ -2489,18 +2371,18 @@ JAVASCRIPT;
                              }
                          }
 
-                       // special case for project tasks
-                       // which have a link tables for their relation with groups/users
+                        // special case for project tasks
+                        // which have a link tables for their relation with groups/users
                          if ($item instanceof ProjectTask) {
-                          // get actor for finding relation with item
+                             // get actor for finding relation with item
                              $actor = new $params['old_actor_itemtype']();
                              $actor->getFromDB((int) $params['old_actor_items_id']);
 
-                          // get current relation
+                             // get current relation
                              $team_old = new ProjectTaskTeam();
                              $team_old->getFromDBForItems($item, $actor);
 
-                          // if new relation already exists, delete old relation
+                             // if new relation already exists, delete old relation
                              $actor_new = new $params['new_actor_itemtype']();
                              $actor_new->getFromDB((int) $params['new_actor_items_id']);
                              $team_new  = new ProjectTaskTeam();
@@ -2509,7 +2391,7 @@ JAVASCRIPT;
                                      'id' => $team_old->fields['id']
                                  ]);
                              } else {
-                      // else update relation
+                                 // else update relation
                                  $team_old->update([
                                      'id'       => $team_old->fields['id'],
                                      'itemtype' => $params['new_actor_itemtype'],
@@ -2525,7 +2407,7 @@ JAVASCRIPT;
                              return;
                          }
 
-                         $fkfield = $update["_job"]->getForeignKeyField();
+                         $fkfield = $update["_job"]::getForeignKeyField();
                          $update[$fkfield] = $item->fields[$fkfield];
                      }
 
@@ -2556,7 +2438,7 @@ JAVASCRIPT;
         ];
 
         foreach ($params as $key => &$value) {
-            if (in_array($key, $dates_fields)) {
+            if (in_array($key, $dates_fields, true)) {
                 $value  = date("Y-m-d H:i:s", strtotime(trim($value, 'Z')));
             }
         }
@@ -2564,20 +2446,17 @@ JAVASCRIPT;
         return $params;
     }
 
-
-
     /**
      * Display a Planning Item
      *
-     * @param $val       Array of the item to display
-     * @param $who             ID of the user (0 if all)
-     * @param $type            position of the item in the time block (in, through, begin or end)
-     *                         (default '')
-     * @param $complete        complete display (more details) (default 0)
+     * @param array $val       Array of the item to display
+     * @param integer $who             ID of the user (0 if all)
+     * @param 'in'|'through'|'begin'|'end'|'' $type Position of the item in the time block (in, through, begin or end)
+     * @param boolean $complete        complete display (more details)
      *
      * @return string
      **/
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
     {
         $html = "";
 
@@ -2588,9 +2467,8 @@ JAVASCRIPT;
 
        // Plugins case
         if (
-            isset($val['itemtype'])
-            && !empty($val['itemtype'])
-            && $val['itemtype'] != 'NotPlanned'
+            !empty($val['itemtype'])
+            && $val['itemtype'] !== 'NotPlanned'
             && method_exists($val['itemtype'], "displayPlanningItem")
         ) {
             $html .= $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
@@ -2602,7 +2480,7 @@ JAVASCRIPT;
     /**
      * Show the planning for the central page of a user
      *
-     * @param $who ID of the user
+     * @param integer $who ID of the user
      *
      * @return void
      **/
@@ -2615,7 +2493,7 @@ JAVASCRIPT;
             !Session::haveRight(self::$rightname, self::READMY)
             || ($who <= 0)
         ) {
-            return false;
+            return;
         }
 
         echo "<div class='table-responsive card-table'>";
@@ -2634,8 +2512,6 @@ JAVASCRIPT;
         echo "</div>";
     }
 
-
-
    //*******************************************************************************************************************************
    // *********************************** Implementation ICAL ***************************************************************
    //*******************************************************************************************************************************
@@ -2643,9 +2519,9 @@ JAVASCRIPT;
     /**
      *  Generate ical file content
      *
-     * @param $who             user ID
-     * @param $whogroup        group ID
-     * @param $limititemtype   itemtype only display this itemtype (default '')
+     * @param integer $who             user ID
+     * @param integer $whogroup        group ID
+     * @param string  $limititemtype   itemtype only display this itemtype (default '')
      *
      * @return void Outputs ical contents
      **/
@@ -2753,12 +2629,8 @@ JAVASCRIPT;
         echo $output;
     }
 
-    /**
-     * @since 0.85
-     **/
     public function getRights($interface = 'central')
     {
-
         $values[self::READMY]    = __('See personnal planning');
         $values[self::READGROUP] = __('See schedule of people in my groups');
         $values[self::READALL]   = __('See all plannings');
@@ -2834,7 +2706,6 @@ JAVASCRIPT;
      */
     private static function getCaldavBaseCalendarUrl(\CommonDBTM $item)
     {
-
         $calendar_uri = null;
 
         switch (get_class($item)) {
