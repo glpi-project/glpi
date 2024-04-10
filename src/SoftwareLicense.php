@@ -758,11 +758,11 @@ class SoftwareLicense extends CommonTreeDropdown
             foreach ($iterator as $license) {
                 $name     = $license['softname'] . ' - ' . $license['name'] . ' - ' . $license['serial'];
                 //TRANS: %1$s the license name, %2$s is the expiration date
-                $message .= sprintf(
+                $message .= htmlspecialchars(sprintf(
                     __('License %1$s expired on %2$s'),
                     Html::convDate($license["expire"]),
                     $name
-                ) . "<br>\n";
+                )) . "<br>";
                 $items[$license['id']] = $license;
             }
 
@@ -778,11 +778,11 @@ class SoftwareLicense extends CommonTreeDropdown
                         $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
                         $task->addVolume(1);
                     } else {
-                        Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
-                            __('%1$s: %2$s'),
-                            $entityname,
+                        Session::addMessageAfterRedirect(sprintf(
+                            __s('%1$s: %2$s'),
+                            htmlspecialchars($entityname),
                             $message
-                        )));
+                        ));
                     }
 
                     $input["type"]     = Alert::END;
