@@ -264,6 +264,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkName::getInternetNameFromID()`
 - `NetworkPort::getNetworkPortInstantiationsWithNames()`
 - `NetworkPort::resetConnections()`
+- `PlanningExternalEvent::addVisibilityRestrict()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
