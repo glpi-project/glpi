@@ -972,9 +972,9 @@ class Item_SoftwareVersion extends CommonDBRelation
     }
 
     /**
-     * Show software installed on a computer
+     * Show software installed on an asset
      *
-     * @param CommonDBTM $item         Computer object
+     * @param CommonDBTM $item
      * @param integer  $withtemplate template case of the view process
      *
      * @return void

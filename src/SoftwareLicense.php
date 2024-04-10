@@ -921,7 +921,7 @@ class SoftwareLicense extends CommonTreeDropdown
         }
 
         $start = (int) ($_GET['start'] ?? 0);
-        $order = $_GET['order'] === 'DESC' ? 'DESC' : 'ASC';
+        $order = ($_GET['order'] ?? 'DESC') === 'DESC' ? 'DESC' : 'ASC';
 
         if (!empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
             $sort = $_GET["sort"];
