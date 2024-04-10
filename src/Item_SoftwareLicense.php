@@ -527,7 +527,7 @@ class Item_SoftwareLicense extends CommonDBRelation
         $item_license_table = self::getTable(__CLASS__);
 
         $start = (int) ($_GET["start"] ?? 0);
-        $order = ($_GET['order'] ?? 'DESC') === 'DESC' ? 'DESC' : 'ASC';
+        $order = ($_GET['order'] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
 
         if (!empty($_GET["sort"])) {
            // manage several param like location,compname : order first

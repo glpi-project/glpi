@@ -1188,7 +1188,7 @@ class SoftwareLicense extends CommonTreeDropdown
                         $item::class
                     );
 
-                case __CLASS__:
+                case self::class:
                     if (!self::canView()) {
                         return '';
                     }
