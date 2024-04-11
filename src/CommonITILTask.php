@@ -500,15 +500,32 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                     ];
                     $item->update($input2);
                 } elseif (
-                    $item->isStatusExists(CommonITILObject::ASSIGNED)
-                    && ($item->fields["status"] == CommonITILObject::PLANNED)
+                    $item->fields["status"] == CommonITILObject::PLANNED
                 ) {
-                    $input2 = [
-                        'id'            => $item->getID(),
-                        'status'        => CommonITILObject::ASSIGNED,
-                        '_disablenotif' => false,
-                    ];
-                    $item->update($input2);
+                    if (
+                        $item->isAllowedStatus($item->fields["status"], CommonITILObject::ASSIGNED)
+                        && (
+                            ($item->countUsers(CommonITILActor::ASSIGN) > 0)
+                            || ($item->countGroups(CommonITILActor::ASSIGN) > 0)
+                            || ($item->countSuppliers(CommonITILActor::ASSIGN) > 0)
+                        )
+                    ) {
+                        $input2 = [
+                            'id'            => $item->getID(),
+                            'status'        => CommonITILObject::ASSIGNED,
+                            '_disablenotif' => false,
+                        ];
+                        $item->update($input2);
+                    } elseif (
+                        $item->isAllowedStatus($item->fields["status"], CommonITILObject::INCOMING)
+                    ) {
+                        $input2 = [
+                            'id'            => $item->getID(),
+                            'status'        => CommonITILObject::INCOMING,
+                            '_disablenotif' => false,
+                        ];
+                        $item->update($input2);
+                    }
                 }
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {

@@ -452,7 +452,54 @@ class TicketTask extends DbTestCase
             'end'                => $date_end_string,
         ]))->isTrue();
 
+
+
         $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+
+        $ticket = new \Ticket();
+        $ticket_users = new \Ticket_User();
+
+        // remove assigned user from ticket
+        $this->boolean($ticket_users->deleteByCriteria([
+            'tickets_id' => $ticket_id,
+            'type'       => \CommonITILActor::ASSIGN,
+        ]))->isTrue();
+
+        $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
+
+        $this->integer($ticket->countUsers(\CommonITILActor::ASSIGN))->isEqualTo(0);
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
+
+        $this->boolean($task->update([
+            'id'                 => $task_id,
+            'tickets_id'         => $ticket_id,
+            'content'            => "De-planned Task",
+            'begin'              => null,
+            'end'                => null,
+        ]))->isTrue();
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
+
+        $this->boolean($task->update([
+            'id'                 => $task_id,
+            'tickets_id'         => $ticket_id,
+            'content'            => "Planned Task",
+            'begin'              => $date_begin_string,
+            'end'                => $date_end_string,
+        ]))->isTrue();
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::PLANNED);
+
+        $this->boolean($task->update([
+            'id'                 => $task_id,
+            'tickets_id'         => $ticket_id,
+            'content'            => "De-planned Task",
+            'begin'              => null,
+            'end'                => null,
+        ]))->isTrue();
+
+        $this->integer(\Ticket::getById($ticket_id)->fields['status'])->isEqualTo(\Ticket::INCOMING);
     }
 
     public function testUpdateParentStatus()
