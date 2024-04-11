@@ -95,10 +95,17 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
             // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
             cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
                 cy.blockGLPIDashboards();
-                cy.visit(href);
-                if (verify) {
-                    cy.get('a.user-menu-dropdown-toggle').contains(profile_pattern);
-                }
+                cy.visit(href, {
+                    headers: {
+                        // Cypress doesn't send this by default and it causes a real headache with GLPI since it is always used when redirecting back after a profile/entity change.
+                        // This causes e2e tests to randomly fail with the browser ending up on a /front/null page.
+                        Referer: Cypress.config('baseUrl'),
+                    }
+                }).then(() => {
+                    if (verify) {
+                        cy.get('a.user-menu-dropdown-toggle').contains(profile_pattern);
+                    }
+                });
             });
         }
     });
@@ -134,7 +141,7 @@ Cypress.Commands.add('iframe', {prevSubject: 'element'}, (iframe, url_pattern) =
 });
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method awaitTinyMCE
  * @description Assert that the subject is a TinyMCE editor and try to wait for tinyMCE to initialize the editor.
  */
@@ -174,7 +181,7 @@ Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
 });
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method selectDate
  * @description Select a date in a flatpickr input
  * @param {string} date - Date to select
@@ -225,7 +232,7 @@ Cypress.Commands.add('blockGLPIDashboards', () => {
 });
 
 /**
- * @memberof cy
+ * @memberof Cypress.Chainable.prototype
  * @method validateSelect2Loading
  * @description Verify that the results for a Select2 dropdown can load. Only works for dropdowns that call an AJAX endpoint for results.
  */
