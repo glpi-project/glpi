@@ -189,7 +189,7 @@ class Contract extends CommonDBTM
                 ]
             ],
             'condition'          => [
-                'NEWTABLE.entities_id' => getSonsOf('glpi_entities', $_SESSION['glpiactive_entity']),
+                'NEWTABLE.entities_id' => getSonsOf('glpi_entities', $_SESSION['glpiactive_entity'] ?? 0),
             ]
         ];
 
