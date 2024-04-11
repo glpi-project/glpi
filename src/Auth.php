@@ -185,7 +185,8 @@ class Auth extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        $result = $DB->request('glpi_users', [
+        $result = $DB->request([
+            'FROM' => 'glpi_users',
             'LEFT JOIN' => [
                 'glpi_useremails' => [
                     'FKEY' => [
@@ -1639,7 +1640,7 @@ class Auth extends CommonGLPI
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === 'User') {
+        if ($item::class === User::class) {
             self::showSynchronizationForm($item);
         }
         return true;
