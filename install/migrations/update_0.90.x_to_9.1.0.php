@@ -846,9 +846,10 @@ function update090xto910()
     }
 
     if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
-       //new right for software license
-       //copy the software right value to the new license right
-        foreach ($DB->request("glpi_profilerights", "`name` = 'software'") as $profrights) {
+        //new right for software license
+        //copy the software right value to the new license right
+        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'software']]);
+        foreach ($prights as $profrights) {
             $DB->insertOrDie(
                 "glpi_profilerights",
                 [
@@ -862,8 +863,9 @@ function update090xto910()
         }
     }
 
-   //new right for survey
-    foreach ($DB->request("glpi_profilerights", "`name` = 'ticket'") as $profrights) {
+    //new right for survey
+    $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'ticket']]);
+    foreach ($prights as $profrights) {
         $DB->updateOrDie(
             "glpi_profilerights",
             [
@@ -965,7 +967,7 @@ function update090xto910()
         $DB->doQueryOrDie($query, "9.1 add table glpi_slts");
 
        // Sla migration
-        $slasIterator = $DB->request("glpi_slas");
+        $slasIterator = $DB->request(['FROM' => "glpi_slas"]);
         if (count($slasIterator)) {
             foreach ($slasIterator as $data) {
                 $DB->insertOrDie(

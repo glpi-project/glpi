@@ -249,7 +249,8 @@ class RequestType extends CommonDropdown
             return 0;
         }
 
-        foreach ($DB->request('glpi_requesttypes', ['is_' . $source . '_default' => 1, 'is_active' => 1]) as $data) {
+        $types = $DB->request(['FROM' => 'glpi_requesttypes', 'WHERE' => ['is_' . $source . '_default' => 1, 'is_active' => 1]]);
+        foreach ($types as $data) {
             return $data['id'];
         }
         return 0;

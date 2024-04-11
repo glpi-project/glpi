@@ -991,7 +991,7 @@ class Software extends CommonDBTM
         $item = array_keys($item);
 
        // Search for software version
-        $req = $DB->request("glpi_softwareversions", ["softwares_id" => $item]);
+        $req = $DB->request(['FROM' => "glpi_softwareversions", 'WHERE' => ["softwares_id" => $item]]);
         $i   = 0;
 
         if ($nb = $req->numrows()) {

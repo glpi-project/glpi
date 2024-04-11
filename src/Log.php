@@ -744,7 +744,7 @@ class Log extends CommonDBTM
                         if ($oldval_expl[0] == '&nbsp;') {
                             $oldval = $data["old_value"];
                         } else {
-                            $old_iterator = $DBread->request('glpi_users', ['name' => $oldval_expl[0]]);
+                            $old_iterator = $DBread->request(['FROM' => 'glpi_users', 'WHERE' => ['name' => $oldval_expl[0]]]);
                             foreach ($old_iterator as $val) {
                                 $oldval = sprintf(
                                     __('%1$s %2$s'),
@@ -762,7 +762,7 @@ class Log extends CommonDBTM
                         if ($newval_expl[0] == '&nbsp;') {
                             $newval = $data["new_value"];
                         } else {
-                            $new_iterator = $DBread->request('glpi_users', ['name' => $newval_expl[0]]);
+                            $new_iterator = $DBread->request(['FROM' => 'glpi_users', 'WHERE' => ['name' => $newval_expl[0]]]);
                             foreach ($new_iterator as $val) {
                                 $newval = sprintf(
                                     __('%1$s %2$s'),

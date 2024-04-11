@@ -42,7 +42,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
 define('GLPI_ENVIRONMENT_TYPE', 'testing');
 
-ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstraping are always displayed
+ini_set('display_errors', 'On'); // Ensure errors happening during test suite bootstrapping are always displayed
 error_reporting(E_ALL);
 
 define('GLPI_ROOT', __DIR__ . '/../');
@@ -80,13 +80,13 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 
-// Errors/exceptions that are not explicitely validated by `$this->error()` or `$this->exception` asserter will already make test fails.
+// Errors/exceptions that are not explicitly validated by `$this->error()` or `$this->exception` asserter will already make test fails.
 // There is no need to pollute the output with error messages.
 ini_set('display_errors', 'Off');
 ErrorHandler::getInstance()->disableOutput();
-// To ensure that errors/exceptions will be catched by `atoum`, unregister GLPI error/exception handlers.
-// Errors that are pushed directly to logs (SQL errors/warnings for instance) will still have to be explicitely
-// validated by `$this->has*LogRecord*()` asserters, otherwise it will make make test fails.
+// To ensure that errors/exceptions will be caught by `atoum`, unregister GLPI error/exception handlers.
+// Errors that are pushed directly to logs (SQL errors/warnings for instance) will still have to be explicitly
+// validated by `$this->has*LogRecord*()` asserters, otherwise it will make test fails.
 set_error_handler(null);
 set_exception_handler(null);
 

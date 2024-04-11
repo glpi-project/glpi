@@ -95,7 +95,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Constructor
      *
-     * @param ?DBmysql $dbconnexion Database Connnexion (must be a CommonDBTM object)
+     * @param ?DBmysql $dbconnexion Database connection (must be a CommonDBTM object)
      *
      * @return void
      */
@@ -107,15 +107,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Executes the query
      *
-     * @param string|array $table       Table name (optional when $crit have FROM entry)
-     * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-     * @param boolean      $debug       To log the request (default false)
+     * @param array   $criteria Query criteria
+     * @param boolean $debug    To log the request (default false)
      *
      * @return DBmysqlIterator
      */
-    public function execute($table, $crit = "", $debug = false)
+    public function execute(array $criteria, bool $debug = false): self
     {
-        $this->buildQuery($table, $crit, $debug);
+        $this->buildQuery($criteria, $debug);
         $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
@@ -125,230 +124,207 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Builds the query
      *
-     * @param string|array $table       Table name (optional when $crit have FROM entry)
-     * @param string|array $crit        Fields/values, ex array("id"=>1), if empty => all rows (default '')
-     * @param boolean      $log         To log the request (default false)
+     * @param array   $criteria Query criteria
+     * @param boolean $log      To log the request (default false)
      *
      * @return void
      */
-    public function buildQuery($table, $crit = "", $log = false)
+    public function buildQuery(array $criteria, bool $log = false): void
     {
         $this->sql = null;
         $this->res = false;
 
-        $is_legacy = false;
+        $table = $criteria['FROM'] ?? null;
+        unset($criteria['FROM']);
 
-        if (is_string($table) && strpos($table, " ") !== false) {
-            $names = preg_split('/\s+AS\s+/i', $table);
-            if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
-                $is_legacy = true;
+        // Check field, orderby, limit, start in criteria
+        $field    = "";
+        $distinct = false;
+        $orderby  = null;
+        $limit    = 0;
+        $start    = 0;
+        $where    = '';
+        $count    = '';
+        $join     = [];
+        $groupby  = '';
+        $having   = '';
+        if (count($criteria)) {
+            foreach ($criteria as $key => $val) {
+                switch ((string)$key) {
+                    case 'SELECT':
+                    case 'FIELDS':
+                        $field = $val;
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'DISTINCT':
+                        if ($val) {
+                            $distinct = true;
+                        }
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'COUNT':
+                        $count = $val;
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'ORDER':
+                    case 'ORDERBY':
+                        $orderby = $val;
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'LIMIT':
+                        $limit = $val;
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'START':
+                    case 'OFFSET':
+                        $start = $val;
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'WHERE':
+                          $where = $val;
+                          unset($criteria[$key]);
+                        break;
+
+                    case 'HAVING':
+                         $having = $val;
+                         unset($criteria[$key]);
+                        break;
+
+                    case 'GROUP':
+                    case 'GROUPBY':
+                        $groupby = $val;
+                        unset($criteria[$key]);
+                        break;
+
+                    case 'JOIN':
+                    case 'LEFT JOIN':
+                    case 'RIGHT JOIN':
+                    case 'INNER JOIN':
+                        $join[$key] = $val;
+                        unset($criteria[$key]);
+                        break;
+                }
             }
         }
 
-        if ($is_legacy) {
-            Toolbox::deprecated(
-                'Direct query usage is strongly discouraged!',
-                false
-            );
-            $this->sql = $table;
-        } else {
-           // Modern way
-            if (is_array($table) && isset($table['FROM'])) {
-               // Shift the args
-                $debug = $crit;
-                $crit  = $table;
-                $table = $crit['FROM'];
-                unset($crit['FROM']);
+        $this->sql = 'SELECT ';
+        $first = true;
+
+       // SELECT field list
+        if ($count) {
+            $this->sql .= 'COUNT(';
+            if ($distinct) {
+                $this->sql .= 'DISTINCT ';
             }
-
-           // Check field, orderby, limit, start in criterias
-            $field    = "";
-            $distinct = false;
-            $orderby  = null;
-            $limit    = 0;
-            $start    = 0;
-            $where    = '';
-            $count    = '';
-            $join     = [];
-            $groupby  = '';
-            $having   = '';
-            if (is_array($crit) && count($crit)) {
-                foreach ($crit as $key => $val) {
-                    switch ((string)$key) {
-                        case 'SELECT':
-                        case 'FIELDS':
-                            $field = $val;
-                            unset($crit[$key]);
-                            break;
-
-                        case 'DISTINCT':
-                            if ($val) {
-                                $distinct = true;
-                            }
-                            unset($crit[$key]);
-                            break;
-
-                        case 'COUNT':
-                            $count = $val;
-                            unset($crit[$key]);
-                            break;
-
-                        case 'ORDER':
-                        case 'ORDERBY':
-                            $orderby = $val;
-                            unset($crit[$key]);
-                            break;
-
-                        case 'LIMIT':
-                            $limit = $val;
-                            unset($crit[$key]);
-                            break;
-
-                        case 'START':
-                        case 'OFFSET':
-                            $start = $val;
-                            unset($crit[$key]);
-                            break;
-
-                        case 'WHERE':
-                              $where = $val;
-                              unset($crit[$key]);
-                            break;
-
-                        case 'HAVING':
-                             $having = $val;
-                             unset($crit[$key]);
-                            break;
-
-                        case 'GROUP':
-                        case 'GROUPBY':
-                            $groupby = $val;
-                            unset($crit[$key]);
-                            break;
-
-                        case 'JOIN':
-                        case 'LEFT JOIN':
-                        case 'RIGHT JOIN':
-                        case 'INNER JOIN':
-                            $join[$key] = $val;
-                            unset($crit[$key]);
-                            break;
-                    }
-                }
-            }
-
-            $this->sql = 'SELECT ';
-            $first = true;
-
-           // SELECT field list
-            if ($count) {
-                $this->sql .= 'COUNT(';
-                if ($distinct) {
-                    $this->sql .= 'DISTINCT ';
-                }
-                if (!empty($field) && !is_array($field)) {
-                    $this->sql .= "" . DBmysql::quoteName($field);
-                } else {
-                    if ($distinct) {
-                        throw new \LogicException("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'.");
-                    }
-                    $this->sql .= "*";
-                }
-                $this->sql .= ") AS $count";
-                $first = false;
-            }
-            if (!$count || $count && is_array($field)) {
-                if ($distinct && !$count) {
-                    $this->sql .= 'DISTINCT ';
-                }
-                if (empty($field)) {
-                    $this->sql .= '*';
-                }
-                if (!empty($field)) {
-                    if (!is_array($field)) {
-                        $field = [$field];
-                    }
-                    foreach ($field as $t => $f) {
-                        if ($first) {
-                            $first = false;
-                        } else {
-                            $this->sql .= ', ';
-                        }
-                        $this->sql .= $this->handleFields($t, $f);
-                    }
-                }
-            }
-
-            // FROM table list
-            if (is_array($table)) {
-                if (count($table)) {
-                    $table = array_map([DBmysql::class, 'quoteName'], $table);
-                    $this->sql .= ' FROM ' . implode(", ", $table);
-                } else {
-                    throw new \LogicException("Missing table name.");
-                }
-            } else if ($table) {
-                if ($table instanceof \AbstractQuery) {
-                    $query = $table;
-                    $table = $query->getQuery();
-                } else if ($table instanceof QueryExpression) {
-                    $table = $table->getValue();
-                } else {
-                    $table = DBmysql::quoteName($table);
-                }
-                $this->sql .= " FROM $table";
+            if (!empty($field) && !is_array($field)) {
+                $this->sql .= DBmysql::quoteName($field);
             } else {
-               /*
-                * TODO filter with if ($where || !empty($crit)) {
-                * but not usefull for now, as we CANNOT write something like "SELECT NOW()"
-                */
+                if ($distinct) {
+                    throw new \LogicException("With COUNT and DISTINCT, you must specify exactly one field, or use 'COUNT DISTINCT'.");
+                }
+                $this->sql .= "*";
+            }
+            $this->sql .= ") AS $count";
+            $first = false;
+        }
+        if (!$count || $count && is_array($field)) {
+            if ($distinct && !$count) {
+                $this->sql .= 'DISTINCT ';
+            }
+            if (empty($field)) {
+                $this->sql .= '*';
+            }
+            if (!empty($field)) {
+                if (!is_array($field)) {
+                    $field = [$field];
+                }
+                foreach ($field as $t => $f) {
+                    if ($first) {
+                        $first = false;
+                    } else {
+                        $this->sql .= ', ';
+                    }
+                    $this->sql .= $this->handleFields($t, $f);
+                }
+            }
+        }
+
+        // FROM table list
+        if (is_array($table)) {
+            if (count($table)) {
+                $table = array_map([DBmysql::class, 'quoteName'], $table);
+                $this->sql .= ' FROM ' . implode(", ", $table);
+            } else {
                 throw new \LogicException("Missing table name.");
             }
-
-            // JOIN
-            if (!empty($join)) {
-                $this->sql .= $this->analyseJoins($join);
+        } else if ($table) {
+            if ($table instanceof \AbstractQuery) {
+                $query = $table;
+                $table = $query->getQuery();
+            } else if ($table instanceof QueryExpression) {
+                $table = $table->getValue();
+            } else {
+                $table = DBmysql::quoteName($table);
             }
-
-            // WHERE criteria list
-            if (!empty($crit)) {
-                $this->sql .= " WHERE " . $this->analyseCrit($crit);
-                if ($where) {
-                    trigger_error(
-                        'Criteria found both inside and outside "WHERE" key. Some of them will be ignored',
-                        E_USER_WARNING
-                    );
-                }
-            } else if ($where) {
-                $this->sql .= " WHERE " . $this->analyseCrit($where);
-            }
-
-            // GROUP BY field list
-            if (is_array($groupby)) {
-                if (count($groupby)) {
-                    $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
-                    $this->sql .= ' GROUP BY ' . implode(", ", $groupby);
-                } else {
-                    throw new \LogicException("Missing group by field.");
-                }
-            } else if ($groupby) {
-                $groupby = DBmysql::quoteName($groupby);
-                $this->sql .= " GROUP BY $groupby";
-            }
-
-            // HAVING criteria list
-            if ($having) {
-                $this->sql .= " HAVING " . $this->analyseCrit($having);
-            }
-
-            // ORDER BY
-            if ($orderby !== null) {
-                $this->sql .= $this->handleOrderClause($orderby);
-            }
-
-            //LIMIT & OFFSET
-            $this->sql .= $this->handleLimits($limit, $start);
+            $this->sql .= " FROM $table";
+        } else {
+           /*
+            * TODO filter with if ($where || !empty($criteria)) {
+            * but not useful for now, as we CANNOT write something like "SELECT NOW()"
+            */
+            throw new \LogicException("Missing table name.");
         }
+
+        // JOIN
+        if (!empty($join)) {
+            $this->sql .= $this->analyseJoins($join);
+        }
+
+        // WHERE criteria list
+        if (!empty($criteria)) {
+            $this->sql .= " WHERE " . $this->analyseCrit($criteria);
+            if ($where) {
+                trigger_error(
+                    'Criteria found both inside and outside "WHERE" key. Some of them will be ignored',
+                    E_USER_WARNING
+                );
+            }
+        } else if ($where) {
+            $this->sql .= " WHERE " . $this->analyseCrit($where);
+        }
+
+        // GROUP BY field list
+        if (is_array($groupby)) {
+            if (count($groupby)) {
+                $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
+                $this->sql .= ' GROUP BY ' . implode(", ", $groupby);
+            } else {
+                throw new \LogicException("Missing group by field.");
+            }
+        } else if ($groupby) {
+            $groupby = DBmysql::quoteName($groupby);
+            $this->sql .= " GROUP BY $groupby";
+        }
+
+        // HAVING criteria list
+        if ($having) {
+            $this->sql .= " HAVING " . $this->analyseCrit($having);
+        }
+
+        // ORDER BY
+        if ($orderby !== null) {
+            $this->sql .= $this->handleOrderClause($orderby);
+        }
+
+        //LIMIT & OFFSET
+        $this->sql .= $this->handleLimits($limit, $start);
+
 
         if ($log == true || defined('GLPI_SQL_DEBUG') && GLPI_SQL_DEBUG == true) {
             Toolbox::logSqlDebug("Generated query:", $this->getSql());

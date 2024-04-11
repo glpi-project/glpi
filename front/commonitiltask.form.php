@@ -130,10 +130,10 @@ if ($handled) {
             'itemtype'         => $itemtype,
             'items_id'         => $task->getField($fk)
         ];
-        $existing = $DB->request(
-            'glpi_knowbaseitems_items',
-            $params
-        );
+        $existing = $DB->request([
+            'FROM' => 'glpi_knowbaseitems_items',
+            'WHERE' => $params
+        ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
             $kb_item_item->add($params);

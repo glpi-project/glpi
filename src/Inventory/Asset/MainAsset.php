@@ -303,11 +303,11 @@ abstract class MainAsset extends InventoryAsset
                             property_exists($a_users, 'domain')
                             && !empty($a_users->domain)
                         ) {
-                            $ldaps = $DB->request(
-                                'glpi_authldaps',
-                                ['WHERE'  => ['inventory_domain' => $a_users->domain]]
-                            );
-                             $ldaps_ids = [];
+                            $ldaps = $DB->request([
+                                'FROM' => 'glpi_authldaps',
+                                'WHERE'  => ['inventory_domain' => $a_users->domain]
+                            ]);
+                            $ldaps_ids = [];
                             foreach ($ldaps as $data_LDAP) {
                                 $ldaps_ids[] = $data_LDAP['id'];
                             }

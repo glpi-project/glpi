@@ -277,13 +277,13 @@ class NetworkName extends FQDNLabel
                 $ip = new IPAddress();
                 // Update IPAddress
                 foreach (
-                    $DB->request(
-                        'glpi_ipaddresses',
-                        [
+                    $DB->request([
+                        'FROM' => 'glpi_ipaddresses',
+                        'WHERE' => [
                             'itemtype' => 'NetworkName',
                             'items_id' => $this->getID()
                         ]
-                    ) as $data
+                    ]) as $data
                 ) {
                     $ip->update([
                         'id'       => $data['id'],

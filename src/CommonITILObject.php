@@ -10640,7 +10640,8 @@ abstract class CommonITILObject extends CommonDBTM
             $tabentities[0] = $rate;
         }
 
-        foreach ($DB->request('glpi_entities') as $entity) {
+        $dbentities = $DB->request(['FROM' => Entity::getTable()]);
+        foreach ($dbentities as $entity) {
             $rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'inquest_rate' . $config_suffix);
             if ($rate > 0) {
                 $tabentities[$entity['id']] = $rate;

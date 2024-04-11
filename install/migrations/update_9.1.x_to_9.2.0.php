@@ -1642,9 +1642,10 @@ Regards,',
     }
 
     if (countElementsInTable("glpi_profilerights", ['name' => 'certificate']) == 0) {
-       //new right for certificate
-       //give full rights to profiles having config right
-        foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+        //new right for certificate
+        //give full rights to profiles having config right
+        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        foreach ($prights as $profrights) {
             if ($profrights['rights'] && (READ + UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK;
             } else {
@@ -1960,9 +1961,10 @@ Regards,',
     }
 
     if (countElementsInTable("glpi_profilerights", ['name' => 'line']) == 0) {
-       //new right for line
-       //give full rights to profiles having config right
-        foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+        //new right for line
+        //give full rights to profiles having config right
+        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        foreach ($prights as $profrights) {
             if ($profrights['rights'] && (READ + UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE | PURGE | READNOTE | UPDATENOTE;
             } else {
@@ -1984,7 +1986,8 @@ Regards,',
     if (countElementsInTable("glpi_profilerights", ['name' => 'lineoperator']) == 0) {
        //new right for lineoperator
        //give full rights to profiles having config right
-        foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        foreach ($prights as $profrights) {
             if ($profrights['rights'] && (READ + UPDATE)) {
                 $rightValue = CREATE | READ | UPDATE | DELETE | PURGE;
             } else {
@@ -2004,9 +2007,10 @@ Regards,',
     }
 
     if (countElementsInTable("glpi_profilerights", ['name' => 'devicesimcard_pinpuk']) == 0) {
-       //new right for simcard pin and puk
-       //give full rights to profiles having config right
-        foreach ($DB->request("glpi_profilerights", "`name` = 'config'") as $profrights) {
+        //new right for simcard pin and puk
+        //give full rights to profiles having config right
+        $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'config']]);
+        foreach ($prights as $profrights) {
             if ($profrights['rights'] && (READ + UPDATE)) {
                 $rightValue = READ | UPDATE;
             } else {
@@ -2063,7 +2067,7 @@ Regards,',
    //Firmware for network equipements
     if ($DB->tableExists('glpi_networkequipmentfirmwares')) {
         $mapping = [];
-        $iterator = $DB->request('glpi_networkequipmentfirmwares');
+        $iterator = $DB->request(['FROM' => 'glpi_networkequipmentfirmwares']);
         foreach ($iterator as $row) {
             $fw = new DeviceFirmware();
             $id = $fw->add([
@@ -2076,7 +2080,7 @@ Regards,',
             $mapping[$row['id']] = $id;
         }
 
-        $iterator = $DB->request('glpi_networkequipments');
+        $iterator = $DB->request(['FROM' => 'glpi_networkequipments']);
         foreach ($iterator as $row) {
             if (isset($mapping[$row['networkequipmentfirmwares_id']])) {
                 $itemdevice = new Item_DeviceFirmware();
