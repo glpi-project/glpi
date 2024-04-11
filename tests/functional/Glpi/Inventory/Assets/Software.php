@@ -1627,4 +1627,85 @@ class Software extends AbstractInventoryAsset
         //check computer-softwareverison relation is the same (ID)
         $this->integer($item_versions_id)->isIdenticalTo($item_version->fields['id']);
     }
+
+    public function testSubCategoryDictionnary()
+    {
+        $this->login();
+
+        $rule         = new \RuleSoftwareCategory();
+        $rulecriteria = new \RuleCriteria();
+        $ruleaction   = new \RuleAction();
+
+        $category   = new \SoftwareCategory();
+        $parent_categories_id = $category->add(['name' => 'Parent']);
+        $categories_id = $category->add(['name' => 'Child', 'categories_id' => $parent_categories_id]);
+
+        $rules_id = $rule->add([
+            'is_active'    => 1,
+            'name'         => 'Sub category',
+            'match'        => 'AND',
+            'sub_type'     => \RuleSoftwareCategory::class,
+            'is_recursive' => 0,
+            'ranking'      => 1,
+        ]);
+        $this->integer((int) $rules_id)->isGreaterThan(0);
+
+        $this->integer((int) $rulecriteria->add([
+            'rules_id'  => $rules_id,
+            'criteria'  => 'name',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'firefox'
+        ]))->isGreaterThan(0);
+
+        $this->integer((int) $ruleaction->add([
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'softwarecategories_id',
+            'value'       => $categories_id,
+        ]))->isGreaterThan(0);
+
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOFTWARES>
+      <ARCH>x86_64</ARCH>
+      <COMMENTS>Mozilla Firefox Web browser</COMMENTS>
+      <FILESIZE>258573684</FILESIZE>
+      <FROM>rpm</FROM>
+      <INSTALLDATE>23/12/2020</INSTALLDATE>
+      <NAME>firefox</NAME>
+      <PUBLISHER>Fedora Project</PUBLISHER>
+      <SYSTEM_CATEGORY>Unspecified</SYSTEM_CATEGORY>
+      <VERSION>84.0-6.fc32</VERSION>
+    </SOFTWARES>
+    <HARDWARE>
+      <NAME>pc_test_entity</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ssnexample</SSN>
+    </BIOS>
+    <VERSIONCLIENT>test-agent</VERSIONCLIENT>
+    <ACCOUNTINFO>
+      <KEYNAME>TAG</KEYNAME>
+      <KEYVALUE>testtag_2</KEYVALUE>
+    </ACCOUNTINFO>
+  </CONTENT>
+  <DEVICEID>pc_test_entity</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $found_computers = $computer->find(['name' => "pc_test_entity"]);
+        $this->integer(count($found_computers))->isIdenticalTo(1);
+
+        $soft = new \Software();
+        $softs = $soft->find(['name' => "firefox"]);
+        $this->integer(count($softs))->isIdenticalTo(1);
+        $first_soft = array_pop($softs);
+
+        $this->integer($first_soft['softwarecategories_id'])->isIdenticalTo($categories_id);
+    }
 }

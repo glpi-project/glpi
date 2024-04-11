@@ -1469,7 +1469,7 @@ class Entity extends CommonTreeDropdown
         $tab[] = [
             'id'                 => '51',
             'table'              => $this->getTable(),
-            'field'              => 'name',
+            'field'              => 'entities_id_software',
             'linkfield'          => 'entities_id_software', // not a dropdown because of special value
                                  //TRANS: software in plural
             'name'               => __('Entity for software creation'),
@@ -3145,7 +3145,7 @@ class Entity extends CommonTreeDropdown
 
             case 'tickettemplates_id':
                 $strategy = $values['tickettemplates_strategy'] ?? $values[$field];
-                if ($values['tickettemplates_strategy'] == self::CONFIG_PARENT) {
+                if ($strategy == self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
                 return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);

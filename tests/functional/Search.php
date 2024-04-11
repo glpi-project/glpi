@@ -1481,16 +1481,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_1)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) ASC");
+                                ) ASC");
         $user_order_2 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1498,16 +1498,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_2)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) DESC");
+                                ) DESC");
 
         $_SESSION['glpinames_format'] = \User::REALNAME_BEFORE;
         $user_order_3 = \Search::addOrderBy('Ticket', [
@@ -1517,16 +1517,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_3)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) ASC");
+                                ) ASC");
         $user_order_4 = \Search::addOrderBy('Ticket', [
             [
                 'searchopt_id' => 4,
@@ -1534,16 +1534,16 @@ class Search extends DbTestCase
             ]
         ]);
         $this->string($user_order_4)->isEqualTo(" ORDER BY GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table_addtable`.`realname`, ''),
-                                IFNULL(`$table_addtable`.`firstname`, ''),
-                                IFNULL(`$table_addtable`.`name`, ''),
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table_addtable`.`realname`, ''),
+                                    IFNULL(`$table_addtable`.`firstname`, ''),
+                                    IFNULL(`$table_addtable`.`name`, ''),
                                 IFNULL(`$table_ticket_user`.`alternative_email`, '')) ASC
-                            ) DESC");
+                                ) DESC");
     }
 
     /**
@@ -2242,15 +2242,11 @@ class Search extends DbTestCase
          ->contains("`glpi_users_users_id_recipient`.`id` = '{$user_normal_id}'")
 
          // Check that ORDER applies on corresponding table alias
-         ->contains("GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`name`, '')
-                            ) ORDER BY CONCAT(
-                                IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
-                                IFNULL(`glpi_users_users_id_recipient`.`name`, '')) ASC
-                            ) ASC");
+         ->contains("CONCAT(
+                                    IFNULL(`glpi_users_users_id_recipient`.`realname`, ''),
+                                    IFNULL(`glpi_users_users_id_recipient`.`firstname`, ''),
+                                    IFNULL(`glpi_users_users_id_recipient`.`name`, '')
+                                ) ASC");
     }
 
     public function testSearchAllAssets()

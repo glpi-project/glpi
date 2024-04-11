@@ -292,6 +292,22 @@ class Config extends CommonDBTM
             $input['glpinetwork_registration_key'] = trim($input['glpinetwork_registration_key']);
         }
 
+        // Prevent invalid profile to be set as the lock profile.
+        // User updating the config from GLPI's UI should not be able to send
+        // invalid values but API or manual HTTP requests might be invalid.
+        if (isset($input['lock_lockprofile_id'])) {
+            $profile = Profile::getById($input['lock_lockprofile_id']);
+            if (!$profile || $profile->fields['interface'] !== 'central') {
+                // Invalid profile
+                Session::addMessageAfterRedirect(
+                    __s("The specified profile doesn't exist or is not allowed to access the central interface."),
+                    false,
+                    ERROR
+                );
+                unset($input['lock_lockprofile_id']);
+            }
+        }
+
         $tfa_enforced_changed = isset($input['2fa_enforced']) && $input['2fa_enforced'] !== $CFG_GLPI['2fa_enforced'];
         $tfa_grace_days_changed = isset($input['2fa_grace_days']) && $input['2fa_grace_days'] !== $CFG_GLPI['2fa_grace_days'];
         if ($tfa_grace_days_changed || $tfa_enforced_changed) {

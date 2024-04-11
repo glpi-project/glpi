@@ -56,6 +56,8 @@ class User extends CommonDBTM
         'publicbookmarkorder', 'privatebookmarkorder'
     ];
 
+    private $must_process_ruleright = false;
+
    // NAME FIRSTNAME ORDER TYPE
     const REALNAME_BEFORE   = 0;
     const FIRSTNAME_BEFORE  = 1;
@@ -1295,8 +1297,7 @@ class User extends CommonDBTM
         $return = false;
 
         if (
-            isset($this->fields['_ruleright_process'])
-            || isset($this->input['_ruleright_process'])
+            $this->must_process_ruleright === true
         ) {
             $dynamic_profiles = Profile_User::getForUser($this->fields["id"], true);
 
@@ -2146,7 +2147,7 @@ class User extends CommonDBTM
                     'mail_email'  => $this->fields['_emails']
                 ]);
 
-                $this->fields['_ruleright_process'] = true;
+                $this->willProcessRuleRight();
 
                //If rule  action is ignore import
                 if (
@@ -2362,7 +2363,7 @@ class User extends CommonDBTM
                 'login'       => $name,
                 'email'       => $email
             ]);
-            $this->fields['_ruleright_process'] = true;
+            $this->willProcessRuleRight();
         }
         return true;
     }
@@ -2397,7 +2398,7 @@ class User extends CommonDBTM
         if (count($a_field) == 0) {
             return true;
         }
-        $this->fields['_ruleright_process'] = true;
+        $this->willProcessRuleRight();
         foreach ($a_field as $field => $key) {
             $value = $_SERVER[$key] ?? null;
             if (empty($value)) {
@@ -7279,5 +7280,10 @@ JAVASCRIPT;
         }
 
         return $user_pref;
+    }
+
+    public function willProcessRuleRight(): void
+    {
+        $this->must_process_ruleright = true;
     }
 }

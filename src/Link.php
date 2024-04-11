@@ -49,7 +49,7 @@ class Link extends CommonDBTM
     public static $rightname = 'link';
     public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',
-        'USER', 'GROUP', 'REALNAME', 'FIRSTNAME'
+        'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL'
     ];
 
     public static function getTypeName($nb = 0)
@@ -441,13 +441,22 @@ class Link extends CommonDBTM
             'GROUP' => $item->isField('groups_id') ? Dropdown::getDropdownName('glpi_groups', $item->getField('groups_id')) : '',
             'REALNAME' => $item->isField('realname') ? $item->getField('realname') : '',
             'FIRSTNAME' => $item->isField('firstname') ? $item->getField('firstname') : '',
+            'MODEL' => '',
         ];
+
         $item_fields = $item->fields;
         $item::unsetUndisclosedFields($item_fields);
         if (count($item_fields)) {
             foreach ($item_fields as $k => $v) {
                 $vars['item'][$k] = $v;
             }
+        }
+
+        if (($model_class = $item->getModelClass()) !== null) {
+            $vars['MODEL'] = Dropdown::getDropdownName(
+                $model_class::getTable(),
+                $item->getField($model_class::getForeignKeyField())
+            );
         }
 
         $vars['LOCATION'] = $item->isField('locations_id') ?

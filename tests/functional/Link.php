@@ -55,15 +55,16 @@ class Link extends DbTestCase
         $item = $this->createItem(
             \Computer::class,
             [
-                'name'         => 'Test computer',
-                'serial'       => 'ABC0004E6',
-                'otherserial'  => 'X0000015',
-                'uuid'         => 'c938f085-4192-4473-a566-46734bbaf6ad',
-                'entities_id'  => $_SESSION['glpiactive_entity'],
-                'groups_id'    => getItemByTypeName(\Group::class, '_test_group_1', true),
-                'locations_id' => getItemByTypeName(\Location::class, '_location01', true),
-                'networks_id'  => $network->getID(),
-                'users_id'     => getItemByTypeName(\User::class, 'glpi', true),
+                'name'              => 'Test computer',
+                'serial'            => 'ABC0004E6',
+                'otherserial'       => 'X0000015',
+                'uuid'              => 'c938f085-4192-4473-a566-46734bbaf6ad',
+                'entities_id'       => $_SESSION['glpiactive_entity'],
+                'groups_id'         => getItemByTypeName(\Group::class, '_test_group_1', true),
+                'locations_id'      => getItemByTypeName(\Location::class, '_location01', true),
+                'networks_id'       => $network->getID(),
+                'users_id'          => getItemByTypeName(\User::class, 'glpi', true),
+                'computermodels_id' => getItemByTypeName(\ComputerModel::class, '_test_computermodel_1', true),
             ]
         );
 
@@ -157,10 +158,10 @@ class Link extends DbTestCase
         foreach ([true, false] as $safe_url) {
             // Link that is actually a title (it is a normal usage!)
             yield [
-                'link'     => '{{ LOCATION }} > {{ SERIAL }} ({{ USER }})',
+                'link'     => '{{ LOCATION }} > {{ SERIAL }}/{{ MODEL }} ({{ USER }})',
                 'item'     => $item,
                 'safe_url' => $safe_url,
-                'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6 (glpi)'],
+                'expected' => [$safe_url ? '#' : '_location01 > ABC0004E6/_test_computermodel_1 (glpi)'],
             ];
 
             // Link that is actually a long text (it is a normal usage!)
@@ -169,6 +170,7 @@ class Link extends DbTestCase
 id:       {{ ID }}
 name:     {{ NAME }}
 serial:   {{ SERIAL }}/{{ OTHERSERIAL }}
+model:    {{ MODEL }}
 location: {{ LOCATION }} ({{ LOCATIONID }})
 domain:   {{ DOMAIN }} ({{ NETWORK }})
 owner:    {{ USER }}/{{ GROUP }}
@@ -182,6 +184,7 @@ TEXT,
 id:       {$item->getID()}
 name:     Test computer
 serial:   ABC0004E6/X0000015
+model:    _test_computermodel_1
 location: _location01 (1)
 domain:   domain1.tld (LAN)
 owner:    glpi/_test_group_1

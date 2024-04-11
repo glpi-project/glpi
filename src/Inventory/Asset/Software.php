@@ -744,7 +744,7 @@ class Software extends InventoryAsset
             if (!isset($this->softwares[$skey])) {
                 $stmt_columns = $this->cleanInputToPrepare((array)$val, $soft_fields);
 
-                $software->handleCategoryRules($stmt_columns);
+                $software->handleCategoryRules($stmt_columns, true);
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
 

@@ -3948,6 +3948,7 @@ JS;
                skin_url: '{$skin_url}', // Doesn't matter which skin is used. We include the proper skins in the core GLPI styles.
                body_class: '{$body_class}',
                content_css: '{$content_css}',
+               highlight_on_focus: false,
                autoresize_bottom_margin: 0, // Avoid excessive bottom padding
                autoresize_overflow_padding: 0,
 
@@ -3986,6 +3987,10 @@ JS;
                // Misc options
                browser_spellcheck: true,
                cache_suffix: '{$cache_suffix}',
+
+               // Security options
+               // Iframes are disabled by default. We assume that administrator that enable it are aware of the potential security issues.
+               sandbox_iframes: false,
 
                init_instance_callback: (editor) => {
                    const page_root_el = $(document.documentElement);

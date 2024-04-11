@@ -3528,15 +3528,23 @@ final class SQLProvider implements SearchProviderInterface
                                 $addaltemail = ",
                                 IFNULL(`$ticket_user_table`.`alternative_email`, '')";
                             }
-                            $criterion = "GROUP_CONCAT(DISTINCT CONCAT(
-                                IFNULL(`$table$addtable`.`$name1`, ''),
-                                IFNULL(`$table$addtable`.`$name2`, ''),
-                                IFNULL(`$table$addtable`.`name`, '')$addaltemail
-                            ) ORDER BY CONCAT(
-                                IFNULL(`$table$addtable`.`$name1`, ''),
-                                IFNULL(`$table$addtable`.`$name2`, ''),
-                                IFNULL(`$table$addtable`.`name`, '')$addaltemail) ASC
-                            ) $order";
+                            if ($searchopt[$ID]['linkfield'] != 'users_id_lastupdater' && $searchopt[$ID]['linkfield'] != 'users_id_recipient') {
+                                $criterion = "GROUP_CONCAT(DISTINCT CONCAT(
+                                    IFNULL(`$table$addtable`.`$name1`, ''),
+                                    IFNULL(`$table$addtable`.`$name2`, ''),
+                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail
+                                ) ORDER BY CONCAT(
+                                    IFNULL(`$table$addtable`.`$name1`, ''),
+                                    IFNULL(`$table$addtable`.`$name2`, ''),
+                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail) ASC
+                                ) $order";
+                            } else {
+                                $criterion = "CONCAT(
+                                    IFNULL(`$table$addtable`.`$name1`, ''),
+                                    IFNULL(`$table$addtable`.`$name2`, ''),
+                                    IFNULL(`$table$addtable`.`name`, '')$addaltemail
+                                ) $order";
+                            }
                         } else {
                             $criterion = "`" . $table . $addtable . "`.`name` $order";
                         }

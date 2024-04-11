@@ -298,6 +298,17 @@ class Profile extends DbTestCase
         $this->hasSessionMessages(ERROR, [
             "Can't remove update right on this profile as it is the only remaining profile with this right."
         ]);
+
+        // Try to change the interface of the lock profile
+        $readonly = getItemByTypeName('Profile', 'Read-Only');
+        $this->updateItem("Profile", $readonly->getID(), [
+            'interface' => 'helpdesk'
+        ], ['interface']); // Skip interface check as it should not be updated.
+        $readonly->getFromDB($readonly->fields['id']); // Reload data
+        $this->string($readonly->fields['interface'])->isEqualTo('central');
+        $this->hasSessionMessages(ERROR, [
+            "This profile can&#039;t be moved to the simplified interface as it is used for locking items."
+        ]);
     }
 
     /**
