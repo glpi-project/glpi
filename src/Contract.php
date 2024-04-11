@@ -187,6 +187,9 @@ class Contract extends CommonDBTM
                 'joinparams' => [
                     'jointype' => 'itemtype_item'
                 ]
+            ],
+            'condition'          => [
+                'NEWTABLE.entities_id' => getSonsOf('glpi_entities', $_SESSION['glpiactive_entity']),
             ]
         ];
 
@@ -194,7 +197,7 @@ class Contract extends CommonDBTM
             'jointype'   => 'child',
             'beforejoin' => [
                 'table'      => 'glpi_contracts',
-                'joinparams' => $joinparams
+                'joinparams' => $joinparams,
             ]
         ];
 
