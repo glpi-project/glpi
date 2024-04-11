@@ -49,12 +49,11 @@ class OlaLevel_Ticket extends CommonDBTM
         return __('OLA level for Ticket');
     }
 
-
     /**
      * Retrieve an item from the database
      *
-     * @param $ID        ID of the item to get
-     * @param $olatype
+     * @param integer $ID        ID of the item to get
+     * @param SLM::TTR|SLM::TTO $olaType
      *
      * @since 9.1 2 mandatory parameters
      *
@@ -88,19 +87,18 @@ class OlaLevel_Ticket extends CommonDBTM
             ],
             'LIMIT'        => 1
         ]);
-        if (count($iterator) == 1) {
+        if (count($iterator) === 1) {
             $row = $iterator->current();
             return $this->getFromDB($row['id']);
         }
         return false;
     }
 
-
     /**
      * Delete entries for a ticket
      *
-     * @param $tickets_id    Ticket ID
-     * @param $type          Type of OLA
+     * @param integer $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $type Type of OLA
      *
      * @since 9.1 2 parameters mandatory
      *
@@ -139,17 +137,16 @@ class OlaLevel_Ticket extends CommonDBTM
         }
     }
 
-
     /**
      * Give cron information
      *
      * @param $name : task's name
      *
      * @return array of information
+     * @used-by CronTask
      **/
     public static function cronInfo($name)
     {
-
         switch ($name) {
             case 'olaticket':
                 return ['description' => __('Automatic actions of OLA')];
@@ -157,13 +154,13 @@ class OlaLevel_Ticket extends CommonDBTM
         return [];
     }
 
-
     /**
      * Cron for ticket's automatic close
      *
      * @param $task : CronTask object
      *
      * @return integer (0 : nothing done - 1 : done)
+     * @used-by CronTask
      **/
     public static function cronOlaTicket(CronTask $task)
     {
@@ -206,12 +203,11 @@ class OlaLevel_Ticket extends CommonDBTM
         return ($tot > 0 ? 1 : 0);
     }
 
-
     /**
      * Do a specific OLAlevel for a ticket
      *
-     * @param $data          array data of an entry of olalevels_tickets
-     * @param $olaType             Type of ola
+     * @param array $data data of an entry of olalevels_tickets
+     * @param SLM::TTR|SLM::TTO $olaType Type of OLA
      *
      * @since 9.1   2 parameters mandatory
      *
@@ -219,7 +215,6 @@ class OlaLevel_Ticket extends CommonDBTM
      **/
     public static function doLevelForTicket(array $data, $olaType)
     {
-
         $ticket         = new Ticket();
         $olalevelticket = new self();
 
@@ -256,7 +251,7 @@ class OlaLevel_Ticket extends CommonDBTM
             $olalevel = new OlaLevel();
             $ola      = new OLA();
            // Check if ola datas are OK
-            list($dateField, $olaField) = OLA::getFieldNames($olaType);
+            [, $olaField] = OLA::getFieldNames($olaType);
             if (($ticket->fields[$olaField] > 0)) {
                 if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
                    // Drop line when status is closed
@@ -315,12 +310,11 @@ class OlaLevel_Ticket extends CommonDBTM
         }
     }
 
-
     /**
      * Replay all task needed for a specific ticket
      *
-     * @param $tickets_id Ticket ID
-     * @param $olaType Type of ola
+     * @param integer $tickets_id Ticket ID
+     * @param SLM::TTR|SLM::TTO $olaType Type of ola
      *
      * @since 9.1    2 parameters mandatory
      *
@@ -354,12 +348,11 @@ class OlaLevel_Ticket extends CommonDBTM
             ]
         ];
 
-        $number = 0;
         $last_escalation = -1;
         do {
             $iterator = $DB->request($criteria);
             $number = count($iterator);
-            if ($number == 1) {
+            if ($number === 1) {
                 $data = $iterator->current();
                 if ($data['id'] === $last_escalation) {
                     // Possible infinite loop. Trying to apply exact same SLA assignment.
@@ -368,6 +361,6 @@ class OlaLevel_Ticket extends CommonDBTM
                 self::doLevelForTicket($data, $olaType);
                 $last_escalation = $data['id'];
             }
-        } while ($number == 1);
+        } while ($number === 1);
     }
 }

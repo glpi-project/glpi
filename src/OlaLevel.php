@@ -59,23 +59,20 @@ class OlaLevel extends LevelAgreementLevel
 
     public function cleanDBonPurge()
     {
-
         parent::cleanDBonPurge();
 
-       // OlaLevel_Ticket does not extends CommonDBConnexity
+        // OlaLevel_Ticket does not extends CommonDBConnexity
         $olt = new OlaLevel_Ticket();
         $olt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
-
 
     public function showForParent(OLA $ola)
     {
         return $this->showForOLA($ola);
     }
 
-
     /**
-     * @param $ola OLA object
+     * @param OLA $ola OLA object
      *
      * @since 9.1 (before showForOLA)
      **/
@@ -210,10 +207,8 @@ class OlaLevel extends LevelAgreementLevel
         echo "</div>";
     }
 
-
     public function getActions()
     {
-
         $actions = parent::getActions();
 
         unset($actions['olas_id']);
@@ -224,18 +219,12 @@ class OlaLevel extends LevelAgreementLevel
         return $actions;
     }
 
-
     /**
-     * Show the rule
-     *
-     * @param $ID              ID of the rule
-     * @param $options   array of possible options
-     *
-     * @return void
-     **/
+     * Show the OLA rule form
+     * {@inheritdoc}
+     */
     public function showForm($ID, array $options = [])
     {
-
         $this->initForm($ID, $options);
         $this->showFormHeader($options);
 
@@ -280,7 +269,6 @@ class OlaLevel extends LevelAgreementLevel
         $this->showFormButtons($options);
     }
 
-
     /**
      * Get first level for a OLA
      *
@@ -312,7 +300,6 @@ class OlaLevel extends LevelAgreementLevel
         }
         return 0;
     }
-
 
     /**
      * Get next level for a OLA

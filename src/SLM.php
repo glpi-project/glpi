@@ -34,12 +34,8 @@
  */
 
 /**
- * @since 9.2
- */
-
-
-/**
  * SLM Class
+ * @since 9.2
  **/
 class SLM extends CommonDBTM
 {
@@ -50,10 +46,10 @@ class SLM extends CommonDBTM
 
     public static $rightname                   = 'slm';
 
-    const TTR = 0; // Time to resolve
-    const TTO = 1; // Time to own
+    public const TTR = 0; // Time to resolve
+    public const TTO = 1; // Time to own
 
-    const RIGHT_ASSIGN = 256;
+    public const RIGHT_ASSIGN = 256;
 
     public static function getTypeName($nb = 0)
     {
@@ -62,7 +58,6 @@ class SLM extends CommonDBTM
 
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
@@ -73,14 +68,12 @@ class SLM extends CommonDBTM
         return $ong;
     }
 
-
     public function prepareInputForAdd($input)
     {
         $input = $this->handleCalendarStrategy($input);
 
         return parent::prepareInputForAdd($input);
     }
-
 
     public function prepareInputForUpdate($input)
     {
@@ -100,7 +93,7 @@ class SLM extends CommonDBTM
     private function handleCalendarStrategy(array $input): array
     {
         if (array_key_exists('calendars_id', $input)) {
-            if ($input['calendars_id'] == -1) {
+            if ((int) $input['calendars_id'] === -1) {
                 $input['calendars_id'] = 0;
                 $input['use_ticket_calendar'] = 1;
             } else {
@@ -116,7 +109,7 @@ class SLM extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (in_array('use_ticket_calendar', $this->updates) || in_array('calendars_id', $this->updates)) {
+        if (in_array('use_ticket_calendar', $this->updates, true) || in_array('calendars_id', $this->updates, true)) {
             // Propagate calendar settings to children
             foreach ([OLA::class, SLA::class] as $child_class) {
                 $child_iterator = $DB->request(
@@ -124,7 +117,7 @@ class SLM extends CommonDBTM
                         'SELECT' => 'id',
                         'FROM'   => $child_class::getTable(),
                         'WHERE'  => [
-                            $this->getForeignKeyField() => $this->getID()
+                            static::getForeignKeyField() => $this->getID()
                         ]
                     ]
                 );
@@ -146,7 +139,6 @@ class SLM extends CommonDBTM
 
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 SLA::class,
@@ -156,18 +148,11 @@ class SLM extends CommonDBTM
     }
 
     /**
-     * Print the slm form
-     *
-     * @param integer $ID ID of the item
-     * @param array   $options of possible options:
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return boolean item found
+     * Print the SLM form
+     * {@inheritdoc}
      **/
     public function showForm($ID, array $options = [])
     {
-
         $rowspan = 2;
 
         $this->initForm($ID, $options);
@@ -196,7 +181,6 @@ class SLM extends CommonDBTM
         return true;
     }
 
-
     public function rawSearchOptions()
     {
         $tab = [];
@@ -208,7 +192,7 @@ class SLM extends CommonDBTM
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
@@ -217,7 +201,7 @@ class SLM extends CommonDBTM
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
@@ -234,7 +218,7 @@ class SLM extends CommonDBTM
 
         $tab[] = [
             'id'                 => '16',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -243,10 +227,8 @@ class SLM extends CommonDBTM
         return $tab;
     }
 
-
     public static function getMenuContent()
     {
-
         $menu = [];
         if (static::canView()) {
             $menu['title']           = self::getTypeName(2);
@@ -278,7 +260,6 @@ class SLM extends CommonDBTM
         }
         return false;
     }
-
 
     public static function getIcon()
     {
