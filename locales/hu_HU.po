@@ -6116,7 +6116,7 @@ msgstr "Bejelentés kategóriát reprezentáló kód már használatban van"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
-msgstr "Menü összezársa"
+msgstr "Menü összezárása"
 
 #: templates/install/step6.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:223
