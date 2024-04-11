@@ -584,7 +584,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * @param $tickets_id
      * @param $type
-     * @return false|Generator
+     * @return false|iterable
      */
     public function getDataForTicket($tickets_id, $type)
     {
