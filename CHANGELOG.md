@@ -146,6 +146,7 @@ The present file will list all changes made to the project; according to the
 - Defining "users_id_validate" field without defining "itemtype_target"/"items_id_target" in "CommonITILValidation".
 - Usage of `name` and `users_id_validate` options in `CommonITILValidation::dropdownValidator()`.
 - Usage of `verbatim_value` Twig filter.
+- `Auth::getErr()`
 - `AuthLDAP::dropdownUserDeletedActions()`
 - `AuthLDAP::getOptions()`
 - `CommonITILObject::isValidator()`
