@@ -71,18 +71,28 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     #[Override]
     public static function show(string $name, array $values, array $params = []): string
     {
+        $itemtype_name = fn($itemtype) => $itemtype::getTypeName(1);
         $params['width'] = '100%';
         $params['templateSelection'] = <<<JS
             function (data) {
                 let icon = '';
                 let text = data.text;
                 let title = data.title;
-                if (data.id != undefined && data.id.startsWith('users_id-') || data.text === 'User') {
-                    icon = '<i class="ti fa-fw ti-user mx-1" title="User"></i>';
-                } else if (data.id != undefined && data.id.startsWith('groups_id-') || data.text === 'Group') {
-                    icon = '<i class="ti fa-fw ti-users mx-1" title="Group"></i>';
-                } else if (data.id != undefined && data.id.startsWith('suppliers_id-') || data.text === 'Supplier') {
-                    icon = '<i class="ti fa-fw ti-package mx-1" title="Supplier"></i>';
+                if (
+                    data.id != undefined && data.id.startsWith('users_id-')
+                    || data.text === '{$itemtype_name('User')}'
+                ) {
+                    icon = '<i class="ti fa-fw ti-user mx-1" title="{$itemtype_name('User')}"></i>';
+                } else if (
+                    data.id != undefined && data.id.startsWith('groups_id-')
+                    || data.text === '{$itemtype_name('Group')}'
+                ) {
+                    icon = '<i class="ti fa-fw ti-users mx-1" title="{$itemtype_name('Group')}"></i>';
+                } else if (
+                    data.id != undefined && data.id.startsWith('suppliers_id-')
+                    || data.text === '{$itemtype_name('Supplier')}'
+                ) {
+                    icon = '<i class="ti fa-fw ti-package mx-1" title="{$itemtype_name('Supplier')}"></i>';
                 }
 
                 return $('<span class="actor_entry">' + icon + text + '</span>');

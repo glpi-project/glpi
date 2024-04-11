@@ -53,7 +53,7 @@ if (Session::getCurrentInterface() !== 'central') {
     ]);
 
     // Check if the user can view at least one question
-    if (array_reduce($questions, fn($acc, $question) => $acc || $question->canViewItem(), false)) {
+    if (array_reduce($questions, fn($acc, $question) => $acc || $question->canViewItem(), false) === false) {
         http_response_code(403);
         exit();
     }

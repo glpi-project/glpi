@@ -4924,8 +4924,8 @@ JAVASCRIPT
             'display_emptychoice' => false,
             'specific_tags'       => [],
             'parent_id_field'     => null,
-            'templateResult'      => null,
-            'templateSelection'   => null,
+            'templateResult'      => 'templateResult',
+            'templateSelection'   => 'templateSelection',
         ];
         $params = array_merge($default_options, $params);
 
@@ -4995,7 +4995,6 @@ JAVASCRIPT
             $placeholder = json_encode($placeholder);
         }
 
-        $undefined_if_null = fn($value) => $value ?? 'undefined';
         $js = <<<JS
             select2_configs['{$field_id}'] = {
                 field_id: '{$field_id}',
@@ -5008,8 +5007,8 @@ JAVASCRIPT
                 url: '{$url}',
                 parent_id_field: '{$parent_id_field}',
                 on_change: '{$on_change}',
-                templateResult: {$undefined_if_null($templateResult)},
-                templateSelection: {$undefined_if_null($templateSelection)},
+                templateResult: {$templateResult},
+                templateSelection: {$templateSelection},
                 params: {
                     {$js_params}
                 }
