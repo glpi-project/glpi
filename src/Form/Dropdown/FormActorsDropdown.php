@@ -78,21 +78,12 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                 let icon = '';
                 let text = data.text;
                 let title = data.title;
-                if (
-                    data.id != undefined && data.id.startsWith('users_id-')
-                    || data.text === '{$itemtype_name('User')}'
-                ) {
-                    icon = '<i class="ti fa-fw ti-user mx-1" title="{$itemtype_name('User')}"></i>';
-                } else if (
-                    data.id != undefined && data.id.startsWith('groups_id-')
-                    || data.text === '{$itemtype_name('Group')}'
-                ) {
-                    icon = '<i class="ti fa-fw ti-users mx-1" title="{$itemtype_name('Group')}"></i>';
-                } else if (
-                    data.id != undefined && data.id.startsWith('suppliers_id-')
-                    || data.text === '{$itemtype_name('Supplier')}'
-                ) {
-                    icon = '<i class="ti fa-fw ti-package mx-1" title="{$itemtype_name('Supplier')}"></i>';
+                if (data.itemtype === 'User') {
+                    icon = '<i class="ti fa-fw ti-user mx-1" title="' + title + '"></i>';
+                } else if (data.itemtype === 'Group') {
+                    icon = '<i class="ti fa-fw ti-users mx-1" title="' + title + '"></i>';
+                } else if (data.itemtype === 'Supplier') {
+                    icon = '<i class="ti fa-fw ti-package mx-1" title="' + title + '"></i>';
                 }
 
                 return $('<span class="actor_entry">' + icon + text + '</span>');
@@ -148,14 +139,17 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                 $title = $labels['title'] ?? $text;
                 $new_group[] = [
                     'id' => $id,
+                    'itemtype' => $itemtype,
                     'text' => $text,
                     'title' => $title,
-                    "selection_text" => "$itemtype - $text",
+                    'selection_text' => "$itemtype - $text",
                 ];
             }
             $results[] = [
-                "text" => $itemtype::getTypeName(1),
-                "children" => $new_group,
+                'itemtype' => $itemtype,
+                'text' => $itemtype::getTypeName(1),
+                'title' => $itemtype::getTypeName(1),
+                'children' => $new_group,
             ];
         }
 
