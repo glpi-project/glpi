@@ -90,15 +90,16 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
     // Pattern for the profile link text to match exactly except ignoring surrounding whitespace
     const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
     // Check if we are already on the desired profile
-    if (document.querySelector('a.user-menu-dropdown-toggle') && document.querySelector('a.user-menu-dropdown-toggle').innerText.contains(profile)) {
-        return;
-    }
-    // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
-    cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
-        cy.blockGLPIDashboards();
-        cy.visit(href);
-        if (verify) {
-            cy.get('a.user-menu-dropdown-toggle').contains(profile_pattern);
+    cy.get('a.user-menu-dropdown-toggle').then(() => {
+        if (!Cypress.$('a.user-menu-dropdown-toggle').text().includes(profile)) {
+            // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
+            cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
+                cy.blockGLPIDashboards();
+                cy.visit(href);
+                if (verify) {
+                    cy.get('a.user-menu-dropdown-toggle').contains(profile_pattern);
+                }
+            });
         }
     });
 });
