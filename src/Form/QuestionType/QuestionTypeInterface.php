@@ -45,6 +45,15 @@ interface QuestionTypeInterface
     public function __construct();
 
     /**
+     * Format the default value for the database.
+     * This method is called before saving the question.
+     *
+     * @param mixed $value The default value to format.
+     * @return string
+     */
+    public static function formatDefaultValueForDB(mixed $value): ?string;
+
+    /**
      * Validate the input for extra data of the question.
      * This method is called before saving the question.
      *
@@ -52,7 +61,7 @@ interface QuestionTypeInterface
      *
      * @return bool
      */
-    public function validateExtraDataInput(?array $input): bool;
+    public static function validateExtraDataInput(array $input): bool;
 
     /**
      * Render the administration template for the given question.

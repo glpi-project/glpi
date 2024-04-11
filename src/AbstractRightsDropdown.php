@@ -75,7 +75,7 @@ abstract class AbstractRightsDropdown
      *
      * @return string
      */
-    public static function show(string $name, array $values): string
+    public static function show(string $name, array $values, array $params = []): string
     {
         // Flatten values
         $dropdown_values = [];
@@ -92,12 +92,18 @@ abstract class AbstractRightsDropdown
         $url = static::getAjaxUrl();
 
         // Build params
-        $params = [
+        $params = array_merge([
             'name'        => $name . "[]",
-            'values'      => $dropdown_values,
-            'valuesnames' => self::getValueNames($dropdown_values),
             'multiple'    => true,
-        ];
+        ], $params);
+
+        if ($params['multiple']) {
+            $params['values'] = $dropdown_values;
+            $params['valuesnames'] = self::getValueNames($dropdown_values);
+        } elseif (count($dropdown_values) > 0) {
+            $params['value'] = $dropdown_values[0];
+            $params['valuename'] = self::getValueNames($dropdown_values)[0];
+        }
         return Html::jsAjaxDropdown($params['name'], $field_id, $url, $params);
     }
 

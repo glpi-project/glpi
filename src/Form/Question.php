@@ -136,15 +136,41 @@ final class Question extends CommonDBChild
     private function prepareInput(&$input)
     {
         $question_type = $this->getQuestionType();
+
+        // The question type can be null when the question is created
+        // We need to instantiate the question type to format and validate attributes
+        if (
+            $question_type === null
+            && isset($input['type'])
+            && class_exists($input['type'])
+        ) {
+            $question_type = new $input['type']();
+        }
+
         if ($question_type) {
-            $is_extra_data_valid = $question_type->validateExtraDataInput($input['extra_data'] ?? null);
+            if (isset($input['default_value'])) {
+                $input['default_value'] = $question_type::formatDefaultValueForDB($input['default_value']);
+            }
+
+            $extra_data = $input['extra_data'] ?? [];
+            if (is_string($extra_data)) {
+                if (empty($extra_data)) {
+                    $extra_data = [];
+                } else {
+                    // Decode extra data as JSON
+                    $extra_data = json_decode($extra_data, true);
+                }
+            }
+
+            $is_extra_data_valid = $question_type::validateExtraDataInput($extra_data);
+
             if (!$is_extra_data_valid) {
                 throw new \InvalidArgumentException("Invalid extra data for question");
             }
 
             // Save extra data as JSON
-            if (isset($input['extra_data'])) {
-                $input['extra_data'] = json_encode($input['extra_data']);
+            if (!empty($extra_data)) {
+                $input['extra_data'] = json_encode($extra_data);
             }
         }
     }

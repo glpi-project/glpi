@@ -4747,6 +4747,7 @@ JAVASCRIPT;
             'hide_if_no_elements' => false,
             'readonly'            => false,
             'multiple'            => false,
+            'init'                => true
         ];
 
         if (is_array($options) && count($options)) {
@@ -4831,6 +4832,7 @@ JAVASCRIPT;
 
         $field_id = Html::cleanId("dropdown_" . $p['name'] . $p['rand']);
         $param    = [
+            'init'                => $p['init'],
             'multiple'            => $p['multiple'],
             'width'               => $p['width'],
             'all'                 => $p['all'],
