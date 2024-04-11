@@ -197,7 +197,7 @@ class Contract extends CommonDBTM
             'jointype'   => 'child',
             'beforejoin' => [
                 'table'      => 'glpi_contracts',
-                'joinparams' => $joinparams,
+                'joinparams' => $joinparams
             ]
         ];
 
