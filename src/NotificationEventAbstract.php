@@ -145,12 +145,12 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     echo "<tr class='tab_bg_2'><td>" . $label . "</td>";
                                     echo "<td>" . $notificationtarget->getNameID() . "</td>";
                                     echo "<td>" . sprintf(
-                                        __('%1$s (%2$s)'),
+                                        __s('%1$s (%2$s)'),
                                         $template->getName(),
-                                        $users_infos['language']
+                                        htmlspecialchars($users_infos['language'])
                                     ) . "</td>";
-                                    echo "<td>" . $options['mode'] . "</td>";
-                                    echo "<td>" . $key . "</td>";
+                                    echo "<td>" . htmlspecialchars($options['mode']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($key) . "</td>";
                                     echo "</tr>";
                                 }
                                 $processed[$users_infos['language']][$key]

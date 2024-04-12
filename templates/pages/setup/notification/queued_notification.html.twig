@@ -1,0 +1,100 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% set field_options = {
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10',
+    } %}
+    {{ fields.htmlField('', parent != null ? get_class(parent) : constant('NOT_AVAILABLE'), _n('Type', 'Types', 1), field_options) }}
+    {% if parent is instanceof('CommonDBTM') %}
+        {{ fields.htmlField('', parent != null ? parent.getLink() : constant('NOT_AVAILABLE'), _n('Item', 'Items', 1), field_options) }}
+    {% else %}
+        {{ fields.nullField() }}
+    {% endif %}
+
+    {{ fields.htmlField('', get_item_name('NotificationTemplate', item.fields['notificationtemplates_id']), 'NotificationTemplate'|itemtype_name, field_options) }}
+    {{ fields.nullField() }}
+
+    {{ fields.htmlField('', item.fields['create_time'], __('Creation date'), field_options) }}
+    {{ fields.htmlField('', item.fields['send_time'], __('Expected send date'), field_options) }}
+    {{ fields.htmlField('', item.fields['sent_time'], __('Send date'), field_options) }}
+    {{ fields.htmlField('', item.fields['sent_try'], __('Number of tries of sent'), field_options) }}
+
+    {{ fields.smallTitle(_n('Email', 'Emails', 1)) }}
+    {{ fields.htmlField('', item.fields['sender'], __('Sender email'), field_options) }}
+    {{ fields.htmlField('', item.fields['sendername'], __('Sender name'), field_options) }}
+    {{ fields.htmlField('', item.fields['recipient'], __('Recipient email'), field_options) }}
+    {{ fields.htmlField('', item.fields['recipientname'], __('Recipient name'), field_options) }}
+    {{ fields.htmlField('', item.fields['replyto'], __('Reply-To email'), field_options) }}
+    {{ fields.htmlField('', item.fields['replytoname'], __('Reply-To name'), field_options) }}
+    {{ fields.htmlField('', item.fields['messageid'], __('Message ID'), field_options) }}
+    {{ fields.htmlField('', additional_headers, __('Additional headers'), field_options) }}
+    {{ fields.htmlField('', item.fields['name'], __('Subject'), field_options) }}
+
+    {{ fields.smallTitle(__('Content')) }}
+    {% set has_html_content = item.fields['body_html'] is not empty %}
+    <div class="row">
+        <div class="col-xxl-12">
+            <ul class="nav nav-tabs" id="emailBodyTabs" role="tablist">
+                {% if has_html_content %}
+                    <li class="nav-item">
+                        <a class="nav-link active" id="html-tab" data-bs-toggle="tab" href="#html" role="tab" aria-controls="html" aria-selected="false">{{ __('HTML') }}</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {{ has_html_content ? '' : 'active' }}" id="text-tab" data-bs-toggle="tab" href="#text" role="tab" aria-controls="text" aria-selected="true">{{ __('Text') }}</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="emailBodyTabsContent">
+                {% if has_html_content %}
+                <div class="tab-pane fade show active" id="html" role="tabpanel" aria-labelledby="html-tab">
+                    {{ fields.htmlField('', item.cleanHtml(item.fields['body_html'])|safe_html, null, field_options + {
+                        no_label: true,
+                        full_width: true,
+                    }) }}
+                </div>
+                {% endif %}
+                <div class="tab-pane fade {{ has_html_content ? '' : 'show active' }}" id="text" role="tabpanel" aria-labelledby="text-tab">
+                    {{ fields.htmlField('', item.fields['body_text']|nl2br, null, field_options + {
+                        no_label: true,
+                        full_width: true,
+                    }) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

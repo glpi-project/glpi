@@ -130,7 +130,7 @@ abstract class NotificationSetting extends CommonDBTM
 
         $CFG_GLPI['use_notifications'] = 0;
         foreach (array_keys($CFG_GLPI) as $key) {
-            if (substr($key, 0, strlen('notifications_')) === 'notifications_') {
+            if (str_starts_with($key, 'notifications_')) {
                 $CFG_GLPI[$key] = 0;
             }
         }

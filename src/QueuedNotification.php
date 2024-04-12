@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -671,107 +672,20 @@ class QueuedNotification extends CommonDBTM
         if (!Session::haveRight("queuednotification", READ)) {
             return false;
         }
-
         $this->check($ID, READ);
         $options['canedit'] = false;
 
-        $this->showFormHeader($options);
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Type', 'Types', 1) . "</td>";
-
-        echo "<td>";
-        if (!($item = getItemForItemtype($this->fields['itemtype']))) {
-            echo NOT_AVAILABLE;
-            echo "</td>";
-            echo "<td>" . _n('Item', 'Items', 1) . "</td>";
-            echo "<td>";
-            echo NOT_AVAILABLE;
-        } else if ($item instanceof CommonDBTM) {
-            echo $item->getType();
+        $item = getItemForItemtype($this->fields['itemtype']);
+        if ($item instanceof CommonDBTM) {
             $item->getFromDB($this->fields['items_id']);
-            echo "</td>";
-            echo "<td>" . _n('Item', 'Items', 1) . "</td>";
-            echo "<td>";
-            echo $item->getLink();
-        } else {
-            echo get_class($item);
-            echo "</td><td></td>";
         }
-        echo "</tr>";
 
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . _n('Notification template', 'Notification templates', 1) . "</td>";
-        echo "<td>";
-        echo Dropdown::getDropdownName(
-            'glpi_notificationtemplates',
-            $this->fields['notificationtemplates_id']
-        );
-        echo "</td>";
-        echo "<td>&nbsp;</td>";
-        echo "<td>&nbsp;</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Creation date') . "</td>";
-        echo "<td>";
-        echo Html::convDateTime($this->fields['create_time']);
-        echo "</td><td>" . __('Expected send date') . "</td>";
-        echo "<td>" . Html::convDateTime($this->fields['send_time']) . "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Send date') . "</td>";
-        echo "<td>" . Html::convDateTime($this->fields['sent_time']) . "</td>";
-        echo "<td>" . __('Number of tries of sent') . "</td>";
-        echo "<td>" . $this->fields['sent_try'] . "</td>";
-        echo "</tr>";
-
-        echo "<tr><th colspan='4'>" . _n('Email', 'Emails', 1) . "</th></tr>";
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Sender email') . "</td>";
-        echo "<td>" . $this->fields['sender'] . "</td>";
-        echo "<td>" . __('Sender name') . "</td>";
-        echo "<td>" . $this->fields['sendername'] . "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Recipient email') . "</td>";
-        echo "<td>" . $this->fields['recipient'] . "</td>";
-        echo "<td>" . __('Recipient name') . "</td>";
-        echo "<td>" . $this->fields['recipientname'] . "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Reply-To email') . "</td>";
-        echo "<td>" . $this->fields['replyto'] . "</td>";
-        echo "<td>" . __('Reply-To name') . "</td>";
-        echo "<td>" . $this->fields['replytoname'] . "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Message ID') . "</td>";
-        echo "<td>" . $this->fields['messageid'] . "</td>";
-        echo "<td>" . __('Additional headers') . "</td>";
-        echo "<td>" . self::getSpecificValueToDisplay('headers', $this->fields) . "</td>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Subject') . "</td>";
-        echo "<td colspan=3>" . $this->fields['name'] . "</td>";
-        echo "</tr>";
-
-        echo "<tr><th colspan='2'>" . __('Email HTML body') . "</th>";
-        echo "<th colspan='2'>" . __('Email text body') . "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1 top' >";
-        echo "<td colspan='2' class='queuemail_preview'>";
-        echo self::cleanHtml($this->fields['body_html'] ?? '');
-        echo "</td>";
-        echo "<td colspan='2'>" . nl2br($this->fields['body_text'], false) . "</td>";
-        echo "</tr>";
-
-        $this->showFormButtons($options);
+        TemplateRenderer::getInstance()->display('pages/setup/notification/queued_notification.html.twig', [
+            'item' => $this,
+            'params' => $options,
+            'parent' => $item,
+            'additional_headers' => self::getSpecificValueToDisplay('headers', $this->fields),
+        ]);
 
         return true;
     }

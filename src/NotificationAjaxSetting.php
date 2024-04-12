@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  This class manages the ajax notifications settings
  */
@@ -58,79 +60,27 @@ class NotificationAjaxSetting extends NotificationSetting
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        echo "<form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' method='post'>";
-        echo "<div>";
-        echo "<input type='hidden' name='id' value='1'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr class='tab_bg_1'>" .
-           "<th colspan='4'>" . _n('Browser notification', 'Browser notifications', Session::getPluralNumber()) .
-           "</th></tr>";
-
         if ($CFG_GLPI['notifications_ajax']) {
-            $sounds = [
-                'sound_a' => __('Sound') . ' A',
-                'sound_b' => __('Sound') . ' B',
-                'sound_c' => __('Sound') . ' C',
-                'sound_d' => __('Sound') . ' D',
-            ];
-
-            echo "<tr class='tab_bg_2'>";
-            echo "<td> " . __('Default notification sound') . "</td><td>";
-            $rand_sound = mt_rand();
-            Dropdown::showFromArray("notifications_ajax_sound", $sounds, [
-                'value'               => $CFG_GLPI["notifications_ajax_sound"],
-                'display_emptychoice' => true,
-                'emptylabel'          => __('Disabled'),
-                'rand'                => $rand_sound,
-            ]);
-            echo "</td><td colspan='2'>&nbsp;</td></tr>";
-
-            echo "<tr class='tab_bg_2'><td>" . __('Time to check for new notifications (in seconds)') .
-              "</td>";
-            echo "<td>";
-            Dropdown::showNumber(
-                'notifications_ajax_check_interval',
-                ['value' => $CFG_GLPI["notifications_ajax_check_interval"],
-                    'min'   => 5,
-                    'max'   => 120,
-                    'step'  => 5
-                ]
-            );
-            echo "</td>";
-            echo "<td>" . __('URL of the icon') . "</td>";
-            echo "<td><input type='text' name='notifications_ajax_icon_url' value='" .
-                    $CFG_GLPI["notifications_ajax_icon_url"] . "' " .
-                    "placeholder='{$CFG_GLPI['root_doc']}/pics/glpi.png'/>";
-            echo "</td></tr>";
-
             $crontask = new CronTask();
             $crontask->getFromDBbyName('QueuedNotification', 'queuednotificationcleanstaleajax');
-            $tooltip = sprintf(
-                __('Notifications older than the selected value will not be displayed. Expired notifications will be deleted by the %s crontask.'),
-                $crontask->getLink()
-            );
-            echo "<tr class='tab_bg_2'><td>" . __('Validity period of notifications (in days)') .
-              "&nbsp; " . Html::showToolTip($tooltip, ['display' => false]) .
-              "</td>";
-            echo "<td>";
-            Dropdown::showNumber(
-                'notifications_ajax_expiration_delay',
-                [
-                    'toadd' => [0 => __('Unlimited')],
-                    'value' => $CFG_GLPI["notifications_ajax_expiration_delay"],
+
+            TemplateRenderer::getInstance()->display('pages/setup/notification/ajax_setting.html.twig', [
+                'stale_crontask_link' => $crontask->getLink(),
+                'item' => $this,
+                'params' => [
+                    'candel' => false,
+                    'addbuttons' => ['test_ajax_send' => __('Send a test browser notification to you')]
                 ]
-            );
-            echo "</td></tr>";
+            ]);
         } else {
-            echo "<tr><td colspan='4'>" . __('Notifications are disabled.') .
-              "<a href='{$CFG_GLPI['root_doc']}/front/setup.notification.php'>" .
-                __('See configuration') .  "</a></td></tr>";
+            $twig_params = ['message' => __('Notifications are disabled.')];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="alert alert-warning">
+                    <a href="{{ path('front/setup.notification.php') }}">{{ message|raw }}</a>
+                </div>
+TWIG, $twig_params);
         }
-        $options['candel']     = false;
-        if ($CFG_GLPI['notifications_ajax']) {
-            $options['addbuttons'] = ['test_ajax_send' => __('Send a test browser notification to you')];
-        }
-        $this->showFormButtons($options);
     }
 
     public static function getIcon()
