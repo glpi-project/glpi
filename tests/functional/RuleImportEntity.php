@@ -409,9 +409,12 @@ class RuleImportEntity extends DbTestCase
         $this->integer($computer->fields['entities_id'])->isIdenticalTo($entities_id_a);
 
         //get connected items
-        $iterator = $DB->request(Asset_PeripheralAsset::getTable(), [
-            'itemtype_asset' => 'Computer',
-            'items_id_asset' => $computer->fields['id']
+        $iterator = $DB->request([
+            'FROM' => Asset_PeripheralAsset::getTable(),
+            'WHERE' =>[
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->fields['id']
+            ]
         ]);
         $this->integer(count($iterator))->isIdenticalTo(2); //1 printer, 1 monitor
         foreach ($iterator as $item) {
