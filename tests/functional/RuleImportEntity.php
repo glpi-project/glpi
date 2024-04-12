@@ -411,7 +411,7 @@ class RuleImportEntity extends DbTestCase
         //get connected items
         $iterator = $DB->request([
             'FROM' => Asset_PeripheralAsset::getTable(),
-            'WHERE' =>[
+            'WHERE' => [
                 'itemtype_asset' => 'Computer',
                 'items_id_asset' => $computer->fields['id']
             ]
