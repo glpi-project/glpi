@@ -34,6 +34,7 @@
 /* global bootstrap */
 /* global L */
 /* global glpi_html_dialog */
+/* global fuzzy */
 
 var timeoutglobalvar;
 
@@ -1889,7 +1890,7 @@ function setupAdaptDropdown(config) {
                 ? getTextWithoutDiacriticalMarks(data.text)
                 : '';
             var select2_fuzzy_opts = {
-                pre: '<span class=\"select2-rendered__match\">',
+                pre: '<span class="select2-rendered__match">',
                 post: '</span>',
             };
 
@@ -1958,9 +1959,9 @@ function setupAdaptDropdown(config) {
     })
         .bind('setValue', function (e, value) {
             $('#$id').val(value).trigger('change');
-        })
+        });
     $('label[for=' + field_id + ']').on('click', function () { $('#' + field_id).select2('open'); });
-    $('#' + field_id).on('select2:open', function (e) {
+    $('#' + field_id).on('select2:open', function () {
         const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
         if (search_input) {
             search_input.focus();
