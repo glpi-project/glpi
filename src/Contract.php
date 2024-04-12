@@ -189,7 +189,7 @@ class Contract extends CommonDBTM
                 ]
             ],
             'condition'          => [
-                'NEWTABLE.entities_id' => $_SESSION['glpiactiveentities'],
+                'NEWTABLE.entities_id' => $_SESSION['glpiactiveentities'] ?? '0',
             ]
         ];
 
