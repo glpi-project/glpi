@@ -1885,7 +1885,7 @@ class AuthLDAP extends DbTestCase
     {
         global $DB;
 
-        $iterator = $DB->request(\SsoVariable::getTable());
+        $iterator = $DB->request(['FROM' => \SsoVariable::getTable()]);
         $sso_vars = [];
         foreach ($iterator as $current) {
             $sso_vars[] = [$current['id'], $current['name']];
