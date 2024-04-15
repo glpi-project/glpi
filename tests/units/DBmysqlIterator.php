@@ -36,6 +36,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\DBAL\QueryExpression;
 use Psr\Log\LogLevel;
 
 // Generic test classe, to be extended for CommonDBTM Object
@@ -1540,5 +1541,164 @@ class DBmysqlIterator extends DbTestCase
                 'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
             ])
         )->isEqualTo("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)");
+    }
+
+    protected function requestArgsProvider(): iterable
+    {
+        // Table name as first param, default value for criteria argument
+        yield [
+            'params'   => ['glpi_computers', ''],
+            'expected' => [
+                'criteria' => [
+                    'FROM' => 'glpi_computers',
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers`',
+        ];
+
+        // Table name as first param, criteria as a string
+        yield [
+            'params'   => ['glpi_computers', 'is_deleted = 0'],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => 'glpi_computers',
+                    'WHERE' => [new QueryExpression('is_deleted = 0')]
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers` WHERE is_deleted = 0',
+        ];
+
+        // Table name as first param, criteria as an array
+        yield [
+            'params'   => ['glpi_computers', ['WHERE' => ['is_deleted' => 0], 'ORDER' => 'id DESC']],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => 'glpi_computers',
+                    'WHERE' => ['is_deleted' => 0],
+                    'ORDER' => 'id DESC'
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
+        ];
+
+        // Table name as first param, criteria as an array but not encapsulated inside a `WHERE` key
+        yield [
+            'params'   => ['glpi_computers', ['is_deleted' => 1]],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => 'glpi_computers',
+                    'is_deleted' => 1,
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'1\'',
+        ];
+    }
+
+    /**
+     * @dataProvider requestArgsProvider
+     */
+    public function testConvertOldRequestArgsToCriteria(array $params, array $expected, string $sql): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+
+        $result = null;
+        $this->when(
+            function () use ($iterator, $params, &$result) {
+                $result = $this->callPrivateMethod($iterator, 'convertOldRequestArgsToCriteria', $params, 'test');
+            }
+        )
+         ->error
+         ->withMessage('The `test()` method signature changed. Its previous signature is deprecated.')
+         ->withType(E_USER_DEPRECATED)
+         ->exists();
+
+        $this->array($result)->isEqualTo($expected);
+    }
+
+    /**
+     * @dataProvider requestArgsProvider
+     */
+    public function testExecuteWithOldSignature(array $params, array $expected, string $sql): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $mysqli_result = new \mock\mysqli_result();
+        $this->calling($mysqli_result)->fetch_assoc = [];
+        $this->calling($mysqli_result)->data_seek   = true;
+        $this->calling($mysqli_result)->free        = true;
+
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+        $this->calling($db)->doQuery = $mysqli_result;
+        $this->calling($db)->numrows = 1;
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->when(
+            function () use ($iterator, $params) {
+                $iterator = $iterator->execute(...$params);
+            }
+        )
+         ->error
+         ->withMessage('The `DBmysqlIterator::execute()` method signature changed. Its previous signature is deprecated.')
+         ->withType(E_USER_DEPRECATED)
+         ->exists();
+
+        $this->string($iterator->getSql())->isEqualTo($sql);
+    }
+
+    public function testExecuteWithRawDirectQuery(): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->exception(
+            function () use ($iterator) {
+                $iterator->execute('SELECT * FROM `glpi_computers`');
+            }
+        )
+         ->message->isEqualTo('Building and executing raw queries with the `DBmysqlIterator::execute()` method is prohibited.');
+    }
+
+    /**
+     * @dataProvider requestArgsProvider
+     */
+    public function testBuildQueryWithOldSignature(array $params, array $expected, string $sql): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->when(
+            function () use ($iterator, $params) {
+                $iterator = $iterator->buildQuery(...$params);
+            }
+        )
+         ->error
+         ->withMessage('The `DBmysqlIterator::buildQuery()` method signature changed. Its previous signature is deprecated.')
+         ->withType(E_USER_DEPRECATED)
+         ->exists();
+
+        $this->string($iterator->getSql())->isEqualTo($sql);
+    }
+
+    public function testBuildQueryWithRawDirectQuery(): void
+    {
+        $this->mockGenerator->orphanize('__construct');
+        $db = new \mock\DBMysql();
+
+        $iterator = new \DBmysqlIterator($db);
+        $this->exception(
+            function () use ($iterator) {
+                $iterator->buildQuery('SELECT * FROM `glpi_computers`');
+            }
+        )
+         ->message->isEqualTo('Building and executing raw queries with the `DBmysqlIterator::buildQuery()` method is prohibited.');
     }
 }

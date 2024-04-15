@@ -1078,15 +1078,15 @@ class DBmysql
     /**
      * Instanciate a Simple DBIterator
      *
-     * @param array   $criteria Query criteria
-     * @param boolean $debug    To log the request (default false)
+     * @param array|QueryUnion  $criteria Query criteria
+     * @param boolean           $debug    To log the request (default false)
      *
      * @return DBmysqlIterator
      */
-    public function request(array $criteria, bool $debug = false)
+    public function request($criteria, $debug = false)
     {
         $iterator = new DBmysqlIterator($this);
-        $iterator->execute($criteria, $debug);
+        $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
         return $iterator;
     }
 

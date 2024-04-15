@@ -112,8 +112,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return DBmysqlIterator
      */
-    public function execute(array $criteria, bool $debug = false): self
+    public function execute($criteria, $debug = false): self
     {
+        ['criteria' => $criteria, 'debug' => $debug] = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
+
         $this->buildQuery($criteria, $debug);
         $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
         $this->count = $this->res instanceof \mysqli_result ? $this->conn->numrows($this->res) : 0;
@@ -129,8 +131,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return void
      */
-    public function buildQuery(array $criteria, bool $log = false): void
+    public function buildQuery($criteria, $log = false): void
     {
+        ['criteria' => $criteria, 'debug' => $log] = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
+
         $this->sql = null;
         $this->res = false;
 
@@ -873,5 +877,49 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function fetchFields(): array
     {
         return $this->res->fetch_fields();
+    }
+
+    /**
+     * Convert arguments used for `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods
+     * from old signature to new signature.
+     * For security reasons, an exception is thrown whenever the arguments contains a direct raw query.
+     *
+     * @param array $args
+     * @return array
+     */
+    private function convertOldRequestArgsToCriteria(array $args, string $method): array
+    {
+        if (is_string($args[0]) && strpos($args[0], " ") !== false) {
+            $names = preg_split('/\s+AS\s+/i', $args[0]);
+            if (isset($names[1]) && strpos($names[1], ' ') || !isset($names[1]) || strpos($names[0], ' ')) {
+                throw new \InvalidArgumentException(
+                    sprintf('Building and executing raw queries with the `%s()` method is prohibited.', $method)
+                );
+            }
+        }
+
+        if (is_array($args[0])) {
+            // The new signature ($criteria, $debug = false) is already used
+            $criteria = $args[0];
+            $debug    = $args[1] ?? false;
+        } else {
+            // The old signature ($tableorsql, $crit = "", $debug = false) is still used
+            Toolbox::deprecated(
+                sprintf('The `%s()` method signature changed. Its previous signature is deprecated.', $method)
+            );
+            $criteria = $args[1] ?? [];
+            if (is_string($criteria)) {
+                $criteria = $criteria !== ''
+                    ? ['WHERE' => [new QueryExpression($criteria)]]
+                    : [];
+            }
+            $debug    = $args[2] ?? false;
+            $criteria['FROM'] = $args[0];
+        }
+
+        return [
+            'criteria' => $criteria,
+            'debug'    => $debug,
+        ];
     }
 }
