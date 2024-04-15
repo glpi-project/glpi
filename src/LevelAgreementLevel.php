@@ -412,8 +412,12 @@ abstract class LevelAgreementLevel extends RuleTicket
         /** @var class-string<LevelAgreement> $parent_class */
         $parent_class = static::$parentclass;
         $canedit = $this->can($parent_class::$rightname, UPDATE);
-        $la = new $parent_class();
-        $la->getFromDB($this->fields[$parent_class::getForeignKeyField()]);
+        if (isset($options['la'])) {
+            $la = $options['la'];
+        } else {
+            $la = new $parent_class();
+            $la->getFromDB($this->fields[$parent_class::getForeignKeyField()]);
+        }
 
         TemplateRenderer::getInstance()->display('pages/setup/levelagreement_level.html.twig', [
             'item' => $this,
@@ -447,6 +451,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         if ($canedit) {
             $this->showForm(0, [
                 'no_header' => true,
+                'la' => $la,
             ]);
         }
 

@@ -57,4 +57,7 @@
         {#  Not sure why the old UI had this hard-coded to AND #}
         <input type="hidden" name="match" value="AND">
     {% endif %}
+    <input type="hidden" name="{{ la.getForeignKeyField() }}" value="{{ la.fields['id'] }}">
+    <input type="hidden" name="entities_id" value="{{ la.fields['entities_id'] }}">
+    <input type="hidden" name="is_recursive" value="{{ la.fields['is_recursive'] }}">
 {% endblock %}
