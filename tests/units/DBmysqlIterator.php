@@ -37,6 +37,7 @@ namespace tests\units;
 
 use DbTestCase;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 use Psr\Log\LogLevel;
 
 // Generic test classe, to be extended for CommonDBTM Object
@@ -1595,6 +1596,26 @@ class DBmysqlIterator extends DbTestCase
                 'debug'    => false,
             ],
             'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'1\'',
+        ];
+
+        // First argument is a QueryUnion
+        $union = new QueryUnion(
+            [
+                ['SELECT' => 'serial', 'FROM' => 'glpi_computers'],
+                ['SELECT' => 'serial', 'FROM' => 'glpi_printers']
+            ],
+            false,
+            'testalias'
+        );
+        yield [
+            'params'   => [$union, ''],
+            'expected' => [
+                'criteria' => [
+                    'FROM'  => $union,
+                ],
+                'debug'    => false,
+            ],
+            'sql'      => 'SELECT * FROM ((SELECT `serial` FROM `glpi_computers`) UNION ALL (SELECT `serial` FROM `glpi_printers`)) AS `testalias`',
         ];
     }
 
