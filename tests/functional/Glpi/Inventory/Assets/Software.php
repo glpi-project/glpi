@@ -204,7 +204,7 @@ class Software extends AbstractInventoryAsset
 
         //new computer with same software
         global $DB;
-        $soft_reference = $DB->request(\Software::getTable());
+        $soft_reference = $DB->request(['FROM' => \Software::getTable()]);
         $this->integer(count($soft_reference))->isIdenticalTo(5);
 
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
@@ -231,7 +231,7 @@ class Software extends AbstractInventoryAsset
         $this->boolean($sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer', ['NOT' => ['date_install' => null]]]))
          ->isTrue('A software version has not been linked to computer!');
 
-        $this->integer(count($DB->request(\Software::getTable())))->isIdenticalTo(count($soft_reference));
+        $this->integer(count($DB->request(['FROM' => \Software::getTable()])))->isIdenticalTo(count($soft_reference));
     }
 
     public function testInventoryUpdate()

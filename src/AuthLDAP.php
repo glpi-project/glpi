@@ -4395,7 +4395,7 @@ class AuthLDAP extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $it = $DB->request('glpi_authldaps', ['is_default' => 1, 'is_active' => 1]);
+        $it = $DB->request(['FROM' => 'glpi_authldaps', 'WHERE' => ['is_default' => 1, 'is_active' => 1]]);
         return count($it) ? $it->current()['id'] : 0;
     }
 

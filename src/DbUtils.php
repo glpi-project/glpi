@@ -549,8 +549,9 @@ final class DbUtils
             }
         }
         $condition['COUNT'] = 'cpt';
+        $condition['FROM']  = $table;
 
-        $row = $DB->request($table, $condition)->current();
+        $row = $DB->request($condition)->current();
         return ($row ? (int)$row['cpt'] : 0);
     }
 
@@ -662,7 +663,7 @@ final class DbUtils
             $criteria['ORDER'] = $order; // Deprecated use case
         }
 
-        $iterator = $DB->request($table, $criteria);
+        $iterator = $DB->request(array_merge(['FROM' => $table], $criteria));
 
         foreach ($iterator as $row) {
             $data[$row['id']] = $row;
@@ -1783,12 +1784,10 @@ final class DbUtils
                 $user = $name;
             }
         } else if ($ID) {
-            $iterator = $DB->request(
-                'glpi_users',
-                [
-                    'WHERE' => ['id' => $ID]
-                ]
-            );
+            $iterator = $DB->request([
+                'FROM' => 'glpi_users',
+                'WHERE' => ['id' => $ID]
+            ]);
 
             if ($link == 2) {
                 $user = ["name"    => "",

@@ -6132,13 +6132,16 @@ JAVASCRIPT;
         ];
         $default_password_set = [];
 
-        $crit = ['FIELDS'     => ['name', 'password'],
-            'is_active'  => 1,
-            'is_deleted' => 0,
-            'name'       => array_keys($passwords)
-        ];
-
-        foreach ($DB->request('glpi_users', $crit) as $data) {
+        $users = $DB->request([
+            'SELECT' => ['name', 'password'],
+            'FROM' => self::getTable(),
+            'WHERE' => [
+                'is_active'  => 1,
+                'is_deleted' => 0,
+                'name'       => array_keys($passwords)
+            ]
+        ]);
+        foreach ($users as $data) {
             if (Auth::checkPassword($passwords[strtolower($data['name'])], $data['password'])) {
                 $default_password_set[] = $data['name'];
             }
@@ -7069,12 +7072,10 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
-        $iterator = $DB->request(
-            'glpi_users',
-            [
-                'WHERE' => ['id' => $ID]
-            ]
-        );
+        $iterator = $DB->request([
+            'FROM' => 'glpi_users',
+            'WHERE' => ['id' => $ID]
+        ]);
 
         if (count($iterator) === 1) {
             $data     = $iterator->current();

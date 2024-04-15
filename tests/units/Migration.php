@@ -132,7 +132,7 @@ class Migration extends \GLPITestCase
         ];
         $DB = $this->db;
 
-       //test with non existing value => new keys should be inserted
+       //test with non-existing value => new keys should be inserted
         $this->migration->addConfig([
             'one' => 'key',
             'two' => 'value'
@@ -192,11 +192,11 @@ class Migration extends \GLPITestCase
             'two' => 'value'
         ]);
         $this->queries = [];
-        $this->calling($this->db)->request = function ($table) {
-          // Call using 'glpi_configs' value for first parameter
-          // corresponds to the call made to retrieve exisintg values
-          // -> returns a value for config 'one'
-            if ('glpi_configs' === $table) {
+        $this->calling($this->db)->request = function ($criteria) {
+           // Call using 'glpi_configs' value for first parameter
+           // corresponds to the call made to retrieve existing values
+           // -> returns a value for config 'one'
+            if ($criteria === ['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core', 'name' => ['one', 'two']]]) {
                   $dbresult = [[
                       'id'        => '42',
                       'context'   => 'core',

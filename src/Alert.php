@@ -229,7 +229,7 @@ class Alert extends CommonDBTM
         if ($items_id <= 0 || $type <= 0) {
             return false;
         }
-        $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+        $iter = $DB->request(['FROM' => self::getTable(), 'WHERE' => ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]]);
         if ($row = $iter->current()) {
             return $row['id'];
         }
@@ -257,7 +257,7 @@ class Alert extends CommonDBTM
         if ($items_id <= 0 || $type <= 0) {
             return false;
         }
-        $iter = $DB->request(self::getTable(), ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]);
+        $iter = $DB->request(['FROM' => self::getTable(), 'WHERE' => ['itemtype' => $itemtype, 'items_id' => $items_id, 'type' => $type]]);
         if ($row = $iter->current()) {
             return $row['date'];
         }
@@ -279,7 +279,9 @@ class Alert extends CommonDBTM
         global $DB;
 
         if ($items_id) {
-            $iter = $DB->request(self::getTable(), ['FIELDS'   => 'date',
+            $iter = $DB->request([
+                'FROM'     => self::getTable(),
+                'FIELDS'   => 'date',
                 'ORDER'    => 'date DESC',
                 'LIMIT'    => 1,
                 'itemtype' => $itemtype,

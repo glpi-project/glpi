@@ -1137,7 +1137,8 @@ class MailCollector extends CommonDBTM
        // Wrap content for blacklisted items
         $cleaned_count = 0;
         $itemstoclean = [];
-        foreach ($DB->request('glpi_blacklistedmailcontents') as $data) {
+        $blacklisted_contents = $DB->request(['FROM' => 'glpi_blacklistedmailcontents']);
+        foreach ($blacklisted_contents as $data) {
             $toclean = trim($data['content']);
             if (!empty($toclean)) {
                 $itemstoclean[] = str_replace(["\r\n", "\n", "\r"], $br_marker, $toclean);
@@ -1823,7 +1824,8 @@ class MailCollector extends CommonDBTM
             $content .= sprintf('(%s)', $mailer::buildDsn(false));
         }
 
-        foreach ($DB->request('glpi_mailcollectors') as $mc) {
+        $collectors = $DB->request(['FROM' => 'glpi_mailcollectors']);
+        foreach ($collectors as $mc) {
             $content .= "\nName: '" . $mc['name'] . "'";
             $content .= "\n\tActive: " . ($mc['is_active'] ? "Yes" : "No");
 

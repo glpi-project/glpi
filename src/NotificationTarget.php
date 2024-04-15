@@ -973,7 +973,8 @@ class NotificationTarget extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        foreach ($DB->request('glpi_profiles') as $data) {
+        $profiles = $DB->request(['FROM' => Profile::getTable()]);
+        foreach ($profiles as $data) {
             $this->addTarget(
                 $data["id"],
                 sprintf(__('%1$s: %2$s'), Profile::getTypeName(1), $data["name"]),

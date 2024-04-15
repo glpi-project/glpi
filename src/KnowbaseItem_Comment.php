@@ -129,10 +129,11 @@ class KnowbaseItem_Comment extends CommonDBTM
             'parent_comment_id' => $parent
         ];
 
-        $db_comments = $DB->request(
-            'glpi_knowbaseitems_comments',
-            $where + ['ORDER' => 'id ASC']
-        );
+        $db_comments = $DB->request([
+            'FROM' => 'glpi_knowbaseitems_comments',
+            'WHERE' => $where,
+            'ORDER' => 'id ASC'
+        ]);
 
         $comments = [];
         foreach ($db_comments as $db_comment) {

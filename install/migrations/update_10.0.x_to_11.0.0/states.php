@@ -78,7 +78,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->doQueryOrDie($query, "10.1.0 add table glpi_dropdownvisibilities");
 
-    $states = $DB->request('glpi_states');
+    $states = $DB->request(['FROM' => 'glpi_states']);
     foreach ($states as $state) {
         $insert_data = [
             'itemtype' => 'State',

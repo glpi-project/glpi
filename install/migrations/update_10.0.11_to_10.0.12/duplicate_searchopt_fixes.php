@@ -38,11 +38,11 @@
  * @var \Migration $migration
  */
 
-$iterator = $DB->request('glpi_configs', ['name' => 'lock_use_lock_item']);
+$iterator = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['name' => 'lock_use_lock_item']]);
 $lock_use_lock_item = $iterator->current()['value'] ?? false;
 
 if ($lock_use_lock_item) {
-    $iterator = $DB->request('glpi_configs', ['name' => 'lock_item_list']);
+    $iterator = $DB->request(['FROM' => 'glpi_configs', 'WHERE' => ['name' => 'lock_item_list']]);
     $lock_item_list = $iterator->current()['value'] ?? '';
     $lock_item_list = json_decode($lock_item_list);
 

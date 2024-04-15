@@ -56,12 +56,13 @@ if (
       && (count($_POST['used']) > 0)
 ) {
     foreach (
-        $DB->request(
-            'glpi_certificates',
-            ['id'                  => $_POST['used'],
+        $DB->request([
+            'FROM' => 'glpi_certificates',
+            'WHERE' => [
+                'id'                  => $_POST['used'],
                 'certificatetypes_id' => $_POST['certificatetype']
             ]
-        ) as $data
+        ]) as $data
     ) {
         $used[$data['id']] = $data['id'];
     }

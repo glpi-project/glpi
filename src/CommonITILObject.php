@@ -9827,50 +9827,52 @@ abstract class CommonITILObject extends CommonDBTM
         // Load linked tickets (only for tickets)
         if (static::class === Ticket::class) {
             $linked_tickets = [];
-            $linked_tickets_iterator = $DB->request(new QueryUnion([
-                // Get parents tickets
-                [
-                    'SELECT' => [
-                        Ticket_Ticket::getTableField('tickets_id_1 AS tickets_id_parent'),
-                        Ticket_Ticket::getTableField('tickets_id_2 AS tickets_id_child'),
-                        Ticket::getTableField('status'),
-                    ],
-                    'FROM' => Ticket_Ticket::getTable(),
-                    'LEFT JOIN' => [
-                        Ticket::getTable() => [
-                            'ON'  => [
-                                Ticket_Ticket::getTable() => 'tickets_id_2',
-                                Ticket::getTable() => 'id'
+            $linked_tickets_iterator = $DB->request([
+                'FROM' => new QueryUnion([
+                    // Get parents tickets
+                    [
+                        'SELECT' => [
+                            Ticket_Ticket::getTableField('tickets_id_1 AS tickets_id_parent'),
+                            Ticket_Ticket::getTableField('tickets_id_2 AS tickets_id_child'),
+                            Ticket::getTableField('status'),
+                        ],
+                        'FROM' => Ticket_Ticket::getTable(),
+                        'LEFT JOIN' => [
+                            Ticket::getTable() => [
+                                'ON'  => [
+                                    Ticket_Ticket::getTable() => 'tickets_id_2',
+                                    Ticket::getTable() => 'id'
+                                ]
                             ]
+                        ],
+                        'WHERE'  => [
+                            'link' => Ticket_Ticket::PARENT_OF,
+                            'tickets_id_1' => new QuerySubQuery($base_common_itil_query),
                         ]
                     ],
-                    'WHERE'  => [
-                        'link' => Ticket_Ticket::PARENT_OF,
-                        'tickets_id_1' => new QuerySubQuery($base_common_itil_query),
-                    ]
-                ],
-                // Get children tickets
-                [
-                    'SELECT' => [
-                        Ticket_Ticket::getTableField('tickets_id_1 AS tickets_id_child'),
-                        Ticket_Ticket::getTableField('tickets_id_2 AS tickets_id_parent'),
-                        Ticket::getTableField('status'),
-                    ],
-                    'FROM' => Ticket_Ticket::getTable(),
-                    'LEFT JOIN' => [
-                        Ticket::getTable() => [
-                            'ON'  => [
-                                Ticket_Ticket::getTable() => 'tickets_id_1',
-                                Ticket::getTable() => 'id'
+                    // Get children tickets
+                    [
+                        'SELECT' => [
+                            Ticket_Ticket::getTableField('tickets_id_1 AS tickets_id_child'),
+                            Ticket_Ticket::getTableField('tickets_id_2 AS tickets_id_parent'),
+                            Ticket::getTableField('status'),
+                        ],
+                        'FROM' => Ticket_Ticket::getTable(),
+                        'LEFT JOIN' => [
+                            Ticket::getTable() => [
+                                'ON'  => [
+                                    Ticket_Ticket::getTable() => 'tickets_id_1',
+                                    Ticket::getTable() => 'id'
+                                ]
                             ]
+                        ],
+                        'WHERE'  => [
+                            'link' => Ticket_Ticket::SON_OF,
+                            'tickets_id_2' => new QuerySubQuery($base_common_itil_query),
                         ]
-                    ],
-                    'WHERE'  => [
-                        'link' => Ticket_Ticket::SON_OF,
-                        'tickets_id_2' => new QuerySubQuery($base_common_itil_query),
                     ]
-                ]
-            ]));
+                ])
+            ]);
 
             foreach ($linked_tickets_iterator as $linked_ticket_row) {
                 $tickets_id_parent = $linked_ticket_row['tickets_id_parent'];
@@ -10640,7 +10642,8 @@ abstract class CommonITILObject extends CommonDBTM
             $tabentities[0] = $rate;
         }
 
-        foreach ($DB->request('glpi_entities') as $entity) {
+        $dbentities = $DB->request(['FROM' => Entity::getTable()]);
+        foreach ($dbentities as $entity) {
             $rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $entity['id'], 'inquest_rate' . $config_suffix);
             if ($rate > 0) {
                 $tabentities[$entity['id']] = $rate;

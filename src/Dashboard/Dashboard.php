@@ -434,9 +434,9 @@ class Dashboard extends \CommonDBTM
         if ($force || count(self::$all_dashboards) == 0) {
             self::$all_dashboards = [];
 
-            $dashboards = iterator_to_array($DB->request(self::getTable()));
-            $items      = iterator_to_array($DB->request(Item::getTable()));
-            $rights     = iterator_to_array($DB->request(Right::getTable()));
+            $dashboards = iterator_to_array($DB->request(['FROM' => self::getTable()]));
+            $items      = iterator_to_array($DB->request(['FROM' => Item::getTable()]));
+            $rights     = iterator_to_array($DB->request(['FROM' => Right::getTable()]));
 
             foreach ($dashboards as $dashboard) {
                 $key = $dashboard['key'];

@@ -141,10 +141,10 @@ TWIG, $twig_params);
 
         $entries = [];
         foreach (
-            $DB->request(
-                'glpi_notificationtemplatetranslations',
-                ['notificationtemplates_id' => $nID]
-            ) as $data
+            $DB->request([
+                'FROM' => 'glpi_notificationtemplatetranslations',
+                'WHERE' => ['notificationtemplates_id' => $nID]
+            ]) as $data
         ) {
             if ($this->getFromDB($data['id'])) {
                 $href = self::getFormURL() . "?id=" . $data['id'] . "&notificationtemplates_id=" . $nID;

@@ -45,12 +45,11 @@ class DbTimezones extends \GLPITestCase
 
         $that = $this;
 
-        $this->calling($db)->request = function ($query) use ($that) {
-            $result = new \mock\DBmysqlIterator(null);
+        $this->calling($db)->doQuery = function ($query) use ($that, $db) {
             if ($query === "SHOW DATABASES LIKE 'mysql'") {
-                  $that->calling($result)->count = 0;
+                  $that->calling($db)->numrows = 0;
             }
-            return $result;
+            return false;
         };
 
         $this->newTestedInstance($db);
@@ -62,18 +61,18 @@ class DbTimezones extends \GLPITestCase
     {
 
         $this->mockGenerator->orphanize('__construct');
+        $real_db = new \DB();
         $db = new \mock\DB();
 
         $that = $this;
 
-        $this->calling($db)->request = function ($query) use ($that) {
-            $result = new \mock\DBmysqlIterator(null);
+        $this->calling($db)->doQuery = function ($query) use ($that, $db, $real_db) {
             if ($query === "SHOW DATABASES LIKE 'mysql'") {
-                  $that->calling($result)->count = 1;
+                  $that->calling($db)->numrows = 1;
             } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
-                $that->calling($result)->count = 0;
+                $that->calling($db)->numrows = 0;
             }
-            return $result;
+            return false;
         };
 
         $this->newTestedInstance($db);
@@ -89,13 +88,21 @@ class DbTimezones extends \GLPITestCase
 
         $that = $this;
 
+        $this->calling($db)->doQuery = function ($query) use ($that, $db) {
+            if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                $that->calling($db)->numrows = 1;
+            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                $that->calling($db)->numrows = 1;
+            }
+            return false;
+        };
+
         $this->calling($db)->request = function ($query) use ($that) {
             $result = new \mock\DBmysqlIterator(null);
-            if ($query === "SHOW DATABASES LIKE 'mysql'") {
-                  $that->calling($result)->count = 1;
-            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
-                $that->calling($result)->count = 1;
-            } else {
+            if (
+                $query !== "SHOW DATABASES LIKE 'mysql'"
+                && $query !== "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'"
+            ) {
                 $that->calling($result)->current = ['cpt' => 0];
             }
             return $result;
@@ -114,13 +121,21 @@ class DbTimezones extends \GLPITestCase
 
         $that = $this;
 
+        $this->calling($db)->doQuery = function ($query) use ($that, $db) {
+            if ($query === "SHOW DATABASES LIKE 'mysql'") {
+                $that->calling($db)->numrows = 1;
+            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
+                $that->calling($db)->numrows = 1;
+            }
+            return false;
+        };
+
         $this->calling($db)->request = function ($query) use ($that) {
             $result = new \mock\DBmysqlIterator(null);
-            if ($query === "SHOW DATABASES LIKE 'mysql'") {
-                  $that->calling($result)->count = 1;
-            } else if ($query === "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'") {
-                $that->calling($result)->count = 1;
-            } else {
+            if (
+                $query !== "SHOW DATABASES LIKE 'mysql'"
+                && $query !== "SHOW TABLES FROM `mysql` LIKE 'time_zone_name'"
+            ) {
                 $that->calling($result)->current = ['cpt' => 30];
             }
             return $result;

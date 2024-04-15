@@ -259,22 +259,22 @@ class NetworkPort extends CommonDBChild
                 $ip = new IPAddress();
                 // Update IPAddress
                 foreach (
-                    $DB->request(
-                        'glpi_networknames',
-                        [
+                    $DB->request([
+                        'FROM' => 'glpi_networknames',
+                        'WHERE' => [
                             'itemtype' => 'NetworkPort',
                             'items_id' => $this->getID()
                         ]
-                    ) as $dataname
+                    ]) as $dataname
                 ) {
                     foreach (
-                        $DB->request(
-                            'glpi_ipaddresses',
-                            [
+                        $DB->request([
+                            'FROM' => 'glpi_ipaddresses',
+                            'WHERE' => [
                                 'itemtype' => 'NetworkName',
                                 'items_id' => $dataname['id']
                             ]
-                        ) as $data
+                        ]) as $data
                     ) {
                          $ip->update(['id'           => $data['id'],
                              'mainitemtype' => $this->fields['itemtype'],

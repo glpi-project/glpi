@@ -1150,7 +1150,7 @@ class Migration
     }
 
     /**
-     * Store configuration values that does not exists
+     * Store configuration values that does not exist
      *
      * @since 9.2
      *
@@ -1163,13 +1163,13 @@ class Migration
 
         foreach ($this->configs as $context => $config) {
             if (count($config)) {
-                $existing = $DB->request(
-                    "glpi_configs",
-                    [
+                $existing = $DB->request([
+                    'FROM' => 'glpi_configs',
+                    'WHERE' => [
                         'context'   => $context,
                         'name'      => array_keys($config)
                     ]
-                );
+                ]);
                 foreach ($existing as $conf) {
                      unset($config[$conf['name']]);
                 }

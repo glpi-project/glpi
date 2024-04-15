@@ -1746,7 +1746,8 @@ TWIG, ['msg' => __('Last run list')]);
             $vol += Event::cleanOld($task->fields['param']);
         }
 
-        foreach ($DB->request('glpi_crontasks') as $data) {
+        $crontasks = $DB->request(['FROM' => self::getTable()]);
+        foreach ($crontasks as $data) {
             if ($data['logs_lifetime'] > 0) {
                 $vol += CronTaskLog::cleanOld($data['id'], $data['logs_lifetime']);
             }
