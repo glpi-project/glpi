@@ -259,31 +259,23 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
         }
 
-        if ($table !== null) {
-            if (is_string($table)) {
-                $table = [$table];
-            }
-            if (is_array($table) && count($table)) {
-                $table = implode(
-                    ', ',
-                    array_map(
-                        [DBmysql::class, 'quoteName'],
-                        $table
-                    )
-                );
-            }
-        } else if (count($criteria) === 1) {
-            $criterion = array_pop($criteria);
-            if ($criterion instanceof \AbstractQuery) {
-                $query = $criterion;
-                $table = $query->getQuery();
-            } else if ($criterion instanceof QueryExpression) {
-                $table = $criterion->getValue();
-            }
-        }
-
         // FROM table list
-        if ($table) {
+        if (is_array($table)) {
+            if (count($table)) {
+                $table = array_map([DBmysql::class, 'quoteName'], $table);
+                $this->sql .= ' FROM ' . implode(", ", $table);
+            } else {
+                throw new \LogicException("Missing table name.");
+            }
+        } else if ($table) {
+            if ($table instanceof \AbstractQuery) {
+                $query = $table;
+                $table = $query->getQuery();
+            } else if ($table instanceof QueryExpression) {
+                $table = $table->getValue();
+            } else {
+                $table = DBmysql::quoteName($table);
+            }
             $this->sql .= " FROM $table";
         } else {
            /*
