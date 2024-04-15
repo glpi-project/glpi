@@ -9827,7 +9827,7 @@ abstract class CommonITILObject extends CommonDBTM
         // Load linked tickets (only for tickets)
         if (static::class === Ticket::class) {
             $linked_tickets = [];
-            $linked_tickets_iterator = $DB->request(new QueryUnion([
+            $linked_tickets_iterator = $DB->request([new QueryUnion([
                 // Get parents tickets
                 [
                     'SELECT' => [
@@ -9870,7 +9870,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'tickets_id_2' => new QuerySubQuery($base_common_itil_query),
                     ]
                 ]
-            ]));
+            ])]);
 
             foreach ($linked_tickets_iterator as $linked_ticket_row) {
                 $tickets_id_parent = $linked_ticket_row['tickets_id_parent'];
