@@ -195,7 +195,9 @@
                         {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                     {% else %}
                         {% set field_value %}
-                            {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
+                            {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params|merge({
+                                'value': item.fields[field['name']]
+                            })) }}
                         {% endset %}
                         {{ fields.field(field['name'], field_value, field['label']) }}
                     {% endif %}

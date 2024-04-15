@@ -153,7 +153,8 @@
         item.fields['assets_assetmenus_id'],
         __('Menu'),
         {
-            'display_emptychoice': 0
+            'display_emptychoice': 0,
+            'toadd': call("Glpi\\Asset\\AssetMenu::getParentMenus")
         }
     ) }}
 {% endblock %}

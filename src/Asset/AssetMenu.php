@@ -35,10 +35,11 @@
 
 namespace Glpi\Asset;
 
-use CommonTreeDropdown;
+use CommonDropdown;
+use Dropdown;
 use Session;
 
-class AssetMenu extends CommonTreeDropdown
+class AssetMenu extends CommonDropdown
 {
     public $can_be_translated = true;
 
@@ -52,27 +53,46 @@ class AssetMenu extends CommonTreeDropdown
         return "ti ti-menu-2";
     }
 
-    public static function reservedEntries()
+    public static function getParentMenus()
     {
-        // we don't offer plugins entry (reserved for the plugins to add their own menu)
+        $max_id = pow(2, 32) - 100;
+
         return [
-            1 => _n('Asset', 'Assets', Session::getPluralNumber()),
-            2 => __('Assistance'),
-            3 => __('Management'),
-            4 => __('Tools'),
-            5 => __('Administration'),
-            6 => __('Setup'),
+            $max_id => _n('Asset', 'Assets', Session::getPluralNumber()),
+            $max_id + 1 => __('Assistance'),
+            $max_id + 2 => __('Management'),
+            $max_id + 3 => __('Tools'),
+            $max_id + 4 => __('Administration'),
+            $max_id + 5 => __('Setup'),
         ];
     }
 
-    public function canDeleteItem()
+    public function getAdditionalFields()
     {
+        return [
+            [
+                'name'  => 'assets_assetmenus_id',
+                'label' => __('Menu'),
+                'type'  => 'menu_parent'
+            ],
+        ];
+    }
 
-        $reserved = self::reservedEntries();
-        if (isset($reserved[$this->fields['id']])) {
-            return false;
+
+   /**
+    * Display specific fields
+    *
+    * @param integer $ID
+    * @param array $field
+    */
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    {
+        switch ($field['type']) {
+            case 'menu_parent':
+                Dropdown::showFromArray('menu_parent', self::getParentMenus(), [
+                    'value' => $this->fields['menu_parent'],
+                ]);
+                break;
         }
-
-        return parent::canDeleteItem();
     }
 }
