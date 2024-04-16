@@ -35,19 +35,17 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use Log;
 
-class HasKnowbaseCapacity extends CapacityTestCase
+class HasKnowbaseCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasKnowbaseCapacity::class;

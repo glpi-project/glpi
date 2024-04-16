@@ -35,22 +35,20 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Document;
 use Document_Item;
 use Entity;
 use Glpi\Asset\Asset;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Iterator;
 use Log;
 
-class HasDocumentsCapacity extends CapacityTestCase
+class HasDocumentsCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasDocumentsCapacity::class;

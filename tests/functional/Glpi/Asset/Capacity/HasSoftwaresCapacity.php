@@ -35,47 +35,29 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
-use DisplayPreference;
+use DbTestCase;
 use Entity;
 use Glpi\Asset\Asset;
-use Glpi\Tests\CapacityTestCase;
+use Item_SoftwareLicense;
 use Item_SoftwareVersion;
 use Log;
 use Software;
+use SoftwareLicense;
 use SoftwareVersion;
 
-class HasSoftwaresCapacity extends CapacityTestCase
+class HasSoftwaresCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
-    protected function getTargetCapacity(): string
-    {
-        return \Glpi\Asset\Capacity\HasSoftwaresCapacity::class;
-    }
-
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
 
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
-        $superadmin_p_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
-        $profiles_matrix = [
-            $superadmin_p_id => [
-                READ   => 1,
-                CREATE => 1,
-            ],
-        ];
-
         $definition_1 = $this->initAssetDefinition(
             capacities: [
                 \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-                \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-            ],
-            profiles: $profiles_matrix
+                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+            ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
@@ -88,8 +70,7 @@ class HasSoftwaresCapacity extends CapacityTestCase
             capacities: [
                 \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
                 \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-            ],
-            profiles: $profiles_matrix
+            ]
         );
         $classname_3  = $definition_3->getAssetClassName();
 
@@ -115,6 +96,8 @@ class HasSoftwaresCapacity extends CapacityTestCase
             } else {
                 $this->array($item->defineAllTabs())->notHasKey('Item_SoftwareVersion$1');
             }
+
+            // No SO to check
         }
     }
 
@@ -125,28 +108,18 @@ class HasSoftwaresCapacity extends CapacityTestCase
 
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
-        $superadmin_p_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
-        $profiles_matrix = [
-            $superadmin_p_id => [
-                READ   => 1,
-                CREATE => 1,
-            ],
-        ];
-
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-            ],
-            profiles: $profiles_matrix
+                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+            ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDomainsCapacity::class,
                 \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-            ],
-            profiles: $profiles_matrix
+                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+            ]
         );
         $classname_2  = $definition_2->getAssetClassName();
 
@@ -199,21 +172,6 @@ class HasSoftwaresCapacity extends CapacityTestCase
             ]
         );
 
-        $displaypref_1   = $this->createItem(
-            DisplayPreference::class,
-            [
-                'itemtype' => $classname_1,
-                'users_id' => 0,
-            ]
-        );
-        $displaypref_2   = $this->createItem(
-            DisplayPreference::class,
-            [
-                'itemtype' => $classname_2,
-                'users_id' => 0,
-            ]
-        );
-
         $item_1_logs_criteria = [
             'itemtype_link' => $classname_1,
         ];
@@ -221,12 +179,10 @@ class HasSoftwaresCapacity extends CapacityTestCase
             'itemtype_link' => $classname_2,
         ];
 
-        // Ensure relation, display preferences and logs exists, and class is registered to global config
+        // Ensure relation and logs exists, and class is registered to global config
         $this->object(Item_SoftwareVersion::getById($item_software_1->getID()))->isInstanceOf(Item_SoftwareVersion::class);
-        $this->object(DisplayPreference::getById($displaypref_1->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(1);
         $this->object(Item_SoftwareVersion::getById($item_software_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
-        $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
@@ -239,7 +195,6 @@ class HasSoftwaresCapacity extends CapacityTestCase
 
         // Ensure relations, logs and global registration are preserved for other definition
         $this->object(Item_SoftwareVersion::getById($item_software_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
-        $this->object(DisplayPreference::getById($displaypref_2->getID()))->isInstanceOf(DisplayPreference::class);
         $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
     }
@@ -282,6 +237,22 @@ class HasSoftwaresCapacity extends CapacityTestCase
                 'items_id' => $asset->getID(),
             ]
         );
+        $software_license = $this->createItem(
+            SoftwareLicense::class,
+            [
+                'name' => 'pro license',
+                'entities_id' => $entity,
+                'softwares_id' => $software->getID(),
+            ]
+        );
+        $this->createItem(
+            Item_SoftwareLicense::class,
+            [
+                'softwarelicenses_id' => $software_license->getID(),
+                'itemtype' => $asset->getType(),
+                'items_id' => $asset->getID(),
+            ]
+        );
 
         $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
         $this->array(getAllDataFromTable(Item_SoftwareVersion::getTable(), [
@@ -289,22 +260,258 @@ class HasSoftwaresCapacity extends CapacityTestCase
             'itemtype' => $asset::getType(),
             'items_id' => $clone_id,
         ]))->hasSize(1);
+        $this->array(getAllDataFromTable(Item_SoftwareLicense::getTable(), [
+            'softwarelicenses_id' => $software_license->getID(),
+            'itemtype' => $asset::getType(),
+            'items_id' => $clone_id,
+        ]))->hasSize(1);
     }
 
-    public function provideIsUsed(): iterable
+    public function testIsUsed(): void
     {
-        yield [
-            'target_classname' => Software::class,
-            'relation_classname' => Item_SoftwareVersion::class
-        ];
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+        );
+        $class    = $definition->getAssetClassName();
+        $capacity = new \Glpi\Asset\Capacity\HasSoftwaresCapacity();
+        $entity   = $this->getTestRootEntity(true);
+
+        /** @var Asset $asset */
+        $asset = $this->createItem($class, [
+            'name'        => 'Test asset',
+            'entities_id' => $entity,
+        ]);
+
+        $software = $this->createItem(
+            Software::class,
+            [
+                'name' => 'Software',
+                'entities_id' => $entity,
+            ]
+        );
+        $software_version = $this->createItem(
+            SoftwareVersion::class,
+            [
+                'name' => 'V1.0',
+                'entities_id' => $entity,
+                'softwares_id' => $software->getID(),
+            ]
+        );
+        $software_license = $this->createItem(
+            SoftwareLicense::class,
+            [
+                'name' => 'pro license',
+                'entities_id' => $entity,
+                'softwares_id' => $software->getID(),
+            ]
+        );
+
+        $this->boolean($capacity->isUsed($class))->isFalse();
+
+        // IS used if linked to a version
+        $version_relation = $this->createItem(
+            Item_SoftwareVersion::class,
+            [
+                'entities_id' => $entity,
+                'softwareversions_id' => $software_version->getID(),
+                'itemtype' => $asset->getType(),
+                'items_id' => $asset->getID(),
+            ]
+        );
+        $this->boolean($capacity->isUsed($class))->isTrue();
+
+        // IS NOT used if relation with version is deleted
+        $this->deleteItem(Item_SoftwareVersion::class, $version_relation->getID());
+        $this->boolean($capacity->isUsed($class))->isFalse();
+
+        // IS used if linked to a license
+        $license_relation = $this->createItem(
+            Item_SoftwareLicense::class,
+            [
+                'softwarelicenses_id' => $software_license->getID(),
+                'itemtype' => $asset->getType(),
+                'items_id' => $asset->getID(),
+            ]
+        );
+        $this->boolean($capacity->isUsed($class))->isTrue();
+
+        // IS NOT used if relation with license is deleted
+        $this->deleteItem(Item_SoftwareLicense::class, $license_relation->getID());
+        $this->boolean($capacity->isUsed($class))->isFalse();
     }
 
-    public function provideGetCapacityUsageDescription(): iterable
+    public function testGetCapacityUsageDescription(): void
     {
-        yield [
-            'target_classname' => Item_SoftwareVersion::class,
-            'expected' => '%d software(s) attached to %d assets',
-            'expected_results' => [[1, 1], [2, 1], [1, 2]]
-        ];
+        $definition = $this->initAssetDefinition(
+            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+        );
+        $class    = $definition->getAssetClassName();
+        $capacity = new \Glpi\Asset\Capacity\HasSoftwaresCapacity();
+        $entity   = $this->getTestRootEntity(true);
+
+        $software1 = $this->createItem(
+            Software::class,
+            [
+                'name' => 'Software 1',
+                'entities_id' => $entity,
+            ]
+        );
+        $software1_version1 = $this->createItem(
+            SoftwareVersion::class,
+            [
+                'name' => 'V1.0',
+                'entities_id' => $entity,
+                'softwares_id' => $software1->getID(),
+            ]
+        );
+        $software1_version2 = $this->createItem(
+            SoftwareVersion::class,
+            [
+                'name' => 'V1.0',
+                'entities_id' => $entity,
+                'softwares_id' => $software1->getID(),
+            ]
+        );
+
+        $software2 = $this->createItem(
+            Software::class,
+            [
+                'name' => 'Software 2',
+                'entities_id' => $entity,
+            ]
+        );
+        $software2_version = $this->createItem(
+            SoftwareVersion::class,
+            [
+                'name' => 'V2.1',
+                'entities_id' => $entity,
+                'softwares_id' => $software2->getID(),
+            ]
+        );
+        $software2_license = $this->createItem(
+            SoftwareLicense::class,
+            [
+                'name' => 'team license',
+                'entities_id' => $entity,
+                'softwares_id' => $software2->getID(),
+            ]
+        );
+
+        $software3 = $this->createItem(
+            Software::class,
+            [
+                'name' => 'Software 3',
+                'entities_id' => $entity,
+            ]
+        );
+        $software3_license1 = $this->createItem(
+            SoftwareLicense::class,
+            [
+                'name' => 'user license',
+                'entities_id' => $entity,
+                'softwares_id' => $software3->getID(),
+            ]
+        );
+        $software3_license2 = $this->createItem(
+            SoftwareLicense::class,
+            [
+                'name' => 'expert license',
+                'entities_id' => $entity,
+                'softwares_id' => $software3->getID(),
+            ]
+        );
+
+        $assets_count   = 0;
+        $software_count = 0;
+        $this->string($capacity->getCapacityUsageDescription($class))
+            ->isEqualTo('0 software(s) attached to 0 assets');
+
+        $software_count += 1; // 2 versions of the same software counts only once
+        for ($i = 0; $i < 3; $i++) {
+            $asset = $this->createItem($class, [
+                'name'        => 'Test asset ' . $assets_count,
+                'entities_id' => $entity,
+            ]);
+
+            $this->createItems(
+                Item_SoftwareVersion::class,
+                [
+                    [
+                        'entities_id' => $entity,
+                        'softwareversions_id' => $software1_version1->getID(),
+                        'itemtype' => $asset->getType(),
+                        'items_id' => $asset->getID(),
+                    ],
+                    [
+                        'entities_id' => $entity,
+                        'softwareversions_id' => $software1_version2->getID(),
+                        'itemtype' => $asset->getType(),
+                        'items_id' => $asset->getID(),
+                    ]
+                ]
+            );
+            $assets_count++;
+
+            $this->string($capacity->getCapacityUsageDescription($class))
+                ->isEqualTo(sprintf('%d software(s) attached to %d assets', $software_count, $assets_count));
+        }
+
+        $software_count += 1; // 1 version + 1 license of the same software counts only once
+        for ($i = 0; $i < 3; $i++) {
+            $asset = $this->createItem($class, [
+                'name'        => 'Test asset' . $assets_count,
+                'entities_id' => $entity,
+            ]);
+
+            $this->createItem(
+                Item_SoftwareVersion::class,
+                [
+                    'entities_id' => $entity,
+                    'softwareversions_id' => $software2_version->getID(),
+                    'itemtype' => $asset->getType(),
+                    'items_id' => $asset->getID(),
+                ]
+            );
+            $this->createItem(
+                Item_SoftwareLicense::class,
+                [
+                    'softwarelicenses_id' => $software2_license->getID(),
+                    'itemtype' => $asset->getType(),
+                    'items_id' => $asset->getID(),
+                ]
+            );
+            $assets_count++;
+
+            $this->string($capacity->getCapacityUsageDescription($class))
+                ->isEqualTo(sprintf('%d software(s) attached to %d assets', $software_count, $assets_count));
+        }
+
+        $software_count += 1; // 2 licenses of the same software counts only once
+        for ($i = 0; $i < 3; $i++) {
+            $asset = $this->createItem($class, [
+                'name'        => 'Test asset' . $assets_count,
+                'entities_id' => $entity,
+            ]);
+
+            $this->createItems(
+                Item_SoftwareLicense::class,
+                [
+                    [
+                        'softwarelicenses_id' => $software3_license1->getID(),
+                        'itemtype' => $asset->getType(),
+                        'items_id' => $asset->getID(),
+                    ],
+                    [
+                        'softwarelicenses_id' => $software3_license2->getID(),
+                        'itemtype' => $asset->getType(),
+                        'items_id' => $asset->getID(),
+                    ]
+                ]
+            );
+            $assets_count++;
+
+            $this->string($capacity->getCapacityUsageDescription($class))
+                ->isEqualTo(sprintf('%d software(s) attached to %d assets', $software_count, $assets_count));
+        }
     }
 }

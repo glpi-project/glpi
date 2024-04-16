@@ -37,19 +37,17 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Contract;
 use Contract_Item;
+use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Log;
 
-class HasContractsCapacity extends CapacityTestCase
+class HasContractsCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasContractsCapacity::class;

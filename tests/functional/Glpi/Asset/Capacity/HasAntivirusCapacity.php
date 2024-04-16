@@ -35,20 +35,17 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use ItemAntivirus;
 use Log;
-use Profile;
 
-class HasAntivirusCapacity extends CapacityTestCase
+class HasAntivirusCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasAntivirusCapacity::class;
@@ -230,7 +227,7 @@ class HasAntivirusCapacity extends CapacityTestCase
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
 
-        /** @var Asset $asset */
+        /** @var \Glpi\Asset\Asset $asset */
         $asset = $this->createItem(
             $class,
             [
@@ -239,7 +236,7 @@ class HasAntivirusCapacity extends CapacityTestCase
             ]
         );
 
-        $antivirus = $this->createItem(
+        $this->createItem(
             ItemAntivirus::class,
             [
                 'name'     => 'Antivirus',

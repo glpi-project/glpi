@@ -33,12 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests;
+namespace Glpi\Tests\Asset;
 
-use DbTestCase;
-
-abstract class CapacityTestCase extends DbTestCase
+trait CapacityUsageTestTrait
 {
+    /**
+     * Get the tested capacity class.
+     *
+     * @return string
+     */
     abstract protected function getTargetCapacity(): string;
 
     abstract public function provideIsUsed(): iterable;
@@ -131,9 +134,10 @@ abstract class CapacityTestCase extends DbTestCase
         array $target_fields = [],
         ?string $relation_classname = null,
         array $relation_fields = [],
-        array $expected_results = [[1, 1], [2, 1], [2, 2]],
     ): void {
         global $DB;
+
+        $capacity = new ($this->getTargetCapacity());
 
         // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
@@ -151,10 +155,8 @@ abstract class CapacityTestCase extends DbTestCase
 
         // Create item
         $table = $target_classname::getTable();
-        if ($DB->fieldExists($table, 'itemtype')) {
+        if ($DB->fieldExists($table, 'itemtype') && $DB->fieldExists($table, 'items_id')) {
             $target_fields['itemtype'] = $definition->getAssetClassName();
-        }
-        if ($DB->fieldExists($table, 'items_id')) {
             $target_fields['items_id'] = $subject->getID();
         }
         if ($DB->fieldExists($table, 'entities_id')) {
@@ -183,39 +185,8 @@ abstract class CapacityTestCase extends DbTestCase
         }
 
         // Check that the capacity usage description is correct
-        $capacity = new ($this->getTargetCapacity());
-        $expectedValue = sprintf($expected, ...$expected_results[0]);
-
+        $expectedValue = sprintf($expected, 1, 1);
         $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
-
-        if (
-            !is_subclass_of($target_classname, 'CommonDBChild')
-            && !is_subclass_of($target_classname, 'CommonDBRelation')
-        ) {
-            // Create a second item
-            $item2 = $this->createItem($target_classname, $target_fields, ['entities_id']);
-
-            // Link item to subject
-            if ($relation_classname !== null) {
-                $table = $relation_classname::getTable();
-                if ($DB->fieldExists($table, 'itemtype')) {
-                    $relation_fields['itemtype'] = $subject::getType();
-                }
-                if ($DB->fieldExists($table, 'items_id')) {
-                    $relation_fields['items_id'] = $subject->getID();
-                }
-                if ($DB->fieldExists($table, $target_classname::getForeignKeyField())) {
-                    $relation_fields[$target_classname::getForeignKeyField()] = $item2->getID();
-                }
-
-                $this->createItem($relation_classname, $relation_fields);
-            }
-
-            // Check that the capacity usage description is correct
-            $expectedValue = sprintf($expected, ...$expected_results[1]);
-
-            $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
-        }
 
         // Create a second subject
         $subject2 = $this->createItem($definition->getAssetClassName(), [
@@ -223,11 +194,25 @@ abstract class CapacityTestCase extends DbTestCase
             'entities_id' => $entity_id,
         ]);
 
-        // Link item to second subject
-        if (
-            $relation_classname !== null
-            && !is_subclass_of($relation_classname, 'CommonDBChild')
-        ) {
+        // Create a second item
+        $table = $target_classname::getTable();
+        if ($DB->fieldExists($table, 'itemtype')) {
+            $target_fields['itemtype'] = $definition->getAssetClassName();
+        }
+        if ($DB->fieldExists($table, 'items_id')) {
+            $target_fields['items_id'] = $subject2->getID();
+        }
+        if ($DB->fieldExists($table, 'entities_id')) {
+            $target_fields['entities_id'] = $entity_id;
+        }
+        if ($DB->fieldExists($table, 'name')) {
+            $target_fields['name'] = 'Test item';
+        }
+
+        $item2 = $this->createItem($target_classname, $target_fields);
+
+        // Link second item to second subject
+        if ($relation_classname !== null) {
             $table = $relation_classname::getTable();
             if ($DB->fieldExists($table, 'itemtype')) {
                 $relation_fields['itemtype'] = $subject2::getType();
@@ -242,30 +227,8 @@ abstract class CapacityTestCase extends DbTestCase
             $this->createItem($relation_classname, $relation_fields);
         }
 
-        if (
-            is_subclass_of($target_classname, 'CommonDBChild')
-            || is_subclass_of($target_classname, 'CommonDBRelation')
-        ) {
-            $table = $target_classname::getTable();
-            if ($DB->fieldExists($table, 'itemtype')) {
-                $target_fields['itemtype'] = $definition->getAssetClassName();
-            }
-            if ($DB->fieldExists($table, 'items_id')) {
-                $target_fields['items_id'] = $subject2->getID();
-            }
-            if ($DB->fieldExists($table, 'entities_id')) {
-                $target_fields['entities_id'] = $entity_id;
-            }
-            if ($DB->fieldExists($table, 'name')) {
-                $target_fields['name'] = 'Test item 2';
-            }
-
-            $this->createItem($target_classname, $target_fields);
-        }
-
         // Check that the capacity usage description is correct
-        $expectedValue = sprintf($expected, ...$expected_results[2]);
-
+        $expectedValue = sprintf($expected, 2, 2);
         $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo($expectedValue);
     }
 }

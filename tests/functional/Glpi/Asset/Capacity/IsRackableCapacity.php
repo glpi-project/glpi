@@ -35,30 +35,20 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
 use Item_Rack;
 use Log;
 use Rack;
 
-class IsRackableCapacity extends CapacityTestCase
+class IsRackableCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
-    protected function getTargetCapacity(): string
-    {
-        return \Glpi\Asset\Capacity\IsRackableCapacity::class;
-    }
-
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
 
-        $root_entity_id = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+        $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
@@ -244,98 +234,96 @@ class IsRackableCapacity extends CapacityTestCase
         $this->array($CFG_GLPI['rackable_types'])->contains($classname_2);
     }
 
-    public function provideIsUsed(): iterable
+    public function testIsUsed(): void
     {
-        $racks_id = $this->createItem(Rack::class, [
-            'name' => 'rack 1',
-            'entities_id' => $this->getTestRootEntity(true),
-            'number_units' => 40
-        ])->getID();
-
-        yield [
-            'target_classname' => Item_Rack::class,
-            'target_fields' => [
-                'racks_id' => $racks_id,
-                'position' => 1
-            ]
-        ];
-    }
-
-    public function provideGetCapacityUsageDescription(): iterable
-    {
-        yield [
-            'target_classname' => Item_Rack::class,
-            'expected' => 'Used by %d of %d assets'
-        ];
-    }
-
-    /**
-     * @dataProvider provideGetCapacityUsageDescription
-     */
-    public function testGetCapacityUsageDescription(
-        string $target_classname,
-        string $expected,
-        array $target_fields = [],
-        ?string $relation_classname = null,
-        array $relation_fields = [],
-        array $expected_results = [[1, 1], [2, 1], [2, 2]],
-    ): void {
-        // Retrieve the test root entity
         $entity_id = $this->getTestRootEntity(true);
 
-        // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            system_name: 'TestAsset',
-            capacities: [$this->getTargetCapacity()]
+            capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
         );
 
-        // Create our test subject
-        $subject = $this->createItem($definition->getAssetClassName(), [
+        $asset = $this->createItem($definition->getAssetClassName(), [
             'name' => 'Test asset',
+            'entities_id' => $entity_id,
         ]);
 
-        // Create a rack
+        // Check that the capacity can be disabled
+        $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isFalse();
+
+        // Create a relation with a rack
+        $racks_id = $this->createItem(Rack::class, [
+            'name' => 'rack 1',
+            'entities_id' => $entity_id,
+            'number_units' => 40
+        ])->getID();
+        $this->createItem(
+            Item_Rack::class,
+            [
+                'itemtype' => $definition->getAssetClassName(),
+                'items_id' => $asset->getID(),
+                'position' => 1,
+                'racks_id' => $racks_id,
+            ]
+        );
+
+        // Check that the capacity can't be safely disabled
+        $this->boolean($capacity->isUsed($definition->getAssetClassName()))->isTrue();
+    }
+
+    public function testGetCapacityUsageDescription(): void
+    {
+        $entity_id = $this->getTestRootEntity(true);
+
+        $definition = $this->initAssetDefinition(
+            system_name: 'TestAsset',
+            capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
+        );
+        $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
+
+        // Check that the capacity usage description is correct
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('Used by 0 of 0 assets');
+
+        // Create assets
+        $asset1 = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset',
+        ]);
+        $asset2 = $this->createItem($definition->getAssetClassName(), [
+            'name' => 'Test asset 2',
+        ]);
+
+        // Check that the capacity usage description is correct
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('Used by 0 of 2 assets');
+
+        // Create a relation with a rack
         $rack = $this->createItem(Rack::class, [
             'name' => 'Test rack',
             'entities_id' => $entity_id,
             'number_units' => 40
         ]);
-
-        // Create an item
-        $this->createItem($target_classname, [
-            'itemtype'       => $subject::getType(),
-            'items_id'       => $subject->getID(),
-            'racks_id'       => $rack->getID(),
-            'position'       => 1
+        $this->createItem(Item_Rack::class, [
+            'itemtype' => $definition->getAssetClassName(),
+            'items_id' => $asset1->getID(),
+            'racks_id' => $rack->getID(),
+            'position' => 1
         ]);
 
         // Check that the capacity usage description is correct
-        $capacity = new ($this->getTargetCapacity());
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo(
-            sprintf($expected, 1, 1)
-        );
-
-        // Create a second subject
-        $subject2 = $this->createItem($definition->getAssetClassName(), [
-            'name' => 'Test asset 2',
-        ]);
-
-        // Check that the capacity usage description is correct
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo(
-            sprintf($expected, 1, 2)
-        );
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('Used by 1 of 2 assets');
 
         // Create an item linked to the second subject
-        $this->createItem($target_classname, [
-            'itemtype'       => $subject2::getType(),
-            'items_id'       => $subject2->getID(),
-            'racks_id'       => $rack->getID(),
-            'position'       => 2
+        $this->createItem(Item_Rack::class, [
+            'itemtype' => $definition->getAssetClassName(),
+            'items_id' => $asset2->getID(),
+            'racks_id' => $rack->getID(),
+            'position' => 2
         ]);
 
         // Check that the capacity usage description is correct
-        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))->isEqualTo(
-            sprintf($expected, 2, 2)
-        );
+        $this->string($capacity->getCapacityUsageDescription($definition->getAssetClassName()))
+            ->isEqualTo('Used by 2 of 2 assets');
     }
 }

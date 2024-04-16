@@ -35,20 +35,18 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Item_OperatingSystem;
 use Log;
 
-class HasOperatingSystemCapacity extends CapacityTestCase
+class HasOperatingSystemCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class;

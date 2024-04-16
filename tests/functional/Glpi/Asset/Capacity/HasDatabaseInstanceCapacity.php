@@ -36,17 +36,14 @@
 namespace tests\units\Glpi\Asset\Capacity;
 
 use DatabaseInstance;
+use DbTestCase;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
-use Profile;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 
-class HasDatabaseInstanceCapacity extends CapacityTestCase
+class HasDatabaseInstanceCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasDatabaseInstanceCapacity::class;
@@ -195,11 +192,6 @@ class HasDatabaseInstanceCapacity extends CapacityTestCase
         yield [
             'target_classname' => DatabaseInstance::class,
             'expected' => '%d database instances attached to %d assets',
-            'expected_results' => [
-                [1, 1],
-                [2, 1],
-                [2, 1],
-            ]
         ];
     }
 }
