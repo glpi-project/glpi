@@ -1363,6 +1363,7 @@ class User extends CommonDBTM
                     $right->delete($db_profile);
                 }
             }
+            $this->must_process_ruleright = false;
         }
         return $return;
     }
