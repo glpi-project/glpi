@@ -50,6 +50,11 @@ class HasSoftwaresCapacity extends AbstractCapacity
         return Software::getTypeName(Session::getPluralNumber());
     }
 
+    public function getIcon(): string
+    {
+        return Software::getIcon();
+    }
+
     public function getCloneRelations(): array
     {
         return [
@@ -61,15 +66,111 @@ class HasSoftwaresCapacity extends AbstractCapacity
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeerItem($classname, Item_SoftwareVersion::class) > 0;
+            && (
+                $this->countAssetsLinkedToPeerItem($classname, Item_SoftwareVersion::class) > 0
+                || $this->countAssetsLinkedToPeerItem($classname, Item_SoftwareLicense::class) > 0
+            );
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $assets_ids = [];
+        $softwares_ids = [];
+
+        $asset_table    = $classname::getTable();
+        $software_table = Software::getTable();
+        $versions_table = SoftwareVersion::getTable();
+        $item_v_table   = Item_SoftwareVersion::getTable();
+        $licences_table = SoftwareLicense::getTable();
+        $item_l_table   = Item_SoftwareLicense::getTable();
+
+        // Get relations between asset and software versions
+        $versions_iterator = $DB->request([
+            'SELECT'     => [
+                $software_table . '.id AS softwares_id',
+                $asset_table . '.id AS assets_id',
+            ],
+            'FROM'       => $item_v_table,
+            'INNER JOIN' => [
+                $versions_table => [
+                    'ON' => [
+                        $item_v_table   => 'softwareversions_id',
+                        $versions_table => 'id',
+                    ]
+                ],
+                $software_table => [
+                    'ON' => [
+                        $versions_table => 'softwares_id',
+                        $software_table => 'id',
+                    ]
+                ],
+                $asset_table => [
+                    'ON' => [
+                        $item_v_table   => 'items_id',
+                        $asset_table    => 'id',
+                    ]
+                ],
+            ],
+            'WHERE'      => [
+                'itemtype' => $classname,
+            ]
+        ]);
+        foreach ($versions_iterator as $version_data) {
+            if (!in_array($version_data['softwares_id'], $softwares_ids, true)) {
+                $softwares_ids[] = $version_data['softwares_id'];
+            }
+            if (!in_array($version_data['assets_id'], $assets_ids, true)) {
+                $assets_ids[] = $version_data['assets_id'];
+            }
+        }
+
+        // Get relations between asset and software licences
+        $versions_iterator = $DB->request([
+            'SELECT' => [
+                $software_table . '.id AS softwares_id',
+                $asset_table . '.id AS assets_id',
+            ],
+            'FROM'       => $item_l_table,
+            'INNER JOIN' => [
+                $licences_table => [
+                    'ON' => [
+                        $item_l_table   => 'softwarelicenses_id',
+                        $licences_table => 'id',
+                    ]
+                ],
+                $software_table => [
+                    'ON' => [
+                        $licences_table => 'softwares_id',
+                        $software_table => 'id',
+                    ]
+                ],
+                $asset_table => [
+                    'ON' => [
+                        $item_l_table   => 'items_id',
+                        $asset_table    => 'id',
+                    ]
+                ],
+            ],
+            'WHERE'  => [
+                'itemtype' => $classname,
+            ]
+        ]);
+        foreach ($versions_iterator as $version_data) {
+            if (!in_array($version_data['softwares_id'], $softwares_ids, true)) {
+                $softwares_ids[] = $version_data['softwares_id'];
+            }
+            if (!in_array($version_data['assets_id'], $assets_ids, true)) {
+                $assets_ids[] = $version_data['assets_id'];
+            }
+        }
+
         return sprintf(
             __('%1$s software(s) attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Item_SoftwareVersion::class),
-            $this->countAssetsLinkedToPeerItem($classname, Item_SoftwareVersion::class)
+            count($softwares_ids),
+            count($assets_ids)
         );
     }
 
