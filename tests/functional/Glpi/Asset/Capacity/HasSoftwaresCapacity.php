@@ -153,7 +153,7 @@ class HasSoftwaresCapacity extends DbTestCase
                 'softwares_id' => $software->getID(),
             ]
         );
-        $item_software_1 = $this->createItem(
+        $item_softwarev_1 = $this->createItem(
             Item_SoftwareVersion::class,
             [
                 'entities_id' => $root_entity_id,
@@ -162,11 +162,35 @@ class HasSoftwaresCapacity extends DbTestCase
                 'items_id' => $item_1->getID(),
             ]
         );
-        $item_software_2 = $this->createItem(
+        $item_softwarev_2 = $this->createItem(
             Item_SoftwareVersion::class,
             [
                 'entities_id' => $root_entity_id,
                 'softwareversions_id' => $software_version->getID(),
+                'itemtype' => $item_2->getType(),
+                'items_id' => $item_2->getID(),
+            ]
+        );
+        $software_license = $this->createItem(
+            SoftwareLicense::class,
+            [
+                'name' => 'pro license',
+                'entities_id' => $root_entity_id,
+                'softwares_id' => $software->getID(),
+            ]
+        );
+        $item_softwarel_1 = $this->createItem(
+            Item_SoftwareLicense::class,
+            [
+                'softwarelicenses_id' => $software_license->getID(),
+                'itemtype' => $item_1->getType(),
+                'items_id' => $item_1->getID(),
+            ]
+        );
+        $item_softwarel_2 = $this->createItem(
+            Item_SoftwareLicense::class,
+            [
+                'softwarelicenses_id' => $software_license->getID(),
                 'itemtype' => $item_2->getType(),
                 'items_id' => $item_2->getID(),
             ]
@@ -180,22 +204,26 @@ class HasSoftwaresCapacity extends DbTestCase
         ];
 
         // Ensure relation and logs exists, and class is registered to global config
-        $this->object(Item_SoftwareVersion::getById($item_software_1->getID()))->isInstanceOf(Item_SoftwareVersion::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(1);
-        $this->object(Item_SoftwareVersion::getById($item_software_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
+        $this->object(Item_SoftwareVersion::getById($item_softwarev_1->getID()))->isInstanceOf(Item_SoftwareVersion::class);
+        $this->object(Item_SoftwareLicense::getById($item_softwarel_1->getID()))->isInstanceOf(Item_SoftwareLicense::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(2); // version + license
+        $this->object(Item_SoftwareVersion::getById($item_softwarev_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
+        $this->object(Item_SoftwareLicense::getById($item_softwarel_2->getID()))->isInstanceOf(Item_SoftwareLicense::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2); // version + license
         $this->array($CFG_GLPI['software_types'])->contains($classname_1);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->boolean($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]))->isTrue();
-        $this->boolean(Item_SoftwareVersion::getById($item_software_1->getID()))->isFalse();
+        $this->boolean(Item_SoftwareVersion::getById($item_softwarev_1->getID()))->isFalse();
+        $this->boolean(Item_SoftwareLicense::getById($item_softwarel_1->getID()))->isFalse();
         $this->integer(countElementsInTable(Log::getTable(), $item_1_logs_criteria))->isEqualTo(0);
         $this->array($CFG_GLPI['software_types'])->notContains($classname_1);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->object(Item_SoftwareVersion::getById($item_software_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
-        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(1);
+        $this->object(Item_SoftwareVersion::getById($item_softwarev_2->getID()))->isInstanceOf(Item_SoftwareVersion::class);
+        $this->object(Item_SoftwareLicense::getById($item_softwarel_2->getID()))->isInstanceOf(Item_SoftwareLicense::class);
+        $this->integer(countElementsInTable(Log::getTable(), $item_2_logs_criteria))->isEqualTo(2);
         $this->array($CFG_GLPI['software_types'])->contains($classname_2);
     }
 
