@@ -65,7 +65,8 @@ switch ($_GET['action']) {
             $deleted = true;
             if ($_GET['params']['id'] > 0) {
                 $obj_fkey = $obj->getForeignKeyField();
-                $deleted  = $item_obj::deleteByCriteria([
+                $relation = new $item_obj();
+                $deleted  = $relation->deleteByCriteria([
                     $obj_fkey  => $_GET['params']['id'],
                     'items_id' => $_GET['items_id'],
                     'itemtype' => $_GET['itemtype']
