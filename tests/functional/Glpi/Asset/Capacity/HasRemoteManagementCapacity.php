@@ -35,19 +35,17 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Item_RemoteManagement;
 use Log;
 
-class HasRemoteManagementCapacity extends CapacityTestCase
+class HasRemoteManagementCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class;

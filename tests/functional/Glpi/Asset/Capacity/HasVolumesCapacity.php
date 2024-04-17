@@ -35,21 +35,18 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Item_Disk;
 use Log;
-use Profile;
 
-class HasVolumesCapacity extends CapacityTestCase
+class HasVolumesCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasVolumesCapacity::class;

@@ -37,19 +37,16 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Appliance;
 use Appliance_Item;
+use DbTestCase;
 use DisplayPreference;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Log;
-use Profile;
 
-class HasAppliancesCapacity extends CapacityTestCase
+class HasAppliancesCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasAppliancesCapacity::class;

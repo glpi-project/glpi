@@ -37,19 +37,16 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use Certificate;
 use Certificate_Item;
+use DbTestCase;
 use DisplayPreference;
 use Entity;
-use Glpi\Tests\CapacityTestCase;
+use Glpi\Tests\Asset\CapacityUsageTestTrait;
 use Log;
-use Profile;
 
-class HasCertificatesCapacity extends CapacityTestCase
+class HasCertificatesCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
+    use CapacityUsageTestTrait;
+
     protected function getTargetCapacity(): string
     {
         return \Glpi\Asset\Capacity\HasCertificatesCapacity::class;

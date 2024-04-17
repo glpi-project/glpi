@@ -35,25 +35,15 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Tests\CapacityTestCase;
 use Log;
 use Monitor;
 
-class HasPeripheralAssetsCapacity extends CapacityTestCase
+class HasPeripheralAssetsCapacity extends DbTestCase
 {
-    /**
-     * Get the tested capacity class.
-     *
-     * @return string
-     */
-    protected function getTargetCapacity(): string
-    {
-        return \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class;
-    }
-
     public function testCapacityActivation(): void
     {
         global $CFG_GLPI;
@@ -259,53 +249,7 @@ class HasPeripheralAssetsCapacity extends CapacityTestCase
         ]))->hasSize(1);
     }
 
-    public function provideIsUsed(): iterable
-    {
-        // Cannot be tested with the generic method
-        return [];
-    }
-
-    public function provideGetCapacityUsageDescription(): iterable
-    {
-        // Cannot be tested with the generic method
-        return [];
-    }
-
-    /**
-     * Cannot be tested with the generic method
-     *
-     * @ignore
-     * @dataProvider provideIsUsed
-     *
-     * @TODO Move generic test in a trait.
-     */
-    public function testIsUsed(
-        string $target_classname,
-        array $target_fields = [],
-        ?string $relation_classname = null,
-        array $relation_fields = [],
-    ): void {
-    }
-
-    /**
-     * Cannot be tested with the generic method
-     *
-     * @ignore
-     * @dataProvider provideGetCapacityUsageDescription
-     *
-     * @TODO Move generic test in a trait.
-     */
-    public function testGetCapacityUsageDescription(
-        string $target_classname,
-        string $expected,
-        array $target_fields = [],
-        ?string $relation_classname = null,
-        array $relation_fields = [],
-        array $expected_results = [[1, 1], [2, 1], [2, 2]],
-    ): void {
-    }
-
-    public function testIsUsedCustom(): void
+    public function testIsUsed(): void
     {
         global $CFG_GLPI;
 
@@ -313,7 +257,7 @@ class HasPeripheralAssetsCapacity extends CapacityTestCase
 
         foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
             $definition = $this->initAssetDefinition(
-                capacities: [$this->getTargetCapacity()]
+                capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
             );
             $class = $definition->getAssetClassName();
 
@@ -349,14 +293,14 @@ class HasPeripheralAssetsCapacity extends CapacityTestCase
         }
     }
 
-    public function testGetCapacityUsageDescriptionCustom(): void
+    public function testGetCapacityUsageDescription(): void
     {
         global $CFG_GLPI;
 
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
         );
         $class = $definition->getAssetClassName();
 
