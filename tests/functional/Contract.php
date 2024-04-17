@@ -99,4 +99,79 @@ class Contract extends DbTestCase
             )->isIdenticalTo(1, 'Missing relation with ' . $rel_class);
         }
     }
+
+    public function getSpecificValueToDisplayProvider()
+    {
+        $past_date = '2020-01-01';
+        $futur_date = date('Y-01-01', strtotime('+1 year'));
+        $futur_date_end = date('Y-07-01', strtotime('+1 year'));
+        return [
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => $past_date,
+                    'duration' => '6',
+                    'renewal' => \Contract::RENEWAL_NEVER
+                ],
+                'expected' => "<span class='red'>2020-07-01</span>"
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => $past_date,
+                    'duration' => '6',
+                    'renewal' => \Contract::RENEWAL_TACIT
+                ],
+                'expected' => "2024-07-01"
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => $past_date,
+                    'duration' => '6',
+                    'renewal' => \Contract::RENEWAL_EXPRESS
+                ],
+                'expected' => "<span class='red'>2020-07-01</span>"
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => $futur_date,
+                    'duration' => '6',
+                    'renewal' => \Contract::RENEWAL_NEVER
+                ],
+                'expected' => $futur_date_end
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => $futur_date,
+                    'duration' => '6',
+                    'renewal' => \Contract::RENEWAL_TACIT
+                ],
+                'expected' => $futur_date_end
+            ],
+            [
+                'field' => '_virtual_expiration',
+                'values' => [
+                    'begin_date' => $futur_date,
+                    'duration' => '6',
+                    'renewal' => \Contract::RENEWAL_EXPRESS
+                ],
+                'expected' => $futur_date_end
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getSpecificValueToDisplayProvider
+     */
+    public function testGetSpecificValueToDisplay($field, $values, $expected)
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+        $contract = new \Contract();
+        $this->string($contract->getSpecificValueToDisplay($field, $values))->isEqualTo($expected);
+    }
+
 }
