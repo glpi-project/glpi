@@ -173,5 +173,4 @@ class Contract extends DbTestCase
         $contract = new \Contract();
         $this->string($contract->getSpecificValueToDisplay($field, $values))->isEqualTo($expected);
     }
-
 }
