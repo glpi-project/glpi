@@ -3743,7 +3743,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (
             array_key_exists(
                 static::STATUS_MATRIX_FIELD,
-                $_SESSION['glpiactiveprofile']
+                $_SESSION['glpiactiveprofile'] ?? []
             )
             && static::isStatusExists($new)
         ) { // maybe not set for post-only

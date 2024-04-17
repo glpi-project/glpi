@@ -475,58 +475,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 if (!$this->input['_job']->getFromDB($this->fields[$this->input['_job']->getForeignKeyField()])) {
                     return false;
                 }
-                if (
-                    isset($this->input['_status'])
-                    && ($this->input['_status'] != $this->input['_job']->fields['status'])
-                ) {
-                    $update = [
-                        'status'        => $this->input['_status'],
-                        'id'            => $this->input['_job']->fields['id'],
-                        '_disablenotif' => true,
-                    ];
-                    $this->input['_job']->update($update);
-                }
-
-                if (
-                    !empty($this->fields['begin'])
-                    && $item->isStatusExists(CommonITILObject::PLANNED)
-                    && (($item->fields["status"] == CommonITILObject::INCOMING)
-                     || ($item->fields["status"] == CommonITILObject::ASSIGNED))
-                ) {
-                    $input2 = [
-                        'id'            => $item->getID(),
-                        'status'        => CommonITILObject::PLANNED,
-                        '_disablenotif' => true,
-                    ];
-                    $item->update($input2);
-                } elseif (
-                    $item->fields["status"] == CommonITILObject::PLANNED
-                ) {
-                    if (
-                        $item->isAllowedStatus($item->fields["status"], CommonITILObject::ASSIGNED)
-                        && (
-                            ($item->countUsers(CommonITILActor::ASSIGN) > 0)
-                            || ($item->countGroups(CommonITILActor::ASSIGN) > 0)
-                            || ($item->countSuppliers(CommonITILActor::ASSIGN) > 0)
-                        )
-                    ) {
-                        $input2 = [
-                            'id'            => $item->getID(),
-                            'status'        => CommonITILObject::ASSIGNED,
-                            '_disablenotif' => false,
-                        ];
-                        $item->update($input2);
-                    } elseif (
-                        $item->isAllowedStatus($item->fields["status"], CommonITILObject::INCOMING)
-                    ) {
-                        $input2 = [
-                            'id'            => $item->getID(),
-                            'status'        => CommonITILObject::INCOMING,
-                            '_disablenotif' => false,
-                        ];
-                        $item->update($input2);
-                    }
-                }
+                $this->updateParentStatus($this->input['_job'], $this->input);
 
                 if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
                     $options = ['task_id'    => $this->fields["id"],

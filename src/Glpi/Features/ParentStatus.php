@@ -164,15 +164,44 @@ trait ParentStatus
             }
         }
 
-        if (
-            !$is_set_pending
-            && !empty($this->fields['begin'])
-            && $parentitem->isStatusExists(CommonITILObject::PLANNED)
-            && (($parentitem->fields["status"] == CommonITILObject::INCOMING)
-              || ($parentitem->fields["status"] == CommonITILObject::ASSIGNED)
-              || $needupdateparent)
-        ) {
-            $input['_status'] = CommonITILObject::PLANNED;
+        if (!$is_set_pending) {
+            if (
+                !empty($this->fields['begin'])
+                && $parentitem->isStatusExists(CommonITILObject::PLANNED)
+                && (($parentitem->fields["status"] == CommonITILObject::INCOMING)
+                    || ($parentitem->fields["status"] == CommonITILObject::ASSIGNED)
+                    || $needupdateparent)
+            ) {
+                $input['_status'] = CommonITILObject::PLANNED;
+            } elseif ($parentitem->fields["status"] == CommonITILObject::PLANNED) {
+                /** @var \DBmysql $DB */
+                global $DB;
+                $criteria = [
+                    'DISTINCT' => true,
+                    'FROM' => $this->getTable(),
+                    'WHERE' => [
+                        $parentitem->getForeignKeyField() => $parentitem->getID(),
+                        ['NOT'   => ['begin' => null]]
+                    ],
+                ];
+                $iterator = $DB->request($criteria);
+                if ($iterator->numrows() > 0) {
+                    $input['_status'] = CommonITILObject::PLANNED;
+                } elseif (
+                    $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::ASSIGNED)
+                    && (
+                        ($parentitem->countUsers(CommonITILActor::ASSIGN) > 0)
+                        || ($parentitem->countGroups(CommonITILActor::ASSIGN) > 0)
+                        || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)
+                    )
+                ) {
+                    $input['_status'] = CommonITILObject::ASSIGNED;
+                } elseif (
+                    $parentitem::isAllowedStatus($parentitem->fields["status"], CommonITILObject::INCOMING)
+                ) {
+                    $input['_status'] = CommonITILObject::INCOMING;
+                }
+            }
         }
 
        //change ITILObject status only if input change
