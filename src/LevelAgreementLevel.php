@@ -435,7 +435,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      * @param LevelAgreement $la The Level Agreement object (SLA or OLA)
      * @return void
      */
-    public function showForLA(LevelAgreement $la): void
+    final protected function showForLA(LevelAgreement $la): void
     {
         /** @var \DBmysql $DB */
         global $DB;

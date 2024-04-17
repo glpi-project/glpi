@@ -515,7 +515,7 @@ TWIG, $twig_params);
      *
      * @param $tickets_id
      * @param $type
-     * @return false|Generator
+     * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getDataForTicket($tickets_id, $type)
