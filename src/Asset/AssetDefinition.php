@@ -105,23 +105,31 @@ final class AssetDefinition extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if ($item instanceof self) {
+            $capacities_count   = 0;
+            $profiles_count     = 0;
+            $translations_count = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $capacities_count   = count($item->getDecodedCapacitiesField());
+                $profiles_count     = count(array_filter($item->getDecodedProfilesField()));
+                $translations_count = count($item->getDecodedTranslationsField());
+            }
             return [
                 1 => self::createTabEntry(
                     __('Capacities'),
-                    count($item->getDecodedCapacitiesField()),
+                    $capacities_count,
                     self::class,
                     'ti ti-adjustments'
                 ),
                 // 2 is reserved for "Fields"
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
-                    count($item->getDecodedProfilesField()),
+                    $profiles_count,
                     self::class,
                     'ti ti-user-check'
                 ),
                 4 => self::createTabEntry(
                     _n('Translation', 'Translations', Session::getPluralNumber()),
-                    count($item->getDecodedTranslationsField()),
+                    $translations_count,
                     self::class,
                     'ti ti-language'
                 ),
