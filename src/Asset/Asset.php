@@ -41,6 +41,7 @@ use Entity;
 use Group;
 use Location;
 use Manufacturer;
+use ReflectionClass;
 use State;
 use Toolbox;
 use User;
@@ -65,7 +66,11 @@ abstract class Asset extends CommonDBTM
      */
     public static function getDefinition(): AssetDefinition
     {
-        $definition = static::$definition ?? null;
+        // Get the definition without triggering PHPStan issue
+        // see https://github.com/phpstan/phpstan/issues/8808
+        // see https://github.com/phpstan/phpstan-src/pull/3019
+        $reflected_class = new ReflectionClass(static::class);
+        $definition = $reflected_class->getStaticPropertyValue('definition');
 
         if (!($definition instanceof AssetDefinition)) {
             throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');

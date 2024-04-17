@@ -37,6 +37,7 @@ namespace Glpi\Asset;
 
 use CommonDropdown;
 use Glpi\Asset\Capacity\IsRackableCapacity;
+use ReflectionClass;
 use Toolbox;
 
 abstract class AssetModel extends \CommonDCModelDropdown
@@ -48,7 +49,11 @@ abstract class AssetModel extends \CommonDCModelDropdown
      */
     public static function getDefinition(): AssetDefinition
     {
-        $definition = static::$definition ?? null;
+        // Get the definition without triggering PHPStan issue
+        // see https://github.com/phpstan/phpstan/issues/8808
+        // see https://github.com/phpstan/phpstan-src/pull/3019
+        $reflected_class = new ReflectionClass(static::class);
+        $definition = $reflected_class->getStaticPropertyValue('definition');
 
         if (!($definition instanceof AssetDefinition)) {
             throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
