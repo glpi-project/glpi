@@ -2226,9 +2226,9 @@ JS
     public function getMinimalCriteriaText($fields, $addtotd = '')
     {
         $to_display = $this->getMinimalCriteria($fields);
-        $text  = "<td $addtotd>" . $to_display['criterion'] . "</td>";
-        $text .= "<td $addtotd>" . $to_display['condition'] . "</td>";
-        $text .= "<td $addtotd>" . $to_display['pattern'] . "</td>";
+        $text  = "<td $addtotd>" . htmlspecialchars($to_display['criterion']) . "</td>";
+        $text .= "<td $addtotd>" . htmlspecialchars($to_display['condition']) . "</td>";
+        $text .= "<td $addtotd>" . htmlspecialchars($to_display['pattern']) . "</td>";
         return $text;
     }
 
@@ -2257,9 +2257,9 @@ JS
     public function getMinimalActionText($fields, $addtotd = '')
     {
         $to_display = $this->getMinimalAction($fields);
-        $text  = "<td $addtotd>" . $to_display['field'] . "</td>";
-        $text .= "<td $addtotd>" . $to_display['type'] . "</td>";
-        $text .= "<td $addtotd>" . $to_display['value'] . "</td>";
+        $text  = "<td $addtotd>" . htmlspecialchars($to_display['field']) . "</td>";
+        $text .= "<td $addtotd>" . htmlspecialchars($to_display['type']) . "</td>";
+        $text .= "<td $addtotd>" . htmlspecialchars($to_display['value']) . "</td>";
         return $text;
     }
 

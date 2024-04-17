@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 
 /**
@@ -320,9 +321,6 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public static function showForSLM(SLM $slm)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (!$slm->can($slm->fields['id'], READ)) {
             return false;
         }
@@ -334,121 +332,90 @@ abstract class LevelAgreement extends CommonDBChild
         $canedit  = $slm->canEdit($instID) && Session::getCurrentInterface() === 'central';
 
         if ($canedit) {
-            echo "<div id='showLa$instID$rand'></div>\n";
-
-            echo "<script type='text/javascript' >";
-            echo "function viewAddLa$instID$rand() {";
-            $params = ['type'                     => $la->getType(),
-                'parenttype'               => $slm->getType(),
-                $slm->getForeignKeyField() => $instID,
-                'id'                       => -1
+            $twig_params = [
+                'instID' => $instID,
+                'rand'   => $rand,
+                'la'     => $la,
+                'slm'    => $slm,
+                'btn_msg' => __('Add a new item'),
             ];
-            Ajax::updateItemJsCode(
-                "showLa$instID$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                $params
-            );
-            echo "}";
-            echo "</script>";
-            echo "<div class='center firstbloc'>" .
-               "<a class='btn btn-primary' href='javascript:viewAddLa$instID$rand();'>";
-            echo __('Add a new item') . "</a></div>\n";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div id="showLa{{ instID }}{{ rand }}"></div>
+                <script>
+                    function viewAddEditLa{{ instID }}{{ rand }}(item_id = -1) {
+                        $('#showLa{{ instID }}{{ rand }}').load("{{ config('root_doc') }}/ajax/viewsubitem.php", {
+                            type: "{{ la.getType() }}",
+                            parenttype: "{{ slm.getType() }}",
+                            {{ slm.getForeignKeyField() }}: {{ instID }},
+                            id: item_id,
+                        });
+                    }
+                    $(() => {
+                        $('#levelagreement{{ instID }}').on('click', 'tbody tr', function () {
+                            viewAddEditLa{{ instID }}{{ rand }}($(this).data('id'));
+                        });
+                    });
+                </script>
+                <div class="text-center mb-3">
+                    <button name="new_la" type="button" class="btn btn-primary" onclick="viewAddEditLa{{ instID }}{{ rand }}();">{{ btn_msg }}</button>
+                </div>
+TWIG, $twig_params);
         }
 
-       // list
+        // list
         $laList = $la->find(['slms_id' => $instID]);
-        Session::initNavigateListItems(
-            __CLASS__,
-            sprintf(
-                __('%1$s = %2$s'),
-                $slm::getTypeName(1),
-                $slm->getName()
-            )
-        );
-        echo "<div class='spaced'>";
-        if (count($laList)) {
-            if ($canedit) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams = ['container' => 'mass' . __CLASS__ . $rand];
-                Html::showMassiveActions($massiveactionparams);
-            }
 
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_top .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_top .= "</th>";
-                $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-                $header_bottom .= "</th>";
+        $entries = [];
+        foreach ($laList as $val) {
+            $la->getFromResultSet($val);
+            $link = '';
+            if ($slm->fields['use_ticket_calendar']) {
+                $link = __s('Calendar of the ticket');
+            } else if (!$slm->fields['calendars_id']) {
+                 $link =  __s('24/7');
+            } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
+                $link = $calendar->getLink();
             }
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-            $header_end .= "<th>" . __('Maximum time') . "</th>";
-            $header_end .= "<th>" . _n('Calendar', 'Calendars', 1) . "</th>";
-
-            echo $header_begin . $header_top . $header_end;
-            foreach ($laList as $val) {
-                $edit = ($canedit ? "style='cursor:pointer' onClick=\"viewEditLa" .
-                        $instID . $val["id"] . "$rand();\""
-                        : '');
-                echo "<script type='text/javascript' >";
-                echo "function viewEditLa" . $instID . $val["id"] . "$rand() {";
-                $params = ['type'                     => $la->getType(),
-                    'parenttype'               => $slm->getType(),
-                    $slm->getForeignKeyField() => $instID,
-                    'id'                       => $val["id"]
-                ];
-                Ajax::updateItemJsCode(
-                    "showLa$instID$rand",
-                    $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
-                    $params
-                );
-                echo "};";
-                echo "</script>\n";
-
-                echo "<tr class='tab_bg_1'>";
-                echo "<td width='10' $edit>";
-                if ($canedit) {
-                     Html::showMassiveActionCheckBox($la->getType(), $val['id']);
-                }
-                echo "</td>";
-                $la->getFromDB($val['id']);
-                echo "<td $edit>" . $la->getLink() . "</td>";
-                echo "<td $edit>" . $la->getSpecificValueToDisplay('type', $la->fields['type']) . "</td>";
-                echo "<td $edit>";
-                echo $la->getSpecificValueToDisplay(
-                    'number_time',
-                    ['number_time'     => $la->fields['number_time'],
-                        'definition_time' => $la->fields['definition_time']
-                    ]
-                );
-                echo "</td>";
-                $link = '';
-                if ($slm->fields['use_ticket_calendar']) {
-                    $link = __('Calendar of the ticket');
-                } else if (!$slm->fields['calendars_id']) {
-                     $link =  __('24/7');
-                } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
-                    $link = $calendar->getLink();
-                }
-                echo "<td $edit>" . $link . "</td>";
-                echo "</tr>";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-        } else {
-            echo __('No item to display');
+            $entries[] = [
+                'itemtype' => static::class,
+                'id'       => $val['id'],
+                'row_class' => 'cursor-pointer',
+                'name'     => $la->getLink(),
+                'type'     => $la::getSpecificValueToDisplay('type', $la->fields['type']),
+                'maximum_time' => $la::getSpecificValueToDisplay('number_time', [
+                    'number_time'     => $la->fields['number_time'],
+                    'definition_time' => $la->fields['definition_time']
+                ]),
+                'calendar' => $link
+            ];
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'levelagreement' . $instID,
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'type' => _n('Type', 'Types', 1),
+                'maximum_time' => __('Maximum time'),
+                'calendar' => _n('Calendar', 'Calendars', 1)
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'calendar' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ]
+        ]);
     }
 
     /**
@@ -462,7 +429,6 @@ abstract class LevelAgreement extends CommonDBChild
 
         $fk      = static::getFieldNames($this->fields['type'])[1];
         $rule    = new RuleTicket();
-        $rand    = mt_rand();
         $canedit = self::canUpdate();
 
         $rules_id_list = iterator_to_array($DB->request([
@@ -476,79 +442,44 @@ abstract class LevelAgreement extends CommonDBChild
         ]));
         $nb = count($rules_id_list);
 
-        echo "<div class='spaced'>";
-        if (!$nb) {
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr><th>" . __('No item found') . "</th>";
-            echo "</tr>\n";
-            echo "</table>\n";
-        } else {
-            if ($canedit) {
-                Html::openMassiveActionsForm('massRuleTicket' . $rand);
-                $massiveactionparams
-                 = ['num_displayed'    => min($_SESSION['glpilist_limit'], $nb),
-                     'specific_actions' => ['update' => _x('button', 'Update'),
-                         'purge'  => _x('button', 'Delete permanently')
-                     ]
-                 ];
-                Html::showMassiveActions($massiveactionparams);
-            }
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-            if ($canedit) {
-                $header_begin  .= "<th width='10'>";
-                $header_top    .= Html::getCheckAllAsCheckbox('massRuleTicket' . $rand);
-                $header_bottom .= Html::getCheckAllAsCheckbox('massRuleTicket' . $rand);
-                $header_end    .= "</th>";
-            }
-            $header_end .= "<th>" . RuleTicket::getTypeName($nb) . "</th>";
-            $header_end .= "<th>" . __('Active') . "</th>";
-            $header_end .= "<th>" . __('Description') . "</th>";
-            $header_end .= "</tr>\n";
-            echo $header_begin . $header_top . $header_end;
-
-            Session::initNavigateListItems(
-                get_class($this),
-                sprintf(
-                    __('%1$s = %2$s'),
-                    $rule->getTypeName(1),
-                    $rule->getName()
-                )
-            );
-
-            foreach ($rules_id_list as $data) {
-                $rule->getFromDB($data['rules_id']);
-                Session::addToNavigateListItems(get_class($this), $rule->fields["id"]);
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox("RuleTicket", $rule->fields["id"]);
-                    echo "</td>";
-                    $ruleclassname = get_class($rule);
-                    echo "<td><a href='" . $ruleclassname::getFormURLWithID($rule->fields["id"])
-                       . "&amp;onglet=1'>" . $rule->fields["name"] . "</a></td>";
-                } else {
-                    echo "<td>" . $rule->fields["name"] . "</td>";
-                }
-
-                echo "<td>" . Dropdown::getYesNo($rule->fields["is_active"]) . "</td>";
-                echo "<td>" . $rule->fields["description"] . "</td>";
-                echo "</tr>\n";
-            }
-            echo $header_begin . $header_bottom . $header_end;
-            echo "</table>\n";
-
-            if ($canedit) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
+        $entries = [];
+        foreach ($rules_id_list as $data) {
+            $rule->getFromDB($data['rules_id']);
+            $entries[] = [
+                'itemtype' => RuleTicket::class,
+                'id'       => $rule->getID(),
+                'rule'     => $canedit ? $rule->getLink() : htmlspecialchars($rule->fields["name"]),
+                'active'   => Dropdown::getYesNo($rule->fields["is_active"]),
+                'description' => $rule->fields["description"]
+            ];
         }
-        echo "</div>";
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'rule' => RuleTicket::getTypeName($nb),
+                'active' => __('Active'),
+                'description' => __('Description')
+            ],
+            'formatters' => [
+                'rule' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . RuleTicket::class . mt_rand(),
+                'specific_actions' => [
+                    'update' => _x('button', 'Update'),
+                    'purge'  => _x('button', 'Delete permanently')
+                ]
+            ]
+        ]);
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
@@ -585,6 +516,7 @@ abstract class LevelAgreement extends CommonDBChild
      * @param $tickets_id
      * @param $type
      * @return false|iterable
+     * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getDataForTicket($tickets_id, $type)
     {
@@ -613,7 +545,6 @@ abstract class LevelAgreement extends CommonDBChild
         }
         return false;
     }
-
 
     public function rawSearchOptions()
     {

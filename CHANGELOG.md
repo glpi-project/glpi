@@ -290,7 +290,9 @@ The present file will list all changes made to the project; according to the
 - `Search::getMetaReferenceItemtype()`
 - `Search::outputData()`
 - `Search::sylk_clean()`
+- `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
+- `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`

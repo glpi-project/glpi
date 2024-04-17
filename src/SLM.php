@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * SLM Class
  * @since 9.2
@@ -153,31 +155,24 @@ class SLM extends CommonDBTM
      **/
     public function showForm($ID, array $options = [])
     {
-        $rowspan = 2;
-
-        $this->initForm($ID, $options);
-        $this->showFormHeader($options);
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Name') . "</td>";
-        echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name']]);
-        echo "<td rowspan='" . $rowspan . "'>" . __('Comments') . "</td>";
-        echo "<td rowspan='" . $rowspan . "'>
-            <textarea class='form-control' name='comment' >" . $this->fields["comment"] . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . _n('Calendar', 'Calendars', 1) . "</td>";
-        echo "<td>";
-
-        Calendar::dropdown([
-            'value'      => $this->fields['use_ticket_calendar'] ? -1 : $this->fields['calendars_id'],
-            'emptylabel' => __('24/7'),
-            'toadd'      => ['-1' => __('Calendar of the ticket')]
-        ]);
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
-
+        $twig_params = [
+            'item' => $this,
+            'params' => $options,
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% extends 'generic_show_form.html.twig' %}
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            
+            {% block more_fields %}
+                {{ fields.dropdownField('Calendar', 'calendars_id', item.fields['use_ticket_calendar'] ? -1 : item.fields['calendars_id'], 'Calendar'|itemtype_name(1), {
+                    emptylabel: __('24/7'),
+                    toadd: {
+                        (-1): __('Calendar of the ticket')
+                    }
+                }) }}
+            {% endblock %}
+TWIG, $twig_params);
         return true;
     }
 
