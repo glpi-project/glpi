@@ -3755,7 +3755,7 @@ JAVASCRIPT;
                                 $addaltemail = ",
                                 IFNULL(`$ticket_user_table`.`alternative_email`, '')";
                             }
-                            if ($searchopt[$ID]['linkfield'] != 'users_id_lastupdater' && $searchopt[$ID]['linkfield'] != 'users_id_recipient') {
+                            if ((isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
                                 $criterion = "GROUP_CONCAT(DISTINCT CONCAT(
                                     IFNULL(`$table$addtable`.`$name1`, ''),
                                     IFNULL(`$table$addtable`.`$name2`, ''),

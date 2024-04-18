@@ -1625,12 +1625,17 @@ class Search extends DbTestCase
         ]);
 
         yield [
+            'itemtype' => 'Change',
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
-                'criteria[0][field]' => 1,
-                'criteria[0][searchtype]' => 'contains',
-                'criteria[0][value]' => 'testAddOrderByUser',
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
                 'sort' => 4,
                 'order' => 'ASC',
             ],
@@ -1641,16 +1646,22 @@ class Search extends DbTestCase
                 'testAddOrderByUser user 1 (R) + user 2 (R)',  //  _test_user, glpi
                 'testAddOrderByUser user 2 (R)',               //  glpi
                 'testAddOrderByUser anonymous user (R)',       //  myemail@email.com
-            ]
+            ],
+            'row_name' => 'ITEM_Change_1'
         ];
 
         yield [
+            'itemtype' => 'Change',
             'search_params' => [
                 'is_deleted' => 0,
                 'start' => 0,
-                'criteria[0][field]' => 1,
-                'criteria[0][searchtype]' => 'contains',
-                'criteria[0][value]' => 'testAddOrderByUser',
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
                 'sort' => 4,
                 'order' => 'DESC',
             ],
@@ -1661,7 +1672,182 @@ class Search extends DbTestCase
                 'testAddOrderByUser user 1 (R)',               //  _test_user
                 'testAddOrderByUser user 1 (R) + group 1 (R)', //  _test_user
                 'testAddOrderByUser group 1 (R)',              //  no requester
-            ]
+            ],
+            'row_name' => 'ITEM_Change_1'
+        ];
+
+        // Creates Peripheral with different users
+        $this->createItems('Peripheral', [
+            // Test set on user
+            [
+                'name' => 'testAddOrderByUser user 1 (U)',
+                'entities_id' => 0,
+                'users_id' => $user_1,
+            ],
+            [
+                'name' => 'testAddOrderByUser user 2 (U)',
+                'entities_id' => 0,
+                'users_id' => $user_2,
+            ],
+            [
+                'name' => 'testAddOrderByUser no user',
+                'entities_id' => 0,
+            ],
+        ]);
+
+        yield [
+            'itemtype' => 'Peripheral',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 70,
+                'order' => 'ASC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser no user',
+                'testAddOrderByUser user 1 (U)', // _test_user
+                'testAddOrderByUser user 2 (U)', // glpi
+            ],
+            'row_name' => 'ITEM_Peripheral_1'
+        ];
+
+        yield [
+            'itemtype' => 'Peripheral',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 70,
+                'order' => 'DESC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser user 2 (U)', // glpi
+                'testAddOrderByUser user 1 (U)', // _test_user
+                'testAddOrderByUser no user',
+            ],
+            'row_name' => 'ITEM_Peripheral_1'
+        ];
+
+        // Creates Problems with different writers
+        // Create by glpi user
+        $this->createItems('Problem', [
+            [
+                'name' => 'testAddOrderByUser by glpi',
+                'content' => '',
+            ],
+        ]);
+
+        // Create by tech user
+        $this->login('tech', 'tech');
+        $this->createItems('Problem', [
+            [
+                'name' => 'testAddOrderByUser by tech',
+                'content' => '',
+            ],
+        ]);
+
+        $this->login('glpi', 'glpi');
+
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 22,
+                'order' => 'ASC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by tech',
+            ],
+            'row_name' => 'ITEM_Problem_1'
+        ];
+
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 22,
+                'order' => 'DESC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by tech',
+                'testAddOrderByUser by glpi',
+            ],
+            'row_name' => 'ITEM_Problem_1'
+        ];
+
+        // Last edit by
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 64,
+                'order' => 'ASC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by glpi',
+                'testAddOrderByUser by tech',
+            ],
+            'row_name' => 'ITEM_Problem_1'
+        ];
+
+        yield [
+            'itemtype' => 'Problem',
+            'search_params' => [
+                'is_deleted' => 0,
+                'start' => 0,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'testAddOrderByUser',
+                    ],
+                ],
+                'sort' => 64,
+                'order' => 'DESC',
+            ],
+            'expected_order' => [
+                'testAddOrderByUser by tech',
+                'testAddOrderByUser by glpi',
+            ],
+            'row_name' => 'ITEM_Problem_1'
         ];
     }
 
@@ -1669,15 +1855,17 @@ class Search extends DbTestCase
      * @dataProvider testAddOrderByUserProvider
      */
     public function testAddOrderByUser(
+        string $itemtype,
         array $search_params,
-        array $expected_order
+        array $expected_order,
+        string $row_name
     ) {
-        $data = $this->doSearch('Change', $search_params);
+        $data = $this->doSearch($itemtype, $search_params);
 
         // Extract items names
         $items = [];
         foreach ($data['data']['rows'] as $row) {
-            $items[] = $row['raw']['ITEM_Change_1'];
+            $items[] = $row['raw'][$row_name];
         }
 
         // Validate order
