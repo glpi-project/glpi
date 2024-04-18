@@ -51,6 +51,15 @@ abstract class Asset extends CommonDBTM
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
 
+    /**
+     * Asset definition.
+     *
+     * Must be defined here to make PHPStan happy (see https://github.com/phpstan/phpstan/issues/8808).
+     * Must be defined by child class too to ensure that assigning a value to this property will affect
+     * each child classe independently.
+     */
+    protected static AssetDefinition $definition;
+
     final public function __construct()
     {
         foreach (static::getDefinition()->getEnabledCapacities() as $capacity) {
@@ -65,13 +74,11 @@ abstract class Asset extends CommonDBTM
      */
     public static function getDefinition(): AssetDefinition
     {
-        $definition = static::$definition ?? null;
-
-        if (!($definition instanceof AssetDefinition)) {
+        if (!(static::$definition instanceof AssetDefinition)) {
             throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
-        return $definition;
+        return static::$definition;
     }
 
     public static function getTypeName($nb = 0)

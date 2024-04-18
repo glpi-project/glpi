@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d9d46384c1136599a5a38fd2bd0d9205",
+    "content-hash": "2b60f9acdc8b3ca61a9a79d146c2fb3a",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -8637,7 +8637,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-dom": "*",
@@ -8660,7 +8660,7 @@
         "ext-xml": "*"
     },
     "platform-overrides": {
-        "php": "8.1.99"
+        "php": "8.2.99"
     },
     "plugin-api-version": "2.6.0"
 }
