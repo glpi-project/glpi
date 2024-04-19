@@ -142,7 +142,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param boolean $getEmpty          else : do we have to load an empty item ?
      * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
      *
-     * @return CommonDBTM|boolean the item or false if we cannot load the item
+     * @return CommonDBTM|false the item or false if we cannot load the item
      **/
     public function getConnexityItem(
         $itemtype,
@@ -223,7 +223,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param boolean $getEmpty          else : do we have to load an empty item ?
      * @param boolean $getFromDBOrEmpty  get from DB if possible, else, getEmpty
      *
-     * @return CommonDBTM|boolean the item or false if we cannot load the item
+     * @return CommonDBTM|false the item or false if we cannot load the item
      **/
     public static function getItemFromArray(
         $itemtype,

@@ -48,22 +48,13 @@ class Reservation extends CommonDBChild
     public static $rightname                = 'reservation';
     public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-
-    /**
-     * @param $nb  integer  for singular or plural
-     **/
     public static function getTypeName($nb = 0)
     {
         return _n('Reservation', 'Reservations', $nb);
     }
 
-
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (
             !$withtemplate
             && Session::haveRight("reservation", READ)
@@ -73,23 +64,15 @@ class Reservation extends CommonDBChild
         return '';
     }
 
-
-    /**
-     * @param $item         CommonGLPI object
-     * @param $tabnum       (default1)
-     * @param $withtemplate (default0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == 'User') {
+        if ($item::class === User::class) {
             self::showForUser($_GET["id"]);
         } else {
             self::showForItem($item);
         }
         return true;
     }
-
 
     public function pre_deleteItem()
     {
@@ -112,10 +95,6 @@ class Reservation extends CommonDBChild
         return true;
     }
 
-
-    /**
-     * @see CommonDBChild::prepareInputForUpdate()
-     **/
     public function prepareInputForUpdate($input)
     {
         // Save fields
@@ -128,7 +107,7 @@ class Reservation extends CommonDBChild
             $this->fields["end"] = $input["end"];
         }
 
-        if (!$this->isReservationInputValid($input)) {
+        if (!$this->isReservationInputValid()) {
             return false;
         }
 
@@ -138,10 +117,6 @@ class Reservation extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-
-    /**
-     * @see CommonDBTM::post_updateItem()
-     **/
     public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
@@ -153,30 +128,24 @@ class Reservation extends CommonDBChild
             && !isset($this->input['_disablenotif'])
         ) {
             NotificationEvent::raiseEvent("update", $this);
-           //$mail = new MailingResa($this,"update");
-           //$mail->send();
         }
 
         parent::post_updateItem($history);
     }
 
-
-    /**
-     * @see CommonDBChild::prepareInputForAdd()
-     **/
     public function prepareInputForAdd($input)
     {
-       // Error on previous added reservation on several add
+        // Error on previous added reservation on several add
         if (isset($input['_ok']) && !$input['_ok']) {
             return false;
         }
 
-       // set new date.
+        // set new date.
         $this->fields["reservationitems_id"] = $input["reservationitems_id"];
         $this->fields["begin"] = $input["begin"];
         $this->fields["end"] = $input["end"];
 
-        if (!$this->isReservationInputValid($input)) {
+        if (!$this->isReservationInputValid()) {
             return false;
         }
 
@@ -193,13 +162,13 @@ class Reservation extends CommonDBChild
         }
 
         Toolbox::manageBeginAndEndPlanDates($input['resa']);
-        if (!isset($input['resa']["begin"]) || !isset($input['resa']["end"])) {
+        if (!isset($input['resa']["begin"], $input['resa']["end"])) {
             return;
         }
 
         if (!isset($input['items']) || !is_array($input['items']) || count($input['items']) === 0) {
             Session::addMessageAfterRedirect(
-                __('No selected items'),
+                __s('No selected items'),
                 false,
                 ERROR
             );
@@ -207,12 +176,8 @@ class Reservation extends CommonDBChild
 
         $dates_to_add = [];
         $dates_to_add[$input['resa']["begin"]] = $input['resa']["end"];
-        if (
-            isset($input['periodicity'])
-            && isset($input['periodicity']['type'])
-            && !empty($input['periodicity']['type'])
-        ) {
-            $dates_to_add += Reservation::computePeriodicities(
+        if (!empty($input['periodicity']['type'])) {
+            $dates_to_add += self::computePeriodicities(
                 $input['resa']["begin"],
                 $input['resa']["end"],
                 $input['periodicity']
@@ -243,7 +208,7 @@ class Reservation extends CommonDBChild
                         4,
                         "inventory",
                         sprintf(
-                            __('%1$s adds the reservation %2$s for item %3$s'),
+                            __s('%1$s adds the reservation %2$s for item %3$s'),
                             $_SESSION["glpiname"],
                             $newID,
                             $reservationitems_id
@@ -257,7 +222,7 @@ class Reservation extends CommonDBChild
 
                     Session::addMessageAfterRedirect(
                         sprintf(
-                            __('Reservation added for item %s at %s'),
+                            __s('Reservation added for item %s at %s'),
                             $item->getLink(),
                             Html::convDateTime($reservation_input['begin'])
                         )
@@ -270,15 +235,13 @@ class Reservation extends CommonDBChild
     /**
      * Check reservation input.
      *
-     * @param array $input
-     *
      * @return bool
      */
-    private function isReservationInputValid(array $input): bool
+    private function isReservationInputValid(): bool
     {
         if (!$this->test_valid_date()) {
             Session::addMessageAfterRedirect(
-                __('Error in entering dates. The starting date is later than the ending date'),
+                __s('Error in entering dates. The starting date is later than the ending date'),
                 false,
                 ERROR
             );
@@ -287,7 +250,7 @@ class Reservation extends CommonDBChild
 
         if ($this->is_reserved()) {
             Session::addMessageAfterRedirect(
-                __('The required item is already reserved for this timeframe'),
+                __s('The required item is already reserved for this timeframe'),
                 false,
                 ERROR
             );
@@ -296,7 +259,6 @@ class Reservation extends CommonDBChild
 
         return true;
     }
-
 
     public function post_addItem()
     {
@@ -314,15 +276,17 @@ class Reservation extends CommonDBChild
    // SPECIFIC FUNCTIONS
 
     /**
+     * Returns an integer that is not already used as a group for the given reservation item.
      * @param $reservationitems_id
-     **/
-    public function getUniqueGroupFor($reservationitems_id)
+     * @return int
+     */
+    public function getUniqueGroupFor($reservationitems_id): int
     {
         /** @var \DBmysql $DB */
         global $DB;
 
         do {
-            $rand = mt_rand(1, mt_getrandmax());
+            $rand = random_int(1, mt_getrandmax());
 
             $result = $DB->request([
                 'COUNT'  => 'cpt',
@@ -337,7 +301,6 @@ class Reservation extends CommonDBChild
 
         return $rand;
     }
-
 
     /**
      * Is the item already reserved ?
@@ -356,7 +319,7 @@ class Reservation extends CommonDBChild
             return true;
         }
 
-       // When modify a reservation do not itself take into account
+        // When modify a reservation do not itself take into account
         $where = [];
         if (isset($this->fields["id"])) {
             $where['id'] = ['<>', $this->fields['id']];
@@ -364,7 +327,7 @@ class Reservation extends CommonDBChild
 
         $result = $DB->request([
             'COUNT'  => 'cpt',
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => $where + [
                 'reservationitems_id'   => $this->fields['reservationitems_id'],
                 'end'                   => ['>', $this->fields['begin']],
@@ -374,56 +337,18 @@ class Reservation extends CommonDBChild
         return $result['cpt'] > 0;
     }
 
-
     /**
      * Current dates are valid ? begin before end
      *
-     *@return boolean
+     * @return boolean
      **/
     public function test_valid_date()
     {
-
         return (!empty($this->fields["begin"])
               && !empty($this->fields["end"])
               && (strtotime($this->fields["begin"]) < strtotime($this->fields["end"])));
     }
 
-
-    /**
-     * display error message
-     *
-     * @param $type   error type : date / is_res / other
-     * @param $ID     ID of the item
-     *
-     * @return void
-     *
-     * @FIXME Deprecate/remove this method in GLPI 11.0.
-     **/
-    public function displayError($type, $ID)
-    {
-
-        echo "<br><div class='center'>";
-        switch ($type) {
-            case "date":
-                echo __('Error in entering dates. The starting date is later than the ending date');
-                break;
-
-            case "is_res":
-                echo __('The required item is already reserved for this timeframe');
-                break;
-
-            default:
-                echo __("Unknown error");
-        }
-
-        echo "<br><a href='reservation.php?reservationitems_id=$ID'>" . __('Back to planning') . "</a>";
-        echo "</div>";
-    }
-
-
-    /**
-     * @since 0.84
-     **/
     public static function canCreate()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
@@ -434,24 +359,15 @@ class Reservation extends CommonDBChild
         return self::canCreate();
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete()
     {
         return (Session::haveRight(self::$rightname, ReservationItem::RESERVEANITEM));
     }
-
 
     /**
      * Overload canChildItem to make specific checks
@@ -459,8 +375,7 @@ class Reservation extends CommonDBChild
      **/
     public function canChildItem($methodItem, $methodNotItem)
     {
-
-       // Original user always have right
+        // Original user always have right
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
@@ -482,7 +397,6 @@ class Reservation extends CommonDBChild
         return Session::haveAccessToEntity($item->getEntityID(), $item->isRecursive());
     }
 
-
     public function post_purgeItem()
     {
         /** @var \DBmysql $DB */
@@ -503,11 +417,10 @@ class Reservation extends CommonDBChild
         }
     }
 
-
     /**
      * Show reservation calendar
      *
-     * @param $ID   ID of the reservation item (if 0 display all) (default '')
+     * @param integer $ID   ID of the reservation item (if 0 display all)
      **/
     public static function showCalendar(int $ID = 0)
     {
@@ -580,7 +493,6 @@ JAVASCRIPT;
         echo Html::scriptBlock($js);
     }
 
-
     public static function getEvents(array $params): array
     {
         /** @var \DBmysql $DB */
@@ -600,7 +512,7 @@ JAVASCRIPT;
         $res_i_table = ReservationItem::getTable();
 
         $can_read    = Session::haveRight("reservation", READ);
-        $can_edit    = Session::getCurrentInterface() == "central" && Session::haveRight("reservation", UPDATE);
+        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight("reservation", UPDATE);
         $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
 
         $user = new User();
@@ -654,7 +566,7 @@ JAVASCRIPT;
 
             if ($can_read || $my_item) {
                 $user->getFromDB($data['users_id']);
-                $data['comment'] .= '<br />' . sprintf(__("Reserved by %s"), $user->getFriendlyName());
+                $data['comment'] .= '<br />' . sprintf(__s("Reserved by %s"), $user->getFriendlyName());
             }
 
             $name = $item->getName([
@@ -675,7 +587,7 @@ JAVASCRIPT;
                 'itemtype'    => $data['itemtype'],
                 'items_id'    => $data['items_id'],
                 'color'       => Toolbox::getColorForString($name),
-                'ajaxurl'     => Reservation::getFormURLWithID($data['id']),
+                'ajaxurl'     => self::getFormURLWithID($data['id']),
                 'editable'    => $editable, // "editable" is used by fullcalendar, but is not accessible
                 '_editable'   => $editable, // "_editable" will be used by custom event handlers
             ];
@@ -683,7 +595,6 @@ JAVASCRIPT;
 
         return $events;
     }
-
 
     public static function getResources()
     {
@@ -722,22 +633,20 @@ JAVASCRIPT;
         return $resources;
     }
 
-
     /**
      * Change dates of a selected reservation.
      * Called from a drag&drop in planning
      *
-     * @param array $options: must contains this keys :
-     *  - id : integer to identify reservation
-     *  - begin : planning start .
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
-     *  - end : planning end .
-     *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
+     * @param array{id: integer, start: string, end: string} $event
+     * <ul>
+     *     <li>id: integer to identify reservation</li>
+     *     <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *     <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     * </ul>
      * @return bool
      */
     public static function updateEvent(array $event = []): bool
     {
-
         $reservation = new static();
         if (!$reservation->getFromDB((int) $event['id'])) {
             return false;
@@ -752,14 +661,16 @@ JAVASCRIPT;
         ]);
     }
 
-
     /**
      * Display for reservation
      *
-     * @param $ID              ID of the reservation (empty for create new)
-     * @param $options   array of possibles options:
-     *     - item  reservation items ID for creation process
-     *     - date date for creation process
+     * @param integer $ID ID of the reservation (empty for create new)
+     * @param array{item: array<int, int>, start: string, end: string} $options
+     * <ul>
+     *      <li>item: Reservation items ID(s) for creation process. The array keys and values are expected to be symmetrical (ex: [2 => 2, 5 => 5])</li>
+     *      <li>start: planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *      <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
+     *  </ul>
      **/
     public function showForm($ID, array $options = [])
     {
@@ -782,7 +693,7 @@ JAVASCRIPT;
             }
            // Set item if not set
             if (
-                (!isset($options['item']) || (count($options['item']) == 0))
+                (!isset($options['item']) || (count($options['item']) === 0))
                 && ($itemid = $resa->getField('reservationitems_id'))
             ) {
                 $options['item'][$itemid] = $itemid;
@@ -808,7 +719,7 @@ JAVASCRIPT;
                 $item = null;
 
                 if ($item = getItemForItemtype($r->fields["itemtype"])) {
-                    $type = $item->getTypeName();
+                    $type = $item::class;
 
                     if ($item->getFromDB($r->fields["items_id"])) {
                         $name = $item->getName();
@@ -835,13 +746,13 @@ JAVASCRIPT;
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
                        * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
 
-        if ($default_delay == 0) {
+        if ($default_delay === 0) {
             $options['duration'] = 0;
         }
 
-        $options['canedit'] = ($resa->fields["users_id"] == Session::getLoginUserID())
+        $options['canedit'] = ($resa->fields["users_id"] === Session::getLoginUserID())
                              || Session::haveRight(static::$rightname, UPDATE);
-        $options['candel'] = ($resa->fields["users_id"] == Session::getLoginUserID())
+        $options['candel'] = ($resa->fields["users_id"] === Session::getLoginUserID())
                              || Session::haveRightsOr(static::$rightname, [PURGE, UPDATE]);
 
         $resa->initForm($ID, $resa->fields);
@@ -856,140 +767,140 @@ JAVASCRIPT;
         return true;
     }
 
-
     /**
      * compute periodicities for reservation
      *
      * @since 0.84
      *
-     * @param $begin             begin of the initial reservation
-     * @param $end               begin of the initial reservation
-     * @param $options   array   periodicity parameters : must contain : type (day/week/month), end
+     * @param string $begin  Planning start (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
+     * @param string $end    Planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)
+     * @param array{type: 'day'|'week'|'month', end: string, subtype?: string, days?: integer} $options Periodicity parameters
      **/
     public static function computePeriodicities($begin, $end, $options = [])
     {
         $toadd = [];
+        if (!isset($options['type'], $options['end'])) {
+            return $toadd;
+        }
 
-        if (isset($options['type']) && isset($options['end'])) {
-            $begin_time = strtotime($begin);
-            $end_time   = strtotime($end);
-            $repeat_end = strtotime($options['end'] . ' 23:59:59');
+        $begin_time = strtotime($begin);
+        $end_time   = strtotime($end);
+        $repeat_end = strtotime($options['end'] . ' 23:59:59');
 
-            switch ($options['type']) {
-                case 'day':
+        switch ($options['type']) {
+            case 'day':
+                $begin_time = strtotime("+1 day", $begin_time);
+                $end_time   = strtotime("+1 day", $end_time);
+                while ($begin_time < $repeat_end) {
+                    $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
                     $begin_time = strtotime("+1 day", $begin_time);
                     $end_time   = strtotime("+1 day", $end_time);
+                }
+                break;
+
+            case 'week':
+                $dates = [];
+
+                // No days set add 1 week
+                if (!isset($options['days'])) {
+                    $dates = [['begin' => strtotime('+1 week', $begin_time),
+                        'end'   => strtotime('+1 week', $end_time)
+                    ]
+                    ];
+                } else {
+                    if (is_array($options['days'])) {
+                        $begin_hour = $begin_time - strtotime(date('Y-m-d', $begin_time));
+                        $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
+                        foreach ($options['days'] as $day => $val) {
+                            $end_day = $day;
+                            // Check that the start and end times are different else set the end day at the next day
+                            if ($begin_hour == $end_hour) {
+                                $end_day = date('l', strtotime($day . ' +1 day'));
+                            }
+                            $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
+                                'end'   => strtotime("next $end_day", $end_time) + $end_hour
+                            ];
+                        }
+                    }
+                }
+                foreach ($dates as $key => $val) {
+                    $begin_time = $val['begin'];
+                    $end_time   = $val['end'];
                     while ($begin_time < $repeat_end) {
                         $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                        $begin_time = strtotime("+1 day", $begin_time);
-                        $end_time   = strtotime("+1 day", $end_time);
+                        $begin_time = strtotime('+1 week', $begin_time);
+                        $end_time   = strtotime('+1 week', $end_time);
                     }
-                    break;
+                }
+                break;
 
-                case 'week':
-                    $dates = [];
-
-                   // No days set add 1 week
-                    if (!isset($options['days'])) {
-                        $dates = [['begin' => strtotime('+1 week', $begin_time),
-                            'end'   => strtotime('+1 week', $end_time)
-                        ]
-                        ];
-                    } else {
-                        if (is_array($options['days'])) {
-                            $begin_hour = $begin_time - strtotime(date('Y-m-d', $begin_time));
-                            $end_hour   = $end_time - strtotime(date('Y-m-d', $end_time));
-                            foreach ($options['days'] as $day => $val) {
-                                $end_day = $day;
-                                //Check that the start and end times are different else set the end day at the next day
-                                if ($begin_hour == $end_hour) {
-                                    $end_day = date('l', strtotime($day . ' +1 day'));
-                                }
-                                $dates[] = ['begin' => strtotime("next $day", $begin_time) + $begin_hour,
-                                    'end'   => strtotime("next $end_day", $end_time) + $end_hour
-                                ];
+            case 'month':
+                if (isset($options['subtype'])) {
+                    switch ($options['subtype']) {
+                        case 'date':
+                            $i = 1;
+                            $calc_begin_time = strtotime("+$i month", $begin_time);
+                            $calc_end_time   = strtotime("+$i month", $end_time);
+                            while ($calc_begin_time < $repeat_end) {
+                                $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
+                                    'Y-m-d H:i:s',
+                                    $calc_end_time
+                                );
+                                $i++;
+                                $calc_begin_time = strtotime("+$i month", $begin_time);
+                                $calc_end_time   = strtotime("+$i month", $end_time);
                             }
-                        }
+                            break;
+
+                        case 'day':
+                            $dayofweek = date('l', $begin_time);
+
+                            $i               = 1;
+                            $calc_begin_time = strtotime("+$i month", $begin_time);
+                            $calc_end_time   = strtotime("+$i month", $end_time);
+                            $begin_hour      = $begin_time - strtotime(date('Y-m-d', $begin_time));
+                            $end_hour        = $end_time - strtotime(date('Y-m-d', $end_time));
+
+                            $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
+                                    + $begin_hour;
+                            $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
+
+                            while ($calc_begin_time < $repeat_end) {
+                                 $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
+                                     'Y-m-d H:i:s',
+                                     $calc_end_time
+                                 );
+                                   $i++;
+                                   $calc_begin_time = strtotime("+$i month", $begin_time);
+                                   $calc_end_time   = strtotime("+$i month", $end_time);
+                                   $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
+                                          + $begin_hour;
+                                   $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
+                                          + $end_hour;
+                            }
+                            break;
                     }
-                    foreach ($dates as $key => $val) {
-                        $begin_time = $val['begin'];
-                        $end_time   = $val['end'];
-                        while ($begin_time < $repeat_end) {
-                            $toadd[date('Y-m-d H:i:s', $begin_time)] = date('Y-m-d H:i:s', $end_time);
-                            $begin_time = strtotime('+1 week', $begin_time);
-                            $end_time   = strtotime('+1 week', $end_time);
-                        }
-                    }
-                    break;
+                }
 
-                case 'month':
-                    if (isset($options['subtype'])) {
-                        switch ($options['subtype']) {
-                            case 'date':
-                                $i = 1;
-                                $calc_begin_time = strtotime("+$i month", $begin_time);
-                                $calc_end_time   = strtotime("+$i month", $end_time);
-                                while ($calc_begin_time < $repeat_end) {
-                                    $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
-                                        'Y-m-d H:i:s',
-                                        $calc_end_time
-                                    );
-                                    $i++;
-                                    $calc_begin_time = strtotime("+$i month", $begin_time);
-                                    $calc_end_time   = strtotime("+$i month", $end_time);
-                                }
-                                break;
-
-                            case 'day':
-                                $dayofweek = date('l', $begin_time);
-
-                                $i               = 1;
-                                $calc_begin_time = strtotime("+$i month", $begin_time);
-                                $calc_end_time   = strtotime("+$i month", $end_time);
-                                $begin_hour      = $begin_time - strtotime(date('Y-m-d', $begin_time));
-                                $end_hour        = $end_time - strtotime(date('Y-m-d', $end_time));
-
-                                $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
-                                        + $begin_hour;
-                                $calc_end_time   = strtotime("next $dayofweek", $calc_end_time) + $end_hour;
-
-                                while ($calc_begin_time < $repeat_end) {
-                                     $toadd[date('Y-m-d H:i:s', $calc_begin_time)] = date(
-                                         'Y-m-d H:i:s',
-                                         $calc_end_time
-                                     );
-                                       $i++;
-                                       $calc_begin_time = strtotime("+$i month", $begin_time);
-                                       $calc_end_time   = strtotime("+$i month", $end_time);
-                                       $calc_begin_time = strtotime("next $dayofweek", $calc_begin_time)
-                                              + $begin_hour;
-                                       $calc_end_time   = strtotime("next $dayofweek", $calc_end_time)
-                                              + $end_hour;
-                                }
-                                break;
-                        }
-                    }
-
-                    break;
-            }
+                break;
         }
         return $toadd;
     }
 
-
     /**
      * Display reservations for an item
      *
-     * @param $item            CommonDBTM object for which the reservation tab need to be displayed
-     * @param $withtemplate    withtemplate param (default 0)
+     * @param CommonDBTM $item Object for which the reservation tab need to be displayed
+     * @param integer $withtemplate
+     * @return void
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         if (!Session::haveRight("reservation", READ)) {
-            return false;
+            return;
         }
 
-        echo "<div class='firstbloc'>";
+        echo "<div class='mb-3'>";
         ReservationItem::showActivationFormForItem($item);
 
         $ri = new ReservationItem();
@@ -997,41 +908,38 @@ JAVASCRIPT;
             return;
         }
 
-       // js vars
+        // js vars
         $rand   = mt_rand();
         $ID     = $ri->fields['id'];
 
         echo "<br>";
-        echo "<h1>" . __('Reservations for this item') . "</h1>";
+        echo "<h1>" . __s('Reservations for this item') . "</h1>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
-        $defaultDate = date('Y-m-d');
-        if (isset($_REQUEST['defaultDate'])) {
-            $defaultDate = $_REQUEST['defaultDate'];
-        }
+        $defaultDate = $_REQUEST['defaultDate'] ?? date('Y-m-d');
         $js = <<<JAVASCRIPT
-      $(function() {
-         var reservation = new Reservations();
-         reservation.init({
-            id: $ID,
-            is_all: false,
-            is_tab: true,
-            rand: $rand,
-            currentv: 'listFull',
-            defaultDate: '$defaultDate',
-         });
-         reservation.displayPlanning();
-      });
+            $(() => {
+                const reservation = new Reservations();
+                reservation.init({
+                    id: $ID,
+                    is_all: false,
+                    is_tab: true,
+                    rand: $rand,
+                    currentv: 'listFull',
+                    defaultDate: '$defaultDate',
+                });
+                reservation.displayPlanning();
+            });
 JAVASCRIPT;
         echo Html::scriptBlock($js);
-        echo "</div>"; // .firstbloc
+        echo "</div>";
     }
-
 
     /**
      * Display reservations for a user
      *
-     * @param $ID ID a the user
+     * @param integer $ID ID of the user
+     * @return void
      **/
     public static function showForUser($ID)
     {
@@ -1044,7 +952,7 @@ JAVASCRIPT;
         $resaID = 0;
 
         if (!Session::haveRight("reservation", READ)) {
-            return false;
+            return;
         }
 
         echo "<div class='firstbloc'>";
@@ -1206,7 +1114,7 @@ JAVASCRIPT;
                 echo "<td>" . nl2br($data["comment"]) . "</td>";
                 echo "<td>";
                 if ($item instanceof CommonDBTM) {
-                    list($annee, $mois, $jour) = explode("-", $data["begin"]);
+                    [$annee, $mois, $jour] = explode("-", $data["begin"]);
                     echo "<a href='" . $item::getFormURLWithID($ri->fields['items_id']) .
                      "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}' " .
                       "title=\"" . __s('See planning') . "\">";
@@ -1232,7 +1140,7 @@ JAVASCRIPT;
 
         return array_filter(
             $CFG_GLPI['reservation_types'],
-            fn ($type) => ReservationItem::countAvailableItems($type) > 0
+            static fn ($type) => ReservationItem::countAvailableItems($type) > 0
         );
     }
 
@@ -1257,29 +1165,27 @@ JAVASCRIPT;
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        $input = $ma->getInput();
-
         switch ($ma->getAction()) {
             case 'enable':
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __('Authorize reservations') . "'>";
+                    __s('Authorize reservations') . "'>";
                 return true;
             case 'disable':
                 echo '<div class="alert alert-warning">';
-                echo __('Are you sure you want to return this non-reservable item?');
+                echo __s('Are you sure you want to return this non-reservable item?');
                 echo '<br>';
-                echo "<span class='fw-bold'>" . __('That will remove all the reservations in progress.') . "</span>";
+                echo "<span class='fw-bold'>" . __s('That will remove all the reservations in progress.') . "</span>";
                 echo '</div>';
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __('Prohibit reservations') . "'>";
+                    __s('Prohibit reservations') . "'>";
                 return true;
             case 'available':
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __('Make available for reservations') . "'>";
+                    __s('Make available for reservations') . "'>";
                 return true;
             case 'unavailable':
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
-                    __('Make unavailable for reservations') . "'>";
+                    __s('Make unavailable for reservations') . "'>";
                 return true;
         }
         return parent::showMassiveActionsSubForm($ma);

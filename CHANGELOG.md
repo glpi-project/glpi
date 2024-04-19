@@ -274,6 +274,7 @@ The present file will list all changes made to the project; according to the
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
 - `Reminder::addVisibilityJoins()`
+- `Reservation::displayError()`
 - `RSSFeed::addVisibilityJoins()`
 - `RSSFeed::addVisibilityRestrict()`
 - `RSSFeed::showDiscoveredFeeds()`
