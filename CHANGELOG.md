@@ -135,6 +135,7 @@ The present file will list all changes made to the project; according to the
 - Specifying the `ranking` of a rule during add/update now triggers `RuleCollection::moveRule` to manage the rankings of other rules to try to keep them valid and in order.
 - `Lock::getLocksQueryInfosByItemType()` has been made private.
 - `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods signatures changed.
+-  Some values for the `$type` parameters of several `Stat` methods have changed to match English spelling (technicien -> technician).
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
