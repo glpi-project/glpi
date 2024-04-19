@@ -564,103 +564,28 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public function showForm($ID, array $options = [])
     {
-       // Test _rss cache directory. I permission trouble : unable to edit
+        // Test _rss cache directory. If permission trouble : unable to edit
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
-            echo "<div class='alert alert-danger'><i class='alert-icon ti ti-alert-triangle'></i><div class='alert-title'>";
-            printf(__s('Check permissions to the directory: %s'), GLPI_RSS_DIR);
-            echo "</div></div>";
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="alert alert-danger">
+                    <i class="alert-icon ti ti-alert-triangle"></i>
+                    <div class="alert-title">{{ msg }}</div>
+                </div>
+TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             return false;
         }
 
-        $this->initForm($ID, $options);
-
-        $this->showFormHeader($options);
-
-        $rowspan = 4;
-
-        if (!$this->isNewID($ID)) {
-           // Force getting feed :
+        if (!self::isNewID($ID)) {
+            // Force getting feed :
             $feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate']);
-            if (!$feed || $feed->error()) {
-                $this->setError(true);
-            } else {
-                $this->setError(false);
-            }
-            echo "<tr class='tab_bg_2'>";
-            echo "<td>" . __('Name') . "</td>";
-            echo "<td>";
-            echo Html::input('name', ['value' => $this->fields['name']]);
-            echo "</td><td colspan ='2'>&nbsp;</td></tr>\n";
+            $this->setError(!$feed || $feed->error());
         }
 
-        echo "<tr class='tab_bg_1'><td>" . __('URL') . "</td>";
-        echo "<td colspan='3'>";
-        echo "<input type='text' name='url' size='100' value='" . $this->fields["url"] . "' class='form-control'>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('By') . "</td>";
-        echo "<td>";
-        echo getUserName($this->fields["users_id"]);
-        echo "<input type='hidden' name='users_id' value='" . $this->fields['users_id'] . "'>\n";
-        echo "</td>";
-        echo "<td rowspan='$rowspan'>" . __('Comments') . "</td>";
-        echo "<td rowspan='$rowspan' class='middle'>";
-        echo "<textarea  class='form-control' rows='" . ($rowspan + 3) . "' name='comment' >" . $this->fields["comment"] .
-           "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Active') . "</td>";
-        echo "<td>";
-        Dropdown::showYesNo('is_active', $this->fields['is_active']);
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Refresh rate') . "</td>";
-        echo "<td>";
-        Dropdown::showTimeStamp(
-            "refresh_rate",
-            ['value'                => $this->fields["refresh_rate"],
-                'min'                  => HOUR_TIMESTAMP,
-                'max'                  => DAY_TIMESTAMP,
-                'step'                 => HOUR_TIMESTAMP,
-                'display_emptychoice'  => false,
-                'toadd'                => [5 * MINUTE_TIMESTAMP,
-                    15 * MINUTE_TIMESTAMP,
-                    30 * MINUTE_TIMESTAMP,
-                    45 * MINUTE_TIMESTAMP
-                ]
-            ]
-        );
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Number of items displayed') . "</td>";
-        echo "<td>";
-        Dropdown::showNumber("max_items", ['value'                => $this->fields["max_items"],
-            'min'                  => 5,
-            'max'                  => 100,
-            'step'                 => 5,
-            'toadd'                => [1],
-            'display_emptychoice'  => false
+        TemplateRenderer::getInstance()->display('pages/tools/rss_form.html.twig', [
+            'item' => $this,
+            'params' => $options,
+            'user' => getUserName($this->fields["users_id"]),
         ]);
-        echo "</td></tr>\n";
-
-        echo "<tr class='tab_bg_2'>";
-        echo "<td>" . __('Error retrieving RSS feed') . "</td>";
-        echo "<td>";
-        if ($this->fields['have_error'] && !Toolbox::isUrlSafe($this->fields['url'])) {
-            echo sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url']);
-        } else {
-            echo Dropdown::getYesNo($this->fields['have_error']);
-        }
-        echo "</td>";
-        echo "<td colspan='2'>&nbsp;</td>";
-        echo "</tr>";
-
-        $this->showFormButtons($options);
-
         return true;
     }
 
@@ -803,7 +728,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         ];
 
         if ($personal) {
-           /// Personal notes only for central view
+            // Personal notes only for central view
             if (Session::getCurrentInterface() === 'helpdesk') {
                 return false;
             }
@@ -811,8 +736,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $criteria['WHERE']["$table.users_id"] = $users_id;
             $criteria['WHERE']["$table.is_active"] = 1;
 
-            $titre = "<a href='" . $CFG_GLPI["root_doc"] . "/front/rssfeed.php'>" .
-                    _n('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
+            $titre = "<a href='" . htmlspecialchars($CFG_GLPI["root_doc"] . "/front/rssfeed.php") . "'>" .
+                    _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
            // Show public rssfeeds / not mines : need to have access to public rssfeeds
             if (!self::canView()) {
@@ -854,7 +779,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $output = "";
         $output .= "<table class='table table-striped table-hover card-table'>";
         $output .= "<thead>";
-        $output .= "<tr class='noHover'><th colspan='2'><div class='relative'><span>$titre</span>";
+        $output .= "<tr class='noHover'><th colspan='2'><div class='relative'><span>" . htmlspecialchars($titre) . "</span>";
 
         if (
             ($personal && self::canCreate())

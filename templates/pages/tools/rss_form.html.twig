@@ -1,0 +1,80 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% set field_options = {
+        label_class: 'col-xxl-4',
+        input_class: 'col-xxl-8'
+    } %}
+    {% if not item.isNewItem() %}
+        {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
+    {% endif %}
+    {{ fields.textField('url', item.fields['url'], __('URL'), {
+        full_width: true,
+        label_class: 'col-xxl-2',
+        input_class: 'col-xxl-10'
+    }) }}
+
+    {{ fields.htmlField('', user|e('html'), __('By'), field_options) }}
+    <input type="hidden" name="user_id" value="{{ item.fields['users_id'] }}">
+    {{ fields.nullField() }}
+
+    {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}
+    {{ fields.dropdownTimestampField('refresh_rate', item.fields['refresh_rate'], __('Refresh rate'), {
+        min: constant('HOUR_TIMESTAMP'),
+        max: constant('DAY_TIMESTAMP'),
+        step: constant('HOUR_TIMESTAMP'),
+        display_emptychoice: false,
+        toadd: [
+            5 * constant('MINUTE_TIMESTAMP'),
+            15 * constant('MINUTE_TIMESTAMP'),
+            30 * constant('MINUTE_TIMESTAMP'),
+            45 * constant('MINUTE_TIMESTAMP')
+        ]
+    }|merge(field_options)) }}
+
+    {{ fields.dropdownNumberField('max_items', item.fields['max_items'], __('Number of items displayed'), field_options) }}
+    {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
+
+    {% set status_field %}
+        {% if item.fields['have_error'] and item.fields['url'] is not url_safe %}
+            {{ __('URL "%s" is not allowed by your administrator.')|format(item.fields['url']) }}
+        {% else %}
+            {{ item.fields['have_error'] ? __('Yes') : __('No') }}
+        {% endif %}
+    {% endset %}
+    {{ fields.htmlField('', status_field|e('html'), __('Error retrieving RSS feed'), field_options) }}
+{% endblock %}
