@@ -1,0 +1,92 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% if ldap_start_tls_exists %}
+        {{ fields.dropdownYesNo('use_tls', item.fields['use_tls'], __('Use TLS')) }}
+    {% else %}
+        {% set field %}
+            <input type="hidden" name="use_tls" value="0">
+            {{ __('ldap_start_tls does not exist') }}
+        {% endset %}
+        {{ fields.htmlField('', field, __('Use TLS')) }}
+    {% endif %}
+    {{ fields.dropdownArrayField('time_offset', item.fields['time_offset'], gmt_values, __('LDAP directory time zone')) }}
+
+    {% if page_size_available %}
+        {{ fields.dropdownYesNo('can_support_pagesize', item.fields['can_support_pagesize'], __('Use paged results')) }}
+        {{ fields.dropdownNumberField('pagesize', item.fields['pagesize'], __('Page size'), {
+            min: 100,
+            max: 100000,
+            step: 100
+        }) }}
+        {{ fields.dropdownNumberField('ldap_maxlimit', item.fields['ldap_maxlimit'], __('Maximum number of results'), {
+            min: 100,
+            max: 999999,
+            step: 100,
+            toadd: {
+                0: __('Unlimited')
+            }
+        }) }}
+    {% else %}
+        <input type="hidden" name="can_support_pagesize" value="0">
+        <input type="hidden" name="pagesize" value="0">
+        <input type="hidden" name="ldap_maxlimit" value="0">
+    {% endif %}
+
+    {{ fields.dropdownArrayField('deref_option', item.fields['deref_option'], {
+        (constant('LDAP_DEREF_NEVER')): __('Never dereferenced (default)'),
+        (constant('LDAP_DEREF_ALWAYS')): __('Always dereferenced'),
+        (constant('LDAP_DEREF_SEARCHING')): __('Dereferenced during the search (but not when locating)'),
+        (constant('LDAP_DEREF_FINDING')): __('Dereferenced when locating (not during the search)'),
+    }, __('How LDAP aliases should be handled')) }}
+
+    {{ fields.textField('inventory_domain', item.fields['inventory_domain'], __('Domain name used by inventory tool for link the user')) }}
+    {{ fields.textField('tls_certfile', item.fields['tls_certfile'], __('TLS Certfile')) }}
+    {{ fields.textField('tls_keyfile', item.fields['tls_keyfile'], __('TLS Keyfile')) }}
+
+    {{ fields.dropdownArrayField('tls_version', item.fields['tls_version'], {
+        '': constant('Dropdown::EMPTY_VALUE')
+    }|merge(constant('AuthLDAP::TLS_VERSIONS')), __('TLS Version')) }}
+    {{ fields.dropdownNumberField('timeout', item.fields['timeout'], __('Timeout'), {
+        min: 1,
+        max: 30,
+        step: 1,
+        toadd: {
+            0: __('No timeout')
+        }
+    }) }}
+{% endblock %}

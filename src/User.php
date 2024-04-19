@@ -138,10 +138,10 @@ class User extends CommonDBTM
         if (Auth::useAuthExt() && Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
             if (static::canCreate()) {
                 $ext_auth_label = __s('Add from an external source');
-                $links['<i class="ti ti-user-cog"></i><span>' . $ext_auth_label . '</span>'] = 'user.form.php?new=1&amp;ext_auth=1';
+                $links['<i class="ti ti-user-cog"></i><span>' . $ext_auth_label . '</span>'] = 'front/user.form.php?new=1&amp;ext_auth=1';
             }
             if (static::canCreate() || static::canUpdate()) {
-                $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "ldap.php";
+                $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "front/ldap.php";
             }
         }
         return $links;

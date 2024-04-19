@@ -35,7 +35,7 @@
 /* global L */
 /* global fuzzy */
 /* global glpi_html_dialog */
-/* global glpi_toast_info */
+/* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 
 var timeoutglobalvar;
 
@@ -1874,7 +1874,8 @@ function setupAjaxDropdown(config) {
     return select2_el;
 }
 
-function setupAdaptDropdown(config) {
+function setupAdaptDropdown(config)
+{
     // Field ID is used as a selector, so we need to escape special characters
     // to avoid issues with jQuery.
     const field_id = $.escapeSelector(config.field_id);
@@ -1970,7 +1971,9 @@ function setupAdaptDropdown(config) {
         .bind('setValue', function (e, value) {
             $('#$id').val(value).trigger('change');
         });
-    $('label[for=' + field_id + ']').on('click', function () { $('#' + field_id).select2('open'); });
+    $('label[for=' + field_id + ']').on('click', function () {
+        $('#' + field_id).select2('open');
+    });
     $('#' + field_id).on('select2:open', function () {
         const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
         if (search_input) {
@@ -1979,4 +1982,29 @@ function setupAdaptDropdown(config) {
     });
 
     return select2_el;
+}
+
+function fetchSessionMessages() {
+    $.ajax({
+        method: 'GET',
+        url: (CFG_GLPI.root_doc + "/ajax/displayMessageAfterRedirect.php"),
+        data: {
+            'get_raw': true
+        }
+    }).done((messages) => {
+        $.each(messages, (level, level_messages) => {
+            $.each(level_messages, (index, message) => {
+                switch (parseInt(level)) {
+                    case 1:
+                        glpi_toast_error(message);
+                        break;
+                    case 2:
+                        glpi_toast_warning(message);
+                        break;
+                    default:
+                        glpi_toast_info(message);
+                }
+            });
+        });
+    });
 }
