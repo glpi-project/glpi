@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Application\ErrorHandler;
 use Glpi\DBAL\QueryFunction;
@@ -407,34 +408,15 @@ JAVASCRIPT;
             return;
         }
         if (
-            !isset($params[$item->getForeignKeyField()])
-            || !$item->getFromDB($params[$item->getForeignKeyField()])
+            !isset($params[$item::getForeignKeyField()])
+            || !$item->getFromDB($params[$item::getForeignKeyField()])
         ) {
             return;
         }
-       // No limit by default
-        if (!isset($params['limitto'])) {
-            $params['limitto'] = 0;
-        }
-        if (isset($params['begin']) && !empty($params['begin'])) {
-            $begin = $params['begin'];
-        } else {
-            $begin = date("Y-m-d");
-        }
-        if (isset($params['end']) && !empty($params['end'])) {
-            $end = $params['end'];
-        } else {
-            $end = date("Y-m-d");
-        }
-
-        if ($end < $begin) {
-            $end = $begin;
-        }
-        $realbegin = $begin . " " . $CFG_GLPI["planning_begin"];
-        $realend   = $end . " " . $CFG_GLPI["planning_end"];
-        if ($CFG_GLPI["planning_end"] == "24:00") {
-            $realend = $end . " 23:59:59";
-        }
+        // No limit by default
+        $params['limitto'] = $params['limitto'] ?? 0;
+        $begin = $params['begin'] ?? date('Y-m-d');
+        $end  = max($params['end'] ?? date('Y-m-d'), $begin);
 
         $users = [];
 
@@ -459,11 +441,7 @@ JAVASCRIPT;
                         }
                     }
                 }
-                if ($itemtype = 'Ticket') {
-                    $task = new TicketTask();
-                } else if ($itemtype = 'Problem') {
-                    $task = new ProblemTask();
-                }
+                $task = new ($item::getTaskClass());
                 if ($task->getFromDBByCrit(['tickets_id' => $item->fields['id']])) {
                     $users[$task->fields['users_id_tech']] = getUserName($task->fields['users_id_tech']);
                     $group_id = $task->fields['groups_id_tech'];
@@ -481,50 +459,6 @@ JAVASCRIPT;
                 break;
         }
         asort($users);
-       // Use get method to check availability
-        echo "<div class='center'><form method='GET' name='form' action='planning.php'>\n";
-        echo "<table class='tab_cadre_fixe'>";
-        $colspan = 5;
-        if (count($users) > 1) {
-            $colspan++;
-        }
-        echo "<tr class='tab_bg_1'><th colspan='$colspan'>" . __('Availability') . "</th>";
-        echo "</tr>";
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Start') . "</td>\n";
-        echo "<td>";
-        Html::showDateField("begin", ['value'      => $begin,
-            'maybeempty' => false
-        ]);
-        echo "</td>\n";
-        echo "<td>" . __('End') . "</td>\n";
-        echo "<td>";
-        Html::showDateField("end", ['value'      => $end,
-            'maybeempty' => false
-        ]);
-        echo "</td>\n";
-        if (count($users) > 1) {
-            echo "<td width='40%'>";
-            $data = [0 => __('All')];
-            $data += $users;
-            Dropdown::showFromArray('limitto', $data, ['width' => '100%',
-                'value' => $params['limitto']
-            ]);
-            echo "</td>";
-        }
-
-        echo "<td class='center'>";
-        echo "<input type='hidden' name='" . $item->getForeignKeyField() . "' value=\"" . $item->getID() . "\">";
-        echo "<input type='hidden' name='itemtype' value=\"" . $item->getType() . "\">";
-        echo "<input type='submit' class='btn btn-primary' name='checkavailability' value=\"" .
-             _sx('button', 'Search') . "\">";
-        echo "</td>\n";
-
-        echo "</tr>";
-        echo "</table>";
-        Html::closeForm();
-        echo "</div>\n";
 
         if (($params['limitto'] > 0) && isset($users[$params['limitto']])) {
             $displayuser[$params['limitto']] = $users[$params['limitto']];
@@ -532,143 +466,14 @@ JAVASCRIPT;
             $displayuser = $users;
         }
 
-        if (count($displayuser)) {
-            foreach ($displayuser as $who => $whoname) {
-                $params = [
-                    'who'       => $who,
-                    'whogroup'  => 0,
-                    'begin'     => $realbegin,
-                    'end'       => $realend
-                ];
-
-                $interv = [];
-                foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-                    $interv = array_merge($interv, $itemtype::populatePlanning($params));
-                    if (method_exists($itemtype, 'populateNotPlanned')) {
-                        $interv = array_merge($interv, $itemtype::populateNotPlanned($params));
-                    }
-                }
-
-               // Print Headers
-                echo "<br><div class='center'><table class='tab_cadre_fixe'>";
-                $colnumber  = 1;
-                $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
-                $plan_end   = explode(":", $CFG_GLPI["planning_end"]);
-                $begin_hour = intval($plan_begin[0]);
-                $end_hour   = intval($plan_end[0]);
-                if ($plan_end[1] != 0) {
-                    $end_hour++;
-                }
-                $colsize    = floor((100 - 15) / ($end_hour - $begin_hour));
-                $timeheader = '';
-                for ($i = $begin_hour; $i < $end_hour; $i++) {
-                    $from       = ($i < 10 ? '0' : '') . $i;
-                    $timeheader .= "<th width='$colsize%' colspan='4'>" . $from . ":00</th>";
-                    $colnumber += 4;
-                }
-
-               // Print Headers
-                echo "<tr class='tab_bg_1'><th colspan='$colnumber'>";
-                echo $whoname;
-                echo "</th></tr>";
-                echo "<tr class='tab_bg_1'><th width='15%'>&nbsp;</th>";
-                echo $timeheader;
-                echo "</tr>";
-
-                $day_begin = strtotime($realbegin);
-                $day_end   = strtotime($realend);
-
-                for ($time = $day_begin; $time < $day_end; $time += DAY_TIMESTAMP) {
-                    $current_day   = date('Y-m-d', $time);
-                    echo "<tr><th>" . Html::convDate($current_day) . "</th>";
-                    $begin_quarter = $begin_hour * 4;
-                    $end_quarter   = $end_hour * 4;
-                    for ($i = $begin_quarter; $i < $end_quarter; $i++) {
-                        $begin_time = date("Y-m-d H:i:s", strtotime($current_day) + ($i) * HOUR_TIMESTAMP / 4);
-                        $end_time   = date("Y-m-d H:i:s", strtotime($current_day) + ($i + 1) * HOUR_TIMESTAMP / 4);
-                       // Init activity interval
-                        $begin_act  = $end_time;
-                        $end_act    = $begin_time;
-
-                        reset($interv);
-                        while ($data = current($interv)) {
-                            if (
-                                ($data["begin"] >= $begin_time)
-                                && ($data["end"] <= $end_time)
-                            ) {
-                             // In
-                                if ($begin_act > $data["begin"]) {
-                                    $begin_act = $data["begin"];
-                                }
-                                if ($end_act < $data["end"]) {
-                                    $end_act = $data["end"];
-                                }
-                                unset($interv[key($interv)]);
-                            } else if (
-                                ($data["begin"] < $begin_time)
-                                 && ($data["end"] > $end_time)
-                            ) {
-                            // Through
-                                $begin_act = $begin_time;
-                                $end_act   = $end_time;
-                                next($interv);
-                            } else if (
-                                ($data["begin"] >= $begin_time)
-                                 && ($data["begin"] < $end_time)
-                            ) {
-                            // Begin
-                                if ($begin_act > $data["begin"]) {
-                                    $begin_act = $data["begin"];
-                                }
-                                $end_act = $end_time;
-                                next($interv);
-                            } else if (
-                                ($data["end"] > $begin_time)
-                                 && ($data["end"] <= $end_time)
-                            ) {
-                            //End
-                                $begin_act = $begin_time;
-                                if ($end_act < $data["end"]) {
-                                    $end_act = $data["end"];
-                                }
-                                unset($interv[key($interv)]);
-                            } else { // Defautl case
-                                next($interv);
-                            }
-                        }
-                        if ($begin_act < $end_act) {
-                            if (
-                                ($begin_act <= $begin_time)
-                                && ($end_act >= $end_time)
-                            ) {
-                               // Activity in quarter
-                                echo "<td class='notavailable'>&nbsp;</td>";
-                            } else {
-                             // Not all the quarter
-                                if ($begin_act <= $begin_time) {
-                                    echo "<td class='partialavailableend'>&nbsp;</td>";
-                                } else {
-                                    echo "<td class='partialavailablebegin'>&nbsp;</td>";
-                                }
-                            }
-                        } else {
-                           // No activity
-                            echo "<td class='available'>&nbsp;</td>";
-                        }
-                    }
-                    echo "</tr>";
-                }
-                echo "<tr class='tab_bg_1'><td colspan='$colnumber'>&nbsp;</td></tr>";
-                echo "</table></div>";
-            }
-        }
-        echo "<div><table class='tab_cadre'>";
-        echo "<tr class='tab_bg_1'>";
-        echo "<th>" . __('Caption') . "</th>";
-        echo "<td class='available' colspan=8>" . __('Available') . "</td>";
-        echo "<td class='notavailable' colspan=8>" . __('Unavailable') . "</td>";
-        echo "</tr>";
-        echo "</table></div>";
+        TemplateRenderer::getInstance()->display('pages/assistance/planning/availability.html.twig', [
+            'begin' => $begin,
+            'end'   => $end,
+            'item'  => $item,
+            'users' => $users,
+            'displayed_users' => $displayuser,
+            'params' => $params
+        ]);
     }
 
     /**
@@ -687,13 +492,8 @@ JAVASCRIPT;
 
         self::initSessionForCurrentUser();
 
-        echo "<div" . ($fullview ? " id='planning_container'" : "") . " class='d-flex flex-wrap flex-sm-nowrap'>";
-
-       // define options for current page
-        $rand = '';
+        // define options for current page
         if ($fullview) {
-           // full planning view (Assistance > Planning)
-            Planning::showPlanningFilter();
             $options = [
                 'full_view'    => true,
                 'default_view' => $_SESSION['glpi_plannings']['lastview'] ?? 'timeGridWeek',
@@ -701,30 +501,35 @@ JAVASCRIPT;
                 'now'          => date("Y-m-d H:i:s"),
                 'can_create'   => PlanningExternalEvent::canCreate(),
                 'can_delete'   => PlanningExternalEvent::canPurge(),
+                'rand'         => mt_rand(),
             ];
         } else {
-           // short view (on Central page)
-            $rand    = rand();
+            // short view (on Central page)
             $options = [
                 'full_view'    => false,
                 'default_view' => 'listFull',
                 'header'       => false,
                 'height'       => 'auto',
-                'rand'         => $rand,
+                'rand'         => mt_rand(),
                 'now'          => date("Y-m-d H:i:s"),
             ];
         }
 
-       // display planning (and call js from js/planning.js)
-        echo "<div id='planning$rand' class='flex-fill'></div>";
-        echo "</div>";
-
-        echo Html::scriptBlock("$(function() {
-         GLPIPlanning.display(" . json_encode($options) . ");
-         GLPIPlanning.planningFilters();
-      });");
-
-        return;
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <div {% if  options.full_view %} id="planning_container" {% endif %} class="d-flex flex-wrap flex-sm-nowrap">
+                {% if options.full_view %}
+                    {{ include('pages/assistance/planning/filters.html.twig') }}
+                {% endif %}
+                <div id="planning{{ options.rand }}" class="flex-fill"></div>
+            </div>
+            <script>
+                $(() => {
+                    GLPIPlanning.display({{ options|json_encode|raw }});
+                    GLPIPlanning.planningFilters();
+                });
+            </script>
+TWIG, ['options' => $options]);
     }
 
     public static function getTimelineResources()
@@ -900,48 +705,7 @@ JAVASCRIPT;
      */
     public static function showPlanningFilter()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $headings = ['filters'    => __("Events type"),
-            'plannings'  => __('Plannings')
-        ];
-
-        echo "<div id='planning_filter'>";
-
-        echo "<div id='planning_filter_toggle'>";
-        echo "<a class='toggle pointer' title='" . __s("Toggle filters") . "'></a>";
-        echo "</div>";
-
-        echo "<div id='planning_filter_content'>";
-        foreach ($_SESSION['glpi_plannings'] as $filter_heading => $filters) {
-            if (!in_array($filter_heading, array_keys($headings))) {
-                continue;
-            }
-
-            echo "<div>";
-            echo "<h3>";
-            echo $headings[$filter_heading];
-            if ($filter_heading == "plannings") {
-                echo "<a class='planning_link planning_add_filter' href='" . $CFG_GLPI['root_doc'] .
-                '/ajax/planning.php?action=add_planning_form' . "'>";
-                echo "<i class='fas fa-plus-circle'></i>";
-                echo "</a>";
-            }
-            echo "</h3>";
-            echo "<ul class='filters'>";
-            foreach ($filters as $filter_key => $filter_data) {
-                self::showSingleLinePlanningFilter(
-                    $filter_key,
-                    $filter_data,
-                    ['filter_color_index' => 0]
-                );
-            }
-            echo "</ul>";
-            echo "</div>";
-        }
-        echo "</div>"; // #planning_filter_content
-        echo "</div>"; // #planning_filter
+        TemplateRenderer::getInstance()->display('pages/assistance/planning/filters.html.twig');
     }
 
     /**
@@ -955,6 +719,8 @@ JAVASCRIPT;
      * @param $options
      *
      * @return void
+     * @used-by templates/pages/assistance/planning/filters.html.twig
+     * @used-by templates/pages/assistance/planning/single_filter.html.twig
      */
     public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
     {
@@ -979,7 +745,7 @@ JAVASCRIPT;
         $gID = 0;
         $expanded = '';
         $title = '';
-        $caldav_item_url = '';
+        $caldav_item_url = null;
         if ($filter_data['type'] === 'user') {
             $uID = $actor[1];
             $user = new User();
@@ -1032,33 +798,6 @@ JAVASCRIPT;
             }
         }
 
-        echo "<li event_type='" . $filter_data['type'] . "'
-               event_name='$filter_key'
-               class='" . $filter_data['type'] . $expanded . "'>";
-        Html::showCheckbox([
-            'name'          => 'filters[]',
-            'value'         => $filter_key,
-            'id'            => $filter_key,
-            'title'         => $title,
-            'checked'       => $filter_data['display']
-        ]);
-
-        if ($filter_data['type'] !== 'event_filter') {
-            $exploded = explode('_', $filter_data['type']);
-            $icon = "user";
-            if ($exploded[0] === 'group') {
-                $icon = "users";
-            }
-            echo "<i class='actor_icon fa fa-fw fa-$icon'></i>";
-        }
-
-        echo "<label for='$filter_key'>";
-        echo $title;
-        if ($filter_data['type'] === 'external' && !Toolbox::isUrlSafe($filter_data['url'] ?? '')) {
-            $warning = sprintf(__s('URL "%s" is not allowed by your administrator.'), $filter_data['url']);
-            echo "<i class='fas fa-exclamation-triangle' title='{$warning}'></i>";
-        }
-        echo "</label>";
 
         if (!empty($filter_data['color'])) {
             $color = $filter_data['color'];
@@ -1067,84 +806,35 @@ JAVASCRIPT;
             $color = self::getPaletteColor('bg', $params['filter_color_index']);
         }
 
-        echo "<span class='ms-auto d-flex align-items-center'>";
-       // colors not for groups
-        if ($filter_data['type'] !== 'group_users' && $filter_key !== 'OnlyBgEvents') {
-            echo "<span class='color_input'>";
-            Html::showColorField(
-                $filter_key . "_color",
-                ['value' => $color]
-            );
-            echo "</span>";
-        }
-
-        if ($filter_data['type'] === 'group_users') {
-            echo "<span class='toggle pointer'></span>";
-        }
-
         if ($filter_data['type'] !== 'event_filter') {
-            echo "<span class='filter_option dropstart'>";
-            echo "<i class='fas fa-ellipsis-v'></i>";
-            echo "<ul class='dropdown-menu '>";
-            if ($params['show_delete']) {
-                echo "<li class='delete_planning dropdown-item' value='$filter_key'>" . __s("Delete") . "</li>";
-            }
             if ($caldav_item_url !== '' && $filter_data['type'] !== 'group_users' && $filter_data['type'] !== 'external') {
                 $url = parse_url($CFG_GLPI["url_base"]);
-                $port = 80;
+                $url_port = 80;
                 if (isset($url['port'])) {
-                    $port = $url['port'];
+                    $url_port = $url['port'];
                 } else if (isset($url['scheme']) && ($url["scheme"] === 'https')) {
-                    $port = 443;
+                    $url_port = 443;
                 }
 
                 $loginUser = new User();
                 $loginUser->getFromDB(Session::getLoginUserID(true));
-                $cal_url = "/front/planning.php?genical=1&uID=" . $uID . "&gID=" . $gID .
-                       //"&limititemtype=$limititemtype".
-                       "&entities_id=" . $_SESSION["glpiactive_entity"] .
-                       "&is_recursive=" . $_SESSION["glpiactive_entity_recursive"] .
-                       "&token=" . $loginUser->getAuthToken();
-
-                echo "<li class='dropdown-item'><a target='_blank' href='" . $CFG_GLPI["root_doc"] . "$cal_url'>" .
-                 _sx("button", "Export") . " - " . __("Ical") . "</a></li>";
-
-                echo "<li class='dropdown-item'><a target='_blank' href='webcal://" . $url['host'] . ":$port" .
-                 ($url['path'] ?? '') . "$cal_url'>" .
-                 _sx("button", "Export") . " - " . __("Webcal") . "</a></li>";
-
-                echo "<li class='dropdown-item'><a target='_blank' href='" . $CFG_GLPI['root_doc'] .
-                 "/front/planningcsv.php?uID=" . $uID . "&gID=" . $gID . "'>" .
-                 _sx("button", "Export") . " - " . __("CSV") . "</a></li>";
-
-                $caldav_url = $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url;
-                $copy_js = 'copyTextToClipboard("' . $caldav_url . '");'
-                . ' alert("' . __s('CalDAV URL has been copied to clipboard') . '");'
-                . ' return false;';
-                echo "<li class='dropdown-item'><a target='_blank' href='#'
-                 onclick='$copy_js'>" .
-                 __s("Copy CalDAV URL to clipboard") . "</a></li>";
             }
-            echo "</ul>";
-            echo "</span>";
-        }
-        echo "</span>";
-
-        if ($caldav_item_url !== '' && $filter_data['type'] === 'group_users') {
-            echo "<ul class='group_listofusers filters'>";
-            foreach ($filter_data['users'] as $user_key => $userdata) {
-                self::showSingleLinePlanningFilter(
-                    $user_key,
-                    $userdata,
-                    ['show_delete'        => false,
-                        'filter_color_index' => $params['filter_color_index']
-                    ]
-                );
-            }
-            echo "</ul>";
         }
 
-        echo "</li>";
+        TemplateRenderer::getInstance()->display('pages/assistance/planning/single_filter.html.twig', [
+            'filter_key'    => $filter_key,
+            'filter_data'   => $filter_data,
+            'expanded'      => $expanded,
+            'title'         => $title,
+            'params'        => $params,
+            'color'         => $color,
+            'uID'           => $uID,
+            'gID'           => $gID,
+            'login_user'    => $loginUser ?? null,
+            'url'           => $url ?? null,
+            'url_port'      => $url_port ?? null,
+            'caldav_url'    => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
+        ]);
     }
 
     /**
@@ -1154,40 +844,42 @@ JAVASCRIPT;
      */
     public static function showAddPlanningForm()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $rand = mt_rand();
-        echo "<form action='" . self::getFormURL() . "'>";
-        echo __s("Actor") . ": <br>";
-
         $planning_types = ['user' => User::getTypeName(1)];
-
         if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
             $planning_types['group_users'] = __('All users of a group');
             $planning_types['group']       = Group::getTypeName(1);
         }
-
         $planning_types['external'] = __('External calendar');
 
-        Dropdown::showFromArray(
-            'planning_type',
-            $planning_types,
-            ['display_emptychoice' => true,
-                'rand'                =>  $rand
-            ]
-        );
-        echo Html::scriptBlock("
-      $(function() {
-         $('#dropdown_planning_type$rand').on( 'change', function( e ) {
-            var planning_type = $(this).val();
-            $('#add_planning_subform$rand').load('" . $CFG_GLPI['root_doc'] . "/ajax/planning.php',
-                                                 {action: 'add_'+planning_type+'_form'});
-         });
-      });");
-        echo "<br><br>";
-        echo "<div id='add_planning_subform$rand'></div>";
-        Html::closeForm();
+
+        $twig_params = [
+            'planning_types' => $planning_types,
+            'rand'           => mt_rand(),
+            'label'          => __('Actor'),
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            <form action="{{ 'Planning'|itemtype_form_path }}">
+                {{ fields.dropdownArrayField('planning_type', 0, planning_types, label, {
+                    display_emptychoice: true,
+                    rand: rand
+                }) }}
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                <script>
+                    $(() => {
+                        $('#dropdown_planning_type{{ rand }}').on('change', function() {
+                            const planning_type = $(this).val();
+                            $('#add_planning_subform{{ rand }}').load('{{ path('ajax/planning.php') }}', {
+                                action: 'add_' + planning_type + '_form'
+                            });
+                        });
+                    });
+                </script>
+                <br><br>
+                <div id="add_planning_subform{{ rand }}"></div>
+            </form>
+TWIG, $twig_params);
     }
 
     /**
@@ -1205,15 +897,14 @@ JAVASCRIPT;
                 $used[] = $actor[1];
             }
         }
-        echo User::getTypeName(1) . " :<br>";
 
-       // show only users with right to add planning events
+        // show only users with right to add planning events
         $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
-       // Can we see only personnal planning ?
+        // Can we see only personnal planning ?
         if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
             $rights = 'id';
         }
-       // Can we see user of my groups ?
+        // Can we see user of my groups ?
         if (
             Session::haveRight('planning', self::READGROUP)
             && !Session::haveRight('planning', self::READALL)
@@ -1221,14 +912,24 @@ JAVASCRIPT;
             $rights = 'groups';
         }
 
-        User::dropdown(['entity'      => $_SESSION['glpiactive_entity'],
-            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-            'right'       => $rights,
-            'used'        => $used
-        ]);
-        echo "<br /><br />";
-        echo Html::hidden('action', ['value' => 'send_add_user_form']);
-        echo Html::submit(_sx('button', 'Add'));
+        $twig_params = [
+            'add_msg' => _x('button', 'Add'),
+            'rights'  => $rights,
+            'used'    => $used,
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+            {{ fields.dropdownField('User', 'users_id', 0, 'User'|itemtype_name, {
+                entity: session('glpiactive_entity'),
+                entity_sons: session('glpiactive_entity_recursive'),
+                right: rights,
+                used: used
+            }) }}
+            <input type="hidden" name="action" value="send_add_user_form">
+            {{ inputs.submit('submit', add_msg, 1) }}
+TWIG, $twig_params);
     }
 
     /**
@@ -1259,22 +960,28 @@ JAVASCRIPT;
      */
     public static function showAddGroupUsersForm()
     {
-        echo htmlspecialchars(Group::getTypeName(1)) . " : <br>";
-
         $condition = [];
        // filter groups
-        if (!Session::haveRight('planning', self::READALL)) {
+        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
-        Group::dropdown([
-            'entity'      => $_SESSION['glpiactive_entity'],
-            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-            'condition'   => $condition
-        ]);
-        echo "<br /><br />";
-        echo Html::hidden('action', ['value' => 'send_add_group_users_form']);
-        echo Html::submit(_sx('button', 'Add'));
+        $twig_params = [
+            'add_msg' => _x('button', 'Add'),
+            'condition' => $condition
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+            {{ fields.dropdownField('Group', 'groups_id', 0, 'Group'|itemtype_name(1), {
+                entity: session('glpiactive_entity'),
+                entity_sons: session('glpiactive_entity_recursive'),
+                condition: condition
+            }) }}
+            <input type="hidden" name="action" value="send_add_group_users_form">
+            {{ inputs.submit('submit', add_msg, 1) }}
+TWIG, $twig_params);
     }
 
     /**
@@ -1366,19 +1073,26 @@ JAVASCRIPT;
     {
         $condition = ['is_task' => 1];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL)) {
+        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
-        echo Group::getTypeName(1) . " : <br>";
-        Group::dropdown([
-            'entity'      => $_SESSION['glpiactive_entity'],
-            'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
-            'condition'   => $condition
-        ]);
-        echo "<br /><br />";
-        echo Html::hidden('action', ['value' => 'send_add_group_form']);
-        echo Html::submit(_sx('button', 'Add'));
+        $twig_params = [
+            'add_msg' => _x('button', 'Add'),
+            'condition' => $condition
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+            {{ fields.dropdownField('Group', 'groups_id', 0, 'Group'|itemtype_name(1), {
+                entity: session('glpiactive_entity'),
+                entity_sons: session('glpiactive_entity_recursive'),
+                condition: condition
+            }) }}
+            <input type="hidden" name="action" value="send_add_group_form">
+            {{ inputs.submit('submit', add_msg, 1) }}
+TWIG, $twig_params);
     }
 
     /**
@@ -1416,27 +1130,21 @@ JAVASCRIPT;
      */
     public static function showAddExternalForm()
     {
-        $rand = mt_rand();
-
-        echo '<label for ="name' . $rand . '">' . __s("Calendar name") . ' : </label> ';
-        echo '<br />';
-        echo Html::input(
-            'name',
-            [
-                'value' => '',
-                'id'    => 'name' . $rand,
-            ]
-        );
-        echo '<br />';
-        echo '<br />';
-
-        echo '<label for ="url' . $rand . '">' . __s("Calendar URL") . ' : </label> ';
-        echo '<br />';
-        echo '<input type="url" name="url" id="url' . $rand . '" required>';
-        echo '<br /><br />';
-
-        echo Html::hidden('action', ['value' => 'send_add_external_form']);
-        echo Html::submit(_sx('button', 'Add'));
+        $twig_params = [
+            'add_msg' => _x('button', 'Add'),
+            'name_label'   => __('Calendar name'),
+            'url_label'    => __('Calendar URL'),
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+            {% set rand = random() %}
+            {{ fields.textField('name', '', name_label, {id: 'name' ~ rand}) }}
+            {{ fields.urlField('url', '', url_label, {id: 'url' ~ rand}) }}
+            <input type="hidden" name="action" value="send_add_external_form">
+            {{ inputs.submit('submit', add_msg, 1) }}
+TWIG, $twig_params);
     }
 
     /**
@@ -1484,33 +1192,40 @@ JAVASCRIPT;
             $params['itemtype'] = $CFG_GLPI['planning_add_types'][0];
             self::showAddEventSubForm($params);
         } else {
-            $rand = mt_rand();
             $select_options = [];
             foreach ($CFG_GLPI['planning_add_types'] as $add_types) {
                 $select_options[$add_types] = $add_types::getTypeName(1);
             }
-            echo __s("Event type") . " : <br>";
-            Dropdown::showFromArray(
-                'itemtype',
-                $select_options,
-                ['display_emptychoice' => true,
-                    'rand'                => $rand
-                ]
-            );
 
-            echo Html::scriptBlock("
-         $(function() {
-            $('#dropdown_itemtype$rand').on('change', function() {
-               var current_itemtype = $(this).val();
-               $('#add_planning_subform$rand').load('" . $CFG_GLPI['root_doc'] . "/ajax/planning.php',
-                                                    {action:   'add_event_sub_form',
-                                                     itemtype: current_itemtype,
-                                                     begin:    '" . $params['begin'] . "',
-                                                     end:      '" . $params['end'] . "'});
-            });
-         });");
-            echo "<br><br>";
-            echo "<div id='add_planning_subform$rand'></div>";
+            $twig_params = [
+                'label' => __('Event type'),
+                'select_options' => $select_options,
+                'params' => $params,
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+            {% set rand = random() %}
+            {{ fields.dropdownArrayField('itemtype', '', select_options, label, {
+                display_emptychoice: true,
+                rand: rand
+            }) }}
+            <script>
+                $(() => {
+                    $('#dropdown_itemtype{{ rand }}').on('change', function() {
+                        const current_itemtype = $(this).val();
+                        $('#add_planning_subform{{ rand }}').load('{{ path('ajax/planning.php')|e('js') }}', {
+                            action: 'add_event_sub_form',
+                            itemtype: current_itemtype,
+                            begin: '{{ params.begin|e('js') }}',
+                            end: '{{ params.end|e('js') }}'
+                        });
+                    });
+                });
+            </script>
+            <div id="add_planning_subform{{ rand }}"></div>
+TWIG, $twig_params);
         }
     }
 
@@ -1552,7 +1267,7 @@ JAVASCRIPT;
 
     /**
      * Former front/planning.php before 9.1.
-     * Display a classic form to plan an event (with begin fiel and duration)
+     * Display a classic form to plan an event (with begin field and duration)
      *
      * @since 9.1
      *
@@ -1584,7 +1299,7 @@ JAVASCRIPT;
                 $mintime = $begintime;
             }
         } else {
-            $ts = $CFG_GLPI['time_step'] * 60; // passage en minutes
+            $ts = $CFG_GLPI['time_step'] * 60; // passage in minutes
             $time = time() + $ts - 60;
             $time = floor($time / $ts) * $ts;
             $begin = date("Y-m-d H:i", $time);
@@ -1596,90 +1311,57 @@ JAVASCRIPT;
             $end = date("Y-m-d H:i:s", strtotime($begin) + HOUR_TIMESTAMP);
         }
 
-        echo "<table class='planning_classic_card'>";
-
-        if ($display_dates) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Start date') . "</td><td>";
-            Html::showDateTimeField("plan[begin]", [
-                'value'      => $begin,
-                'maybeempty' => false,
-                'canedit'    => true,
-                'mindate'    => '',
-                'maxdate'    => '',
-                'mintime'    => $mintime,
-                'maxtime'    => $CFG_GLPI["planning_end"],
-                'rand'       => $rand,
-            ]);
-            echo "</td></tr>";
-        }
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Period') . "&nbsp;";
-
-        if (isset($params["rand_user"])) {
-            $_POST['parent_itemtype'] = $params["parent_itemtype"] ?? '';
-            $_POST['parent_items_id'] = $params["parent_items_id"] ?? '';
-            $_POST['parent_fk_field'] = $params["parent_fk_field"] ?? '';
-            echo "<span id='user_available" . $params["rand_user"] . "'>";
-            include_once(GLPI_ROOT . '/ajax/planningcheck.php');
-            echo "</span>";
-        }
-
-        echo "</td><td>";
-
-        $empty_label   = Dropdown::EMPTY_VALUE;
         $default_delay = $params['duration'] ?? 0;
         if ($display_dates) {
-            $empty_label   = __('Specify an end date');
             $default_delay = floor((strtotime($end) - strtotime($begin)) / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP) * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
         }
 
-        Dropdown::showTimeStamp("plan[_duration]", [
-            'min'        => 0,
-            'max'        => 50 * HOUR_TIMESTAMP,
-            'value'      => $default_delay,
-            'emptylabel' => $empty_label,
-            'rand'       => $rand,
+        TemplateRenderer::getInstance()->display('pages/assistance/planning/add_classic_event.html.twig', [
+            'params' => $params,
+            'begin'  => $begin,
+            'end'    => $end,
+            'mintime' => $mintime,
+            'default_delay' => $default_delay,
         ]);
-        echo "<br><div id='date_end$rand'></div>";
+    }
 
-        $event_options = [
-            'duration'     => '__VALUE__',
-            'end'          => $end,
-            'name'         => "plan[end]",
-            'global_begin' => $CFG_GLPI["planning_begin"],
-            'global_end'   => $CFG_GLPI["planning_end"]
+    /**
+     * @param array $data
+     * @return void
+     * @used-by templates/pages/assistance/planning/add_classic_event.html.twig
+     */
+    public static function showPlanningCheck(array $data): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $append_params = [
+            "checkavailability" => "checkavailability",
         ];
 
-        if ($display_dates) {
-            Ajax::updateItemOnSelectEvent(
-                "dropdown_plan[_duration]$rand",
-                "date_end$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/planningend.php",
-                $event_options
-            );
-
-            if ($default_delay === 0) {
-                $params['duration'] = 0;
-                Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"] . "/ajax/planningend.php", $params);
-            }
-        }
-
-        echo "</td></tr>\n";
-
-        if (
-            (!isset($params["id"]) || ((int) $params["id"] === 0))
-            && isset($params['itemtype'])
-            && PlanningRecall::isAvailable()
+        if (isset($data['users_id']) && ($data['users_id'] > 0)) {
+            $append_params["itemtype"] = User::class;
+            $append_params[User::getForeignKeyField()] = $data['users_id'];
+        } elseif (
+            isset($data['parent_itemtype'], $data['parent_items_id'], $data['parent_fk_field'])
+            && class_exists($data['parent_itemtype']) && ($data['parent_items_id'] > 0) && ($data['parent_fk_field'] !== '')
         ) {
-            echo "<tr class='tab_bg_2'><td>" . _sx('Planning', 'Reminder') . "</td><td>";
-            PlanningRecall::dropdown([
-                'itemtype' => $params['itemtype'],
-                'items_id' => $params['items_id'],
-                'rand'     => $rand,
-            ]);
-            echo "</td></tr>";
+            $append_params["itemtype"] = $data['parent_itemtype'];
+            $append_params[$data['parent_fk_field']] = $data['parent_items_id'];
         }
-        echo "</table>\n";
+
+        if (count($append_params) > 1) {
+            $rand = mt_rand();
+            echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
+            echo "<i class='far fa-calendar-alt'></i>";
+            echo "<span class='sr-only'>" . __s('Availability') . "</span>";
+            echo "</a>";
+            Ajax::createIframeModalWindow(
+                'planningcheck' . $rand,
+                $CFG_GLPI["root_doc"] . "/front/planning.php?" . Toolbox::append_params($append_params),
+                ['title'  => __s('Availability')]
+            );
+        }
     }
 
     /**
@@ -2486,9 +2168,6 @@ JAVASCRIPT;
      **/
     public static function showCentral($who)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (
             !Session::haveRight(self::$rightname, self::READMY)
             || ($who <= 0)
@@ -2496,20 +2175,23 @@ JAVASCRIPT;
             return;
         }
 
-        echo "<div class='table-responsive card-table'>";
-        echo "<table class='table'>";
-        echo "<thead>";
-        echo "<tr class='noHover'><th>";
-        echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/planning.php'>" . __('Your planning') . "</a>";
-        echo "</th></tr>";
-        echo "</thead>";
-
-        echo "<tr class='noHover'>";
-        echo "<td class='planning_on_central'>";
-        self::showPlanning(false);
-        echo "</td></tr>";
-        echo "</table>";
-        echo "</div>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <div class="table-responsive card-table">
+                <table class="table">
+                    <thead>
+                        <tr class="noHover">
+                            <th><a href="{{ path('front/planning.php') }}">{{ msg }}</a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="noHover">
+                            <td class="planning_on_central">{% do call('Planning::showPlanning', [false]) %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+TWIG, ['msg' => __('Your planning')]);
     }
 
    //*******************************************************************************************************************************

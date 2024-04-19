@@ -1,0 +1,106 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+<li event_type="{{ filter_data.type }}" event_name="{{ filter_key }}" class="{{ filter_data.type }} {{ expanded }}">
+    <input type="checkbox" id="{{ filter_key }}" name="filters[]" class="form-check-input" value="{{ filter_key }}" {{ filter_data.display ? 'checked' : '' }}/>
+    {% if filter_data.type != 'event_filter' %}
+        <i class="ms-1 pb-1 actor_icon ti ti-{{ filter_data.type|split('_')[0] == 'group' ? 'users' : 'user' }}"></i>
+    {% endif %}
+    {% set label_title %}
+        {{ title }}
+        {% if filter_data.type == 'external' and (not filter_data.url|default('') is url_safe) %}
+            <i class="fas fa-exclamation-triangle" title="{{ __('URL "%s" is not allowed by your administrator.')|format(filter_data.url) }}"></i>
+        {% endif %}
+    {% endset %}
+    {{ inputs.label(label_title, filter_key) }}
+
+    <span class="ms-auto d-flex align-items-center">
+        {# Colors not for groups #}
+        {% if filter_data.type != 'group_users' and filter_key != 'OnlyBgEvents' %}
+            <span class="color_input">
+                <input type="color" name="{{ filter_key }}_color" value="{{ color }}">
+            </span>
+        {% endif %}
+        {% if filter_data.type == 'group_users' %}
+            <span class="toggle cursor-pointer"></span>
+        {% endif %}
+        {% if filter_data.type != 'event_filter' %}
+            <div class="filter_option dropstart">
+                <i class="ti ti-dots cursor-pointer"></i>
+                <ul class="dropdown-menu">
+                    {% if params.show_delete %}
+                        <li class="dropdown-item">
+                            <a target="_blank" href="#" onclick="GLPIPlanning.deletePlanning(this)" value="{{ filter_key }}">{{ __('Delete') }}</a>
+                        </li>
+                    {% endif %}
+                    {% if caldav_url != null and filter_data.type != 'group_users' and filter_data.type != 'external' %}
+                        <li class="dropdown-item">
+                            {% set export_url = path(
+                                'front/planning.php?genical=1&uID=' ~ uID ~ '&gID=' ~ gID ~ '&entities_id=' ~ session('glpiactive_entity') ~ '&is_recursive=' ~ session('glpiactive_entity_recursive') ~ '&token=' ~ login_user.getAuthToken()
+                            ) %}
+                            <a target="_blank" href="{{ export_url }}">
+                                {{ _x('button', 'Export') }} - {{ __('Ical') }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a target="_blank" href="webcal://{{ url.host }}:{{ url.port }}{{ url.path }}{{ export_url }}">
+                                {{ _x('button', 'Export') }} - {{ __('Webcal') }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a target="_blank" href="{{ path('front/planningcsv.php') ~ '?uID=' ~ uID ~ '&gID=' ~ gID }}">
+                                {{ _x('button', 'Export') }} - {{ __('CSV') }}
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a target="_blank" href="#" onclick="copyTextToClipboard('{{ caldav_url|e('js') }}'); alert('{{ __('CalDAV URL has been copied to clipboard')|e('js') }}'); return false;">
+                                {{ __('Copy CalDAV URL to clipboard') }}
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+    </span>
+    {% if caldav_item_url is not empty and filter_data.type == 'group_users' %}
+        <ul class="group_listofusers filters">
+            {% for user_key, user_data in filter_data.users %}
+                {% do call('Planning::showSingleLinePlanningFilter', [user_key, user_data, {
+                    show_delete: false,
+                    filter_color_index: params.filter_color_index,
+                }]) %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

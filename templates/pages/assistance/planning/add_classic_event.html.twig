@@ -1,0 +1,113 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% if params.id is defined and params.id > 0 %}
+    <input type="hidden" name="plan[id]" value="{{ params.id }}">
+{% endif %}
+
+{% set rand = params.rand|default(random()) %}
+{% set display_dates = params._display_dates|default(true) %}
+
+<div class="d-flex">
+    <div class="col-12">
+        {% if display_dates %}
+            {{ fields.datetimeField('plan[begin]', begin, __('Start date'), {
+                maybeempty: false,
+                canedit: true,
+                mindate: '',
+                maxdate: '',
+                mintime: mintime,
+                maxtime: config('planning_end'),
+                rand: rand,
+                field_class: 'col-12',
+            }) }}
+        {% endif %}
+
+        {% set period_field %}
+            {% if params.rand_user %}
+                <span id="user_available{{ params.rand_user }}">
+                    {% do call('Planning::showCheckPlanning', [_post|merge({
+                        parent_itemtype: params.parent_itemtype|default(''),
+                        parent_items_id: params.parent_items_id|default(''),
+                        parent_fk_field: params.parent_fk_field|default(''),
+                    })]) %}
+                </span>
+            {% endif %}
+            {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
+                min: 0,
+                max: 50 * constant('HOUR_TIMESTAMP'),
+                value: default_delay,
+                emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
+            }]) %}
+            <br>
+            <div id="date_end{{ rand }}"></div>
+
+            {% if display_dates %}
+                {% if default_delay == 0 %}
+                    {% set params = params|merge({
+                        duration: 0,
+                    }) %}
+                    <script>
+                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', {{ params|json_encode|raw }});
+                    </script>
+                {% endif %}
+                <script>
+                    {% set event_params = {
+                        duration: '__VALUE__',
+                        end: end,
+                        name: 'plan[end]',
+                        global_begin: config('planning_begin'),
+                        global_end: config('planning_end'),
+                    } %}
+                    $('#dropdown_plan[_duration]{{ rand }}').on('change', () => {
+                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', {{ event_params|json_encode|raw }});
+                    });
+                </script>
+            {% endif %}
+        {% endset %}
+        {{ fields.htmlField('', period_field, __('Period'), {
+            field_class: 'col-12',
+        }) }}
+
+        {% if (params.id is not defined or params.id == 0) and params.itemtype is defined and call('PlanningRecall::isAvailable') %}
+            {{ fields.dropdownField('PlanningRecall', 'planningrecalls_id', 0, _x('Planning', 'Reminder'), {
+                itemtype: params.itemtype,
+                items_id: params.items_id,
+                rand: rand,
+                field_class: 'col-12',
+            }) }}
+        {% endif %}
+    </div>
+</div>

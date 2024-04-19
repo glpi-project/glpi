@@ -107,6 +107,20 @@
    {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
+{% macro urlField(name, value, label = '', options = {}) %}
+    {% set options = {
+        'id': '%id%'
+    }|merge(options) %}
+
+    {% set field %}
+        {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+        {{ _inputs.input(name, value, options|merge({
+            'type': 'url'
+        })) }}
+    {% endset %}
+
+    {{ _self.field(name, field, label, options) }}
+{% endmacro %}
 
 {% macro checkboxField(name, value, label = '', options = {}) %}
    {% set options = {

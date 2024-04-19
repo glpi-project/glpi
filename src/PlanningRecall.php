@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
@@ -264,7 +265,7 @@ class PlanningRecall extends CommonDBChild
      *    - value    : integer preselected value for before_time
      *    - field    : string  field used as time mark (default begin)
      *
-     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
+     * @return void|false print out an HTML select box or return false if mandatory fields are not ok
      **/
     public static function dropdown($options = [])
     {
@@ -281,12 +282,12 @@ class PlanningRecall extends CommonDBChild
                 $p[$key] = $val;
             }
         }
-        if (!($item = getItemForItemtype($p['itemtype']))) {
+        if (!(getItemForItemtype($p['itemtype']))) {
             return false;
         }
 
         $pr = new self();
-       // Get recall for item and user
+        // Get recall for item and user
         if ($pr->getFromDBForItemAndUser($p['itemtype'], $p['items_id'], $p['users_id'])) {
             $p['value'] = $pr->fields['before_time'];
         }
@@ -321,52 +322,13 @@ class PlanningRecall extends CommonDBChild
             'value' => $p['value'],
             'rand'  => $p['rand'],
         ]);
-        echo "<input type='hidden' name='_planningrecall[itemtype]' value='" . $p['itemtype'] . "'>";
-        echo "<input type='hidden' name='_planningrecall[items_id]' value='" . $p['items_id'] . "'>";
-        echo "<input type='hidden' name='_planningrecall[users_id]' value='" . $p['users_id'] . "'>";
-        echo "<input type='hidden' name='_planningrecall[field]' value='" . $p['field'] . "'>";
-        return true;
-    }
-
-    /**
-     * Dispaly specific form when no edit right
-     *
-     * Mandatory options : itemtype, items_id
-     *
-     * @param array $options array of possible options:
-     *    - itemtype : string itemtype
-     *    - items_id : integer id of the item
-     *    - users_id : integer id of the user (if not set used login user)
-     *    - value    : integer preselected value for before_time
-     *    - field    : string  field used as time mark (default begin)
-     *
-     * @return void|boolean print out an HTML select box or return false if mandatory fields are not ok
-     **/
-    public static function specificForm($options = [])
-    {
-        // Default values
-        $p['itemtype'] = '';
-        $p['items_id'] = 0;
-        $p['users_id'] = Session::getLoginUserID();
-        $p['value']    = Entity::CONFIG_NEVER;
-        $p['field']    = 'begin';
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
-        if (!($item = getItemForItemtype($p['itemtype']))) {
-            return false;
-        }
-
-        echo "<form method='post' action='" . self::getFormURL() . "'>";
-        echo "<table width='100%'><tr><td>";
-        self::dropdown($options);
-        echo "&nbsp;";
-        echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\" class='btn btn-primary'>";
-        echo "</td></tr></table>";
-        Html::closeForm();
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <input type="hidden" name="_planningrecall[itemtype]" value="{{ itemtype }}">
+            <input type="hidden" name="_planningrecall[items_id]" value="{{ items_id }}">
+            <input type="hidden" name="_planningrecall[users_id]" value="{{ users_id }}">
+            <input type="hidden" name="_planningrecall[field]" value="{{ field }}">
+TWIG, $p);
     }
 
     /**
