@@ -175,7 +175,7 @@ class NetworkPort extends AbstractInventoryAsset
 </CONTENT>
 </REQUEST>",
                 'ports'         => [
-                    '{"ifdescr":"Port-channel10","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"15 days, 23:20:53.24","ifmtu":1500,"ifname":"Po10","ifnumber":5010,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":56,"trunk":false,"mac":"c4:64:13:8c:7e:b5","instantiation_type":"NetworkPortEthernet","name":"Po10","logical_number":5010,"ifinbytes":1076823325,"ifoutbytes":2179528910}',
+                    '{"ifdescr":"Port-channel10","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"15 days, 23:20:53.24","ifmtu":1500,"ifname":"Po10","ifnumber":5010,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":56,"trunk":false,"mac":"c4:64:13:8c:7e:b5","instantiation_type":"NetworkPortFiberchannel","name":"Po10","logical_number":5010,"ifinbytes":1076823325,"ifoutbytes":2179528910}',
                     '{"ifdescr":"Agg one","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"18 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg01","ifnumber":10001,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b6","instantiation_type":"NetworkPortEthernet","name":"Agg01","logical_number":10001,"ifinbytes":0,"ifoutbytes":0}',
                     '{"ifdescr":"Agg two","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"17 days, 23:20:53.24","ifmtu":1500,"ifname":"Agg02","ifnumber":10002,"ifouterrors":0,"ifspeed":4294967295,"ifstatus":1,"iftype":6,"trunk":false,"mac":"c4:64:13:8c:7e:b7","instantiation_type":"NetworkPortEthernet","name":"Agg02","logical_number":10002,"ifinbytes":0,"ifoutbytes":0}'
                 ],
@@ -313,7 +313,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 </CONTENT>
 </REQUEST>",
                 'ports'  => [
-                    '{"ifalias":"lag1.glpi-project.org","ifdescr":"Port-channel6","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"32.65 seconds","ifmtu":9000,"ifname":"Po6","ifnumber":5006,"ifouterrors":0,"ifspeed":2000000000,"ifstatus":1,"iftype":56,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Po6","logical_number":5006,"ifinbytes":82823274,"ifoutbytes":657139488}',
+                    '{"ifalias":"lag1.glpi-project.org","ifdescr":"Port-channel6","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"32.65 seconds","ifmtu":9000,"ifname":"Po6","ifnumber":5006,"ifouterrors":0,"ifspeed":2000000000,"ifstatus":1,"iftype":56,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortFiberchannel","name":"Po6","logical_number":5006,"ifinbytes":82823274,"ifoutbytes":657139488}',
                     '{"ifalias":"net1.glpi-project.org","ifdescr":"GigabitEthernet4\/0\/46","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"5 minutes, 50.26","ifmtu":9000,"ifname":"Gi4\/0\/46","ifnumber":11646,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:19:2f:08:8f:2e","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi4\/0\/46","logical_number":11646,"portduplex":3,"ifinbytes":38145664,"ifoutbytes":167335360}',
                     '{"ifalias":"net2.glpi-project.org","ifdescr":"GigabitEthernet8\/0\/45","ifinerrors":0,"ifinternalstatus":1,"iflastchange":"30.69 seconds","ifmtu":9000,"ifname":"Gi8\/0\/45","ifnumber":13645,"ifouterrors":0,"ifportduplex":3,"ifspeed":1000000000,"ifstatus":1,"iftype":6,"mac":"00:14:a9:37:ee:2d","trunk":false,"instantiation_type":"NetworkPortEthernet","name":"Gi8\/0\/45","logical_number":13645,"portduplex":3,"ifinbytes":40326934,"ifoutbytes":454911808}'
                 ],
@@ -839,6 +839,88 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->string($networkport->fields['ifalias'])->isEqualTo('another alias');
     }
 
+    public function testNetworkEquipmentInstanciationType()
+    {
+        $networkport = new \NetworkPort();
+        $networkequipment = new \NetworkEquipment();
+
+        //First step : import NetworkEquipement with only one NetworkPort (WiFi)
+        $xml_source = "<?xml version='1.0' encoding='UTF-8'?>
+            <REQUEST>
+              <CONTENT>
+                <DEVICE>
+                  <FIRMWARES>
+                    <DESCRIPTION>device firmware</DESCRIPTION>
+                    <MANUFACTURER>Aruba</MANUFACTURER>
+                    <NAME>AP 315</NAME>
+                    <TYPE>device</TYPE>
+                    <VERSION>8.6.0.23-8.6.0.23_88342</VERSION>
+                  </FIRMWARES>
+                  <INFO>
+                    <COMMENTS>ArubaOS (MODEL: 315), Version 8.6.0.23-8.6.0.23</COMMENTS>
+                    <CPU>5</CPU>
+                    <FIRMWARE>8.6.0.23-8.6.0.23_88342</FIRMWARE>
+                    <ID>0</ID>
+                    <IPS>
+                      <IP>172.31.98.1</IP>
+                      <IP>192.168.0.140</IP>
+                    </IPS>
+                    <MAC>24:f2:7f:c4:3d:62</MAC>
+                    <MANUFACTURER>Aruba</MANUFACTURER>
+                    <MEMORY>41</MEMORY>
+                    <MODEL>AP 315</MODEL>
+                    <NAME>AP02-ESCRITORIO</NAME>
+                    <RAM>512</RAM>
+                    <SERIAL>CNF0J0T4TH</SERIAL>
+                    <TYPE>NETWORKING</TYPE>
+                    <UPTIME>2 hours, 10:13.96</UPTIME>
+                  </INFO>
+                  <PORTS>
+                    <PORT>
+                      <IFDESCR>radio0_ssid_id0</IFDESCR>
+                      <IFINERRORS>0</IFINERRORS>
+                      <IFINOCTETS>0</IFINOCTETS>
+                      <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                      <IFLASTCHANGE>0.00 seconds</IFLASTCHANGE>
+                      <IFMTU>1500</IFMTU>
+                      <IFNAME>radio0_ssid_id0</IFNAME>
+                      <IFNUMBER>50</IFNUMBER>
+                      <IFOUTERRORS>0</IFOUTERRORS>
+                      <IFOUTOCTETS>0</IFOUTOCTETS>
+                      <IFSPEED>0</IFSPEED>
+                      <IFSTATUS>1</IFSTATUS>
+                      <IFTYPE>71</IFTYPE>
+                      <MAC>24:f2:7f:c3:d6:30</MAC>
+                    </PORT>
+                  </PORTS>
+                </DEVICE>
+                <MODULEVERSION>6.1</MODULEVERSION>
+                <PROCESSNUMBER>1</PROCESSNUMBER>
+              </CONTENT>
+              <DEVICEID>foo</DEVICEID>
+              <QUERY>SNMPQUERY</QUERY>
+            </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->integer($networkquipement_id)->isGreaterThan(0);
+
+        //get networkport
+        $this->boolean(
+            $networkport->getFromDbByCrit([
+                'itemtype' => 'NetworkEquipment',
+                'items_id' => $networkquipement_id,
+                'name' => 'radio0_ssid_id0'
+            ])
+        )->isTrue();
+
+        //check type is correct
+        $this->string($networkport->fields['instantiation_type'])->isIdenticalTo('NetworkPortWifi');
+    }
+
     public function testInstantiationType()
     {
         global $DB;
@@ -1123,7 +1205,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             ]
         ))->isTrue();
     }
-
 
     public function testInstantiationTypeUpdate()
     {
