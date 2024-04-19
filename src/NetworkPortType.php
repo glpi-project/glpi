@@ -185,7 +185,7 @@ class NetworkPortType extends CommonDropdown
             $othername = "$name ($num)";
 
             if ($type === $num || $type == $name || $type == $othername) {
-                return $row['instantiation_type'] ?? self::DEFAULT_TYPE;
+                return $entry['instantiation_type'] ?? self::DEFAULT_TYPE;
             }
         }
 
