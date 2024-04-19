@@ -266,7 +266,11 @@ class ItemtypeExtension extends AbstractExtension
         return $instance ?: null;
     }
 
-    public function getItemtypeForeignKey(string $itemtype): ?string
+    /**
+     * @param class-string|object $itemtype The itemtype or an item instance.
+     * @return string|null The foreign key field name of the itemtype or null if not found.
+     */
+    public function getItemtypeForeignKey(string|object $itemtype): ?string
     {
         if (is_a($itemtype, CommonDBTM::class, true)) {
             return $itemtype::getForeignKeyField();

@@ -324,6 +324,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkPortInstantiation::getPeerInstantiationHTMLTable()` and all sub classes overrrides.
 - `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
+- `PlanningRecall::specificForm()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
@@ -391,6 +392,7 @@ The present file will list all changes made to the project; according to the
 - `DropdownTranslation::getTranslationByName()`
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
 - `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.
+- `ajax/planningcheck.php` script. Use `Planning::showPlanningCheck()` instead.
 
 
 ## [10.0.16] unreleased
