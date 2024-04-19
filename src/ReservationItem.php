@@ -57,58 +57,33 @@ class ReservationItem extends CommonDBChild
 
     public $taborientation           = 'horizontal';
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canView()
     {
         return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
     }
-
 
     public static function getTypeName($nb = 0)
     {
         return _n('Reservable item', 'Reservable items', $nb);
     }
 
-
-    /**
-     * @see CommonGLPI::getMenuName()
-     *
-     * @since 0.85
-     **/
     public static function getMenuName()
     {
         return Reservation::getTypeName(Session::getPluralNumber());
     }
 
-
-    /**
-     * @see CommonGLPI::getForbiddenActionsForMenu()
-     *
-     * @since 0.85
-     **/
     public static function getForbiddenActionsForMenu()
     {
         return ['add'];
     }
 
-
-    /**
-     * @see CommonGLPI::getAdditionalMenuLinks()
-     *
-     * @since 0.85
-     **/
     public static function getAdditionalMenuLinks()
     {
-
         if (static::canView()) {
             return ['showall' => Reservation::getSearchURL(false)];
         }
         return false;
     }
-
 
     public static function getMenuContent()
     {
@@ -120,8 +95,6 @@ class ReservationItem extends CommonDBChild
         return $menu;
     }
 
-
-   // From CommonDBTM
     /**
      * Retrieve an item from the database for a specific item
      *
@@ -132,28 +105,24 @@ class ReservationItem extends CommonDBChild
      **/
     public function getFromDBbyItem($itemtype, $ID)
     {
-
         return $this->getFromDBByCrit([
-            $this->getTable() . '.itemtype'  => $itemtype,
-            $this->getTable() . '.items_id'  => $ID
+            static::getTable() . '.itemtype'  => $itemtype,
+            static::getTable() . '.items_id'  => $ID
         ]);
     }
 
-
     public function cleanDBonPurge()
     {
-
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Reservation::class,
             ]
         );
 
-       // Alert does not extends CommonDBConnexity
+        // Alert does not extend CommonDBConnexity
         $alert = new Alert();
-        $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
-
 
     public function rawSearchOptions()
     {
@@ -161,7 +130,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '4',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
             'datatype'           => 'text'
@@ -169,7 +138,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '5',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool'
@@ -203,7 +172,7 @@ class ReservationItem extends CommonDBChild
 
         $tab[] = [
             'id'                 => '9',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => '_virtual',
             'name'               => __('Planning'),
             'datatype'           => 'specific',
@@ -302,7 +271,7 @@ class ReservationItem extends CommonDBChild
         return [
             [
                 'id'                 => '81',
-                'table'              => 'glpi_reservationitems',
+                'table'              => static::getTable(),
                 'name'               => __('Reservable'),
                 'field'              => 'is_active',
                 'joinparams'         => [
@@ -314,13 +283,12 @@ class ReservationItem extends CommonDBChild
         ];
     }
 
-
     /**
-     * @param $item   CommonDBTM object
-     **/
+     * @param CommonDBTM $item
+     * @return false|void
+     */
     public static function showActivationFormForItem(CommonDBTM $item)
     {
-
         if (!self::canUpdate()) {
             return false;
         }
@@ -399,21 +367,18 @@ class ReservationItem extends CommonDBChild
         echo "</div>";
     }
 
-
     public function showForm($ID, array $options = [])
     {
-
         if (!self::canView()) {
             return false;
         }
 
         $r = new self();
-
         if ($r->getFromDB($ID)) {
             $type = $r->fields["itemtype"];
             $name = NOT_AVAILABLE;
             if ($item = getItemForItemtype($r->fields["itemtype"])) {
-                $type = $item->getTypeName();
+                $type = $item::getTypeName(1);
                 if ($item->getFromDB($r->fields["items_id"])) {
                     $name = $item->getName();
                 }
@@ -430,7 +395,6 @@ class ReservationItem extends CommonDBChild
         }
         return false;
     }
-
 
     public static function showListSimple()
     {
@@ -524,6 +488,7 @@ class ReservationItem extends CommonDBChild
         ]);
 
         foreach ($iterator as $data) {
+            /** @var array{itemtype: string} $data */
             if (is_a($data['itemtype'], CommonDBTM::class, true)) {
                 $values[$data['itemtype']] = $data['itemtype']::getTypeName();
             }
@@ -753,24 +718,24 @@ class ReservationItem extends CommonDBChild
         echo "</div>";
     }
 
-
     /**
      * @param $name
      *
      * @return array
+     * @used-by CronTask
      **/
     public static function cronInfo($name)
     {
         return ['description' => __('Alerts on reservations')];
     }
 
-
     /**
      * Cron action on reservation : alert on end of reservations
      *
-     * @param $task to log, if NULL use display (default NULL)
+     * @param CronTask $task Task to log, if NULL use display (default NULL)
      *
-     * @return 0 : nothing to do 1 : done with success
+     * @return integer 0 : nothing to do 1 : done with success
+     * @used-by CronTask
      **/
     public static function cronReservation($task = null)
     {
@@ -784,7 +749,6 @@ class ReservationItem extends CommonDBChild
             return 0;
         }
 
-        $message        = [];
         $cron_status    = 0;
         $items_infos    = [];
         $items_messages = [];
@@ -843,7 +807,7 @@ class ReservationItem extends CommonDBChild
                         }
                         $items_messages[$entity] .= sprintf(
                             __('%1$s - %2$s'),
-                            $item_resa->getTypeName(),
+                            $item_resa::getTypeName(),
                             $item_resa->getName()
                         ) . "<br>";
                     }
@@ -905,13 +869,11 @@ class ReservationItem extends CommonDBChild
         return $cron_status;
     }
 
-
     /**
      * Display debug information for reservation of current object
      **/
     public function showDebugResa()
     {
-
         $resa                                = new Reservation();
         $resa->fields['id']                  = '1';
         $resa->fields['reservationitems_id'] = $this->getField('id');
@@ -923,15 +885,9 @@ class ReservationItem extends CommonDBChild
         NotificationEvent::debugEvent($resa);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see commonDBTM::getRights()
-     **/
     public function getRights($interface = 'central')
     {
-        if ($interface == 'central') {
+        if ($interface === 'central') {
             $values = parent::getRights();
         } else {
             $values = [READ => __('Read')];
@@ -941,37 +897,23 @@ class ReservationItem extends CommonDBChild
         return $values;
     }
 
-
-    /**
-     * @see CommonGLPI::defineTabs()
-     *
-     * @since 0.85
-     **/
     public function defineTabs($options = [])
     {
-
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
         $ong['no_all_tab'] = true;
         return $ong;
     }
 
-
-    /**
-     * @see CommonGLPI::getTabNameForItem()
-     *
-     * @since 0.85
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             $tabs = [];
-            if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+            if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
                 $tabs[1] = Reservation::getTypeName(1);
             }
             if (
-                (Session::getCurrentInterface() == "central")
+                (Session::getCurrentInterface() === "central")
                 && Session::haveRight("reservation", READ)
             ) {
                 $tabs[2] = __('Administration');
@@ -981,20 +923,13 @@ class ReservationItem extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param $item         CommonGLPI object
-     * @param $tabnum       (default1)
-     * @param $withtemplate (default0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
+        if ($item::class === self::class) {
             switch ($tabnum) {
                 case 1:
                     $item->showListSimple();
                     break;
-
                 case 2:
                     Search::show('ReservationItem');
                     break;
@@ -1003,16 +938,10 @@ class ReservationItem extends CommonDBChild
         return true;
     }
 
-    /**
-     * @see CommonDBTM::isNewItem()
-     *
-     * @since 0.85
-     **/
     public function isNewItem()
     {
         return false;
     }
-
 
     public static function getIcon()
     {
@@ -1022,9 +951,11 @@ class ReservationItem extends CommonDBChild
     /**
      * Display a dropdown with only reservable items
      *
-     * @param array $post with these options
-     * - idtable: itemtype of items to show
-     * - name: input name
+     * @param array{idtable: string, name: string} $post
+     * <ul>
+     *     <li>idtable: itemtype of items to show</li>
+     *     <li>name: input name</li>
+     * </ul>
      *
      * @return void
      */
@@ -1033,8 +964,8 @@ class ReservationItem extends CommonDBChild
         if ($post['idtable'] && class_exists($post['idtable'])) {
             $result = self::getAvailableItems($post['idtable']);
 
-            if ($result->count() == 0) {
-                 echo __('No reservable item!');
+            if ($result->count() === 0) {
+                 echo __s('No reservable item!');
             } else {
                 $items = [];
                 foreach ($result as $row) {
@@ -1052,7 +983,7 @@ class ReservationItem extends CommonDBChild
     /**
      * Get available items for a given itemtype
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return DBmysqlIterator
      */
@@ -1061,7 +992,7 @@ class ReservationItem extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        $reservation_table = ReservationItem::getTable();
+        $reservation_table = self::getTable();
         $item_table = $itemtype::getTable();
 
         $criteria = self::getAvailableItemsCriteria($itemtype);
@@ -1076,7 +1007,7 @@ class ReservationItem extends CommonDBChild
     /**
      * Get available items for a given itemtype
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return int
      */
@@ -1094,13 +1025,13 @@ class ReservationItem extends CommonDBChild
     /**
      * Get common criteria for getAvailableItems and countAvailableItems functions
      *
-     * @param string $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array
      */
     private static function getAvailableItemsCriteria(string $itemtype): array
     {
-        $reservation_table = ReservationItem::getTable();
+        $reservation_table = self::getTable();
         /** @var CommonDBTM $item */
         $item = new $itemtype();
         $item_table = $itemtype::getTable();
