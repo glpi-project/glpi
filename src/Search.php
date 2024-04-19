@@ -151,6 +151,10 @@ class Search
      **/
     public static function show($itemtype)
     {
+        global $ticketcolor;
+        $ticketcolor = $itemtype;
+    
+
 
         $params = self::manageParams($itemtype, $_GET);
         echo "<div class='search_page row'>";
@@ -8718,13 +8722,14 @@ HTML;
      **/
     public static function showItem($type, $value, &$num, $row, $extraparam = '')
     {
-
+    
+        global $ticketcolor;
         $out = "";
         // Handle null values
         if ($value === null) {
             $value = '';
         }
-
+    
         switch ($type) {
             case self::PDF_OUTPUT_LANDSCAPE: //pdf
             case self::PDF_OUTPUT_PORTRAIT:
@@ -8737,9 +8742,9 @@ HTML;
                 $PDF_TABLE .= "<td $extraparam valign='top'>";
                 $PDF_TABLE .= $value;
                 $PDF_TABLE .= "</td>";
-
+    
                 break;
-
+    
             case self::SYLK_OUTPUT: //sylk
                 /**
                  * @var array $SYLK_ARRAY
@@ -8755,14 +8760,14 @@ HTML;
                     Toolbox::strlen($SYLK_ARRAY[$row][$num])
                 );
                 break;
-
+    
             case self::CSV_OUTPUT: //csv
                 $value = DataExport::normalizeValueForTextExport($value);
                 $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                 $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                 $out   = "\"" . self::csv_clean($value) . "\"" . $_SESSION["glpicsv_delimiter"];
                 break;
-
+    
             case self::NAMES_OUTPUT:
                // We only want to display one column (the name of the item).
                // The name field is always the first column expect for tickets
@@ -8787,20 +8792,30 @@ HTML;
                     }
                 }
                 break;
-
+    
             default:
                 /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
-                $out = "<td $extraparam valign='top'>";
-
+                
+    //Abfrage nach der Tickettabelle 
+            if($_GET["itemtype"]== "Ticket" || $ticketcolor == "Ticket" )
+           {
+              
+         
+                
+                
+               
+               
                 if (!preg_match('/' . self::LBHR . '/', $value)) {
                     $values = preg_split('/' . self::LBBR . '/i', $value);
                     $line_delimiter = '<br>';
+                  
                 } else {
                     $values = preg_split('/' . self::LBHR . '/i', $value);
                     $line_delimiter = '<hr>';
                 }
-
+            
+    
                 if (
                     count($values) > 1
                     && Toolbox::strlen($value) > $CFG_GLPI['cut']
@@ -8808,11 +8823,13 @@ HTML;
                     $value = '';
                     foreach ($values as $v) {
                         $value .= $v . $line_delimiter;
+    
+                   
                     }
                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                     $value = '<div class="fup-popup">' . $value . '</div>';
-                    $valTip = ' ' . Html::showToolTip(
+                    $valTip = "&nbsp;" . Html::showToolTip(
                         $value,
                         [
                             'awesome-class'   => 'fa-comments',
@@ -8821,17 +8838,76 @@ HTML;
                             'onclick'         => true
                         ]
                     );
+                   
                     $out .= $values[0] . $valTip;
                 } else {
                     $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
                     $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
                     $out .= $value;
                 }
-                $out .= "</td>\n";
+               
+            
+                
+            
+             
+        } 
+        else
+        {  
+          $out = "<td $extraparam valign='top'>";
+        
+        
+         if (!preg_match('/' . self::LBHR . '/', $value)) {
+             $values = preg_split('/' . self::LBBR . '/i', $value);
+             $line_delimiter = '<br>';
+           
+         } else {
+             $values = preg_split('/' . self::LBHR . '/i', $value);
+             $line_delimiter = '<hr>';
+         }
+     
+    
+         if (
+             count($values) > 1
+             && Toolbox::strlen($value) > $CFG_GLPI['cut']
+         ) {
+             $value = '';
+             foreach ($values as $v) {
+                 $value .= $v . $line_delimiter;
+    
+            
+             }
+             $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
+             $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
+             $value = '<div class="fup-popup">' . $value . '</div>';
+             $valTip = "&nbsp;" . Html::showToolTip(
+                 $value,
+                 [
+                     'awesome-class'   => 'fa-comments',
+                     'display'         => false,
+                     'autoclose'       => false,
+                     'onclick'         => true
+                 ]
+             );
+            
+             $out .= $values[0] . $valTip;
+         } else {
+             $value = preg_replace('/' . self::LBBR . '/', '<br>', $value);
+             $value = preg_replace('/' . self::LBHR . '/', '<hr>', $value);
+             $out .= $value;
+         }
+        
+     } 
+         $out .= "</td>\n";
+    
+             
         }
         $num++;
+
         return $out;
+    
     }
+    
+    
 
 
     /**

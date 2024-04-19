@@ -3157,6 +3157,16 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own')
         ];
 
+        
+     $tab[] = [
+        'id'                 => '15',
+        'table'              => 'glpi_itilcategories',
+        'field'              => 'color',
+        'name'               => __('Color'),
+        'datatype'           => 'color'
+    ];
+
+
         $max_date = '99999999';
         $tab[] = [
             'id'                 => '188',
