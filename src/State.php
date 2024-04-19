@@ -48,28 +48,18 @@ class State extends CommonTreeDropdown
 
     public static $rightname               = 'state';
 
-
-
     public static function getTypeName($nb = 0)
     {
         return _n('Status of items', 'Statuses of items', $nb);
     }
-
 
     public static function getFieldLabel()
     {
         return __('Status');
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonTreeDropdown::getAdditionalFields()
-     **/
     public function getAdditionalFields()
     {
-
         $fields   = parent::getAdditionalFields();
 
         $fields[] = [
@@ -96,9 +86,11 @@ class State extends CommonTreeDropdown
 
 
     /**
-     * States for behavious config
+     * States for behaviour config
      *
-     * @param $lib    string   to add for -1 value (default '')
+     * @param string $lib to add for -1 value (default '')
+     * @param boolean $is_inheritable
+     * @return array
      */
     final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
     {
@@ -131,16 +123,17 @@ class State extends CommonTreeDropdown
     /**
      * Dropdown of states for behaviour config
      *
-     * @param $name            select name
-     * @param $lib    string   to add for -1 value (default '')
-     * @param $value           default value (default 0)
+     * @param string $name  select name
+     * @param string $lib   to add for -1 value (default '')
+     * @param integer $value
+     * @param boolean $is_inheritable
+     * @used-by templates/pages/admin/entity/assets.html.twig
      **/
     public static function dropdownBehaviour($name, $lib = "", $value = 0, $is_inheritable = false)
     {
         $elements = self::getBehaviours($lib, $is_inheritable);
         Dropdown::showFromArray($name, $elements, ['value' => $value]);
     }
-
 
     public static function showSummary()
     {
@@ -155,7 +148,7 @@ class State extends CommonTreeDropdown
 
         foreach ($state_type as $key => $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
-                if (!$item->canView()) {
+                if (!$item::canView()) {
                     unset($state_type[$key]);
                 } else {
                     $table = getTableForItemType($itemtype);
@@ -187,10 +180,10 @@ class State extends CommonTreeDropdown
         if (count($states)) {
             $total = [];
 
-           // Produce headline
+            // Produce headline
             echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
-           // Type
+            // Type
             echo "<th>" . __('Status') . "</th>";
 
             foreach ($state_type as $key => $itemtype) {
@@ -277,14 +270,13 @@ class State extends CommonTreeDropdown
         }
     }
 
-
     public function getEmpty()
     {
         if (!parent::getEmpty()) {
             return false;
         }
 
-        //initialize is_visible_* fields at true to keep the same behavior as in older versions
+        // initialize is_visible_* fields at true to keep the same behavior as in older versions
         foreach ($this->getvisibilityFields() as $field) {
             $this->fields[$field] = 1;
         }
@@ -294,13 +286,11 @@ class State extends CommonTreeDropdown
         return true;
     }
 
-
     public function cleanDBonPurge()
     {
         Rule::cleanForItemCriteria($this);
         Rule::cleanForItemCriteria($this, '_states_id%');
     }
-
 
     public function prepareInputForAdd($input)
     {
@@ -309,7 +299,7 @@ class State extends CommonTreeDropdown
         }
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
-                sprintf(__('%1$s must be unique!'), $this->getTypeName(1)),
+                sprintf(__s('%1$s must be unique!'), static::getTypeName(1)),
                 false,
                 ERROR
             );
@@ -336,7 +326,7 @@ class State extends CommonTreeDropdown
         foreach ($this->getvisibilityFields() as $itemtype => $field) {
             if (isset($this->input[$field])) {
                 $state_visibility->add([
-                    'itemtype' => State::getType(),
+                    'itemtype' => self::class,
                     'items_id' => $this->fields['id'],
                     'visible_itemtype'  => $itemtype,
                     'is_visible' => $this->input[$field]
@@ -352,14 +342,14 @@ class State extends CommonTreeDropdown
         $state_visibility = new DropdownVisibility();
         foreach ($this->getvisibilityFields() as $itemtype => $field) {
             if (isset($this->input[$field])) {
-                if ($state_visibility->getFromDBByCrit(['itemtype' => self::getType(), 'items_id' => $this->input['id'], 'visible_itemtype' => $itemtype])) {
+                if ($state_visibility->getFromDBByCrit(['itemtype' => self::class, 'items_id' => $this->input['id'], 'visible_itemtype' => $itemtype])) {
                     $state_visibility->update([
                         'id' => $state_visibility->fields['id'],
                         'is_visible' => $this->input[$field]
                     ]);
                 } else {
                     $state_visibility->add([
-                        'itemtype' => State::getType(),
+                        'itemtype' => self::class,
                         'items_id' => $this->fields['id'],
                         'visible_itemtype' => $itemtype,
                         'is_visible' => $this->input[$field]
@@ -383,7 +373,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Computer',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -403,7 +393,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'SoftwareVersion',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -419,7 +409,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Monitor',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -435,7 +425,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Printer',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -451,7 +441,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Peripheral',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -467,7 +457,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Phone',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -487,7 +477,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'NetworkEquipment',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -507,7 +497,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'SoftwareLicense',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -527,7 +517,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Certificate',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -547,7 +537,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Rack',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -567,7 +557,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Line',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -587,7 +577,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Enclosure',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -607,7 +597,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'PDU',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -627,7 +617,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Cluster',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -647,7 +637,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'PassiveDCEquipment',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -667,7 +657,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Contract',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -687,7 +677,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Appliance',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -707,7 +697,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'Cable',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -727,7 +717,7 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype' => 'itemtypeonly',
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'condition' => [
                     'NEWTABLE.visible_itemtype' => 'DatabaseInstance',
                     'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id')
@@ -737,7 +727,7 @@ class State extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '40',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_helpdesk_visible',
             'name'               => __('Show items with this status in assistance'),
             'datatype'           => 'bool'
@@ -750,7 +740,7 @@ class State extends CommonTreeDropdown
     {
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(
-                sprintf(__('%1$s must be unique per level!'), $this->getTypeName(1)),
+                sprintf(__s('%1$s must be unique per level!'), static::getTypeName(1)),
                 false,
                 ERROR
             );
@@ -788,7 +778,7 @@ class State extends CommonTreeDropdown
             }
         }
         if (!$has_changed) {
-           //state has not changed; this is OK.
+            // state has not changed; this is OK.
             return true;
         }
 
@@ -799,12 +789,12 @@ class State extends CommonTreeDropdown
         }
 
         $query = [
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => $where
         ];
         $row = $DB->request($query)->current();
-        return (int)$row['cpt'] == 0;
+        return (int) $row['cpt'] === 0;
     }
 
     /**
@@ -834,7 +824,7 @@ class State extends CommonTreeDropdown
             'OR' =>  [
                 'states_id' => new QuerySubQuery([
                     'SELECT' => 'id',
-                    'FROM'   => State::getTable(),
+                    'FROM'   => self::getTable(),
                     'WHERE'  => ['is_helpdesk_visible' => true]
                 ]),
                 ['states_id' => 0]
@@ -856,7 +846,7 @@ class State extends CommonTreeDropdown
             $this->fields[$visibility_field] = 0;
         }
 
-        $visibilities = $statevisibility->find(['itemtype' => State::getType(), 'items_id' => $this->fields['id']]);
+        $visibilities = $statevisibility->find(['itemtype' => self::class, 'items_id' => $this->fields['id']]);
         foreach ($visibilities as $visibility) {
             $this->fields['is_visible_' . strtolower($visibility['visible_itemtype'])] = $visibility['is_visible'];
         }

@@ -52,7 +52,7 @@ class ITILCategory extends CommonTreeDropdown
     {
         $tab = [
             [
-                'name'      => $this->getForeignKeyField(),
+                'name'      => static::getForeignKeyField(),
                 'label'     => __('As child of'),
                 'type'      => 'parent',
                 'list'      => false,
@@ -152,7 +152,6 @@ class ITILCategory extends CommonTreeDropdown
         return $tab;
     }
 
-
     public function rawSearchOptions()
     {
         $tab                       = parent::rawSearchOptions();
@@ -212,7 +211,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '74',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_incident',
             'name'               => __('Visible for an incident'),
             'datatype'           => 'bool'
@@ -220,7 +219,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '75',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_request',
             'name'               => __('Visible for a request'),
             'datatype'           => 'bool'
@@ -228,7 +227,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '76',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_problem',
             'name'               => __('Visible for a problem'),
             'datatype'           => 'bool'
@@ -236,7 +235,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '85',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_change',
             'name'               => __('Visible for a change'),
             'datatype'           => 'bool'
@@ -244,7 +243,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_helpdeskvisible',
             'name'               => __('Visible in the simplified interface'),
             'datatype'           => 'bool'
@@ -299,7 +298,7 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '99',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'code',
             'name'               => __('Code representing the ticket category'),
             'massiveaction'      => false,
@@ -309,16 +308,13 @@ class ITILCategory extends CommonTreeDropdown
         return $tab;
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('ITIL category', 'ITIL categories', $nb);
     }
 
-
     public function post_getEmpty()
     {
-
         $this->fields['is_helpdeskvisible'] = 1;
         $this->fields['is_request']         = 1;
         $this->fields['is_incident']        = 1;
@@ -326,17 +322,17 @@ class ITILCategory extends CommonTreeDropdown
         $this->fields['is_change']          = 1;
     }
 
-
     public function cleanDBonPurge()
     {
         Rule::cleanForItemCriteria($this);
     }
 
     /**
+     * @param string $value
+     * @return int
      * @since 9.5.0
      *
-     * @param $value
-     **/
+     */
     public static function getITILCategoryIDByCode($value)
     {
         return self::getITILCategoryIDByField("code", $value);
@@ -347,6 +343,7 @@ class ITILCategory extends CommonTreeDropdown
      *
      * @param string $field
      * @param mixed  $value
+     * @return int
      **/
     private static function getITILCategoryIDByField($field, $value)
     {
@@ -359,7 +356,7 @@ class ITILCategory extends CommonTreeDropdown
             'WHERE'  => [$field => $value]
         ]);
 
-        if (count($iterator) == 1) {
+        if (count($iterator) === 1) {
             $result = $iterator->current();
             return $result['id'];
         }
@@ -373,10 +370,10 @@ class ITILCategory extends CommonTreeDropdown
         $input['code'] = isset($input['code']) ? trim($input['code']) : '';
         if (
             !empty($input["code"])
-            && ITILCategory::getITILCategoryIDByCode($input["code"]) != -1
+            && self::getITILCategoryIDByCode($input["code"]) !== -1
         ) {
             Session::addMessageAfterRedirect(
-                __("Code representing the ticket category is already used"),
+                __s("Code representing the ticket category is already used"),
                 false,
                 ERROR
             );
@@ -384,7 +381,6 @@ class ITILCategory extends CommonTreeDropdown
         }
         return $input;
     }
-
 
     public function prepareInputForUpdate($input)
     {
@@ -398,7 +394,7 @@ class ITILCategory extends CommonTreeDropdown
             && !in_array(ITILCategory::getITILCategoryIDByCode($input["code"]), [$input['id'],-1])
         ) {
             Session::addMessageAfterRedirect(
-                __("Code representing the ticket category is already used"),
+                __s("Code representing the ticket category is already used"),
                 false,
                 ERROR
             );
@@ -414,39 +410,30 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $item         CommonGLPI object
-     * @param $withtemplate (default 0)
-     **/
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         if (Session::haveRight(self::$rightname, READ)) {
             if ($item instanceof ITILTemplate) {
-                $ong[1] = $this->getTypeName(Session::getPluralNumber());
+                $ong[1] = $this::getTypeName(Session::getPluralNumber());
                 return $ong;
             }
         }
         return parent::getTabNameForItem($item, $withtemplate);
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         if ($item instanceof ITILTemplate) {
             self::showForITILTemplate($item, $withtemplate);
         }
         return parent::displayTabContentForItem($item, $tabnum, $withtemplate);
     }
 
-
     /**
-     * @param $tt           ITILTemplate object
-     * @param $withtemplate (default 0)
-     **/
+     * @param ITILTemplate $tt
+     * @param integer $withtemplate (default 0)
+     * @return false|void
+     */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
     {
         /**
