@@ -4423,6 +4423,9 @@ JAVASCRIPT;
                 if ($with_no_right) {
                     $WHERE['OR'][] = ['glpi_profiles_users.entities_id' => null];
                 }
+                if (empty($WHERE['OR'])) {
+                    unset($WHERE['OR']);
+                }
                 break;
 
             default:

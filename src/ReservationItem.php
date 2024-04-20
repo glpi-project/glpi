@@ -419,19 +419,19 @@ class ReservationItem extends CommonDBChild
         if (isset($_POST['reserve'])) {
             echo "<div id='viewresasearch'  class='center'>";
             Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
-            echo "<div id='nosearch' class='center firstbloc'>" .
+            echo "<div id='nosearch' class='text-center mb-3'>" .
               "<a href=\"" . $CFG_GLPI['root_doc'] . "/front/reservationitem.php\">";
-            echo __('See all reservable items') . "</a></div>\n";
+            echo __s('See all reservable items') . "</a></div>";
         } else {
-            echo "<div id='makesearch' class='center firstbloc'>" .
+            echo "<div id='makesearch' class='text-center mb-3'>" .
               "<a class='btn btn-secondary' href='reservation.php?reservationitems_id=0'>
-                  <i class='far fa-calendar'></i>&nbsp;
-                  " . __("View calendar for all items") . "
+                  <i class='" . Planning::getIcon() . " me-2'></i>
+                  " . __s("View calendar for all items") . "
                </a>
                <a class='btn btn-secondary mw-100 d-inline-block text-truncate' onClick=\"javascript:showHideDiv('viewresasearch','','','');" .
                 "showHideDiv('makesearch','','','')\">
-               <i class='fas fa-search'></i>&nbsp;";
-            echo __('Find a free item in a specific period') . "</a></div>";
+               <i class='ti ti-search me-2'></i>";
+            echo __s('Find a free item in a specific period') . "</a></div>";
 
             echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
             $begin_time                 = time();
@@ -442,9 +442,9 @@ class ReservationItem extends CommonDBChild
         }
         echo "<form method='post' name='form' action='" . Toolbox::getItemTypeSearchURL(__CLASS__) . "'>";
         echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-        echo "<th colspan='3'>" . __('Find a free item in a specific period') . "</th></tr>";
+        echo "<th colspan='3'>" . __s('Find a free item in a specific period') . "</th></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Start date') . "</td><td class='d-flex'>";
+        echo "<tr class='tab_bg_2'><td>" . __s('Start date') . "</td><td class='d-flex'>";
         Html::showDateTimeField("reserve[begin]", ['value'      =>  $_POST['reserve']["begin"],
             'maybeempty' => false
         ]);
@@ -452,7 +452,7 @@ class ReservationItem extends CommonDBChild
         echo "<input type='submit' class='btn btn-primary' name='submit' value=\"" . _sx('button', 'Search') . "\">";
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Duration') . "</td><td>";
+        echo "<tr class='tab_bg_2'><td>" . __s('Duration') . "</td><td>";
         $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
                        * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
@@ -463,7 +463,8 @@ class ReservationItem extends CommonDBChild
             'emptylabel' => __('Specify an end date')
         ]);
         echo "<br><div id='date_end$rand'></div>";
-        $params = ['duration'     => '__VALUE__',
+        $params = [
+            'duration'     => '__VALUE__',
             'end'          => $_POST['reserve']["end"],
             'name'         => "reserve[end]"
         ];
@@ -476,7 +477,7 @@ class ReservationItem extends CommonDBChild
         );
         echo "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __('Item type') . "</td><td>";
+        echo "<tr class='tab_bg_2'><td>" . __s('Item type') . "</td><td>";
 
         $iterator = $DB->request([
             'SELECT'          => 'itemtype',
@@ -550,30 +551,21 @@ class ReservationItem extends CommonDBChild
         Html::closeForm();
         echo "</div>";
 
-       // GET method passed to form creation
+        // GET method passed to form creation
         echo "<div id='nosearch' class='card'>";
         echo "<form name='form' method='GET' action='" . Reservation::getFormURL() . "'>";
-        echo "<div class='table-responsive'>";
-        echo "<table class='card-table table table-hover'>";
-        echo "<tr>";
-        echo "<th style='width: 30px;'>" . Html::getCheckAllAsCheckbox('nosearch') . "</th>";
-        echo "<th>" . self::getTypeName(Session::getPluralNumber()) . "</th>";
-        echo "<th>" . Location::getTypeName(1) . "</th>";
-        echo "<th>" . _n('Comment', 'Comments', 1) . "</th>";
-        if ($showentity) {
-            echo "<th>" . Entity::getTypeName(1) . "</th>";
-        }
-        echo "<th style='width: 50px;'>" . __("Booking calendar") . "</th>";
-        echo "</tr>";
 
+        $entries = [];
+        $location_cache = [];
+        $entity_cache = [];
         foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
             $itemtable = getTableForItemType($itemtype);
-            $itemname  = $item->getNameField();
+            $itemname  = $item::getNameField();
 
-            $otherserial = new QueryExpression($DB->quote('') . ' AS ' . $DB->quoteName('otherserial'));
+            $otherserial = new QueryExpression($DB->quote('') . ' AS ' . $DB::quoteName('otherserial'));
             if ($item->isField('otherserial')) {
                 $otherserial = "$itemtable.otherserial AS otherserial";
             }
@@ -620,7 +612,7 @@ class ReservationItem extends CommonDBChild
 
             $begin = $_POST['reserve']["begin"];
             $end   = $_POST['reserve']["end"];
-            if (isset($_POST['submit']) && isset($begin) && isset($end)) {
+            if (isset($_POST['submit'], $begin, $end)) {
                 $criteria['LEFT JOIN']['glpi_reservations'] = [
                     'ON'  => [
                         'glpi_reservationitems' => 'id',
@@ -634,12 +626,12 @@ class ReservationItem extends CommonDBChild
                 ];
                 $criteria['WHERE'][] = ['glpi_reservations.id' => null];
             }
-            if (isset($_POST["reservation_types"]) && !empty($_POST["reservation_types"])) {
+            if (!empty($_POST["reservation_types"])) {
                 $tmp = explode('#', $_POST["reservation_types"]);
                 $criteria['WHERE'][] = ['glpi_reservationitems.itemtype' => $tmp[0]];
                 if (
-                    isset($tmp[1]) && ($tmp[0] == 'Peripheral')
-                    && ($itemtype == 'Peripheral')
+                    isset($tmp[1]) && ($tmp[0] === Peripheral::class)
+                    && ($itemtype === Peripheral::class)
                 ) {
                     $criteria['LEFT JOIN']['glpi_peripheraltypes'] = [
                         'ON' => [
@@ -660,19 +652,23 @@ class ReservationItem extends CommonDBChild
 
             $iterator = $DB->request($criteria);
             foreach ($iterator as $row) {
-                echo "<tr><td>";
-                echo Html::getCheckbox([
-                    'name'  => "item[" . $row["id"] . "]",
-                    'value' => $row["id"],
-                    'zero_on_empty' => false,
-                ]);
-                echo "</td>";
-                $typename = $item->getTypeName();
-                if ($itemtype == 'Peripheral') {
+                $entry = [
+                    'itemtype' => $itemtype,
+                    'id'       => $row['id'],
+                    'checkbox' => Html::getCheckbox([
+                        'name'  => "item[" . $row["id"] . "]",
+                        'value' => $row["id"],
+                        'zero_on_empty' => false,
+                    ]),
+                    'entity'   => '',
+                ];
+
+                $typename = $item::getTypeName();
+                if ($itemtype === Peripheral::class) {
                      $item->getFromDB($row['items_id']);
                     if (
                         isset($item->fields["peripheraltypes_id"])
-                         && ($item->fields["peripheraltypes_id"] != 0)
+                         && ((int) $item->fields["peripheraltypes_id"] !== 0)
                     ) {
                         $typename = Dropdown::getDropdownName(
                             "glpi_peripheraltypes",
@@ -682,37 +678,75 @@ class ReservationItem extends CommonDBChild
                 }
                 $item_link = sprintf(__('%1$s - %2$s'), $typename, $row["name"]);
                 if ($itemtype::canView()) {
-                    $item_link = "<a href='" . $itemtype::getFormURLWithId($row['items_id']) . "&forcetab=Reservation$1'>" .
-                        $item_link .
+                    $item_link = "<a href='" . htmlspecialchars($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>" .
+                        htmlspecialchars($item_link) .
                         "</a>";
                 }
-                echo "<td>$item_link</td>";
-                echo "<td>" . Dropdown::getDropdownName("glpi_locations", $row["location"]) . "</td>";
-                echo "<td>" . nl2br(($row["comment"] ?? "")) . "</td>";
-                if ($showentity) {
-                    echo "<td>" . Dropdown::getDropdownName("glpi_entities", $row["entities_id"]) .
-                     "</td>";
+                $entry['item'] = $item_link;
+
+                if (!isset($location_cache[$row["location"]])) {
+                    $location_cache[$row["location"]] = Dropdown::getDropdownName("glpi_locations", $row["location"]);
                 }
-                echo "<td class='center'><a href='reservation.php?reservationitems_id=" . $row['id'] . "'>
-                     <i class='far fa-calendar-plus fa-2x pointer' title=\"" . __s("Reserve this item") . "\"></i>
-                  </a></td>";
-                echo "</tr>";
+                $entry['location'] = $location_cache[$row["location"]];
+
+                $entry['comment'] = nl2br(htmlspecialchars($row["comment"] ?? ""));
+
+                if ($showentity) {
+                    if (!isset($entity_cache[$row["entities_id"]])) {
+                        $entity_cache[$row["entities_id"]] = Dropdown::getDropdownName("glpi_entities", $row["entities_id"]);
+                    }
+                    $entry['entity'] = $entity_cache[$row["entities_id"]];
+                }
+                $cal_href = htmlspecialchars(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
+                $entry['calendar'] = "<a href='$cal_href'>";
+                $entry['calendar'] .= "<i class='" . Planning::getIcon() . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
+
                 $ok = true;
+                $entries[] = $entry;
             }
         }
+
+        $columns = [
+            'checkbox' => [
+                'label' => Html::getCheckAllAsCheckbox('nosearch'),
+                'raw_header' => true
+            ],
+            'item' => self::getTypeName(1),
+            'location' => Location::getTypeName(1),
+            'comment' => _n('Comment', 'Comments', 1),
+        ];
+        if ($showentity) {
+            $columns['entity'] = Entity::getTypeName(1);
+        }
+        $columns['calendar'] = __("Booking calendar");
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => [
+                'checkbox' => 'raw_html',
+                'item' => 'raw_html',
+                'comment' => 'raw_html', // To preserve <br>. Text was already sanitized.
+                'calendar' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false,
+        ]);
+
         if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<th><i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i></th>";
+            echo "<i class='fas fa-level-up-alt fa-flip-horizontal fa-lg mx-2'></i>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
             if (isset($_POST['reserve'])) {
                 echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
                 echo Html::hidden('end', ['value'   => $_POST['reserve']["end"]]);
             }
             echo Html::submit("<i class='fas fa-lg fa-calendar-plus'></i>&nbsp;" . _sx('button', 'Book'));
-            echo "</th></tr>";
         }
-        echo "</table>";
-        echo "</div>";
+
         echo "<input type='hidden' name='id' value=''>";
         echo "</form>";// No CSRF token needed
         echo "</div>";
