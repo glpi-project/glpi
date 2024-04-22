@@ -60,7 +60,7 @@
 
         $('[data-glpi-dropdown-count-preview]')
             .attr('href', response.link ?? "")
-            .html("{{ __('There are %d user(s) matching these criteria.') }}".replace("%d", response.count))
+            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}".replace("%d", response.count))
         ;
     });
     $("select[name='_allow_list_dropdown[]']").trigger('change');

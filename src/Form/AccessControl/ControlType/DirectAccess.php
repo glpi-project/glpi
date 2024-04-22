@@ -68,7 +68,7 @@ final class DirectAccess implements ControlTypeInterface
         }
 
         // Build form URL with integrated token parameter
-        $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]";
+        $url = $CFG_GLPI['url_base'];
         $url .= "/front/form/form_renderer.php?";
         $url .= http_build_query([
             'id'    => $_GET['id'],

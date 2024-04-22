@@ -125,7 +125,7 @@ final class FormAccessControlManager
 
                 if ($new_control_id) {
                     trigger_error(
-                        "Faile to create control type: $strategy",
+                        "Fail to create control type: `$strategy`",
                         E_USER_WARNING
                     );
                 }
