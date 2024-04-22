@@ -430,6 +430,9 @@ abstract class InventoryAsset
     protected function handleInput(\stdClass $value, ?CommonDBTM $item = null): array
     {
         $input = ['_auto' => 1];
+        if (property_exists($value, '_user_inventory')) {
+            $input = ['_user_inventory' => $value->_user_inventory];
+        }
         $locks = [];
 
         if ($item !== null) {
