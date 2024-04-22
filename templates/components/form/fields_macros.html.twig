@@ -797,6 +797,7 @@
       'field_class': 'col-12 col-sm-6',
       'container_id': '',
       'add_field_class': '',
+      'add_label_class': '',
       'add_field_attribs': {},
       'center': false,
       'label_align': 'end',
@@ -848,7 +849,7 @@
 
    <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-      {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
+      {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
       {% if options.center %}
          {% set flex_class = "d-flex align-items-center" %}
       {% endif %}

@@ -38,10 +38,11 @@
         'statmenu',
         selected,
         values,
-        "<h3>" ~ __('Select statistics to be displayed') ~ "</h3>",
+        __('Select statistics to be displayed'),
         {
-            'full_width': true,
-            'on_change': 'window.location.href=this.options[this.selectedIndex].value'
+            full_width: true,
+            on_change: 'window.location.href=this.options[this.selectedIndex].value',
+            add_label_class: 'fs-3'
         }
     ) }}
 </div>
