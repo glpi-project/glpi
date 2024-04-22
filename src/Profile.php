@@ -3682,7 +3682,7 @@ class Profile extends CommonDBTM
                 $message = [];
                 foreach ($types as $type) {
                     if ($item = getItemForItemtype($type)) {
-                        $message[] = $item::etTypeName();
+                        $message[] = $item::getTypeName();
                     }
                 }
                 return implode(', ', $message);
