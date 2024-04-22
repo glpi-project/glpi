@@ -491,10 +491,6 @@ class FormAccessControl extends DbTestCase
         $form_access_control->fields = ['strategy' => DirectAccess::class];
         $strategy = $form_access_control->getStrategy();
         $this->object($strategy)->isInstanceOf(DirectAccess::class);
-
-        // Read strategy from manual parameter
-        $strategy = $form_access_control->getStrategy(AllowList::class);
-        $this->object($strategy)->isInstanceOf(AllowList::class);
     }
 
     /**

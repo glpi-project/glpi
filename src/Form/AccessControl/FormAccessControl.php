@@ -199,12 +199,15 @@ final class FormAccessControl extends CommonDBChild
     /**
      * Get access control strategy for this item.
      *
-     * @param string $strategy Strategy name can be manually supplied, else it
-     *                         will be read from the fields
+     * @return ControlTypeInterface
      */
-    public function getStrategy(string $strategy = null): ControlTypeInterface
+    public function getStrategy(): ControlTypeInterface
     {
-        $control_type = $strategy ?? $this->fields['strategy'];
+        $control_type = $this->fields['strategy'];
+        if (!$this->isValidStrategy($control_type)) {
+            throw new \RuntimeException();
+        }
+
         return new $control_type();
     }
 
@@ -245,7 +248,7 @@ final class FormAccessControl extends CommonDBChild
             );
             return false;
         }
-        $strategy = $this->getStrategy($strategy_class);
+        $strategy = new $strategy_class();
 
         if (is_a($input['_config'] ?? null, $strategy->getConfigClass())) {
             // Config object can be directly passed in the input if needed
