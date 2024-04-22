@@ -1821,6 +1821,7 @@ final class DbUtils
                     $user_params = [
                         'id'                 => $ID,
                         'user_name'          => $username,
+                        'login'              => $data['name'],
                     ];
 
                     if ($anon_name === null) {
