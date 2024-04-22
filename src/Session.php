@@ -37,6 +37,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
+use Glpi\Session\SessionInfo;
 
 /**
  * Session Class

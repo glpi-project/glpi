@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
-use SessionInfo;
+use Glpi\Session\SessionInfo;
 
 class DirectAccess extends \GLPITestCase
 {

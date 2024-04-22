@@ -37,7 +37,7 @@ namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use SessionInfo;
+use Glpi\Session\SessionInfo;
 
 class AllowList extends \GLPITestCase
 {

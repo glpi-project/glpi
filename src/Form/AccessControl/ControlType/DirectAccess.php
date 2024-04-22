@@ -38,7 +38,7 @@ namespace Glpi\Form\AccessControl\ControlType;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
-use SessionInfo;
+use Glpi\Session\SessionInfo;
 
 final class DirectAccess implements ControlTypeInterface
 {

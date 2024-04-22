@@ -41,7 +41,7 @@ use Glpi\Form\Form;
 use Group;
 use Override;
 use Profile;
-use SessionInfo;
+use Glpi\Session\SessionInfo;
 use User;
 
 final class AllowList implements ControlTypeInterface

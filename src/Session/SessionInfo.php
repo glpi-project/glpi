@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Session;
+
 class SessionInfo
 {
     public function __construct(
