@@ -101,18 +101,8 @@ $val2   = null;
 $values = [];
 
 switch ($_GET["type"]) {
-    case "technician":
-        $val1    = $_GET["id"];
-        $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-        $title   = sprintf(
-            __('%1$s: %2$s'),
-            __('Technician'),
-            $item->getAssignName($_GET["id"], 'User', $showuserlink)
-        );
-        break;
-
     case "technician_followup":
+    case "technician":
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
@@ -134,14 +124,8 @@ switch ($_GET["type"]) {
         );
         break;
 
-    case "user":
-        $val1    = $_GET["id"];
-        $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-        $title   = sprintf(__('%1$s: %2$s'), User::getTypeName(1), getUserName($_GET["id"], $showuserlink));
-        break;
-
     case "users_id_recipient":
+    case "user":
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
@@ -171,7 +155,7 @@ switch ($_GET["type"]) {
 
     case 'locations_tree':
         $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // nobreak;
+       // no break
 
     case 'locations_id':
         $val1    = $_GET['id'];
@@ -200,7 +184,7 @@ switch ($_GET["type"]) {
     case 'group_tree':
     case 'groups_tree_assign':
         $parent = (isset($_GET['champ']) ? $_GET['champ'] : 0);
-       // nobreak;
+       // no break
 
     case "group":
         $val1    = $_GET["id"];
@@ -231,24 +215,16 @@ switch ($_GET["type"]) {
         break;
 
     case "priority":
-        $val1    = $_GET["id"];
-        $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-        $title   = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($_GET["id"]));
-        break;
-
     case "urgency":
-        $val1    = $_GET["id"];
-        $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-        $title   = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($_GET["id"]));
-        break;
-
     case "impact":
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
-        $title   = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"]));
+        $title = match ($_GET['type']) {
+            'priority' => sprintf(__('%1$s: %2$s'), __('Priority'), $item::getPriorityName($_GET["id"])),
+            'urgency'  => sprintf(__('%1$s: %2$s'), __('Urgency'), $item::getUrgencyName($_GET["id"])),
+            'impact'   => sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"])),
+        };
         break;
 
     case "usertitles_id":
@@ -318,7 +294,7 @@ switch ($_GET["type"]) {
 
             $title  = sprintf(
                 __('%1$s: %2$s'),
-                $item->getTypeName(),
+                $item::getTypeName(),
                 $current['designation']
             );
         }
@@ -328,7 +304,7 @@ switch ($_GET["type"]) {
         $val1  = $_GET["id"];
         $val2  = $_GET["champ"];
         if ($item = getItemForItemtype($_GET["champ"])) {
-            $table  = $item->getTable();
+            $table  = $item::getTable();
             $values = Stat::getItems(
                 $_GET["itemtype"],
                 $_POST["date1"],
@@ -337,7 +313,7 @@ switch ($_GET["type"]) {
             );
             $title  = sprintf(
                 __('%1$s: %2$s'),
-                $item->getTypeName(),
+                $item::getTypeName(),
                 Dropdown::getDropdownName($table, $_GET["id"])
             );
         }
@@ -347,7 +323,7 @@ switch ($_GET["type"]) {
 // Found next and prev items
 $foundkey = -1;
 foreach ($values as $key => $val) {
-    if ($val['id'] == $_GET["id"]) {
+    if ((int) $val['id'] === (int) $_GET["id"]) {
         $foundkey = $key;
     }
 }
