@@ -47,7 +47,14 @@ use Glpi\CustomObject\AbstractDefinition;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Search\SearchOption;
+use Group;
+use Location;
+use Manufacturer;
+use Profile;
+use ProfileRight;
 use Session;
+use State;
+use User;
 
 /**
  * @extends AbstractDefinition<\Glpi\Asset\Asset>
@@ -111,10 +118,10 @@ final class AssetDefinition extends AbstractDefinition
                     'ti ti-adjustments'
                 ),
                 2 => self::createTabEntry(
-                    CustomFieldDefinition::getTypeName(Session::getPluralNumber()),
+                    __('Fields'),
                     $fields_count,
-                    CustomFieldDefinition::class,
-                    CustomFieldDefinition::getIcon()
+                    self::class,
+                    'ti ti-forms'
                 ),
                 3 => self::createTabEntry(
                     _n('Profile', 'Profiles', Session::getPluralNumber()),
@@ -142,6 +149,7 @@ final class AssetDefinition extends AbstractDefinition
                     $item->showCapacitiesForm();
                     break;
                 case 2:
+                    $item->showFieldsForm();
                     $item->showCustomFieldsForm();
                     break;
                 case 3:
@@ -196,11 +204,11 @@ final class AssetDefinition extends AbstractDefinition
         if ($canedit) {
             TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
                 'cancreate' => CustomFieldDefinition::canCreate(),
-                'id'        => $this->fields['id'],
-                'rand'      => $rand,
-                'type'      => CustomFieldDefinition::class,
+                'id' => $this->fields['id'],
+                'rand' => $rand,
+                'type' => CustomFieldDefinition::class,
                 'parenttype' => CustomFieldDefinition::$itemtype,
-                'items_id'  => CustomFieldDefinition::$items_id,
+                'items_id' => CustomFieldDefinition::$items_id,
                 'add_new_label' => __('Add a new field'),
                 'datatable_id' => 'datatable_customfields' . $rand,
                 'subitem_container_id' => 'customfield_form_container'
@@ -267,10 +275,32 @@ final class AssetDefinition extends AbstractDefinition
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . str_replace('\\', '_', self::class) . $rand,
+                'container' => 'mass' . str_replace('\\', '_', self::class) . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
             ],
         ]);
+    }
+
+    /*
+     * Display fields form.
+     *
+     * @return void
+     */
+    private function showFieldsForm(): void
+    {
+        $all_fields = $this->getAllFields();
+        $fields_display = $this->getDecodedFieldsField();
+
+        TemplateRenderer::getInstance()->display(
+            'pages/admin/assetdefinition/fields_display.html.twig',
+            [
+                'item'           => $this,
+                'classname'      => $this->getAssetClassName(),
+                'all_fields'     => $all_fields,
+                'fields_display' => $fields_display,
+                'used'           => array_column($fields_display, 'key'),
+            ]
+        );
     }
 
     public function prepareInputForAdd($input)
@@ -302,6 +332,17 @@ final class AssetDefinition extends AbstractDefinition
             } else {
                 $input['capacities'] = json_encode($input['capacities']);
             }
+        }
+
+        if (array_key_exists('fields_display', $input)) {
+            $formatted_fields_display = [];
+            foreach ($input['fields_display'] as $field_order => $field_key) {
+                $formatted_fields_display[] = [
+                    'order' => $field_order,
+                    'key'   => $field_key,
+                ];
+            }
+            $input['fields_display'] = json_encode($formatted_fields_display);
         }
 
         return $has_errors ? false : parent::prepareInput($input);
@@ -571,6 +612,63 @@ final class AssetDefinition extends AbstractDefinition
             $capacities = [];
         }
         return $capacities;
+    }
+
+
+    private function getAllFields(): array
+    {
+        $fields = [
+            'name'             => __('Name'),
+            'comment'          => __('Comment'),
+            'serial'           => __('Serial'),
+            'otherserial'      => __('Inventory number'),
+            'contact'          => __('Alternate username'),
+            'contact_num'      => __('Alternate username number'),
+            'users_id'         => User::getTypeName(),
+            'groups_id'        => Group::getTypeName(),
+            'users_id_tech'    => __('Technician in charge'),
+            'groups_id_tech'   => __('Group in charge'),
+            `locations_id`     => Location::getTypeName(),
+            `manufacturers_id` => Manufacturer::getTypeName(),
+            `states_id`        => State::getTypeName(),
+        ];
+
+        // TODO add assets_assetmodels_id and assets_assettypes_id
+        // TODO add custom fields
+
+        return $fields;
+    }
+
+    private function getDefaultFieldsDisplay(): array
+    {
+        $all_fields = $this->getAllFields();
+
+        $default = [];
+        $order = 0;
+        foreach ($all_fields as $key => $label) {
+            $default[] = [
+                'key'   => $key,
+                'order' => $order,
+            ];
+            $order++;
+        }
+
+        return $default;
+    }
+
+
+    /**
+     * Return the decoded value of the `capacities` field.
+     *
+     * @return array
+     */
+    private function getDecodedFieldsField(): array
+    {
+        $fields_display = @json_decode($this->fields['fields_display'], associative: true);
+        if (!is_array($fields_display) || count($fields_display) === 0) {
+            return $this->getDefaultFieldsDisplay();
+        }
+        return $fields_display;
     }
 
     /**

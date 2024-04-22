@@ -54,6 +54,7 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
             `capacities` JSON NOT NULL,
             `profiles` JSON NOT NULL,
             `translations` JSON NOT NULL,
+            `fields_display ` JSON NOT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -65,7 +66,7 @@ if (!$DB->tableExists('glpi_assets_assetdefinitions')) {
 SQL;
     $DB->doQueryOrDie($query);
 } else {
-    foreach (['profiles', 'translations'] as $field) {
+    foreach (['profiles', 'translations', 'fields_display'] as $field) {
         $migration->addField('glpi_assets_assetdefinitions', $field, 'JSON NOT NULL', ['update' => "'[]'"]);
     }
 }
