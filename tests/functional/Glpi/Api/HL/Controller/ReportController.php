@@ -59,7 +59,7 @@ class ReportController extends \HLAPITestCase
                             $this->array($report['report_group_fields'])->hasKeys([
                                 'user', 'users_id_recipient', 'group', 'group_tree', 'usertitles_id',
                                 'usercategories_id', 'itilcategories_id', 'itilcategories_tree', 'urgency', 'impact',
-                                'priority', 'solutiontypes_id', 'technicien', 'technicien_followup', 'groups_id_assign',
+                                'priority', 'solutiontypes_id', 'technician', 'technician_followup', 'groups_id_assign',
                                 'groups_tree_assign', 'suppliers_id_assign'
                             ]);
                             $tested++;

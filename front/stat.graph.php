@@ -101,7 +101,7 @@ $val2   = null;
 $values = [];
 
 switch ($_GET["type"]) {
-    case "technicien":
+    case "technician":
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
@@ -112,7 +112,7 @@ switch ($_GET["type"]) {
         );
         break;
 
-    case "technicien_followup":
+    case "technician_followup":
         $val1    = $_GET["id"];
         $val2    = "";
         $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
