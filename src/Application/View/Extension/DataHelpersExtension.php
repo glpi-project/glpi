@@ -71,7 +71,7 @@ class DataHelpersExtension extends AbstractExtension
     public function getTests(): array
     {
         return [
-            new TwigTest('url_safe', \Toolbox::isUrlSafe(...)),
+            new TwigTest('url_safe', Toolbox::isUrlSafe(...)),
         ];
     }
 

@@ -49,7 +49,7 @@
     }) }}
 
     {{ fields.htmlField('', user|e('html'), __('By'), field_options) }}
-    <input type="hidden" name="user_id" value="{{ item.fields['users_id'] }}">
+    <input type="hidden" name="users_id" value="{{ item.fields['users_id'] }}">
     {{ fields.nullField() }}
 
     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active'), field_options) }}

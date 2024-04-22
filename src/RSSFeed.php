@@ -81,7 +81,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function canCreateItem()
     {
         // Is my rssfeed
-        return ($this->fields['users_id'] === Session::getLoginUserID());
+        return (int)$this->fields['users_id'] === Session::getLoginUserID();
     }
 
     public function canUpdateItem()
