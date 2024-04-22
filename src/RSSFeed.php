@@ -216,7 +216,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
 
        // Profiles
-        if ($forceall|| isset($_SESSION["glpiactiveprofile"]['id'])) {
+        if ($forceall || isset($_SESSION["glpiactiveprofile"]['id'])) {
             $join['glpi_profiles_rssfeeds'] = [
                 'ON' => [
                     'glpi_profiles_rssfeeds'   => 'rssfeeds_id',
