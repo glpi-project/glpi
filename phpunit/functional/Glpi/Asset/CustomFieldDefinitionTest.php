@@ -78,6 +78,15 @@ class CustomFieldDefinitionTest extends DbTestCase
             'default_value' => 'default text',
         ]);
 
+        $this->assertTrue($asset_definition->update([
+            'id' => $asset_definition->getID(),
+            'fields_display' => [
+                0 => 'name',
+                1 => 'custom_test_string',
+                2 => 'serial'
+            ],
+        ]));
+
         $asset = $this->createItem($asset_classname, [
             'entities_id' => $this->getTestRootEntity(true),
             'name' => 'Test asset',
@@ -89,6 +98,14 @@ class CustomFieldDefinitionTest extends DbTestCase
 
         $asset->getFromDB($asset->getID());
         $this->assertEquals('{"' . $custom_field_definition_2->getID() . '": "value2"}', $asset->fields['custom_fields']);
+
+        $this->assertTrue($asset_definition->getFromDB($asset_definition->getID()));
+        $fields_display = $asset_definition->getDecodedFieldsField();
+        $this->assertCount(2, $fields_display);
+        $this->assertEquals('name', $fields_display[0]['key']);
+        $this->assertEquals(0, $fields_display[0]['order']);
+        $this->assertEquals('serial', $fields_display[1]['key']);
+        $this->assertEquals(1, $fields_display[1]['order']);
     }
 
     public function testGetAllowedDropdownItemtypes()

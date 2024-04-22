@@ -2125,4 +2125,10 @@ class CommonDBTMTest extends DbTestCase
         $item = new $itemtype();
         $item->displayFullPageForItem($items_id);
     }
+
+    public function testGetFormFields()
+    {
+        $computer = new \Computer();
+        $this->assertTrue(!array_diff(['name', 'serial', '_template_is_active'], $computer->getFormFields()));
+    }
 }

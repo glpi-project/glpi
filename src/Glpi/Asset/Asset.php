@@ -320,15 +320,34 @@ abstract class Asset extends CommonDBTM
         return $not_allowed;
     }
 
+    public function getFormFields(): array
+    {
+        $all_fields = array_keys(static::getDefinition()->getAllFields());
+        $fields_display = static::getDefinition()->getDecodedFieldsField();
+        $shown_fields = array_column($fields_display, 'key');
+        return array_filter($shown_fields, static fn ($f) => in_array($f, $all_fields, true));
+    }
+
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
+        $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
+        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['name'], $custom_fields), $custom_fields);
+        $fields_display = static::getDefinition()->getDecodedFieldsField();
+        $core_field_options = [];
+
+        foreach ($fields_display as $field) {
+            $core_field_options[$field['key']] = $field['field_options'] ?? [];
+        }
+
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
             [
                 'item'   => $this,
                 'params' => $options,
-                'custom_field_definitions' => static::getDefinition()->getCustomFieldDefinitions(),
+                'custom_fields' => $custom_fields,
+                'field_order' => $this->getFormFields(),
+                'additional_field_options' => $core_field_options,
             ]
         );
         return true;
