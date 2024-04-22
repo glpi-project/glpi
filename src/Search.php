@@ -5165,7 +5165,7 @@ JAVASCRIPT;
             case "glpi_ticketvalidations.status":
             case "glpi_changes.global_validation":
             case "glpi_changevalidations.status":
-                if ($val == 'all') {
+                if ($val == 'all' || !is_numeric($val)) {
                     return "";
                 }
                 $tocheck = [];
