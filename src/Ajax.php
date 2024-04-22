@@ -361,7 +361,11 @@ JAVASCRIPT;
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
             var url = tablink.attr('href');
-            const href_url_params = new URL(url, CFG_GLPI.url_base).searchParams;
+            if (CFG_GLPI.url_base != '') {
+                const href_url_params = new URL(url, CFG_GLPI.url_base).searchParams;
+            } else {
+                const href_url_params = new URLSearchParams($(tablink).prop('href'));
+            }
             var target = tablink.attr('data-bs-target');
 
             const updateCurrentTab = () => {
