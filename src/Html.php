@@ -3897,6 +3897,8 @@ JS;
 
             // init editor
             tinyMCE.init(Object.assign({
+               license_key: 'gpl',
+
                link_default_target: '_blank',
                branding: false,
                selector: '#{$id}',
