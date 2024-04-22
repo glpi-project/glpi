@@ -158,6 +158,19 @@ class RuleAsset extends Rule
             Rule::PATTERN_DATE_IS_NOT_EQUAL,
         ];
 
+        $criterias['_user_inventory']['name']             = __('User from inventory');
+        $criterias['_user_inventory']['allow_condition']  = [
+            Rule::REGEX_MATCH,
+            Rule::REGEX_NOT_MATCH,
+            Rule::PATTERN_EXISTS,
+            Rule::PATTERN_DOES_NOT_EXISTS,
+            Rule::PATTERN_BEGIN,
+            Rule::PATTERN_END,
+            Rule::PATTERN_IS_EMPTY,
+            Rule::PATTERN_CONTAIN,
+            Rule::PATTERN_NOT_CONTAIN
+        ];
+
         return $criterias;
     }
 
@@ -206,6 +219,9 @@ class RuleAsset extends Rule
         $actions['otherserial']['type']              = 'text';
         $actions['otherserial']['force_actions']     = ['regex_result'];
 
+        $actions['_affect_user_by_name_and_regex']['name']              = __('Assign user from name');
+        $actions['_affect_user_by_name_and_regex']['type']              = 'text';
+        $actions['_affect_user_by_name_and_regex']['force_actions']     = ['regex_result'];
         return $actions;
     }
 
