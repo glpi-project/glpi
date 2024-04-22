@@ -43,6 +43,7 @@ var Reservations = function() {
     this.currentv    = null;
     this.defaultDate = null;
     this.can_reserve = true;
+    this.now         = null;
 
     var my = this;
 
@@ -58,6 +59,7 @@ var Reservations = function() {
         if (config.can_reserve != undefined) {
             my.can_reserve = config.can_reserve;
         }
+        my.now          = config.now || null;
     };
 
     my.displayPlanning = function() {
@@ -65,6 +67,7 @@ var Reservations = function() {
             schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             timeZone: 'UTC',
             nowIndicator: true,
+            now: my.now,// as we set the calendar as UTC, we need to reprecise the current datetime
             theme: true,
             editable: true,
             defaultDate: my.defaultDate,

@@ -3937,6 +3937,8 @@ JS;
 
             // Store config in global var so the editor can be reinitialized from the client side if needed
             tinymce_editor_configs['{$id}'] = Object.assign({
+               license_key: 'gpl',
+
                link_default_target: '_blank',
                branding: false,
                selector: '#' + $.escapeSelector('{$id}'),

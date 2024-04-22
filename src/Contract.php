@@ -470,7 +470,7 @@ class Contract extends CommonDBTM
                     $values['duration'],
                     0,
                     true,
-                    true
+                    ($values['renewal'] == self::RENEWAL_TACIT)
                 );
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -662,7 +662,8 @@ class Contract extends CommonDBTM
             'field'              => '_virtual_expiration', // virtual field
             'additionalfields'   => [
                 'begin_date',
-                'duration'
+                'duration',
+                'renewal'
             ],
             'name'               => __('Expiration'),
             'datatype'           => 'specific',

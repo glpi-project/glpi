@@ -478,6 +478,7 @@ class Reservation extends CommonDBChild
             Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         ) ? "true" : "false";
+        $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
       $(function() {
          var reservation = new Reservations();
@@ -486,6 +487,7 @@ class Reservation extends CommonDBChild
             is_all: $is_all,
             rand: $rand,
             can_reserve: $can_reserve,
+            now: '$now',
          });
          reservation.displayPlanning();
       });
@@ -917,6 +919,7 @@ JAVASCRIPT;
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
         $defaultDate = $_REQUEST['defaultDate'] ?? date('Y-m-d');
+        $now = date("Y-m-d H:i:s");
         $js = <<<JAVASCRIPT
             $(() => {
                 const reservation = new Reservations();
@@ -927,6 +930,7 @@ JAVASCRIPT;
                     rand: $rand,
                     currentv: 'listFull',
                     defaultDate: '$defaultDate',
+                    now: '$now',
                 });
                 reservation.displayPlanning();
             });

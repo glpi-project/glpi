@@ -465,7 +465,7 @@ JAVASCRIPT;
                     $task = new ProblemTask();
                 }
                 if ($task->getFromDBByCrit(['tickets_id' => $item->fields['id']])) {
-                    $users['users_id'] = getUserName($task->fields['users_id_tech']);
+                    $users[$task->fields['users_id_tech']] = getUserName($task->fields['users_id_tech']);
                     $group_id = $task->fields['groups_id_tech'];
                     if ($group_id) {
                         foreach (Group_User::getGroupUsers($group_id) as $data2) {
