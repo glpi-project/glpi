@@ -361,7 +361,12 @@ JAVASCRIPT;
          var url_hash = window.location.hash;
          var loadTabContents = function (tablink, force_reload = false, update_session_tab = true) {
             var url = tablink.attr('href');
-            const href_url_params = new URL(url, CFG_GLPI.url_base).searchParams;
+            var base_url = CFG_GLPI.url_base;
+            if (base_url === '') {
+                // If base URL is not configured, fallback to current URL domain + GLPI base dir.
+                base_url = window.location.origin + '/' + CFG_GLPI.root_doc;
+            }
+            const href_url_params = new URL(url, base_url).searchParams;
             var target = tablink.attr('data-bs-target');
 
             const updateCurrentTab = () => {
