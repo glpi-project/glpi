@@ -41,6 +41,7 @@ use Html;
 use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
+use Twig\TwigTest;
 
 /**
  * @since 10.0.0
@@ -64,6 +65,13 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
             new TwigFilter('truncate_left', [$this, 'truncateLeft']),
+        ];
+    }
+
+    public function getTests(): array
+    {
+        return [
+            new TwigTest('url_safe', Toolbox::isUrlSafe(...)),
         ];
     }
 
