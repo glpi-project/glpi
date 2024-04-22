@@ -35,7 +35,7 @@
 
 namespace Glpi\Tests;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
@@ -359,13 +359,13 @@ class FormBuilder
      * Add a destination to the form
      *
      * @param string                  $strategy
-     * @param FreeJsonConfigInterface $values
+     * @param JsonConfigInterface $values
      *
      * @return self To allow chain calls
      */
     public function addAccessControl(
         string $strategy,
-        FreeJsonConfigInterface $config
+        JsonConfigInterface $config
     ): self {
         $this->access_control[$strategy] = $config;
         return $this;

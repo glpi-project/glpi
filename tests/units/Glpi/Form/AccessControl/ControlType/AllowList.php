@@ -35,7 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use SessionInfo;
 
@@ -82,7 +82,7 @@ class AllowList extends \GLPITestCase
 
         // Ensure the class exists and is valid
         $is_valid =
-            is_a($class, FreeJsonConfigInterface::class, true)
+            is_a($class, JsonConfigInterface::class, true)
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->boolean($is_valid)->isTrue();

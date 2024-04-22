@@ -37,7 +37,7 @@ namespace Glpi\Form\AccessControl;
 
 use CommonDBChild;
 use CommonGLPI;
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\Form;
@@ -211,9 +211,9 @@ final class FormAccessControl extends CommonDBChild
     /**
      * Get config for this item's strategy.
      *
-     * @return FreeJsonConfigInterface
+     * @return JsonConfigInterface
      */
-    public function getConfig(): FreeJsonConfigInterface
+    public function getConfig(): JsonConfigInterface
     {
         $config = json_decode($this->fields['config'], true);
         $strategy = $this->getStrategy();

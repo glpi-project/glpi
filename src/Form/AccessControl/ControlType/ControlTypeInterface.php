@@ -35,7 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 use Glpi\Form\Form;
 use SessionInfo;
 
@@ -58,18 +58,18 @@ interface ControlTypeInterface
     /**
      * Get the free json config config class name for this object.
      *
-     * @return string Class name which implements FreeJsonConfigInterface
+     * @return string Class name which implements JsonConfigInterface
      */
     public function getConfigClass(): string;
 
     /**
      * Render the configuration form of this control type.
      *
-     * @param FreeJsonConfigInterface $config
+     * @param JsonConfigInterface $config
      *
      * @return string Rendered content
      */
-    public function renderConfigForm(FreeJsonConfigInterface $config): string;
+    public function renderConfigForm(JsonConfigInterface $config): string;
 
     /**
      * Get weight of this control type (used to sort controls types).
@@ -83,29 +83,29 @@ interface ControlTypeInterface
      *
      * @param array $input
      *
-     * @return FreeJsonConfigInterface
+     * @return JsonConfigInterface
      */
-    public function createConfigFromUserInput(array $input): FreeJsonConfigInterface;
+    public function createConfigFromUserInput(array $input): JsonConfigInterface;
 
     /**
      * Check if unauthenticated users are allowed to answer the given form.
      *
-     * @param FreeJsonConfigInterface $config
+     * @param JsonConfigInterface $config
      *
      * @return bool
      */
-    public function allowUnauthenticatedUsers(FreeJsonConfigInterface $config): bool;
+    public function allowUnauthenticatedUsers(JsonConfigInterface $config): bool;
 
     /**
      * Check if the current user can answer the given form.
      *
-     * @param FreeJsonConfigInterface $config
+     * @param JsonConfigInterface $config
      * @param SessionInfo             $session
      *
      * @return bool
      */
     public function canAnswer(
-        FreeJsonConfigInterface $config,
+        JsonConfigInterface $config,
         SessionInfo $session
     ): bool;
 }

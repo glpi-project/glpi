@@ -35,7 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
 use Group;
@@ -65,7 +65,7 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(FreeJsonConfigInterface $config): string
+    public function renderConfigForm(JsonConfigInterface $config): string
     {
         if (!$config instanceof AllowListConfig) {
             throw new \InvalidArgumentException("Invalid config class");
@@ -95,14 +95,14 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function allowUnauthenticatedUsers(FreeJsonConfigInterface $config): bool
+    public function allowUnauthenticatedUsers(JsonConfigInterface $config): bool
     {
         return false;
     }
 
     #[Override]
     public function canAnswer(
-        FreeJsonConfigInterface $config,
+        JsonConfigInterface $config,
         SessionInfo $session
     ): bool {
         if (!$config instanceof AllowListConfig) {

@@ -35,9 +35,9 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 
-final class AllowListConfig implements FreeJsonConfigInterface
+final class AllowListConfig implements JsonConfigInterface
 {
     public readonly array $user_ids;
     public readonly array $group_ids;

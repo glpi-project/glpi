@@ -35,10 +35,10 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 use Toolbox;
 
-final class DirectAccessConfig implements FreeJsonConfigInterface
+final class DirectAccessConfig implements JsonConfigInterface
 {
     public readonly string $token;
     public readonly bool $allow_unauthenticated;

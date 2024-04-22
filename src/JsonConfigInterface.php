@@ -34,10 +34,10 @@
  */
 
  /**
-  * Base interface that can be used to type check any free json configration
+  * Base interface that can be used to type check any json configuration
   * from the database.
   */
-interface FreeJsonConfigInterface
+interface JsonConfigInterface
 {
     /**
      * Create an instance from a raw array of data.

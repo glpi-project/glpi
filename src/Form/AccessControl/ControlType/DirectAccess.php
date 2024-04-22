@@ -35,7 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use FreeJsonConfigInterface;
+use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
 use SessionInfo;
@@ -61,7 +61,7 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(FreeJsonConfigInterface $config): string
+    public function renderConfigForm(JsonConfigInterface $config): string
     {
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
@@ -100,7 +100,7 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function allowUnauthenticatedUsers(FreeJsonConfigInterface $config): bool
+    public function allowUnauthenticatedUsers(JsonConfigInterface $config): bool
     {
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
@@ -116,7 +116,7 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
-        FreeJsonConfigInterface $config,
+        JsonConfigInterface $config,
         SessionInfo $session
     ): bool {
         if (!$config instanceof DirectAccessConfig) {
