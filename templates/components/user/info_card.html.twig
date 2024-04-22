@@ -52,8 +52,13 @@
                {{ user['user_name'] }}
             {% endif %}
          </h4>
-
          <div class="text-muted">
+            {% if user['id'] is not empty %}
+                <div>
+                    <i class="fas fa-id-badge"></i>
+                    {{ user['id'] }}
+                </div>
+            {% endif %}
             {% if user['email']|length > 0 %}
                <div>
                   <i class="fas fa-fw fa-envelope"></i>
