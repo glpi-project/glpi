@@ -48,7 +48,7 @@ describe("Custom Assets - Custom Fields", () => {
         cy.get('div.toast-container .toast-body a').click();
         cy.url().should('include', '/front/asset/assetdefinition.form.php?id=');
 
-        cy.findByRole('tab', {name: 'Custom fields'}).click();
+        cy.findByRole('tab', {name: 'Fields'}).click();
 
         cy.findByRole('button', {name: 'Add a new field'}).parents('.tab-pane').should('have.class', 'active').first().within(() => {
             cy.findByRole('button', {name: 'Add a new field'}).click();
@@ -258,7 +258,7 @@ describe("Custom Assets - Custom Fields", () => {
         cy.get('div.toast-container .toast-body a').click();
         cy.url().should('include', '/front/asset/assetdefinition.form.php?id=');
 
-        cy.findByRole('tab', {name: 'Custom fields'}).click();
+        cy.findByRole('tab', {name: 'Fields'}).click();
 
         cy.findByRole('button', {name: 'Add a new field'}).parents('.tab-pane').should('have.class', 'active').first().within(() => {
             cy.findByRole('button', {name: 'Add a new field'}).click();
@@ -295,7 +295,7 @@ describe("Custom Assets - Custom Fields", () => {
         cy.get('div.toast-container .toast-body a').click();
         cy.url().should('include', '/front/asset/assetdefinition.form.php?id=');
 
-        cy.findByRole('tab', {name: 'Custom fields'}).click();
+        cy.findByRole('tab', {name: 'Fields'}).click();
 
         cy.findByRole('button', {name: 'Add a new field'}).parents('.tab-pane').should('have.class', 'active').first().within(() => {
             cy.findByRole('button', {name: 'Add a new field'}).click();

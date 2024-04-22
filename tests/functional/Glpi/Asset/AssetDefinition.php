@@ -254,6 +254,7 @@ class AssetDefinition extends DbTestCase
                         'capacities'   => '[]',
                         'profiles'     => '[]',
                         'translations' => '[]',
+                        'fields_display' => '[]',
                     ],
                     'messages' => [],
                 ];
@@ -295,6 +296,7 @@ class AssetDefinition extends DbTestCase
                     'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
+                    'fields_display' => '[]',
                 ],
                 'messages' => [],
             ];
@@ -308,6 +310,7 @@ class AssetDefinition extends DbTestCase
                     'capacities'   => '[]',
                     'profiles'     => '[]',
                     'translations' => '[]',
+                    'fields_display' => '[]',
                 ],
                 'messages' => [],
             ];
@@ -335,6 +338,7 @@ class AssetDefinition extends DbTestCase
                 'capacities'   => '[]',
                 'profiles'     => '[]',
                 'translations' => '[]',
+                'fields_display' => '[]',
             ],
             'messages' => [],
         ];
@@ -361,6 +365,7 @@ class AssetDefinition extends DbTestCase
                 'capacities'   => '[]',
                 'profiles'     => '[]',
                 'translations' => '[]',
+                'fields_display' => '[]',
             ],
             'messages' => [],
         ];
@@ -384,6 +389,9 @@ class AssetDefinition extends DbTestCase
             if (is_array($data['output']) && !array_key_exists('translations', $data['output'])) {
                 // default value for `translations`
                 $data['output']['translations'] = '[]';
+            }
+            if (is_array($data['output']) && !array_key_exists('fields_display', $data['output'])) {
+                $data['output']['fields_display'] = '[]';
             }
             yield $data;
         }

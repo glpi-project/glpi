@@ -347,8 +347,9 @@ class DbTestCase extends \GLPITestCase
                 'is_active'   => true,
                 'capacities'  => $capacities,
                 'profiles'    => $profiles,
+                'fields_display' => [],
             ],
-            skip_fields: ['capacities', 'profiles'] // JSON encoded fields cannot be automatically checked
+            skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
         );
         $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
         $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
