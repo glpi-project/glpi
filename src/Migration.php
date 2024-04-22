@@ -1721,11 +1721,14 @@ class Migration
                 $item = new $itemtype();
                 if ($item instanceof CommonITILObject) {
                     $tables = [
-                        'glpi_' . $itemtype . 'templatehiddenfields',
-                        'glpi_' . $itemtype . 'templatemandatoryfields',
-                        'glpi_' . $itemtype . 'templatepredefinedfields',
+                        'glpi_' . strtolower($itemtype) . 'templatehiddenfields',
+                        'glpi_' . strtolower($itemtype) . 'templatemandatoryfields',
+                        'glpi_' . strtolower($itemtype) . 'templatepredefinedfields',
                     ];
                     foreach ($tables as $table) {
+                        if (!$DB->tableExists($table)) {
+                            continue;
+                        }
                         $DB->updateOrDie($table, [
                             'field' => $new_search_opt
                         ], [
