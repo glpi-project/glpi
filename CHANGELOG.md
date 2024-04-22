@@ -274,6 +274,8 @@ The present file will list all changes made to the project; according to the
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
 - `Reminder::addVisibilityJoins()`
+- `RSSFeed::addVisibilityJoins()`
+- `RSSFeed::addVisibilityRestrict()`
 - `RSSFeed::showDiscoveredFeeds()`
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
