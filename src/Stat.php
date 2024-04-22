@@ -846,7 +846,7 @@ class Stat extends CommonGLPI
                           $data[$key2] *= $solved[$key2];
                     }
 
-                    $timedisplay = max(array_sum($data) / $nb_solved, 0);
+                    $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
 
                     if (
                         ($output_type == Search::HTML_OUTPUT)
