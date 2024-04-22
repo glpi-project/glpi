@@ -46,9 +46,14 @@ use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Search\SearchOption;
+use Group;
+use Location;
+use Manufacturer;
 use Profile;
 use ProfileRight;
 use Session;
+use State;
+use User;
 
 final class AssetDefinition extends CommonDBTM
 {
@@ -110,6 +115,7 @@ final class AssetDefinition extends CommonDBTM
             $translations_count = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $capacities_count   = count($item->getDecodedCapacitiesField());
+                $fields_count       = count($item->getDecodedFieldsField());
                 $profiles_count     = count(array_filter($item->getDecodedProfilesField()));
                 $translations_count = count($item->getDecodedTranslationsField());
             }
@@ -119,6 +125,12 @@ final class AssetDefinition extends CommonDBTM
                     $capacities_count,
                     self::class,
                     'ti ti-adjustments'
+                ),
+                2 => self::createTabEntry(
+                    __('Fields'),
+                    $fields_count,
+                    self::class,
+                    'ti ti-forms'
                 ),
                 // 2 is reserved for "Fields"
                 3 => self::createTabEntry(
@@ -147,7 +159,7 @@ final class AssetDefinition extends CommonDBTM
                     $item->showCapacitiesForm();
                     break;
                 case 2:
-                    // 2 is reserved for "Fields" form
+                    $item->showFieldsForm();
                     break;
                 case 3:
                     $item->showProfilesForm();
@@ -219,6 +231,29 @@ final class AssetDefinition extends CommonDBTM
                 'item' => $this,
                 'classname' => $this->getAssetClassName(),
                 'capacities' => $capacities,
+            ]
+        );
+    }
+
+
+    /**
+     * Display capacities form.
+     *
+     * @return void
+     */
+    private function showFieldsForm(): void
+    {
+        $all_fields = $this->getAllFields();
+        $fields_display = $this->getDecodedFieldsField();
+
+        TemplateRenderer::getInstance()->display(
+            'pages/admin/assetdefinition/fields_display.html.twig',
+            [
+                'item'           => $this,
+                'classname'      => $this->getAssetClassName(),
+                'all_fields'     => $all_fields,
+                'fields_display' => $fields_display,
+                'used'           => array_column($fields_display, 'key'),
             ]
         );
     }
@@ -471,6 +506,17 @@ final class AssetDefinition extends CommonDBTM
             } else {
                 $input['translations'] = json_encode($input['translations']);
             }
+        }
+
+        if (array_key_exists('fields_display', $input)) {
+            $formatted_fields_display = [];
+            foreach ($input['fields_display'] as $field_order => $field_key) {
+                $formatted_fields_display[] = [
+                    'order' => $field_order,
+                    'key'   => $field_key,
+                ];
+            }
+            $input['fields_display'] = json_encode($formatted_fields_display);
         }
 
         return $has_errors ? false : $input;
@@ -949,6 +995,63 @@ TWIG, ['name' => $name, 'value' => $value]);
             $capacities = [];
         }
         return $capacities;
+    }
+
+
+    private function getAllFields(): array
+    {
+        $fields = [
+            'name'             => __('Name'),
+            'comment'          => __('Comment'),
+            'serial'           => __('Serial'),
+            'otherserial'      => __('Inventory number'),
+            'contact'          => __('Alternate username'),
+            'contact_num'      => __('Alternate username number'),
+            'users_id'         => User::getTypeName(),
+            'groups_id'        => Group::getTypeName(),
+            'users_id_tech'    => __('Technician in charge'),
+            'groups_id_tech'   => __('Group in charge'),
+            `locations_id`     => Location::getTypeName(),
+            `manufacturers_id` => Manufacturer::getTypeName(),
+            `states_id`        => State::getTypeName(),
+        ];
+
+        // TODO add assets_assetmodels_id and assets_assettypes_id
+        // TODO add custom fields
+
+        return $fields;
+    }
+
+    private function getDefaultFieldsDisplay(): array
+    {
+        $all_fields = $this->getAllFields();
+
+        $default = [];
+        $order = 0;
+        foreach ($all_fields as $key => $label) {
+            $default[] = [
+                'key'   => $key,
+                'order' => $order,
+            ];
+            $order++;
+        }
+
+        return $default;
+    }
+
+
+    /**
+     * Return the decoded value of the `capacities` field.
+     *
+     * @return array
+     */
+    private function getDecodedFieldsField(): array
+    {
+        $fields_display = @json_decode($this->fields['fields_display'], associative: true);
+        if (!is_array($fields_display) || count($fields_display) === 0) {
+            return $this->getDefaultFieldsDisplay();
+        }
+        return $fields_display;
     }
 
     /**

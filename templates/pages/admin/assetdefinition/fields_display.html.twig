@@ -1,0 +1,99 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set params = {} %}
+{# do not display delete button #}
+{% set params = params|merge({'candel': false}) %}
+{# do not display footer with dates #}
+{% set params = params|merge({'formfooter': false}) %}
+
+{% block form_fields %}
+    <input type="hidden" name="_update_fields_display" value="1" />
+
+    <div class="grid gap-3" id="sortable-fields">
+
+        {# <div class="sortable-placeholder"></div> #}
+        {% for field in fields_display %}
+            <div class="g-col-6 py-2 sortable-field cursor-grab bg-blue-lt bg-opacity-25">
+                <input type="hidden" name="fields_display[]" value="{{ field['key'] }}" />
+                <i class="ti ti-grip-vertical"></i>
+                <span>{{ all_fields[field['key']] }}</span>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        $(() => {
+            sortable('#sortable-fields', {
+                items: '.sortable-field',
+                placeholderClass: 'sortable-placeholder g-col-6',
+            });
+        });
+    </script>
+
+    <div class="row mt-3">
+        <div class="col-6">
+            {% do call('Dropdown::showFromArray', ['new_field', all_fields, {
+                'display_emptychoice': true,
+                'rand': rand,
+                'used': used,
+            }]) %}
+            <button type="button" class="btn btn-outline-secondary" id="add-field">
+                <i class="ti ti-plus"></i>
+                <span>{{ __("Add a field") }}</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        $(() => {
+            $('#add-field').on('click', function() {
+                //get select2 value of #dropdown_new_field2119306878
+                const field = $('#dropdown_new_field{{ rand }}').val();
+
+                if (field) {
+                    //add field to the list
+                    $('#sortable-fields').append(`
+                        <div class="g-col-6 py-2 sortable-field cursor-grab bg-blue-lt bg-opacity-25">
+                            <input type="hidden" name="fields_display[]" value="${field}" />
+                            <i class="ti ti-grip-vertical"></i>
+                            <span>${field}</span>
+                        </div>`
+                    );
+                }
+            });
+        });
+    </script>
+{% endblock %}
