@@ -533,6 +533,7 @@ $CFG_GLPI['javascript'] = [
         ],
     ],
     'config' => [
+        'assetdefinition'  => ['sortable'],
         'commondropdown'  => [
             'ITILFollowupTemplate'   => ['tinymce'],
             'ProjectTaskTemplate'    => ['tinymce'],

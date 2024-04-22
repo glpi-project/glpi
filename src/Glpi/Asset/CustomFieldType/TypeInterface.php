@@ -43,6 +43,8 @@ interface TypeInterface
      */
     public static function getName(): string;
 
+    public function getLabel(): string;
+
     /**
      * Get the HTML code to use to display the custom field input in the asset form.
      *
