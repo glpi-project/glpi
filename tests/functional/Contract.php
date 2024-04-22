@@ -102,16 +102,14 @@ class Contract extends DbTestCase
 
     public function getSpecificValueToDisplayProvider()
     {
-        $duration = 6;
-        $past_date = '2020-01-01';
-        $futur_date = date('Y-01-01', strtotime('+1 year'));
-        $futur_date_end = date('Y-m-d', strtotime("+$duration months", strtotime($futur_date)));
+        $this->login();
+        $_SESSION['glpi_currenttime'] = '2024-04-22 10:00:00';
         return [
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => $past_date,
-                    'duration' => $duration,
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
                     'renewal' => \Contract::RENEWAL_NEVER
                 ],
                 'expected' => "<span class='red'>2020-07-01</span>"
@@ -119,8 +117,8 @@ class Contract extends DbTestCase
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => $past_date,
-                    'duration' => $duration,
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
                     'renewal' => \Contract::RENEWAL_TACIT
                 ],
                 'expected' => "2024-07-01"
@@ -128,8 +126,8 @@ class Contract extends DbTestCase
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => $past_date,
-                    'duration' => $duration,
+                    'begin_date' => '2020-01-01',
+                    'duration' => 6,
                     'renewal' => \Contract::RENEWAL_EXPRESS
                 ],
                 'expected' => "<span class='red'>2020-07-01</span>"
@@ -137,29 +135,29 @@ class Contract extends DbTestCase
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => $futur_date,
-                    'duration' => $duration,
+                    'begin_date' => '2025-01-01',
+                    'duration' => 6,
                     'renewal' => \Contract::RENEWAL_NEVER
                 ],
-                'expected' => $futur_date_end
+                'expected' => '2025-07-01'
             ],
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => $futur_date,
-                    'duration' => $duration,
+                    'begin_date' => '2025-01-01',
+                    'duration' => 6,
                     'renewal' => \Contract::RENEWAL_TACIT
                 ],
-                'expected' => $futur_date_end
+                'expected' => '2025-07-01'
             ],
             [
                 'field' => '_virtual_expiration',
                 'values' => [
-                    'begin_date' => $futur_date,
-                    'duration' => $duration,
+                    'begin_date' => '2025-01-01',
+                    'duration' => 6,
                     'renewal' => \Contract::RENEWAL_EXPRESS
                 ],
-                'expected' => $futur_date_end
+                'expected' => '2025-07-01'
             ],
         ];
     }

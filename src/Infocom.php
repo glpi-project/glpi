@@ -1779,14 +1779,14 @@ class Infocom extends CommonDBChild
         $timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
 
         if ($auto_renew && $addwarranty > 0) {
-            while ($timestamp < time()) {
+            while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
                 $datetime->setTimestamp($timestamp);
                 $timestamp = strtotime($datetime->format("Y-m-d H:i:s") . "+$addwarranty month");
             }
         }
 
-        if ($color && ($timestamp < time())) {
+        if ($color && ($timestamp < strtotime($_SESSION['glpi_currenttime']))) {
             return "<span class='red'>" . Html::convDate(date("Y-m-d", $timestamp)) . "</span>";
         }
         return Html::convDate(date("Y-m-d", $timestamp));
