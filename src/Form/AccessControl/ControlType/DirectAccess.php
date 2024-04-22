@@ -63,6 +63,9 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function renderConfigForm(JsonConfigInterface $config): string
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
