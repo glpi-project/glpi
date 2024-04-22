@@ -366,7 +366,7 @@ JAVASCRIPT;
                 // If base URL is not configured, fallback to current URL domain + GLPI base dir.
                 base_url = window.location.origin + '/' + CFG_GLPI.root_doc;
             }
-            const href_url_params = new URL(url, CFG_GLPI.url_base).searchParams;
+            const href_url_params = new URL(url, base_url).searchParams;
             var target = tablink.attr('data-bs-target');
 
             const updateCurrentTab = () => {
