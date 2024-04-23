@@ -60,7 +60,7 @@
                     request_id: request_id,
                     num: query['num'],
                     time: query['time'],
-                    query: escapeMarkupText(query['query']),
+                    query: query['query'],
                     rows: query['rows'],
                     warnings: escapeMarkupText(query['warnings']),
                     errors: escapeMarkupText(query['errors']),
