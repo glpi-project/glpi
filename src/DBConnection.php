@@ -441,8 +441,10 @@ class DBConnection extends CommonDBTM
             $DBread = new DBSlave();
 
             if ($DBread->connected) {
-                $sql = "SELECT MAX(`id`) AS maxid
-                    FROM `glpi_logs`";
+                $sql = [
+                    'SELECT' => ['MAX' => 'id AS maxid'],
+                    'FROM'   => Log::getTable(),
+                ];
 
                 switch ($CFG_GLPI['use_slave_for_search']) {
                     case 3: // If synced or read-only account
