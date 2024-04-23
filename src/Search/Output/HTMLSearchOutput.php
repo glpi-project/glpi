@@ -254,10 +254,10 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
     public static function showHeader($rows, $cols, $fixed = 0): string
     {
         if ($fixed) {
-            return "<div class='center'><table border='0' class='table'>";
+            return "<div class='text-center'><table class='table'>";
         }
 
-        return "<div class='center'><table border='0' class='table card-table table-hover'>";
+        return "<div class='text-center'><table class='table card-table table-hover'>";
     }
 
     public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string

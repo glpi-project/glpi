@@ -124,7 +124,7 @@ abstract class AbstractSearchOutput
     /**
      * Print generic Header Column
      *
-     * @param string           $value    Value to display
+     * @param string           $value    Value to display. This value may contain HTML data. Non-HTML content should be escaped before calling this function.
      * @param integer          &$num     Column number
      * @param string           $linkto   Link display element (HTML specific) (default '')
      * @param boolean|integer  $issort   Is the sort column ? (default 0)

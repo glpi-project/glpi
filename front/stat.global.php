@@ -86,7 +86,7 @@ $stat_params = [
     'date2'    => $_GET['date2'],
 ];
 
-echo "<div class='center mt-3'>";
+echo "<div class='text-center mt-3'>";
 $stat->displayLineGraphFromData(new StatDataTicketNumber($stat_params));
 $stat->displayLineGraphFromData(new StatDataTicketAverageTime($stat_params));
 

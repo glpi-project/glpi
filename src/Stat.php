@@ -35,6 +35,10 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Search\Output\Csv;
+use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\Search\Output\Pdf;
+use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
 use Glpi\Application\View\TemplateRenderer;
 use Laminas\Json\Expr as Json_Expr;
@@ -216,7 +220,7 @@ class Stat extends CommonGLPI
                 break;
 
             case "type":
-                $types = $item->getTypes();
+                $types = $item::getTypes();
                 foreach ($types as $id => $v) {
                     $tmp['id']   = $id;
                     $tmp['link'] = $v;
@@ -376,86 +380,42 @@ class Stat extends CommonGLPI
         }
 
         $export_data = [];
-        if (!is_array($value)) {
-            return $export_data;
-        }
 
         $end_display = $start + $_SESSION['glpilist_limit'];
         $numrows     = count($value);
 
+        $fn_append_entry_values = static function (int $i, string $data_type, string $data_key) use ($itemtype, $date1, $date2, $type, $value, $value2, &$export_data) {
+            $values = self::constructEntryValues(
+                $itemtype,
+                $data_type,
+                $date1,
+                $date2,
+                $type,
+                $value[$i]["id"],
+                $value2
+            );
+            $export_data[$data_key][$value[$i]['link']] = array_sum($values);
+        };
+
         for ($i = $start; $i < $numrows && $i < ($end_display); $i++) {
-           //le nombre d'intervention - the number of intervention
-            $opened    = self::constructEntryValues(
-                $itemtype,
-                "inter_total",
-                $date1,
-                $date2,
-                $type,
-                $value[$i]["id"],
-                $value2
-            );
-            $nb_opened = array_sum($opened);
-            $export_data['opened'][$value[$i]['link']] = $nb_opened;
-
-           //le nombre d'intervention resolues - the number of solved intervention
-            $solved    = self::constructEntryValues(
-                $itemtype,
-                "inter_solved",
-                $date1,
-                $date2,
-                $type,
-                $value[$i]["id"],
-                $value2
-            );
-            $nb_solved = array_sum($solved);
-            $export_data['solved'][$value[$i]['link']] = $nb_solved;
-
-           //le nombre d'intervention resolues - the number of solved late intervention
-            $late      = self::constructEntryValues(
-                $itemtype,
-                "inter_solved_late",
-                $date1,
-                $date2,
-                $type,
-                $value[$i]["id"],
-                $value2
-            );
-            $nb_late   = array_sum($late);
-            $export_data['late'][$value[$i]['link']] = $nb_late;
-
-           //le nombre d'intervention closes - the number of closed intervention
-            $closed    = self::constructEntryValues(
-                $itemtype,
-                "inter_closed",
-                $date1,
-                $date2,
-                $type,
-                $value[$i]["id"],
-                $value2
-            );
-            $nb_closed = array_sum($closed);
-            $export_data['closed'][$value[$i]['link']] = $nb_closed;
+            // the number of intervention
+            $fn_append_entry_values($i, "inter_total", "opened");
+            // the number of solved intervention
+            $fn_append_entry_values($i, "inter_solved", "solved");
+            // the number of solved late intervention
+            $fn_append_entry_values($i, "inter_solved_late", "late");
+            // the number of closed intervention
+            $fn_append_entry_values($i, "inter_closed", "closed");
 
             if ($itemtype === Ticket::class) {
-                 //open satisfaction
-                 $opensatisfaction    = self::constructEntryValues(
-                     $itemtype,
-                     "inter_opensatisfaction",
-                     $date1,
-                     $date2,
-                     $type,
-                     $value[$i]["id"],
-                     $value2
-                 );
-                   $nb_opensatisfaction = array_sum($opensatisfaction);
-                   $export_data['opensatisfaction'][$value[$i]['link']] = $nb_opensatisfaction;
+                // open satisfaction
+                $fn_append_entry_values($i, "inter_opensatisfaction", "opensatisfaction");
             }
         }
 
         self::$cache[$hash] = $export_data;
         return $export_data;
     }
-
 
     /**
      * @param class-string<CommonGLPI> $itemtype
@@ -471,529 +431,433 @@ class Stat extends CommonGLPI
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-       // Set display type for export if define
+        // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
+        $output = SearchEngine::getOutputForLegacyKey($output_type);
+        $is_html_output = is_a($output, HTMLSearchOutput::class);
 
-        if ($output_type === Search::HTML_OUTPUT) { // HTML display
-            echo "<div class ='card table-card center'>";
+        $numrows = count($value);
+        if ($numrows === 0) {
+            echo $output::showHeader(0, 0);
+            if ($is_html_output) {
+                echo '<div class="alert alert-info">' . __s('No statistics are available') . '</div>';
+            } else {
+                echo __('No statistics are available');
+            }
+            echo $output::showFooter('', 0);
+            return;
         }
 
-        if (is_array($value)) {
-            $end_display = $start + $_SESSION['glpilist_limit'];
-            $numrows     = count($value);
+        $end_display = $start + $_SESSION['glpilist_limit'];
+        $numrows     = count($value);
 
-            if (isset($_GET['export_all'])) {
-                $start       = 0;
-                $end_display = $numrows;
-            }
+        if (isset($_GET['export_all'])) {
+            $start       = 0;
+            $end_display = $numrows;
+        }
 
-            $nbcols = 8;
-            if ($output_type !== Search::HTML_OUTPUT) { // not HTML display
-                $nbcols--;
-            }
+        $nbcols = 8;
+        if (!$is_html_output) {
+            $nbcols--;
+        }
 
-            echo Search::showHeader($output_type, $end_display - $start + 1, $nbcols);
-            $subname = '';
-            switch ($type) {
-                case 'group_tree':
-                case 'groups_tree_assign':
-                    $subname = Dropdown::getDropdownName('glpi_groups', $value2);
-                    break;
+        echo $output::showHeader($end_display - $start + 1, $nbcols);
+        $subname = match ($type) {
+            'group_tree', 'groups_tree_assign' => Dropdown::getDropdownName('glpi_groups', $value2),
+            'itilcategories_tree' => Dropdown::getDropdownName('glpi_itilcategories', $value2),
+            'locations_tree' => Dropdown::getDropdownName('glpi_locations', $value2),
+            default => '',
+        };
 
-                case 'itilcategories_tree':
-                    $subname = Dropdown::getDropdownName('glpi_itilcategories', $value2);
-                    break;
+        if ($is_html_output) {
+            echo $output::showNewLine();
+            $header_num = 1;
 
-                case 'locations_tree':
-                    $subname = Dropdown::getDropdownName('glpi_locations', $value2);
-                    break;
-            }
-
-            if ($output_type === Search::HTML_OUTPUT) { // HTML display
-                echo Search::showNewLine($output_type);
-                $header_num = 1;
-
-                if (
-                    ($output_type === Search::HTML_OUTPUT)
-                    && strstr($type, '_tree')
-                    && $value2
-                ) {
-                    // HTML display
-                    $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
-                        [
-                            'date1'    => $date1,
-                            'date2'    => $date2,
-                            'itemtype' => $itemtype,
-                            'type'     => $type,
-                            'value2'   => 0,
-                        ],
-                        '&amp;'
-                    );
-                    $link = "<a href='$url'>" . __('Back') . "</a>";
-                    echo Search::showHeaderItem($output_type, $link, $header_num);
-                } else {
-                    echo Search::showHeaderItem($output_type, "&nbsp;", $header_num);
-                }
-                echo Search::showHeaderItem($output_type, '', $header_num);
-
-                echo Search::showHeaderItem(
-                    $output_type,
-                    _x('quantity', 'Number'),
-                    $header_num,
-                    '',
-                    0,
-                    '',
-                    "colspan='4'"
+            if (str_contains($type, '_tree') && $value2) {
+                $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                    [
+                        'date1'    => $date1,
+                        'date2'    => $date2,
+                        'itemtype' => $itemtype,
+                        'type'     => $type,
+                        'value2'   => 0,
+                    ],
+                    '&amp;'
                 );
-                if ($itemtype === Ticket::class) {
-                     echo Search::showHeaderItem(
-                         $output_type,
-                         __('Satisfaction'),
-                         $header_num,
-                         '',
-                         0,
-                         '',
-                         "colspan='3'"
-                     );
-                }
-                echo Search::showHeaderItem(
-                    $output_type,
-                    __('Average time'),
-                    $header_num,
-                    '',
-                    0,
-                    '',
-                    $itemtype === Ticket::class ? "colspan='3'" : "colspan='2'"
-                );
-                echo Search::showHeaderItem(
-                    $output_type,
-                    __('Real duration of treatment of the ticket'),
-                    $header_num,
-                    '',
-                    0,
-                    '',
-                    "colspan='2'"
-                );
-            }
-
-            echo Search::showNewLine($output_type);
-            $header_num    = 1;
-            echo Search::showHeaderItem($output_type, $subname, $header_num);
-
-            if ($output_type === Search::HTML_OUTPUT) { // HTML display
-                echo Search::showHeaderItem($output_type, "", $header_num);
-            }
-            if ($output_type !== Search::HTML_OUTPUT) {
-                echo Search::showHeaderItem($output_type, __('Number of opened tickets'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Number of solved tickets'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Number of late tickets'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Number of closed tickets'), $header_num);
+                echo $output::showHeaderItem("<a href='$url'>" . __s('Back') . "</a>", $header_num);
             } else {
-                echo Search::showHeaderItem($output_type, _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()), $header_num);
-                echo Search::showHeaderItem(
-                    $output_type,
-                    _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
-                    $header_num
-                );
-                echo Search::showHeaderItem($output_type, __('Late'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Closed'), $header_num);
+                echo $output::showHeaderItem("&nbsp;", $header_num);
             }
+            echo $output::showHeaderItem('', $header_num);
 
-            if ($itemtype === 'Ticket') {
-                if ($output_type != Search::HTML_OUTPUT) {
-                    echo Search::showHeaderItem(
-                        $output_type,
-                        __('Number of opened satisfaction survey'),
-                        $header_num
-                    );
-                    echo Search::showHeaderItem(
-                        $output_type,
-                        __('Number of answered satisfaction survey'),
-                        $header_num
-                    );
-                    echo Search::showHeaderItem(
-                        $output_type,
-                        __('Average satisfaction'),
-                        $header_num
-                    );
-                } else {
-                    echo Search::showHeaderItem(
-                        $output_type,
-                        _nx('survey', 'Opened', 'Opened', Session::getPluralNumber()),
-                        $header_num
-                    );
-                    echo Search::showHeaderItem(
-                        $output_type,
-                        _nx('survey', 'Answered', 'Answered', Session::getPluralNumber()),
-                        $header_num
-                    );
-                    echo Search::showHeaderItem($output_type, __('Average'), $header_num);
-                }
+            echo $output::showHeaderItem(
+                value: _sx('quantity', 'Number'),
+                num: $header_num,
+                options: "colspan='4'"
+            );
+            if ($itemtype === Ticket::class) {
+                 echo $output::showHeaderItem(
+                     value: __s('Satisfaction'),
+                     num: $header_num,
+                     options: "colspan='3'"
+                 );
             }
+            echo $output::showHeaderItem(
+                value: __s('Average time'),
+                num: $header_num,
+                options: $itemtype === Ticket::class ? "colspan='3'" : "colspan='2'"
+            );
+            echo $output::showHeaderItem(
+                value: __s('Real duration of treatment of the ticket'),
+                num: $header_num,
+                options: "colspan='2'"
+            );
+        }
 
-            if ($output_type !== Search::HTML_OUTPUT) {
-                if ($itemtype === 'Ticket') {
-                    echo Search::showHeaderItem(
-                        $output_type,
-                        __('Average time to take into account'),
-                        $header_num
-                    );
-                }
-                echo Search::showHeaderItem($output_type, __('Average time to resolution'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Average time to closure'), $header_num);
-            } else {
-                if ($itemtype === 'Ticket') {
-                    echo Search::showHeaderItem($output_type, __('Take into account'), $header_num);
-                }
-                echo Search::showHeaderItem($output_type, __('Resolution'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Closure'), $header_num);
-            }
+        echo $output::showNewLine();
+        $header_num    = 1;
+        echo $output::showHeaderItem($subname, $header_num);
 
-            if ($output_type !== Search::HTML_OUTPUT) {
-                echo Search::showHeaderItem(
-                    $output_type,
-                    __('Average real duration of treatment of the ticket'),
-                    $header_num
-                );
-                echo Search::showHeaderItem(
-                    $output_type,
-                    __('Total real duration of treatment of the ticket'),
-                    $header_num
-                );
-            } else {
-                echo Search::showHeaderItem($output_type, __('Average'), $header_num);
-                echo Search::showHeaderItem($output_type, __('Total duration'), $header_num);
-            }
-           // End Line for column headers
-            echo Search::showEndLine($output_type);
-            $row_num = 1;
-
-            for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
-                $row_num++;
-                $item_num = 1;
-                echo Search::showNewLine($output_type, $i % 2);
-                if (
-                    ($output_type === Search::HTML_OUTPUT)
-                    && str_contains($type, '_tree')
-                    && ($value[$i]['id'] !== $value2)
-                ) {
-                    // HTML display
-                    $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
-                        [
-                            'date1'    => $date1,
-                            'date2'    => $date2,
-                            'itemtype' => $itemtype,
-                            'type'     => $type,
-                            'value2'  => $value[$i]['id'],
-                        ],
-                        '&amp;'
-                    );
-                    $link = "<a href='$url'>" . $value[$i]['link'] . "</a>";
-                    echo Search::showItem($output_type, $link, $item_num, $row_num);
-                } else {
-                    echo Search::showItem($output_type, $value[$i]['link'], $item_num, $row_num);
-                }
-
-                if ($output_type === Search::HTML_OUTPUT) { // HTML display
-                    $link = "";
-                    if ($value[$i]['id'] > 0) {
-                        $url = 'stat.graph.php?' . Toolbox::append_params(
-                            [
-                                'id' => $value[$i]['id'],
-                                'date1'    => $date1,
-                                'date2'    => $date2,
-                                'itemtype' => $itemtype,
-                                'type'     => $type,
-                                'champ'    => $value2,
-                            ],
-                            '&amp;'
-                        );
-                        $link = "<a href='$url'>" .
-                          "<img src='" . $CFG_GLPI["root_doc"] . "/pics/stats_item.png' alt=''>" .
-                          "</a>";
-                    }
-                    echo Search::showItem($output_type, $link, $item_num, $row_num);
-                }
-
-               //le nombre d'intervention - the number of intervention
-                $opened    = self::constructEntryValues(
-                    $itemtype,
-                    "inter_total",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                $nb_opened = array_sum($opened);
-                echo Search::showItem($output_type, $nb_opened, $item_num, $row_num);
-
-               //le nombre d'intervention resolues - the number of solved intervention
-                $solved    = self::constructEntryValues(
-                    $itemtype,
-                    "inter_solved",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                $nb_solved = array_sum($solved);
-                echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
-
-               //le nombre d'intervention resolues - the number of solved intervention
-                $solved_late    = self::constructEntryValues(
-                    $itemtype,
-                    "inter_solved_late",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                $nb_solved_late = array_sum($solved_late);
-                echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
-
-               //le nombre d'intervention closes - the number of closed intervention
-                $closed    = self::constructEntryValues(
-                    $itemtype,
-                    "inter_closed",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                $nb_closed = array_sum($closed);
-
-                echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
-
-                if ($itemtype === Ticket::class) {
-                     //Satisfaction open
-                     $opensatisfaction    = self::constructEntryValues(
-                         $itemtype,
-                         "inter_opensatisfaction",
-                         $date1,
-                         $date2,
-                         $type,
-                         $value[$i]["id"],
-                         $value2
-                     );
-                     $nb_opensatisfaction = array_sum($opensatisfaction);
-                     echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
-
-                     //Satisfaction answer
-                     $answersatisfaction    = self::constructEntryValues(
-                         $itemtype,
-                         "inter_answersatisfaction",
-                         $date1,
-                         $date2,
-                         $type,
-                         $value[$i]["id"],
-                         $value2
-                     );
-                    $nb_answersatisfaction = array_sum($answersatisfaction);
-                    echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
-
-                    //Satisfaction rate
-                    $satisfaction = self::constructEntryValues(
-                        $itemtype,
-                        "inter_avgsatisfaction",
-                        $date1,
-                        $date2,
-                        $type,
-                        $value[$i]["id"],
-                        $value2
-                    );
-                    foreach (array_keys($satisfaction) as $key2) {
-                          $satisfaction[$key2] *= $answersatisfaction[$key2];
-                    }
-                    if ($nb_answersatisfaction > 0) {
-                        $avgsatisfaction = round(array_sum($satisfaction) / $nb_answersatisfaction, 1);
-                        if ($output_type === Search::HTML_OUTPUT) {
-                            // Display using the max number of stars defined in the root entity
-                            $max_rate = Entity::getUsedConfig(
-                                'inquest_config',
-                                0,
-                                'inquest_max_rate' . TicketSatisfaction::getConfigSufix()
-                            );
-                            if (!$max_rate) {
-                                $max_rate = 5;
-                            }
-                            // Scale satisfaction accordingly
-                            $avgsatisfaction = $avgsatisfaction * ($max_rate / 5);
-                            $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
-                        }
-                    } else {
-                        $avgsatisfaction = '&nbsp;';
-                    }
-                    echo Search::showItem($output_type, $avgsatisfaction, $item_num, $row_num);
-
-                    //Le temps moyen de prise en compte du ticket - The average time to take a ticket into account
-                    $data = self::constructEntryValues(
-                        $itemtype,
-                        "inter_avgtakeaccount",
-                        $date1,
-                        $date2,
-                        $type,
-                        $value[$i]["id"],
-                        $value2
-                    );
-                    foreach (array_keys($data) as $key2) {
-                          $data[$key2] *= $solved[$key2];
-                    }
-
-                    $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
-
-                    if (
-                        ($output_type == Search::HTML_OUTPUT)
-                        || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
-                        || ($output_type == Search::PDF_OUTPUT_PORTRAIT)
-                    ) {
-                        $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                    } else if ($output_type == Search::CSV_OUTPUT) {
-                        $timedisplay = Html::timestampToCsvString($timedisplay);
-                    }
-                    echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
-                }
-
-              //Le temps moyen de resolution - The average time to resolv
-                $data = self::constructEntryValues(
-                    $itemtype,
-                    "inter_avgsolvedtime",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                foreach (array_keys($data) as $key2) {
-                    $data[$key2] = round($data[$key2] * $solved[$key2]);
-                }
-
-                if ($nb_solved > 0) {
-                    $timedisplay = array_sum($data) / $nb_solved;
-                } else {
-                    $timedisplay = 0;
-                }
-                if (
-                    ($output_type === Search::HTML_OUTPUT)
-                    || ($output_type === Search::PDF_OUTPUT_LANDSCAPE)
-                    || ($output_type === Search::PDF_OUTPUT_PORTRAIT)
-                ) {
-                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                } else if ($output_type === Search::CSV_OUTPUT) {
-                    $timedisplay = Html::timestampToCsvString($timedisplay);
-                }
-                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
-
-              //Le temps moyen de cloture - The average time to close
-                $data = self::constructEntryValues(
-                    $itemtype,
-                    "inter_avgclosedtime",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                foreach (array_keys($data) as $key2) {
-                    $data[$key2] = round($data[$key2] * $solved[$key2]);
-                }
-
-                if ($nb_closed > 0) {
-                    $timedisplay = array_sum($data) / $nb_closed;
-                } else {
-                    $timedisplay = 0;
-                }
-                if (
-                    ($output_type === Search::HTML_OUTPUT)
-                    || ($output_type === Search::PDF_OUTPUT_LANDSCAPE)
-                    || ($output_type === Search::PDF_OUTPUT_PORTRAIT)
-                ) {
-                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                } else if ($output_type === Search::CSV_OUTPUT) {
-                    $timedisplay = Html::timestampToCsvString($timedisplay);
-                }
-                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
-
-              //the number of solved interventions with a duration time
-                $solved_with_actiontime = self::constructEntryValues(
-                    $itemtype,
-                    "inter_solved_with_actiontime",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                $nb_solved_with_actiontime = array_sum($solved_with_actiontime);
-
-              //Le temps moyen de l'intervention reelle - The average actiontime to resolv
-                $data = self::constructEntryValues(
-                    $itemtype,
-                    "inter_avgactiontime",
-                    $date1,
-                    $date2,
-                    $type,
-                    $value[$i]["id"],
-                    $value2
-                );
-                foreach (array_keys($data) as $key2) {
-                    if (isset($solved_with_actiontime[$key2])) {
-                        $data[$key2] *= $solved_with_actiontime[$key2];
-                    } else {
-                        $data[$key2] *= 0;
-                    }
-                }
-                $total_actiontime = array_sum($data);
-
-                if ($nb_solved_with_actiontime > 0) {
-                    $timedisplay = $total_actiontime / $nb_solved_with_actiontime;
-                } else {
-                    $timedisplay = 0;
-                }
-
-                if (
-                    ($output_type === Search::HTML_OUTPUT)
-                    || ($output_type === Search::PDF_OUTPUT_LANDSCAPE)
-                    || ($output_type === Search::PDF_OUTPUT_PORTRAIT)
-                ) {
-                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                } else if ($output_type === Search::CSV_OUTPUT) {
-                    $timedisplay = Html::timestampToCsvString($timedisplay);
-                }
-                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
-              //Le temps total de l'intervention reelle - The total actiontime to resolv
-                $timedisplay = $total_actiontime;
-
-                if (
-                    ($output_type === Search::HTML_OUTPUT)
-                    || ($output_type === Search::PDF_OUTPUT_LANDSCAPE)
-                    || ($output_type === Search::PDF_OUTPUT_PORTRAIT)
-                ) {
-                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                } else if ($output_type === Search::CSV_OUTPUT) {
-                    $timedisplay = Html::timestampToCsvString($timedisplay);
-                }
-                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
-
-                echo Search::showEndLine($output_type);
-            }
-          // Display footer
-            echo Search::showFooter($output_type, '', $numrows);
+        if ($is_html_output) { // HTML display
+            echo $output::showHeaderItem('', $header_num);
+        }
+        if (!$is_html_output) {
+            echo $output::showHeaderItem(__('Number of opened tickets'), $header_num);
+            echo $output::showHeaderItem(__('Number of solved tickets'), $header_num);
+            echo $output::showHeaderItem(__('Number of late tickets'), $header_num);
+            echo $output::showHeaderItem(__('Number of closed tickets'), $header_num);
         } else {
-            echo __s('No statistics are available');
+            echo $output::showHeaderItem(htmlspecialchars(_nx('ticket', 'Opened', 'Opened', Session::getPluralNumber())), $header_num);
+            echo $output::showHeaderItem(
+                htmlspecialchars(_nx('ticket', 'Solved', 'Solved', Session::getPluralNumber())),
+                $header_num
+            );
+            echo $output::showHeaderItem(__s('Late'), $header_num);
+            echo $output::showHeaderItem(__s('Closed'), $header_num);
         }
 
-        if ($output_type === Search::HTML_OUTPUT) { // HTML display
-            echo "</div>";
+        if ($itemtype === Ticket::class) {
+            if (!$is_html_output) {
+                echo $output::showHeaderItem(
+                    __('Number of opened satisfaction survey'),
+                    $header_num
+                );
+                echo $output::showHeaderItem(
+                    __('Number of answered satisfaction survey'),
+                    $header_num
+                );
+                echo $output::showHeaderItem(
+                    __('Average satisfaction'),
+                    $header_num
+                );
+            } else {
+                echo $output::showHeaderItem(
+                    htmlspecialchars(_nx('survey', 'Opened', 'Opened', Session::getPluralNumber())),
+                    $header_num
+                );
+                echo $output::showHeaderItem(
+                    htmlspecialchars(_nx('survey', 'Answered', 'Answered', Session::getPluralNumber())),
+                    $header_num
+                );
+                echo $output::showHeaderItem(__s('Average'), $header_num);
+            }
         }
+
+        if (!$is_html_output) {
+            if ($itemtype === Ticket::class) {
+                echo $output::showHeaderItem(
+                    __('Average time to take into account'),
+                    $header_num
+                );
+            }
+            echo $output::showHeaderItem(__('Average time to resolution'), $header_num);
+            echo $output::showHeaderItem(__('Average time to closure'), $header_num);
+        } else {
+            if ($itemtype === Ticket::class) {
+                echo $output::showHeaderItem(__s('Take into account'), $header_num);
+            }
+            echo $output::showHeaderItem(__s('Resolution'), $header_num);
+            echo $output::showHeaderItem(__s('Closure'), $header_num);
+        }
+
+        if (!$is_html_output) {
+            echo $output::showHeaderItem(
+                __('Average real duration of treatment of the ticket'),
+                $header_num
+            );
+            echo $output::showHeaderItem(
+                __('Total real duration of treatment of the ticket'),
+                $header_num
+            );
+        } else {
+            echo $output::showHeaderItem(__s('Average'), $header_num);
+            echo $output::showHeaderItem(__s('Total duration'), $header_num);
+        }
+        // End Line for column headers
+        echo $output::showEndLine($output_type);
+        $row_num = 1;
+
+        for ($i = $start; ($i < $numrows) && ($i < $end_display); $i++) {
+            $row_num++;
+            $item_num = 1;
+            echo $output::showNewLine($i % 2);
+            if (
+                $is_html_output
+                && str_contains($type, '_tree')
+                && ((int) $value[$i]['id'] !== (int) $value2)
+            ) {
+                // HTML display
+                $url = $_SERVER['PHP_SELF'] . '?' . Toolbox::append_params(
+                    [
+                        'date1'    => $date1,
+                        'date2'    => $date2,
+                        'itemtype' => $itemtype,
+                        'type'     => $type,
+                        'value2'  => $value[$i]['id'],
+                    ],
+                    '&amp;'
+                );
+                echo $output::showItem("<a href='$url'>" . htmlspecialchars($value[$i]['link']) . "</a>", $item_num, $row_num);
+            } else {
+                echo $output::showItem($value[$i]['link'], $item_num, $row_num);
+            }
+
+            if ($is_html_output) {
+                $link = "";
+                if ($value[$i]['id'] > 0) {
+                    $url = 'stat.graph.php?' . Toolbox::append_params(
+                        [
+                            'id' => $value[$i]['id'],
+                            'date1'    => $date1,
+                            'date2'    => $date2,
+                            'itemtype' => $itemtype,
+                            'type'     => $type,
+                            'champ'    => $value2,
+                        ],
+                        '&amp;'
+                    );
+                    $link = "<a href='$url' title='" . __s('View graph') . "'>" .
+                      "<i class='ti ti-graph fs-1'></i>" .
+                      "</a>";
+                }
+                echo $output::showItem($link, $item_num, $row_num);
+            }
+
+            $fn_show_entry_values = static function (int $i, string $data_type) use ($itemtype, $date1, $date2, $type, $value, $value2, &$item_num, $row_num, $output) {
+                $values = self::constructEntryValues(
+                    $itemtype,
+                    $data_type,
+                    $date1,
+                    $date2,
+                    $type,
+                    $value[$i]["id"],
+                    $value2
+                );
+                $sum = array_sum($values);
+                echo $output::showItem($sum, $item_num, $row_num);
+                return [$values, $sum];
+            };
+
+            // the number of intervention
+            $fn_show_entry_values($i, 'inter_total');
+
+            // the number of solved intervention
+            [$solved, $nb_solved] = $fn_show_entry_values($i, 'inter_solved');
+
+            // the number of late solved intervention
+            $fn_show_entry_values($i, 'inter_solved_late');
+
+            // the number of closed intervention
+            [, $nb_closed] = $fn_show_entry_values($i, 'inter_closed');
+
+            if ($itemtype === Ticket::class) {
+                 // Satisfaction open
+                $fn_show_entry_values($i, 'inter_opensatisfaction');
+                // Satisfaction answer
+                [$answersatisfaction, $nb_answersatisfaction] = $fn_show_entry_values($i, 'inter_answersatisfaction');
+
+                // Satisfaction rate
+                $satisfaction = self::constructEntryValues(
+                    $itemtype,
+                    "inter_avgsatisfaction",
+                    $date1,
+                    $date2,
+                    $type,
+                    $value[$i]["id"],
+                    $value2
+                );
+                foreach (array_keys($satisfaction) as $key2) {
+                      $satisfaction[$key2] *= $answersatisfaction[$key2];
+                }
+                if ($nb_answersatisfaction > 0) {
+                    $avgsatisfaction = round(array_sum($satisfaction) / $nb_answersatisfaction, 1);
+                    if ($is_html_output) {
+                        // Display using the max number of stars defined in the root entity
+                        $max_rate = Entity::getUsedConfig(
+                            'inquest_config',
+                            0,
+                            'inquest_max_rate' . TicketSatisfaction::getConfigSufix()
+                        );
+                        if (!$max_rate) {
+                            $max_rate = 5;
+                        }
+                        // Scale satisfaction accordingly
+                        $avgsatisfaction = $avgsatisfaction * ($max_rate / 5);
+                        $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
+                    }
+                } else {
+                    $avgsatisfaction = '&nbsp;';
+                }
+                echo $output::showItem($avgsatisfaction, $item_num, $row_num);
+
+                // The average time to take a ticket into account
+                $data = self::constructEntryValues(
+                    $itemtype,
+                    "inter_avgtakeaccount",
+                    $date1,
+                    $date2,
+                    $type,
+                    $value[$i]["id"],
+                    $value2
+                );
+                foreach (array_keys($data) as $key2) {
+                    $data[$key2] *= $solved[$key2];
+                }
+
+                $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
+
+                if ($is_html_output || is_a($output, Pdf::class)) {
+                    $timedisplay = Html::timestampToString($timedisplay, 0, false);
+                } else if (is_a($output, Csv::class)) {
+                    $timedisplay = Html::timestampToCsvString($timedisplay);
+                }
+                if ($is_html_output) {
+                    $timedisplay = htmlspecialchars($timedisplay);
+                }
+                echo $output::showItem($timedisplay, $item_num, $row_num);
+            }
+
+            // The average time to resolve
+            $data = self::constructEntryValues(
+                $itemtype,
+                "inter_avgsolvedtime",
+                $date1,
+                $date2,
+                $type,
+                $value[$i]["id"],
+                $value2
+            );
+            foreach (array_keys($data) as $key2) {
+                $data[$key2] = round($data[$key2] * $solved[$key2]);
+            }
+
+            if ($nb_solved > 0) {
+                $timedisplay = array_sum($data) / $nb_solved;
+            } else {
+                $timedisplay = 0;
+            }
+            if ($is_html_output || is_a($output, Pdf::class)) {
+                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if (is_a($output, Csv::class)) {
+                $timedisplay = Html::timestampToCsvString($timedisplay);
+            }
+            if ($is_html_output) {
+                $timedisplay = htmlspecialchars($timedisplay);
+            }
+            echo $output::showItem($timedisplay, $item_num, $row_num);
+
+            // The average time to close
+            $data = self::constructEntryValues(
+                $itemtype,
+                "inter_avgclosedtime",
+                $date1,
+                $date2,
+                $type,
+                $value[$i]["id"],
+                $value2
+            );
+            foreach (array_keys($data) as $key2) {
+                $data[$key2] = round($data[$key2] * $solved[$key2]);
+            }
+
+            if ($nb_closed > 0) {
+                $timedisplay = array_sum($data) / $nb_closed;
+            } else {
+                $timedisplay = 0;
+            }
+            if ($is_html_output || is_a($output, Pdf::class)) {
+                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if (is_a($output, Csv::class)) {
+                $timedisplay = Html::timestampToCsvString($timedisplay);
+            }
+            if ($is_html_output) {
+                $timedisplay = htmlspecialchars($timedisplay);
+            }
+            echo $output::showItem($timedisplay, $item_num, $row_num);
+
+            //the number of solved interventions with a duration time
+            $solved_with_actiontime = self::constructEntryValues(
+                $itemtype,
+                "inter_solved_with_actiontime",
+                $date1,
+                $date2,
+                $type,
+                $value[$i]["id"],
+                $value2
+            );
+            $nb_solved_with_actiontime = array_sum($solved_with_actiontime);
+
+            // The average actiontime to resolve
+            $data = self::constructEntryValues(
+                $itemtype,
+                "inter_avgactiontime",
+                $date1,
+                $date2,
+                $type,
+                $value[$i]["id"],
+                $value2
+            );
+            foreach (array_keys($data) as $key2) {
+                if (isset($solved_with_actiontime[$key2])) {
+                    $data[$key2] *= $solved_with_actiontime[$key2];
+                } else {
+                    $data[$key2] *= 0;
+                }
+            }
+            $total_actiontime = array_sum($data);
+
+            if ($nb_solved_with_actiontime > 0) {
+                $timedisplay = $total_actiontime / $nb_solved_with_actiontime;
+            } else {
+                $timedisplay = 0;
+            }
+
+            if ($is_html_output || is_a($output, Pdf::class)) {
+                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if (is_a($output, Csv::class)) {
+                $timedisplay = Html::timestampToCsvString($timedisplay);
+            }
+            if ($is_html_output) {
+                $timedisplay = htmlspecialchars($timedisplay);
+            }
+            echo $output::showItem($timedisplay, $item_num, $row_num);
+            // The total actiontime to resolve
+            $timedisplay = $total_actiontime;
+
+            if ($is_html_output || is_a($output, Pdf::class)) {
+                $timedisplay = Html::timestampToString($timedisplay, 0, false);
+            } else if (is_a($output, Csv::class)) {
+                $timedisplay = Html::timestampToCsvString($timedisplay);
+            }
+            if ($is_html_output) {
+                $timedisplay = htmlspecialchars($timedisplay);
+            }
+            echo $output::showItem($timedisplay, $item_num, $row_num);
+
+            echo $output::showEndLine(false);
+        }
+        $output::showFooter('', $numrows);
     }
-
 
     /**
      * @param class-string<CommonITILObject> $itemtype
@@ -1297,15 +1161,25 @@ class Stat extends CommonGLPI
                 break;
         }
 
+        $date_unix = QueryFunction::fromUnixtime(
+            expression: QueryFunction::unixTimestamp("$table.date"),
+            format: new QueryExpression($DB::quoteValue('%Y-%m')),
+            alias: 'date_unix'
+        );
+        $solvedate_unix = QueryFunction::fromUnixtime(
+            expression: QueryFunction::unixTimestamp("$table.solvedate"),
+            format: new QueryExpression($DB::quoteValue('%Y-%m')),
+            alias: 'date_unix'
+        );
+        $closedate_unix = QueryFunction::fromUnixtime(
+            expression: QueryFunction::unixTimestamp("$table.closedate"),
+            format: new QueryExpression($DB::quoteValue('%Y-%m')),
+            alias: 'date_unix'
+        );
+
         switch ($type) {
             case "inter_total":
                 $WHERE[] = getDateCriteria("$table.date", $begin, $end);
-
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.date"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
 
                 $criteria = [
                     'SELECT'    => [
@@ -1324,15 +1198,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.solvedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solvedate_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1353,15 +1221,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
                 $WHERE[] = new QueryExpression("$table.solvedate > $table.time_to_resolve");
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.solvedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solvedate_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1376,15 +1238,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.closedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $closedate_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1400,15 +1256,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.solvedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solvedate_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1423,15 +1273,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.solvedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solvedate_unix,
                         'AVG' => "solve_delay_stat AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1446,15 +1290,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.closedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $closedate_unix,
                         'AVG'  => "close_delay_stat AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1473,15 +1311,9 @@ class Stat extends CommonGLPI
                 $WHERE["$actiontime_table.actiontime"] = ['>', 0];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.solvedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solvedate_unix,
                         'AVG'  => "$actiontime_table.actiontime AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1496,15 +1328,9 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.solvedate" => null]];
                 $WHERE[] = getDateCriteria("$table.solvedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.solvedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $solvedate_unix,
                         'AVG'  => "$table.takeintoaccount_delay_stat AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1519,12 +1345,6 @@ class Stat extends CommonGLPI
                 $WHERE[] = ['NOT' => ["$table.closedate" => null]];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.closedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
                     'ON' => [
                         'glpi_ticketsatisfactions' => 'tickets_id',
@@ -1534,7 +1354,7 @@ class Stat extends CommonGLPI
 
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $closedate_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1553,12 +1373,6 @@ class Stat extends CommonGLPI
 
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.closedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
                     'ON' => [
                         'glpi_ticketsatisfactions' => 'tickets_id',
@@ -1568,7 +1382,7 @@ class Stat extends CommonGLPI
 
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $closedate_unix,
                         'COUNT DISTINCT'  => "$table.id AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1588,12 +1402,6 @@ class Stat extends CommonGLPI
                 ];
                 $WHERE[] = getDateCriteria("$table.closedate", $begin, $end);
 
-                $date_unix = QueryFunction::fromUnixtime(
-                    expression: QueryFunction::unixTimestamp("$table.closedate"),
-                    format: new QueryExpression($DB::quoteValue('%Y-%m')),
-                    alias: 'date_unix'
-                );
-
                 $INNERJOIN['glpi_ticketsatisfactions'] = [
                     'ON' => [
                         'glpi_ticketsatisfactions' => 'tickets_id',
@@ -1603,7 +1411,7 @@ class Stat extends CommonGLPI
 
                 $criteria = [
                     'SELECT'    => [
-                        $date_unix,
+                        $closedate_unix,
                         'AVG'  => "glpi_ticketsatisfactions.satisfaction_scaled_to_5 AS total_visites"
                     ],
                     'FROM'      => $table,
@@ -1738,6 +1546,9 @@ class Stat extends CommonGLPI
         $view_entities = Session::isMultiEntitiesMode();
 
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
+        $output = SearchEngine::getOutputForLegacyKey($output_type);
+        $is_html_output = is_a($output, HTMLSearchOutput::class);
+
         if (empty($date2)) {
             $date2 = date("Y-m-d");
         }
@@ -1753,7 +1564,7 @@ class Stat extends CommonGLPI
         $numrows = count($assets);
 
         if ($numrows > 0) {
-            if ($output_type === Search::HTML_OUTPUT) {
+            if ($is_html_output) {
                 Html::printPager(
                     $start,
                     $numrows,
@@ -1769,22 +1580,25 @@ class Stat extends CommonGLPI
                     ),
                     'Stat'
                 );
-                echo "<div class='center'>";
+                echo "<div class='text-center'>";
             }
 
             $end_display = $start + $_SESSION['glpilist_limit'];
             if (isset($_GET['export_all'])) {
                 $end_display = $numrows;
             }
-            echo Search::showHeader($output_type, $end_display - $start + 1, 2, 1);
+            echo $output::showHeader($end_display - $start + 1, 2, 1);
             $header_num = 1;
-            echo Search::showNewLine($output_type);
-            echo Search::showHeaderItem($output_type, _n('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
+            echo $output::showNewLine();
+            $item_label = _n('Associated element', 'Associated elements', $numrows);
+            echo $output::showHeaderItem($is_html_output ? htmlspecialchars($item_label) : $item_label, $header_num);
             if ($view_entities) {
-                echo Search::showHeaderItem($output_type, Entity::getTypeName(1), $header_num);
+                $entity_label = Entity::getTypeName(1);
+                echo $output::showHeaderItem($is_html_output ? htmlspecialchars($entity_label) : $entity_label, $header_num);
             }
-            echo Search::showHeaderItem($output_type, __('Number of tickets'), $header_num);
-            echo Search::showEndLine($output_type);
+            $nb_tickets_label = __('Number of tickets');
+            echo $output::showHeaderItem($is_html_output ? htmlspecialchars($nb_tickets_label) : $nb_tickets_label, $header_num);
+            echo $output::showEndLine(false);
 
             $i = $start;
             if (isset($_GET['export_all'])) {
@@ -1795,32 +1609,28 @@ class Stat extends CommonGLPI
             foreach ($assets as $data) {
                 $item_num = 1;
                // Get data and increment loop variables
-                echo Search::showNewLine($output_type, $i % 2);
-                echo Search::showItem(
-                    $output_type,
-                    sprintf(
-                        __('%1$s - %2$s'),
-                        $data['itemtype']::getTypeName(),
-                        $data['link']
-                    ),
+                echo $output::showNewLine($i % 2);
+                $link = $is_html_output
+                    ? sprintf(__s('%1$s - %2$s'), htmlspecialchars($data['itemtype']::getTypeName()), $data['link'])
+                    : sprintf(__('%1$s - %2$s'), $data['itemtype']::getTypeName(), $data['link']);
+                echo $output::showItem(
+                    $link,
                     $item_num,
                     $i - $start + 1,
-                    "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                    "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
                     : "")
                 );
                 if ($view_entities) {
-                      echo Search::showItem(
-                          $output_type,
-                          $data['entity_name'],
+                      echo $output::showItem(
+                          $is_html_output ? htmlspecialchars($data['entity_name']) : $data['entity_name'],
                           $item_num,
                           $i - $start + 1,
-                          "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
+                          "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
                           : "")
                       );
                 }
-                echo Search::showItem(
-                    $output_type,
-                    $data["NB"],
+                echo $output::showItem(
+                    $is_html_output ? htmlspecialchars($data["NB"]) : $data["NB"],
                     $item_num,
                     $i - $start + 1,
                     "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
@@ -1833,10 +1643,7 @@ class Stat extends CommonGLPI
                 }
             }
 
-            echo Search::showFooter($output_type);
-            if ($output_type == Search::HTML_OUTPUT) {
-                echo "</div>";
-            }
+            echo $output::showFooter();
         }
     }
 
