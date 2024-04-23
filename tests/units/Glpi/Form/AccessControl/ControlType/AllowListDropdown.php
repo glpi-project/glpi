@@ -48,14 +48,15 @@ class AllowListDropdown extends DbTestCase
         // Search engine rely on session data, we must be logged in.
         $this->login();
 
-        // There are 7 users in the database:
+        // There are 8 users in the database:
         // - 5 default users (glpi, normal, post-only, tech, glpi-system)
         // - 2 from bootstrap data (_test_user, jsmith123)
+        // - 1 from empty_data.php (2e2_tests)
         yield [
             'users'    => [],
             'groups'   => [],
             'profiles' => [],
-            'expected' => 7,
+            'expected' => 8,
         ];
 
         // Allow only 2 specific users.
@@ -86,7 +87,7 @@ class AllowListDropdown extends DbTestCase
             'expected' => 3, // _test_user + jsmith123 + post-only (from group)
         ];
 
-        // Allow super-administrators (glpi)
+        // Allow super-administrators (glpi + e2e_tests)
         yield [
             'users'    => [
                 getItemByTypeName(User::class, '_test_user', true),
@@ -98,7 +99,7 @@ class AllowListDropdown extends DbTestCase
             'profiles' => [
                 getItemByTypeName(Profile::class, 'Super-Admin', true)
             ],
-            'expected' => 4, // _test_user + jsmith123 + post-only (from group) + glpi (from profile)
+            'expected' => 5, // _test_user and jsmith123 + post-only (from group) + glpi and e2e_tests (from profile)
         ];
     }
 
