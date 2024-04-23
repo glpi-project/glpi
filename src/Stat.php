@@ -1591,11 +1591,14 @@ class Stat extends CommonGLPI
             echo $output::showHeader($end_display - $start + 1, 2, 1);
             $header_num = 1;
             echo $output::showNewLine();
-            echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
+            $item_label = _n('Associated element', 'Associated elements', $numrows);
+            echo $output::showHeaderItem($is_html_output ? htmlspecialchars($item_label) : $item_label, $header_num);
             if ($view_entities) {
-                echo $output::showHeaderItem(htmlspecialchars(Entity::getTypeName(1)), $header_num);
+                $entity_label = Entity::getTypeName(1);
+                echo $output::showHeaderItem($is_html_output ? htmlspecialchars($entity_label) : $entity_label, $header_num);
             }
-            echo $output::showHeaderItem(__s('Number of tickets'), $header_num);
+            $nb_tickets_label = __('Number of tickets');
+            echo $output::showHeaderItem($is_html_output ? htmlspecialchars($nb_tickets_label) : $nb_tickets_label, $header_num);
             echo $output::showEndLine(false);
 
             $i = $start;
@@ -1608,12 +1611,11 @@ class Stat extends CommonGLPI
                 $item_num = 1;
                // Get data and increment loop variables
                 echo $output::showNewLine($i % 2);
+                $link = $is_html_output
+                    ? sprintf(__s('%1$s - %2$s'), htmlspecialchars($data['itemtype']::getTypeName()), $data['link'])
+                    : sprintf(__('%1$s - %2$s'), $data['itemtype']::getTypeName(), $data['link']);
                 echo $output::showItem(
-                    sprintf(
-                        __s('%1$s - %2$s'),
-                        htmlspecialchars($data['itemtype']::getTypeName()),
-                        $data['link']
-                    ),
+                    $link,
                     $item_num,
                     $i - $start + 1,
                     "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
@@ -1621,7 +1623,7 @@ class Stat extends CommonGLPI
                 );
                 if ($view_entities) {
                       echo $output::showItem(
-                          htmlspecialchars($data['entity_name']),
+                          $is_html_output ? htmlspecialchars($data['entity_name']) : $data['entity_name'],
                           $item_num,
                           $i - $start + 1,
                           "class='text-center'" . " " . ($data['is_deleted'] ? " class='deleted' "
@@ -1629,7 +1631,7 @@ class Stat extends CommonGLPI
                       );
                 }
                 echo $output::showItem(
-                    htmlspecialchars($data["NB"]),
+                    $is_html_output ? htmlspecialchars($data["NB"]) : $data["NB"],
                     $item_num,
                     $i - $start + 1,
                     "class='center'" . " " . ($data['is_deleted'] ? " class='deleted' "
