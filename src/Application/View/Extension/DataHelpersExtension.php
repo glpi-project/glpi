@@ -52,6 +52,7 @@ class DataHelpersExtension extends AbstractExtension
     {
         return [
             new TwigFilter('formatted_datetime', [$this, 'getFormattedDatetime']),
+            new TwigFilter('formatted_date', [$this, 'getFormattedDate']),
             new TwigFilter('formatted_duration', [$this, 'getFormattedDuration']),
             new TwigFilter('formatted_integer', [$this, 'getFormattedInteger']),
             new TwigFilter('formatted_number', [$this, 'getFormattedNumber']),
@@ -89,6 +90,21 @@ class DataHelpersExtension extends AbstractExtension
             return null;
         }
         return Html::convDateTime($datetime, null, $with_seconds);
+    }
+
+    /**
+     * Return date formatted to user preferred format.
+     *
+     * @param mixed $date
+     *
+     * @return string|null
+     */
+    public function getFormattedDate($date): ?string
+    {
+        if (!is_string($date)) {
+            return null;
+        }
+        return Html::convDate($date);
     }
 
     /**
