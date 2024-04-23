@@ -90,6 +90,12 @@
             input_class: 'col-xxl-10',
         }) }}
 
+        {{ fields.htmlField('', __('From %1$s to %2$s')|format(informations['subscription']['begin_date']|formatted_date, informations['subscription']['end_date']|formatted_date)|default(__('Unknown'))|e, __('Period'), {
+            full_width: true,
+            label_class: 'col-xxl-2',
+            input_class: 'col-xxl-10',
+        }) }}
+
         {{ fields.htmlField('', informations['owner']['name']|default(__('Unknown'))|e, __('Registered by'), {
             full_width: true,
             label_class: 'col-xxl-2',
