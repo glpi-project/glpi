@@ -243,17 +243,18 @@ final class AssetDefinition extends CommonDBTM
      */
     private function showFieldsForm(): void
     {
-        $all_fields = $this->getAllFields();
         $fields_display = $this->getDecodedFieldsField();
+        $used = array_column($fields_display, 'key');
+        $used = array_combine($used, $used);
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/assetdefinition/fields_display.html.twig',
             [
                 'item'           => $this,
                 'classname'      => $this->getAssetClassName(),
-                'all_fields'     => $all_fields,
+                'all_fields'     => $this->getAllFields(),
                 'fields_display' => $fields_display,
-                'used'           => array_column($fields_display, 'key'),
+                'used'           => $used,
             ]
         );
     }
@@ -1011,9 +1012,9 @@ TWIG, ['name' => $name, 'value' => $value]);
             'groups_id'        => Group::getTypeName(),
             'users_id_tech'    => __('Technician in charge'),
             'groups_id_tech'   => __('Group in charge'),
-            `locations_id`     => Location::getTypeName(),
-            `manufacturers_id` => Manufacturer::getTypeName(),
-            `states_id`        => State::getTypeName(),
+            'locations_id'     => Location::getTypeName(),
+            'manufacturers_id' => Manufacturer::getTypeName(),
+            'states_id'        => State::getTypeName(),
         ];
 
         // TODO add assets_assetmodels_id and assets_assettypes_id
