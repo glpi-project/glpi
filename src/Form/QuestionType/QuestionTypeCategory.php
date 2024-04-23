@@ -61,6 +61,11 @@ enum QuestionTypeCategory: string
     case ACTORS = "actors";
 
     /**
+     * Question that expect a urgency level
+     */
+    case URGENCY = "urgency";
+
+    /**
      * Get category label
      * @return string
      */
@@ -71,6 +76,7 @@ enum QuestionTypeCategory: string
             self::LONG_ANSWER  => __("Long answer"),
             self::DATE_AND_TIME => __("Date and time"),
             self::ACTORS => __("Actors"),
+            self::URGENCY => __("Urgency"),
         };
     }
 }

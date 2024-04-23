@@ -50,6 +50,7 @@ use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeTime;
+use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
@@ -255,6 +256,7 @@ class AnswersSet extends DbTestCase
                 ->addQuestion("Requester", QuestionTypeRequester::class)
                 ->addQuestion("Observer", QuestionTypeObserver::class)
                 ->addQuestion("Assignee", QuestionTypeAssignee::class)
+                ->addQuestion("Urgency", QuestionTypeUrgency::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
@@ -277,6 +279,7 @@ class AnswersSet extends DbTestCase
                 Group::getForeignKeyField() . '-1',
                 Supplier::getForeignKeyField() . '-1'
             ],
+            $this->getQuestionId($form, "Urgency") => 2
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

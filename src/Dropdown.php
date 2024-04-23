@@ -2163,6 +2163,7 @@ JAVASCRIPT;
         $param['templateResult']      = "templateResult";
         $param['templateSelection']   = "templateSelection";
         $param['track_changes']       = "true";
+        $param['init']                = true;
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2342,6 +2343,7 @@ JAVASCRIPT;
                 'width'             => $param["width"],
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
+                'init'              => $param["init"],
             ];
             $output .= Html::jsAdaptDropdown($field_id, $adapt_params);
         }
