@@ -4782,7 +4782,7 @@ JAVASCRIPT
 
         $placeholder = '';
         if (isset($params["placeholder"])) {
-            $placeholder = "placeholder: " . json_encode($params["placeholder"]) . ",";
+            $placeholder = json_encode($params["placeholder"]);
         }
 
         $templateresult    = $params["templateResult"] ?? "templateResult";
@@ -4793,14 +4793,14 @@ JAVASCRIPT
                 type: 'adapt',
                 field_id: '{$id}',
                 width: '{$width}',
-                placeholder: '{$placeholder}',
+                placeholder: {$placeholder},
                 ajax_limit_count: {$CFG_GLPI['ajax_limit_count']},
                 templateresult: {$templateresult},
                 templateselection: {$templateselection}
             };
 JS;
 
-        if ($params['init']) {
+        if ($params['init'] ?? true) {
             $js .= "setupAdaptDropdown(window.select2_configs['{$id}']);";
         }
 
