@@ -48,9 +48,7 @@ use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
-use Group_User;
 use Profile;
-use Session;
 use User;
 
 final class FormAccessControlManager extends DbTestCase
