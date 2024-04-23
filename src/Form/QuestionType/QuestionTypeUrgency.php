@@ -78,7 +78,7 @@ final class QuestionTypeUrgency implements QuestionTypeInterface
             }
         }
 
-        return 1;
+        return 0;
     }
 
     #[Override]
@@ -93,8 +93,9 @@ final class QuestionTypeUrgency implements QuestionTypeInterface
                 urgency_levels,
                 '',
                 {
-                    'init'     : init,
-                    'no_label' : true,
+                    'init'                : init,
+                    'no_label'            : true,
+                    'display_emptychoice' : true
                 }
             ) }}
 TWIG;
@@ -105,7 +106,7 @@ TWIG;
             'value'              => $this->getDefaultValue($question),
             'urgency_levels'     => array_combine(
                 range(1, 5),
-                array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+                array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
             ),
         ]);
     }
@@ -128,7 +129,8 @@ TWIG;
             urgency_levels,
             '',
             {
-                'no_label' : true,
+                'no_label'            : true,
+                'display_emptychoice' : true,
             }
         ) }}
 TWIG;
@@ -139,7 +141,7 @@ TWIG;
             'question'           => $question,
             'urgency_levels'     => array_combine(
                 range(1, 5),
-                array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+                array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
             ),
         ]);
     }
