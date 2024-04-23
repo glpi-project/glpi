@@ -35,9 +35,8 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
-use Glpi\Form\Form;
-use Glpi\Session\SessionInfo;
 
 interface ControlTypeInterface
 {
@@ -100,12 +99,12 @@ interface ControlTypeInterface
      * Check if the current user can answer the given form.
      *
      * @param JsonConfigInterface $config
-     * @param SessionInfo             $session
+     * @param FormAccessParameters $parameters
      *
      * @return bool
      */
     public function canAnswer(
         JsonConfigInterface $config,
-        \Glpi\Session\SessionInfo $session
+        FormAccessParameters $parameters
     ): bool;
 }

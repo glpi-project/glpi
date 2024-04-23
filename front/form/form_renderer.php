@@ -34,6 +34,7 @@
  */
 
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\Renderer\FormRenderer;
 use Glpi\Http\Firewall;
@@ -77,7 +78,11 @@ if ($manager->canUnauthenticatedUsersAccessForm($form)) {
 }
 
 // Validate form access
-if (!$manager->canAnswerForm($form)) {
+$parameters = new FormAccessParameters(
+    session_info: Session::getSessionInfo(),
+    url_parameters: $_GET
+);
+if (!$manager->canAnswerForm($form, $parameters)) {
     Response::sendError(403, __("You are not allowed to answer this form."));
 }
 

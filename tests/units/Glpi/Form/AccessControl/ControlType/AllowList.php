@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Session\SessionInfo;
@@ -184,12 +185,16 @@ class AllowList extends \GLPITestCase
             group_ids : [1, 2, 3],   // User is part of groups 1, 2 and 3
             profile_id: 1,           // User has profile 1
         );
+        $parameters = new FormAccessParameters(
+            session_info: $session_info,
+            url_parameters: []
+        );
 
         // Default config, allow all users
         yield [
-            'config'  => new AllowListConfig(),
-            'session' => $session_info,
-            'expected' => true,
+            'config'     => new AllowListConfig(),
+            'parameters' => $parameters,
+            'expected'   => true,
         ];
 
         // User allowlist
@@ -197,14 +202,14 @@ class AllowList extends \GLPITestCase
             'config'  => new AllowListConfig([
                 'user_ids' => [2] // Not our user
             ]),
-            'session' => $session_info,
+            'parameters' => $parameters,
             'expected' => false,
         ];
         yield [
             'config'  => new AllowListConfig([
                 'user_ids' => [1] // Our user
             ]),
-            'session' => $session_info,
+            'parameters' => $parameters,
             'expected' => true,
         ];
 
@@ -213,14 +218,14 @@ class AllowList extends \GLPITestCase
             'config'  => new AllowListConfig([
                 'group_ids' => [4, 5] // Not our user
             ]),
-            'session' => $session_info,
+            'parameters' => $parameters,
             'expected' => false,
         ];
         yield [
             'config'  => new AllowListConfig([
                 'group_ids' => [1, 2] // Our user
             ]),
-            'session' => $session_info,
+            'parameters' => $parameters,
             'expected' => true,
         ];
 
@@ -229,14 +234,14 @@ class AllowList extends \GLPITestCase
             'config'  => new AllowListConfig([
                 'profile_ids' => [2] // Not our user
             ]),
-            'session' => $session_info,
+            'parameters' => $parameters,
             'expected' => false,
         ];
         yield [
             'config'  => new AllowListConfig([
                 'profile_ids' => [1] // Our user
             ]),
-            'session' => $session_info,
+            'parameters' => $parameters,
             'expected' => true,
         ];
     }
@@ -250,10 +255,12 @@ class AllowList extends \GLPITestCase
      */
     public function testCanAnswer(
         AllowListConfig $config,
-        SessionInfo $session,
+        FormAccessParameters $parameters,
         bool $expected
     ): void {
         $allow_list = new \Glpi\Form\AccessControl\ControlType\AllowList();
-        $this->boolean($allow_list->canAnswer($config, $session))->isEqualTo($expected);
+        $this->boolean(
+            $allow_list->canAnswer($config, $parameters)
+        )->isEqualTo($expected);
     }
 }

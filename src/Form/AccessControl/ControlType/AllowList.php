@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Form;
@@ -103,7 +104,7 @@ final class AllowList implements ControlTypeInterface
     #[Override]
     public function canAnswer(
         JsonConfigInterface $config,
-        SessionInfo $session
+        FormAccessParameters $parameters
     ): bool {
         if (!$config instanceof AllowListConfig) {
             throw new \InvalidArgumentException("Invalid config class");
@@ -117,6 +118,8 @@ final class AllowList implements ControlTypeInterface
             // No restrictions
             return true;
         }
+
+        $session = $parameters->getSessionInfo();
 
         // User allowlist
         if (in_array($session->user_id, $config->user_ids)) {

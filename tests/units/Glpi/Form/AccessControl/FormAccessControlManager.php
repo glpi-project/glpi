@@ -41,6 +41,7 @@ use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
@@ -48,6 +49,7 @@ use Glpi\Tests\FormTesterTrait;
 use Group;
 use Group_User;
 use Profile;
+use Session;
 use User;
 
 class FormAccessControlManager extends DbTestCase
@@ -381,8 +383,9 @@ class FormAccessControlManager extends DbTestCase
         // Form without access controls -> should be visible for all authenticated users
         $form_1 = $this->createForm(new FormBuilder());
         yield [
-            'form'     => $form_1,
-            'expected' => [
+            'form'           => $form_1,
+            'url_parameters' => [],
+            'expected'       => [
                 'glpi'      => true,
                 'tech'      => true,
                 'normal'    => true,
@@ -399,8 +402,9 @@ class FormAccessControlManager extends DbTestCase
         );
         yield [
             // Form is still accessible without token
-            'form'     => $form_2,
-            'expected' => [
+            'form'           => $form_2,
+            'url_parameters' => [],
+            'expected'       => [
                 'glpi'      => true,
                 'tech'      => true,
                 'normal'    => true,
@@ -418,37 +422,37 @@ class FormAccessControlManager extends DbTestCase
         );
         yield [
             // Form is NOT accessible without token
-            'form'     => $form_3,
-            'expected' => [
+            'form'           => $form_3,
+            'url_parameters' => [],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => false,
             ],
         ];
-        $_GET['token'] = 'invalid_token';
         yield [
             // Wrong token
-            'form'     => $form_3,
-            'expected' => [
+            'form'           => $form_3,
+            'url_parameters' => ['token' => 'invalid_token'],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => false,
                 'normal'    => false,
                 'post-only' => false,
             ],
         ];
-        $_GET['token'] = 'my_token';
         yield [
             // Valid token
-            'form'     => $form_3,
-            'expected' => [
+            'form'           => $form_3,
+            'url_parameters' => ['token' => 'my_token'],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => true,
                 'normal'    => true,
                 'post-only' => true,
             ],
         ];
-        unset($_GET['token']);
 
         // Form with an allow list
         $form_4 = $this->createForm(
@@ -466,8 +470,9 @@ class FormAccessControlManager extends DbTestCase
                 ]))
         );
         yield [
-            'form'     => $form_4,
-            'expected' => [
+            'form'           => $form_4,
+            'url_parameters' => [],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => true, // Allowed by user list
                 'normal'    => false,
@@ -481,8 +486,9 @@ class FormAccessControlManager extends DbTestCase
             'users_id'  => getItemByTypeName(User::class, "normal", true),
         ]);
         yield [
-            'form'     => $form_4,
-            'expected' => [
+            'form'           => $form_4,
+            'url_parameters' => [],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => true, // Allowed by user list
                 'normal'    => true, // Allowed by group list
@@ -504,8 +510,9 @@ class FormAccessControlManager extends DbTestCase
                 ]))
         );
         yield [
-            'form'     => $form_5,
-            'expected' => [
+            'form'           => $form_5,
+            'url_parameters' => [],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => false, // Allowed by user list but token is missing
                 'normal'    => false,
@@ -513,17 +520,16 @@ class FormAccessControlManager extends DbTestCase
             ],
         ];
 
-        $_GET['token'] = 'my_token';
         yield [
-            'form'     => $form_5,
-            'expected' => [
+            'form'           => $form_5,
+            'url_parameters' => ['token' => 'my_token'],
+            'expected'       => [
                 'glpi'      => true, // Admin can see all forms
                 'tech'      => true, // Allowed by user list and token is valid
                 'normal'    => false,
                 'post-only' => false,
             ],
         ];
-        unset($_GET['token']);
     }
 
     /**
@@ -531,21 +537,29 @@ class FormAccessControlManager extends DbTestCase
      *
      * @dataProvider testCanAnswerFormProvider
      *
-     * @param Form $form
+     * @param Form  $form
+     * @param array $get       $_GET request
      * @param array $expected
      *
      * @return void
      */
     public function testCanAnswerForm(
         Form $form,
+        array $url_parameters,
         array $expected
     ): void {
         $manager = \Glpi\Form\AccessControl\FormAccessControlManager::getInstance();
 
         foreach ($expected as $user => $can_answer) {
             $this->login($user, str_replace("-", "", $user));
+
+            $access_parameters = new FormAccessParameters(
+                session_info: Session::getSessionInfo(),
+                url_parameters: $url_parameters
+            );
+
             $this->boolean(
-                $manager->canAnswerForm($form)
+                $manager->canAnswerForm($form, $access_parameters)
             )->isEqualTo($can_answer, "Failed for $user.");
         }
     }

@@ -185,11 +185,13 @@ final class FormAccessControlManager
      * Check if the current user can answer the given form.
      *
      * @param Form $form
+     * @param FormAccessParameters $parameters
      *
      * @return bool
      */
     public function canAnswerForm(
         Form $form,
+        FormAccessParameters $parameters
     ): bool {
         // Form administrators can preview all forms.
         if (Session::haveRight(Form::$rightname, READ)) {
@@ -202,7 +204,7 @@ final class FormAccessControlManager
         foreach ($access_controls as $control) {
             $can_answer = $control->getStrategy()->canAnswer(
                 $control->getConfig(),
-                Session::getSessionInfo()
+                $parameters
             );
             if (!$can_answer) {
                 // If any control deny access, the user is denied.

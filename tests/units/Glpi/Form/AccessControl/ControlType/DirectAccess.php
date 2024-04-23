@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Session\SessionInfo;
@@ -214,38 +215,42 @@ class DirectAccess extends \GLPITestCase
             profile_id: 1,           // User has profile 1
         );
 
-        // Default config, allow all users
+        // Default config
         yield [
-            'config'   => new DirectAccessConfig(),
-            'session'  => $session_info,
-            'expected' => true,
+            'config'     => new DirectAccessConfig(),
+            'parameters' => new FormAccessParameters(
+                session_info: $session_info,
+                url_parameters: []
+            ),
+            'expected'   => true,
         ];
-
-        // Mock server/query variables
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['HTTP_HOST'] = 'localhost';
-        $_GET['id'] = 1;
 
         // Test token usage
         $config = new DirectAccessConfig([
             'token' => "valid_token"
         ]);
-        $_GET['token'] = "invalid_token";
         yield [
             'config'   => $config,
-            'session'  => $session_info,
+            'parameters' => new FormAccessParameters(
+                session_info: $session_info,
+                url_parameters: ['token' => 'invalid_token']
+            ),
             'expected' => false,
         ];
-        $_GET['token'] = "valid_token";
         yield [
             'config'   => $config,
-            'session'  => $session_info,
+            'parameters' => new FormAccessParameters(
+                session_info: $session_info,
+                url_parameters: ['token' => 'valid_token']
+            ),
             'expected' => true,
         ];
-        unset($_GET['token']); // No token
         yield [
             'config'   => $config,
-            'session'  => $session_info,
+            'parameters' => new FormAccessParameters(
+                session_info: $session_info,
+                url_parameters: [] // No token
+            ),
             'expected' => true,
         ];
 
@@ -254,21 +259,22 @@ class DirectAccess extends \GLPITestCase
             'token'               => "valid_token",
             'force_direct_access' => true,
         ]);
-        unset($_GET['token']); // No token
         yield [
             'config'   => $config,
-            'session'  => $session_info,
+            'parameters' => new FormAccessParameters(
+                session_info: $session_info,
+                url_parameters: [] // No token
+            ),
             'expected' => false,
         ];
-        $_GET['token'] = "valid_token";
         yield [
             'config'   => $config,
-            'session'  => $session_info,
+            'parameters' => new FormAccessParameters(
+                session_info: $session_info,
+                url_parameters: ['token' => 'valid_token']
+            ),
             'expected' => true,
         ];
-
-        // Clean up $_GET
-        unset($_GET['token']);
     }
 
     /**
@@ -280,10 +286,12 @@ class DirectAccess extends \GLPITestCase
      */
     public function testCanAnswer(
         DirectAccessConfig $config,
-        SessionInfo $session,
+        FormAccessParameters $parameters,
         bool $expected
     ): void {
         $direct_access = new \Glpi\Form\AccessControl\ControlType\DirectAccess();
-        $this->boolean($direct_access->canAnswer($config, $session))->isEqualTo($expected);
+        $this->boolean(
+            $direct_access->canAnswer($config, $parameters)
+        )->isEqualTo($expected);
     }
 }

@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Override;
@@ -120,15 +121,16 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function canAnswer(
         JsonConfigInterface $config,
-        SessionInfo $session
+        FormAccessParameters $parameters
     ): bool {
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
-        if (isset($_GET['token'])) {
+        $token = $parameters->getUrlParameters()['token'] ?? null;
+        if ($token !== null) {
             // A token was supplied, it must be correct
-            return $config->token === $_GET['token'];
+            return $config->token === $token;
         } else {
             // No token supplied, check if token access is mandatory
             return !$config->force_direct_access;
