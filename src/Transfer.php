@@ -1224,6 +1224,43 @@ class Transfer extends CommonDBTM
         if (!isset($this->already_transfer[$itemtype][$ID])) {
            // Check computer exists ?
             if ($item->getFromDB($newID)) {
+                if ($itemtype != 'Computer') {
+                    $itemrelations = $item->getCloneRelations();
+
+                    foreach ($itemrelations as $itemrelation) {
+                        // Skip if 'Item' is not in $itemrelation
+                        if (strpos($itemrelation, 'Item') === false) {
+                            continue;
+                        }
+
+                        $relation_item = new $itemrelation();
+                        $links = $relation_item->find([strtolower($itemtype) . 's_id' => $ID]);
+
+                        // Skip if no links found
+                        if (count($links) === 0) {
+                            continue;
+                        }
+
+                        foreach ($links as $link) {
+                            $item_linked = new $link['itemtype']();
+                            $item_linked->getFromDB($link['items_id']);
+
+                            // Return if entity ID does not match
+                            if ($item_linked->getEntityID() != $this->to) {
+                                Session::addMessageAfterRedirect(
+                                    sprintf(
+                                        __('%1$s is linked to this item but is not in the target entity'),
+                                        $item_linked->getLink(),
+                                    ),
+                                    true,
+                                    ERROR
+                                );
+                                Html::back();
+                                return;
+                            }
+                        }
+                    }
+                }
                // Network connection ? keep connected / keep_disconnected / delete
                 if (in_array($itemtype, $CFG_GLPI['networkport_types'])) {
                     $this->transferNetworkLink($itemtype, $ID, $newID);
