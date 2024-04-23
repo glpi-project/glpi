@@ -1170,12 +1170,12 @@ class Stat extends CommonGLPI
         $solvedate_unix = QueryFunction::fromUnixtime(
             expression: QueryFunction::unixTimestamp("$table.solvedate"),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
-            alias: 'solvedate_unix'
+            alias: 'date_unix'
         );
         $closedate_unix = QueryFunction::fromUnixtime(
             expression: QueryFunction::unixTimestamp("$table.closedate"),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
-            alias: 'closedate_unix'
+            alias: 'date_unix'
         );
 
         switch ($type) {
