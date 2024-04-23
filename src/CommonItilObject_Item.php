@@ -585,8 +585,6 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
         $restrict = $params['restrict'];
 
-        $restrict[static::getTable() . ".items_id"] = $item->getID();
-        $restrict[static::getTable() . ".itemtype"] = $item->getType();
         $params['criteria'][0]['field']      = 12;
         $params['criteria'][0]['searchtype'] = 'equals';
         $params['criteria'][0]['value']      = 'all';
