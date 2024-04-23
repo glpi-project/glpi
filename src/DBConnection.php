@@ -443,7 +443,7 @@ class DBConnection extends CommonDBTM
             if ($DBread->connected) {
                 $sql = [
                     'SELECT' => ['MAX' => 'id AS maxid'],
-                    'FROM'   => 'glpi_logs',
+                    'FROM'   => Log::getTable(),
                 ];
 
                 switch ($CFG_GLPI['use_slave_for_search']) {
