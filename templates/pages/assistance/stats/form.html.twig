@@ -1,0 +1,109 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<form method="get" name="form" action="{{ target }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+    <input type="hidden" name="itemtype" value="{{ itemtype }}">
+    {% if value2 is defined %}
+        <input type="hidden" name="value2" value="{{ value2 }}">
+    {% endif %}
+
+    <div class="card mx-auto mb-3">
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                {% set total_cols = 4 - (type_params is defined ? 0 : 1) - (showgraph is defined? 0 : 1) %}
+                {% set field_class = 'col-12 col-sm-' ~ (12 / total_cols) %}
+                {% set has_type = type_params is defined %}
+                {% if has_type %}
+                    {{ fields.dropdownArrayField(
+                        type_params.field,
+                        type_params.value,
+                        type_params.elements,
+                        type_params.label|default(_n('Field', 'Fields', 1)),
+                        {
+                            field_class: field_class
+                        }
+                    ) }}
+                {% endif %}
+
+                {% set date_fields %}
+                    <div class="{{ total_cols == 2 ? 'd-flex' : '' }}">
+                        {{ fields.dateField(
+                            'date1',
+                            date1,
+                            __('Start date'),
+                            {
+                                full_width: total_cols != 2,
+                                clearable: true
+                            }
+                        ) }}
+
+                        {{ fields.dateField(
+                            'date2',
+                            date2,
+                            __('End date'),
+                            {
+                                full_width: total_cols != 2,
+                                clearable: true
+                            }
+                        ) }}
+                    </div>
+                {% endset %}
+                {% if total_cols == 2 %}
+                    {{ date_fields|raw }}
+                {% else %}
+                    {{ fields.htmlField('', date_fields, null, {
+                        no_label: true,
+                        field_class: field_class
+                    }) }}
+                {% endif %}
+
+                {% if showgraph is defined %}
+                    {{ fields.checkboxField(
+                        'showgraph',
+                        showgraph,
+                        __('Show graphics'),
+                        {
+                            field_class: field_class
+                        }
+                    ) }}
+                {% endif %}
+            </div>
+            <div class="d-flex flex-row-reverse">
+                <input type="submit" class="btn btn-primary ms-auto" value="{{ __('Display report') }}">
+            </div>
+        </div>
+    </div>
+</form>

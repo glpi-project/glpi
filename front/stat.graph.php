@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Stat\Data\Graph\StatDataSatisfaction;
 use Glpi\Stat\Data\Graph\StatDataSatisfactionSurvey;
 use Glpi\Stat\Data\Graph\StatDataTicketAverageTime;
@@ -82,9 +83,8 @@ if (
     $_POST["date2"] = $tmp;
 }
 
-$cleantarget = preg_replace("/[&]date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
-$cleantarget = preg_replace("/[&]*id=([0-9]+[&]{0,1})/", "", $cleantarget);
-$cleantarget = preg_replace("/&/", "&amp;", $cleantarget);
+$cleantarget = preg_replace("/&date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
+$cleantarget = preg_replace("/&*id=(\d+&?)/", "", $cleantarget);
 
 $next    = 0;
 $prev    = 0;
@@ -339,45 +339,46 @@ if ($foundkey >= 0) {
 
 $stat = new Stat();
 
-echo "<div class='center'>";
-echo "<table class='tab_cadre'>";
-echo "<tr><td>";
-if ($prev > 0) {
-    echo "<a href=\"" . $_SERVER['PHP_SELF'] . "?$cleantarget&amp;date1=" . $_POST["date1"] . "&amp;date2=" .
-          $_POST["date2"] . "&amp;id=$prev\">
-          <img src='" . $CFG_GLPI["root_doc"] . "/pics/left.png' alt=\"" . __s('Previous') . "\"
-           title=\"" . __s('Previous') . "\"></a>";
-}
-echo "</td>";
+$twig_params = [
+    'php_self' => $_SERVER['PHP_SELF'],
+    'cleantarget' => $cleantarget,
+    'prev' => $prev,
+    'prev_label' => __('Previous'),
+    'next' => $next,
+    'next_label' => __('Next'),
+    'title' => $title,
+];
+// language=Twig
+echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+    <div class="text-center mx-auto p-1 mb-2" style="background-color: var(--tblr-bg-surface); width: fit-content">
+        {% if prev > 0 %}
+            <div class="d-inline-block">
+                <a href="{{ php_self }}?{{ cleantarget }}&date1={{ _request['date1'] }}&date2={{ _request['date2'] }}&id={{ prev }}" title="{{ prev_label }}">
+                    <i class="ti ti-chevron-left"></i>
+                </a>
+            </div>
+        {% endif %}
+        <div class="d-inline-block" style="width: 400px">{{ title|raw }}</div>
+        {% if next > 0 %}
+            <div class="d-inline-block">
+                <a href="{{ php_self }}?{{ cleantarget }}&date1={{ _request['date1'] }}&date2={{ _request['date2'] }}&id={{ next }}" title="{{ next_label }}">
+                    <i class="ti ti-chevron-right"></i>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+TWIG, $twig_params);
 
-echo "<td width='400' class='center b'>$title</td>";
-echo "<td>";
-if ($next > 0) {
-    echo "<a href=\"" . $_SERVER['PHP_SELF'] . "?$cleantarget&amp;date1=" . $_POST["date1"] . "&amp;date2=" .
-          $_POST["date2"] . "&amp;id=$next\">
-          <img src='" . $CFG_GLPI["root_doc"] . "/pics/right.png' alt=\"" . __s('Next') . "\"
-           title=\"" . __s('Next') . "\"></a>";
-}
-echo "</td>";
-echo "</tr>";
-echo "</table></div><br>";
 
 $target = preg_replace("/&/", "&amp;", $_SERVER["REQUEST_URI"]);
 
-echo "<form method='post' name='form' action='$target'><div class='center'>";
-echo "<table class='tab_cadre'>";
-echo "<tr class='tab_bg_2'><td class='right'>" . __('Start date') . "</td><td>";
-Html::showDateField("date1", ['value' => $_POST["date1"]]);
-echo "</td><td rowspan='2' class='center'>";
-echo "<input type='hidden' name='itemtype' value=\"" . htmlspecialchars($_GET['itemtype']) . "\">";
-echo "<input type='submit' class='btn btn-primary' value=\"" . __s('Display report') . "\"></td></tr>";
-
-echo "<tr class='tab_bg_2'><td class='right'>" . __('End date') . "</td><td>";
-Html::showDateField("date2", ['value' => $_POST["date2"]]);
-echo "</td></tr>";
-echo "</table></div>";
-
-Html::closeForm();
+TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [
+    'target'    => $target,
+    'itemtype'  => $_GET['itemtype'],
+    'type'      => $_GET['type'],
+    'date1'     => $_POST["date1"],
+    'date2'     => $_POST["date2"],
+]);
 
 $stat_params = [
     'itemtype' => $_GET['itemtype'],
