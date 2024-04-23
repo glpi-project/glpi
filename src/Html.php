@@ -4780,10 +4780,7 @@ JAVASCRIPT
             unset($params["width"]);
         }
 
-        $placeholder = '';
-        if (isset($params["placeholder"])) {
-            $placeholder = json_encode($params["placeholder"]);
-        }
+        $placeholder = json_encode($params["placeholder"] ?? '');
 
         $templateresult    = $params["templateResult"] ?? "templateResult";
         $templateselection = $params["templateSelection"] ?? "templateSelection";
