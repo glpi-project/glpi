@@ -1718,8 +1718,7 @@ class Migration
                 ]);
 
                 // Update template fields
-                $item = new $itemtype();
-                if ($item instanceof CommonITILObject) {
+                if (is_a($itemtype, 'CommonITILObject', true)) {
                     $tables = [
                         'glpi_' . strtolower($itemtype) . 'templatehiddenfields',
                         'glpi_' . strtolower($itemtype) . 'templatemandatoryfields',
