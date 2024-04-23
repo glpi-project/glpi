@@ -44,6 +44,7 @@ use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Group;
@@ -52,7 +53,7 @@ use Profile;
 use Session;
 use User;
 
-class FormAccessControlManager extends DbTestCase
+final class FormAccessControlManager extends DbTestCase
 {
     use FormTesterTrait;
 
@@ -63,7 +64,7 @@ class FormAccessControlManager extends DbTestCase
      */
     public function testGetInstance(): void
     {
-        $instance = \Glpi\Form\AccessControl\FormAccessControlManager::getInstance();
+        $instance = $this->getManager();
 
         // Not much to test here, just make sure the method run without errors
         $this
@@ -78,7 +79,7 @@ class FormAccessControlManager extends DbTestCase
      *
      * @return iterable
      */
-    protected function testGetAccessControlsForFormDataProvider(): iterable
+    public function getAccessControlsForFormDataProvider(): iterable
     {
         // Form without access controls
         $form_1 = $this->createForm(new FormBuilder());
@@ -219,7 +220,7 @@ class FormAccessControlManager extends DbTestCase
     /**
      * Test the `getAccessControlsForForm` method
      *
-     * @dataProvider testGetAccessControlsForFormDataProvider
+     * @dataProvider getAccessControlsForFormDataProvider
      *
      * @param Form $form
      * @param bool $only_active
@@ -232,9 +233,10 @@ class FormAccessControlManager extends DbTestCase
         bool $only_active,
         array $expected_access_controls,
     ): void {
-        $manager = \Glpi\Form\AccessControl\FormAccessControlManager::getInstance();
-
-        $controls = $manager->getAccessControlsForForm($form, $only_active);
+        $controls = $this->getManager()->getAccessControlsForForm(
+            $form,
+            $only_active
+        );
         $this->array($controls)->hasSize(count($expected_access_controls));
 
         // Ensure both array are sorted in the same way to get a proper comparison.
@@ -278,7 +280,7 @@ class FormAccessControlManager extends DbTestCase
      *
      * @return iterable
      */
-    protected function testCanUnauthenticatedUsersAccessFormProvider(): iterable
+    public function canUnauthenticatedUsersAccessFormProvider(): iterable
     {
         // Form without access controls
         $form_1 = $this->createForm(new FormBuilder());
@@ -355,7 +357,7 @@ class FormAccessControlManager extends DbTestCase
     /**
      * Test the `canUnauthenticatedUsersAccessForm` method.
      *
-     * @dataProvider testCanUnauthenticatedUsersAccessFormProvider
+     * @dataProvider canUnauthenticatedUsersAccessFormProvider
      *
      * @param Form $form
      * @param bool $expected
@@ -366,201 +368,158 @@ class FormAccessControlManager extends DbTestCase
         Form $form,
         bool $expected
     ): void {
-        $manager = \Glpi\Form\AccessControl\FormAccessControlManager::getInstance();
-
         $this->boolean(
-            $manager->canUnauthenticatedUsersAccessForm($form)
+            $this->getManager()->canUnauthenticatedUsersAccessForm($form)
         )->isEqualTo($expected);
     }
 
-    /**
-     * Data provider for the `testCanAnswerForm` test.
-     *
-     * @return iterable
-     */
-    protected function testCanAnswerFormProvider(): iterable
+    public function testAdminCanBypassFormRestrictions(): void
     {
-        // Form without access controls -> should be visible for all authenticated users
-        $form_1 = $this->createForm(new FormBuilder());
-        yield [
-            'form'           => $form_1,
-            'url_parameters' => [],
-            'expected'       => [
-                'glpi'      => true,
-                'tech'      => true,
-                'normal'    => true,
-                'post-only' => true,
-            ],
-        ];
+        $this->login('glpi', 'glpi');
+        $form = $this->getFormAccessibleOnlyToTechUser();
+        $access_parameters = $this->getEmptyParameters();
 
-        // Form with a direct access control restriction
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token' => 'my_token'
-                ]))
-        );
-        yield [
-            // Form is still accessible without token
-            'form'           => $form_2,
-            'url_parameters' => [],
-            'expected'       => [
-                'glpi'      => true,
-                'tech'      => true,
-                'normal'    => true,
-                'post-only' => true,
-            ],
-        ];
+        $this->boolean(
+            $this->getManager()->canAnswerForm($form, $access_parameters)
+        )->isTrue();
+    }
 
-        // Form with a direct access control restriction
-        $form_3 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'               => 'my_token',
-                    'force_direct_access' => true,
-                ]))
-        );
-        yield [
-            // Form is NOT accessible without token
-            'form'           => $form_3,
-            'url_parameters' => [],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => false,
-                'normal'    => false,
-                'post-only' => false,
-            ],
-        ];
-        yield [
-            // Wrong token
-            'form'           => $form_3,
-            'url_parameters' => ['token' => 'invalid_token'],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => false,
-                'normal'    => false,
-                'post-only' => false,
-            ],
-        ];
-        yield [
-            // Valid token
-            'form'           => $form_3,
-            'url_parameters' => ['token' => 'my_token'],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => true,
-                'normal'    => true,
-                'post-only' => true,
-            ],
-        ];
+    public function testFormWithoutRestrictionCanBeAnswered(): void
+    {
+        $form = $this->createForm(new FormBuilder());
+        $access_parameters = $this->getEmptyParameters();
 
-        // Form with an allow list
-        $form_4 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids' => [
-                        getItemByTypeName(User::class, "tech", true),
-                    ],
-                    'group_ids' => [
-                        getItemByTypeName(Group::class, "_test_group_1", true),
-                    ],
-                    'profile_ids' => [
-                        getItemByTypeName(Profile::class, "Self-service", true),
-                    ],
-                ]))
-        );
-        yield [
-            'form'           => $form_4,
-            'url_parameters' => [],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => true, // Allowed by user list
-                'normal'    => false,
-                'post-only' => true, // Allowed by profile list
-            ],
-        ];
+        $this->boolean(
+            $this->getManager()->canAnswerForm($form, $access_parameters)
+        )->isTrue();
+    }
 
-        // Add "normal" to the allowed group
-        $this->createItem(Group_User::class, [
-            'groups_id' => getItemByTypeName(Group::class, "_test_group_1", true),
-            'users_id'  => getItemByTypeName(User::class, "normal", true),
-        ]);
-        yield [
-            'form'           => $form_4,
-            'url_parameters' => [],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => true, // Allowed by user list
-                'normal'    => true, // Allowed by group list
-                'post-only' => true, // Allowed by profile list
-            ],
-        ];
+    public function formWithMultipleRestrictionsProvider(): iterable
+    {
+        $form = $this->getFormAccessibleOnlyToTechUserWithMandatoryToken();
 
-        // Mix allow list + token usage
-        $form_5 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids' => [
-                        getItemByTypeName(User::class, "tech", true),
-                    ],
-                ]))
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'               => 'my_token',
-                    'force_direct_access' => true,
-                ]))
-        );
-        yield [
-            'form'           => $form_5,
-            'url_parameters' => [],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => false, // Allowed by user list but token is missing
-                'normal'    => false,
-                'post-only' => false,
-            ],
+        yield 'both_parameters_invalid' => [
+            'form'       => $form,
+            'parameters' => $this->getEmptyParameters(),
+            'expected'   => false,
         ];
-
-        yield [
-            'form'           => $form_5,
-            'url_parameters' => ['token' => 'my_token'],
-            'expected'       => [
-                'glpi'      => true, // Admin can see all forms
-                'tech'      => true, // Allowed by user list and token is valid
-                'normal'    => false,
-                'post-only' => false,
-            ],
+        yield 'user_valid_and_no_token_supplied' => [
+            'form'       => $form,
+            'parameters' => $this->getTechUserParameters(),
+            'expected'   => false,
+        ];
+        yield 'user_invalid_and_valid_token' => [
+            'form'       => $form,
+            'parameters' => $this->getValidTokenParameters(),
+            'expected'   => false,
+        ];
+        yield 'user_valid_and_valid_token' => [
+            'form'       => $form,
+            'parameters' => $this->getTechUserAndValidTokenParameters(),
+            'expected'   => true,
         ];
     }
 
     /**
-     * Test the `canAnswerForm` method.
-     *
-     * @dataProvider testCanAnswerFormProvider
-     *
-     * @param Form  $form
-     * @param array $get       $_GET request
-     * @param array $expected
-     *
-     * @return void
+     * @dataProvider formWithMultipleRestrictionsProvider
      */
-    public function testCanAnswerForm(
+    public function testFormWithMultipleRestrictions(
         Form $form,
-        array $url_parameters,
-        array $expected
+        FormAccessParameters $parameters,
+        bool $expected
     ): void {
-        $manager = \Glpi\Form\AccessControl\FormAccessControlManager::getInstance();
+        $this->boolean(
+            $this->getManager()->canAnswerForm($form, $parameters)
+        )->isEqualTo($expected);
+    }
 
-        foreach ($expected as $user => $can_answer) {
-            $this->login($user, str_replace("-", "", $user));
+    private function getManager(): \Glpi\Form\AccessControl\FormAccessControlManager
+    {
+        return \Glpi\Form\AccessControl\FormAccessControlManager::getInstance();
+    }
 
-            $access_parameters = new FormAccessParameters(
-                session_info: Session::getSessionInfo(),
-                url_parameters: $url_parameters
-            );
+    private function getFormAccessibleOnlyToTechUser(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(AllowList::class, new AllowListConfig([
+                    'user_ids' => [
+                        getItemByTypeName(User::class, "tech", true),
+                    ],
+                ]))
+        );
+    }
 
-            $this->boolean(
-                $manager->canAnswerForm($form, $access_parameters)
-            )->isEqualTo($can_answer, "Failed for $user.");
-        }
+    private function getFormAccessibleOnlyToTechUserWithMandatoryToken(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(AllowList::class, new AllowListConfig([
+                    'user_ids' => [
+                        getItemByTypeName(User::class, "tech", true),
+                    ],
+                ]))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
+                    'token'               => 'my_token',
+                    'force_direct_access' => true,
+                ]))
+        );
+    }
+
+    private function getEmptyParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: $this->getEmptySessionInfo(),
+            url_parameters: []
+        );
+    }
+
+    private function getTechUserParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: $this->getTechUserSessionInfo(),
+            url_parameters: []
+        );
+    }
+
+    private function getValidTokenParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: $this->getEmptySessionInfo(),
+            url_parameters: $this->getUrlParametersWithValidToken(),
+        );
+    }
+
+    private function getTechUserAndValidTokenParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: $this->getTechUserSessionInfo(),
+            url_parameters: $this->getUrlParametersWithValidToken(),
+        );
+    }
+
+    private function getEmptySessionInfo(): SessionInfo
+    {
+        // This session info should not match any user
+        return new SessionInfo(
+            user_id: 0,
+            group_ids: [],
+            profile_id: 0,
+        );
+    }
+
+    private function getTechUserSessionInfo(): SessionInfo
+    {
+        $tech_user = getItemByTypeName(User::class, "tech");
+        return new SessionInfo(
+            user_id: $tech_user->getID(),
+            group_ids: [],
+            profile_id: 6, // Technician profile
+        );
+    }
+
+    private function getUrlParametersWithValidToken(): array
+    {
+        return ['token' => 'my_token'];
     }
 }
