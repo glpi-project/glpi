@@ -44,6 +44,7 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use RuleCriteria;
+use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class Inventory extends InventoryTestCase
@@ -7852,5 +7853,138 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->doInventory($xml_source, true);
         $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
         $this->integer($computer->fields['states_id'])->isIdenticalTo($states_id);
+    }
+
+    protected function getAssignUserByFieldAndRegexRules()
+    {
+        $user_id = \User::getIDByName('glpi');
+        $this->createItem(UserEmail::class, [
+            'users_id' => $user_id,
+            'is_default' => 1,
+            'email' => 'glpi@teclib.com'
+        ]);
+        $user = $this->updateItem(\User::class, $user_id, [
+            'registration_number' => 'glpi1234567890',
+            'realname' => 'glpi',
+            'authtype' => \Auth::EXTERNAL,
+            'sync_field' => 'glpi@toto'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0i',
+            ],
+            'result' => [
+                'users_id'    => $user->fields['id'],
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by email',
+                'action' => '_affect_user_by_email_and_regex',
+                'value' => '#0i@teclib.com',
+            ],
+            'result' => [
+                'users_id'    => $user->fields['id'],
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by registration number',
+                'action' => '_affect_user_by_registration_number_and_regex',
+                'value' => '#0i1234567890',
+            ],
+            'result' => [
+                'users_id'    => $user->fields['id'],
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by sync field',
+                'action' => '_affect_user_by_sync_field_and_regex',
+                'value' => '#0i@toto',
+            ],
+            'result' => [
+                'users_id'    => $user->fields['id'],
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getAssignUserByFieldAndRegexRules
+     */
+    public function testAssignUserByFieldAndRegex($rules_fields, $result)
+    {
+        global $DB;
+
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => $rules_fields['name'],
+            'match'     => 'AND',
+            'sub_type'  => 'RuleAsset',
+            'condition' => \RuleAsset::ONADD + \RuleAsset::ONUPDATE
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->integer($rules_id)->isGreaterThan(0);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => 'contact',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern' => '/^log([^@]+)/'
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->integer($rule_criteria_id)->isGreaterThan(0);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'regex_result',
+            'field' => $rules_fields['action'],
+            'value' => $rules_fields['value']
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->integer($rule_action_id)->isGreaterThan(0);
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps</NAME>
+            <UUID>25C1BB60-5BCB-11D9-B18F-5404A6A534C4</UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>640HP72</MSN>
+          </BIOS>
+          <USERS>
+            <DOMAIN>TECLIB</DOMAIN>
+            <LOGIN>logglp</LOGIN>
+          </USERS>
+          <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>test_assign_user_by_field_and_regex</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        \SingletonRuleList::getInstance("RuleAsset", 0)->load = 0;
+        \SingletonRuleList::getInstance("RuleAsset", 0)->list = [];
+        $this->doInventory($xml_source, true);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable(), "WHERE" => ['deviceid' => 'test_assign_user_by_field_and_regex']]);
+        $this->integer(count($agents))->isIdenticalTo(1);
+        $agent = $agents->current();
+
+        //check created computer
+        $computer = new \Computer();
+        $this->boolean($computer->getFromDB($agent['items_id']))->isTrue();
+        $this->integer($computer->fields['users_id'])->isIdenticalTo($result['users_id']);
     }
 }

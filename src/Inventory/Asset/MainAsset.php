@@ -351,7 +351,9 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        $val->_user_inventory = $_user_inventory;
+        if (!empty($_user_inventory)) {
+            $val->_user_inventory = $_user_inventory;
+        }
     }
 
     protected function prepareForBios($val)
