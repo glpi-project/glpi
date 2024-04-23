@@ -1153,6 +1153,8 @@ class Migration extends \GLPITestCase
         $this->migration->changeSearchOption('Printer', 20, 10);
         $this->migration->changeSearchOption('Ticket', 1, 1001);
 
+        $this->calling($this->db)->tableExists = true;
+
         $this->output(
             function () {
                 $this->migration->executeMigration();
