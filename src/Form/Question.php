@@ -116,7 +116,7 @@ final class Question extends CommonDBChild
      *
      * @return Form
      */
-    protected function getForm(): Form
+    public function getForm(): Form
     {
         return $this->getItem()->getItem();
     }

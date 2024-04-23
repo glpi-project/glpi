@@ -64,6 +64,16 @@ interface QuestionTypeInterface
     public static function validateExtraDataInput(array $input): bool;
 
     /**
+     * Prepare the answer for the end user.
+     * This method is called before saving the answer.
+     *
+     * @param Question $question The question data.
+     * @param mixed $answer The raw answer data.
+     * @return mixed The prepared answer data.
+     */
+    public static function prepareEndUserAnswer(Question $question, mixed $answer): mixed;
+
+    /**
      * Render the administration template for the given question.
      * This template is used on the form editor page.
      *

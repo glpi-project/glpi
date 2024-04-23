@@ -52,6 +52,12 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
+    public static function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    {
+        return $answer;
+    }
+
+    #[Override]
     public static function validateExtraDataInput(array $input): bool
     {
         return empty($input); // No extra data by default

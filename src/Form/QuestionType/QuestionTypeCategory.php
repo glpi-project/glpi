@@ -71,6 +71,11 @@ enum QuestionTypeCategory: string
     case REQUEST_TYPE = "request_type";
 
     /**
+     * Question that expect a file upload
+     */
+    case FILE = "file";
+
+    /**
      * Get category label
      * @return string
      */
@@ -83,6 +88,7 @@ enum QuestionTypeCategory: string
             self::ACTORS => __("Actors"),
             self::URGENCY => __("Urgency"),
             self::REQUEST_TYPE => __("Request type"),
+            self::FILE => __("File")
         };
     }
 }
