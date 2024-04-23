@@ -619,8 +619,7 @@ class Stat extends CommonGLPI
                 );
                 echo $output::showItem("<a href='$url'>" . htmlspecialchars($value[$i]['link']) . "</a>", $item_num, $row_num);
             } else {
-                $link = $is_html_output ? htmlspecialchars($value[$i]['link']) : $value[$i]['link'];
-                echo $output::showItem($link, $item_num, $row_num);
+                echo $output::showItem($value[$i]['link'], $item_num, $row_num);
             }
 
             if ($is_html_output) {
