@@ -539,15 +539,15 @@ class Stat extends CommonGLPI
         if ($itemtype === Ticket::class) {
             if (!$is_html_output) {
                 echo $output::showHeaderItem(
-                    __s('Number of opened satisfaction survey'),
+                    __('Number of opened satisfaction survey'),
                     $header_num
                 );
                 echo $output::showHeaderItem(
-                    __s('Number of answered satisfaction survey'),
+                    __('Number of answered satisfaction survey'),
                     $header_num
                 );
                 echo $output::showHeaderItem(
-                    __s('Average satisfaction'),
+                    __('Average satisfaction'),
                     $header_num
                 );
             } else {
@@ -1588,9 +1588,9 @@ class Stat extends CommonGLPI
             if (isset($_GET['export_all'])) {
                 $end_display = $numrows;
             }
-            echo $output::showHeader($output_type, $end_display - $start + 1, 2, 1);
+            echo $output::showHeader($end_display - $start + 1, 2, 1);
             $header_num = 1;
-            echo $output::showNewLine($output_type);
+            echo $output::showNewLine();
             echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
             if ($view_entities) {
                 echo $output::showHeaderItem(htmlspecialchars(Entity::getTypeName(1)), $header_num);
