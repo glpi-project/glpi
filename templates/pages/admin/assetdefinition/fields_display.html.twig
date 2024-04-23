@@ -40,7 +40,7 @@
         <input type="hidden" name="fields_display[]" value="%field_key%" />
         <div>
             <i class="ti ti-grip-vertical"></i>
-            <span class="me-auto">%field_name%</span>
+            <span class="me-auto">%field_label%</span>
         </div>
         <button type="button" class="btn btn-ghost-secondary btn-sm me-2 remove-field" title="{{ __("Remove") }}">
             <i class="ti ti-x"></i>
@@ -62,7 +62,7 @@
         {% for field in fields_display %}
             {{ my_draggable_macros.draggable_field()|replace({
                 '%field_key%': field['key'],
-                '%field_name%': all_fields[field['key']]
+                '%field_label%': all_fields[field['key']]
             })|raw }}
         {% endfor %}
     </div>
@@ -89,22 +89,38 @@
                 placeholderClass: 'sortable-placeholder g-col-6',
             });
 
+            const all_fields = {{ all_fields|json_encode()|raw }};
+
             // add field action
             $('#add-field').on('click', function() {
                 //get select2 value
                 const field_key = $('#dropdown_new_field{{ rand }}').val();
-                if (field_key) {
+                if (field_key && field_key != 0 ) {
                     // re-use twig macro to generate the field
                     let field_html = `{{ my_draggable_macros.draggable_field() }}`;
                     field_html = field_html.replace('%field_key%', field_key);
+                    field_html = field_html.replace('%field_label%', all_fields[field_key]);
 
                     //add field to the list
                     $('#sortable-fields').append(field_html);
+
+                    // remove the selected option in select2
+                    $('#dropdown_new_field{{ rand }} option[value=' + field_key + ']').remove()
+                    $('#dropdown_new_field{{ rand }}').val(0).trigger('change');
                 }
             });
 
             // remove field action
             $('#sortable-fields').on('click', '.remove-field', function() {
+                const field_key = $(this).closest('.sortable-field').find('input').val();
+
+                // re-add the option in select2
+                $('#dropdown_new_field{{ rand }}').append($('<option>', {
+                    value: field_key,
+                    text: all_fields[field_key]
+                }));
+
+                // remove the field from sortable list
                 $(this).closest('.sortable-field').remove();
             });
         });
