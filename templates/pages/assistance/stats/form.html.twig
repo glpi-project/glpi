@@ -43,7 +43,7 @@
     <div class="card mx-auto mb-3">
         <div class="card-body">
             <div class="d-flex align-items-center">
-                {% set total_cols = 4 - (type_params is defined ? 0 : 1) - (showgraph is defined? 0 : 1) %}
+                {% set total_cols = 4 - (type_params is defined ? 0 : 1) - (showgraph is defined ? 0 : 1) %}
                 {% set field_class = 'col-12 col-sm-' ~ (12 / total_cols) %}
                 {% set has_type = type_params is defined %}
                 {% if has_type %}
