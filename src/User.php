@@ -2387,7 +2387,7 @@ class User extends CommonDBTM
 
             $this->fields = $rule->processAllRules($groups_id, Toolbox::stripslashes_deep($this->fields), [
                 'type'   => Auth::EXTERNAL,
-                'email'  => $this->fields["_emails"],
+                'email'  => $this->fields["_emails"] ?? [],
                 'login'  => $this->fields["name"]
             ]);
 
