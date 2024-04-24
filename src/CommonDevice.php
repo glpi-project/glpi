@@ -264,6 +264,20 @@ abstract class CommonDevice extends CommonDropdown
         ];
 
         $tab[] = [
+            'id'                 => '3',
+            'table'              => static::getItem_DeviceType()::getTable(),
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of items'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams' => [
+                'jointype' => 'child'
+            ]
+        ];
+
+        $tab[] = [
             'id'                 => '23',
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
