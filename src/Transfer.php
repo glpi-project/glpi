@@ -36,6 +36,7 @@
 use Glpi\Application\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
+use Webmozart\Assert\Assert;
 
 /**
  * Transfer engine.
@@ -1213,8 +1214,11 @@ class Transfer extends CommonDBTM
      **/
     public function transferItem($itemtype, $ID, $newID)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (!($item = getItemForItemtype($itemtype))) {
             return;
@@ -1225,38 +1229,47 @@ class Transfer extends CommonDBTM
            // Check computer exists ?
             if ($item->getFromDB($newID)) {
                 if ($itemtype != 'Computer') {
-                    $itemrelations = $item->getCloneRelations();
+                    if (
+                        method_exists($item->getTable(), 'getCloneRelations')
+                    ) {
+                        // Get all relations of the item (clone relations
+                        $itemrelations = $item->getCloneRelations();
 
-                    foreach ($itemrelations as $itemrelation) {
-                        // Skip if 'Item' is not in $itemrelation
-                        if (strpos($itemrelation, 'Item') === false) {
-                            continue;
-                        }
+                        foreach ($itemrelations as $itemrelation) {
+                            // Skip if 'Item' is not in $itemrelation
+                            if (strpos($itemrelation, 'Item') === false) {
+                                continue;
+                            }
 
-                        $relation_item = new $itemrelation();
-                        $links = $relation_item->find([strtolower($itemtype) . 's_id' => $ID]);
+                            $relation_item = new $itemrelation();
+                            $field_name = strtolower($itemtype) . 's_id';
+                            if (!$DB->fieldExists($relation_item->getTable(), $field_name)) {
+                                continue;
+                            }
+                            $links = $relation_item->find([$field_name => $ID]);
 
-                        // Skip if no links found
-                        if (count($links) === 0) {
-                            continue;
-                        }
+                            // Skip if no links found
+                            if (count($links) === 0) {
+                                continue;
+                            }
 
-                        foreach ($links as $link) {
-                            $item_linked = new $link['itemtype']();
-                            $item_linked->getFromDB($link['items_id']);
+                            foreach ($links as $link) {
+                                $item_linked = new $link['itemtype']();
+                                $item_linked->getFromDB($link['items_id']);
 
-                            // Return if entity ID does not match
-                            if ($item_linked->getEntityID() != $this->to) {
-                                Session::addMessageAfterRedirect(
-                                    sprintf(
-                                        __('%1$s is linked to this item but is not in the target entity'),
-                                        $item_linked->getLink(),
-                                    ),
-                                    true,
-                                    ERROR
-                                );
-                                Html::back();
-                                return;
+                                // Return if entity ID does not match
+                                if ($item_linked->getEntityID() != $this->to) {
+                                    Session::addMessageAfterRedirect(
+                                        sprintf(
+                                            __('%1$s is linked to this item but is not in the target entity'),
+                                            $item_linked->getLink(),
+                                        ),
+                                        true,
+                                        ERROR
+                                    );
+                                    Html::back();
+                                    return;
+                                }
                             }
                         }
                     }
