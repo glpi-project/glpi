@@ -38,6 +38,7 @@ namespace tests\units;
 use Certificate;
 use Certificate_Item;
 use Computer;
+use Contract_Item;
 use DbTestCase;
 use Item_SoftwareVersion;
 use Software;
@@ -631,5 +632,64 @@ class Transfer extends DbTestCase
         //reload ticket
         $this->boolean($ticket->getFromDB($ticket_id))->isTrue();
         $this->integer($ticket->fields['locations_id'])->isEqualTo(0);
+    }
+
+    public function testTransferItemLinkedToAnotherInOtherEntity()
+    {
+        $this->login();
+
+       //Original entity
+        $fentity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+       //Destination entity
+        $dentity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+
+        //Create contract
+        $contract = new \Contract();
+        $contract_id = (int)$contract->add([
+            'name'         => 'contract',
+            'entities_id'  => $fentity
+        ]);
+        $this->integer($contract_id)->isGreaterThan(0);
+        $this->boolean($contract->getFromDB($contract_id))->isTrue();
+
+        //Create computer
+        $computer = new Computer();
+        $computer_id = (int)$computer->add([
+            'name'         => 'root_entity_computer',
+            'entities_id'  => $fentity
+        ]);
+        $this->integer($computer_id)->isGreaterThan(0);
+        $this->boolean($computer->getFromDB($computer_id))->isTrue();
+
+        //Linked contract to computer
+        $item_contract = new Contract_Item();
+        $item_contract_id = (int)$item_contract->add([
+            'items_id'     => $computer_id,
+            'itemtype'     => 'Computer',
+            'contracts_id' => $contract_id
+        ]);
+        $this->integer($item_contract_id)->isGreaterThan(0);
+        $this->boolean($item_contract->getFromDB($item_contract_id))->isTrue();
+
+
+        //transer to another entity
+        $transfer = new \Transfer();
+        $this->boolean($transfer->getFromDB(1))->isTrue();
+
+        $item_to_transfer = ["contract" => [$contract_id => $contract_id]];
+        $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
+        $this->hasSessionMessages(
+            ERROR,
+            [
+                sprintf(
+                    __('%1$s is linked to this item but is not in the target entity'),
+                    $computer->getLink(),
+                ),
+            ]
+        );
+
+        //reload contract
+        $this->boolean($contract->getFromDB($contract_id))->isTrue();
+        $this->integer($contract->fields['entities_id'])->isEqualTo($fentity);
     }
 }

@@ -1230,7 +1230,7 @@ class Transfer extends CommonDBTM
             if ($item->getFromDB($newID)) {
                 if ($itemtype != 'Computer') {
                     if (
-                        method_exists($item->getTable(), 'getCloneRelations')
+                        method_exists($itemtype, 'getCloneRelations')
                     ) {
                         // Get all relations of the item (clone relations
                         $itemrelations = $item->getCloneRelations();
@@ -1267,7 +1267,7 @@ class Transfer extends CommonDBTM
                                         true,
                                         ERROR
                                     );
-                                    Html::back();
+                                    //Html::back();
                                     return;
                                 }
                             }
