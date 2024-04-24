@@ -7875,12 +7875,86 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ]);
         yield [
             'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0i',
+                'condition' => \Rule::PATTERN_NOT_CONTAIN,
+                'pattern' => 'admin'
+            ],
+            "xml_fields" => [
+                'name' => 'adminglp',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => 0,
+            ]
+        ];
+        $contain_test_user = $this->createItem(\User::class, [
+            'name' => 'contain_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_CONTAIN,
+                'pattern' => 'contain'
+            ],
+            "xml_fields" => [
+                'name' => 'logcontain_test',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $contain_test_user->fields['id'],
+            ]
+        ];
+        $begin_test_user = $this->createItem(\User::class, [
+            'name' => 'begin_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_BEGIN,
+                'pattern' => 'logbegin'
+            ],
+            "xml_fields" => [
+                'name' => 'logbegin_test',
+                'domain' => 'TECLIB'
+            ],
+            'result' => [
+                'users_id'    => $begin_test_user->fields['id'],
+            ]
+        ];
+        $end_test_user = $this->createItem(\User::class, [
+            'name' => 'end_test'
+        ]);
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by name field',
+                'action' => '_affect_user_by_name_and_regex',
+                'value' => '#0',
+                'condition' => \Rule::PATTERN_END,
+                'pattern' => 'END'
+            ],
+            "xml_fields" => [
+                'name' => 'logend_test',
+                'domain' => 'END'
+            ],
+            'result' => [
+                'users_id'    => $end_test_user->fields['id'],
+            ]
+        ];
+        yield [
+            'rules_fields' => [
                 'name'    => 'Assign user by name',
                 'action' => '_affect_user_by_name_and_regex',
                 'value' => '#0h',
             ],
             "xml_fields" => [
-                'name' => 'logtec'
+                'name' => 'logtec',
+                'domain' => 'TECLIB'
             ],
             'result' => [
                 'users_id'    => \User::getIDByName('tech'),
@@ -7893,7 +7967,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'value' => '#0l1234567890',
             ],
             "xml_fields" => [
-                'name' => 'lognorma'
+                'name' => 'lognorma',
+                'domain' => 'TECLIB'
             ],
             'result' => [
                 'users_id'    => $normal_id,
@@ -7906,7 +7981,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'value' => '#0i@teclib.com',
             ],
             "xml_fields" => [
-                'name' => 'logglp'
+                'name' => 'logglp',
+                'domain' => 'TECLIB'
             ],
             'result' => [
                 'users_id'    => $glpi_id,
@@ -7919,7 +7995,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'value' => '#0r@toto',
             ],
             "xml_fields" => [
-                'name' => 'log_test_use'
+                'name' => 'log_test_use',
+                'domain' => 'TECLIB'
             ],
             'result' => [
                 'users_id'    => $test_id,
@@ -7947,10 +8024,21 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $rules_id = $rule->add($input_rule);
         $this->integer($rules_id)->isGreaterThan(0);
 
+        if (isset($rules_fields['condition']) && isset($rules_fields['pattern'])) {
+            $input_criteria2 = [
+                'rules_id'  => $rules_id,
+                'criteria'      => '_user_inventory',
+                'condition' => $rules_fields['condition'],
+                'pattern' => $rules_fields['pattern'],
+            ];
+            $rule_criteria2 = new \RuleCriteria();
+            $rule_criteria2_id = $rule_criteria2->add($input_criteria2);
+            $this->integer($rule_criteria2_id)->isGreaterThan(0);
+        }
         //create criteria
         $input_criteria = [
             'rules_id'  => $rules_id,
-            'criteria'      => 'contact',
+            'criteria'      => '_user_inventory',
             'condition' => \Rule::REGEX_MATCH,
             'pattern' => '/^log([^@]+)/'
         ];
@@ -7980,7 +8068,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             <MSN>640HP72</MSN>
           </BIOS>
           <USERS>
-            <DOMAIN>TECLIB</DOMAIN>
+            <DOMAIN>" . $xml_fields['domain'] . "</DOMAIN>
             <LOGIN>" . $xml_fields['name'] . "</LOGIN>
           </USERS>
           <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
