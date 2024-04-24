@@ -343,9 +343,7 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/single_item_pag
     'php_self' => $_SERVER['PHP_SELF'],
     'cleantarget' => $cleantarget,
     'prev' => $prev,
-    'prev_label' => __('Previous'),
     'next' => $next,
-    'next_label' => __('Next'),
     'title' => $title,
 ]);
 
