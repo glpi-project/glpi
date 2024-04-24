@@ -751,12 +751,11 @@ class Search
         // need to reorder $data['tocompute'] that contains searchoption ID
         // to be sure that all LEFT JOIN related to count operation (saerchoption datatype = count))
         // are done after all other LEFT JOIN
-        $ordered_data_to_compute = [];
-        foreach ($data['tocompute'] as $val) {
+        $ordered_data_to_compute = $data['tocompute'];
+        foreach ($data['tocompute'] as $key => $val) {
             if (isset($searchopt[$val]["datatype"]) && $searchopt[$val]["datatype"] == 'count') {
-                array_push($ordered_data_to_compute, $val);
-            } else {
-                array_unshift($ordered_data_to_compute, $val);
+                unset($ordered_data_to_compute[$key]); //remove key
+                array_push($ordered_data_to_compute, $val); //add it at end
             }
         }
         $data['tocompute'] = $ordered_data_to_compute;
