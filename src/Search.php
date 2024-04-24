@@ -1348,7 +1348,7 @@ class Search
     }
 
     /**
-     * Construct aditionnal SQL (select, joins, etc) for meta-criteria
+     * Construct additional SQL (select, joins, etc) for meta-criteria
      *
      * @since 9.4
      *
