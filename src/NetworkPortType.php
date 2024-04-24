@@ -106,7 +106,7 @@ class NetworkPortType extends CommonDropdown
 
         $default_instanciations = [
             'Ethernet'     => [6, 7, 62, 117, 169],
-            'Wifi'         => [71],
+            'Wifi'         => [71, 188],
             'Fiberchannel' => [56]
         ];
 
