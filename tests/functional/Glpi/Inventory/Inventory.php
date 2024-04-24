@@ -7857,26 +7857,46 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
     protected function getAssignUserByFieldAndRegexRules()
     {
-        $user_id = \User::getIDByName('glpi');
+        $glpi_id = \User::getIDByName('glpi');
         $this->createItem(UserEmail::class, [
-            'users_id' => $user_id,
+            'users_id' => $glpi_id,
             'is_default' => 1,
             'email' => 'glpi@teclib.com'
         ]);
-        $user = $this->updateItem(\User::class, $user_id, [
-            'registration_number' => 'glpi1234567890',
-            'realname' => 'glpi',
+        $normal_id = \User::getIDByName('normal');
+        $this->updateItem(\User::class, $normal_id, [
+            'registration_number' => 'normal1234567890',
+        ]);
+        $test_id = \User::getIDByName('_test_user');
+        $this->updateItem(\User::class, $test_id, [
+            'realname' => '_test_user',
             'authtype' => \Auth::EXTERNAL,
-            'sync_field' => 'glpi@toto'
+            'sync_field' => '_test_user@toto'
         ]);
         yield [
             'rules_fields' => [
                 'name'    => 'Assign user by name',
                 'action' => '_affect_user_by_name_and_regex',
-                'value' => '#0i',
+                'value' => '#0h',
+            ],
+            "xml_fields" => [
+                'name' => 'logtec'
             ],
             'result' => [
-                'users_id'    => $user->fields['id'],
+                'users_id'    => \User::getIDByName('tech'),
+            ]
+        ];
+        yield [
+            'rules_fields' => [
+                'name'    => 'Assign user by registration number',
+                'action' => '_affect_user_by_registration_number_and_regex',
+                'value' => '#0l1234567890',
+            ],
+            "xml_fields" => [
+                'name' => 'lognorma'
+            ],
+            'result' => [
+                'users_id'    => $normal_id,
             ]
         ];
         yield [
@@ -7885,28 +7905,24 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'action' => '_affect_user_by_email_and_regex',
                 'value' => '#0i@teclib.com',
             ],
-            'result' => [
-                'users_id'    => $user->fields['id'],
-            ]
-        ];
-        yield [
-            'rules_fields' => [
-                'name'    => 'Assign user by registration number',
-                'action' => '_affect_user_by_registration_number_and_regex',
-                'value' => '#0i1234567890',
+            "xml_fields" => [
+                'name' => 'logglp'
             ],
             'result' => [
-                'users_id'    => $user->fields['id'],
+                'users_id'    => $glpi_id,
             ]
         ];
         yield [
             'rules_fields' => [
                 'name'    => 'Assign user by sync field',
                 'action' => '_affect_user_by_sync_field_and_regex',
-                'value' => '#0i@toto',
+                'value' => '#0r@toto',
+            ],
+            "xml_fields" => [
+                'name' => 'log_test_use'
             ],
             'result' => [
-                'users_id'    => $user->fields['id'],
+                'users_id'    => $test_id,
             ]
         ];
     }
@@ -7914,7 +7930,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
     /**
      * @dataProvider getAssignUserByFieldAndRegexRules
      */
-    public function testAssignUserByFieldAndRegex($rules_fields, $result)
+    public function testAssignUserByFieldAndRegex($rules_fields, $xml_fields, $result)
     {
         global $DB;
 
@@ -7965,7 +7981,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
           </BIOS>
           <USERS>
             <DOMAIN>TECLIB</DOMAIN>
-            <LOGIN>logglp</LOGIN>
+            <LOGIN>" . $xml_fields['name'] . "</LOGIN>
           </USERS>
           <VERSIONCLIENT>GLPI-Agent_v1.6.18</VERSIONCLIENT>
         </CONTENT>

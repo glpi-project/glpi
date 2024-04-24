@@ -299,8 +299,6 @@ class RuleAsset extends Rule
                                           $user = User::getUsersIdByEmails($res);
                                         if ($user) {
                                             $output['users_id'] = $user[0];
-                                        } else {
-                                            $output['users_id'] = 0;
                                         }
                                     }
                                 }
@@ -315,8 +313,6 @@ class RuleAsset extends Rule
                                           $user = User::getIdByField('registration_number', $res);
                                         if ($user) {
                                             $output['users_id'] = $user;
-                                        } else {
-                                            $output['users_id'] = 0;
                                         }
                                     }
                                 }
@@ -331,8 +327,6 @@ class RuleAsset extends Rule
                                             $user = User::getIdByField('sync_field', $res);
                                         if ($user) {
                                             $output['users_id'] = $user;
-                                        } else {
-                                            $output['users_id'] = 0;
                                         }
                                     }
                                 }
