@@ -5087,6 +5087,48 @@ class Search extends DbTestCase
 
         $this->array($items)->isEqualTo($expected);
     }
+
+    public function testTicketValidationStatus()
+    {
+        $search_params = [
+            'reset'        => 'reset',
+            'is_deleted'   => 0,
+            'start'        => 0,
+            'search'       => 'Search',
+            'criteria'     => [
+                0 => [
+                    'field' => 'view', // items seen
+                    'searchtype' => 'contains',
+                    'value' => 'any string'
+                ]
+            ]
+        ];
+
+        $displaypref = new \DisplayPreference();
+        $input = [
+            'itemtype'  => 'Ticket',
+            'users_id'  => \Session::getLoginUserID(),
+            'num'       => 55, //Ticket glpi_ticketvalidations.status
+        ];
+        $this->integer((int)$displaypref->add($input))->isGreaterThan(0);
+
+
+        $data = $this->doSearch('Ticket', $search_params);
+
+        $this->string($data['sql']['search'])->notContains("`glpi_ticketvalidations`.`status` IN");
+
+        $search_params['criteria'][0]['value'] = 1;
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->string($data['sql']['search'])->contains("`glpi_ticketvalidations`.`status` IN");
+
+        $search_params['criteria'][0]['value'] = 'all';
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->string($data['sql']['search'])->contains("`glpi_ticketvalidations`.`status` IN");
+
+        $search_params['criteria'][0]['value'] = 'can';
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->string($data['sql']['search'])->contains("`glpi_ticketvalidations`.`status` IN");
+    }
 }
 
 // @codingStandardsIgnoreStart
