@@ -537,6 +537,8 @@ class Search
             $p['start'] = 0;
         }
 
+        $p = self::cleanParams($p);
+
         $data             = [];
         $data['search']   = $p;
         $data['itemtype'] = $itemtype;
@@ -8033,6 +8035,11 @@ HTML;
             }
         }
 
+        return self::cleanParams($params);
+    }
+
+    public static function cleanParams(array $params): array
+    {
         $int_params = [
             'sort'
         ];
