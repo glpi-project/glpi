@@ -5165,29 +5165,20 @@ JAVASCRIPT;
             case "glpi_ticketvalidations.status":
             case "glpi_changes.global_validation":
             case "glpi_changevalidations.status":
-                if (!in_array($val, ['all', 'can'], true) && !is_numeric($val)) {
+                if ($val != 'can' && !is_numeric($val)) {
                     return "";
                 }
                 $tocheck = [];
-                switch ($val) {
-                    case 'can':
-                        $tocheck = CommonITILValidation::getCanValidationStatusArray();
-                        break;
-
-                    case 'all':
-                        $tocheck = CommonITILValidation::getAllValidationStatusArray();
-                        break;
+                if ($val === 'can') {
+                    $tocheck = CommonITILValidation::getCanValidationStatusArray();
                 }
                 if (count($tocheck) == 0) {
                     $tocheck = [$val];
                 }
-                if (count($tocheck)) {
-                    if ($nott) {
-                        return $link . " `$table`.`$field` NOT IN ('" . implode("','", $tocheck) . "')";
-                    }
-                    return $link . " `$table`.`$field` IN ('" . implode("','", $tocheck) . "')";
+                if ($nott) {
+                    return $link . " `$table`.`$field` NOT IN ('" . implode("','", $tocheck) . "')";
                 }
-                break;
+                return $link . " `$table`.`$field` IN ('" . implode("','", $tocheck) . "')";
 
             case "glpi_notifications.event":
                 if (in_array($searchtype, ['equals', 'notequals']) && strpos($val, self::SHORTSEP)) {

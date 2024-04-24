@@ -5123,7 +5123,7 @@ class Search extends DbTestCase
 
         $search_params['criteria'][0]['value'] = 'all';
         $data = $this->doSearch('Ticket', $search_params);
-        $this->string($data['sql']['search'])->contains("`glpi_ticketvalidations`.`status` IN");
+        $this->string($data['sql']['search'])->notContains("`glpi_ticketvalidations`.`status` IN");
 
         $search_params['criteria'][0]['value'] = 'can';
         $data = $this->doSearch('Ticket', $search_params);
