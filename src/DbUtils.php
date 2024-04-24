@@ -1820,8 +1820,7 @@ final class DbUtils
 
                     $user_params = [
                         'id'                 => $ID,
-                        'user_name'          => $username,
-                        'login'              => $data['name'],
+                        'user_name'          => $username
                     ];
 
                     if ($anon_name === null) {
