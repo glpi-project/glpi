@@ -6876,4 +6876,28 @@ HTML;
     {
         $this->must_process_ruleright = true;
     }
+
+    /**
+     * Toggle pin of given itemtype saved search.
+     *
+     * @param string $itemtype
+     *
+     * @return bool
+     */
+    public function toggleSavedSearchPin(string $itemtype): bool
+    {
+        if (getItemForItemtype($itemtype) === false) {
+            return false;
+        }
+
+        $all_pinned     = importArrayFromDB($this->fields['savedsearches_pinned']);
+        $already_pinned = $all_pinned[$itemtype] ?? 0;
+
+        $all_pinned[$itemtype] = $already_pinned ? 0 : 1;
+
+        return $this->update(Sanitizer::sanitize([
+            'id'                   => $this->fields['id'],
+            'savedsearches_pinned' => exportArrayToDB($all_pinned),
+        ]));
+    }
 }

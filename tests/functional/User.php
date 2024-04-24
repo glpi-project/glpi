@@ -1404,4 +1404,70 @@ class User extends \DbTestCase
         $this->boolean($retrievedUser->isNewItem())->isFalse();
         $this->string($retrievedUser->fields['user_dn'])->isEmpty();
     }
+
+    protected function toggleSavedSearchPinProvider(): iterable
+    {
+        foreach (['', '[]', '{}'] as $initial_db_value) {
+            // initial empty data
+            yield [
+                'initial_db_value' => $initial_db_value,
+                'itemtype'         => 'Computer',
+                'success'          => true,
+                'result_db_value'  => '{"Computer":1}',
+            ];
+        }
+
+        // toggle to 1
+        yield [
+            'initial_db_value' => '{"Computer":0,"Monitor":1}',
+            'itemtype'         => 'Computer',
+            'success'          => true,
+            'result_db_value'  => '{"Computer":1,"Monitor":1}',
+        ];
+
+        // toggle to 0
+        yield [
+            'initial_db_value' => '{"Computer":1,"Monitor":1}',
+            'itemtype'         => 'Monitor',
+            'success'          => true,
+            'result_db_value'  => '{"Computer":1,"Monitor":0}',
+        ];
+
+        // namespaced itemtype
+        yield [
+            'initial_db_value' => '{"Computer":1,"Monitor":0}',
+            'itemtype'         => 'Glpi\\Socket',
+            'success'          => true,
+            'result_db_value'  => '{"Computer":1,"Monitor":0,"Glpi\\\\Socket":1}',
+        ];
+
+        // invalid itemtype
+        yield [
+            'initial_db_value' => '{"Computer":1,"Monitor":1}',
+            'itemtype'         => 'This is not a valid itemtype',
+            'success'          => false,
+            'result_db_value'  => '{"Computer":1,"Monitor":1}',
+        ];
+    }
+
+    /**
+     * @dataProvider toggleSavedSearchPinProvider
+     */
+    public function testToggleSavedSearchPin(string $initial_db_value, string $itemtype, bool $success, string $result_db_value): void
+    {
+        $user = $this->createItem(
+            \User::class,
+            [
+                'name'                  => __FUNCTION__ . (string) mt_rand(),
+                'savedsearches_pinned'  => $initial_db_value,
+            ]
+        );
+
+        $this->boolean($user->toggleSavedSearchPin($itemtype))->isEqualTo($success);
+        $this->boolean($user->getFromDb($user->getID()))->isTrue();
+        $this->string($user->fields['savedsearches_pinned'])->isEqualTo($result_db_value);
+
+        // result value in DB is always a valid JSON string
+        $this->array(importArrayFromDB($user->fields['savedsearches_pinned']))->isEqualTo(json_decode($result_db_value, true));
+    }
 }
