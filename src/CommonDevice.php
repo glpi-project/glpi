@@ -84,7 +84,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @param string $devicetype class name of device type, defaults to called class name
      *
-     * @return string
+     * @return class-string<Item_Devices>
      **/
     public static function getItem_DeviceType($devicetype = null)
     {
@@ -282,6 +282,20 @@ abstract class CommonDevice extends CommonDropdown
             'name'               => __('ID'),
             'datatype'           => 'number',
             'massiveaction'      => false
+        ];
+
+        $tab[] = [
+            'id'                 => '3',
+            'table'              => static::getItem_DeviceType()::getTable(),
+            'field'              => 'id',
+            'name'               => _x('quantity', 'Number of items'),
+            'datatype'           => 'count',
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'massiveaction'      => false,
+            'joinparams' => [
+                'jointype' => 'child'
+            ]
         ];
 
         $tab[] = [
