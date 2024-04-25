@@ -449,31 +449,6 @@ class Stat extends CommonGLPI
         $headers = [];
         $rows = [];
 
-        /*$params = [
-            'start' => 0,
-            'is_deleted' => 0,
-            'as_map' => 0,
-            'browse' => 0,
-            'unpublished' => 1,
-            'criteria' =>
-                array (
-                    0 =>
-                        array (
-                            'field' => 12,
-                            'searchtype' => 'equals',
-                            'value' => 'notold',
-                        ),
-                ),
-            'metacriteria' =>
-                array (
-                ),
-            'display_type' => 0,
-            'hide_controls' => true
-        ];
-        $data = SearchEngine::getData($itemtype, $params, []);
-        $output->displayData($data, $params);*/
-
-
         $end_display = $start + $_SESSION['glpilist_limit'];
         if (isset($_GET['export_all'])) {
             $start       = 0;
@@ -555,10 +530,6 @@ class Stat extends CommonGLPI
             $headers[] = __('Number of solved tickets');
             $headers[] = __('Number of late tickets');
             $headers[] = __('Number of closed tickets');
-            /*echo $output::showHeaderItem(__('Number of opened tickets'), $header_num);
-            echo $output::showHeaderItem(__('Number of solved tickets'), $header_num);
-            echo $output::showHeaderItem(__('Number of late tickets'), $header_num);
-            echo $output::showHeaderItem(__('Number of closed tickets'), $header_num);*/
         } else {
             $html_output .= $output::showHeaderItem(htmlspecialchars(_nx('ticket', 'Opened', 'Opened', Session::getPluralNumber())), $header_num);
             $html_output .= $output::showHeaderItem(
@@ -574,18 +545,6 @@ class Stat extends CommonGLPI
                 $headers[] = __('Number of opened satisfaction survey');
                 $headers[] = __('Number of answered satisfaction survey');
                 $headers[] = __('Average satisfaction');
-                /*echo $output::showHeaderItem(
-                    __('Number of opened satisfaction survey'),
-                    $header_num
-                );
-                echo $output::showHeaderItem(
-                    __('Number of answered satisfaction survey'),
-                    $header_num
-                );
-                echo $output::showHeaderItem(
-                    __('Average satisfaction'),
-                    $header_num
-                );*/
             } else {
                 $html_output .= $output::showHeaderItem(
                     htmlspecialchars(_nx('survey', 'Opened', 'Opened', Session::getPluralNumber())),
@@ -602,15 +561,9 @@ class Stat extends CommonGLPI
         if (!$is_html_output) {
             if ($itemtype === Ticket::class) {
                 $headers[] = __('Average time to take into account');
-                /*echo $output::showHeaderItem(
-                    __('Average time to take into account'),
-                    $header_num
-                );*/
             }
             $headers[] = __('Average time to resolution');
             $headers[] = __('Average time to closure');
-            /*echo $output::showHeaderItem(__('Average time to resolution'), $header_num);
-            echo $output::showHeaderItem(__('Average time to closure'), $header_num);*/
         } else {
             if ($itemtype === Ticket::class) {
                 $html_output .= $output::showHeaderItem(__s('Take into account'), $header_num);
@@ -622,14 +575,6 @@ class Stat extends CommonGLPI
         if (!$is_html_output) {
             $headers[] = __('Average real duration of treatment of the ticket');
             $headers[] = __('Total real duration of treatment of the ticket');
-            /*echo $output::showHeaderItem(
-                __('Average real duration of treatment of the ticket'),
-                $header_num
-            );
-            echo $output::showHeaderItem(
-                __('Total real duration of treatment of the ticket'),
-                $header_num
-            );*/
         } else {
             $html_output .= $output::showHeaderItem(__s('Average'), $header_num);
             $html_output .= $output::showHeaderItem(__s('Total duration'), $header_num);
@@ -952,12 +897,6 @@ class Stat extends CommonGLPI
                 'unpublished' => 1,
                 'criteria' =>
                     array (
-                        /*0 =>
-                            array (
-                                'field' => 12,
-                                'searchtype' => 'equals',
-                                'value' => 'notold',
-                            ),*/
                     ),
                 'metacriteria' =>
                     array (
