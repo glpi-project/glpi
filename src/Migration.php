@@ -1716,6 +1716,25 @@ class Migration
                     'itemtype' => $itemtype,
                     'num'      => $old_search_opt
                 ]);
+
+                // Update template fields
+                if (is_a($itemtype, 'CommonITILObject', true)) {
+                    $tables = [
+                        'glpi_' . strtolower($itemtype) . 'templatehiddenfields',
+                        'glpi_' . strtolower($itemtype) . 'templatemandatoryfields',
+                        'glpi_' . strtolower($itemtype) . 'templatepredefinedfields',
+                    ];
+                    foreach ($tables as $table) {
+                        if (!$DB->tableExists($table)) {
+                            continue;
+                        }
+                        $DB->updateOrDie($table, [
+                            'field' => $new_search_opt
+                        ], [
+                            'field' => $old_search_opt
+                        ]);
+                    }
+                }
             }
         }
 
