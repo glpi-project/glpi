@@ -347,7 +347,7 @@ TWIG;
             <input
                 type="{{ input_type|e('html_attr') }}"
                 class="form-control"
-                name="answers[{{ question.fields.id|e('html_attr') }}]"
+                name="{{ question.getEndUserInputName() }}"
                 value="{{ default_value|e('html_attr') }}"
                 {{ question.fields.is_mandatory ? 'required' : '' }}
             >

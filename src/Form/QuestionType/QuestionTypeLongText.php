@@ -105,7 +105,7 @@ TWIG;
             {% import 'components/form/fields_macros.html.twig' as fields %}
 
             {{ fields.textareaField(
-                "answers[" ~ question.fields.id ~ "]",
+                question.getEndUserInputName(),
                 question.fields.default_value,
                 "",
                 {

@@ -46,6 +46,9 @@ use ReflectionClass;
  */
 final class Question extends CommonDBChild
 {
+    public const END_USER_INPUT_NAME = 'answers_%d';
+    public const END_USER_INPUT_NAME_REGEX = '/^_?answers_(\d+)$/';
+
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
@@ -119,6 +122,11 @@ final class Question extends CommonDBChild
     protected function getForm(): Form
     {
         return $this->getItem()->getItem();
+    }
+
+    public function getEndUserInputName(): string
+    {
+        return sprintf(static::END_USER_INPUT_NAME, $this->getID());
     }
 
     public function prepareInputForAdd($input)

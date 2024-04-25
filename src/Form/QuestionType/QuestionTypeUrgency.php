@@ -124,7 +124,7 @@ TWIG;
         {% import 'components/form/fields_macros.html.twig' as fields %}
 
         {{ fields.dropdownArrayField(
-            'answers[' ~ question.fields.id ~ ']',
+            question.getEndUserInputName(),
             value,
             urgency_levels,
             '',
