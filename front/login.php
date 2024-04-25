@@ -50,6 +50,13 @@ $SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');
 
+if (GLPI_ENVIRONMENT_TYPE === 'testing' && !isset($_SESSION['namfield'])) {
+    // Direct login attempt by the e2e tests.
+    $_SESSION['namfield'] = "username";
+    $_SESSION['pwdfield'] = "password";
+    $_SESSION['rmbfield'] = "remember_me";
+    $_SESSION["glpicookietest"] = 'testcookie';
+}
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
     if (!Session::canWriteSessionFiles()) {
