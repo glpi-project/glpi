@@ -2255,7 +2255,7 @@ JAVASCRIPT;
             }
 
             if (!empty($param['data-cy'])) {
-                $output .= " data-cy='{$param['data-cy']}'";
+                $output .= sprintf(' data-cy="%s"', htmlspecialchars($param['data-cy']));
             }
 
             $output .= '>';
