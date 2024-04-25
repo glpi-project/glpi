@@ -36,11 +36,16 @@
 {% set all_fields = all_fields ?? {} %}
 
 {% macro draggable_field() %}
-    <div class="g-col-6 py-2 sortable-field cursor-grab bg-blue-lt bg-opacity-25 d-flex justify-content-between">
+    <div class="g-col-6 sortable-field d-flex align-items-center p-1">
         <input type="hidden" name="fields_display[]" value="%field_key%" />
-        <div>
-            <i class="ti ti-grip-vertical"></i>
-            <span class="me-auto">%field_label%</span>
+        <div class="form-field row flex-grow-1">
+            <label class="col-form-label cursor-grab col-xxl-5 text-xxl-end">
+                %field_label%
+                <i class="ti ti-grip-vertical"></i>
+            </label>
+            <div class="col-xxl-7 field-container">
+                <input type="text" disabled class="form-control" />
+            </div>
         </div>
         <button type="button" class="btn btn-ghost-secondary btn-sm me-2 remove-field" title="{{ __("Remove") }}">
             <i class="ti ti-x"></i>
@@ -70,7 +75,6 @@
     <div class="row mt-3">
         <div class="col-6">
             {% do call('Dropdown::showFromArray', ['new_field', all_fields, {
-                'display_emptychoice': true,
                 'rand': rand,
                 'used': used,
             }]) %}
@@ -81,12 +85,19 @@
         </div>
     </div>
 
+    <style>
+        .sortable-dragging {
+            display: none !important; /* d-flex has an important rule */
+        }
+    </style>
+
     <script>
         $(() => {
             // init sortable lib on fields
             sortable('#sortable-fields', {
                 items: '.sortable-field',
                 placeholderClass: 'sortable-placeholder g-col-6',
+                forcePlaceholderSize: true,
             });
 
             const all_fields = {{ all_fields|json_encode()|raw }};
@@ -106,13 +117,12 @@
 
                     // remove the selected option in select2
                     $('#dropdown_new_field{{ rand }} option[value=' + field_key + ']').remove()
-                    $('#dropdown_new_field{{ rand }}').val(0).trigger('change');
                 }
             });
 
             // remove field action
             $('#sortable-fields').on('click', '.remove-field', function() {
-                const field_key = $(this).closest('.sortable-field').find('input').val();
+                const field_key = $(this).closest('.sortable-field').find('input[type=hidden]').val();
 
                 // re-add the option in select2
                 $('#dropdown_new_field{{ rand }}').append($('<option>', {
