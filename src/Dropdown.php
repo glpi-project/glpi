@@ -2127,6 +2127,7 @@ JAVASCRIPT;
      *    - noselect2           : if true, don't use select2 lib
      *    - templateResult      : if not empty, call this as template results of select2
      *    - templateSelection   : if not empty, call this as template selection of select2
+     *    - data-cy             : data-cy attribute for e2e testing
      *
      * Permit to use optgroup defining items in arrays
      * array('optgroupname'  => array('key1' => 'val1',
@@ -2164,6 +2165,7 @@ JAVASCRIPT;
         $param['templateSelection']   = "templateSelection";
         $param['track_changes']       = "true";
         $param['init']                = true;
+        $param['data-cy']             = null;
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2250,6 +2252,10 @@ JAVASCRIPT;
 
             if (!$param['track_changes']) {
                 $output .= " data-track-changes=''";
+            }
+
+            if (!empty($param['data-cy'])) {
+                $output .= " data-cy='{$param['data-cy']}'";
             }
 
             $output .= '>';

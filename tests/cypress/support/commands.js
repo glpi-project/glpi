@@ -48,13 +48,13 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             cy.blockGLPIDashboards();
             cy.visit('/');
             cy.title().should('eq', 'Authentication - GLPI');
-            cy.get('#login_name').type(username);
-            cy.get('input[type="password"]').type(password);
-            cy.get('#login_remember').check();
+            cy.getBySelector('UsernameInput').type(username);
+            cy.getBySelector('PasswordInput').type(password);
+            cy.getBySelector('RememberMeCheckbox').check();
             // Select 'local' from the 'auth' dropdown
-            cy.get('select[name="auth"]').select('local', { force: true });
+            cy.getBySelector('LoginAuthDropdown').select('local', { force: true });
 
-            cy.get('button[type="submit"]').click();
+            cy.getBySelector('LoginButton').click();
             // After logging in, the url should contain /front/central.php or /front/helpdesk.public.php
             cy.url().should('match', /\/front\/(central|helpdesk.public).php/);
         },
@@ -154,30 +154,36 @@ Cypress.Commands.add('awaitTinyMCE',  {
 Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
     // If the subject is a textarea, see if there is a TinyMCE editor for it
     // If there is, set the content of the editor instead of the textarea
-    if (subject.is('textarea')) {
-        cy.get(`textarea[name="${subject.attr('name')}"]`).invoke('attr', 'id').then((textarea_id) => {
-            cy.window().then((win) => {
-                if (win.tinymce.get(textarea_id)) {
-                    if (options !== undefined && options.interactive) {
-                        // Use 'should' off the 'window()' to wait for the required property to be set.
-                        cy.window().should('satisfy', () => {
-                            return typeof win.tinymce.get(textarea_id).dom.doc !== 'undefined';
-                        });
-                        cy.wrap(win.tinymce.get(textarea_id).dom.doc).within(() => {
-                            cy.get('#tinymce[contenteditable="true"]').should('exist');
-                            cy.get('#tinymce p').type(text, options);
-                        });
-                    } else {
-                        win.tinymce.get(textarea_id).setContent(text);
-                    }
-                    return;
-                }
-                originalFn(subject, text, options);
-            });
-        });
-        return;
+    if (!subject.is('textarea')) {
+        return originalFn(subject, text, options);
     }
-    return originalFn(subject, text, options);
+
+    cy.window().as('win');
+    cy
+        .get(`textarea[name="${subject.attr('name')}"]`)
+        .invoke('attr', 'id')
+        .as('textarea_id')
+    ;
+
+    cy.getMany(["@win", "@textarea_id"]).then(([win, textarea_id]) => {
+        if (!win.tinymce.get(textarea_id)) {
+            return originalFn(subject, text, options);
+        }
+
+        if (options === undefined || !options.interactive) {
+            win.tinymce.get(textarea_id).setContent(text);
+            return;
+        }
+
+        // Use 'should' off the 'window()' to wait for the required property to be set.
+        cy.window().should('satisfy', () => {
+            return typeof win.tinymce.get(textarea_id).dom.doc !== 'undefined';
+        });
+        cy.wrap(win.tinymce.get(textarea_id).dom.doc).within(() => {
+            cy.get('#tinymce[contenteditable="true"]').should('exist');
+            cy.get('#tinymce p').type(text, options);
+        });
+    });
 });
 
 /**
@@ -261,4 +267,22 @@ Cypress.Commands.add('validateSelect2Loading', {prevSubject: true}, (subject) =>
             });
         });
     });
+});
+
+Cypress.Commands.add('getBySelector', (selector, ...args) => {
+    const escaped_selector = Cypress.$.escapeSelector(selector);
+    return cy.get(`[data-cy=${escaped_selector}]`, ...args);
+});
+
+Cypress.Commands.add('findBySelector', {prevSubject: true}, (subject, selector, ...args) => {
+    const escaped_selector = Cypress.$.escapeSelector(selector);
+    return subject.find(`[data-cy=${escaped_selector}]`, ...args);
+});
+
+Cypress.Commands.add("getMany", (names) => {
+    const values = [];
+    for (const arg of names) {
+        cy.get(arg).then((value) => values.push(value));
+    }
+    return cy.wrap(values);
 });

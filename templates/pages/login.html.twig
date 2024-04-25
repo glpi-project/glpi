@@ -50,7 +50,15 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label" for="login_name">{{ __('Login') }}</label>
-                    <input type="text" class="form-control" id="login_name" name="{{ namfield }}" placeholder="" tabindex="1"/>
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="login_name"
+                        name="{{ namfield }}"
+                        placeholder=""
+                        tabindex="1"
+                        data-cy="UsernameInput"
+                    />
                 </div>
                 <div class="mb-4">
                     <label class="form-label" for="login_password">
@@ -80,7 +88,16 @@
                             {% endif %}
                         {% endif %}
                     </label>
-                    <input type="password" class="form-control" id="login_password" name="{{ pwdfield }}" placeholder="" autocomplete="off" tabindex="2"/>
+                    <input
+                        type="password"
+                        class="form-control"
+                        id="login_password"
+                        name="{{ pwdfield }}"
+                        placeholder=""
+                        autocomplete="off"
+                        tabindex="2"
+                        data-cy="PasswordInput"
+                    />
                 </div>
 
                 {% if constant('GLPI_DEMO_MODE') %}
@@ -100,14 +117,27 @@
                 {% if config('login_remember_time') %}
                     <div class="mb-2">
                         <label class="form-check" for="login_remember">
-                            <input type="checkbox" class="form-check-input" id="login_remember" name="{{ rmbfield }}" {{ config('login_remember_default') ? 'checked' : '' }}/>
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="login_remember"
+                                name="{{ rmbfield }}"
+                                {{ config('login_remember_default') ? 'checked' : '' }}
+                                data-cy="RememberMeCheckbox"
+                            />
                             <span class="form-check-label">{{ __('Remember me') }}</span>
                         </label>
                     </div>
                 {% endif %}
 
                 <div class="form-footer">
-                    <button type="submit" name="submit" class="btn btn-primary w-100" tabindex="3">
+                    <button
+                        type="submit"
+                        name="submit"
+                        class="btn btn-primary w-100"
+                        tabindex="3"
+                        data-cy="LoginButton"
+                    >
                         {{ __('Sign in') }}
                     </button>
                 </div>
