@@ -329,9 +329,7 @@ class Entity extends CommonTreeDropdown
     {
         /** @var \DBmysql $DB */
         global $DB;
-        if($input['clone']){
-            $input['sons_cache'] = NULL;
-         }
+        
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
         if (empty($input["name"])) {
             Session::addMessageAfterRedirect(
