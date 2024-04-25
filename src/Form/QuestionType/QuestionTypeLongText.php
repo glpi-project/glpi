@@ -42,25 +42,8 @@ use Override;
 /**
  * Long answers are multiple lines inputs used to answer questions with as much details as needed.
  */
-final class QuestionTypeLongText implements QuestionTypeInterface
+final class QuestionTypeLongText extends AbstractQuestionType
 {
-    #[Override]
-    public function __construct()
-    {
-    }
-
-    #[Override]
-    public static function formatDefaultValueForDB(mixed $value): ?string
-    {
-        return $value;
-    }
-
-    #[Override]
-    public static function validateExtraDataInput(array $input): bool
-    {
-        return empty($input); // No extra data for this question type
-    }
-
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
@@ -89,12 +72,6 @@ TWIG;
             'question'    => $question,
             'placeholder' => __('Long text'),
         ]);
-    }
-
-    #[Override]
-    public function renderAdministrationOptionsTemplate(?Question $question): string
-    {
-        return '';
     }
 
     #[Override]
@@ -140,20 +117,8 @@ TWIG;
     }
 
     #[Override]
-    public function getName(): string
-    {
-        return __("Long answer");
-    }
-
-    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::LONG_ANSWER;
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
     }
 }

@@ -40,25 +40,8 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeUrgency implements QuestionTypeInterface
+final class QuestionTypeUrgency extends AbstractQuestionType
 {
-    #[Override]
-    public function __construct()
-    {
-    }
-
-    #[Override]
-    public static function formatDefaultValueForDB(mixed $value): ?string
-    {
-        return $value;
-    }
-
-    #[Override]
-    public static function validateExtraDataInput(array $input): bool
-    {
-        return empty($input); // No extra data for this question type
-    }
-
     /**
      * Retrieve the default value for the urgency question type
      *
@@ -112,12 +95,6 @@ TWIG;
     }
 
     #[Override]
-    public function renderAdministrationOptionsTemplate(?Question $question): string
-    {
-        return '';
-    }
-
-    #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
         $template = <<<TWIG
@@ -160,20 +137,8 @@ TWIG;
     }
 
     #[Override]
-    public function getName(): string
-    {
-        return __("Urgency");
-    }
-
-    #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::URGENCY;
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
     }
 }

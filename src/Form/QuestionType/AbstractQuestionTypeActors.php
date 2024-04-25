@@ -42,13 +42,8 @@ use Override;
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors implements QuestionTypeInterface
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType
 {
-    #[Override]
-    public function __construct()
-    {
-    }
-
     /**
      * Retrieve the allowed actor types
      *
