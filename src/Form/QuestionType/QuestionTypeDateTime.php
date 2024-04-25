@@ -43,35 +43,12 @@ use Override;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-class QuestionTypeDateTime implements QuestionTypeInterface
+class QuestionTypeDateTime extends AbstractQuestionType
 {
-    #[Override]
-    public function __construct()
-    {
-    }
-
-    #[Override]
-    public static function formatDefaultValueForDB(mixed $value): ?string
-    {
-        return $value;
-    }
-
     #[Override]
     public function getCategory(): QuestionTypeCategory
     {
         return QuestionTypeCategory::DATE_AND_TIME;
-    }
-
-    #[Override]
-    public function getName(): string
-    {
-        return 'Date and time';
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
     }
 
     public function getInputType(?Question $question, bool $ignoreDefaultValueIsCurrentTime = false): string
