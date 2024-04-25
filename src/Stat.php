@@ -496,10 +496,10 @@ class Stat extends CommonGLPI
             );
             if ($itemtype === Ticket::class) {
                 $html_output .= $output::showHeaderItem(
-                     value: __s('Satisfaction'),
-                     num: $header_num,
-                     options: "colspan='3'"
-                 );
+                    value: __s('Satisfaction'),
+                    num: $header_num,
+                    options: "colspan='3'"
+                );
             }
             $html_output .= $output::showHeaderItem(
                 value: __s('Average time'),
@@ -895,12 +895,8 @@ class Stat extends CommonGLPI
                 'as_map' => 0,
                 'browse' => 0,
                 'unpublished' => 1,
-                'criteria' =>
-                    array (
-                    ),
-                'metacriteria' =>
-                    array (
-                    ),
+                'criteria' => [],
+                'metacriteria' => [],
                 'display_type' => 0,
                 'hide_controls' => true
             ];
