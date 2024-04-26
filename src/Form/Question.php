@@ -123,7 +123,7 @@ final class Question extends CommonDBChild
 
     public function getEndUserInputName(): string
     {
-        return EndUserInputNameProvider::getEndUserInputName($this);
+        return (new EndUserInputNameProvider())->getEndUserInputName($this);
     }
 
     public function prepareInputForAdd($input)

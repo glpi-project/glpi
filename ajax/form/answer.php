@@ -36,7 +36,6 @@
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
-use Glpi\Form\Question;
 use Glpi\Http\Response;
 
 include('../../inc/includes.php');
@@ -60,7 +59,7 @@ if (!$form) {
 }
 
 // Validate the 'answers' parameter by filtering and reindexing the $_POST array.
-$answers = EndUserInputNameProvider::getAnswers();
+$answers = (new EndUserInputNameProvider())->getAnswers($_POST);
 if (empty($answers)) {
     Response::sendError(400, __('Invalid answers'));
 }

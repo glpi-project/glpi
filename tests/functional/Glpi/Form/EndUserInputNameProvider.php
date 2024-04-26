@@ -71,14 +71,14 @@ class EndUserInputNameProvider extends DbTestCase
         );
 
         // Generate the answers
-        $_POST = [
+        $inputs = [
             $form->getQuestions()[array_keys($form->getQuestions())[0]]->getEndUserInputName() => 'John Doe',
             $form->getQuestions()[array_keys($form->getQuestions())[1]]->getEndUserInputName() => 'john.doe@mail.mail',
             'invalid_input' => 'invalid_value',
         ];
 
         // Check that the answers are correctly indexed by question ID
-        $this->array(\Glpi\Form\EndUserInputNameProvider::getAnswers())
+        $this->array((new \Glpi\Form\EndUserInputNameProvider())->getAnswers($inputs))
             ->hasSize(2)
             ->isEqualTo([
                 $form->getQuestions()[array_keys($form->getQuestions())[0]]->getID() => 'John Doe',

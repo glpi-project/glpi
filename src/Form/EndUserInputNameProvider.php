@@ -36,7 +36,7 @@
 namespace Glpi\Form;
 
 /**
- * Helpdesk form
+ * Utility class to provide the end user input name
  */
 final class EndUserInputNameProvider
 {
@@ -49,20 +49,21 @@ final class EndUserInputNameProvider
      * @param Question $question
      * @return string
      */
-    public static function getEndUserInputName(Question $question): string
+    public function getEndUserInputName(Question $question): string
     {
-        return sprintf(static::END_USER_INPUT_NAME, $question->getID());
+        return sprintf(self::END_USER_INPUT_NAME, $question->getID());
     }
 
     /**
      * Get the answers submitted by the end user
      * The answers are indexed by question ID
      *
+     * @param array $inputs The inputs submitted by the end user
      * @return array
      */
-    public static function getAnswers(): array
+    public function getAnswers(array $inputs): array
     {
-        $filteredAnswers = self::filterAnswers($_POST);
+        $filteredAnswers = self::filterAnswers($inputs);
         $reindexedAnswers = self::reindexAnswers($filteredAnswers);
 
         return $reindexedAnswers;
@@ -75,7 +76,7 @@ final class EndUserInputNameProvider
      * @param array $answers
      * @return array
      */
-    private static function filterAnswers(array $answers): array
+    private function filterAnswers(array $answers): array
     {
         return array_filter(
             $answers,
@@ -93,7 +94,7 @@ final class EndUserInputNameProvider
      * @param array $answers
      * @return array
      */
-    private static function reindexAnswers(array $answers): array
+    private function reindexAnswers(array $answers): array
     {
         return array_reduce(
             array_keys($answers),
