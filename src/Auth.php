@@ -1724,7 +1724,7 @@ class Auth extends CommonGLPI
             'display'   => false,
             'rand'      => $rand,
             'value'     => $default,
-            'width'     => '100%',
+            'width'     => '100%'
         ]);
 
         if ($display) {
