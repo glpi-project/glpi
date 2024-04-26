@@ -71,6 +71,11 @@ $empty_data_builder = new class
     {
         $tables = [];
 
+        // API need to be enabled to ease e2e testing
+        $is_testing = GLPI_ENVIRONMENT_TYPE === "testing";
+        $enable_api = $is_testing ? "1" : "0";
+        $enable_api_login_credentials = $is_testing ? "1" : "0";
+
         $tables['glpi_apiclients'] = [
             [
                 'id' => 1,
@@ -285,8 +290,8 @@ $empty_data_builder = new class
             'highcontrast_css' => '0',
             'default_central_tab' => '0',
             'smtp_check_certificate' => '1',
-            'enable_api' => '0',
-            'enable_api_login_credentials' => '0',
+            'enable_api' => $enable_api,
+            'enable_api_login_credentials' => $enable_api_login_credentials,
             'enable_api_login_external_token' => '1',
             'login_remember_time' => '604800',
             'login_remember_default' => '1',
@@ -9128,7 +9133,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         ];
 
         // Test environment data
-        if (GLPI_ENVIRONMENT_TYPE === 'testing') {
+        if ($is_testing) {
             $root_entity = array_filter($tables['glpi_entities'], static fn ($e) => $e['id'] === 0);
             $e2e_entity = array_shift($root_entity);
             $e2e_entity = array_replace($e2e_entity, [
