@@ -38,6 +38,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 /** @var \DBmysql $DB */
 global $DB;
@@ -59,12 +60,10 @@ if (
 
     if (count($linktype::getSpecificities())) {
         $keys = array_keys($linktype::getSpecificities());
-        array_walk($keys, static function (&$val) use ($DB) {
-            return $DB->quoteName($val);
-        });
-        $name_field = new QueryExpression(
-            "CONCAT_WS(' - ', " . implode(', ', $keys) . ")"
-            . "AS " . $DB->quoteName("name")
+        $name_field = QueryFunction::concat_ws(
+            separator: new QueryExpression($DB::quoteValue(' - ')),
+            params: $keys,
+            alias: 'name'
         );
     } else {
         $name_field = 'id AS name';
@@ -79,11 +78,11 @@ if (
             ]
         ]
     );
-    echo "<table class='w-100'><tr><td>" . __('Choose an existing device') . "</td><td rowspan='2'>" .
-        __('and/or') . "</td><td>" . __('Add new devices') . '</td></tr>';
+    echo "<table class='w-100'><tr><td>" . __s('Choose an existing device') . "</td><td rowspan='2'>" .
+        __('and/or') . "</td><td>" . __s('Add new devices') . '</td></tr>';
     echo "<tr><td>";
-    if ($result->count() == 0) {
-        echo __('No unaffected device!');
+    if (count($result) === 0) {
+        echo __s('No unaffected device!');
     } else {
         $devices = [];
         foreach ($result as $row) {

@@ -70,7 +70,7 @@ if (isset($_POST["validatortype"])) {
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
 
-            echo "<br><br>" . __('Comments') . " ";
+            echo "<br><br>" . __s('Comments') . " ";
             echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -85,7 +85,7 @@ if (isset($_POST["validatortype"])) {
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'Group']);
 
-            echo "<br><br>" . __('Comments') . " ";
+            echo "<br><br>" . __s('Comments') . " ";
             echo "<textarea name='comment_submission' cols='50' rows='6'></textarea>&nbsp;";
 
             echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";

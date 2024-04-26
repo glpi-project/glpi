@@ -100,6 +100,52 @@ class QueryFunction extends \GLPITestCase
         $this->string((string) \Glpi\DBAL\QueryFunction::concat($params, $alias))->isIdenticalTo($expected);
     }
 
+    protected function concatWSProvider()
+    {
+        return [
+            [
+                new QueryExpression("','"),
+                [
+                    new QueryExpression("'A'"),
+                    new QueryExpression("'B'"),
+                    new QueryExpression("'C'")
+                ], null, "CONCAT_WS(',', 'A', 'B', 'C')"
+            ],
+            [
+                new QueryExpression("'-'"),
+                [
+                    new QueryExpression("'A'"),
+                    new QueryExpression("'B'"),
+                    new QueryExpression("'C'")
+                ], 'concat_alias', "CONCAT_WS('-', 'A', 'B', 'C') AS `concat_alias`"
+            ],
+            [
+                new QueryExpression("','"),
+                [
+                    new QueryExpression("'A'"),
+                    'glpi_computers.name',
+                    new QueryExpression("'C'")
+                ], null, "CONCAT_WS(',', 'A', `glpi_computers`.`name`, 'C')"
+            ],
+            [
+                new QueryExpression("','"),
+                [
+                    new QueryExpression("'A'"),
+                    'glpi_computers.name',
+                    new QueryExpression("'C'")
+                ], 'concat_alias', "CONCAT_WS(',', 'A', `glpi_computers`.`name`, 'C') AS `concat_alias`"
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider concatWSProvider
+     */
+    public function testConcatWS($separator, $params, $alias, $expected)
+    {
+        $this->string((string) \Glpi\DBAL\QueryFunction::concat_ws($separator, $params, $alias))->isIdenticalTo($expected);
+    }
+
     protected function ifProvider()
     {
         return [

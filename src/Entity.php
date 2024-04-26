@@ -1658,48 +1658,25 @@ class Entity extends CommonTreeDropdown
             }
         }
 
-        $fn_get_inheritance_label = static function (string $field, ?string $strategy_field = null) use ($entity): ?string {
-            $result = null;
-            if ($entity->fields[$field] == self::CONFIG_PARENT) {
-                if ($strategy_field === null) {
-                    $strategy_field = $field;
-                }
-                $inherited_strategy = self::getUsedConfig($strategy_field, $entity->fields['entities_id']);
-                $inherited_value    = $inherited_strategy === 0
-                    ? self::getUsedConfig($strategy_field, $entity->fields['entities_id'], $field)
-                    : $inherited_strategy;
-                $result = self::inheritedValue(
-                    self::getSpecificValueToDisplay($field, $inherited_value),
-                    false,
-                    false
-                );
-            }
-            return $result;
-        };
-
         $inheritance_labels = [
-            'entities_id_software'          => $fn_get_inheritance_label('entities_id_software', 'entities_strategy_software'),
-            'transfers_id'                  => $fn_get_inheritance_label('transfers_id', 'transfers_strategy'),
-            'autofill_buy_date'             => $fn_get_inheritance_label('autofill_buy_date'),
-            'autofill_order_date'           => $fn_get_inheritance_label('autofill_order_date'),
-            'autofill_delivery_date'        => $fn_get_inheritance_label('autofill_delivery_date'),
-            'autofill_use_date'             => $fn_get_inheritance_label('autofill_use_date'),
-            'autofill_warranty_date'        => $fn_get_inheritance_label('autofill_warranty_date'),
-            'autofill_decommission_date'    => $fn_get_inheritance_label('autofill_decommission_date'),
-            'agent_base_url'                => self::inheritedValue(
-                self::getUsedConfig('agent_base_url', $ID, '', ''),
-                false,
-                false
-            ),
+            'entities_id_software'          => $entity->getInheritedValueBadge('entities_id_software', 'entities_strategy_software'),
+            'transfers_id'                  => $entity->getInheritedValueBadge('transfers_id', 'transfers_strategy'),
+            'autofill_buy_date'             => $entity->getInheritedValueBadge('autofill_buy_date'),
+            'autofill_order_date'           => $entity->getInheritedValueBadge('autofill_order_date'),
+            'autofill_delivery_date'        => $entity->getInheritedValueBadge('autofill_delivery_date'),
+            'autofill_use_date'             => $entity->getInheritedValueBadge('autofill_use_date'),
+            'autofill_warranty_date'        => $entity->getInheritedValueBadge('autofill_warranty_date'),
+            'autofill_decommission_date'    => $entity->getInheritedValueBadge('autofill_decommission_date'),
+            'agent_base_url'                => $entity->getInheritedValueBadge(field: 'agent_base_url', inherit_parent_value: null),
         ];
 
         $fields = ["contact", "user", "group", "location"];
         foreach ($fields as $field) {
-            $inheritance_labels["is_{$field}_autoupdate"] = $fn_get_inheritance_label("is_{$field}_autoupdate");
-            $inheritance_labels["is_{$field}_autoclean"] = $fn_get_inheritance_label("is_{$field}_autoclean");
+            $inheritance_labels["is_{$field}_autoupdate"] = $entity->getInheritedValueBadge("is_{$field}_autoupdate");
+            $inheritance_labels["is_{$field}_autoclean"] = $entity->getInheritedValueBadge("is_{$field}_autoclean");
         }
-        $inheritance_labels['state_autoupdate_mode'] = $fn_get_inheritance_label('state_autoupdate_mode');
-        $inheritance_labels['state_autoclean_mode'] = $fn_get_inheritance_label('state_autoclean_mode');
+        $inheritance_labels['state_autoupdate_mode'] = $entity->getInheritedValueBadge('state_autoupdate_mode');
+        $inheritance_labels['state_autoclean_mode'] = $entity->getInheritedValueBadge('state_autoclean_mode');
 
         TemplateRenderer::getInstance()->display('pages/admin/entity/assets.html.twig', [
             'item' => $entity,
@@ -1733,58 +1710,41 @@ class Entity extends CommonTreeDropdown
             return false;
         }
 
-        $fn_get_inheritance_label = static function (string $field) use ($ID): string {
-            return self::inheritedValue(
-                self::getUsedConfig($field, $ID, '', ''),
-                false,
-                false
-            );
-        };
-
-        $fn_get_specific_inheritance_label = static function (string $field) use ($entity): string {
-            $tid = self::getUsedConfig($field, $entity->getField('entities_id'));
-            return self::inheritedValue(
-                self::getSpecificValueToDisplay($field, $tid),
-                false,
-                false
-            );
-        };
-
         $inheritance_labels = [
-            'admin_email' => $fn_get_inheritance_label('admin_email'),
-            'admin_email_name' => $fn_get_inheritance_label('admin_email_name'),
-            'from_email' => $fn_get_inheritance_label('from_email'),
-            'from_email_name' => $fn_get_inheritance_label('from_email_name'),
-            'noreply_email' => $fn_get_inheritance_label('noreply_email'),
-            'noreply_email_name' => $fn_get_inheritance_label('noreply_email_name'),
-            'replyto_email' => $fn_get_inheritance_label('replyto_email'),
-            'replyto_email_name' => $fn_get_inheritance_label('replyto_email_name'),
-            'notification_subject_tag' => $fn_get_inheritance_label('notification_subject_tag'),
+            'admin_email' => $entity->getInheritedValueBadge(field: 'admin_email', inherit_parent_value: null),
+            'admin_email_name' => $entity->getInheritedValueBadge(field: 'admin_email_name', inherit_parent_value: null),
+            'from_email' => $entity->getInheritedValueBadge(field: 'from_email', inherit_parent_value: null),
+            'from_email_name' => $entity->getInheritedValueBadge(field: 'from_email_name', inherit_parent_value: null),
+            'noreply_email' => $entity->getInheritedValueBadge(field: 'noreply_email', inherit_parent_value: null),
+            'noreply_email_name' => $entity->getInheritedValueBadge(field: 'noreply_email_name', inherit_parent_value: null),
+            'replyto_email' => $entity->getInheritedValueBadge(field: 'replyto_email', inherit_parent_value: null),
+            'replyto_email_name' => $entity->getInheritedValueBadge(field: 'replyto_email_name', inherit_parent_value: null),
+            'notification_subject_tag' => $entity->getInheritedValueBadge(field: 'notification_subject_tag', inherit_parent_value: null),
             'delay_send_emails' => null,
             'is_notif_enable_default' => null,
-            'mailing_signature' => $fn_get_inheritance_label('mailing_signature'),
-            'url_base' => $fn_get_inheritance_label('url_base'),
-            'cartridges_alert_repeat' => $fn_get_specific_inheritance_label('cartridges_alert_repeat'),
-            'default_cartridges_alarm_threshold' => $fn_get_specific_inheritance_label('default_cartridges_alarm_threshold'),
-            'consumables_alert_repeat' => $fn_get_specific_inheritance_label('consumables_alert_repeat'),
-            'default_consumables_alarm_threshold' => $fn_get_specific_inheritance_label('default_consumables_alarm_threshold'),
-            'use_contracts_alert' => $fn_get_specific_inheritance_label('use_contracts_alert'),
-            'default_contract_alert' => $fn_get_specific_inheritance_label('default_contract_alert'),
-            'send_contracts_alert_before_delay' => $fn_get_specific_inheritance_label('send_contracts_alert_before_delay'),
-            'use_infocoms_alert' => $fn_get_specific_inheritance_label('use_infocoms_alert'),
-            'default_infocom_alert' => $fn_get_specific_inheritance_label('default_infocom_alert'),
-            'send_infocoms_alert_before_delay' => $fn_get_specific_inheritance_label('send_infocoms_alert_before_delay'),
-            'use_licenses_alert' => $fn_get_specific_inheritance_label('use_licenses_alert'),
-            'send_licenses_alert_before_delay' => $fn_get_specific_inheritance_label('send_licenses_alert_before_delay'),
-            'use_certificates_alert' => $fn_get_specific_inheritance_label('use_certificates_alert'),
-            'send_certificates_alert_before_delay' => $fn_get_specific_inheritance_label('send_certificates_alert_before_delay'),
-            'certificates_alert_repeat_interval' => $fn_get_specific_inheritance_label('certificates_alert_repeat_interval'),
-            'use_reservations_alert' => $fn_get_specific_inheritance_label('use_reservations_alert'),
-            'notclosed_delay' => $fn_get_specific_inheritance_label('notclosed_delay'),
-            'use_domains_alert' => $fn_get_specific_inheritance_label('use_domains_alert'),
-            'send_domains_alert_close_expiries_delay' => $fn_get_specific_inheritance_label('send_domains_alert_close_expiries_delay'),
-            'send_domains_alert_expired_delay' => $fn_get_specific_inheritance_label('send_domains_alert_expired_delay'),
-            'approval_reminder_repeat_interval' => $fn_get_specific_inheritance_label('approval_reminder_repeat_interval'),
+            'mailing_signature' => $entity->getInheritedValueBadge('mailing_signature', inherit_parent_value: null),
+            'url_base' => $entity->getInheritedValueBadge('url_base', inherit_parent_value: null),
+            'cartridges_alert_repeat' => $entity->getInheritedValueBadge('cartridges_alert_repeat'),
+            'default_cartridges_alarm_threshold' => $entity->getInheritedValueBadge('default_cartridges_alarm_threshold'),
+            'consumables_alert_repeat' => $entity->getInheritedValueBadge('consumables_alert_repeat'),
+            'default_consumables_alarm_threshold' => $entity->getInheritedValueBadge('default_consumables_alarm_threshold'),
+            'use_contracts_alert' => $entity->getInheritedValueBadge('use_contracts_alert'),
+            'default_contract_alert' => $entity->getInheritedValueBadge('default_contract_alert'),
+            'send_contracts_alert_before_delay' => $entity->getInheritedValueBadge('send_contracts_alert_before_delay'),
+            'use_infocoms_alert' => $entity->getInheritedValueBadge('use_infocoms_alert'),
+            'default_infocom_alert' => $entity->getInheritedValueBadge('default_infocom_alert'),
+            'send_infocoms_alert_before_delay' => $entity->getInheritedValueBadge('send_infocoms_alert_before_delay'),
+            'use_licenses_alert' => $entity->getInheritedValueBadge('use_licenses_alert'),
+            'send_licenses_alert_before_delay' => $entity->getInheritedValueBadge('send_licenses_alert_before_delay'),
+            'use_certificates_alert' => $entity->getInheritedValueBadge('use_certificates_alert'),
+            'send_certificates_alert_before_delay' => $entity->getInheritedValueBadge('send_certificates_alert_before_delay'),
+            'certificates_alert_repeat_interval' => $entity->getInheritedValueBadge('certificates_alert_repeat_interval'),
+            'use_reservations_alert' => $entity->getInheritedValueBadge('use_reservations_alert'),
+            'notclosed_delay' => $entity->getInheritedValueBadge('notclosed_delay'),
+            'use_domains_alert' => $entity->getInheritedValueBadge('use_domains_alert'),
+            'send_domains_alert_close_expiries_delay' => $entity->getInheritedValueBadge('send_domains_alert_close_expiries_delay'),
+            'send_domains_alert_expired_delay' => $entity->getInheritedValueBadge('send_domains_alert_expired_delay'),
+            'approval_reminder_repeat_interval' => $entity->getInheritedValueBadge('approval_reminder_repeat_interval'),
         ];
         if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
@@ -2025,15 +1985,12 @@ class Entity extends CommonTreeDropdown
     }
 
     /**
+     * @param Entity $entity
+     * @return false|void
      * @since 0.84 (before in entitydata.class)
-     *
-     * @param Entity $entity object
      **/
     public static function showHelpdeskOptions(Entity $entity)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         $ID = $entity->getField('id');
         if (
             !$entity->can($ID, READ)
@@ -2047,500 +2004,43 @@ class Entity extends CommonTreeDropdown
         $canedit = (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)
                   && Session::haveAccessToEntity($ID));
 
-        echo "<div class='spaced'>";
-        if ($canedit) {
-            echo "<form method='post' name=form action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "' data-track-changes='true'>";
-        }
-
-        echo "<table class='tab_cadre_fixe'>";
-
-        Plugin::doHook(Hooks::PRE_ITEM_FORM, ['item' => $entity, 'options' => []]);
-
-        echo "<tr><th colspan='4'>" . __('Templates configuration') . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Ticket template', 'Ticket templates', 1) .
-           "</td>";
-        echo "<td colspan='2'>";
-        $toadd = [];
-        if ($ID != 0) {
-            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-        }
-
-        $options = ['value'  => $entity->fields["tickettemplates_id"],
-            'entity' => $ID,
-            'toadd'  => $toadd
-        ];
-
-        TicketTemplate::dropdown($options);
-
-        if ($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
-            $tt  = new TicketTemplate();
-            $tid = self::getUsedConfig('tickettemplates_strategy', $ID, 'tickettemplates_id', 0);
-            if (!$tid) {
-                self::inheritedValue(Dropdown::EMPTY_VALUE, true);
-            } else if ($tt->getFromDB($tid)) {
-                self::inheritedValue($tt->getLink(), true);
-            }
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Change template', 'Change templates', 1) .
-           "</td>";
-        echo "<td colspan='2'>";
-        $toadd = [];
-        if ($ID != 0) {
-            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-        }
-
-        $options = ['value'  => $entity->fields["changetemplates_id"],
-            'entity' => $ID,
-            'toadd'  => $toadd
-        ];
-
-        ChangeTemplate::dropdown($options);
-
-        if ($entity->fields["changetemplates_id"] == self::CONFIG_PARENT) {
-            $tt  = new ChangeTemplate();
-            $tid = self::getUsedConfig('changetemplates_strategy', $ID, 'changetemplates_id', 0);
-            if (!$tid) {
-                self::inheritedValue(Dropdown::EMPTY_VALUE, true);
-            } else if ($tt->getFromDB($tid)) {
-                self::inheritedValue($tt->getLink(), true);
-            }
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Problem template', 'Problem templates', 1) .
-           "</td>";
-        echo "<td colspan='2'>";
-        $toadd = [];
-        if ($ID != 0) {
-            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-        }
-
-        $options = ['value'  => $entity->fields["problemtemplates_id"],
-            'entity' => $ID,
-            'toadd'  => $toadd
-        ];
-
-        ProblemTemplate::dropdown($options);
-
-        if ($entity->fields["problemtemplates_id"] == self::CONFIG_PARENT) {
-            $tt  = new ProblemTemplate();
-            $tid = self::getUsedConfig('problemtemplates_strategy', $ID, 'problemtemplates_id', 0);
-            if (!$tid) {
-                self::inheritedValue(Dropdown::EMPTY_VALUE, true);
-            } else if ($tt->getFromDB($tid)) {
-                self::inheritedValue($tt->getLink(), true);
-            }
-        }
-        echo "</td></tr>";
-
-        echo "<tr><th colspan='4'>" . __('Tickets configuration') . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='2'>" . _n('Calendar', 'Calendars', 1) . "</td>";
-        echo "<td colspan='2'>";
-        $options = ['value'      => $entity->fields["calendars_id"],
-            'emptylabel' => __('24/7')
-        ];
-
-        if ($ID != 0) {
-            $options['toadd'] = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-        }
-        Calendar::dropdown($options);
-
-        if ($entity->fields["calendars_id"] == self::CONFIG_PARENT) {
-            $calendar = new Calendar();
-            $cid = self::getUsedConfig('calendars_strategy', $ID, 'calendars_id', 0);
-            if (!$cid) {
-                self::inheritedValue(__('24/7'), true);
-            } else if ($calendar->getFromDB($cid)) {
-                self::inheritedValue($calendar->getLink(), true);
-            }
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td colspan='2'>" . __('Tickets default type') . "</td>";
-        echo "<td colspan='2'>";
-        $toadd = [];
-        if ($ID != 0) {
-            $toadd = [self::CONFIG_PARENT => __('Inheritance of the parent entity')];
-        }
-        Ticket::dropdownType('tickettype', ['value' => $entity->fields["tickettype"],
-            'toadd' => $toadd
-        ]);
-
-        if ($entity->fields['tickettype'] == self::CONFIG_PARENT) {
-            self::inheritedValue(Ticket::getTicketTypeName(self::getUsedConfig(
-                'tickettype',
-                $ID,
-                '',
-                Ticket::INCIDENT_TYPE
-            )), true);
-        }
-        echo "</td></tr>";
-
-       // Auto assign mode
-        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Automatic assignment of tickets, changes and problems') . "</td>";
-        echo "<td colspan='2'>";
-        $autoassign = self::getAutoAssignMode();
-
-        if ($ID == 0) {
-            unset($autoassign[self::CONFIG_PARENT]);
-        }
-
-        Dropdown::showFromArray(
-            'auto_assign_mode',
-            $autoassign,
-            ['value' => $entity->fields["auto_assign_mode"]]
-        );
-
-        if ($entity->fields['auto_assign_mode'] == self::CONFIG_PARENT) {
-            $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entity->fields['entities_id']);
-            self::inheritedValue($autoassign[$auto_assign_mode], true);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Mark followup added by a supplier though an email collector as private') . "</td>";
-        echo "<td colspan='2'>";
-        $supplierValues = self::getSuppliersAsPrivateValues();
-        $currentSupplierValue = $entity->fields['suppliers_as_private'];
-
-        if ($ID == 0) { // Remove parent option for root entity
-            unset($supplierValues[self::CONFIG_PARENT]);
-        }
-
-        Dropdown::showFromArray(
-            'suppliers_as_private',
-            $supplierValues,
-            ['value' => $currentSupplierValue]
-        );
-
-       // If the entity is using it's parent value, print it
-        if ($currentSupplierValue == self::CONFIG_PARENT) {
-            $parentSupplierValue = self::getUsedConfig(
-                'suppliers_as_private',
-                $entity->fields['entities_id']
-            );
-            self::inheritedValue($supplierValues[$parentSupplierValue], true);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Anonymize support agents') . "</td>";
-        echo "<td colspan='2'>";
-        $anonymize_values = self::getAnonymizeSupportAgentsValues();
-        $current_anonymize_value = $entity->fields['anonymize_support_agents'];
-
-        if ($ID == 0) { // Remove parent option for root entity
-            unset($anonymize_values[self::CONFIG_PARENT]);
-        }
-
-        Dropdown::showFromArray(
-            'anonymize_support_agents',
-            $anonymize_values,
-            ['value' => $current_anonymize_value]
-        );
-
-       // If the entity is using it's parent value, print it
-        if ($current_anonymize_value == self::CONFIG_PARENT) {
-            $parent_helpdesk_value = self::getUsedConfig(
-                'anonymize_support_agents',
-                $entity->fields['entities_id']
-            );
-            self::inheritedValue($anonymize_values[$parent_helpdesk_value], true);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __("Display initials for users without pictures") . "</td>";
-        echo "<td colspan='2'>";
-        $initialsValues = self::getDisplayUsersInitialsValues();
-        $currentInitialsValue = $entity->fields['display_users_initials'];
-
-        if ($ID == 0) { // Remove parent option for root entity
-            unset($initialsValues[self::CONFIG_PARENT]);
-        }
-
-        Dropdown::showFromArray(
-            'display_users_initials',
-            $initialsValues,
-            ['value' => $currentInitialsValue]
-        );
-
-       // If the entity is using it's parent value, print it
-        if ($currentInitialsValue == self::CONFIG_PARENT) {
-            $parentSupplierValue = self::getUsedConfig(
-                'display_users_initials',
-                $entity->fields['entities_id']
-            );
-            self::inheritedValue($initialsValues[$parentSupplierValue], true);
-        }
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td  colspan='2'>" . __('Default contract') . "</td>";
-        echo "<td colspan='2'>";
-        $current_default_contract_value = $entity->fields['contracts_id_default'];
-
-        $toadd = [
-            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-            self::CONFIG_AUTO   => __('Contract in ticket entity'),
-        ];
-
-        if ($ID == 0) { // Remove parent option for root entity
-            unset($toadd[self::CONFIG_PARENT]);
-        }
-
-        Contract::dropdown([
-            'name'      => 'contracts_id_default',
-            'condition' => ['is_template' => 0, 'is_deleted' => 0] + Contract::getNotExpiredCriteria(),
-            'entity'    => $entity->getID(),
-            'toadd'     => $toadd,
-            'value'     => $current_default_contract_value,
-        ]);
-
-        // If the entity is using it's parent value, print it
-        if ($current_default_contract_value == self::CONFIG_PARENT) {
-            $inherited_default_contract_strategy = self::getUsedConfig(
-                'contracts_strategy_default',
-                $entity->fields['entities_id']
-            );
-            $inherited_default_contract_id = self::getUsedConfig(
-                'contracts_strategy_default',
-                $entity->fields['entities_id'],
-                'contracts_id_default',
-                0
-            );
-            $contract = new Contract();
-            if ($inherited_default_contract_strategy == self::CONFIG_AUTO) {
-                $display_value = __('Contract in ticket entity');
-            } elseif ($inherited_default_contract_id > 0 && $contract->getFromDB($inherited_default_contract_id)) {
-                $display_value = $contract->fields['name'];
-            } else {
-                $display_value = Dropdown::EMPTY_VALUE;
-            }
-
-            self::inheritedValue($display_value, true);
-        }
-        echo "</td></tr>";
-
-        echo "<tr><th colspan='4'>" . __('Automatic closing configuration') . "</th></tr>";
-
-        echo "<tr class='tab_bg_1'>" .
-         "<td>" . __('Automatic closing of solved tickets after');
-
-       //Check if crontask is disabled
         $crontask = new CronTask();
-        $criteria = [
-            'itemtype'  => 'Ticket',
-            'name'      => 'closeticket',
-            'state'     => CronTask::STATE_DISABLE
+        $inheritance_labels = [
+            'tickettemplates_id' => $entity->getInheritedLinkedValueBadge(TicketTemplate::class),
+            'changetemplates_id' => $entity->getInheritedLinkedValueBadge(ChangeTemplate::class),
+            'problemtemplates_id' => $entity->getInheritedLinkedValueBadge(ProblemTemplate::class),
+            'calendars_id' => $entity->getInheritedLinkedValueBadge(Calendar::class, __('24/7')),
+            'tickettype' => $entity->getInheritedValueBadge(field: 'tickettype', default_value: Ticket::INCIDENT_TYPE),
+            'auto_assign_mode' => $entity->getInheritedValueBadge('auto_assign_mode'),
+            'suppliers_as_private' => $entity->getInheritedValueBadge('suppliers_as_private'),
+            'anonymize_support_agents' => $entity->getInheritedValueBadge('anonymize_support_agents'),
+            'display_users_initials' => $entity->getInheritedValueBadge('display_users_initials'),
+            'contracts_id_default' => $entity->getInheritedValueBadge('contracts_id_default', 'contracts_strategy_default'),
+            'inquest_config' => $entity->getInheritedValueBadge('inquest_config'),
+            'inquest_config_change' => $entity->getInheritedValueBadge('inquest_config_change'),
+            'autoclose_delay' => $entity->getInheritedValueBadge('autoclose_delay'),
+            'autopurge_delay' => $entity->getInheritedValueBadge(field: 'autopurge_delay', default_value: self::CONFIG_NEVER),
         ];
-        if ($crontask->getFromDBByCrit($criteria)) {
-            echo "<br/><strong>" . __('Close ticket action is disabled.') . "</strong>";
-        }
 
-        echo "</td>";
-        echo "<td>";
-        $autoclose = [self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-            self::CONFIG_NEVER  => __('Never'),
-            0                   => __('Immediatly')
-        ];
-        if ($ID == 0) {
-            unset($autoclose[self::CONFIG_PARENT]);
-        }
-
-        Dropdown::showNumber(
-            'autoclose_delay',
-            ['value' => $entity->fields['autoclose_delay'],
-                'min'   => 1,
-                'max'   => 99,
-                'step'  => 1,
-                'toadd' => $autoclose,
-                'unit'  => 'day'
+        TemplateRenderer::getInstance()->display('pages/admin/entity/assistance.html.twig', [
+            'item' => $entity,
+            'inheritance_labels' => $inheritance_labels,
+            'closeticket_disabled' => (bool) $crontask->getFromDBByCrit([
+                'itemtype'  => 'Ticket',
+                'name'      => 'closeticket',
+                'state'     => CronTask::STATE_DISABLE
+            ]),
+            'purgeticket_disabled' => (bool) $crontask->getFromDBByCrit([
+                'itemtype'  => 'Ticket',
+                'name'      => 'purgeticket',
+                'state'     => CronTask::STATE_DISABLE
+            ]),
+            'params' => [
+                'canedit' => $canedit,
+                'candel' => false, // No deleting from the non-main tab
+                'formfooter' => false
             ]
-        );
-
-        if ($entity->fields['autoclose_delay'] == self::CONFIG_PARENT) {
-            $autoclose_mode = self::getUsedConfig(
-                'autoclose_delay',
-                $entity->fields['entities_id'],
-                '',
-                self::CONFIG_NEVER
-            );
-
-            if ($autoclose_mode >= 0) {
-                self::inheritedValue(sprintf(_n('%d day', '%d days', $autoclose_mode), $autoclose_mode), true);
-            } else {
-                self::inheritedValue($autoclose[$autoclose_mode], true);
-            }
-        }
-        echo "<td>" . __('Automatic purge of closed tickets after');
-
-       //Check if crontask is disabled
-        $crontask = new CronTask();
-        $criteria = [
-            'itemtype'  => 'Ticket',
-            'name'      => 'purgeticket',
-            'state'     => CronTask::STATE_DISABLE
-        ];
-        if ($crontask->getFromDBByCrit($criteria)) {
-            echo "<br/><strong>" . __('Purge ticket action is disabled.') . "</strong>";
-        }
-        echo "</td>";
-        echo "<td>";
-        $autopurge = [
-            self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-            self::CONFIG_NEVER  => __('Never')
-        ];
-        if ($ID == 0) {
-            unset($autopurge[self::CONFIG_PARENT]);
-        }
-
-        Dropdown::showNumber(
-            'autopurge_delay',
-            [
-                'value' => $entity->fields['autopurge_delay'],
-                'min'   => 1,
-                'max'   => 3650,
-                'step'  => 1,
-                'toadd' => $autopurge,
-                'unit'  => 'day'
-            ]
-        );
-
-        if ($entity->fields['autopurge_delay'] == self::CONFIG_PARENT) {
-            $autopurge_mode = self::getUsedConfig(
-                'autopurge_delay',
-                $entity->fields['entities_id'],
-                '',
-                self::CONFIG_NEVER
-            );
-
-            if ($autopurge_mode >= 0) {
-                self::inheritedValue(sprintf(_n('%d day', '%d days', $autopurge_mode), $autopurge_mode), true);
-            } else {
-                self::inheritedValue($autopurge[$autopurge_mode], true);
-            }
-        }
-        echo "</td></tr>";
-
-        $inquest_types = [
-            Ticket::class   => TicketSatisfaction::class,
-            Change::class   => ChangeSatisfaction::class,
-        ];
-
-        /**
-         * @var CommonITILObject $itemtype
-         * @var CommonITILSatisfaction $inquest_itemtype
-         */
-        foreach ($inquest_types as $itemtype => $inquest_itemtype) {
-            $config_title = sprintf(__('Configuring the satisfaction survey: %s'), $itemtype::getTypeName(Session::getPluralNumber()));
-            // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
-            $config_suffix = $itemtype::getType() === 'Ticket' ? '' : ('_' . strtolower($itemtype::getType()));
-
-            echo "<tr><th colspan='4'>" . $config_title . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'>" .
-                "<td colspan='2'>" . __('Configuring the satisfaction survey') . "</td>";
-            echo "<td colspan='2'>";
-
-            /// no inquest case = rate 0
-            $typeinquest = [
-                self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                CommonITILSatisfaction::TYPE_INTERNAL => __('Internal survey'),
-                CommonITILSatisfaction::TYPE_EXTERNAL => __('External survey')
-            ];
-
-            // No inherit from parent for root entity
-            if ($ID == 0) {
-                unset($typeinquest[self::CONFIG_PARENT]);
-                if ($entity->fields['inquest_config' . $config_suffix] == self::CONFIG_PARENT) {
-                    $entity->fields['inquest_config' . $config_suffix] = 1;
-                }
-            }
-            $rand = Dropdown::showFromArray(
-                'inquest_config' . $config_suffix,
-                $typeinquest,
-                $options = ['value' => $entity->fields['inquest_config' . $config_suffix]]
-            );
-            echo "</td></tr>\n";
-
-            if ($entity->fields['inquest_config' . $config_suffix] == self::CONFIG_PARENT) {
-                $inquestconfig = self::getUsedConfig('inquest_config' . $config_suffix, $entity->fields['entities_id']);
-                $inquestrate = self::getUsedConfig(
-                    'inquest_config' . $config_suffix,
-                    $entity->fields['entities_id'],
-                    'inquest_rate' . $config_suffix
-                );
-                echo "<tr class='tab_bg_1'><td colspan='4'>";
-
-                $inherit = "";
-                if ($inquestrate == 0) {
-                    $inherit .= __('Disabled');
-                } else {
-                    $inherit .= $typeinquest[$inquestconfig] . '<br>';
-                    $inqconf = self::getUsedConfig(
-                        'inquest_config' . $config_suffix,
-                        $entity->fields['entities_id'],
-                        'inquest_delay' . $config_suffix
-                    );
-
-                    $inherit .= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
-                    $inherit .= "<br>";
-                    //TRANS: %d is the percentage. %% to display %
-                    $inherit .= sprintf(__('%d%%'), $inquestrate);
-
-                    if ($inquestconfig == 2) {
-                        $inherit .= "<br>";
-                        $inherit .= self::getUsedConfig(
-                            'inquest_config' . $config_suffix,
-                            $entity->fields['entities_id'],
-                            'inquest_URL' . $config_suffix
-                        );
-                    }
-                }
-                self::inheritedValue($inherit, true);
-                echo "</td></tr>";
-            }
-
-            echo "<tr class='tab_bg_1'><td colspan='4'>";
-
-            $_POST = [
-                ('inquest_config' . $config_suffix) => $entity->fields['inquest_config' . $config_suffix],
-                'entities_id' => $ID
-            ];
-            $params = [
-                ('inquest_config' . $config_suffix) => '__VALUE__',
-                'entities_id' => $ID
-            ];
-            echo "<div id='inquestconfig'>";
-            $ajax_file =  GLPI_ROOT . '/ajax/' . strtolower($inquest_itemtype::getType()) . '.php';
-            include $ajax_file;
-            echo "</div>\n";
-
-            echo "</td></tr>";
-        }
-
-        Plugin::doHook(Hooks::POST_ITEM_FORM, ['item' => $entity, 'options' => &$options]);
-
-        echo "</table>";
-
-        if ($canedit) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $entity->fields["id"] . "'>";
-            echo "<input type='submit' name='update' value=\"" . _sx('button', 'Save') . "\"
-                  class='btn btn-primary'>";
-            echo "</div>";
-            Html::closeForm();
-        }
-
-        echo "</div>";
-
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_inquest_config$rand",
-            "inquestconfig",
-            $CFG_GLPI["root_doc"] . "/ajax/ticketsatisfaction.php",
-            $params
-        );
+        ]);
     }
 
     /**
@@ -2922,31 +2422,28 @@ class Entity extends CommonTreeDropdown
             case 'use_domains_alert':
             case 'use_infocoms_alert':
             case 'is_notif_enable_default':
-                if ($values[$field] == self::CONFIG_PARENT) {
+            case 'enable_custom_css':
+            case 'suppliers_as_private':
+            case 'display_users_initials':
+                if ($values[$field] === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
                 return Dropdown::getYesNo($values[$field]);
 
             case 'use_reservations_alert':
-                switch ($values[$field]) {
-                    case self::CONFIG_PARENT:
-                        return __('Inheritance of the parent entity');
-
-                    case 0:
-                        return __('Never');
-                }
-                return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+                return match ($values[$field]) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    0 => __('Never'),
+                    default => sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]),
+                };
 
             case 'default_cartridges_alarm_threshold':
             case 'default_consumables_alarm_threshold':
-                switch ($values[$field]) {
-                    case self::CONFIG_PARENT:
-                        return __('Inheritance of the parent entity');
-
-                    case 0:
-                        return __('Never');
-                }
-                return $values[$field];
+                return match ($values[$field]) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    0 => __('Never'),
+                    default => $values[$field],
+                };
 
             case 'send_contracts_alert_before_delay':
             case 'send_infocoms_alert_before_delay':
@@ -2954,56 +2451,37 @@ class Entity extends CommonTreeDropdown
             case 'send_certificates_alert_before_delay':
             case 'send_domains_alert_close_expiries_delay':
             case 'send_domains_alert_expired_delay':
-                switch ($values[$field]) {
-                    case self::CONFIG_PARENT:
-                        return __('Inheritance of the parent entity');
-
-                    case 0:
-                        return __('No');
-                }
-                return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+                return match ($values[$field]) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    0 => __('No'),
+                    default => sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]),
+                };
 
             case 'cartridges_alert_repeat':
             case 'consumables_alert_repeat':
             case 'approval_reminder_repeat_interval':
-                switch ($values[$field]) {
-                    case self::CONFIG_PARENT:
-                        return __('Inheritance of the parent entity');
-
-                    case self::CONFIG_NEVER:
-                    case 0: // For compatibility issue
-                        return __('Never');
-
-                    case DAY_TIMESTAMP:
-                        return __('Each day');
-
-                    case WEEK_TIMESTAMP:
-                        return __('Each week');
-
-                    case MONTH_TIMESTAMP:
-                        return __('Each month');
-
-                    default:
-                       // Display value if not defined
-                        return $values[$field];
-                }
-                break;
+            case 'certificates_alert_repeat_interval':
+                return match ($values[$field]) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    self::CONFIG_NEVER, 0 => __('Never'),
+                    DAY_TIMESTAMP => __('Each day'),
+                    WEEK_TIMESTAMP => __('Each week'),
+                    MONTH_TIMESTAMP => __('Each month'),
+                    default => $values[$field],
+                };
 
             case 'notclosed_delay':   // 0 means never
-                switch ($values[$field]) {
-                    case self::CONFIG_PARENT:
-                        return __('Inheritance of the parent entity');
-
-                    case 0:
-                        return __('Never');
-                }
-                return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+                return match ($values[$field]) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    0 => __('Never'),
+                    default => sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]),
+                };
 
             case 'auto_assign_mode':
                 return self::getAutoAssignMode((int) $values[$field]);
 
             case 'tickettype':
-                if ($values[$field] == self::CONFIG_PARENT) {
+                if ($values[$field] === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
                 return Ticket::getTicketTypeName($values[$field]);
@@ -3031,9 +2509,9 @@ class Entity extends CommonTreeDropdown
                         return __('Copy the delivery date');
 
                     default:
-                        if (strstr($values[$field], '_')) {
-                            list($type,$sid) = explode('_', $values[$field], 2);
-                            if ($type == Infocom::ON_STATUS_CHANGE) {
+                        if (str_contains($values[$field], '_')) {
+                            [$type, $sid] = explode('_', $values[$field], 2);
+                            if ($type === Infocom::ON_STATUS_CHANGE) {
                                        // TRANS %s is the name of the state
                                 return sprintf(
                                     __('Fill when shifting to state %s'),
@@ -3046,10 +2524,41 @@ class Entity extends CommonTreeDropdown
 
             case 'inquest_config':
             case 'inquest_config_change':
-                if ($values[$field] == self::CONFIG_PARENT) {
+                if ($values[$field] === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
-                return CommonITILSatisfaction::getTypeInquestName($values[$field]);
+                $inherit = '';
+                $inquest_rate = self::getUsedConfig(
+                    $field,
+                    $options['entity']->fields['entities_id'],
+                    str_replace('config', 'rate', $field)
+                );
+                $inherit .= '<br>';
+                if ($inquest_rate === 0) {
+                    $inherit .= __('Disabled');
+                } else {
+                    $inherit .= CommonITILSatisfaction::getTypeInquestName($values[$field]) . '<br>';
+                    $inqconf = self::getUsedConfig(
+                        $field,
+                        $options['entity']->fields['entities_id'],
+                        str_replace('config', 'delay', $field)
+                    );
+
+                    $inherit .= sprintf(_n('%d day', '%d days', $inqconf), $inqconf);
+                    $inherit .= "<br>";
+                    //TRANS: %d is the percentage. %% to display %
+                    $inherit .= sprintf(__('%d%%'), $inquest_rate);
+
+                    if ($values[$field] === 2) {
+                        $inherit .= "<br>";
+                        $inherit .= self::getUsedConfig(
+                            $field,
+                            $options['entity']->fields['entities_id'],
+                            str_replace('config', 'URL', $field)
+                        );
+                    }
+                }
+                return $inherit;
 
             case 'default_contract_alert':
                 return Contract::getAlertName($values[$field]);
@@ -3059,98 +2568,87 @@ class Entity extends CommonTreeDropdown
 
             case 'entities_id_software':
                 $strategy = $values['entities_strategy_software'] ?? $values[$field];
-                if ($strategy == self::CONFIG_NEVER) {
-                    return __('No change of entity');
-                }
-                if ($strategy == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                }
-                return Dropdown::getDropdownName('glpi_entities', $values[$field]);
+                return match ($strategy) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    self::CONFIG_NEVER => __('No change of entity'),
+                    default => Dropdown::getDropdownName('glpi_entities', $values[$field]),
+                };
 
             case 'tickettemplates_id':
                 $strategy = $values['tickettemplates_strategy'] ?? $values[$field];
-                if ($strategy == self::CONFIG_PARENT) {
+                if ($strategy === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
                 return Dropdown::getDropdownName(TicketTemplate::getTable(), $values[$field]);
 
             case 'calendars_id':
                 $strategy = $values['calendars_strategy'] ?? $values[$field];
-                if ($strategy == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                } elseif ($values[$field] == 0) {
-                    return __('24/7');
-                }
-                return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
+                return match ($strategy) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    self::CONFIG_NEVER => __('24/7'),
+                    default => Dropdown::getDropdownName('glpi_calendars', $values[$field]),
+                };
 
             case 'transfers_id':
                 $strategy = $values['transfers_strategy'] ?? $values[$field];
-                if ($strategy == self::CONFIG_NEVER) {
-                    return __('No automatic transfer');
-                }
-                if ($strategy == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                } elseif ($values[$field] == 0) {
-                    return __('No automatic transfer');
-                }
-                return Dropdown::getDropdownName('glpi_transfers', $values[$field]);
+                return match (true) {
+                    $strategy === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    $strategy === self::CONFIG_NEVER, $values[$field] === 0 => __('No automatic transfer'),
+                    default => Dropdown::getDropdownName('glpi_transfers', $values[$field]),
+                };
 
             case 'contracts_id_default':
                 $strategy = $values['contracts_strategy_default'] ?? $values[$field];
-                if ($strategy === self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                }
-                if ($strategy === self::CONFIG_AUTO) {
-                    return __('Contract in ticket entity');
-                }
-
-                return Dropdown::getDropdownName(Contract::getTable(), $values[$field]);
+                return match ($strategy) {
+                    self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    self::CONFIG_AUTO => __('Contract in ticket entity'),
+                    default => Dropdown::getDropdownName('glpi_contracts', $values[$field]),
+                };
 
             case 'is_contact_autoupdate':
             case 'is_user_autoupdate':
             case 'is_group_autoupdate':
             case 'is_location_autoupdate':
-                if ($values[$field] == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                } elseif ($values[$field]) {
-                    return __('Copy');
-                }
-                return __('Do not copy');
+                return match (true) {
+                    $values[$field] === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    $values[$field] > 0 => __('Copy'),
+                    default => __('Do not copy'),
+                };
 
             case 'is_contact_autoclean':
             case 'is_user_autoclean':
             case 'is_group_autoclean':
             case 'is_location_autoclean':
-                if ($values[$field] == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                } elseif ($values[$field]) {
-                    return __('Clear');
-                }
-                return __('Do not delete');
+                return match (true) {
+                    $values[$field] === self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                    $values[$field] > 0 => __('Clear'),
+                    default => __('Do not delete'),
+                };
 
             case 'state_autoupdate_mode':
-                if ($values[$field] == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                }
-                $states = State::getBehaviours(
-                    __('Copy computer status'),
-                );
-                return $states[$values[$field]];
-            case 'state_autoclean_mode':
-                if ($values[$field] == self::CONFIG_PARENT) {
-                    return __('Inheritance of the parent entity');
-                }
-                $states = State::getBehaviours(
-                    __('Clear status'),
-                );
-                return $states[$values[$field]];
-            case 'enable_custom_css':
                 if ($values[$field] === self::CONFIG_PARENT) {
                     return __('Inheritance of the parent entity');
                 }
-                return Dropdown::getYesNo($values[$field]);
+                $states = State::getBehaviours(__('Copy computer status'));
+                return $states[$values[$field]];
+            case 'state_autoclean_mode':
+                if ($values[$field] === self::CONFIG_PARENT) {
+                    return __('Inheritance of the parent entity');
+                }
+                $states = State::getBehaviours(__('Clear status'));
+                return $states[$values[$field]];
+            case 'anonymize_support_agents':
+                return self::getAnonymizeSupportAgentsValues()[$values[$field]] ?? $values[$field];
+            case 'autoclose_delay':
+            case 'autopurge_delay':
+                return match ($values[$field]) {
+                    self::CONFIG_NEVER => __('Never'),
+                    0 => __('Immediately'),
+                    default => sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]),
+                };
+            default:
+                return $values[$field] ?? '';
         }
-        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
@@ -3296,7 +2794,6 @@ class Entity extends CommonTreeDropdown
             return "";
         }
 
-        $value = htmlspecialchars($value);
         $out = "<div class='badge bg-azure-lt m-1 py-1 " . ($inline ? "inline" : "") . "'
                    title='" . __s("Value inherited from a parent entity") . "'
                    data-bs-toggle='tooltip'>
@@ -3310,6 +2807,68 @@ class Entity extends CommonTreeDropdown
         }
 
         return $out;
+    }
+
+    /**
+     * Get the badge HTML for a field that can be inherited
+     * @param string $field The field name
+     * @param string|null $strategy_field The field name of the strategy
+     * @param mixed $default_value
+     * @return string|null The badge HTML or null if the field is not inherited
+     */
+    public function getInheritedValueBadge(string $field, ?string $strategy_field = null, mixed $default_value = self::CONFIG_PARENT, mixed $inherit_parent_value = self::CONFIG_PARENT): ?string
+    {
+        if ($this->getID() <= 0) {
+            return null;
+        }
+        $result = null;
+        if ($this->fields[$field] == $inherit_parent_value) {
+            if ($strategy_field === null) {
+                $strategy_field = $field;
+            }
+            $inherited_strategy = self::getUsedConfig($strategy_field, $this->fields['entities_id']);
+            $inherited_value    = $inherited_strategy === 0
+                ? self::getUsedConfig($strategy_field, $this->fields['entities_id'], $field, $default_value)
+                : $inherited_strategy;
+            if ($inherited_value === self::CONFIG_PARENT) {
+                return null;
+            }
+            $result = self::inheritedValue(
+                self::getSpecificValueToDisplay($field, $inherited_value, [
+                    'entity' => $this,
+                ]),
+                false,
+                false
+            );
+        }
+        return $result;
+    }
+
+    /**
+     * Get the badge HTML for a linked field that can be inherited
+     * @param class-string<CommonDBTM> $itemtype The item type
+     * @param string $empty_value The value to display when the field is empty
+     * @param string|null $field The field name
+     * @param int $default_value The default value
+     * @return string|null The badge HTML or null if the field is not inherited
+     */
+    public function getInheritedLinkedValueBadge(string $itemtype, string $empty_value = Dropdown::EMPTY_VALUE, ?string $field = null, int $default_value = 0): ?string
+    {
+        if ($this->getID() <= 0) {
+            return null;
+        }
+        $item  = new $itemtype();
+        $field = $field ?? $item::getForeignKeyField();
+        if ($this->fields[$field] == self::CONFIG_PARENT) {
+            $tid = self::getUsedConfig(str_replace('_id', '_strategy', $field), $this->getID(), $field, $default_value);
+            if (!$tid) {
+                return self::inheritedValue(htmlspecialchars($empty_value), true, false);
+            }
+            if ($item->getFromDB($tid)) {
+                return self::inheritedValue($item->getLink(), true, false);
+            }
+        }
+        return null;
     }
 
     public static function getIcon()

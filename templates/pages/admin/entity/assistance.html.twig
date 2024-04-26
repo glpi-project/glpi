@@ -1,0 +1,175 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% block form_fields %}
+    {% set inheritable_params = {
+        full_width: true,
+        entity: item.getID(),
+        toadd: (item.getID() > 0 ? {
+            (constant('Entity::CONFIG_PARENT')): __('Inheritance of the parent entity')
+        } : {})
+    } %}
+
+    {{ fields.smallTitle(__('Templates configuration')) }}
+    {{ fields.dropdownField('TicketTemplate', 'tickettemplates_id', item.fields['tickettemplates_id'], 'TicketTemplate'|itemtype_name(1), {
+        add_field_html: inheritance_labels['tickettemplates_id']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownField('ChangeTemplate', 'changetemplates_id', item.fields['changetemplates_id'], 'ChangeTemplate'|itemtype_name(1), {
+        add_field_html: inheritance_labels['changetemplates_id']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownField('ProblemTemplate', 'problemtemplates_id', item.fields['problemtemplates_id'], 'ProblemTemplate'|itemtype_name(1), {
+        add_field_html: inheritance_labels['problemtemplates_id']|default(null)
+    } + inheritable_params) }}
+
+    {{ fields.smallTitle(__('Tickets configuration')) }}
+    {{ fields.dropdownField('Calendar', 'calendars_id', item.fields['calendars_id'], 'Calendar'|itemtype_name(1), {
+        emptylabel: __('24/7'),
+        add_field_html: inheritance_labels['calendars_id']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownArrayField('tickettype', item.fields['tickettype'], inheritable_params.toadd + {
+        (constant('Ticket::INCIDENT_TYPE')): __('Incident'),
+        (constant('Ticket::DEMAND_TYPE')): __('Request'),
+    }, __('Tickets default type'), {
+        add_field_html: inheritance_labels['tickettype']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownArrayField('auto_assign_mode', item.fields['auto_assign_mode'], inheritable_params.toadd + {
+        (constant('Entity::CONFIG_NEVER')): __('No'),
+        (constant('Entity::AUTO_ASSIGN_HARDWARE_CATEGORY')): __('Based on the item then the category'),
+        (constant('Entity::AUTO_ASSIGN_CATEGORY_HARDWARE')): __('Based on the category then the item'),
+    }, __('Automatic assignment of tickets, changes and problems'), {
+        add_field_html: inheritance_labels['auto_assign_mode']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownArrayField('suppliers_as_private', item.fields['suppliers_as_private'], inheritable_params.toadd + {
+        0: __('No'),
+        1: __('Yes'),
+    }, __('Mark followup added by a supplier though an email collector as private'), {
+        add_field_html: inheritance_labels['suppliers_as_private']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownArrayField('anonymize_support_agents', item.fields['anonymize_support_agents'], inheritable_params.toadd + {
+        (constant('Entity::ANONYMIZE_DISABLED')): __('Disabled'),
+        (constant('Entity::ANONYMIZE_USE_GENERIC')): __("Replace the agent and group name with a generic name"),
+        (constant('Entity::ANONYMIZE_USE_NICKNAME')): __("Replace the agent and group name with a customisable nickname"),
+        (constant('Entity::ANONYMIZE_USE_GENERIC_USER')): __("Replace the agent's name with a generic name"),
+        (constant('Entity::ANONYMIZE_USE_NICKNAME_USER')): __("Replace the agent's name with a customisable nickname"),
+        (constant('Entity::ANONYMIZE_USE_GENERIC_GROUP')): __("Replace the group's name with a generic name"),
+    }, __('Anonymize support agents'), {
+        add_field_html: inheritance_labels['anonymize_support_agents']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownArrayField('display_users_initials', item.fields['display_users_initials'], inheritable_params.toadd + {
+        0: __('No'),
+        1: __('Yes')
+    }, __('Display initials for users without pictures'), {
+        add_field_html: inheritance_labels['display_users_initials']|default(null)
+    } + inheritable_params) }}
+    {{ fields.dropdownField('Contract', 'contracts_id_default', item.fields['contracts_id_default'], __('Default contract'), {
+        full_width: true,
+        entity: item.getID(),
+        toadd: inheritable_params.toadd + {
+            (constant('Entity::CONFIG_AUTO')): __('Contract in ticket entity')
+        },
+        condition: {
+            is_template: 0,
+            is_deleted: 0
+        }|merge(call('Contract::getNotExpiredCriteria')),
+        add_field_html: inheritance_labels['contracts_id_default']|default(null)
+    }) }}
+
+    {{ fields.smallTitle(__('Automatic closing configuration')) }}
+    {% if closeticket_disabled or purgeticket_disabled %}
+        <div class="alert alert-info">
+            <i class="ti ti-info-circle"></i>
+            <div>
+                {{ closeticket_disabled ? __('Close ticket action is disabled.') : '' }}
+                {{ purgeticket_disabled ? __('Purge ticket action is disabled.') : '' }}
+            </div>
+        </div>
+    {% endif %}
+    {{ fields.dropdownNumberField('autoclose_delay', item.fields['autoclose_delay'], __('Automatic closing of solved tickets after'), {
+        full_width: true,
+        min: 1,
+        max: 99,
+        unit: 'day',
+        toadd: inheritable_params.toadd + {
+            (constant('Entity::CONFIG_NEVER')): __('Never'),
+            0: __('Immediately'),
+        },
+        add_field_html: inheritance_labels['autoclose_delay']|default(null)
+    }) }}
+    {{ fields.dropdownNumberField('autopurge_delay', item.fields['autopurge_delay'], __('Automatic purge of closed tickets after'), {
+        full_width: true,
+        min: 1,
+        max: 3650,
+        unit: 'day',
+        toadd: inheritable_params.toadd + {
+            (constant('Entity::CONFIG_NEVER')): __('Never'),
+        },
+        add_field_html: inheritance_labels['autopurge_delay']|default(null)
+    }) }}
+
+    {% set inquest_types = {
+        'Ticket': 'TicketSatisfaction',
+        'Change': 'ChangeSatisfaction',
+    } %}
+    {% for itemtype, inquest_itemtype in inquest_types %}
+        {% set c_rand = random() %}
+        {% set config_suffix = itemtype == 'Ticket' ? '' : ('_' ~ itemtype|lower) %}
+        {{ fields.smallTitle(__('Configuring the satisfaction survey: %s')|format(itemtype|itemtype_name(get_plural_number()))) }}
+        {{ fields.dropdownArrayField('inquest_config' ~ config_suffix, item.fields['inquest_config' ~ config_suffix], inheritable_params.toadd + {
+            (constant('CommonITILSatisfaction::TYPE_INTERNAL')): __('Internal survey'),
+            (constant('CommonITILSatisfaction::TYPE_EXTERNAL')): __('External survey')
+        }, __('Configuring the satisfaction survey'), {
+            add_field_html: inheritance_labels['inquest_config' ~ config_suffix]|default(null),
+            rand: c_rand
+        } + inheritable_params) }}
+        <div id="inquest_config{{ config_suffix }}_extra"></div>
+        <script>
+            $(() => {
+                const refresh = (val) => {
+                    $('#inquest_config{{ config_suffix }}_extra').load('{{ path('ajax/commonitilsatisfaction.php') }}', {
+                        itemtype: '{{ itemtype }}',
+                        entities_id: '{{ item.getID() }}',
+                        inquest_config{{ config_suffix }}: val,
+                    });
+                }
+                $('#dropdown_inquest_config{{ config_suffix }}{{ c_rand }}').on('change', (e) => {
+                    const selected = $(e.target).val();
+                    refresh(selected);
+                });
+                refresh({{ item.fields['inquest_config' ~ config_suffix] }});
+            });
+        </script>
+    {% endfor %}
+{% endblock %}

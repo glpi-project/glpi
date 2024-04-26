@@ -109,7 +109,7 @@ if (
                 'entity_sons' => $_POST['is_recursive'] ?? false,
             ]);
             echo "</td><td>";
-            echo __('Child entities');
+            echo __s('Child entities');
             echo "</td><td>";
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
             echo "</td>";
