@@ -57,7 +57,6 @@
                         name="{{ namfield }}"
                         placeholder=""
                         tabindex="1"
-                        data-cy="UsernameInput"
                     />
                 </div>
                 <div class="mb-4">
@@ -96,7 +95,6 @@
                         placeholder=""
                         autocomplete="off"
                         tabindex="2"
-                        data-cy="PasswordInput"
                     />
                 </div>
 
@@ -123,7 +121,6 @@
                                 id="login_remember"
                                 name="{{ rmbfield }}"
                                 {{ config('login_remember_default') ? 'checked' : '' }}
-                                data-cy="RememberMeCheckbox"
                             />
                             <span class="form-check-label">{{ __('Remember me') }}</span>
                         </label>
@@ -136,7 +133,6 @@
                         name="submit"
                         class="btn btn-primary w-100"
                         tabindex="3"
-                        data-cy="LoginButton"
                     >
                         {{ __('Sign in') }}
                     </button>

@@ -48,13 +48,15 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             cy.blockGLPIDashboards();
             cy.visit('/');
             cy.title().should('eq', 'Authentication - GLPI');
-            cy.getBySelector('UsernameInput').type(username);
-            cy.getBySelector('PasswordInput').type(password);
-            cy.getBySelector('RememberMeCheckbox').check();
+            cy.findByRole('textbox', {'name': "Login"}).type(username);
+            cy.findByLabelText("Password").type(password);
+            cy.findByRole('checkbox', {name: "Remember me"}).check();
             // Select 'local' from the 'auth' dropdown
-            cy.getBySelector('LoginAuthDropdown').select('local', { force: true });
+            cy.findByLabelText("Login source").select('local', { force: true });
+            // TODO: should be
+            // cy.findByRole('combobox', {name: "Login source"}).select2('local', { force: true });
 
-            cy.getBySelector('LoginButton').click();
+            cy.findByRole('button', {name: "Sign in"}).click();
             // After logging in, the url should contain /front/central.php or /front/helpdesk.public.php
             cy.url().should('match', /\/front\/(central|helpdesk.public).php/);
         },
@@ -267,16 +269,6 @@ Cypress.Commands.add('validateSelect2Loading', {prevSubject: true}, (subject) =>
             });
         });
     });
-});
-
-Cypress.Commands.add('getBySelector', (selector, ...args) => {
-    const escaped_selector = Cypress.$.escapeSelector(selector);
-    return cy.get(`[data-cy=${escaped_selector}]`, ...args);
-});
-
-Cypress.Commands.add('findBySelector', {prevSubject: true}, (subject, selector, ...args) => {
-    const escaped_selector = Cypress.$.escapeSelector(selector);
-    return subject.find(`[data-cy=${escaped_selector}]`, ...args);
 });
 
 Cypress.Commands.add("getMany", (names) => {

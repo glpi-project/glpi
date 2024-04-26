@@ -1725,7 +1725,6 @@ class Auth extends CommonGLPI
             'rand'      => $rand,
             'value'     => $default,
             'width'     => '100%',
-            'data-cy'   => 'LoginAuthDropdown',
         ]);
 
         if ($display) {
