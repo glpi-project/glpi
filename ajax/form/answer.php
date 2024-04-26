@@ -34,6 +34,7 @@
  */
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Http\Response;
@@ -59,20 +60,7 @@ if (!$form) {
 }
 
 // Validate the 'answers' parameter by filtering and reindexing the $_POST array.
-// It first filters the keys that match a specific regex pattern,
-// then reindexes the array by transforming the keys to integers.
-$answers = array_reduce(
-    array_keys($_POST),
-    function ($carry, $key) {
-        if (preg_match(Question::END_USER_INPUT_NAME_REGEX, $key)) {
-            $question_id = (int) preg_replace(Question::END_USER_INPUT_NAME_REGEX, '$1', $key);
-            $carry[$question_id] = $_POST[$key];
-        }
-        return $carry;
-    },
-    []
-);
-
+$answers = EndUserInputNameProvider::getAnswers();
 if (empty($answers)) {
     Response::sendError(400, __('Invalid answers'));
 }
