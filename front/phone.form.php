@@ -38,7 +38,7 @@ use Glpi\Event;
 
 include('../inc/includes.php');
 
-Session::checkRightsOr(Phone::$rightname, [READ, READ_ASSIGNED]);
+Session::checkRightsOr(Phone::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";

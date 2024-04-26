@@ -220,4 +220,8 @@ $assignable_asset_rights = [
 foreach ($assignable_asset_rights as $rightname) {
     $migration->addRight($rightname, READ_ASSIGNED, [$rightname => READ]);
     $migration->addRight($rightname, UPDATE_ASSIGNED, [$rightname => UPDATE]);
+    if ($rightname !== 'cartdrige' && $rightname !== 'consumable') {
+        $migration->addRight($rightname, READ_OWNED, [$rightname => READ]);
+        $migration->addRight($rightname, UPDATE_OWNED, [$rightname => UPDATE]);
+    }
 }

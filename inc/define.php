@@ -68,6 +68,8 @@ define("UPDATENOTE", 64);
 define("UNLOCK", 128);
 define("READ_ASSIGNED", 256);
 define("UPDATE_ASSIGNED", 512);
+define("READ_OWNED", 1024);
+define("UPDATE_OWNED", 2048);
 
 // set the default app_name
 $CFG_GLPI['app_name'] = 'GLPI';

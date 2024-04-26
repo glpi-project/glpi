@@ -2070,6 +2070,14 @@ class Dropdown extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id_tech' => $groups_id
         ]))->isGreaterThan(0);
+        // Create an item with a user as the owner if not a CartridgeItem/ConsumableItem
+        if (!in_array($itemtype, [\CartridgeItem::class, \ConsumableItem::class], true)) {
+            $this->integer($item->add([
+                'name' => __FUNCTION__ . '4',
+                'entities_id' => $this->getTestRootEntity(true),
+                'users_id' => $_SESSION['glpiID']
+            ]))->isGreaterThan(0);
+        }
 
         $results = \Dropdown::getDropdownFindNum([
             'itemtype' => $itemtype,
@@ -2104,6 +2112,27 @@ class Dropdown extends DbTestCase
         ];
         $this->array(array_column($results, 'text'))->containsValues($expected);
         $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+
+        if (!in_array($itemtype, [\CartridgeItem::class, \ConsumableItem::class], true)) {
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+            $results = \Dropdown::getDropdownFindNum([
+                'itemtype' => $itemtype,
+                'table' => $itemtype::getTable(),
+                '_idor_token' => \Session::getNewIDORToken($itemtype, [
+                    'table' => $itemtype::getTable()
+                ])
+            ], false)['results'];
+            $expected = [
+                __FUNCTION__ . '4'
+            ];
+            $not_expected = [
+                __FUNCTION__ . '1',
+                __FUNCTION__ . '2',
+                __FUNCTION__ . '3'
+            ];
+            $this->array(array_column($results, 'text'))->containsValues($expected);
+            $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
+        }
 
         // Remove permission to read assigned items
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;

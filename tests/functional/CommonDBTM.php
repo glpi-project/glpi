@@ -481,7 +481,7 @@ class CommonDBTM extends DbTestCase
         // Super admin
         $this->login('glpi', 'glpi');
         $this->variable($_SESSION['glpiactiveprofile']['id'])->isEqualTo(4);
-        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(1023);
+        $this->variable($_SESSION['glpiactiveprofile']['printer'])->isEqualTo(4095);
 
         // See all
         $this->boolean(\Session::changeActiveEntities('all'))->isTrue();
@@ -1785,6 +1785,8 @@ class CommonDBTM extends DbTestCase
         $this->boolean($itemtype::canView())->isTrue();
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->boolean($itemtype::canView())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->boolean($itemtype::canView())->isTrue();
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~READ;
         $this->boolean($itemtype::canView())->isFalse();
     }
@@ -1811,6 +1813,17 @@ class CommonDBTM extends DbTestCase
             'users_id_tech' => $_SESSION['glpiID'],
         ]));
         $this->boolean($item->canViewItem())->isTrue();
+
+        if ($itemtype !== \CartridgeItem::class && $itemtype !== \ConsumableItem::class) {
+            $this->boolean($item->canViewItem())->isTrue();
+            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+            $this->boolean($item->canViewItem())->isFalse();
+            $this->boolean($item->update([
+                'id' => $item->getID(),
+                'users_id' => $_SESSION['glpiID'],
+            ]));
+            $this->boolean($item->canViewItem())->isTrue();
+        }
 
         // Create group for the user
         $group = new \Group();

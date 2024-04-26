@@ -42,7 +42,7 @@ trait AssignableAsset
 {
     public static function canView()
     {
-        return Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED]);
+        return Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
     }
 
     public function canViewItem()
@@ -53,9 +53,11 @@ trait AssignableAsset
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
             in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
+        $is_owned = isset($this->fields['users_id']) && $this->fields['users_id'] === $_SESSION['glpiID'];
 
         if (!Session::haveRight(static::$rightname, READ)) {
-            return $is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED);
+            return ($is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED))
+                || ($is_owned && Session::haveRight(static::$rightname, READ_OWNED));
         }
 
         // Has global READ right
@@ -64,7 +66,7 @@ trait AssignableAsset
 
     public static function canUpdate()
     {
-        return Session::haveRightsOr(static::$rightname, [UPDATE, UPDATE_ASSIGNED]);
+        return Session::haveRightsOr(static::$rightname, [UPDATE, UPDATE_ASSIGNED, UPDATE_OWNED]);
     }
 
     public function canUpdateItem()
@@ -75,9 +77,11 @@ trait AssignableAsset
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
             in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
+        $is_owned = isset($this->fields['users_id']) && $this->fields['users_id'] === $_SESSION['glpiID'];
 
         if (!Session::haveRight(static::$rightname, UPDATE)) {
-            return $is_assigned && Session::haveRight(static::$rightname, UPDATE_ASSIGNED);
+            return ($is_assigned && Session::haveRight(static::$rightname, UPDATE_ASSIGNED))
+                || ($is_owned && Session::haveRight(static::$rightname, UPDATE_OWNED));
         }
 
         // Has global UPDATE right
@@ -100,6 +104,13 @@ trait AssignableAsset
             }
             return [$criteria];
         }
+        if (Session::haveRight(static::$rightname, READ_OWNED)) {
+            return [
+                'OR' => [
+                    'users_id' => $_SESSION['glpiID'],
+                ],
+            ];
+        }
         return [new QueryExpression('0')];
     }
 
@@ -114,8 +125,10 @@ trait AssignableAsset
         $rights = parent::getRights($interface);
         $rights[READ] = __('View all');
         $rights[READ_ASSIGNED] = __('View assigned');
+        $rights[READ_OWNED] = __('View owned');
         $rights[UPDATE] = __('Update all');
         $rights[UPDATE_ASSIGNED] = __('Update assigned');
+        $rights[UPDATE_OWNED] = __('Update owned');
         return $rights;
     }
 }
