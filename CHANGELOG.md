@@ -239,6 +239,7 @@ The present file will list all changes made to the project; according to the
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`
 - `Document_Item::showSimpleAddForItem()`
+- `Entity::getDefaultContractValues()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
