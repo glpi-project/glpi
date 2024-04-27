@@ -37,15 +37,13 @@ class DeviceFirmware extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceFirmware', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Firmware', 'Firmware', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -73,14 +71,13 @@ class DeviceFirmware extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'date',
             'name'               => __('Release date'),
             'datatype'           => 'date'
@@ -112,7 +109,7 @@ class DeviceFirmware extends CommonDevice
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
@@ -160,7 +157,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -180,7 +177,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -200,7 +197,7 @@ class DeviceFirmware extends CommonDevice
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'beforejoin' => [
-                    'table'      => DeviceFirmware::getTable(),
+                    'table'      => self::getTable(),
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
@@ -267,7 +264,8 @@ class DeviceFirmware extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?HTMLTableCell
+    {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
@@ -276,7 +274,7 @@ class DeviceFirmware extends CommonDevice
             return $father;
         }
 
-        if (in_array($item->getType(), $CFG_GLPI['itemdevicefirmware_types'])) {
+        if (in_array($item::class, $CFG_GLPI['itemdevicefirmware_types'], true)) {
             Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
 
             if ($this->fields["devicefirmwaretypes_id"]) {
@@ -303,11 +301,11 @@ class DeviceFirmware extends CommonDevice
                 );
             }
         }
+        return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
         return [
             'designation'              => 'equal',
             'devicefirmwaretypes_id'   => 'equal',
@@ -316,8 +314,7 @@ class DeviceFirmware extends CommonDevice
         ];
     }
 
-
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "fas fa-microchip";
     }

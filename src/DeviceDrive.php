@@ -38,15 +38,13 @@ class DeviceDrive extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceDrive', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Drive', 'Drives', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'is_writer',
@@ -69,14 +67,13 @@ class DeviceDrive extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_writer',
             'name'               => __('Writing ability'),
             'datatype'           => 'bool'
@@ -84,7 +81,7 @@ class DeviceDrive extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'speed',
             'name'               => __('Speed'),
             'datatype'           => 'string',
@@ -108,7 +105,6 @@ class DeviceDrive extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -134,21 +130,20 @@ class DeviceDrive extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
-
+    ): ?HTMLTableCell
+    {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["is_writer"]) {
@@ -169,27 +164,19 @@ class DeviceDrive extends CommonDevice
 
                 InterfaceType::getHTMLTableCellsForItem($row, $this, null, $options);
         }
+        return null;
     }
 
-
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 0.84
-     **/
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
-        return ['designation'       => 'equal',
+        return [
+            'designation'       => 'equal',
             'manufacturers_id'  => 'equal',
             'interfacetypes_id' => 'equal'
         ];
     }
 
-
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "far fa-hdd";
     }

@@ -37,14 +37,13 @@ class DeviceCamera extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceCamera', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Camera', 'Cameras', $nb);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
-
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
@@ -56,7 +55,7 @@ class DeviceCamera extends CommonDevice
         return $ong;
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -100,7 +99,7 @@ class DeviceCamera extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -114,7 +113,7 @@ class DeviceCamera extends CommonDevice
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'flashunit',
             'name'               => __('Flashunit'),
             'datatype'           => 'bool',
@@ -122,7 +121,7 @@ class DeviceCamera extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'lensfacing',
             'name'               => __('Lensfacing'),
             'datatype'           => 'string',
@@ -130,7 +129,7 @@ class DeviceCamera extends CommonDevice
 
         $tab[] = [
             'id'                 => '13',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'orientation',
             'name'               => __('orientation'),
             'datatype'           => 'string',
@@ -138,7 +137,7 @@ class DeviceCamera extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'focallength',
             'name'               => __('Focal length'),
             'datatype'           => 'string',
@@ -146,7 +145,7 @@ class DeviceCamera extends CommonDevice
 
         $tab[] = [
             'id'                 => '15',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'sensorsize',
             'name'               => __('Sensor size'),
             'datatype'           => 'string',
@@ -154,7 +153,7 @@ class DeviceCamera extends CommonDevice
 
         $tab[] = [
             'id'                 => '17',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'support',
             'name'               => __('Support'),
             'datatype'           => 'string',
@@ -192,7 +191,8 @@ class DeviceCamera extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?HTMLTableCell
+    {
 
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -225,9 +225,10 @@ class DeviceCamera extends CommonDevice
                 $father
             );
         }
+        return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'           => 'equal',
@@ -236,7 +237,7 @@ class DeviceCamera extends CommonDevice
         ];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-camera";
     }

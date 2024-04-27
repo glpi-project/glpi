@@ -38,15 +38,13 @@ class DeviceCase extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceCase', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Case', 'Cases', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'devicecasetypes_id',
@@ -61,8 +59,7 @@ class DeviceCase extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -84,7 +81,6 @@ class DeviceCase extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -113,8 +109,8 @@ class DeviceCase extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
-
+    ): ?HTMLTableCell
+    {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -126,20 +122,13 @@ class DeviceCase extends CommonDevice
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
 
-
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 0.84
-     **/
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
-        return ['designation'        => 'equal',
+        return [
+            'designation'        => 'equal',
             'manufacturers_id'   => 'equal',
             'devicecasetypes_id' => 'equal'
         ];

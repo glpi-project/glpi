@@ -40,32 +40,23 @@ class DevicePci extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DevicePci', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('PCI device', 'PCI devices', $nb);
     }
 
-
-    /**
-     * @see CommonDevice::getAdditionalFields()
-     * @since 0.85
-     */
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'none',
-                'label' => RegisteredID::getTypeName(Session::getPluralNumber()) .
-                                        RegisteredID::showAddChildButtonForItemForm(
-                                            $this,
-                                            '_registeredID',
-                                            null,
-                                            false
-                                        ),
-                'type'  => 'registeredIDChooser'
-            ],
-                ['name'  => 'devicepcimodels_id',
+            [
+                [
+                    'name'  => 'none',
+                    'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
+                    'type'  => 'registeredIDChooser'
+                ],
+                [
+                    'name'  => 'devicepcimodels_id',
                     'label' => _n('Model', 'Models', 1),
                     'type'  => 'dropdownValue'
                 ]
@@ -73,9 +64,8 @@ class DevicePci extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
-
         $tab                 = parent::rawSearchOptions();
 
         $tab[] = [
@@ -89,13 +79,13 @@ class DevicePci extends CommonDevice
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
         $tab[] = [
             'id'                 => '95',
-            'table'              => 'glpi_devicepcis',
+            'table'              => static::getTable(),
             'field'              => 'designation',
             'name'               => __('Other component'),
             'forcegroupby'       => true,

@@ -40,15 +40,13 @@ class DeviceMemory extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Memory', 'Memory', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -80,14 +78,13 @@ class DeviceMemory extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'size_default',
             'name'               => __('Size by default'),
             'datatype'           => 'integer',
@@ -95,7 +92,7 @@ class DeviceMemory extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'frequence',
             'name'               => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
             'datatype'           => 'integer',
@@ -120,16 +117,14 @@ class DeviceMemory extends CommonDevice
         return $tab;
     }
 
-
     /**
      * @since 0.85
-     * @param $input
+     * @param array $input
      *
-     * @return number
+     * @return array|false
      **/
-    public function prepareInputForAddOrUpdate($input)
+    public function prepareInputForAddOrUpdate($input): array|false
     {
-
         foreach (['size_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
                 $input[$field] = 0;
@@ -138,18 +133,15 @@ class DeviceMemory extends CommonDevice
         return $input;
     }
 
-
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array|false
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array|false
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -174,14 +166,13 @@ class DeviceMemory extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
-
+    ): ?HTMLTableCell
+    {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -211,20 +202,20 @@ class DeviceMemory extends CommonDevice
                 }
                 break;
         }
+        return null;
     }
 
-
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
-        return ['designation'          => 'equal',
+        return [
+            'designation'          => 'equal',
             'devicememorytypes_id' => 'equal',
             'manufacturers_id'     => 'equal',
             'frequence'            => 'delta:10'
         ];
     }
 
-    public static function rawSearchOptionsToAdd($class, $main_joinparams)
+    public static function rawSearchOptionsToAdd($class, $main_joinparams): array
     {
         $tab = [];
 
@@ -267,8 +258,7 @@ class DeviceMemory extends CommonDevice
         return $tab;
     }
 
-
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "fas fa-memory";
     }

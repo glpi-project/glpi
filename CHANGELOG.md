@@ -136,6 +136,7 @@ The present file will list all changes made to the project; according to the
 - `Lock::getLocksQueryInfosByItemType()` has been made private.
 - `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods signatures changed.
 -  Some values for the `$type` parameters of several `Stat` methods have changed to match English spelling (technicien -> technician).
+- Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.

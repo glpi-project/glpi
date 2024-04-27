@@ -40,27 +40,26 @@ class DeviceSensor extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceSensor', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Sensor', 'Sensors', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
-            [['name'  => 'devicesensortypes_id',
-                'label' => _n('Type', 'Types', 1),
-                'type'  => 'dropdownValue'
-            ]
+            [
+                [
+                    'name'  => 'devicesensortypes_id',
+                    'label' => _n('Type', 'Types', 1),
+                    'type'  => 'dropdownValue'
+                ]
             ]
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab                 = parent::rawSearchOptions();
 
@@ -74,7 +73,6 @@ class DeviceSensor extends CommonDevice
         return $tab;
     }
 
-
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -82,7 +80,6 @@ class DeviceSensor extends CommonDevice
         HTMLTableHeader $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
         if ($column == $father) {
@@ -98,36 +95,35 @@ class DeviceSensor extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
-
+    ): ?HTMLTableCell
+    {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        switch ($item->getType()) {
-            case 'Computer':
-            case 'Peripheral':
+        switch ($item::class) {
+            case Computer::class:
+            case Peripheral::class:
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
-
 
     /**
      * Criteria used for import function
      */
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
-        return ['designation'          => 'equal',
+        return [
+            'designation'          => 'equal',
             'manufacturers_id'     => 'equal',
             'devicesensortypes_id' => 'equal',
             'locations_id'         => 'equal'

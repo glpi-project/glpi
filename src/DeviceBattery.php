@@ -37,13 +37,12 @@ class DeviceBattery extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Battery', 'Batteries', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -71,14 +70,13 @@ class DeviceBattery extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'capacity',
             'name'               => __('Capacity'),
             'datatype'           => 'integer',
@@ -86,7 +84,7 @@ class DeviceBattery extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'integer',
@@ -128,7 +126,8 @@ class DeviceBattery extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?HTMLTableCell
+    {
 
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -164,12 +163,11 @@ class DeviceBattery extends CommonDevice
                 $father
             );
         }
+        return null;
     }
 
-
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
         return [
             'designation'           => 'equal',
             'devicebatterytypes_id' => 'equal',
@@ -179,8 +177,7 @@ class DeviceBattery extends CommonDevice
         ];
     }
 
-
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-battery-2";
     }

@@ -38,13 +38,12 @@ class DevicePowerSupply extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Power supply', 'Power supplies', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return array_merge(
@@ -65,14 +64,13 @@ class DevicePowerSupply extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_atx',
             'name'               => __('ATX'),
             'datatype'           => 'bool'
@@ -80,7 +78,7 @@ class DevicePowerSupply extends CommonDevice
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'power',
             'name'               => __('Power'),
             'datatype'           => 'string',
@@ -97,7 +95,6 @@ class DevicePowerSupply extends CommonDevice
         return $tab;
     }
 
-
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -105,7 +102,6 @@ class DevicePowerSupply extends CommonDevice
         HTMLTableHeader $father = null,
         array $options = []
     ) {
-
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
         if ($column == $father) {
@@ -120,14 +116,13 @@ class DevicePowerSupply extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
-
+    ): ?HTMLTableCell
+    {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -141,9 +136,10 @@ class DevicePowerSupply extends CommonDevice
                     $row->addCell($row->getHeaderByName('power'), $this->fields["power"]);
                 }
         }
+        return null;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
@@ -167,8 +163,7 @@ class DevicePowerSupply extends CommonDevice
         return $tab;
     }
 
-
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-bolt";
     }

@@ -38,15 +38,13 @@ class DeviceMotherboard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceMotherboard', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('System board', 'System boards', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'chipset',
@@ -61,14 +59,13 @@ class DeviceMotherboard extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'chipset',
             'name'               => __('Chipset'),
             'datatype'           => 'string',
@@ -84,7 +81,6 @@ class DeviceMotherboard extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -107,13 +103,13 @@ class DeviceMotherboard extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?HTMLTableCell
+    {
 
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -121,24 +117,24 @@ class DeviceMotherboard extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
-            case 'Computer':
+        switch ($item::class) {
+            case Computer::class:
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 break;
         }
+        return null;
     }
 
-
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
-        return ['designation'      => 'equal',
+        return [
+            'designation'      => 'equal',
             'manufacturers_id' => 'equal',
             'chipset'          => 'equal'
         ];
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 

@@ -33,48 +33,48 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * RegisteredID class
  * @since 0.85
  **/
 class RegisteredID extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public $dohistory              = true;
 
-
-    public static function getRegisteredIDTypes()
+    public static function getRegisteredIDTypes(): array
     {
-
-        return ['PCI' => __('PCI'),
+        return [
+            'PCI' => __('PCI'),
             'USB' => __('USB')
         ];
     }
 
-
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Registered ID (issued by PCI-SIG)', 'Registered IDs (issued by PCI-SIG)', $nb);
     }
 
-
     /**
-     * @param $field_name
-     * @param $child_count_js_var
+     * @param string $field_name
+     * @param string $child_count_js_var
      *
      * @return string
      **/
-    public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
+    public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var): string
     {
-
         $result  = "<select name=\'" . $field_name . "_type[-'+$child_count_js_var+']\'>";
         $result .= "<option value=\'\'>" . Dropdown::EMPTY_VALUE . "</option>";
         foreach (self::getRegisteredIDTypes() as $name => $label) {
+            $name = htmlspecialchars($name);
+            $label = htmlspecialchars($label);
             $result .= "<option value=\'$name\'>$label</option>";
         }
         $result .= "</select> : ";
@@ -83,18 +83,14 @@ class RegisteredID extends CommonDBChild
         return $result;
     }
 
-
-    /**
-     * @see CommonDBChild::showChildForItemForm()
-     **/
     public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
     {
-
-        if ($this->isNewID($this->getID())) {
+        if (self::isNewID($this->getID())) {
             $value = '';
         } else {
             $value = $this->getName();
         }
+        $value             = htmlspecialchars($value);
         $result            = "";
         $main_field        = $field_name . "[$id]";
         $type_field        = $field_name . "_type[$id]";
@@ -104,8 +100,10 @@ class RegisteredID extends CommonDBChild
             $result .= "<select name='$type_field'>";
             $result .= "<option value=''>" . Dropdown::EMPTY_VALUE . "</option>";
             foreach ($registeredIDTypes as $name => $label) {
+                $name = htmlspecialchars($name);
+                $label = htmlspecialchars($label);
                 $result .= "<option value='$name'";
-                if ($this->fields['device_type'] == $name) {
+                if ($this->fields['device_type'] === $name) {
                     $result .= " selected";
                 }
                 $result .= ">$label</option>";
@@ -115,8 +113,8 @@ class RegisteredID extends CommonDBChild
             $result .= "<input type='hidden' name='$main_field' value='$value'>";
             if (!empty($this->fields['device_type'])) {
                 $result .= sprintf(
-                    __('%1$s: %2$s'),
-                    $registeredIDTypes[$this->fields['device_type']],
+                    __s('%1$s: %2$s'),
+                    htmlspecialchars($registeredIDTypes[$this->fields['device_type']]),
                     $value
                 );
             } else {

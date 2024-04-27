@@ -256,7 +256,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param $number
      *
-     * @return boolean
+     * @return CommonDBTM|false
      **/
     public function getOnePeer($number)
     {

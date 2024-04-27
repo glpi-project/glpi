@@ -38,14 +38,13 @@ class DeviceSimcard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Simcard', 'Simcards', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [
@@ -70,13 +69,13 @@ class DeviceSimcard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'voltage',
             'name'               => __('Voltage'),
             'datatype'           => 'integer',
@@ -92,7 +91,7 @@ class DeviceSimcard extends CommonDevice
 
         $tab[] = [
             'id'                 => '14',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'allow_voip',
             'name'               => __('Allow VOIP'),
             'datatype'           => 'bool'
@@ -101,16 +100,8 @@ class DeviceSimcard extends CommonDevice
         return $tab;
     }
 
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 9.2
-     **/
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
         return [
             'designation'             => 'equal',
             'manufacturers_id'        => 'equal',
@@ -118,12 +109,12 @@ class DeviceSimcard extends CommonDevice
         ];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "fas fa-sim-card";
     }
 
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         $rights = parent::getRights($interface);
         // Update labels to match other assets

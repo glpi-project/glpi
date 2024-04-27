@@ -38,15 +38,13 @@ class DeviceGeneric extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceGeneric', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Generic device', 'Generic devices', $nb);
     }
 
-
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
-
         return array_merge(
             parent::getAdditionalFields(),
             [['name'  => 'devicegenerictypes_id',
@@ -57,8 +55,7 @@ class DeviceGeneric extends CommonDevice
         );
     }
 
-
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab                 = parent::rawSearchOptions();
 
@@ -72,7 +69,6 @@ class DeviceGeneric extends CommonDevice
 
         return $tab;
     }
-
 
     public static function getHTMLTableHeader(
         $itemtype,
@@ -96,22 +92,21 @@ class DeviceGeneric extends CommonDevice
         }
     }
 
-
     public function getHTMLTableCellForItem(
         HTMLTableRow $row = null,
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ) {
-
+    ): ?HTMLTableCell
+    {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
             return $father;
         }
 
-        switch ($item->getType()) {
-            case 'Computer':
+        switch ($item::class) {
+            case Computer::class:
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["devicegenerictypes_id"]) {
                     $type_name = Dropdown::getDropdownName(
@@ -122,20 +117,13 @@ class DeviceGeneric extends CommonDevice
                 }
                 break;
         }
+        return null;
     }
 
-
-    /**
-     * Criteria used for import function
-     *
-     * @see CommonDevice::getImportCriteria()
-     *
-     * @since 0.84
-     **/
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
-
-        return ['designation'       => 'equal',
+        return [
+            'designation'       => 'equal',
             'manufacturers_id'  => 'equal',
             'devicecasetypes_id' => 'equal',
             'locations_id'      => 'equal',
