@@ -258,8 +258,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $itemtype,
         $is_deleted = false,
         CommonDBTM $checkitem = null
-    ): void
-    {
+    ): void {
         $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
 
@@ -453,7 +452,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     =>'massAsset_PeripheralAsset' . $rand,
+                'container' => 'massAsset_PeripheralAsset' . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Disconnect')],
             ]
         ]);
@@ -597,7 +596,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     =>'massAsset_PeripheralAsset' . $rand,
+                'container' => 'massAsset_PeripheralAsset' . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Disconnect')],
             ]
         ]);
@@ -670,8 +669,7 @@ TWIG, $twig_params);
         $entity_restrict = -1,
         $onlyglobal = false,
         $used = []
-    ): int
-    {
+    ): int {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
