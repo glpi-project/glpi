@@ -138,7 +138,8 @@ class GLPIMailer extends PHPMailer
         if (
             $this->oauth instanceof OAuthTokenProvider
             && $result === true
-            && ($refresh_token = $this->oauth->getOauthToken()->getRefreshToken() ?? null) !== (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token'])
+            && ($refresh_token = $this->oauth->getOauthToken()->getRefreshToken() ?? null) !== null
+            && $refresh_token !== (new GLPIKey())->decrypt($CFG_GLPI['smtp_oauth_refresh_token'])
         ) {
             // The refresh token may be refreshed itself.
             // Be sure to always store any new refresh token.
