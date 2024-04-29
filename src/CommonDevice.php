@@ -382,8 +382,7 @@ abstract class CommonDevice extends CommonDropdown
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell
-    {
+    ): ?HTMLTableCell {
 
         if (isset($options['dont_display'][static::class])) {
             return $father;
