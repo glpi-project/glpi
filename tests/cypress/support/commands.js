@@ -48,13 +48,15 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             cy.blockGLPIDashboards();
             cy.visit('/');
             cy.title().should('eq', 'Authentication - GLPI');
-            cy.get('#login_name').type(username);
-            cy.get('input[type="password"]').type(password);
-            cy.get('#login_remember').check();
+            cy.findByRole('textbox', {'name': "Login"}).type(username);
+            cy.findByLabelText("Password").type(password);
+            cy.findByRole('checkbox', {name: "Remember me"}).check();
             // Select 'local' from the 'auth' dropdown
-            cy.get('select[name="auth"]').select('local', { force: true });
+            cy.findByLabelText("Login source").select('local', { force: true });
+            // TODO: should be
+            // cy.findByRole('combobox', {name: "Login source"}).select2('local', { force: true });
 
-            cy.get('button[type="submit"]').click();
+            cy.findByRole('button', {name: "Sign in"}).click();
             // After logging in, the url should contain /front/central.php or /front/helpdesk.public.php
             cy.url().should('match', /\/front\/(central|helpdesk.public).php/);
         },
@@ -154,30 +156,36 @@ Cypress.Commands.add('awaitTinyMCE',  {
 Cypress.Commands.overwrite('type', (originalFn, subject, text, options) => {
     // If the subject is a textarea, see if there is a TinyMCE editor for it
     // If there is, set the content of the editor instead of the textarea
-    if (subject.is('textarea')) {
-        cy.get(`textarea[name="${subject.attr('name')}"]`).invoke('attr', 'id').then((textarea_id) => {
-            cy.window().then((win) => {
-                if (win.tinymce.get(textarea_id)) {
-                    if (options !== undefined && options.interactive) {
-                        // Use 'should' off the 'window()' to wait for the required property to be set.
-                        cy.window().should('satisfy', () => {
-                            return typeof win.tinymce.get(textarea_id).dom.doc !== 'undefined';
-                        });
-                        cy.wrap(win.tinymce.get(textarea_id).dom.doc).within(() => {
-                            cy.get('#tinymce[contenteditable="true"]').should('exist');
-                            cy.get('#tinymce p').type(text, options);
-                        });
-                    } else {
-                        win.tinymce.get(textarea_id).setContent(text);
-                    }
-                    return;
-                }
-                originalFn(subject, text, options);
-            });
-        });
-        return;
+    if (!subject.is('textarea')) {
+        return originalFn(subject, text, options);
     }
-    return originalFn(subject, text, options);
+
+    cy.window().as('win');
+    cy
+        .get(`textarea[name="${subject.attr('name')}"]`)
+        .invoke('attr', 'id')
+        .as('textarea_id')
+    ;
+
+    cy.getMany(["@win", "@textarea_id"]).then(([win, textarea_id]) => {
+        if (!win.tinymce.get(textarea_id)) {
+            return originalFn(subject, text, options);
+        }
+
+        if (options === undefined || !options.interactive) {
+            win.tinymce.get(textarea_id).setContent(text);
+            return;
+        }
+
+        // Use 'should' off the 'window()' to wait for the required property to be set.
+        cy.window().should('satisfy', () => {
+            return typeof win.tinymce.get(textarea_id).dom.doc !== 'undefined';
+        });
+        cy.wrap(win.tinymce.get(textarea_id).dom.doc).within(() => {
+            cy.get('#tinymce[contenteditable="true"]').should('exist');
+            cy.get('#tinymce p').type(text, options);
+        });
+    });
 });
 
 /**
@@ -261,4 +269,12 @@ Cypress.Commands.add('validateSelect2Loading', {prevSubject: true}, (subject) =>
             });
         });
     });
+});
+
+Cypress.Commands.add("getMany", (names) => {
+    const values = [];
+    for (const arg of names) {
+        cy.get(arg).then((value) => values.push(value));
+    }
+    return cy.wrap(values);
 });
