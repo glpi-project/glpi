@@ -258,7 +258,7 @@ TWIG;
         {% import 'components/form/fields_macros.html.twig' as fields %}
 
         {% set actors_dropdown = call('Glpi\\\\Form\\\\Dropdown\\\\FormActorsDropdown::show', [
-            'answers[' ~ question.fields.id ~ ']',
+            question.getEndUserInputName(),
             value,
             {
                 'multiple': is_multiple_actors,
@@ -267,7 +267,7 @@ TWIG;
         ]) %}
 
         {{ fields.htmlField(
-            'answers[' ~ question.fields.id ~ ']',
+            question.getEndUserInputName(),
             actors_dropdown,
             '',
             {

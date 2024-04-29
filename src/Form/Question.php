@@ -121,6 +121,11 @@ final class Question extends CommonDBChild
         return $this->getItem()->getItem();
     }
 
+    public function getEndUserInputName(): string
+    {
+        return (new EndUserInputNameProvider())->getEndUserInputName($this);
+    }
+
     public function prepareInputForAdd($input)
     {
         $this->prepareInput($input);

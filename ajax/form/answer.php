@@ -34,6 +34,7 @@
  */
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
 use Glpi\Http\Response;
 
@@ -57,9 +58,9 @@ if (!$form) {
     Response::sendError(404, __('Form not found'));
 }
 
-// Validate answers parameter
-$answers = $_POST['answers'] ?? [];
-if (!is_array($answers) || empty($answers)) {
+// Validate the 'answers' parameter by filtering and reindexing the $_POST array.
+$answers = (new EndUserInputNameProvider())->getAnswers($_POST);
+if (empty($answers)) {
     Response::sendError(400, __('Invalid answers'));
 }
 
