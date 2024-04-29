@@ -180,11 +180,11 @@ class RuleImportEntity extends Rule
                 return true;
 
             case Rule::PATTERN_EXISTS:
-                echo Dropdown::showYesNo($name, 1, 0);
+                Dropdown::showYesNo($name, 1, 0);
                 return true;
 
             case Rule::PATTERN_DOES_NOT_EXISTS:
-                echo Dropdown::showYesNo($name, 1, 0);
+                Dropdown::showYesNo($name, 1, 0);
                 return true;
         }
         return false;
