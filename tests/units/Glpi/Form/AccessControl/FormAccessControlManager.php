@@ -43,12 +43,9 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use Group;
-use Profile;
 use User;
 
 final class FormAccessControlManager extends DbTestCase
@@ -71,206 +68,95 @@ final class FormAccessControlManager extends DbTestCase
         ;
     }
 
-
-    /**
-     * Data provider for the `testGetAccessControlsForForm` test.
-     *
-     * @return iterable
-     */
-    public function getAccessControlsForFormDataProvider(): iterable
+    public function testCreateMisingAccessControlsForForm(): void
     {
-        // Form without access controls
-        $form_1 = $this->createForm(new FormBuilder());
-        yield [
-            'form'                     => $form_1,
-            'only_active'              => true,
-            'expected_access_controls' => [],
-        ];
-        yield [
-            'form'                     => $form_1,
-            'only_active'              => false, // Trigger lazy creation
-            'expected_access_controls' => [
-                [
-                    'forms_forms_id' => $form_1->getID(),
-                    'strategy'       => AllowList::class,
-                    'config'         => json_encode(new AllowListConfig([])), // Default config
-                    'is_active'      => 0,
-                ],
-                [
-                    'forms_forms_id' => $form_1->getID(),
-                    'strategy'       => DirectAccess::class,
-                    'config'         => json_encode(new DirectAccessConfig([])), // Default config
-                    'is_active'      => 0,
-                    '_ignore_token'  => true, // Token is randomly generated, we can't test its value
-                ],
-            ],
+        $manager = $this->getManager();
+        $form = $this->getFormWithoutAccessControls();
+
+        $manager->createMissingAccessControlsForForm($form);
+        $this->array($form->getAccessControls())->hasSize(2);
+    }
+
+    public function getActiveAccessControlsForFormProvider(): iterable
+    {
+        yield 'Form without access controls' => [
+            'form'     => $this->getFormWithoutAccessControls(),
+            'expected' => [],
         ];
 
-        // Still no active access controls
-        yield [
-            'form'                     => $form_1,
-            'only_active'              => true,
-            'expected_access_controls' => [],
+        yield 'Form with active access controls' => [
+            'form'     => $this->getFormWithActiveAccessControls(),
+            'expected' => [AllowList::class, DirectAccess::class],
         ];
 
-        // Set one policy as active
-        $this->updateItem(
-            FormAccessControl::class,
-            $this->getAccessControl($form_1, AllowList::class)->getID(),
-            ['is_active' => 1]
-        );
-        yield [
-            'form'                     => $form_1,
-            'only_active'              => true,
-            'expected_access_controls' => [
-                [
-                    'forms_forms_id' => $form_1->getID(),
-                    'strategy'       => AllowList::class,
-                    'config'         => json_encode(new AllowListConfig([])), // Default config
-                    'is_active'      => 1, // Must now be active
-                ]
-            ],
-        ];
-
-        // Update the configuration
-        $new_config = new AllowListConfig([
-            'user_ids' => [1, 2, 3]
-        ]);
-        $this->updateItem(
-            FormAccessControl::class,
-            $this->getAccessControl($form_1, AllowList::class)->getID(),
-            ['_config' => $new_config]
-        );
-        yield [
-            'form'                     => $form_1,
-            'only_active'              => true,
-            'expected_access_controls' => [
-                [
-                    'forms_forms_id' => $form_1->getID(),
-                    'strategy'       => AllowList::class,
-                    'config'         => json_encode($new_config),
-                    'is_active'      => 1, // Must now be active
-                ]
-            ],
-        ];
-
-        // Create a second form with policies already defined
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'                 => 'my_token',
-                    'allow_unauthenticated' => true,
-                    'force_direct_access'   => true,
-                ]))
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids'    => [
-                        getItemByTypeName(User::class, "glpi", true),
-                        getItemByTypeName(User::class, "normal", true),
-                        getItemByTypeName(User::class, "tech", true),
-                    ],
-                    'group_ids'   => [
-                        getItemByTypeName(Group::class, "_test_group_1", true),
-                        getItemByTypeName(Group::class, "_test_group_2", true),
-                    ],
-                    'profile_ids' => [
-                        getItemByTypeName(Profile::class, "Super-Admin", true),
-                    ],
-                ]))
-        );
-        yield [
-            'form'                     => $form_2,
-            'only_active'              => true,
-            'expected_access_controls' => [
-                [
-                    'forms_forms_id' => $form_2->getID(),
-                    'strategy'       => DirectAccess::class,
-                    'is_active'      => 1,
-                    'config'         => json_encode(new DirectAccessConfig([
-                        'token'                 => 'my_token',
-                        'allow_unauthenticated' => true,
-                        'force_direct_access'   => true,
-                    ])),
-                ],
-                [
-                    'forms_forms_id' => $form_2->getID(),
-                    'strategy'       => AllowList::class,
-                    'is_active'      => 1,
-                    'config'         => json_encode(new AllowListConfig([
-                        'user_ids'    => [
-                            getItemByTypeName(User::class, "glpi", true),
-                            getItemByTypeName(User::class, "normal", true),
-                            getItemByTypeName(User::class, "tech", true),
-                        ],
-                        'group_ids'   => [
-                            getItemByTypeName(Group::class, "_test_group_1", true),
-                            getItemByTypeName(Group::class, "_test_group_2", true),
-                        ],
-                        'profile_ids' => [
-                            getItemByTypeName(Profile::class, "Super-Admin", true),
-                        ],
-                    ])),
-                ],
-            ],
+        yield 'Form with one active and one disabled access controls' => [
+            'form'     => $this->getFormWithOneDisabledAndOneActiveAccessControls(),
+            'expected' => [DirectAccess::class],
         ];
     }
 
     /**
-     * Test the `getAccessControlsForForm` method
-     *
-     * @dataProvider getAccessControlsForFormDataProvider
-     *
-     * @param Form $form
-     * @param bool $only_active
-     * @param array $expected_access_controls
-     *
-     * @return void
+     * @dataProvider getActiveAccessControlsForFormProvider
      */
-    public function testGetAccessControlsForForm(
+    public function testGetActiveAccessControlsForForm(
         Form $form,
-        bool $only_active,
-        array $expected_access_controls,
+        array $expected
     ): void {
-        $controls = $this->getManager()->getAccessControlsForForm(
-            $form,
-            $only_active
+        $manager = $this->getManager();
+        $controls = $manager->getActiveAccessControlsForForm($form);
+
+        $active_controls = array_map(
+            fn (FormAccessControl $control) => $control->fields['strategy'],
+            $controls
         );
-        $this->array($controls)->hasSize(count($expected_access_controls));
 
-        // Ensure both array are sorted in the same way to get a proper comparison.
-        usort($controls, function ($a, $b) {
-            return $a->fields['strategy'] <=> $b->fields['strategy'];
-        });
-        usort($expected_access_controls, function ($a, $b) {
-            return $a['strategy'] <=> $b['strategy'];
-        });
+        $this->array($active_controls)->isEqualTo($expected);
+    }
 
-        foreach ($controls as $i => $control) {
-            $this->object($control)->isInstanceOf(FormAccessControl::class);
+    public function sortAccessControlsProvider(): iterable
+    {
+        // Weights reminder: Access control: 10 < Direct access: 20
+        yield 'No access controls' => [
+            'access_controls' => [],
+            'expected'        => [],
+        ];
+        yield 'Form with two disabled access controls' => [
+            'access_controls' => [
+                $this->getInactiveAllowListAccessControl(),
+                $this->getInactiveDirectAccessControl(),
+            ],
+            'expected' => [AllowList::class, DirectAccess::class],
+        ];
+        yield 'Form with one active access controls' => [
+            'access_controls' => [
+                $this->getInactiveAllowListAccessControl(),
+                $this->getActiveDirectAccessControl(),
+            ],
+            'expected' => [DirectAccess::class, AllowList::class],
+        ];
+        yield 'Form with two active access controls' => [
+            'access_controls' => [
+                $this->getActiveAllowListAccessControl(),
+                $this->getActiveDirectAccessControl(),
+            ],
+            'expected' => [AllowList::class, DirectAccess::class],
+        ];
+    }
 
-            // Unset fields that can't be compared properly, such as IDs.
-            unset($control->fields['id']);
-
-            // We need to compare decoded JSON objects to ensure a
-            // proper comparison with no false negative.
-            $control->fields['config'] = json_decode($control->fields['config']);
-            $expected_access_controls[$i]['config'] = json_decode($expected_access_controls[$i]['config']);
-
-            if (isset($expected_access_controls[$i]['_ignore_token'])) {
-                // We can't compare randomnly generated token values,
-                // thus we remove it from the expected array.
-                unset($control->fields['config']->token);
-                unset($expected_access_controls[$i]['config']->token);
-
-                // Remove special flag.
-                unset($expected_access_controls[$i]['_ignore_token']);
-            }
-
-            $this
-                ->array($control->fields)
-                ->isEqualTo($expected_access_controls[$i])
-            ;
-        }
+    /**
+     * @dataProvider sortAccessControlsProvider
+     */
+    public function testSortAccessControls(
+        array $access_controls,
+        array $expected
+    ): void {
+        $manager = $this->getManager();
+        $sorted_controls = $manager->sortAccessControls($access_controls);
+        $sorted_controls = array_map(
+            fn (FormAccessControl $control) => $control->fields['strategy'],
+            $sorted_controls
+        );
+        $this->array($sorted_controls)->isEqualTo($expected);
     }
 
     public function testAdminCanBypassFormRestrictions(): void
@@ -350,6 +236,49 @@ final class FormAccessControlManager extends DbTestCase
         );
     }
 
+    private function getFormWithoutAccessControls(): Form
+    {
+        return $this->createForm(new FormBuilder());
+    }
+
+    private function getFormWithActiveAccessControls(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(AllowList::class, new AllowListConfig([
+                    'user_ids' => [
+                        getItemByTypeName(User::class, "tech", true),
+                    ],
+                ]))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
+                    'token'               => 'my_token',
+                    'force_direct_access' => true,
+                ]))
+        );
+    }
+
+    private function getFormWithOneDisabledAndOneActiveAccessControls(): Form
+    {
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(AllowList::class, new AllowListConfig([
+                    'user_ids' => [
+                        getItemByTypeName(User::class, "tech", true),
+                    ],
+                ]))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
+                    'token'               => 'my_token',
+                    'force_direct_access' => true,
+                ]))
+        );
+
+        $control = $this->getAccessControl($form, AllowList::class);
+        $this->updateItem($control::class, $control->getID(), ['is_active' => 0]);
+        $form->getFromDB($form->getID());
+
+        return $form;
+    }
+
     private function getFormAccessibleOnlyToTechUserWithMandatoryToken(): Form
     {
         return $this->createForm(
@@ -364,6 +293,46 @@ final class FormAccessControlManager extends DbTestCase
                     'force_direct_access' => true,
                 ]))
         );
+    }
+
+    private function getActiveAllowListAccessControl()
+    {
+        $control = new FormAccessControl();
+        $control->fields = [
+            'strategy'  => AllowList::class,
+            'is_active' => 1,
+        ];
+        return $control;
+    }
+
+    private function getInactiveAllowListAccessControl()
+    {
+        $control = new FormAccessControl();
+        $control->fields = [
+            'strategy'  => AllowList::class,
+            'is_active' => 0,
+        ];
+        return $control;
+    }
+
+    private function getActiveDirectAccessControl()
+    {
+        $control = new FormAccessControl();
+        $control->fields = [
+            'strategy' => DirectAccess::class,
+            'is_active' => 1,
+        ];
+        return $control;
+    }
+
+    private function getInactiveDirectAccessControl()
+    {
+        $control = new FormAccessControl();
+        $control->fields = [
+            'strategy' => DirectAccess::class,
+            'is_active' => 0,
+        ];
+        return $control;
     }
 
     private function getEmptyParameters(): FormAccessParameters

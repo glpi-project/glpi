@@ -38,6 +38,7 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Html;
@@ -45,6 +46,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Log;
 use Override;
+use ReflectionClass;
 use Session;
 
 /**
@@ -297,6 +299,32 @@ final class Form extends CommonDBTM
         }
 
         return $destinations;
+    }
+
+    /**
+     * @return FormAccessControl[]
+     */
+    public function getAccessControls(): array
+    {
+        $controls = [];
+        $raw_controls = (new FormAccessControl())->find([
+            Form::getForeignKeyField() => $this->getID(),
+        ]);
+
+        // Make sure all returned data are valid (some data might come from
+        // disabled plugins).
+        foreach ($raw_controls as $row) {
+            if (!$this->isValidAccessControlType($row['strategy'])) {
+                continue;
+            }
+
+            $control = new FormAccessControl();
+            $control->getFromResultSet($row);
+            $control->post_getFromDB();
+            $controls[] = $control;
+        }
+
+        return $controls;
     }
 
     /**
@@ -555,5 +583,20 @@ final class Form extends CommonDBTM
         }
 
         unset($this->input['_found_questions']);
+    }
+
+    /**
+     * Check if the given class is a valid access control type.
+     *
+     * @param string $class
+     *
+     * @return bool
+     */
+    protected function isValidAccessControlType(string $class): bool
+    {
+        return
+            is_a($class, ControlTypeInterface::class, true)
+            && !(new ReflectionClass($class))->isAbstract()
+        ;
     }
 }

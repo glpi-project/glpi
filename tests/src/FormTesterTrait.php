@@ -210,8 +210,7 @@ trait FormTesterTrait
         Form $form,
         string $control_type
     ): FormAccessControl {
-        $manager = FormAccessControlManager::getInstance();
-        $controls = $manager->getAccessControlsForForm($form, false);
+        $controls = $form->getAccessControls();
 
         $controls = array_filter(
             $controls,

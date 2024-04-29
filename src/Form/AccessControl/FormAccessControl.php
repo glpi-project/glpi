@@ -84,14 +84,14 @@ final class FormAccessControl extends CommonDBChild
         }
 
         $manager = FormAccessControlManager::getInstance();
+        $manager->createMissingAccessControlsForForm($item);
+        $controls = $item->getAccessControls();
+        $sorted_access_controls = $manager->sortAccessControls($controls);
 
         $twig = TemplateRenderer::getInstance();
         echo $twig->render('pages/admin/form/access_control.html.twig', [
             'form'            => $item,
-            'access_controls' => $manager->getAccessControlsForForm(
-                $item,
-                false
-            ),
+            'access_controls' => $sorted_access_controls,
         ]);
 
         return true;
