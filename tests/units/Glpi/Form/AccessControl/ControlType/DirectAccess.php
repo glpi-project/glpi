@@ -157,123 +157,112 @@ class DirectAccess extends \GLPITestCase
     }
 
     /**
-     * Test the `allowUnauthenticatedUsers` method.
-     *
-     * @return void
-     */
-    public function testAllowUnauthenticatedUsers(): void
-    {
-        $direct_access = new \Glpi\Form\AccessControl\ControlType\DirectAccess();
-
-        // Allow unauthenticated users and a correct token was supplied
-        $_GET['token'] = "my_token";
-        $allow = new DirectAccessConfig([
-            'allow_unauthenticated' => true,
-            'token'                 => 'my_token',
-        ]);
-        $this->boolean($direct_access->allowUnauthenticatedUsers($allow))->isTrue();
-
-        // Allow unauthenticated users and an invalid token was supplied
-        $_GET['token'] = "invalid_token";
-        $allow = new DirectAccessConfig([
-            'allow_unauthenticated' => true,
-            'token'                 => 'my_token',
-        ]);
-        $this->boolean($direct_access->allowUnauthenticatedUsers($allow))->isFalse();
-
-        // Allow unauthenticated users but no token was supplied
-        unset($_GET['token']);
-        $allow = new DirectAccessConfig([
-            'allow_unauthenticated' => true,
-            'token'                 => 'my_token',
-        ]);
-        $this->boolean($direct_access->allowUnauthenticatedUsers($allow))->isFalse();
-
-        // Deny unauthenticated users
-        $deny = new DirectAccessConfig([
-            'allow_unauthenticated' => false,
-            'token'                 => 'my_token',
-        ]);
-        $this->boolean($direct_access->allowUnauthenticatedUsers($deny))->isFalse();
-
-        // Deny by default
-        $default = new DirectAccessConfig([]);
-        $this->boolean($direct_access->allowUnauthenticatedUsers($default))->isFalse();
-    }
-
-    /**
      * Data provider for the `testCanAnswer` method.
      *
      * @return iterable
      */
     protected function testCanAnswerProvider(): iterable
     {
-        // Session info doesn't matter here
-        $session_info = new SessionInfo(
-            user_id   : 1,           // User has id 1
-            group_ids : [1, 2, 3],   // User is part of groups 1, 2 and 3
-            profile_id: 1,           // User has profile 1
-        );
-
-        // Default config
-        yield [
-            'config'     => new DirectAccessConfig(),
-            'parameters' => new FormAccessParameters(
-                session_info: $session_info,
-                url_parameters: []
+        // Autenticated form
+        $config_authenticated = $this->getConfigWithAuthenticadedAccess();
+        yield 'Authenticated form: allow authenticated user with correct token' => [
+            $config_authenticated,
+            new FormAccessParameters(
+                session_info: $this->getAuthenticatedSession(),
+                url_parameters: $this->getValidTokenUrlParameters()
             ),
-            'expected'   => true,
+            true
+        ];
+        yield 'Authenticated form: deny authenticated user with wrong token' => [
+            $config_authenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getInvalidTokenUrlParameters()
+            ),
+            false
+        ];
+        yield 'Authenticated form: deny authenticated user with wrong token' => [
+            $config_authenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getMissingTokenUrlParameters()
+            ),
+            false
+        ];
+        yield 'Authenticated form: deny unauthenticated user with correct token' => [
+            $config_authenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getValidTokenUrlParameters()
+            ),
+            false
+        ];
+        yield 'Authenticated form: deny unauthenticated user with wrong token' => [
+            $config_authenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getInvalidTokenUrlParameters()
+            ),
+            false
+        ];
+        yield 'Authenticated form: deny unauthenticated user with missing token' => [
+            $config_authenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getMissingTokenUrlParameters()
+            ),
+            false
         ];
 
-        // Test token usage
-        $config = new DirectAccessConfig([
-            'token' => "valid_token"
-        ]);
-        yield [
-            'config'   => $config,
-            'parameters' => new FormAccessParameters(
-                session_info: $session_info,
-                url_parameters: ['token' => 'invalid_token']
+        // Unauthenticated form
+        $config_unauthenticated = $this->getConfigWithUnauthenticadedAccess();
+        yield 'Unauthenticated form: allow authenticated user with correct token' => [
+            $config_unauthenticated,
+            new FormAccessParameters(
+                session_info: $this->getAuthenticatedSession(),
+                url_parameters: $this->getValidTokenUrlParameters()
             ),
-            'expected' => false,
+            true
         ];
-        yield [
-            'config'   => $config,
-            'parameters' => new FormAccessParameters(
-                session_info: $session_info,
-                url_parameters: ['token' => 'valid_token']
+        yield 'Unauthenticated form: deny authenticated user with wrong token' => [
+            $config_unauthenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getInvalidTokenUrlParameters()
             ),
-            'expected' => true,
+            false
         ];
-        yield [
-            'config'   => $config,
-            'parameters' => new FormAccessParameters(
-                session_info: $session_info,
-                url_parameters: [] // No token
+        yield 'Unauthenticated form: deny authenticated user with wrong token' => [
+            $config_unauthenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getMissingTokenUrlParameters()
             ),
-            'expected' => true,
+            false
         ];
-
-        // Test force_direct_access usage
-        $config = new DirectAccessConfig([
-            'token'               => "valid_token",
-            'force_direct_access' => true,
-        ]);
-        yield [
-            'config'   => $config,
-            'parameters' => new FormAccessParameters(
-                session_info: $session_info,
-                url_parameters: [] // No token
+        yield 'Unauthenticated form: allow unauthenticated user with correct token' => [
+            $config_unauthenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getValidTokenUrlParameters()
             ),
-            'expected' => false,
+            true
         ];
-        yield [
-            'config'   => $config,
-            'parameters' => new FormAccessParameters(
-                session_info: $session_info,
-                url_parameters: ['token' => 'valid_token']
+        yield 'Unauthenticated form: deny unauthenticated user with wrong token' => [
+            $config_unauthenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getInvalidTokenUrlParameters()
             ),
-            'expected' => true,
+            false
+        ];
+        yield 'Unauthenticated form: deny unauthenticated user with missing token' => [
+            $config_unauthenticated,
+            new FormAccessParameters(
+                session_info: $this->getUnauthenticatedSession(),
+                url_parameters: $this->getMissingTokenUrlParameters()
+            ),
+            false
         ];
     }
 
@@ -293,5 +282,51 @@ class DirectAccess extends \GLPITestCase
         $this->boolean(
             $direct_access->canAnswer($config, $parameters)
         )->isEqualTo($expected);
+    }
+
+    private function getConfigWithAuthenticadedAccess(): DirectAccessConfig
+    {
+        return new DirectAccessConfig([
+            'token' => 'my_token',
+            'allow_unauthenticated' => false,
+        ]);
+    }
+
+    private function getConfigWithUnauthenticadedAccess(): DirectAccessConfig
+    {
+        return new DirectAccessConfig([
+            'token' => 'my_token',
+            'allow_unauthenticated' => true,
+        ]);
+    }
+
+    private function getAuthenticatedSession(): SessionInfo
+    {
+        // Dummy session data, won't be used.
+        return new SessionInfo(
+            user_id: 1,
+            group_ids: [2, 3],
+            profile_id: 4,
+        );
+    }
+
+    private function getUnauthenticatedSession(): null
+    {
+        return null;
+    }
+
+    private function getValidTokenUrlParameters(): array
+    {
+        return ['token' => 'my_token'];
+    }
+
+    private function getInvalidTokenUrlParameters(): array
+    {
+        return ['token' => 'not_my_token'];
+    }
+
+    private function getMissingTokenUrlParameters(): array
+    {
+        return [];
     }
 }

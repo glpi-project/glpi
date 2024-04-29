@@ -42,8 +42,8 @@ use Glpi\Http\Response;
 
 /** @var array $CFG_GLPI */
 
-// Real security stategy will be handled a bit later as we need the framework and
-// the target form to be loaded.
+// Since forms may be available to unauthenticated users, we trust the
+// `canAnswerForm` method to do the required session checks.
 $SECURITY_STRATEGY = 'no_check';
 
 include('../../inc/includes.php');
@@ -66,20 +66,9 @@ if (!$form) {
 
 $manager = FormAccessControlManager::getInstance();
 
-// Manual session checks depending on the configurated access
-// This is a separate step from the `canAnswerForm` step to force each
-// access controls to be explicit on this point and avoid opening
-// too much access to unauthenticated users by mistake.
-$firewall = new Firewall($CFG_GLPI['root_doc']);
-if ($manager->canUnauthenticatedUsersAccessForm($form)) {
-    $firewall->applyStrategy($_SERVER['PHP_SELF'], Firewall::STRATEGY_NO_CHECK);
-} else {
-    $firewall->applyStrategy($_SERVER['PHP_SELF'], Firewall::STRATEGY_AUTHENTICATED);
-}
-
 // Validate form access
 $parameters = new FormAccessParameters(
-    session_info: Session::getSessionInfo(),
+    session_info: Session::getCurrentSessionInfo(),
     url_parameters: $_GET
 );
 if (!$manager->canAnswerForm($form, $parameters)) {

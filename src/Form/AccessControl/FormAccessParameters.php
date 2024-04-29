@@ -40,12 +40,17 @@ use Glpi\Session\SessionInfo;
 final readonly class FormAccessParameters
 {
     public function __construct(
-        private SessionInfo $session_info,
+        private ?SessionInfo $session_info,
         private array $url_parameters,
     ) {
     }
 
-    public function getSessionInfo(): SessionInfo
+    public function isAuthenticated()
+    {
+        return $this->session_info !== null;
+    }
+
+    public function getSessionInfo(): ?SessionInfo
     {
         return $this->session_info;
     }

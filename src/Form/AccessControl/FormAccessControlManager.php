@@ -150,38 +150,6 @@ final class FormAccessControlManager
     }
 
     /**
-     * Check if unauthenticated users can access the given form.
-     *
-     * @param Form $form
-     *
-     * @return bool
-     */
-    public function canUnauthenticatedUsersAccessForm(Form $form): bool
-    {
-        // Get access controls defined for this form
-        $access_controls = $this->getAccessControlsForForm($form);
-
-        // If no access controls are defined, we use the default behavior,
-        // which mean showing the form to all authenticated users.
-        if (!count($access_controls)) {
-            return false;
-        }
-
-        // Validate each define strategies
-        foreach ($access_controls as $control) {
-            $strategy = $control->getStrategy();
-            $config = $control->getConfig();
-            if (!$strategy->allowUnauthenticatedUsers($config)) {
-                return false;
-            }
-        }
-
-        // If we reach this point, all defined controls strategies allow
-        // unauthenticated users.
-        return true;
-    }
-
-    /**
      * Check if the current user can answer the given form.
      *
      * @param Form $form
@@ -198,22 +166,38 @@ final class FormAccessControlManager
             return true;
         }
 
-        // Check the defined access controls.
-        // All active access controls must be validated.
-        $access_controls = $this->getAccessControlsForForm($form);
-        foreach ($access_controls as $control) {
-            $can_answer = $control->getStrategy()->canAnswer(
-                $control->getConfig(),
+        $access_controls_policies = $this->getAccessControlsForForm($form);
+        if (count($access_controls_policies) === 0) {
+            // Refuse access if no access controls are configured.
+            return false;
+        }
+
+        return $this->validateAccessControlsPolicies(
+            $access_controls_policies,
+            $parameters
+        );
+    }
+
+    private function validateAccessControlsPolicies(
+        array $policies,
+        FormAccessParameters $parameters
+    ): bool {
+        // TODO: for now, we use an unanimous decision system.
+        // Future PR will allow to pick between unanimous and affirmative
+        // strategies.
+
+        /** @var FormAccessControl[] $policies */
+        foreach ($policies as $policiy) {
+            $can_answer = $policiy->getStrategy()->canAnswer(
+                $policiy->getConfig(),
                 $parameters
             );
+
             if (!$can_answer) {
-                // If any control deny access, the user is denied.
                 return false;
             }
         }
 
-        // If we reach this point, all defined controls strategies allow
-        // acces to this form.
         return true;
     }
 

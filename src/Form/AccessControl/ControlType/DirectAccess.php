@@ -104,21 +104,6 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function allowUnauthenticatedUsers(JsonConfigInterface $config): bool
-    {
-        if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
-        }
-
-        // Token must always be supplied for unauthenticated users
-        if (!isset($_GET['token']) || $config->token !== $_GET['token']) {
-            return false;
-        }
-
-        return $config->allow_unauthenticated;
-    }
-
-    #[Override]
     public function canAnswer(
         JsonConfigInterface $config,
         FormAccessParameters $parameters
@@ -127,13 +112,33 @@ final class DirectAccess implements ControlTypeInterface
             throw new \InvalidArgumentException("Invalid config class");
         }
 
-        $token = $parameters->getUrlParameters()['token'] ?? null;
-        if ($token !== null) {
-            // A token was supplied, it must be correct
-            return $config->token === $token;
-        } else {
-            // No token supplied, check if token access is mandatory
-            return !$config->force_direct_access;
+        if (!$this->validateSession($config, $parameters)) {
+            return false;
         }
+
+        return $this->validateToken($config, $parameters);
+    }
+
+    private function validateSession(
+        DirectAccessConfig $config,
+        FormAccessParameters $parameters,
+    ): bool {
+        if (!$config->allow_unauthenticated && !$parameters->isAuthenticated()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function validateToken(
+        DirectAccessConfig $config,
+        FormAccessParameters $parameters,
+    ): bool {
+        $token = $parameters->getUrlParameters()['token'] ?? null;
+        if ($token === null) {
+            return false;
+        }
+
+        return $config->token === $token;
     }
 }

@@ -273,104 +273,6 @@ final class FormAccessControlManager extends DbTestCase
         }
     }
 
-    /**
-     * Data provider for the `testCanUnauthenticatedUsersAccessForm` test.
-     *
-     * @return iterable
-     */
-    public function canUnauthenticatedUsersAccessFormProvider(): iterable
-    {
-        // Form without access controls
-        $form_1 = $this->createForm(new FormBuilder());
-        yield [
-            'form'     => $form_1,
-            'expected' => false,
-        ];
-
-        // Form with the default DirectAccess policy
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([])) // Default config
-        );
-        yield [
-            'form'     => $form_2,
-            'expected' => false,
-        ];
-
-        // Form with a DirectAccess policy that don't allow unauthenticated users.
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'allow_unauthenticated' => false, // Disabled
-                ]))
-        );
-        yield [
-            'form'     => $form_2,
-            'expected' => false,
-        ];
-
-        // Form with a DirectAccess policy that allow unauthenticated users.
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'allow_unauthenticated' => true,         // Enabled
-                    'token'                 => 'my_token',
-                ]))
-        );
-        yield [
-            'form'     => $form_2,
-            'expected' => false, // No token is supplied
-        ];
-
-        // Form with a DirectAccess policy that allow unauthenticated users.
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'allow_unauthenticated' => true,         // Enabled
-                    'token'                 => 'my_token',
-                ]))
-        );
-        $_GET['token'] = 'invalid_token';
-        yield [
-            'form'     => $form_2,
-            'expected' => false, // Invalid token is supplied
-        ];
-
-        // Form with a DirectAccess policy that allow unauthenticated users.
-        $form_2 = $this->createForm(
-            (new FormBuilder())
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'allow_unauthenticated' => true,         // Enabled
-                    'token'                 => 'my_token',
-                ]))
-        );
-        $_GET['token'] = 'my_token';
-        yield [
-            'form'     => $form_2,
-            'expected' => true, // Valid token is supplied
-        ];
-        unset($_GET['token']);
-    }
-
-    /**
-     * Test the `canUnauthenticatedUsersAccessForm` method.
-     *
-     * @dataProvider canUnauthenticatedUsersAccessFormProvider
-     *
-     * @param Form $form
-     * @param bool $expected
-     *
-     * @return void
-     */
-    public function testCanUnauthenticatedUsersAccessForm(
-        Form $form,
-        bool $expected
-    ): void {
-        $this->boolean(
-            $this->getManager()->canUnauthenticatedUsersAccessForm($form)
-        )->isEqualTo($expected);
-    }
-
     public function testAdminCanBypassFormRestrictions(): void
     {
         $this->login('glpi', 'glpi');
@@ -382,36 +284,36 @@ final class FormAccessControlManager extends DbTestCase
         )->isTrue();
     }
 
-    public function testFormWithoutRestrictionCanBeAnswered(): void
+    public function testFormWithoutRestrictionCantBeAnswered(): void
     {
         $form = $this->createForm(new FormBuilder());
         $access_parameters = $this->getEmptyParameters();
 
         $this->boolean(
             $this->getManager()->canAnswerForm($form, $access_parameters)
-        )->isTrue();
+        )->isFalse();
     }
 
     public function formWithMultipleRestrictionsProvider(): iterable
     {
         $form = $this->getFormAccessibleOnlyToTechUserWithMandatoryToken();
 
-        yield 'both_parameters_invalid' => [
+        yield 'Both parameters invalid' => [
             'form'       => $form,
             'parameters' => $this->getEmptyParameters(),
             'expected'   => false,
         ];
-        yield 'user_valid_and_no_token_supplied' => [
+        yield 'Valid user and no token supplied' => [
             'form'       => $form,
             'parameters' => $this->getTechUserParameters(),
             'expected'   => false,
         ];
-        yield 'user_invalid_and_valid_token' => [
+        yield 'Invalid user and valid token' => [
             'form'       => $form,
             'parameters' => $this->getValidTokenParameters(),
             'expected'   => false,
         ];
-        yield 'user_valid_and_valid_token' => [
+        yield 'Valid user and valid token' => [
             'form'       => $form,
             'parameters' => $this->getTechUserAndValidTokenParameters(),
             'expected'   => true,

@@ -160,89 +160,51 @@ class AllowList extends \GLPITestCase
     }
 
     /**
-     * Test the `allowUnauthenticatedUsers` method.
-     *
-     * @return void
-     */
-    public function testAllowUnauthenticatedUsers(): void
-    {
-        $allow_list = new \Glpi\Form\AccessControl\ControlType\AllowList();
-
-        // Not much to test here, just ensure the method run without errors
-        $this->boolean($allow_list->allowUnauthenticatedUsers(new AllowListConfig()));
-    }
-
-    /**
      * Data provider for the `testCanAnswer` method.
      *
      * @return iterable
      */
     protected function testCanAnswerProvider(): iterable
     {
-        // Mock session info
-        $session_info = new SessionInfo(
-            user_id   : 1,           // User has id 1
-            group_ids : [1, 2, 3],   // User is part of groups 1, 2 and 3
-            profile_id: 1,           // User has profile 1
-        );
-        $parameters = new FormAccessParameters(
-            session_info: $session_info,
-            url_parameters: []
-        );
-
-        // Default config, allow all users
-        yield [
-            'config'     => new AllowListConfig(),
-            'parameters' => $parameters,
+        yield 'Refuse all when allow list is empty' => [
+            'config'     => $this->getEmptyAllowList(),
+            'parameters' => $this->getAuthenticatedUserParameters(),
+            'expected'   => false,
+        ];
+        yield 'Refuse unauthenticated users' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getUnauthenticatedUserParameters(),
+            'expected'   => false,
+        ];
+        yield 'Allow directly allowed user' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getDirectlyAllowedUserParameters(),
             'expected'   => true,
         ];
-
-        // User allowlist
-        yield [
-            'config'  => new AllowListConfig([
-                'user_ids' => [2] // Not our user
-            ]),
-            'parameters' => $parameters,
-            'expected' => false,
+        yield 'Deny not directly allowed user' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getNotDirectlyAllowedUserParameters(),
+            'expected'   => false,
         ];
-        yield [
-            'config'  => new AllowListConfig([
-                'user_ids' => [1] // Our user
-            ]),
-            'parameters' => $parameters,
-            'expected' => true,
+        yield 'Allow user by group' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getAllowedUserByGroupParameters(),
+            'expected'   => true,
         ];
-
-        // Group allowlist
-        yield [
-            'config'  => new AllowListConfig([
-                'group_ids' => [4, 5] // Not our user
-            ]),
-            'parameters' => $parameters,
-            'expected' => false,
+        yield 'Deny user by group' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getNotAllowedUserByGroupParameters(),
+            'expected'   => false,
         ];
-        yield [
-            'config'  => new AllowListConfig([
-                'group_ids' => [1, 2] // Our user
-            ]),
-            'parameters' => $parameters,
-            'expected' => true,
+        yield 'Allow user by profile' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getAllowedUserByProfileParameters(),
+            'expected'   => true,
         ];
-
-        // Profile allowlist
-        yield [
-            'config'  => new AllowListConfig([
-                'profile_ids' => [2] // Not our user
-            ]),
-            'parameters' => $parameters,
-            'expected' => false,
-        ];
-        yield [
-            'config'  => new AllowListConfig([
-                'profile_ids' => [1] // Our user
-            ]),
-            'parameters' => $parameters,
-            'expected' => true,
+        yield 'Deny user by profile' => [
+            'config'     => $this->getFullyConfiguredAllowListConfig(),
+            'parameters' => $this->getNotAllowedUserByProfileParameters(),
+            'expected'   => false,
         ];
     }
 
@@ -262,5 +224,113 @@ class AllowList extends \GLPITestCase
         $this->boolean(
             $allow_list->canAnswer($config, $parameters)
         )->isEqualTo($expected);
+    }
+
+    private function getEmptyAllowList(): AllowListConfig
+    {
+        return new AllowListConfig([]);
+    }
+
+
+    private function getFullyConfiguredAllowListConfig(): AllowListConfig
+    {
+        return new AllowListConfig([
+            'user_ids'    => [1, 2, 3],
+            'group_ids'   => [4, 5, 6],
+            'profile_ids' => [7, 8, 9],
+        ]);
+    }
+
+    private function getAuthenticatedUserParameters(): FormAccessParameters
+    {
+        // Dummy session data, won't be used.
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 1,
+                group_ids: [2, 3],
+                profile_id: 4,
+            ),
+            url_parameters: []
+        );
+    }
+
+    private function getUnauthenticatedUserParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: null,
+            url_parameters: []
+        );
+    }
+
+    private function getDirectlyAllowedUserParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 1,
+                group_ids: [],
+                profile_id: 0,
+            ),
+            url_parameters: []
+        );
+    }
+
+    private function getNotDirectlyAllowedUserParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 0,
+                group_ids: [],
+                profile_id: 0,
+            ),
+            url_parameters: []
+        );
+    }
+
+    private function getAllowedUserByGroupParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 0,
+                group_ids: [5],
+                profile_id: 0,
+            ),
+            url_parameters: []
+        );
+    }
+
+    private function getNotAllowedUserByGroupParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 0,
+                group_ids: [],
+                profile_id: 0,
+            ),
+            url_parameters: []
+        );
+    }
+
+    private function getAllowedUserByProfileParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 0,
+                group_ids: [],
+                profile_id: 9,
+            ),
+            url_parameters: []
+        );
+    }
+
+    private function getNotAllowedUserByProfileParameters(): FormAccessParameters
+    {
+        return new FormAccessParameters(
+            session_info: new SessionInfo(
+                user_id: 0,
+                group_ids: [],
+                profile_id: 0,
+            ),
+            url_parameters: []
+        );
     }
 }

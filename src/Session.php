@@ -971,7 +971,7 @@ class Session
     public static function redirectIfNotLoggedIn()
     {
 
-        if (!self::getLoginUserID()) {
+        if (!self::isAuthenticated()) {
             Html::redirectToLogin();
         }
     }
@@ -2308,18 +2308,26 @@ class Session
         }
     }
 
+    public static function isAuthenticated(): bool
+    {
+        return self::getLoginUserID() !== false;
+    }
+
     /**
      * Get a SessionInfo object with the current session information.
      *
-     * @return SessionInfo
+     * @return ?SessionInfo
      */
-    public static function getSessionInfo(): SessionInfo
+    public static function getCurrentSessionInfo(): ?SessionInfo
     {
-        $session_info = new SessionInfo(
+        if (!self::isAuthenticated()) {
+            return null;
+        }
+
+        return new SessionInfo(
             user_id   : self::getLoginUserID(),
             group_ids : $_SESSION['glpigroups'] ?? [],
             profile_id: $_SESSION['glpiactiveprofile']['id'],
         );
-        return $session_info;
     }
 }

@@ -86,14 +86,6 @@ interface ControlTypeInterface
      */
     public function createConfigFromUserInput(array $input): JsonConfigInterface;
 
-    /**
-     * Check if unauthenticated users are allowed to answer the given form.
-     *
-     * @param JsonConfigInterface $config
-     *
-     * @return bool
-     */
-    public function allowUnauthenticatedUsers(JsonConfigInterface $config): bool;
 
     /**
      * Check if the current user can answer the given form.

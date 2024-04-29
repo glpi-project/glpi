@@ -38,7 +38,6 @@ namespace Glpi\Form\AccessControl\ControlType;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
 use Group;
 use Override;
 use Profile;
@@ -96,12 +95,6 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function allowUnauthenticatedUsers(JsonConfigInterface $config): bool
-    {
-        return false;
-    }
-
-    #[Override]
     public function canAnswer(
         JsonConfigInterface $config,
         FormAccessParameters $parameters
@@ -110,34 +103,54 @@ final class AllowList implements ControlTypeInterface
             throw new \InvalidArgumentException("Invalid config class");
         }
 
-        if (
-            empty($config->user_ids)
-            && empty($config->group_ids)
-            && empty($config->profile_ids)
-        ) {
-            // No restrictions
+        if (!$parameters->isAuthenticated()) {
+            return false;
+        }
+
+        return $this->isUserAllowed($config, $parameters);
+    }
+
+    private function isUserAllowed(
+        AllowListConfig $config,
+        FormAccessParameters $parameters
+    ): bool {
+        $session_info = $parameters->getSessionInfo();
+
+        if ($this->isUserDirectlyAllowed($config, $session_info)) {
+            return true;
+        } elseif ($this->isUserAllowedByGroup($config, $session_info)) {
+            return true;
+        } elseif ($this->isUserAllowedByProfile($config, $session_info)) {
             return true;
         }
 
-        $session = $parameters->getSessionInfo();
+        return false;
+    }
 
-        // User allowlist
-        if (in_array($session->user_id, $config->user_ids)) {
-            return true;
-        }
+    private function isUserDirectlyAllowed(
+        AllowListConfig $config,
+        SessionInfo $session_info
+    ): bool {
+        return in_array($session_info->user_id, $config->user_ids);
+    }
 
-        // Group allowlist
-        foreach ($session->group_ids as $group_id) {
+    private function isUserAllowedByGroup(
+        AllowListConfig $config,
+        SessionInfo $session_info
+    ): bool {
+        foreach ($session_info->group_ids as $group_id) {
             if (in_array($group_id, $config->group_ids)) {
                 return true;
             }
         }
 
-        // Profiles allowlist
-        if (in_array($session->profile_id, $config->profile_ids)) {
-            return true;
-        }
-
         return false;
+    }
+
+    private function isUserAllowedByProfile(
+        AllowListConfig $config,
+        SessionInfo $session_info
+    ): bool {
+        return in_array($session_info->profile_id, $config->profile_ids);
     }
 }

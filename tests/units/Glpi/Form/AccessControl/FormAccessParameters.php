@@ -42,35 +42,63 @@ class FormAccessParameters extends GLPITestCase
 {
     public function testGetSessionInfo(): void
     {
-        $session_info = new SessionInfo(
-            user_id: 1,
-            group_ids: [2, 3],
-            profile_id: 4,
-        );
         $form_access_parameters = new \Glpi\Form\AccessControl\FormAccessParameters(
-            session_info: $session_info,
+            session_info: $this->getDummySessionInfo(),
             url_parameters: []
         );
 
         $this->object(
             $form_access_parameters->getSessionInfo()
-        )->isEqualTo($session_info);
+        )->isEqualTo($this->getDummySessionInfo());
     }
 
     public function testGetUrlParameters(): void
     {
-        $session_info = new SessionInfo(
-            user_id: 1,
-            group_ids: [2, 3],
-            profile_id: 4,
-        );
         $form_access_parameters = new \Glpi\Form\AccessControl\FormAccessParameters(
-            session_info: $session_info,
+            session_info: $this->getDummySessionInfo(),
             url_parameters: ['token' => 'my_token']
         );
 
         $this->array(
             $form_access_parameters->getUrlParameters()
         )->isEqualTo(['token' => 'my_token']);
+    }
+
+    public function isAuthenticatedProvider(): iterable
+    {
+        $parameters_without_session = new \Glpi\Form\AccessControl\FormAccessParameters(
+            session_info: null,
+            url_parameters: []
+        );
+        $parameters_with_session = new \Glpi\Form\AccessControl\FormAccessParameters(
+            session_info: $this->getDummySessionInfo(),
+            url_parameters: []
+        );
+
+        return [
+            'Without session' => [$parameters_without_session, false],
+            'With session'    => [$parameters_with_session, true],
+        ];
+    }
+
+    /**
+     * @dataProvider isAuthenticatedProvider
+     */
+    public function testIsAuthenticated(
+        \Glpi\Form\AccessControl\FormAccessParameters $form_access_parameters,
+        bool $expected
+    ): void {
+        $this->boolean(
+            $form_access_parameters->isAuthenticated()
+        )->isEqualTo($expected);
+    }
+
+    private function getDummySessionInfo(): SessionInfo
+    {
+        return new SessionInfo(
+            user_id: 1,
+            group_ids: [2, 3],
+            profile_id: 4,
+        );
     }
 }
