@@ -995,6 +995,7 @@ JAVASCRIPT;
         $ri = new ReservationItem();
 
         $fn_get_entry = static function (array $data, bool $is_old) use ($ri) {
+            /** @var array $CFG_GLPI */
             global $CFG_GLPI;
             $entry = [
                 'itemtype' => ReservationItem::class,
