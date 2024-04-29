@@ -445,58 +445,55 @@ class RuleCollection extends CommonDBTM
         $p['active']    = false;
         $p['condition'] = 0;
         $p['_glpi_tab'] = $options['_glpi_tab'];
-        $rand           = mt_rand();
         $p['display_criterias'] = false;
         $p['display_actions']   = false;
 
         foreach (['inherited','childrens', 'condition'] as $param) {
-            if (
-                isset($options[$param])
-                && $this->isRuleRecursive()
-            ) {
+            if (isset($options[$param]) && $this->isRuleRecursive()) {
                 $p[$param] = $options[$param];
             }
         }
 
         foreach (['display_criterias', 'display_actions'] as $param) {
-            if (
-                isset($options[$param])
-            ) {
+            if (isset($options[$param])) {
                 $p[$param] = $options[$param];
             }
         }
 
         $rule              = $this->getRuleClass();
-        $display_entities  = ($this->isRuleRecursive()
-                            && ($p['inherited'] || $p['childrens']));
+        $display_entities  = ($this->isRuleRecursive() && ($p['inherited'] || $p['childrens']));
         $display_criterias = $p['display_criterias'];
         $display_actions   = $p['display_actions'];
 
        // Do not know what it is ?
-        $canedit    = (self::canUpdate()
-                     && !$display_entities);
+        $canedit    = self::canUpdate() && !$display_entities;
 
         $use_conditions = false;
         if ($rule->useConditions()) {
             // First get saved option
-            $p['condition'] = Session::getSavedOption($this->getType(), 'condition', 0);
-            if ($p['condition'] == 0) {
+            $p['condition'] = Session::getSavedOption(static::class, 'condition', 0);
+            if ((int) $p['condition'] === 0) {
                 $p['condition'] = $this->getDefaultRuleConditionForList();
             }
             $use_conditions = true;
-            // Mini Search engine
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><td class='center' width='50%'>";
-            echo __('Rules used for') . "</td><td>";
-            $rule->dropdownConditions(['value' => $p['condition'],
-                'on_change'  => 'reloadTab("start=0&inherited=' . $p['inherited']
-                                                         . '&childrens=' . $p['childrens'] . '&condition="+this.value)'
-            ]);
-            echo "</td></tr></table>";
+            $twig_params = [
+                'label' => __('Rules used for'),
+                'conditions' => $rule::getConditionsArray(),
+                'p' => $p
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="d-flex justify-content-center">
+                    {{ fields.dropdownArrayField('condition', p.condition, conditions, label, {
+                        on_change: 'reloadTab("start=0&inherited=' ~ p.inherited ~ '&childrens=' ~ p.childrens ~ '&condition=" + this.value)'
+                    }) }}
+                </div>
+TWIG, $twig_params);
         }
 
         $nb         = $this->getCollectionSize($p['inherited'], $p['condition'], $p['childrens']);
-        $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
+        $p['start'] = $options['start'] ?? 0;
 
         if ($p['start'] >= $nb) {
             $p['start'] = 0;
@@ -505,176 +502,138 @@ class RuleCollection extends CommonDBTM
         $p['limit'] = $_SESSION['glpilist_limit'];
         $this->getCollectionPart($p);
 
-        Html::printAjaxPager('', $p['start'], $nb);
-
-        Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-        echo "\n<div class='spaced'>";
-
-        if ($canedit && $nb) {
-            $massiveactionparams = ['num_displayed' => min($p['limit'], $nb),
-                'container'     => 'mass' . __CLASS__ . $rand,
-                'extraparams'   => ['entity' => $this->entity,
-                    'condition' => $p['condition'],
-                    'rule_class_name'
-                                                                 => $this->getRuleClassName()
-                ]
-            ];
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        echo "<table class='table table-striped table-hover card-table'>";
-        $colspan = 4;
-
-        if ($display_entities) {
-            $colspan++;
-        }
-        if ($use_conditions) {
-            $colspan++;
-        }
-        if ($display_criterias) {
-            $colspan++;
-        }
-        if ($display_actions) {
-            $colspan++;
-        }
-
         $ruletype = $this->getRuleClassName();
-        $can_sort = $canedit && $nb;
-        if (count($this->RuleList->list)) {
-            Session::initNavigateListItems($ruletype);
+
+        $entries = [];
+        for ($i = $p['start'],$j = 0; isset($this->RuleList->list[$j]); $i++,$j++) {
+            $entries[] = [
+                'itemtype' => $ruletype,
+                'id'       => $this->RuleList->list[$j]->fields['id'],
+            ] + $this->RuleList->list[$j]->getDataForList($display_criterias, $display_actions, $display_entities, $canedit);
         }
 
-        if ($can_sort) {
-            $colspan += 2;
-        }
-
-        echo "<tr><th colspan='$colspan'>" . $this->getTitle() . "</th></tr>";
-        $header_row = "<tr>";
-        $header_row .= "<th>";
-        if ($canedit) {
-            $header_row .= Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-        }
-        $header_row .= "</th>";
-        $header_row .= "<th>" . __('Name') . "</th>";
-        $header_row .= "<th>" . __('Description') . "</th>";
+        $columns = [
+            'name' => __('Name'),
+            'description' => __('Description'),
+        ];
         if ($use_conditions) {
-            $header_row .= "<th>" . __('Use rule for') . "</th>";
+            $columns['condition'] = __('Use rule for');
         }
         if ($display_criterias) {
-            $header_row .= "<th>" . RuleCriteria::getTypeName(2) . "</th>";
+            $columns['criteria'] = RuleCriteria::getTypeName(Session::getPluralNumber());
         }
         if ($display_actions) {
-            $header_row .= "<th>" . RuleAction::getTypeName(2) . "</th>";
+            $columns['actions'] = RuleAction::getTypeName(Session::getPluralNumber());
         }
-        $header_row .= "<th>" . __('Active') . "</th>";
+        $columns['is_active'] = __('Active');
         if ($display_entities) {
-            $header_row .= "<th>" . Entity::getTypeName(1) . "</th>";
+            $columns['entities_id'] = Entity::getTypeName(1);
         }
-        if ($can_sort) {
-            $header_row .= "<th></th><th></th>";
-        }
-        $header_row .= "</tr>";
-        echo $header_row;
+        $columns['sort'] = '';
 
-        echo "<tbody class='sortable-rules'>";
-        for ($i = $p['start'],$j = 0; isset($this->RuleList->list[$j]); $i++,$j++) {
-            $this->RuleList->list[$j]->showMinimalForm(
-                $target,
-                $i == 0,
-                $i == $nb - 1,
-                $display_entities,
-                $p['condition'],
-                $display_criterias,
-                $display_actions
-            );
-            Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
-        }
-        echo "</tbody>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'datatable_id' => 'rulelist',
+            'table_class_style' => 'table-striped table-hover card-table',
+            'is_tab' => true,
+            'start' => $p['start'],
+            'limit' => $p['limit'],
+            'nofilter' => true,
+            'nosort' => true,
+            'super_header' => $this->getTitle(),
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+                'criteria' => 'raw_html',
+                'actions' => 'raw_html',
+                'is_active' => 'raw_html',
+                'sort' => 'raw_html'
+            ],
+            'entries' => $entries,
+            'total_number' => $nb,
+            'filtered_number' => count($entries),
+            'showmassiveactions' => true,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+                'extraparams'   => [
+                    'entity' => $this->entity,
+                    'condition' => $p['condition'],
+                    'rule_class_name' => $this->getRuleClassName()
+                ],
+                'item'          => $this
+            ]
+        ]);
+        $collection_classname = static::class;
+        echo <<<HTML
+            <script>
+                $(() => {
+                    sortable('#rulelist tbody', {
+                        handle: '.grip-rule',
+                        placeholder: '<tr><td colspan="8" class="sortable-placeholder">&nbsp;</td></tr>'
+                    })[0].addEventListener('sortupdate', (e) => {
+                       const sort_detail = e.detail;
+                       const new_index = sort_detail.destination.index;
+                       const old_index = sort_detail.origin.index;
+        
+                       $.post(CFG_GLPI['root_doc'] + '/ajax/rule.php', {
+                          'action': 'move_rule',
+                          'rule_id': sort_detail.item.dataset.id,
+                          'collection_classname':  "{$collection_classname}",
+                          'sort_action': (old_index > new_index) ? 'before' : 'after',
+                          'ref_id': sort_detail.destination.itemsBeforeUpdate[new_index].dataset.id,
+                       });
+        
+                       displayAjaxMessageAfterRedirect();
+                    });
+                });
+            </script>
+HTML;
 
-        if ($nb) {
-            echo $header_row;
-        }
-        echo "</table>";
-
-        if ($can_sort) {
-            $collection_classname = $this->getType();
-            $js = <<<JAVASCRIPT
-         $(function() {
-            sortable('.sortable-rules', {
-               handle: '.grip-rule',
-               placeholder: '<tr><td colspan="7" class="sortable-placeholder">&nbsp;</td></tr>'
-            })[0].addEventListener('sortupdate', function(e) {
-               var sort_detail          = e.detail;
-               var rule_id              = sort_detail.item.dataset.ruleId;
-               var collection_classname = "{$collection_classname}";
-               var new_index            = sort_detail.destination.index;
-               var old_index            = sort_detail.origin.index;
-               var ref_id               = sort_detail.destination.itemsBeforeUpdate[new_index].dataset.ruleId;
-               var sort_action          = 'after';
-
-               if (old_index > new_index) {
-                  sort_action = 'before';
-               }
-
-               $.post(CFG_GLPI['root_doc']+'/ajax/rule.php', {
-                  'action': 'move_rule',
-                  'rule_id': rule_id,
-                  'collection_classname': collection_classname,
-                  'sort_action': sort_action,
-                  'ref_id': ref_id,
-               });
-
-               displayAjaxMessageAfterRedirect();
-            });
-         });
-JAVASCRIPT;
-            echo Html::scriptBlock($js);
-
-            $massiveactionparams['ontop'] = false;
-            Html::showMassiveActions($massiveactionparams);
-        }
-
-        echo "</div>";
-        Html::closeForm();
-
-        Html::printAjaxPager('', $p['start'], $nb);
-
-        echo "<div class='spaced center'>";
-
-        if ($plugin = isPluginItemType($this->getType())) {
+        if ($plugin = isPluginItemType(static::class)) {
             $url = Plugin::getWebDir($plugin['plugin']);
         } else {
             $url = $CFG_GLPI["root_doc"];
         }
 
-        // if rules provides has default rules, then we're able to reset them
-        $ruleclass = $this->getRuleClass();
-        if ($ruleclass instanceof Rule && $ruleclass->hasDefaultRules()) {
-            echo "<a class='btn btn-primary' id='reset_rules' href='" . $rule->getSearchURL() . "?reinit=true&subtype=" . $ruleclass->getType() . "' " .
-            "onClick='if(confirm(\"" . __s('Rules will be erased and recreated from default. Are you sure?') . "\"))
-            { return true } else { return false; };' " .
-            "title='" . __s("Delete all rules and recreate them by default") . "'" .
-            ">" . __('Reset rules') . "</a>&nbsp;";
-        }
-        echo "<a class='btn btn-primary' href='#' data-bs-toggle='modal' data-bs-target='#allruletest$rand'>" .
-                  __('Test rules engine') . "</a>";
-        Ajax::createIframeModalWindow(
-            'allruletest' . $rand,
-            $url . "/front/rulesengine.test.php?" .
-                                          "sub_type=" . $ruleclass->getType() .
-                                          "&condition=" . $p['condition'],
-            ['title' => __('Test rules engine')]
-        );
-        echo "</div>";
+        $twig_params = [
+            'rule_class' => $rule::class,
+            'can_reset' => $rule instanceof Rule && $rule::hasDefaultRules(),
+            'can_replay' => $this->can_replay_rules,
+            'reset_label' => __('Reset rules'),
+            'reset_warning' => __('Rules will be erased and recreated from defaults. Are you sure?'),
+            'test_label' => __('Test rules engine'),
+            'replay_label' => __('Replay the dictionary rules'),
+            'test_url' => $url . "/front/rulesengine.test.php?sub_type=" . $rule::class . "&condition={$p['condition']}"
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <div class="d-flex justify-content-center">
+                {% if can_reset %}
+                    <button type="button" class="btn btn-primary mx-1" name="reset_rules">{{ reset_label }}</button>
+                {% endif %}
+                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#allruletest">{{ test_label }}</button>
+                {% do call('Ajax::createIframeModalWindow', ['allruletest', test_url, {title: test_label}]) %}
+                {% if can_replay %}
+                    <a class="btn btn-primary mx-1" role="button" href="{{ rule_class|itemtype_search_path }}?replay_rule=replay_rule">{{ replay_label }}</a>
+                {% endif %}
 
-        if ($this->can_replay_rules) {
-            echo "<div class='spaced center'>";
-            echo "<a class='btn btn-primary' href='" . $rule->getSearchURL() . "?replay_rule=replay_rule'>" .
-               __s('Replay the dictionary rules') . "</a>";
-            echo "</div>";
-        }
+                <script>
+                    $(() => {
+                        $('button[name="reset_rules"]').on('click', () => {
+                            glpi_confirm({
+                                title: '{{ reset_label }}',
+                                message: '{{ reset_warning }}',
+                                confirm_callback: () => {
+                                    window.location.href = '{{ rule_class|itemtype_search_path }}?reinit=true&subtype={{ rule_class }}';
+                                }
+                            });
+                        });
+                    });
+                </script>
+            </div>
+TWIG, $twig_params);
 
-        echo "<div class='spaced'>";
+        echo "<div class='mb-2'>";
         $this->showAdditionalInformationsInForm($target);
         echo "</div>";
     }
