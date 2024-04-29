@@ -44,12 +44,8 @@ class RuleRight extends Rule
     public static $rightname           = 'rule_ldap';
     public $specific_parameters = true;
 
-    /**
-     * @see Rule::showNewRuleForm()
-     **/
     public function showNewRuleForm($ID)
     {
-
         echo "<form method='post' action='" . Toolbox::getItemTypeFormURL('Entity') . "'>";
         echo "<table  class='tab_cadre_fixe'>";
         echo "<tr><th colspan='7'>" . __('Authorizations assignment rules') . "</th></tr>\n";
@@ -79,7 +75,6 @@ class RuleRight extends Rule
         echo "</table>";
         Html::closeForm();
     }
-
 
     public function executeActions($output, $params, array $input = [])
     {
@@ -111,15 +106,15 @@ class RuleRight extends Rule
                                 break;
 
                             case '_profiles_id_default':
-                                     $output['profiles_id'] = $action->fields["value"];
+                                $output['profiles_id'] = $action->fields["value"];
                                 break;
 
                             case 'groups_id':
-                                   $output['groups_id'] = $action->fields["value"];
+                                $output['groups_id'] = $action->fields["value"];
                                 break;
 
                             case 'specific_groups_id':
-                                 $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
+                                $output["_ldap_rules"]['groups_id'][] = $action->fields["value"];
                                 break;
 
                             case "is_active":
@@ -152,30 +147,16 @@ class RuleRight extends Rule
                                         $action->fields["value"],
                                         $regex_result
                                     );
-                                    if ($res != null) {
-                                        switch ($action->fields["field"]) {
-                                            case "_affect_entity_by_dn":
-                                                 $entity_found = Entity::getEntityIDByDN($res);
-                                                break;
+                                    if ($res !== null) {
+                                        $entity_found = match ($action->fields["field"]) {
+                                            "_affect_entity_by_dn" => Entity::getEntityIDByDN($res),
+                                            "_affect_entity_by_tag" => Entity::getEntityIDByTag($res),
+                                            "_affect_entity_by_domain" => Entity::getEntityIDByDomain($res),
+                                            "_affect_entity_by_completename" => Entity::getEntityIDByCompletename($res),
+                                            default => -1,
+                                        };
 
-                                            case "_affect_entity_by_tag":
-                                                 $entity_found = Entity::getEntityIDByTag($res);
-                                                break;
-
-                                            case "_affect_entity_by_domain":
-                                                $entity_found = Entity::getEntityIDByDomain($res);
-                                                break;
-
-                                            case "_affect_entity_by_completename":
-                                                $entity_found = Entity::getEntityIDByCompletename($res);
-                                                break;
-
-                                            default:
-                                                $entity_found = -1;
-                                                break;
-                                        }
-
-                                         //If an entity was found
+                                        // If an entity was found
                                         if ($entity_found > -1) {
                                             $entity[] = $entity_found;
                                         }
@@ -183,7 +164,7 @@ class RuleRight extends Rule
                                 }
 
                                 if (!count($entity)) {
-                                //Not entity assigned : action processing must be stopped for this rule
+                                    // Not entity assigned : action processing must be stopped for this rule
                                     $continue = false;
                                 }
                                 break;
@@ -194,10 +175,10 @@ class RuleRight extends Rule
         }
 
         if ($continue) {
-           //Nothing to be returned by the function :
-           //Store in session the entity and/or right
+            // Nothing to be returned by the function :
+            // Store in session the entity and/or right
             if (count($entity)) {
-                if ($right != '') {
+                if ($right !== '') {
                     foreach ($entity as $entID) {
                         $output["_ldap_rules"]["rules_entities_rights"][] = [$entID, $right,
                             $is_recursive
@@ -208,7 +189,7 @@ class RuleRight extends Rule
                         $output["_ldap_rules"]["rules_entities"][] = [$entID, $is_recursive];
                     }
                 }
-            } else if ($right != '') {
+            } else if ($right !== '') {
                 $output["_ldap_rules"]["rules_rights"][] = $right;
             }
 
@@ -217,16 +198,11 @@ class RuleRight extends Rule
         return $output_src;
     }
 
-
     public function getTitle()
     {
         return __('Automatic user assignment');
     }
 
-
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
         static $criterias = [];
@@ -283,10 +259,9 @@ class RuleRight extends Rule
         return $criterias;
     }
 
-
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        if ($criteria['field'] == 'type') {
+        if ($criteria['field'] === 'type') {
             \Auth::dropdown([
                 'name'  => $name,
                 'value' => $value,
@@ -295,7 +270,6 @@ class RuleRight extends Rule
         }
         return false;
     }
-
 
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
@@ -306,13 +280,8 @@ class RuleRight extends Rule
         return false;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                                              = parent::getActions();
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
@@ -408,16 +377,14 @@ class RuleRight extends Rule
         return false;
     }
 
-
-
     /**
      * Get all ldap rules criteria from the DB and add them into the RULES_CRITERIAS
      *
-     * @param &$criteria
+     * @param array &$criteria
+     * @return void
      **/
-    public function addSpecificCriteriasToArray(&$criteria)
+    public function addSpecificCriteriasToArray(array &$criteria): void
     {
-
         $criteria['ldap'] = __('LDAP criteria');
         $all = getAllDataFromTable('glpi_rulerightparameters', [], true);
         foreach ($all as $data) {

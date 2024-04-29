@@ -35,12 +35,8 @@
 
 class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
 {
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -70,13 +66,8 @@ class RuleDictionnaryOperatingSystemEdition extends RuleDictionnaryDropdown
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                          = [];
         $actions['name']['name']          = _n('Edition', 'Editions', 1);
         $actions['name']['force_actions'] = ['append_regex_result', 'assign', 'regex_result'];

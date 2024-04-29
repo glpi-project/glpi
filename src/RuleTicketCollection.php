@@ -35,7 +35,7 @@
 
 class RuleTicketCollection extends RuleCommonITILObjectCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public static $rightname    = 'rule_ticket';
     public $menu_option         = 'ticket';
 
@@ -44,9 +44,6 @@ class RuleTicketCollection extends RuleCommonITILObjectCollection
         return __('Business rules for tickets');
     }
 
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
     public function prepareInputDataForProcess($input, $params)
     {
         // Pass x-priority header if exists

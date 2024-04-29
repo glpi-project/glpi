@@ -284,6 +284,8 @@ The present file will list all changes made to the project; according to the
 - `Rule::$orderby` property.
 - `Rule::showMinimalActionForm()`
 - `RuleCollection::showTestResults()`
+- `RuleRightCollection::displayActionByName()`
+- `RuleRightCollection::showTestResults()`
 - `RuleImportComputer` class.
 - `RuleImportComputerCollection` class.
 - `RuleMatchedLog::showFormAgent()`.

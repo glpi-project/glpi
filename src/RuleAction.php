@@ -45,12 +45,9 @@ class RuleAction extends CommonDBChild
     public $dohistory              = true;
     public $auto_message_on_action = false;
 
-    /**
-     * @since 0.84
-     **/
+
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
 
@@ -64,21 +61,14 @@ class RuleAction extends CommonDBChild
         return $forbidden;
     }
 
-
     /**
-     * @param string $rule_type
+     * @param class-string<Rule> $rule_type
      **/
     public function __construct($rule_type = 'Rule')
     {
         static::$itemtype = $rule_type;
     }
 
-
-    /**
-     * @since 0.84.3
-     *
-     * @see CommonDBTM::post_getFromDB()
-     */
     public function post_getFromDB()
     {
 
@@ -90,7 +80,6 @@ class RuleAction extends CommonDBChild
             }
         }
     }
-
 
     /**
      * Get title used in rule
@@ -111,7 +100,6 @@ class RuleAction extends CommonDBChild
 
     protected function computeFriendlyName()
     {
-
         if ($rule = getItemForItemtype(static::$itemtype)) {
             $action_row = $rule->getMinimalActionText($this->fields);
             $action_text = trim(preg_replace(['/<td[^>]*>/', '/<\/td>/'], [' ', ''], $action_row));
@@ -120,14 +108,8 @@ class RuleAction extends CommonDBChild
         return '';
     }
 
-    /**
-     * @since 0.84
-     *
-     * @see CommonDBChild::post_addItem()
-     **/
     public function post_addItem()
     {
-
         parent::post_addItem();
         if (
             isset($this->input['rules_id'])
@@ -139,15 +121,8 @@ class RuleAction extends CommonDBChild
         }
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @see CommonDBTM::post_purgeItem()
-     **/
     public function post_purgeItem()
     {
-
         parent::post_purgeItem();
         if (
             isset($this->fields['rules_id'])
@@ -159,19 +134,13 @@ class RuleAction extends CommonDBChild
         }
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function prepareInputForAdd($input)
     {
-
-        if (!isset($input['field']) || empty($input['field'])) {
+        if (empty($input['field'])) {
             return false;
         }
         return parent::prepareInputForAdd($input);
     }
-
 
     public function rawSearchOptions()
     {
@@ -179,7 +148,7 @@ class RuleAction extends CommonDBChild
 
         $tab[] = [
             'id'                 => '1',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'action_type',
             'name'               => self::getTypeName(1),
             'massiveaction'      => false,
@@ -189,7 +158,7 @@ class RuleAction extends CommonDBChild
 
         $tab[] = [
             'id'                 => '2',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'field',
             'name'               => _n('Field', 'Fields', Session::getPluralNumber()),
             'massiveaction'      => false,
@@ -199,7 +168,7 @@ class RuleAction extends CommonDBChild
 
         $tab[] = [
             'id'                 => '3',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'value',
             'name'               => __('Value'),
             'massiveaction'      => false,
@@ -210,14 +179,6 @@ class RuleAction extends CommonDBChild
         return $tab;
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param $options   array
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -264,15 +225,6 @@ class RuleAction extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
-     * @param $options      array
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {
@@ -331,11 +283,10 @@ class RuleAction extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-
     /**
      * Get all actions for a given rule
      *
-     * @param $ID the rule_description ID
+     * @param integer $ID the rule_description ID
      *
      * @return array of RuleAction objects
      **/
@@ -345,7 +296,7 @@ class RuleAction extends CommonDBChild
         global $DB;
 
         $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
+            'FROM'   => static::getTable(),
             'WHERE'  => [static::$items_id => $ID],
             'ORDER'  => 'id'
         ]);
@@ -359,18 +310,16 @@ class RuleAction extends CommonDBChild
         return $rules_actions;
     }
 
-
     /**
      * Add an action
      *
-     * @param $action    action type
-     * @param $ruleid    rule ID
-     * @param $field     field name
-     * @param $value     value
+     * @param string $action    action type
+     * @param integer $ruleid    rule ID
+     * @param string $field     field name
+     * @param string $value     value
      **/
     public function addActionByAttributes($action, $ruleid, $field, $value)
     {
-
         $input = [
             'action_type'     => $action,
             'field'           => $field,
@@ -380,35 +329,30 @@ class RuleAction extends CommonDBChild
         $this->add($input);
     }
 
-
     /**
      * Display a dropdown with all the possible actions
      *
-     * @param $options   array of possible options:
-     *    - subtype
-     *    - name
-     *    - field
-     *    - value
-     *    - alreadyused
-     *    - display
+     * @param array{subtype: string, name: string, field: string, value?: string, alreadyused?: bool, display?: bool} $options
+     * <ul>
+     *     <li>subtype: the itemtype of the rule</li>
+     *     <li>name: the name of the dropdown</li>
+     *     <li>field: the field name</li>
+     *     <li>value: the value</li>
+     *     <li>alreadyused: if an action of the same type was already used for the rule (default false)</li>
+     *     <li>display: if the dropdown should be displayed< (default true)/li>
+     * </ul>
+     * @return string|int Returns the dropdown HTML if display is false, otherwise the random number used to create the dropdown is returned.
      **/
     public static function dropdownActions($options = [])
     {
-
-        $p = [
+        $p = array_replace([
             'subtype'     => '',
             'name'        => '',
             'field'       => '',
             'value'       => '',
             'alreadyused' => false,
             'display'     => true,
-        ];
-
-        if (is_array($options) && count($options)) {
-            foreach ($options as $key => $val) {
-                $p[$key] = $val;
-            }
-        }
+        ], $options);
 
         if ($rule = getItemForItemtype($p['subtype'])) {
             $actions_options = $rule->getAllActions();
@@ -435,13 +379,16 @@ class RuleAction extends CommonDBChild
                 'display' => $p['display']
             ]);
         }
+        return '';
     }
 
-
+    /**
+     * @return array<string, string>
+     */
     public static function getActions()
     {
-
-        return ['assign'              => __('Assign'),
+        return [
+            'assign'              => __('Assign'),
             'append'              => __('Add'),
             'regex_result'        => __('Assign the value from regular expression'),
             'append_regex_result' => __('Add the result of regular expression'),
@@ -459,28 +406,23 @@ class RuleAction extends CommonDBChild
         ];
     }
 
-
     /**
-     * @param $ID
-     **/
+     * @param string $ID
+     * @return string
+     */
     public static function getActionByID($ID)
     {
-
         $actions = self::getActions();
-        if (isset($actions[$ID])) {
-            return $actions[$ID];
-        }
-        return '';
+        return $actions[$ID] ?? '';
     }
 
-
     /**
-     * @param $action
-     * @param $regex_result
+     * @param string $action
+     * @param array $regex_result
+     * @return string
      **/
     public static function getRegexResultById($action, $regex_result)
     {
-
         $results = [];
 
         if (count($regex_result) > 0) {
@@ -488,7 +430,7 @@ class RuleAction extends CommonDBChild
                 foreach ($results[1] as $result) {
                     $action = str_replace(
                         "#$result",
-                        (isset($regex_result[$result]) ? $regex_result[$result] : ''),
+                        $regex_result[$result] ?? '',
                         $action
                     );
                 }
@@ -497,10 +439,9 @@ class RuleAction extends CommonDBChild
         return $action;
     }
 
-
     /**
-     * @param $rules_id
-     * @param $sub_type
+     * @param integer $rules_id
+     * @param string $sub_type
      **/
     public function getAlreadyUsedForRuleID($rules_id, $sub_type)
     {
@@ -513,7 +454,7 @@ class RuleAction extends CommonDBChild
             $actions = [];
             $iterator = $DB->request([
                 'SELECT' => 'field',
-                'FROM'   => $this->getTable(),
+                'FROM'   => static::getTable(),
                 'WHERE'  => [static::$items_id => $rules_id],
             ]);
 
@@ -531,9 +472,8 @@ class RuleAction extends CommonDBChild
         }
     }
 
-
     /**
-     * @param $options   array
+     * @param array $options
      **/
     public function displayActionSelectPattern($options = [])
     {

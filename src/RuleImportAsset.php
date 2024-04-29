@@ -70,16 +70,13 @@ class RuleImportAsset extends Rule
         return $col->getTitle();
     }
 
-
     public function maxActionsCount()
     {
         return 1;
     }
 
-
     public function getCriterias()
     {
-
         static $criteria = [];
 
         if (count($criteria)) {
@@ -207,7 +204,6 @@ class RuleImportAsset extends Rule
         return $criteria;
     }
 
-
     public function getActions()
     {
         $actions = [
@@ -223,7 +219,6 @@ class RuleImportAsset extends Rule
         return $actions;
     }
 
-
     public static function getRuleActionValues()
     {
         return [
@@ -233,21 +228,14 @@ class RuleImportAsset extends Rule
         ];
     }
 
-
     public function displayAdditionRuleActionValue($value)
     {
-
         $values = self::getRuleActionValues();
-        if (isset($values[$value])) {
-            return $values[$value];
-        }
-        return '';
+        return $values[$value] ?? '';
     }
-
 
     public function manageSpecificCriteriaValues($criteria, $name, $value)
     {
-
         switch ($criteria['type']) {
             case "state":
                 $link_array = [
@@ -261,7 +249,6 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-
     /**
      * Add more criteria
      *
@@ -270,25 +257,19 @@ class RuleImportAsset extends Rule
      */
     public static function addMoreCriteria($criterion = '')
     {
-        switch ($criterion) {
-            case 'entityrestrict':
-                return [self::PATTERN_ENTITY_RESTRICT => __('Yes')];
-            case 'link_criteria_port':
-                return [self::PATTERN_NETWORK_PORT_RESTRICT => __('Yes')];
-            case 'only_these_criteria':
-                return [self::PATTERN_ONLY_CRITERIA_RULE => __('Yes')];
-            default:
-                return [
-                    self::PATTERN_FIND      => __('is already present'),
-                    self::PATTERN_IS_EMPTY  => __('is empty')
-                ];
-        }
+        return match ($criterion) {
+            'entityrestrict' => [self::PATTERN_ENTITY_RESTRICT => __('Yes')],
+            'link_criteria_port' => [self::PATTERN_NETWORK_PORT_RESTRICT => __('Yes')],
+            'only_these_criteria' => [self::PATTERN_ONLY_CRITERIA_RULE => __('Yes')],
+            default => [
+                self::PATTERN_FIND => __('is already present'),
+                self::PATTERN_IS_EMPTY => __('is empty')
+            ],
+        };
     }
-
 
     public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
     {
-
         if (
             $condition == self::PATTERN_IS_EMPTY
             || $condition == self::PATTERN_ENTITY_RESTRICT
@@ -303,17 +284,15 @@ class RuleImportAsset extends Rule
                 isset($crit['type'])
                  && $crit['type'] == 'dropdown_inventory_itemtype'
             ) {
-                $array = $this->getItemTypesForRules();
+                $array = static::getItemTypesForRules();
                 return $array[$pattern];
             }
         }
         return false;
     }
 
-
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-
         if ($test) {
             return false;
         }
@@ -337,10 +316,8 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-
     public function displayAdditionalRuleAction(array $action, $value = '')
     {
-
         switch ($action['type']) {
             case 'inventory_type':
             case 'fusion_type':
@@ -350,10 +327,8 @@ class RuleImportAsset extends Rule
         return false;
     }
 
-
     public function getCriteriaByID($ID)
     {
-
         $criteria = [];
         foreach ($this->criterias as $criterion) {
             if ($ID == $criterion->fields['criteria']) {
@@ -388,7 +363,7 @@ class RuleImportAsset extends Rule
                             isset($definition_criteria['is_global'])
                              && $definition_criteria['is_global']
                         ) {
-                         //If a value is missing, then there's a problem !
+                            // If a value is missing, then there's a problem !
                             trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                             return false;
                         }
@@ -458,16 +433,16 @@ class RuleImportAsset extends Rule
         $this->link_criteria_port = false;
 
         if (!$this->preComputeCriteria($input)) {
-           //logged in place, just exit
+            // logged in place, just exit
             return false;
         }
 
-       //No complex criteria
-        if (empty($this->complex_criteria) || $this->found_criteria == 0) {
+        // No complex criteria
+        if (empty($this->complex_criteria) || $this->found_criteria === 0) {
             return true;
         }
 
-       // Get all equipment type
+        // Get all equipment type
         $itemtypeselected = [];
         if (
             isset($input['itemtype'])
@@ -483,8 +458,8 @@ class RuleImportAsset extends Rule
             foreach ($CFG_GLPI["asset_types"] as $itemtype) {
                 if (
                     class_exists($itemtype)
-                    && $itemtype != 'SoftwareLicense'
-                    && $itemtype != 'Certificate'
+                    && $itemtype !== SoftwareLicense::class
+                    && $itemtype !== Certificate::class
                 ) {
                     $itemtypeselected[] = $itemtype;
                 }
@@ -498,7 +473,7 @@ class RuleImportAsset extends Rule
             $item = new $itemtype();
             $itemtable = $item->getTable();
 
-           //Build the request to check if the asset exists in GLPI
+            // Build the request to check if the asset exists in GLPI
             $where_entity = $input['entities_id'] ?? [];
             if (!empty($where_entity) && !is_array($where_entity)) {
                 $where_entity = [$where_entity];
@@ -513,7 +488,7 @@ class RuleImportAsset extends Rule
             if ($this->link_criteria_port) {
                 $this->handleLinkCriteriaPort($item, $it_criteria);
             } else {
-               // 1 join per criterion
+                // 1 join per criterion
                 $this->handleOneJoinPerCriteria($item, $it_criteria);
             }
 
@@ -524,7 +499,7 @@ class RuleImportAsset extends Rule
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
-                    if (is_array($val) && in_array($this->getType(), $val)) {
+                    if (is_array($val) && in_array(static::class, $val, true)) {
                         $params = [
                             'where_entity' => $where_entity,
                             'itemtype'     => $itemtype,
@@ -551,7 +526,7 @@ class RuleImportAsset extends Rule
                     $this->criterias_results['found_inventories'][$itemtype][] = $data['id'];
                     foreach ($data as $alias => $value) {
                         if (
-                            strstr($alias, "portid")
+                            str_contains($alias, "portid")
                             && !is_null($value)
                             && is_numeric($value)
                             && $value > 0
@@ -1018,10 +993,8 @@ class RuleImportAsset extends Rule
         return $output;
     }
 
-
     public function showSpecificCriteriasForPreview($fields)
     {
-
         $entity_as_criterion = false;
         foreach ($this->criterias as $criterion) {
             if ($criterion->fields['criteria'] == 'entities_id') {
@@ -1122,13 +1095,13 @@ class RuleImportAsset extends Rule
             'only_these_criteria'
         ], $this->getNetportCriteria());
 
-       //Add plugin global criteria
+        // Add plugin global criteria
         if (isset($PLUGIN_HOOKS['use_rules'])) {
             foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                if (is_array($val) && in_array($this->getType(), $val)) {
+                if (is_array($val) && in_array(static::class, $val, true)) {
                     $criteria = Plugin::doOneHook(
                         $plugin,
                         "ruleImportAsset_addGlobalCriteria",

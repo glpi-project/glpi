@@ -40,30 +40,18 @@ class RuleMailCollector extends Rule
     public static $rightname = 'rule_mailcollector';
 
 
-    /**
-     * @see Rule::maxActionsCount()
-     **/
     public function maxActionsCount()
     {
         return 2;
     }
 
-
-    /**
-     * @see Rule::getTitle()
-     **/
     public function getTitle()
     {
         return __('Rules for assigning a ticket created through a mails receiver');
     }
 
-
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -171,13 +159,8 @@ class RuleMailCollector extends Rule
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                                              = parent::getActions();
 
         $actions['entities_id']['name']                       = Entity::getTypeName(1);
@@ -219,10 +202,8 @@ class RuleMailCollector extends Rule
         return $actions;
     }
 
-
     public function executeActions($output, $params, array $input = [])
     {
-
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
@@ -267,10 +248,10 @@ class RuleMailCollector extends Rule
                                    //Case 2 : check if there's only one profile for this user
                                     if (
                                         (isset($this->criterias_results['ONE_PROFILE'])
-                                        && (count($entities) == 1))
+                                        && (count($entities) === 1))
                                         || !isset($this->criterias_results['ONE_PROFILE'])
                                     ) {
-                                        if (count($entities) == 1) {
+                                        if (count($entities) === 1) {
                                             //User has right on only one entity
                                               $output['entities_id'] = array_pop($entities);
                                         } else if (isset($this->criterias_results['UNIQUE_PROFILE'])) {
@@ -294,8 +275,8 @@ class RuleMailCollector extends Rule
                                              // If an entity is defined in user's preferences,
                                              // and this entity allowed for this profile, use this one
                                              // else do not set the rule as matched
-                                                if (in_array($tmpid, $entities)) {
-                                                          $output['entities_id'] = $user->fields['entities_id'];
+                                                if (in_array($tmpid, $entities, true)) {
+                                                    $output['entities_id'] = $user->fields['entities_id'];
                                                 }
                                             }
                                         }
@@ -311,8 +292,8 @@ class RuleMailCollector extends Rule
                                  $action->fields["value"],
                                  $regex_result
                              );
-                            if ($res != null) {
-                                if ($action->fields["field"] == 'externalid') {
+                            if ($res !== null) {
+                                if ($action->fields["field"] === 'externalid') {
                                     $output[$action->fields["field"]] = $res;
                                 } else {
                                     switch ($action->fields["field"]) {
@@ -335,7 +316,7 @@ class RuleMailCollector extends Rule
                         }
                         break;
                     default:
-                    //Allow plugins actions
+                        // Allow plugins actions
                         $executeaction = clone $this;
                         $output = $executeaction->executePluginsActions($action, $output, $params, $input);
                         break;
@@ -344,7 +325,6 @@ class RuleMailCollector extends Rule
         }
         return $output;
     }
-
 
     public static function getIcon()
     {

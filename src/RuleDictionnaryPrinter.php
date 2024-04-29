@@ -49,21 +49,13 @@ class RuleDictionnaryPrinter extends Rule
         return __('Dictionary of printers');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
     public function maxActionsCount()
     {
         return 4;
     }
 
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -85,13 +77,8 @@ class RuleDictionnaryPrinter extends Rule
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                               = parent::getActions();
 
         $actions['name']['name']               = __('Name');

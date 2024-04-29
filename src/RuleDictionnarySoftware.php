@@ -46,31 +46,19 @@ class RuleDictionnarySoftware extends Rule
     public static $rightname                         = 'rule_dictionnary_software';
 
 
-
-    /**
-     * @see Rule::getTitle()
-     **/
     public function getTitle()
     {
-       //TRANS: plural for software
+        //TRANS: plural for software
         return __('Dictionary of software');
     }
 
-
-    /**
-     * @see Rule::maxActionsCount()
-     **/
     public function maxActionsCount()
     {
         return 4;
     }
 
-    /**
-     * @see Rule::getCriterias()
-     **/
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -96,13 +84,8 @@ class RuleDictionnarySoftware extends Rule
         return $criterias;
     }
 
-
-    /**
-     * @see Rule::getActions()
-     **/
     public function getActions()
     {
-
         $actions                                  = parent::getActions();
 
         $actions['name']['name']                  = _n('Software', 'Software', 1);
