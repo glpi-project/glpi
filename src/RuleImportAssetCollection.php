@@ -59,8 +59,8 @@ class RuleImportAssetCollection extends RuleCollection
         global $CFG_GLPI;
 
         if (!$withtemplate) {
-            switch ($item->getType()) {
-                case __CLASS__:
+            switch ($item::class) {
+                case self::class:
                     $ong    = [];
                     $types = $CFG_GLPI['state_types'];
                     foreach ($types as $type) {
@@ -75,16 +75,14 @@ class RuleImportAssetCollection extends RuleCollection
         return '';
     }
 
-
     public function getTitle()
     {
         return __('Rules for import and link equipments');
     }
 
-
     public function collectionFilter($criteria, $options = [])
     {
-       //current tab
+        // current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());
         $current_tab = str_replace(__CLASS__ . '$', '', $active_tab);
         $tabs = $this->getTabNameForItem($this);
@@ -153,7 +151,7 @@ class RuleImportAssetCollection extends RuleCollection
             $item = $inventory->getItem();
             $invitem = $inventory->getMainAsset();
 
-          //sanitize input
+            // sanitize input
             if ($input['itemtype'] == 0) {
                 unset($input['itemtype']);
             }
@@ -166,7 +164,7 @@ class RuleImportAssetCollection extends RuleCollection
             $data = $invitem->getData();
             $rules_input = $invitem->prepareAllRulesInput($data[0]);
 
-          //keep user values if any
+            // keep user values if any
             $input += $rules_input;
         } else {
             trigger_error(

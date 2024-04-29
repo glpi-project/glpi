@@ -90,9 +90,6 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
             && (count($_SESSION['glpiactiveentities']) > 1));
     }
 
-    /**
-     * @see RuleCollection::prepareInputDataForProcess()
-     **/
     public function prepareInputDataForProcess($input, $params)
     {
         $input['_groups_id_of_requester'] = [];

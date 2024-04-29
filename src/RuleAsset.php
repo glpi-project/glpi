@@ -58,23 +58,20 @@ class RuleAsset extends Rule
         return true;
     }
 
-
     public function isEntityAssign()
     {
         return true;
     }
-
 
     public function canUnrecurs()
     {
         return true;
     }
 
-
     public static function getConditionsArray()
     {
-
-        return [static::ONADD                   => __('Add'),
+        return [
+            static::ONADD                   => __('Add'),
             static::ONUPDATE                => __('Update'),
             static::ONADD | static::ONUPDATE  => sprintf(
                 __('%1$s / %2$s'),
@@ -84,10 +81,8 @@ class RuleAsset extends Rule
         ];
     }
 
-
     public function getCriterias()
     {
-
         static $criterias = [];
 
         if (count($criterias)) {
@@ -166,10 +161,8 @@ class RuleAsset extends Rule
         return $criterias;
     }
 
-
     public function getActions()
     {
-
         $actions                                = parent::getActions();
 
         $actions['states_id']['name']           = __('Status');
@@ -216,22 +209,19 @@ class RuleAsset extends Rule
         return $actions;
     }
 
-
     public function getRights($interface = 'central')
     {
-
         $values = parent::getRights();
-        $values[self::PARENT] = ['short' => __('Parent business'),
+        $values[self::PARENT] = [
+            'short' => __('Parent business'),
             'long'  => __('Business rules (entity parent)')
         ];
 
         return $values;
     }
 
-
     public function executeActions($output, $params, array $input = [])
     {
-
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
