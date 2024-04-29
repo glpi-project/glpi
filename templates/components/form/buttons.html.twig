@@ -140,7 +140,7 @@
                 {% else %}
                     {% set extra_attribs = '' %}
                 {% endif %}
-               <button class="btn btn-outline-secondary me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}" {{ extra_attribs|raw }}>
+               <button class="btn {{ val.btn_class ?? 'btn-outline-secondary' }} me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}" {{ extra_attribs|raw }}>
                   {% if val is iterable %}
                      {% if val.icon is defined %}
                         <i class="{{ val.icon }}"></i>

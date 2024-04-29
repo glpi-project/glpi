@@ -304,67 +304,48 @@ class ReservationItem extends CommonDBChild
         }
 
         $ri = new self();
+        $reservable = $ri->getFromDBbyItem($item::class, $item->getID());
+        $twig_params = [
+            'reservable' => $reservable,
+            'toggle_state_label' => ($ri->fields["is_active"] ?? 0)
+                ? __('Make unavailable')
+                : __('Make available'),
+            'toggle_state' => $ri->fields["is_active"] ?? 0,
+            'toggle_reservable_label' => $reservable
+                ? __('Prohibit reservations')
+                : __('Authorize reservations'),
+            'toggle_reservable' => $reservable,
+            'item' => $item,
+            'id' => $ri->getID(),
+            'purge_warning' => __('Are you sure you want to return this non-reservable item?')
+                . ' ' . __('That will remove all the reservations in progress.'),
+        ];
 
-        echo "<div>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . __('Reserve an item') . "</th></tr>";
-        echo "<tr class='tab_bg_1'>";
-        if ($ri->getFromDBbyItem($item->getType(), $item->getID())) {
-            echo "<td class='center'>";
-           //Switch reservation state
-
-            if ($ri->fields["is_active"]) {
-                Html::showSimpleForm(
-                    static::getFormURL(),
-                    'update',
-                    "<i class='fas fa-toggle-on'></i>&nbsp;" . __('Make unavailable'),
-                    [
-                        'id'        => $ri->fields['id'],
-                        'is_active' => 0
-                    ]
-                );
-            } else {
-                Html::showSimpleForm(
-                    static::getFormURL(),
-                    'update',
-                    "<i class='fas fa-toggle-off'></i>&nbsp;" . __('Make available'),
-                    [
-                        'id'        => $ri->fields['id'],
-                        'is_active' => 1
-                    ]
-                );
-            }
-
-            echo '</td><td>';
-            Html::showSimpleForm(
-                static::getFormURL(),
-                'purge',
-                "<i class='fas fa-ban'></i>&nbsp;" . __('Prohibit reservations'),
-                ['id' => $ri->fields['id']],
-                '',
-                '',
-                [__('Are you sure you want to return this non-reservable item?'),
-                    __('That will remove all the reservations in progress.')
-                ]
-            );
-
-            echo "</td>";
-        } else {
-            echo "<td class='center'>";
-            Html::showSimpleForm(
-                static::getFormURL(),
-                'add',
-                "<i class='fas fa-check'></i>&nbsp;" . __('Authorize reservations'),
-                ['items_id'     => $item->getID(),
-                    'itemtype'     => $item::class,
-                    'entities_id'  => $item->getEntityID(),
-                    'is_recursive' => $item->isRecursive(),
-                ]
-            );
-            echo "</td>";
-        }
-        echo "</tr></table>";
-        echo "</div>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            <form id="reservation_actions" class="d-flex justify-content-center mt-3" action="{{ 'ReservationItem'|itemtype_form_path }}" method="post">
+                <input type="hidden" name="items_id" value="{{ item.getID() }}">
+                <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
+                <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
+                <input type="hidden" name="is_recursive" value="{{ item.isRecursive() }}">
+                <input type="hidden" name="is_active" value="{{ reservable ? (toggle_state ? 0 : 1) : 1 }}">
+                {% if reservable %}
+                    <button name="update" class="btn btn-{{ toggle_state ? 'danger' : 'primary' }} mx-1">
+                        <i class="{{ toggle_state ? 'ti ti-toggle-right' : 'ti ti-toggle-left' }} me-2"></i>
+                        {{ toggle_state_label }}
+                    </button>
+                    <input type="hidden" name="id" value="{{ id }}">
+                    <script>
+                        $(() => $('#reservation_actions button[name="purge"]').on('click', () => confirm('{{ purge_warning }}')));
+                    </script>
+                {% endif %}
+                <button name="{{ toggle_reservable ? 'purge' : 'add' }}" class="btn btn-{{ toggle_reservable ? 'danger' : 'primary' }} mx-1">
+                    <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2"></i>
+                    {{ toggle_reservable_label }}
+                </button>
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            </form>
+TWIG, $twig_params);
     }
 
     public function showForm($ID, array $options = [])
@@ -410,74 +391,42 @@ class ReservationItem extends CommonDBChild
 
         $ok         = false;
         $showentity = Session::isMultiEntitiesMode();
-        $values     = [];
+        $reservation_types     = [];
 
         if (isset($_SESSION['glpi_saved']['ReservationItem'])) {
             $_POST = $_SESSION['glpi_saved']['ReservationItem'];
         }
 
-        if (isset($_POST['reserve'])) {
-            echo "<div id='viewresasearch'  class='center'>";
+        $reserve = isset($_POST['reserve']);
+        if ($reserve) {
             Toolbox::manageBeginAndEndPlanDates($_POST['reserve']);
-            echo "<div id='nosearch' class='text-center mb-3'>" .
-              "<a href=\"" . $CFG_GLPI['root_doc'] . "/front/reservationitem.php\">";
-            echo __s('See all reservable items') . "</a></div>";
         } else {
-            echo "<div id='makesearch' class='text-center mb-3'>" .
-              "<a class='btn btn-secondary' href='reservation.php?reservationitems_id=0'>
-                  <i class='" . Planning::getIcon() . " me-2'></i>
-                  " . __s("View calendar for all items") . "
-               </a>
-               <a class='btn btn-secondary mw-100 d-inline-block text-truncate' onClick=\"javascript:showHideDiv('viewresasearch','','','');" .
-                "showHideDiv('makesearch','','','')\">
-               <i class='ti ti-search me-2'></i>";
-            echo __s('Find a free item in a specific period') . "</a></div>";
-
-            echo "<div id='viewresasearch' style=\"display:none;\" class='center'>";
             $begin_time                 = time();
             $begin_time                -= ($begin_time % HOUR_TIMESTAMP);
             $_POST['reserve']["begin"]  = date("Y-m-d H:i:s", $begin_time);
             $_POST['reserve']["end"]    = date("Y-m-d H:i:s", $begin_time + HOUR_TIMESTAMP);
             $_POST['reservation_types'] = '';
         }
-        echo "<form method='post' name='form' action='" . Toolbox::getItemTypeSearchURL(__CLASS__) . "'>";
-        echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-        echo "<th colspan='3'>" . __s('Find a free item in a specific period') . "</th></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __s('Start date') . "</td><td class='d-flex'>";
-        Html::showDateTimeField("reserve[begin]", ['value'      =>  $_POST['reserve']["begin"],
-            'maybeempty' => false
-        ]);
-        echo "</td><td rowspan='3'>";
-        echo "<input type='submit' class='btn btn-primary' name='submit' value=\"" . _sx('button', 'Search') . "\">";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Duration') . "</td><td>";
-        $default_delay = floor((strtotime($_POST['reserve']["end"]) - strtotime($_POST['reserve']["begin"]))
-                             / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
-                       * $CFG_GLPI['time_step'] * MINUTE_TIMESTAMP;
-        $rand = Dropdown::showTimeStamp("reserve[_duration]", [
-            'min'        => 0,
-            'max'        => 48 * HOUR_TIMESTAMP,
-            'value'      => $default_delay,
-            'emptylabel' => __('Specify an end date')
-        ]);
-        echo "<br><div id='date_end$rand'></div>";
-        $params = [
-            'duration'     => '__VALUE__',
-            'end'          => $_POST['reserve']["end"],
-            'name'         => "reserve[end]"
+        $twig_params = [
+            'reserve' => $reserve,
+            'view_calendar_label' => __("View calendar for all items"),
+            'find_free_item_label' => __('Find a free item in a specific period'),
         ];
-
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_reserve[_duration]$rand",
-            "date_end$rand",
-            $CFG_GLPI["root_doc"] . "/ajax/planningend.php",
-            $params
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Item type') . "</td><td>";
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% if not reserve %}
+                <div id="makesearch" class="text-center mb-3">
+                    <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
+                        <i class="{{ 'Planning'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
+                    </a>
+                    <a class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
+                        <i class="ti ti-search me-2"></i>{{ find_free_item_label }}
+                    </a>
+                </div>
+                <div id="viewresasearch" class="d-none text-center">
+            {% endif %}
+TWIG, $twig_params);
 
         $iterator = $DB->request([
             'SELECT'          => 'itemtype',
@@ -491,7 +440,7 @@ class ReservationItem extends CommonDBChild
         foreach ($iterator as $data) {
             /** @var array{itemtype: string} $data */
             if (is_a($data['itemtype'], CommonDBTM::class, true)) {
-                $values[$data['itemtype']] = $data['itemtype']::getTypeName();
+                $reservation_types[$data['itemtype']] = $data['itemtype']::getTypeName();
             }
         }
 
@@ -525,30 +474,13 @@ class ReservationItem extends CommonDBChild
 
         foreach ($iterator as $ptype) {
             $id = $ptype['id'];
-            $values["Peripheral#$id"] = $ptype['name'];
+            $reservation_types["Peripheral#$id"] = $ptype['name'];
         }
 
-        Dropdown::showFromArray("reservation_types", $values, [
-            'class'               => "form-select",
-            'value'               => $_POST['reservation_types'],
-            'display_emptychoice' => true,
+        TemplateRenderer::getInstance()->display('pages/tools/find_available_reservation.html.twig', [
+            'reservation_types' => $reservation_types,
+            'default_location' => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0)
         ]);
-
-        echo "</td></tr>";
-
-        // Location dropdown
-        $locrand = mt_rand();
-        echo "<tr class='tab_bg_1'><td><label for='dropdown_locations_id$locrand'>" . __('Item location') . "</label></td><td>";
-        Location::dropdown([
-            // Fill with submitted data if any, otherwise use user's location
-            'value'  => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0),
-            'rand'   => $locrand,
-            'entity' => $_SESSION['glpiactiveentities'],
-        ]);
-
-        echo "</td></tr>";
-        echo "</table>";
-        Html::closeForm();
         echo "</div>";
 
         // GET method passed to form creation
