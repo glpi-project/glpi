@@ -202,11 +202,10 @@ class Group_User extends CommonDBRelation
             echo "<input type='hidden' name='users_id' value='$ID'>";
 
             $params = [
-                'used'      => $used,
                 'condition' => [
                     'is_usergroup' => 1,
                 ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
-            ];
+            ] + ['NOT' => self::getListForItemParams($user)];
             Group::dropdown($params);
             echo "</td><td>" . _n('Manager', 'Managers', 1) . "</td><td>";
             Dropdown::showYesNo('is_manager');
