@@ -1439,7 +1439,9 @@ class CommonDBTM extends CommonGLPI
             $this->no_form_page
             || !$this->can($this->fields['id'], READ)
         ) {
-            return htmlspecialchars($this->getNameID($options));
+            return ($p['icon'] ?? false)
+                ? $this->getNameID($options) // If icon is displayed, result is already a valid HTML code
+                : htmlspecialchars($this->getNameID($options));
         }
 
         $link = $this->getLinkURL();
@@ -3717,7 +3719,11 @@ class CommonDBTM extends CommonGLPI
             if ($p['icon']) {
                 $icon = $this->getIcon();
                 if (!empty($icon)) {
-                    $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
+                    $name = sprintf(
+                        '<i class="%s"></i> %s',
+                        htmlspecialchars($icon),
+                        htmlspecialchars($name)
+                    );
                 }
             }
             return $name;
