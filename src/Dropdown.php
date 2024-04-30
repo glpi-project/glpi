@@ -2702,6 +2702,7 @@ JAVASCRIPT;
 
         if (isset($post['used'])) {
             $used = $post['used'];
+
             if (count($used)) {
                 $where['NOT'] = ["$table.id" => $used];
             }
