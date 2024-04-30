@@ -1439,7 +1439,7 @@ class CommonDBTM extends CommonGLPI
             $this->no_form_page
             || !$this->can($this->fields['id'], READ)
         ) {
-            return $this->getNameID($options);
+            return htmlspecialchars($this->getNameID($options));
         }
 
         $link = $this->getLinkURL();
@@ -1449,11 +1449,17 @@ class CommonDBTM extends CommonGLPI
         if (!preg_match('/title=/', $p['linkoption'])) {
             $thename = $this->getName(['complete' => true]);
             if ($thename != NOT_AVAILABLE) {
-                $title = ' title="' . htmlentities($thename, ENT_QUOTES, 'utf-8') . '"';
+                $title = ' title="' . htmlspecialchars($thename) . '"';
             }
         }
 
-        return "<a " . $p['linkoption'] . " href='$link' $title>$label</a>";
+        return sprintf(
+            '<a %s href="%s" %s>%s</a>',
+            $p['linkoption'],
+            htmlspecialchars($link),
+            $title,
+            htmlspecialchars($label)
+        );
     }
 
 
