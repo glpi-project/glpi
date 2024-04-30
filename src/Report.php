@@ -309,7 +309,7 @@ class Report extends CommonGLPI
                 ],
                 'WHERE'     => [
                     "$table_item.is_deleted"   => 0
-                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria(),
+                ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria($table_item),
                 'GROUPBY'   => "$type_table.name"
             ];
 
