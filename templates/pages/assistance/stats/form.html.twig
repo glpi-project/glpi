@@ -33,10 +33,19 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<form method="POST" name="form" action="{{ target }}">
-    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+<form method="GET" name="form" action="{{ target }}">
+    <input type="hidden" name="itemtype" value="{{ itemtype }}">
+    {% if id is defined %}
+        <input type="hidden" name="id" value="{{ id }}">
+    {% endif %}
     {% if value2 is defined %}
         <input type="hidden" name="value2" value="{{ value2 }}">
+    {% endif %}
+    {% if champ is defined %}
+        <input type="hidden" name="champ" value="{{ champ }}">
+    {% endif %}
+    {% if type is defined %}
+        <input type="hidden" name="type" value="{{ type }}">
     {% endif %}
 
     <div class="card mx-auto mb-3">
@@ -44,8 +53,7 @@
             <div class="d-flex align-items-center">
                 {% set total_cols = 4 - (type_params is defined ? 0 : 1) - (showgraph is defined ? 0 : 1) %}
                 {% set field_class = 'col-12 col-sm-' ~ (12 / total_cols) %}
-                {% set has_type = type_params is defined %}
-                {% if has_type %}
+                {% if type_params is defined %}
                     {{ fields.dropdownArrayField(
                         type_params.field,
                         type_params.value,

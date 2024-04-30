@@ -59,27 +59,16 @@ foreach (['date1', 'date2'] as $key) {
     if (array_key_exists($key, $_GET) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
-    if (array_key_exists($key, $_POST) && preg_match('/\d{4}-\d{2}-\d{2}/', (string)$_POST[$key]) !== 1) {
-        unset($_POST[$key]);
-    }
-}
-if (empty($_POST["date1"]) && empty($_POST["date2"])) {
-    if (isset($_GET["date1"])) {
-        $_POST["date1"] = $_GET["date1"];
-    }
-    if (isset($_GET["date2"])) {
-        $_POST["date2"] = $_GET["date2"];
-    }
 }
 
 if (
-    !empty($_POST["date1"])
-    && !empty($_POST["date2"])
-    && (strcmp($_POST["date2"], $_POST["date1"]) < 0)
+    !empty($_GET["date1"])
+    && !empty($_GET["date2"])
+    && (strcmp($_GET["date2"], $_GET["date1"]) < 0)
 ) {
-    $tmp            = $_POST["date1"];
-    $_POST["date1"] = $_POST["date2"];
-    $_POST["date2"] = $tmp;
+    $tmp            = $_GET["date1"];
+    $_GET["date1"] = $_GET["date2"];
+    $_GET["date2"] = $tmp;
 }
 
 $cleantarget = preg_replace("/&date[12]=[0-9-]*/", "", $_SERVER['QUERY_STRING']);
@@ -99,7 +88,7 @@ switch ($_GET["type"]) {
     case "technician":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $link    = User::canView() ? 1 : 0;
         $name    = $item->getAssignName($_GET["id"], 'User', $link);
         $title   = sprintf(
@@ -112,7 +101,7 @@ switch ($_GET["type"]) {
     case "suppliers_id_assign":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $link    = Supplier::canView() ? 1 : 0;
         $name    = $item->getAssignName($_GET["id"], 'Supplier', $link);
         $title   = sprintf(
@@ -126,7 +115,7 @@ switch ($_GET["type"]) {
     case "user":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $link    = User::canView() ? 1 : 0;
         $name    = getUserName($_GET["id"], $link);
         $title   = sprintf(
@@ -145,8 +134,8 @@ switch ($_GET["type"]) {
         $val2    = "";
         $values  = Stat::getItems(
             $_GET["itemtype"],
-            $_POST["date1"],
-            $_POST["date2"],
+            $_GET["date1"],
+            $_GET["date2"],
             $_GET["type"],
             $parent
         );
@@ -167,8 +156,8 @@ switch ($_GET["type"]) {
         $val2    = '';
         $values  = Stat::getItems(
             $_GET['itemtype'],
-            $_POST['date1'],
-            $_POST['date2'],
+            $_GET['date1'],
+            $_GET['date2'],
             $_GET['type'],
             $parent
         );
@@ -183,7 +172,7 @@ switch ($_GET["type"]) {
     case "type":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($_GET["id"]));
         $title   = htmlspecialchars($title);
         break;
@@ -198,8 +187,8 @@ switch ($_GET["type"]) {
         $val2    = "";
         $values  = Stat::getItems(
             $_GET["itemtype"],
-            $_POST["date1"],
-            $_POST["date2"],
+            $_GET["date1"],
+            $_GET["date2"],
             $_GET["type"],
             $parent
         );
@@ -214,7 +203,7 @@ switch ($_GET["type"]) {
     case "groups_id_assign":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(
             __('%1$s: %2$s'),
             Group::getTypeName(1),
@@ -228,7 +217,7 @@ switch ($_GET["type"]) {
     case "impact":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title = match ($_GET['type']) {
             'priority' => sprintf(__('%1$s: %2$s'), __('Priority'), $item::getPriorityName($_GET["id"])),
             'urgency'  => sprintf(__('%1$s: %2$s'), __('Urgency'), $item::getUrgencyName($_GET["id"])),
@@ -240,7 +229,7 @@ switch ($_GET["type"]) {
     case "usertitles_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(
             __('%1$s: %2$s'),
             _x('person', 'Title'),
@@ -252,7 +241,7 @@ switch ($_GET["type"]) {
     case "solutiontypes_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(
             __('%1$s: %2$s'),
             SolutionType::getTypeName(1),
@@ -264,7 +253,7 @@ switch ($_GET["type"]) {
     case "usercategories_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(
             __('%1$s: %2$s'),
             _n('Category', 'Categories', 1),
@@ -276,7 +265,7 @@ switch ($_GET["type"]) {
     case "requesttypes_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_POST["date1"], $_POST["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
         $title   = sprintf(
             __('%1$s: %2$s'),
             RequestType::getTypeName(1),
@@ -292,8 +281,8 @@ switch ($_GET["type"]) {
             $device_table = $item->getTable();
             $values       = Stat::getItems(
                 $_GET["itemtype"],
-                $_POST["date1"],
-                $_POST["date2"],
+                $_GET["date1"],
+                $_GET["date2"],
                 $_GET["champ"]
             );
 
@@ -322,8 +311,8 @@ switch ($_GET["type"]) {
             $table  = $item::getTable();
             $values = Stat::getItems(
                 $_GET["itemtype"],
-                $_POST["date1"],
-                $_POST["date2"],
+                $_GET["date1"],
+                $_GET["date2"],
                 $_GET["champ"]
             );
             $title  = sprintf(
@@ -364,17 +353,19 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/single_item_pag
 ]);
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [
-    'target'    => $_SERVER["REQUEST_URI"],
+    'target'    => 'stat.graph.php',
     'itemtype'  => $_GET['itemtype'],
+    'id'        => $_GET["id"],
     'type'      => $_GET['type'],
-    'date1'     => $_POST["date1"],
-    'date2'     => $_POST["date2"],
+    'date1'     => $_GET["date1"],
+    'date2'     => $_GET["date2"],
+    'champ'     => $_GET["champ"] ?? 0,
 ]);
 
 $stat_params = [
     'itemtype' => $_GET['itemtype'],
-    'date1'    => $_POST['date1'],
-    'date2'    => $_POST['date2'],
+    'date1'    => $_GET['date1'],
+    'date2'    => $_GET['date2'],
     'type'     => $_GET['type'],
     'val1'     => $val1,
     'val2'     => $val2,
