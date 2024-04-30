@@ -545,10 +545,8 @@ JAVASCRIPT;
                 'DomainRecord',
                 [
                     'name'   => "domainrecords_id",
-                    'used_param' => [
-                        'SELECT' => 'id',
-                        'FROM'   => self::getTable(),
-                        'WHERE'  => [
+                    'condition' => [
+                        'NOT' => [
                             'domains_id'   => ['>', 0],
                             'NOT'          => ['domains_id' => null]
                         ]

@@ -127,7 +127,6 @@ class Dropdown
         $params['readonly']             = false;
         $params['parent_id_field']      = null;
         $params['multiple']             = false;
-        $params['used_param']           = [];
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -249,10 +248,6 @@ class Dropdown
             'parent_id_field'      => $params['parent_id_field'],
             'multiple'             => $params['multiple'] ?? false,
         ];
-
-        if (count($params['used_param'])) {
-            $p['used_param'] = json_encode($params['used_param']);
-        }
 
         if ($params['multiple']) {
             $p['values'] = $params['values'];
@@ -2705,20 +2700,11 @@ JAVASCRIPT;
         $start = intval(($post['page'] - 1) * $post['page_limit']);
         $limit = intval($post['page_limit']);
 
-        $used = [];
         if (isset($post['used'])) {
             $used = $post['used'];
-        } elseif (isset($post['used_param'])) {
-            $used_params = json_decode(Sanitizer::unsanitize($post['used_param']), true);
-            $used_iterator = $DB->request($used_params);
-            $used = [];
-            foreach ($used_iterator as $row) {
-                $used[$row['id']] = $row['id'];
+            if (count($used)) {
+                $where['NOT'] = ["$table.id" => $used];
             }
-        }
-
-        if (count($used)) {
-            $where['NOT'] = ["$table.id" => $used];
         }
 
         if (isset($post['toadd'])) {

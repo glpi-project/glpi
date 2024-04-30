@@ -202,7 +202,7 @@ class Group_User extends CommonDBRelation
             echo "<input type='hidden' name='users_id' value='$ID'>";
 
             $params = [
-                'used'      => $used,
+                'used_param' => self::getListForItemParams($user),
                 'condition' => [
                     'is_usergroup' => 1,
                 ] + getEntitiesRestrictCriteria(Group::getTable(), '', '', true)
