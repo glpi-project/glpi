@@ -98,23 +98,15 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         global $GLPI_CACHE;
 
         $vendors = new PCIVendor();
-        try {
-            if (($pciids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
-                return $pciids;
-            }
-        } catch (Psr\SimpleCache\InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
+        if (($pciids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
+            return $pciids;
         }
 
         $jsonfile = new FilesToJSON();
         $file_pciids = json_decode(file_get_contents($jsonfile->getJsonFilePath('pciid')), true) ?? [];
         $db_pciids = $vendors->getDbList();
         $pciids = $db_pciids + $file_pciids;
-        try {
-            $GLPI_CACHE->set($vendors->cache_key, $pciids);
-        } catch (Psr\SimpleCache\InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        }
+        $GLPI_CACHE->set($vendors->cache_key, $pciids);
 
         return $pciids;
     }

@@ -98,12 +98,8 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
         global $GLPI_CACHE;
 
         $vendors = new USBVendor();
-        try {
-            if (($usbids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
-                return $usbids;
-            }
-        } catch (Psr\SimpleCache\InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
+        if (($usbids = $GLPI_CACHE->get($vendors->cache_key)) !== null) {
+            return $usbids;
         }
 
         $jsonfile = new FilesToJSON();
@@ -111,11 +107,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
         $db_usbids = $vendors->getDbList();
         $usbids = $db_usbids + $file_usbids;
         $usbids = array_change_key_case($usbids, CASE_LOWER);
-        try {
-            $GLPI_CACHE->set($vendors->cache_key, $usbids);
-        } catch (Psr\SimpleCache\InvalidArgumentException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
-        }
+        $GLPI_CACHE->set($vendors->cache_key, $usbids);
 
         return $usbids;
     }
