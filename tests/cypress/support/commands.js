@@ -315,7 +315,6 @@ Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoi
         body: {input: values},
         headers: {
             'Session-Token': token,
-            'GLPI-Profile': 4
         }
     }).then((response) => {
         return response;
