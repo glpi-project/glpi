@@ -270,6 +270,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkName::getInternetNameFromID()`
 - `NetworkPort::getNetworkPortInstantiationsWithNames()`
 - `NetworkPort::resetConnections()`
+- `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `PlanningExternalEvent::addVisibilityRestrict()`
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
@@ -298,7 +299,7 @@ The present file will list all changes made to the project; according to the
 - `Search::sylk_clean()`
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
-- `OlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
+- `SoftwareLicense::getSonsOf()`
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`

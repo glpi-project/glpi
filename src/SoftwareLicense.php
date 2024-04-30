@@ -902,14 +902,18 @@ class SoftwareLicense extends CommonTreeDropdown
         $license       = new self();
 
         if (!$software->can($softwares_id, READ)) {
-            return false;
+            return;
         }
 
-        $columns = ['name'      => __('Name'),
+        $columns = [
+            'name'      => __('Name'),
             'entity'    => Entity::getTypeName(1),
             'serial'    => __('Serial number'),
             'number'    => _x('quantity', 'Number'),
-            '_affected' => __('Affected items'),
+            '_affected' => [
+                'label' => __('Affected items'),
+                'nosort' => true,
+            ],
             'typename'  => _n('Type', 'Types', 1),
             'buyname'   => __('Purchase version'),
             'usename'   => __('Version in use'),
@@ -926,14 +930,13 @@ class SoftwareLicense extends CommonTreeDropdown
         if (!empty($_GET["sort"]) && isset($columns[$_GET["sort"]])) {
             $sort = $_GET["sort"];
         } else {
-            $sort = ["entity $order", "name $order"];
+            $sort = 'name';
         }
 
-       // Righ type is enough. Can add a License on a software we have Read access
+        // Right type is enough. Can add a License on a software we have Read access
         $canedit             = Software::canUpdate();
-        $showmassiveactions  = $canedit;
 
-       // Total Number of events
+        // Total Number of events
         $number = countElementsInTable(
             "glpi_softwarelicenses",
             [
@@ -941,26 +944,20 @@ class SoftwareLicense extends CommonTreeDropdown
                 'glpi_softwarelicenses.is_template'  => 0,
             ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true)
         );
-        echo "<div class='spaced'>";
-
-        Session::initNavigateListItems(
-            'SoftwareLicense',
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                     sprintf(
-                                         __('%1$s = %2$s'),
-                                         Software::getTypeName(1),
-                                         $software->getName()
-                                     )
-        );
 
         if ($canedit) {
-            echo "<div class='center firstbloc'>";
-            echo "<a class='btn btn-primary' href='" . SoftwareLicense::getFormURL() . "?softwares_id=$softwares_id'>" .
-                _x('button', 'Add a license') . "</a>";
-            echo "</div>";
+            $twig_params = [
+                'btn_msg' => _x('button', 'Add a license'),
+                'softwares_id' => $softwares_id,
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="text-center mb-3">
+                    <a class="btn btn-primary" href="{{ 'SoftwareLicense'|itemtype_form_path }}?softwares_id={{ softwares_id }}">{{ btn_msg }}</a>
+                </div>
+TWIG, $twig_params);
         }
 
-        $rand  = mt_rand();
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_softwarelicenses.*',
@@ -1007,134 +1004,87 @@ class SoftwareLicense extends CommonTreeDropdown
                 'glpi_softwarelicenses.softwares_id'   => $softwares_id,
                 'glpi_softwarelicenses.is_template'    => 0
             ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', '', '', true),
-            'ORDERBY'   => $sort,
-            'START'     => (int)$start,
+            'ORDERBY'   => "$sort $order",
+            'START'     => $start,
             'LIMIT'     => (int)$_SESSION['glpilist_limit']
         ]);
-        $num_displayed = count($iterator);
 
-        if ($num_displayed) {
-           // Display the pager
-            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
-            if ($showmassiveactions) {
-                Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                $massiveactionparams
-                 = ['num_displayed'
-                        => min($_SESSION['glpilist_limit'], $num_displayed),
-                     'container'
-                        => 'mass' . __CLASS__ . $rand,
-                     'extraparams'
-                        => ['options'
-                                    => ['glpi_softwareversions.name'
-                                             => ['condition'
-                                                      => $DB->quoteName("glpi_softwareversions.softwares_id") . "
-                                                               = $softwares_id"
-                                             ],
-                                        'glpi_softwarelicenses.name'
-                                             => ['itemlink_as_string' => true]
-                                    ]
-                        ]
-                 ];
-
-                Html::showMassiveActions($massiveactionparams);
+        $tot_assoc = 0;
+        $tot       = 0;
+        $entries   = [];
+        foreach ($iterator as $data) {
+            $license->getFromResultSet($data);
+            $expired = true;
+            if (
+                is_null($data['expire'])
+                || ($data['expire'] > date('Y-m-d'))
+            ) {
+                $expired = false;
             }
+            $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
+            $tot_assoc += $nb_assoc;
 
-            echo "<table class='tab_cadre_fixehov'>";
-
-            $header_begin  = "<tr><th>";
-            $header_top    = Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $rand);
-            $header_end    = '';
-
-            foreach ($columns as $key => $val) {
-               // Non order column
-                if ($key[0] == '_') {
-                    $header_end .= "<th>$val</th>";
-                } else {
-                    $header_end .= "<th" . (!is_array($sort) && $sort == "$key" ? " class='order_$order'" : '') . ">" .
-                     "<a href='javascript:reloadTab(\"sort=$key&amp;order=" .
-                        (($order == "ASC") ? "DESC" : "ASC") . "&amp;start=0\");'>$val</a></th>";
+            if ($data['number'] < 0) {
+                // One unlimited license, total is unlimited
+                $tot = -1;
+            } else if ($tot >= 0) {
+                // Expired licenses do not count
+                if (!$expired) {
+                    // Not unlimited, add the current number
+                    $tot += $data['number'];
                 }
             }
-
-            $header_end .= "</tr>\n";
-            echo $header_begin . $header_top . $header_end;
-
-            $tot_assoc = 0;
-            $tot       = 0;
-            foreach ($iterator as $data) {
-                Session::addToNavigateListItems('SoftwareLicense', $data['id']);
-                $expired = true;
-                if (
-                    is_null($data['expire'])
-                    || ($data['expire'] > date('Y-m-d'))
-                ) {
-                    $expired = false;
-                }
-                echo "<tr class='tab_bg_2" . ($expired ? '_2' : '') . "'>";
-
-                if ($license->canEdit($data['id'])) {
-                    echo "<td>" . Html::getMassiveActionCheckBox(__CLASS__, $data["id"]) . "</td>";
-                } else {
-                    echo "<td>&nbsp;</td>";
-                }
-
-                echo "<td>";
-                echo $license->getLink(['complete' => true, 'comments' => true]);
-                echo "</td>";
-
-                if (isset($columns['entity'])) {
-                    echo "<td>";
-                    echo $data['entity'];
-                    echo "</td>";
-                }
-                echo "<td>" . $data['serial'] . "</td>";
-                echo "<td class='numeric'>" .
-                     (($data['number'] > 0) ? $data['number'] : __('Unlimited')) . "</td>";
-                $nb_assoc   = Item_SoftwareLicense::countForLicense($data['id']);
-                $tot_assoc += $nb_assoc;
-                $color = ($data['is_valid'] ? 'green' : 'red');
-
-                echo "<td class='numeric $color'>" . $nb_assoc . "</td>";
-                echo "<td>" . $data['typename'] . "</td>";
-                echo "<td>" . $data['buyname'] . "</td>";
-                echo "<td>" . $data['usename'] . "</td>";
-                echo "<td class='center'>" . Html::convDate($data['expire']) . "</td>";
-                echo "<td>" . $data['statename'] . "</td>";
-                echo "</tr>";
-
-                if ($data['number'] < 0) {
-                   // One illimited license, total is illimited
-                    $tot = -1;
-                } else if ($tot >= 0) {
-                   // Expire license not count
-                    if (!$expired) {
-                       // Not illimited, add the current number
-                        $tot += $data['number'];
-                    }
-                }
-            }
-            echo "<tr class='tab_bg_1 noHover'>";
-            echo "<td colspan='" .
-                  ($software->isRecursive() ? 4 : 3) . "' class='right b'>" . __('Total') . "</td>";
-            echo "<td class='numeric'>" . (($tot > 0) ? $tot . "" : __('Unlimited')) .
-               "</td>";
-            $color = ($software->fields['is_valid'] ? 'green' : 'red');
-            echo "<td class='numeric $color'>" . $tot_assoc . "</td><td></td><td></td><td></td><td></td><td></td>";
-            echo "</tr>";
-            echo "</table>\n";
-
-            if ($showmassiveactions) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-
-                Html::closeForm();
-            }
-            Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, $number);
-        } else {
-            echo "<table class='tab_cadre_fixe'><tr><th>" . __('No item found') . "</th></tr></table>";
+            $entries[] = [
+                'itemtype' => self::class,
+                'id'       => $data['id'],
+                'row_class' => $expired ? 'table-danger' : '',
+                'name' => $license->getLink(['complete' => true, 'comments' => true]),
+                'entity' => $data['entity'],
+                'serial' => $data['serial'],
+                'number' => ($data['number'] > 0) ? $data['number'] : __('Unlimited'),
+                '_affected' => '<span class="' . ($data['is_valid'] ? 'text-green' : 'text-red') . '">' . $nb_assoc . '</span>',
+                'typename' => $data['typename'],
+                'buyname' => $data['buyname'],
+                'usename' => $data['usename'],
+                'expire' => $data['expire'],
+                'statename' => $data['statename']
+            ];
         }
 
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'start' => $start,
+            'limit' => $_SESSION["glpilist_limit"],
+            'sort' => $sort,
+            'order' => $order,
+            'nofilter' => true,
+            'columns' => $columns,
+            'formatters' => [
+                'name' => 'raw_html',
+                '_affected' => 'raw_html',
+                'expire' => 'date',
+            ],
+            'footers' => [
+                ['', __('Total'), (($tot > 0) ? $tot . "" : __('Unlimited')), $tot_assoc, '', '', '', '', '']
+            ],
+            'footer_class' => 'fw-bold',
+            'entries' => $entries,
+            'total_number' => $number,
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container'     => 'mass' . static::class . mt_rand(),
+                'extraparams' => [
+                    'options' => [
+                        'glpi_softwareversions.name' => [
+                            'condition' => $DB::quoteName("glpi_softwareversions.softwares_id") . " = $softwares_id"
+                        ],
+                        'glpi_softwarelicenses.name' => ['itemlink_as_string' => true]
+                    ]
+                ]
+            ]
+        ]);
     }
 
     /**
@@ -1213,70 +1163,10 @@ class SoftwareLicense extends CommonTreeDropdown
         if ($item::class === Software::class && self::canView()) {
             self::showForSoftware($item);
         } else if ($item::class === self::class && self::canView()) {
-            self::getSonsOf($item);
+            $item->showChildren();
             return true;
         }
         return true;
-    }
-
-    public static function getSonsOf($item)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-        $entity_assign = $item->isEntityAssign();
-        $nb            = 0;
-        $ID            = $item->getID();
-
-        echo "<div class='spaced'>";
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='" . ($nb + 3) . "'>" . sprintf(
-            __('Sons of %s'),
-            $item->getTreeLink()
-        );
-        echo "</th></tr>";
-
-        $header = "<tr><th>" . __('Name') . "</th>";
-        if ($entity_assign) {
-            $header .= "<th>" . Entity::getTypeName(1) . "</th>";
-        }
-
-        $header .= "<th>" . __('Comments') . "</th>";
-        $header .= "</tr>\n";
-        echo $header;
-
-        $fk   = $item->getForeignKeyField();
-        $crit = [$fk     => $ID,
-            'ORDER' => 'name'
-        ];
-
-        if ($entity_assign) {
-            if ($fk == 'entities_id') {
-                $crit['id']  = $_SESSION['glpiactiveentities'];
-                $crit['id'] += $_SESSION['glpiparententities'];
-            } else {
-                foreach ($_SESSION['glpiactiveentities'] as $key => $value) {
-                    $crit['entities_id'][$key] = (string)$value;
-                }
-            }
-        }
-        $nb = 0;
-
-        foreach ($DB->request($item->getTable(), $crit) as $data) {
-            $nb++;
-            echo "<tr class='tab_bg_1'>";
-            echo "<td><a href='" . $item->getFormURL();
-            echo '?id=' . $data['id'] . "'>" . $data['name'] . "</a></td>";
-            if ($entity_assign) {
-                echo "<td>" . Dropdown::getDropdownName("glpi_entities", $data["entities_id"]) . "</td>";
-            }
-
-            echo "<td>" . $data['comment'] . "</td>";
-            echo "</tr>\n";
-        }
-        if ($nb) {
-            echo $header;
-        }
-        echo "</table></div>\n";
     }
 
     public static function getIcon()

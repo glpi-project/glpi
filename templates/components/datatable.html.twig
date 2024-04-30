@@ -36,8 +36,12 @@
     <table id="{{ datatable_id }}" class="table">
         <thead>
         {% if super_header is defined and super_header is not empty %}
+            {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
+            {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
             <tr>
-                <th>{{ super_header }}</th>
+                <th colspan="1">
+                    {{ super_header_raw ? super_header_label|raw : super_header_label }}
+                </th>
             </tr>
         {% endif %}
         </thead>

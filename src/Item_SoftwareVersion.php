@@ -482,7 +482,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $order = "ASC";
         }
 
-        if (isset($_GET["sort"]) && !empty($_GET["sort"]) && isset($refcolumns[$_GET["sort"]])) {
+        if (!empty($_GET["sort"]) && isset($refcolumns[$_GET["sort"]])) {
            // manage several param like location,compname :  order first
             $tmp  = explode(",", $_GET["sort"]);
             $sort = "`" . implode("` $order,`", $tmp) . "`";
