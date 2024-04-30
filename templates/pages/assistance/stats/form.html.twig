@@ -33,9 +33,8 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<form method="get" name="form" action="{{ target }}">
+<form method="POST" name="form" action="{{ target }}">
     <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-    <input type="hidden" name="itemtype" value="{{ itemtype }}">
     {% if value2 is defined %}
         <input type="hidden" name="value2" value="{{ value2 }}">
     {% endif %}

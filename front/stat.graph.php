@@ -363,11 +363,8 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/single_item_pag
     'title' => $title,
 ]);
 
-
-$target = preg_replace("/&/", "&amp;", $_SERVER["REQUEST_URI"]);
-
 TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [
-    'target'    => $target,
+    'target'    => $_SERVER["REQUEST_URI"],
     'itemtype'  => $_GET['itemtype'],
     'type'      => $_GET['type'],
     'date1'     => $_POST["date1"],

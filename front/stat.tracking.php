@@ -105,8 +105,7 @@ Html::printPager(
 );
 
 TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [
-    'target'    => 'stat.tracking.php',
-    'itemtype'  => $params["itemtype"],
+    'target'    => 'stat.tracking.php?itemtype=' . $params["itemtype"],
     'type_params' => [
         'field' => 'type',
         'value' => $params["type"],
