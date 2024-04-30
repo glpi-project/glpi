@@ -89,7 +89,7 @@ class FormAccessControl extends DbTestCase
     protected function testCanProvider(): iterable
     {
         $this->login('glpi', 'glpi');
-        yield ['view' => true, 'create' => false, 'update' => true, 'delete' => false, 'purge' => false];
+        yield ['view' => true, 'create' => true, 'update' => true, 'delete' => false, 'purge' => false];
 
         $this->login('tech', 'tech');
         yield ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false];
@@ -145,16 +145,16 @@ class FormAccessControl extends DbTestCase
         $control = $this->getAccessControl($form, DirectAccess::class);
 
         $this->login('glpi', 'glpi');
-        yield ['item' => $control, 'view' => true, 'update' => true, 'delete' => false, 'purge' => false];
+        yield 'glpi' => ['item' => $control, 'view' => true, 'update' => true, 'delete' => false, 'purge' => false];
 
         $this->login('tech', 'tech');
-        yield ['item' => $control, 'view' => false, 'update' => false, 'delete' => false, 'purge' => false];
+        yield 'tech' => ['item' => $control, 'view' => false, 'update' => false, 'delete' => false, 'purge' => false];
 
         $this->login('normal', 'normal');
-        yield ['item' => $control, 'view' => false, 'update' => false, 'delete' => false, 'purge' => false];
+        yield 'normal' => ['item' => $control, 'view' => false, 'update' => false, 'delete' => false, 'purge' => false];
 
         $this->login('post-only', 'postonly');
-        yield ['item' => $control, 'view' => false, 'update' => false, 'delete' => false, 'purge' => false];
+        yield 'post-only' => ['item' => $control, 'view' => false, 'update' => false, 'delete' => false, 'purge' => false];
     }
 
     /**
@@ -203,7 +203,7 @@ class FormAccessControl extends DbTestCase
         ];
 
         $this->login('glpi', 'glpi');
-        yield ['input' => $input, 'expected' => false];
+        yield ['input' => $input, 'expected' => true];
 
         $this->login('tech', 'tech');
         yield ['input' => $input, 'expected' => false];

@@ -77,6 +77,18 @@ final class FormAccessControlManager extends DbTestCase
         $this->array($form->getAccessControls())->hasSize(2);
     }
 
+    public function testCreateMisingAccessControlsForFormThatAlreadyHasAccess(): void
+    {
+        $manager = $this->getManager();
+        $form = $this->getFormWithActiveAccessControls();
+
+        // This test ensure that we don't create duplicate access controls.
+        // If getFormWithActiveAccessControls try to recreate the existing
+        // access controls, there will be an SQL unicity constraint error.
+        $manager->createMissingAccessControlsForForm($form);
+        $this->array($form->getAccessControls())->hasSize(2);
+    }
+
     public function getActiveAccessControlsForFormProvider(): iterable
     {
         yield 'Form without access controls' => [

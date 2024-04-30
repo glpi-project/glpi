@@ -200,9 +200,17 @@ final class FormAccessControlManager
      */
     private function getMissingStrategies(array $defined_strategies)
     {
+        $defined_strategies_classes = array_map(
+            fn ($strategy) => $strategy::class,
+            $defined_strategies
+        );
+
         return array_filter(
             $this->getPossibleAccessControlsStrategies(),
-            fn ($strategy) => !in_array($strategy::class, $defined_strategies)
+            fn (ControlTypeInterface $strategy) => !in_array(
+                $strategy::class,
+                $defined_strategies_classes
+            )
         );
     }
 

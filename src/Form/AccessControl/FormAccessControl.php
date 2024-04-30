@@ -113,21 +113,26 @@ final class FormAccessControl extends CommonDBChild
         }
 
         // Must be able to view the parent form
-        return Form::canView();
+        return $form->canViewItem();
     }
 
     #[Override]
     public static function canCreate()
     {
-        // Never created from the UX
-        return false;
+        // Must be able to update parent form
+        return Form::canUpdate();
     }
 
     #[Override]
     public function canCreateItem()
     {
-        // Never created from the UX
-        return false;
+        $form = Form::getByID($this->input['forms_forms_id']);
+        if (!$form) {
+            return false;
+        }
+
+        // Must be able to update parent form
+        return $form->canCreateItem();
     }
 
     #[Override]
