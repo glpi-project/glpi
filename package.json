@@ -11,7 +11,7 @@
     "dependencies": {
         "@algolia/autocomplete-js": "^1.17.0",
         "@fontsource/inter": "^4.5.15",
-        "@fortawesome/fontawesome-free": "^6.5.1",
+        "@fortawesome/fontawesome-free": "^6.5.2",
         "@fullcalendar/bootstrap": "^4.4.2",
         "@fullcalendar/core": "^4.4.2",
         "@fullcalendar/daygrid": "^4.4.2",
