@@ -37,6 +37,7 @@ namespace Glpi\Form\AccessControl;
 
 use CommonDBChild;
 use CommonGLPI;
+use InvalidArgumentException;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
@@ -185,7 +186,24 @@ final class FormAccessControl extends CommonDBChild
     #[Override]
     public function prepareInputForAdd($input)
     {
+        // Config is mandatory on creation; inject default config if missing.
+        if (!isset($input['_config'])) {
+            $strategy_class = $this->input['strategy'];
+            if (!$this->isValidStrategy($strategy_class)) {
+                trigger_error(
+                    "Invalid access control strategy: $strategy_class",
+                    E_USER_WARNING
+                );
+                return false;
+            }
+
+            $strategy = new $strategy_class();
+            $config_class = $strategy->getConfigClass();
+            $input['_config'] = new $config_class();
+        }
+
         $input = $this->prepareConfigInput($input);
+
         return $input;
     }
 
@@ -234,6 +252,18 @@ final class FormAccessControl extends CommonDBChild
         return $config_class::createFromRawArray($config);
     }
 
+    public function createConfigFromUserInput(array $input): JsonConfigInterface
+    {
+        $strategy_class = $input['strategy'] ?? $this->fields['strategy'] ?? null;
+        if ($strategy_class === null || !$this->isValidStrategy($strategy_class)) {
+            throw new InvalidArgumentException(
+                "Invalid access control strategy: $strategy_class"
+            );
+        }
+        $strategy = new $strategy_class();
+        return $strategy->createConfigFromUserInput($input);
+    }
+
     #[Override]
     protected function computeFriendlyName()
     {
@@ -250,26 +280,11 @@ final class FormAccessControl extends CommonDBChild
      */
     protected function prepareConfigInput(array $input)
     {
-        $strategy_class = $input['strategy'] ?? $this->fields['strategy'] ?? null;
-        if ($strategy_class === null || !$this->isValidStrategy($strategy_class)) {
-            trigger_error(
-                "Invalid access control strategy: $strategy_class",
-                E_USER_WARNING
-            );
-            return false;
-        }
-        $strategy = new $strategy_class();
-
-        if (is_a($input['_config'] ?? null, $strategy->getConfigClass())) {
-            // When an item is created from a direct line of code,
-            // the correct config object can be directly passed.
-            $config = $input['_config'];
+        $config = $input['_config'] ?? null;
+        if ($config !== null) {
+            $input['config'] = json_encode($config);
             unset($input['_config']);
-        } else {
-            // When supplied from user form or API, we need to create correct config object from the submitted values
-            $config = $strategy->createConfigFromUserInput($input);
         }
-        $input['config'] = json_encode($config);
 
         return $input;
     }

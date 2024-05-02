@@ -378,27 +378,12 @@ class FormAccessControl extends DbTestCase
             'warning'         => "Invalid access control strategy: not a strategy",
         ];
 
-        yield 'Direct input of a raw config item' => [
+        yield 'Valid config' => [
             'input' => [
                 'strategy' => DirectAccess::class,
                 '_config'  => new DirectAccessConfig(token: "my_token"),
             ],
             'expected_fields' => [
-                'strategy' => DirectAccess::class,
-                'config'   => json_encode([
-                    'token'                 => "my_token",
-                    'allow_unauthenticated' => false,
-                ]),
-            ],
-        ];
-
-        yield 'User supplied input' => [
-            'input' => [
-                'strategy' => DirectAccess::class,
-                '_token'   => "my_token",
-            ],
-            'expected_fields' => [
-                '_token'   => "my_token", // Special fields are not deleted
                 'strategy' => DirectAccess::class,
                 'config'   => json_encode([
                     'token'                 => "my_token",

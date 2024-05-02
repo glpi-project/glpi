@@ -58,6 +58,10 @@ try {
         // Right check
         $access_control->check($id, UPDATE, $_POST);
 
+        // Format user supplied config
+        $access_control->getFromDB($id);
+        $_POST['_config'] = $access_control->createConfigFromUserInput($_POST);
+
         // Update access control item
         if (!$access_control->update($_POST, true)) {
             throw new RuntimeException("Failed to create destination item");

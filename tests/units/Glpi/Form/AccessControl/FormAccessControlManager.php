@@ -77,7 +77,7 @@ final class FormAccessControlManager extends DbTestCase
         $this->array($form->getAccessControls())->hasSize(2);
     }
 
-    public function testCreateMisingAccessControlsForFormThatAlreadyHasAccess(): void
+    public function testCreateMisingAccessControlsForFormThatAlreadyHasAccessPolicies(): void
     {
         $manager = $this->getManager();
         $form = $this->getFormWithActiveAccessControls();
