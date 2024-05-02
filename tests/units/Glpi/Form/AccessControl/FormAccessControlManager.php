@@ -263,8 +263,7 @@ final class FormAccessControlManager extends DbTestCase
                     ],
                 ]))
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'               => 'my_token',
-                    'force_direct_access' => true,
+                    'token' => 'my_token',
                 ]))
         );
     }
@@ -279,8 +278,7 @@ final class FormAccessControlManager extends DbTestCase
                     ],
                 ]))
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'               => 'my_token',
-                    'force_direct_access' => true,
+                    'token' => 'my_token',
                 ]))
         );
 
@@ -301,8 +299,7 @@ final class FormAccessControlManager extends DbTestCase
                     ],
                 ]))
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'               => 'my_token',
-                    'force_direct_access' => true,
+                    'token' => 'my_token',
                 ]))
         );
     }

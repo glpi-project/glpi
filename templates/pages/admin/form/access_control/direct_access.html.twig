@@ -82,30 +82,4 @@
     </span>
 </label>
 
-{# Force direct access configuration #}
-<label class="form-check form-switch">
-<input
-    class="form-check-input"
-    name="_force_direct_access"
-    type="hidden"
-    value="0"
->
-<input
-    class="form-check-input"
-    name="_force_direct_access"
-    type="checkbox"
-    value="1"
-    {{ config.force_direct_access ? 'checked' : '' }}
->
-    <span class="form-check-label"><i class="ti ti-eye-off"></i>
-        {{ __("Don't list this form") }}
-        <span class="form-help"
-            data-bs-toggle="popover"
-            data-bs-placement="top"
-            data-bs-html="true"
-            data-bs-content="{{ "Users will only be able to see this form by using the link above." }}">
-            ?
-        </span>
-    </span>
-</label>
 <input type="hidden" name="_token" value="{{ token }}">

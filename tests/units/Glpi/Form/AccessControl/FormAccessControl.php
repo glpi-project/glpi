@@ -315,7 +315,6 @@ class FormAccessControl extends DbTestCase
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
                     'token'                 => 'my_token',
                     'allow_unauthenticated' => true,
-                    'force_direct_access'   => true,
                 ]))
                 ->addAccessControl(AllowList::class, new AllowListConfig([
                     'user_ids'    => [
@@ -391,7 +390,6 @@ class FormAccessControl extends DbTestCase
                 'config'   => json_encode([
                     'token'                 => "my_token",
                     'allow_unauthenticated' => false,
-                    'force_direct_access'   => false,
                 ]),
             ],
         ];
@@ -408,7 +406,6 @@ class FormAccessControl extends DbTestCase
                 'config'   => json_encode([
                     'token'                 => "my_token",
                     'allow_unauthenticated' => false,
-                    'force_direct_access'   => false,
                 ]),
             ],
         ];
@@ -506,7 +503,6 @@ class FormAccessControl extends DbTestCase
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
                     'token'                 => 'my_token',
                     'allow_unauthenticated' => true,
-                    'force_direct_access'   => true,
                 ]))
                 ->addAccessControl(AllowList::class, new AllowListConfig([
                     'user_ids'    => [
@@ -530,7 +526,6 @@ class FormAccessControl extends DbTestCase
             ->isEqualTo(json_encode([
                 'token'                 => 'my_token',
                 'allow_unauthenticated' => true,
-                'force_direct_access'   => true,
             ]))
         ;
 

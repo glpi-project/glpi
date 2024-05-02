@@ -42,7 +42,6 @@ final class DirectAccessConfig implements JsonConfigInterface
 {
     public readonly string $token;
     public readonly bool $allow_unauthenticated;
-    public readonly bool $force_direct_access;
 
     public function __construct(array $data = [])
     {
@@ -59,12 +58,5 @@ final class DirectAccessConfig implements JsonConfigInterface
             $allow_unauthenticated = (bool) $data['allow_unauthenticated'];
         }
         $this->allow_unauthenticated = $allow_unauthenticated;
-
-        // Force direct access
-        $force_direct_access = false;
-        if (isset($data['force_direct_access'])) {
-            $force_direct_access = (bool) $data['force_direct_access'];
-        }
-        $this->force_direct_access = $force_direct_access;
     }
 }

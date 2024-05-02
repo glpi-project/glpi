@@ -99,7 +99,6 @@ final class DirectAccess implements ControlTypeInterface
         return new DirectAccessConfig([
             'token'                 => $input['_token'] ?? null,
             'allow_unauthenticated' => $input['_allow_unauthenticated'] ?? false,
-            'force_direct_access'   => $input['_force_direct_access'] ?? false,
         ]);
     }
 

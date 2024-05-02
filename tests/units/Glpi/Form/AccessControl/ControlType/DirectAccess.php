@@ -107,9 +107,8 @@ class DirectAccess extends \GLPITestCase
         // The rendered content should be validated by an E2E test.
         $this->string($direct_access->renderConfigForm(new DirectAccessConfig()));
         $this->string($direct_access->renderConfigForm(new DirectAccessConfig([
-            'token'                 => 'my token',
+            'token' => 'my token',
             'allow_unauthenticated' => true,
-            'force_direct_access'   => true,
         ])));
     }
 
@@ -142,18 +141,15 @@ class DirectAccess extends \GLPITestCase
         $this->object($config)->isInstanceOf(DirectAccessConfig::class);
         $this->string($config->token)->isNotEmpty();
         $this->boolean($config->allow_unauthenticated)->isFalse();
-        $this->boolean($config->force_direct_access)->isFalse();
 
         // Test user supplied values
         $config = $direct_access->createConfigFromUserInput([
             '_token'                 => 'my token',
             '_allow_unauthenticated' => true,
-            '_force_direct_access'   => true,
         ]);
         $this->object($config)->isInstanceOf(DirectAccessConfig::class);
         $this->string($config->token)->isEqualTo('my token');
         $this->boolean($config->allow_unauthenticated)->isTrue();
-        $this->boolean($config->force_direct_access)->isTrue();
     }
 
     /**
