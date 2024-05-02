@@ -49,7 +49,7 @@ final class AllowList implements ControlTypeInterface
     #[Override]
     public function getLabel(): string
     {
-        return __("Restrict to specifics users, groups or profiles");
+        return __("Allow specifics users, groups or profiles");
     }
 
     #[Override]
