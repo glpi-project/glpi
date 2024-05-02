@@ -59,7 +59,7 @@
         );
 
         $('[data-glpi-dropdown-count-preview]')
-            .attr('href', response.link ?? "")
+            .attr('href', response.link ?? null)
             .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}".replace("%d", response.count))
         ;
     });

@@ -47,16 +47,19 @@ Session::checkRight(Form::$rightname, READ);
  * A link to the search results will also be provided if the user can read the user list.
  */
 
+
 if (isset($_POST['values'])) {
     $users = AllowListDropdown::getPostedIds($_POST['values'], User::class);
     $groups = AllowListDropdown::getPostedIds($_POST['values'], Group::class);
     $profiles = AllowListDropdown::getPostedIds($_POST['values'], Profile::class);
+    $empty_criteria = false;
 } else {
     // If the dropdown has no selected value, $_POST['values'] is not defined at all.
-    // This mean there are no criteria and all users should be found.
-    $users = [];
-    $groups = [];
-    $profiles = [];
+    // This mean there are no criteria and no users should be found.
+    $users = [-1];
+    $groups = [-1];
+    $profiles = [-1];
+    $empty_criteria = true;
 }
 
 $data = AllowListDropdown::countUsersForCriteria(
@@ -64,6 +67,12 @@ $data = AllowListDropdown::countUsersForCriteria(
     $groups,
     $profiles
 );
+
+// Do not display the link if there are no criteria, as the search would be confusing
+// with the '-1' criteria.
+if ($empty_criteria) {
+    unset($data['link']);
+}
 
 // Do not display the link if the user does not have the right to read the user list
 if (!Session::haveRight(User::$rightname, READ)) {
