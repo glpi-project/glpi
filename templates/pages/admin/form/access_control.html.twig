@@ -46,11 +46,11 @@
                     <i class="ti ti-alert-triangle me-2"></i>
                     {{ __("This form is not visible to anyone because it is not active.") }}
                 </div>
-            {% elseif are_all_controls_disabled %}
-                <div class="alert alert-info d-flex align-items-center" role="alert">
+            {% endif %}
+            {% if are_all_controls_disabled %}
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
                     <i class="ti ti-alert-circle me-2"></i>
-                    {{ __("There are currently no access controls defined.") }}
-                    {{ __("This form is visible to all authenticated users.") }}
+                    {{ __("This form will not be visible to any users as they are currently no access policies defined.") }}
                 </div>
             {% endif %}
         </div>
