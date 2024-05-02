@@ -49,8 +49,8 @@
             {% endif %}
             {% if are_all_controls_disabled %}
                 <div class="alert alert-warning d-flex align-items-center" role="alert">
-                    <i class="ti ti-alert-circle me-2"></i>
-                    {{ __("This form will not be visible to any users as they are currently no access policies defined.") }}
+                    <i class="ti ti-alert-triangle me-2"></i>
+                    {{ __("This form will not be visible to any users as they are currently no active access policies.") }}
                 </div>
             {% endif %}
         </div>
