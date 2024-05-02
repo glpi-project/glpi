@@ -33,23 +33,40 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+/**
+ * Update from 10.0.15 to 10.0.16
+ *
+ * @return bool for success (will die for most error)
+ **/
+function update10015to10016()
+{
+    /**
+     * @var \DBmysql $DB
+     * @var \Migration $migration
+     */
+    global $DB, $migration;
 
-header('Content-Type: application/json; charset=UTF-8');
-Html::header_nocache();
+    $updateresult       = true;
+    $ADDTODISPLAYPREF   = [];
+    $DELFROMDISPLAYPREF = [];
+    $update_dir = __DIR__ . '/update_10.0.15_to_10.0.16/';
 
-Session::checkLoginUser();
+    //TRANS: %s is the number of new version
+    $migration->displayTitle(sprintf(__('Update to %s'), '10.0.16'));
+    $migration->setVersion('10.0.16');
 
-$success = false;
+    $update_scripts = scandir($update_dir);
+    foreach ($update_scripts as $update_script) {
+        if (preg_match('/\.php$/', $update_script) !== 1) {
+            continue;
+        }
+        require $update_dir . $update_script;
+    }
 
-$user = new User();
-if (
-    array_key_exists('itemtype', $_POST)
-    && is_string($_POST['itemtype'])
-    && $user->getFromDB(Session::getLoginUserID())
-    && $user->toggleSavedSearchPin($_POST['itemtype'])
-) {
-    $success = true;
+    // ************ Keep it at the end **************
+    $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
+
+    $migration->executeMigration();
+
+    return $updateresult;
 }
-
-echo json_encode(['success' => $success]);

@@ -155,7 +155,7 @@ class RuleImportEntity extends Rule
 
         if ($criteria['field'] == '_source') {
             $tab = ['GLPI' => __('GLPI'), 'NATIVE_INVENTORY' => AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY)];
-            foreach ($PLUGIN_HOOKS['import_item'] as $plug => $types) {
+            foreach ($PLUGIN_HOOKS['import_item'] ?? [] as $plug => $types) {
                 if (!Plugin::isPluginActive($plug)) {
                     continue;
                 }
@@ -179,11 +179,11 @@ class RuleImportEntity extends Rule
                 return true;
 
             case Rule::PATTERN_EXISTS:
-                echo Dropdown::showYesNo($name, 1, 0);
+                Dropdown::showYesNo($name, 1, 0);
                 return true;
 
             case Rule::PATTERN_DOES_NOT_EXISTS:
-                echo Dropdown::showYesNo($name, 1, 0);
+                Dropdown::showYesNo($name, 1, 0);
                 return true;
         }
         return false;

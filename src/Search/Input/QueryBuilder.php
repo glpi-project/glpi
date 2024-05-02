@@ -823,7 +823,11 @@ final class QueryBuilder implements SearchInputInterface
                 $params['criteria'][] = $defaultfilter['search_criteria'];
             }
         }
+        return self::cleanParams($params);
+    }
 
+    public static function cleanParams(array $params): array
+    {
         $int_params = [
             'sort'
         ];

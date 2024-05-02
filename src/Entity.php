@@ -340,7 +340,6 @@ class Entity extends CommonTreeDropdown
     {
         /** @var \DBmysql $DB */
         global $DB;
-
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
         if (empty($input["name"])) {
             Session::addMessageAfterRedirect(

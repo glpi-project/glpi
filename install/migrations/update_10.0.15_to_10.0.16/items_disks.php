@@ -33,23 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-include('../inc/includes.php');
+/**
+ * @var \Migration $migration
+ */
 
-header('Content-Type: application/json; charset=UTF-8');
-Html::header_nocache();
-
-Session::checkLoginUser();
-
-$success = false;
-
-$user = new User();
-if (
-    array_key_exists('itemtype', $_POST)
-    && is_string($_POST['itemtype'])
-    && $user->getFromDB(Session::getLoginUserID())
-    && $user->toggleSavedSearchPin($_POST['itemtype'])
-) {
-    $success = true;
-}
-
-echo json_encode(['success' => $success]);
+// same as update_10.0.14_to_10.0.15/items_disks.php
+// see #16992
+$migration->changeField('glpi_items_disks', 'totalsize', 'totalsize', 'bigint NOT NULL DEFAULT "0"');
+$migration->changeField('glpi_items_disks', 'freesize', 'freesize', 'bigint NOT NULL DEFAULT "0"');
