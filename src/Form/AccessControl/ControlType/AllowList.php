@@ -131,14 +131,14 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        return in_array($session_info->user_id, $config->user_ids);
+        return in_array($session_info->getUserId(), $config->user_ids);
     }
 
     private function isUserAllowedByGroup(
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        foreach ($session_info->group_ids as $group_id) {
+        foreach ($session_info->getGroupsIds() as $group_id) {
             if (in_array($group_id, $config->group_ids)) {
                 return true;
             }
@@ -151,6 +151,6 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        return in_array($session_info->profile_id, $config->profile_ids);
+        return in_array($session_info->getProfileId(), $config->profile_ids);
     }
 }

@@ -33,29 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Session;
+namespace tests\units\Glpi\Session;
 
-final readonly class SessionInfo
+class SessionInfo extends \GLPITestCase
 {
-    public function __construct(
-        private int $user_id = 0,
-        private array $group_ids = [],
-        private int $profile_id = 0,
-    ) {
+    public function testGetUserId(): void
+    {
+        $session_info = new \Glpi\Session\SessionInfo(
+            user_id: 500,
+        );
+        $this->integer($session_info->getUserId())->isEqualTo(500);
     }
 
-    public function getUserId(): int
+    public function testGetGroupsIds(): void
     {
-        return $this->user_id;
+        $session_info = new \Glpi\Session\SessionInfo(
+            group_ids: [1, 2, 3],
+        );
+        $this->array($session_info->getGroupsIds())->isEqualTo([1, 2, 3]);
     }
 
-    public function getGroupsIds(): array
+    public function testGetProfileId(): void
     {
-        return $this->group_ids;
-    }
-
-    public function getProfileId(): int
-    {
-        return $this->profile_id;
+        $session_info = new \Glpi\Session\SessionInfo(
+            profile_id: 13,
+        );
+        $this->integer($session_info->getProfileId())->isEqualTo(13);
     }
 }
