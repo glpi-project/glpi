@@ -34,8 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-// Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
 
+// Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
 $SECURITY_STRATEGY = 'no_check';
 
 include('../inc/includes.php');
