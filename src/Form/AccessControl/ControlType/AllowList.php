@@ -87,7 +87,7 @@ final class AllowList implements ControlTypeInterface
     public function createConfigFromUserInput(array $input): AllowListConfig
     {
         $values = $input['_allow_list_dropdown'] ?? [];
-        return new AllowListConfig([
+        return AllowListConfig::createFromRawArray([
             'user_ids'    => AllowListDropdown::getPostedIds($values, User::class),
             'group_ids'   => AllowListDropdown::getPostedIds($values, Group::class),
             'profile_ids' => AllowListDropdown::getPostedIds($values, Profile::class),
@@ -131,15 +131,15 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        return in_array($session_info->getUserId(), $config->user_ids);
+        return in_array($session_info->getUserId(), $config->getUserIds());
     }
 
     private function isUserAllowedByGroup(
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        foreach ($session_info->getGroupsIds() as $group_id) {
-            if (in_array($group_id, $config->group_ids)) {
+        foreach ($session_info->getGroupIds() as $group_id) {
+            if (in_array($group_id, $config->getGroupIds())) {
                 return true;
             }
         }
@@ -151,6 +151,6 @@ final class AllowList implements ControlTypeInterface
         AllowListConfig $config,
         SessionInfo $session_info
     ): bool {
-        return in_array($session_info->getProfileId(), $config->profile_ids);
+        return in_array($session_info->getProfileId(), $config->getProfileIds());
     }
 }

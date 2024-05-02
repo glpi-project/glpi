@@ -49,7 +49,7 @@ final readonly class SessionInfo
         return $this->user_id;
     }
 
-    public function getGroupsIds(): array
+    public function getGroupIds(): array
     {
         return $this->group_ids;
     }

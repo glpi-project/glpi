@@ -240,11 +240,11 @@ final class FormAccessControlManager extends DbTestCase
     {
         return $this->createForm(
             (new FormBuilder())
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids' => [
+                ->addAccessControl(AllowList::class, new AllowListConfig(
+                    user_ids: [
                         getItemByTypeName(User::class, "tech", true),
                     ],
-                ]))
+                ))
         );
     }
 
@@ -257,14 +257,14 @@ final class FormAccessControlManager extends DbTestCase
     {
         return $this->createForm(
             (new FormBuilder())
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids' => [
+                ->addAccessControl(AllowList::class, new AllowListConfig(
+                    user_ids: [
                         getItemByTypeName(User::class, "tech", true),
                     ],
-                ]))
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token' => 'my_token',
-                ]))
+                ))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
         );
     }
 
@@ -272,14 +272,14 @@ final class FormAccessControlManager extends DbTestCase
     {
         $form = $this->createForm(
             (new FormBuilder())
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids' => [
+                ->addAccessControl(AllowList::class, new AllowListConfig(
+                    user_ids: [
                         getItemByTypeName(User::class, "tech", true),
                     ],
-                ]))
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token' => 'my_token',
-                ]))
+                ))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
         );
 
         $control = $this->getAccessControl($form, AllowList::class);
@@ -293,14 +293,14 @@ final class FormAccessControlManager extends DbTestCase
     {
         return $this->createForm(
             (new FormBuilder())
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids' => [
+                ->addAccessControl(AllowList::class, new AllowListConfig(
+                    user_ids: [
                         getItemByTypeName(User::class, "tech", true),
                     ],
-                ]))
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token' => 'my_token',
-                ]))
+                ))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
         );
     }
 

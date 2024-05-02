@@ -76,14 +76,13 @@ final class DirectAccess implements ControlTypeInterface
         $url .= "/front/form/form_renderer.php?";
         $url .= http_build_query([
             'id'    => $_GET['id'],
-            'token' => $config->token,
+            'token' => $config->getToken(),
         ]);
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render("pages/admin/form/access_control/direct_access.html.twig", [
             'config' => $config,
             'url'    => $url,
-            'token'  => $config->token,
         ]);
     }
 
@@ -96,7 +95,7 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function createConfigFromUserInput(array $input): DirectAccessConfig
     {
-        return new DirectAccessConfig([
+        return DirectAccessConfig::createFromRawArray([
             'token'                 => $input['_token'] ?? null,
             'allow_unauthenticated' => $input['_allow_unauthenticated'] ?? false,
         ]);
@@ -122,7 +121,7 @@ final class DirectAccess implements ControlTypeInterface
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
     ): bool {
-        if (!$config->allow_unauthenticated && !$parameters->isAuthenticated()) {
+        if (!$config->allowUnauthenticated() && !$parameters->isAuthenticated()) {
             return false;
         }
 
@@ -138,6 +137,6 @@ final class DirectAccess implements ControlTypeInterface
             return false;
         }
 
-        return $config->token === $token;
+        return $config->getToken() === $token;
     }
 }

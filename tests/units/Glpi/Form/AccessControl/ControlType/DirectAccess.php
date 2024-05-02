@@ -106,10 +106,10 @@ class DirectAccess extends \GLPITestCase
         // We only validate that the function run without errors.
         // The rendered content should be validated by an E2E test.
         $this->string($direct_access->renderConfigForm(new DirectAccessConfig()));
-        $this->string($direct_access->renderConfigForm(new DirectAccessConfig([
-            'token' => 'my token',
-            'allow_unauthenticated' => true,
-        ])));
+        $this->string($direct_access->renderConfigForm(new DirectAccessConfig(
+            token: 'my token',
+            allow_unauthenticated: true,
+        )));
     }
 
 
@@ -139,8 +139,8 @@ class DirectAccess extends \GLPITestCase
         // Test default fallback values
         $config = $direct_access->createConfigFromUserInput([]);
         $this->object($config)->isInstanceOf(DirectAccessConfig::class);
-        $this->string($config->token)->isNotEmpty();
-        $this->boolean($config->allow_unauthenticated)->isFalse();
+        $this->string($config->getToken())->isNotEmpty();
+        $this->boolean($config->allowUnauthenticated())->isFalse();
 
         // Test user supplied values
         $config = $direct_access->createConfigFromUserInput([
@@ -148,8 +148,8 @@ class DirectAccess extends \GLPITestCase
             '_allow_unauthenticated' => true,
         ]);
         $this->object($config)->isInstanceOf(DirectAccessConfig::class);
-        $this->string($config->token)->isEqualTo('my token');
-        $this->boolean($config->allow_unauthenticated)->isTrue();
+        $this->string($config->getToken())->isEqualTo('my token');
+        $this->boolean($config->allowUnauthenticated())->isTrue();
     }
 
     /**
@@ -282,18 +282,18 @@ class DirectAccess extends \GLPITestCase
 
     private function getConfigWithAuthenticadedAccess(): DirectAccessConfig
     {
-        return new DirectAccessConfig([
-            'token' => 'my_token',
-            'allow_unauthenticated' => false,
-        ]);
+        return new DirectAccessConfig(
+            token: 'my_token',
+            allow_unauthenticated: false,
+        );
     }
 
     private function getConfigWithUnauthenticadedAccess(): DirectAccessConfig
     {
-        return new DirectAccessConfig([
-            'token' => 'my_token',
-            'allow_unauthenticated' => true,
-        ]);
+        return new DirectAccessConfig(
+            token: 'my_token',
+            allow_unauthenticated: true,
+        );
     }
 
     private function getAuthenticatedSession(): SessionInfo

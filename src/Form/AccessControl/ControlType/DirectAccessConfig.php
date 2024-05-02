@@ -36,27 +36,46 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use JsonConfigInterface;
+use JsonSerializable;
+use Override;
 use Toolbox;
 
-final class DirectAccessConfig implements JsonConfigInterface
+final class DirectAccessConfig implements JsonConfigInterface, JsonSerializable
 {
-    public readonly string $token;
-    public readonly bool $allow_unauthenticated;
+    public function __construct(
+        private string $token = "",
+        private bool $allow_unauthenticated = false,
+    ) {
+        if (empty($this->token)) {
+            $this->token = Toolbox::getRandomString(40);
+        }
+    }
 
-    public function __construct(array $data = [])
+    #[Override]
+    public static function createFromRawArray(array $data): self
     {
-        // Access token
-        $token = Toolbox::getRandomString(40);
-        if (isset($data['token'])) {
-            $token = $data['token'];
-        }
-        $this->token = $token;
+        return new self(
+            token: $data['token'] ?? "",
+            allow_unauthenticated: $data['allow_unauthenticated'] ?? false,
+        );
+    }
 
-        // Allow unauthenticated
-        $allow_unauthenticated = false;
-        if (isset($data['allow_unauthenticated'])) {
-            $allow_unauthenticated = (bool) $data['allow_unauthenticated'];
-        }
-        $this->allow_unauthenticated = $allow_unauthenticated;
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'token' => $this->token,
+            'allow_unauthenticated' => $this->allow_unauthenticated,
+        ];
+    }
+
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    public function allowUnauthenticated(): bool
+    {
+        return $this->allow_unauthenticated;
     }
 }

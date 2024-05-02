@@ -36,34 +36,50 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use JsonConfigInterface;
+use JsonSerializable;
+use Override;
 
-final class AllowListConfig implements JsonConfigInterface
+final class AllowListConfig implements JsonConfigInterface, JsonSerializable
 {
-    public readonly array $user_ids;
-    public readonly array $group_ids;
-    public readonly array $profile_ids;
+    public function __construct(
+        private array $user_ids = [],
+        private array $group_ids = [],
+        private array $profile_ids = [],
+    ) {
+    }
 
-    public function __construct(array $data = [])
+    #[Override]
+    public static function createFromRawArray(array $data): self
     {
-        // Allowed users
-        $user_ids = [];
-        if (isset($data['user_ids']) && is_array($data['user_ids'])) {
-            $user_ids = $data['user_ids'];
-        }
-        $this->user_ids = $user_ids;
+        return new self(
+            user_ids   : $data['user_ids'] ?? [],
+            group_ids  : $data['group_ids'] ?? [],
+            profile_ids: $data['profile_ids'] ?? []
+        );
+    }
 
-        // Allowed groups
-        $group_ids = [];
-        if (isset($data['group_ids']) && is_array($data['group_ids'])) {
-            $group_ids = $data['group_ids'];
-        }
-        $this->group_ids = $group_ids;
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'user_ids'    => $this->user_ids,
+            'group_ids'   => $this->group_ids,
+            'profile_ids' => $this->profile_ids,
+        ];
+    }
 
-        // Allowed profiles
-        $profile_ids = [];
-        if (isset($data['profile_ids']) && is_array($data['profile_ids'])) {
-            $profile_ids = $data['profile_ids'];
-        }
-        $this->profile_ids = $profile_ids;
+    public function getUserIds(): array
+    {
+        return $this->user_ids;
+    }
+
+    public function getGroupIds(): array
+    {
+        return $this->group_ids;
+    }
+
+    public function getProfileIds(): array
+    {
+        return $this->profile_ids;
     }
 }

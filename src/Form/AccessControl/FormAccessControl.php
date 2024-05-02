@@ -226,7 +226,12 @@ final class FormAccessControl extends CommonDBChild
         $config = json_decode($this->fields['config'], true);
         $strategy = $this->getStrategy();
         $config_class = $strategy->getConfigClass();
-        return new $config_class($config);
+
+        if (!is_a($config_class, JsonConfigInterface::class, true)) {
+            throw new \RuntimeException("Invalid config class");
+        }
+
+        return $config_class::createFromRawArray($config);
     }
 
     #[Override]
@@ -256,14 +261,15 @@ final class FormAccessControl extends CommonDBChild
         $strategy = new $strategy_class();
 
         if (is_a($input['_config'] ?? null, $strategy->getConfigClass())) {
-            // Config object can be directly passed in the input if needed
-            $input['config'] = json_encode($input['_config']);
+            // When an item is created from a direct line of code,
+            // the correct config object can be directly passed.
+            $config = $input['_config'];
             unset($input['_config']);
-            return $input;
         } else {
-            // Otherwise it is computed from user supplied values
-            $input['config'] = json_encode($strategy->createConfigFromUserInput($input));
+            // When supplied from user form or API, we need to create correct config object from the submitted values
+            $config = $strategy->createConfigFromUserInput($input);
         }
+        $input['config'] = json_encode($config);
 
         return $input;
     }

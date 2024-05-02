@@ -140,7 +140,7 @@ class FormAccessControl extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([]))
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
         $control = $this->getAccessControl($form, DirectAccess::class);
 
@@ -198,7 +198,7 @@ class FormAccessControl extends DbTestCase
         $input = [
             'forms_forms_id' => $form->getID(),
             'strategy'       => new DirectAccess(),
-            'config'         => new DirectAccessConfig([]),
+            'config'         => new DirectAccessConfig(),
             'is_active'      => true,
         ];
 
@@ -312,24 +312,24 @@ class FormAccessControl extends DbTestCase
         $form_2 = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'                 => 'my_token',
-                    'allow_unauthenticated' => true,
-                ]))
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids'    => [
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                    allow_unauthenticated: true,
+                ))
+                ->addAccessControl(AllowList::class, new AllowListConfig(
+                    user_ids: [
                         getItemByTypeName(User::class, "glpi", true),
                         getItemByTypeName(User::class, "normal", true),
                         getItemByTypeName(User::class, "tech", true),
                     ],
-                    'group_ids'   => [
+                    group_ids: [
                         getItemByTypeName(Group::class, "_test_group_1", true),
                         getItemByTypeName(Group::class, "_test_group_2", true),
                     ],
-                    'profile_ids' => [
+                    profile_ids: [
                         getItemByTypeName(Profile::class, "Super-Admin", true),
                     ],
-                ]))
+                ))
         );
         yield [$form_2, true];
     }
@@ -370,8 +370,7 @@ class FormAccessControl extends DbTestCase
      */
     protected function testPrepareInputForAddProvider(): iterable
     {
-        // Test invalid strategy
-        yield [
+        yield 'Invalid strategy' => [
             'input' => [
                 'strategy' => "not a strategy",
             ],
@@ -379,11 +378,10 @@ class FormAccessControl extends DbTestCase
             'warning'         => "Invalid access control strategy: not a strategy",
         ];
 
-        // Test direct input of a raw config item
-        yield [
+        yield 'Direct input of a raw config item' => [
             'input' => [
                 'strategy' => DirectAccess::class,
-                '_config'  => new DirectAccessConfig(['token' => "my_token"]),
+                '_config'  => new DirectAccessConfig(token: "my_token"),
             ],
             'expected_fields' => [
                 'strategy' => DirectAccess::class,
@@ -394,8 +392,7 @@ class FormAccessControl extends DbTestCase
             ],
         ];
 
-        // Test user supplied input
-        yield [
+        yield 'User supplied input' => [
             'input' => [
                 'strategy' => DirectAccess::class,
                 '_token'   => "my_token",
@@ -466,12 +463,12 @@ class FormAccessControl extends DbTestCase
         // Make sure `_no_message_link` is added to the fields
         $prepared_input = $form_access_control->prepareInputForUpdate([
             'strategy' => DirectAccess::class,
-            '_config'  => new DirectAccessConfig(['token' => "my_token"]),
+            '_config'  => new DirectAccessConfig(token: "my_token"),
         ]);
         $this->array($prepared_input)->isEqualTo([
             '_no_message_link' => true,
             'strategy'         => DirectAccess::class,
-            'config'           => json_encode(new DirectAccessConfig(['token' => "my_token"]))
+            'config'           => json_encode(new DirectAccessConfig(token: "my_token"))
         ]);
     }
 
@@ -500,24 +497,24 @@ class FormAccessControl extends DbTestCase
         $form = $this->createForm(
             (new FormBuilder())
                 ->addQuestion("Name", QuestionTypeShortText::class)
-                ->addAccessControl(DirectAccess::class, new DirectAccessConfig([
-                    'token'                 => 'my_token',
-                    'allow_unauthenticated' => true,
-                ]))
-                ->addAccessControl(AllowList::class, new AllowListConfig([
-                    'user_ids'    => [
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                    allow_unauthenticated: true,
+                ))
+                ->addAccessControl(AllowList::class, new AllowListConfig(
+                    user_ids: [
                         getItemByTypeName(User::class, "glpi", true),
                         getItemByTypeName(User::class, "normal", true),
                         getItemByTypeName(User::class, "tech", true),
                     ],
-                    'group_ids'   => [
+                    group_ids: [
                         getItemByTypeName(Group::class, "_test_group_1", true),
                         getItemByTypeName(Group::class, "_test_group_2", true),
                     ],
-                    'profile_ids' => [
+                    profile_ids: [
                         getItemByTypeName(Profile::class, "Super-Admin", true),
                     ],
-                ]))
+                ))
         );
 
         // Check config of the direct access policy

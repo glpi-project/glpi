@@ -44,5 +44,5 @@ interface JsonConfigInterface
      *
      * @param array $data
      */
-    public function __construct(array $data = []);
+    public static function createFromRawArray(array $data): JsonConfigInterface;
 }

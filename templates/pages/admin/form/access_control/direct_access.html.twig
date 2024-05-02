@@ -33,7 +33,6 @@
 
 {# @var \Glpi\Form\AccessControl\ControlType\DirectAccessConfig config #}
 {# @var string                                                  url #}
-{# @var string                                                  token #}
 
 {# Readonly input used to display the link, can be copied by clicking on it #}
 <div
@@ -67,7 +66,7 @@
         name="_allow_unauthenticated"
         type="checkbox"
         value="1"
-        {{ config.allow_unauthenticated ? 'checked' : '' }}
+        {{ config.allowUnauthenticated() ? 'checked' : '' }}
     >
     <span class="form-check-label">
         <i class="ti ti-lock-open"></i>
@@ -82,4 +81,4 @@
     </span>
 </label>
 
-<input type="hidden" name="_token" value="{{ token }}">
+<input type="hidden" name="_token" value="{{ config.getToken() }}">

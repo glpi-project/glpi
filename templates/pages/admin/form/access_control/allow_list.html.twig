@@ -37,9 +37,9 @@
 {{ call(
     "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
     ["_allow_list_dropdown", {
-        'users_id'   : config.user_ids,
-        'groups_id'  : config.group_ids,
-        'profiles_id': config.profile_ids,
+        'users_id'   : config.getUserIds(),
+        'groups_id'  : config.getGroupIds(),
+        'profiles_id': config.getProfileIds(),
     }]
 )|raw }}
 

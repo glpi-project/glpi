@@ -101,11 +101,11 @@ class AllowList extends \GLPITestCase
         // We only validate that the function run without errors.
         // The rendered content should be validated by an E2E test.
         $this->string($allow_list->renderConfigForm(new AllowListConfig()));
-        $this->string($allow_list->renderConfigForm(new AllowListConfig([
-            'user_ids'    => [1, 2, 3],
-            'group_ids'   => [4, 5, 6],
-            'profile_ids' => [7, 8, 9],
-        ])));
+        $this->string($allow_list->renderConfigForm(new AllowListConfig(
+            user_ids   : [1, 2, 3],
+            group_ids  : [4, 5, 6],
+            profile_ids: [7, 8, 9],
+        )));
     }
 
 
@@ -135,9 +135,9 @@ class AllowList extends \GLPITestCase
         // Test default fallback values
         $config = $allow_list->createConfigFromUserInput([]);
         $this->object($config)->isInstanceOf(AllowListConfig::class);
-        $this->array($config->user_ids)->isEqualTo([]);
-        $this->array($config->group_ids)->isEqualTo([]);
-        $this->array($config->profile_ids)->isEqualTo([]);
+        $this->array($config->getUserIds())->isEqualTo([]);
+        $this->array($config->getGroupIds())->isEqualTo([]);
+        $this->array($config->getProfileIds())->isEqualTo([]);
 
         // Test user supplied values
         $config = $allow_list->createConfigFromUserInput([
@@ -154,9 +154,9 @@ class AllowList extends \GLPITestCase
             ]
         ]);
         $this->object($config)->isInstanceOf(AllowListConfig::class);
-        $this->array($config->user_ids)->isEqualTo([1, 2, 3]);
-        $this->array($config->group_ids)->isEqualTo([4, 5, 6]);
-        $this->array($config->profile_ids)->isEqualTo([7, 8, 9]);
+        $this->array($config->getUserIds())->isEqualTo([1, 2, 3]);
+        $this->array($config->getGroupIds())->isEqualTo([4, 5, 6]);
+        $this->array($config->getProfileIds())->isEqualTo([7, 8, 9]);
     }
 
     /**
@@ -228,17 +228,17 @@ class AllowList extends \GLPITestCase
 
     private function getEmptyAllowList(): AllowListConfig
     {
-        return new AllowListConfig([]);
+        return new AllowListConfig();
     }
 
 
     private function getFullyConfiguredAllowListConfig(): AllowListConfig
     {
-        return new AllowListConfig([
-            'user_ids'    => [1, 2, 3],
-            'group_ids'   => [4, 5, 6],
-            'profile_ids' => [7, 8, 9],
-        ]);
+        return new AllowListConfig(
+            user_ids   : [1, 2, 3],
+            group_ids  : [4, 5, 6],
+            profile_ids: [7, 8, 9],
+        );
     }
 
     private function getAuthenticatedUserParameters(): FormAccessParameters

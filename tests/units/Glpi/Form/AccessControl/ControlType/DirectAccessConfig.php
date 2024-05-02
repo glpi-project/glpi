@@ -33,31 +33,38 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Session;
+namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
-final class SessionInfo extends \GLPITestCase
+final class DirectAccessConfig extends \GLPITestCase
 {
-    public function testGetUserId(): void
+    public function testCreateFromRawArray(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
-            user_id: 500,
+        $config = \Glpi\Form\AccessControl\ControlType\DirectAccessConfig::createFromRawArray(
+            ['token' => 'token', 'allow_unauthenticated' => true],
         );
-        $this->integer($session_info->getUserId())->isEqualTo(500);
+        $this->string($config->getToken())->isEqualTo('token');
+        $this->boolean($config->allowUnauthenticated())->isEqualTo(true);
     }
 
-    public function testGetGroupIds(): void
+    public function testGetToken(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
-            group_ids: [1, 2, 3],
+        $direct_access_config = new \Glpi\Form\AccessControl\ControlType\DirectAccessConfig(
+            token: 'token',
         );
-        $this->array($session_info->getGroupIds())->isEqualTo([1, 2, 3]);
+        $this->string($direct_access_config->getToken())->isEqualTo('token');
     }
 
-    public function testGetProfileId(): void
+    public function testAllowUnauthenticated(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
-            profile_id: 13,
+        $direct_access_config = new \Glpi\Form\AccessControl\ControlType\DirectAccessConfig(
+            allow_unauthenticated: true,
         );
-        $this->integer($session_info->getProfileId())->isEqualTo(13);
+        $this->boolean($direct_access_config->allowUnauthenticated())->isEqualTo(true);
+    }
+
+    public function testEmptyTokenInitialization(): void
+    {
+        $direct_access_config = new \Glpi\Form\AccessControl\ControlType\DirectAccessConfig();
+        $this->string($direct_access_config->getToken())->isNotEmpty();
     }
 }

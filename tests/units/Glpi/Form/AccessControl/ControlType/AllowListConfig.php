@@ -33,31 +33,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Session;
+namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
-final class SessionInfo extends \GLPITestCase
+final class AllowListConfig extends \GLPITestCase
 {
-    public function testGetUserId(): void
+    public function testCreateFromRawArray(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
-            user_id: 500,
+        $config = \Glpi\Form\AccessControl\ControlType\AllowListConfig::createFromRawArray([
+            'user_ids'    => [1, 2, 3],
+            'group_ids'   => [4, 5, 6],
+            'profile_ids' => [7, 8, 9],
+        ]);
+        $this->array($config->getUserIds())->isEqualTo([1, 2, 3]);
+        $this->array($config->getGroupIds())->isEqualTo([4, 5, 6]);
+        $this->array($config->getProfileIds())->isEqualTo([7, 8, 9]);
+    }
+
+    public function testGetUserIds(): void
+    {
+        $allow_list_config = new \Glpi\Form\AccessControl\ControlType\AllowListConfig(
+            user_ids: [1, 2, 3],
         );
-        $this->integer($session_info->getUserId())->isEqualTo(500);
+        $this->array($allow_list_config->getUserIds())->isEqualTo([1, 2, 3]);
     }
 
     public function testGetGroupIds(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
-            group_ids: [1, 2, 3],
+        $allow_list_config = new \Glpi\Form\AccessControl\ControlType\AllowListConfig(
+            group_ids: [4, 5, 6],
         );
-        $this->array($session_info->getGroupIds())->isEqualTo([1, 2, 3]);
+        $this->array($allow_list_config->getGroupIds())->isEqualTo([4, 5, 6]);
     }
 
-    public function testGetProfileId(): void
+    public function testGetProfileIds(): void
     {
-        $session_info = new \Glpi\Session\SessionInfo(
-            profile_id: 13,
+        $allow_list_config = new \Glpi\Form\AccessControl\ControlType\AllowListConfig(
+            profile_ids: [7, 8, 9],
         );
-        $this->integer($session_info->getProfileId())->isEqualTo(13);
+        $this->array($allow_list_config->getProfileIds())->isEqualTo([7, 8, 9]);
     }
 }
