@@ -39,6 +39,7 @@
 body.mce-content-body {
     margin: 15px 10px;
 
+    [data-form-tag="true"],
     [data-user-mention="true"] {
         cursor: default !important; // Overrides "not-allowed" cursor on noneditable content
     }
@@ -96,6 +97,12 @@ body.mce-content-body {
 
 .user-mention,
 [data-user-mention="true"] {
+    background: rgba(0, 0, 0, 20%);
+    border-radius: 3px;
+    padding: 5px;
+}
+
+[data-form-tag="true"] {
     background: rgba(0, 0, 0, 20%);
     border-radius: 3px;
     padding: 5px;

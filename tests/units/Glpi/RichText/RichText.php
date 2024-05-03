@@ -113,13 +113,13 @@ HTML,
 </head>
 <body>
   <h1>Test</h1>
-  
+
   <style>
     body {
       color: red;
     }
   </style>
-  
+
   <p>Hello world!</p>
   <script>$(function(){ dosomething(); });</script>
 </body>
@@ -127,7 +127,7 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => <<<HTML
   <h1>Test</h1>
-  
+
   <p>Hello world!</p>
 HTML,
         ];
@@ -240,12 +240,12 @@ HTML,
   <div>
     <label>e-mail:</label><br />
     <label>password:</label>
-    
+
     OK
-    
+
         Opt 1
         Opt 2
-    
+
     Some textarea content
   </div>
 
@@ -278,9 +278,9 @@ HTML,
 
 <h1>Comments and CDATA should be removed</h1>
 <p>
-  
+
   Legit text
-  
+
 </p>
 <p>Uppercase tag will be normalized to lowercase tag</p>
 
@@ -385,6 +385,17 @@ HTML,
   ...
 </p>
 HTML,
+        ];
+        yield 'Do not remove content editable on span' => [
+            'content' => '<span contenteditable="true">Editable content</span>',
+            'encode_output_entities' => false,
+            'expected_result' => '<span contenteditable="true">Editable content</span>',
+        ];
+
+        yield 'Do not remove data-form-tag property' => [
+            'content' => '<span data-form-tag="true">Tag label</span>',
+            'encode_output_entities' => false,
+            'expected_result' => '<span data-form-tag="true">Tag label</span>',
         ];
     }
 
@@ -505,7 +516,7 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] [{$base_url}/glpi/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS? 
+ [an image] [{$base_url}/glpi/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS?
 PLAINTEXT,
         ];
 
@@ -526,7 +537,7 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] Should I yell FOR THE IMPORTANT WORDS? 
+ [an image] Should I yell FOR THE IMPORTANT WORDS?
 PLAINTEXT,
         ];
 
@@ -547,7 +558,7 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] Should I yell for the important words? 
+ [an image] Should I yell for the important words?
 PLAINTEXT,
         ];
     }

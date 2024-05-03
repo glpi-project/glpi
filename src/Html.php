@@ -5876,6 +5876,7 @@ HTML;
                 break;
             case 'tinymce':
                 $_SESSION['glpi_js_toload'][$name][] = 'public/lib/tinymce.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/FormTags.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
