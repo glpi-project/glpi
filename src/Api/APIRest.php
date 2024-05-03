@@ -367,7 +367,6 @@ class APIRest extends API
         $this->messageLostError();
     }
 
-
     /**
      * Retrieve and check itemtype from $this->url_elements
      *
@@ -377,22 +376,24 @@ class APIRest extends API
      *                            (default true)
      * @param boolean $all_assets if we can have allasset virtual type (default false)
      *
-     * @return boolean
+     * @return string|bool
      */
     private function getItemtype($index = 0, $recursive = true, $all_assets = false)
     {
+        $itemtype = $this->getItemtypeFromUrlParameters($index);
 
-        if (isset($this->url_elements[$index])) {
-            $all_assets = $all_assets && $this->url_elements[$index] == AllAssets::getType();
-            $valid_class = Toolbox::isCommonDBTM($this->url_elements[$index])
-            || Toolbox::isAPIDeprecated($this->url_elements[$index]);
+        if ($itemtype !== null) {
+            $all_assets = $all_assets && $itemtype == AllAssets::getType();
+            $valid_class = Toolbox::isCommonDBTM($itemtype)
+            || Toolbox::isAPIDeprecated($itemtype);
 
             if ($all_assets || $valid_class) {
-                 $itemtype = $this->url_elements[$index];
+                // Current index + id parameter + first itemtype length
+                $second_itemtype_index = $index + 1 + $this->countUrlPartsUsedByItemtypeName($itemtype);
 
                 if (
                     $recursive
-                     && ($additional_itemtype = $this->getItemtype(2, false))
+                     && ($additional_itemtype = $this->getItemtype($second_itemtype_index, false))
                 ) {
                     $this->parameters['parent_itemtype'] = $itemtype;
                     $itemtype                            = $additional_itemtype;
@@ -418,11 +419,11 @@ class APIRest extends API
                 return $itemtype;
             }
             $this->returnError(
-                __("resource not found or not an instance of CommonDBTM"),
+                __("resource not found or not an instance of CommonDBTM: $itemtype"),
                 400,
                 "ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM"
             );
-        } else if ($recursive) {
+        } elseif ($recursive) {
             $this->returnError(__("missing resource"), 400, "ERROR_RESOURCE_MISSING");
         }
 
@@ -661,5 +662,71 @@ class APIRest extends API
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
         exit;
+    }
+
+    private function getItemtypeFromUrlParameters(int $index): ?string
+    {
+        $itemtype = $this->url_elements[$index] ?? null;
+        if ($itemtype === null) {
+            return null;
+        }
+
+        // Core namespaced itemtype
+        if ($itemtype == "Glpi") {
+            return $this->getNamespacedItemtypeFromUrlParameters(
+                "Glpi",
+                $index
+            );
+        }
+
+        // Plugin namespaced itemtype
+        if ($itemtype == "GlpiPlugin") {
+            $plugin_name = $this->url_elements[$index + 1];
+            return $this->getNamespacedItemtypeFromUrlParameters(
+                "GlpiPlugin\\$plugin_name",
+                $index + 1
+            );
+        }
+
+        return $itemtype;
+    }
+
+    private function getNamespacedItemtypeFromUrlParameters(
+        string $base_itemtype_part,
+        int $index
+    ): ?string {
+        $itemtype = $base_itemtype_part;
+
+        do {
+            $itemtype_part = $this->url_elements[++$index] ?? null;
+            $is_valid_part = $this->isValidItemtypePart($itemtype_part);
+
+            if ($is_valid_part) {
+                $itemtype .= "\\$itemtype_part";
+            }
+        } while ($is_valid_part);
+
+        return $itemtype;
+    }
+
+    private function isValidItemtypePart(mixed $part): bool
+    {
+        // End of URL parameters reached
+        if ($part === null) {
+            return false;
+        }
+
+        // ID parameter reached
+        if (is_numeric($part)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private function countUrlPartsUsedByItemtypeName(string $itemtype): int
+    {
+        $itemtype_parts = explode("\\", $itemtype);
+        return count($itemtype_parts);
     }
 }

@@ -40,6 +40,7 @@ use Auth;
 use atoum\atoum;
 use Computer;
 use Config;
+use Glpi\Form\Form;
 use Glpi\Tests\Api\Deprecated\Computer_Item;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareLicense;
 use Glpi\Tests\Api\Deprecated\Computer_SoftwareVersion;
@@ -3248,5 +3249,38 @@ class APIRest extends atoum
         $computer = new \Computer();
         $this->boolean((bool)$computer->getFromDB($computers_id))->isTrue();
         $this->boolean((bool)$computer->getField('is_deleted'))->isTrue();
+    }
+
+    public function testRequestWithNamespacedItemtype(): void
+    {
+        $headers = ['Session-Token' => $this->session_token];
+
+        $this->query("Glpi/Form/Form", [
+            'headers' => $headers,
+            'verb'    => "GET",
+        ], 200);
+    }
+
+    public function testRequestWithNamespacedItemtypeAndId(): void
+    {
+        $form = $this->createForm();
+        $headers = ['Session-Token' => $this->session_token];
+
+        $this->query("Glpi/Form/Form/{$form->getId()}", [
+            'headers' => $headers,
+            'verb'    => "GET",
+        ], 200);
+    }
+
+    private function createForm(): Form
+    {
+        $form = new Form();
+        $form_id = $form->add([
+            'name' => 'test_form',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->integer($form_id)->isGreaterThan(0);
+
+        return $form;
     }
 }
