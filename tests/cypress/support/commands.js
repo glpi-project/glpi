@@ -296,7 +296,7 @@ Cypress.Commands.add("initApi", () => {
         return api_token;
     }
 
-    cy.request({
+    return cy.request({
         auth: {
             'user': 'e2e_tests',
             'pass': 'glpi',
@@ -304,12 +304,13 @@ Cypress.Commands.add("initApi", () => {
         method: 'POST',
         url: '/apirest.php/initSession',
     }).then((response) => {
-        return response.body.session_token;
+        api_token = response.body.session_token;
+        return api_token;
     });
 });
 
 Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
-    cy.request({
+    return cy.request({
         method: method,
         url: '/apirest.php/' + encodeURI(endpoint),
         body: {input: values},
