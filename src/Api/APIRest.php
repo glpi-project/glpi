@@ -696,15 +696,18 @@ class APIRest extends API
         int $index
     ): ?string {
         $itemtype = $base_itemtype_part;
+        $has_reached_end_of_namespace_parts = false;
 
-        do {
+        while (!$has_reached_end_of_namespace_parts) {
             $itemtype_part = $this->url_elements[++$index] ?? null;
             $is_valid_part = $this->isValidItemtypePart($itemtype_part);
 
             if ($is_valid_part) {
                 $itemtype .= "\\$itemtype_part";
+            } else {
+                $has_reached_end_of_namespace_parts = true;
             }
-        } while ($is_valid_part);
+        }
 
         return $itemtype;
     }
