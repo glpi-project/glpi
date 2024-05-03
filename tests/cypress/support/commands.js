@@ -311,7 +311,7 @@ Cypress.Commands.add("initApi", () => {
 Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
     cy.request({
         method: method,
-        url: '/apirest.php/' + endpoint,
+        url: '/apirest.php/' + encodeURI(endpoint),
         body: {input: values},
         headers: {
             'Session-Token': token,

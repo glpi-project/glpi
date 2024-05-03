@@ -1,0 +1,16 @@
+diff --git a/src/Reservation.php b/src/Reservation.php
+index fe95ddd65a8..3b252892701 100644
+--- a/src/Reservation.php
++++ b/src/Reservation.php
+@@ -187,10 +187,7 @@ public static function handleAddForm(array $input): void
+         if (empty($input['users_id'])) {
+             $input['users_id'] = Session::getLoginUserID();
+         }
+-        if (
+-            !Session::haveRight("reservation", UPDATE)
+-            && Session::getLoginUserID() !== (int)$input['users_id']
+-        ) {
++        if (!Session::haveRight("reservation", ReservationItem::RESERVEANITEM)) {
+             return;
+         }
+ 
