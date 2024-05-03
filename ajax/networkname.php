@@ -33,17 +33,25 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Local instantiation of NetworkPort. Among others, loopback (ie.: 127.0.0.1).
- * @since 0.84
- */
-class NetworkPortLocal extends NetworkPortInstantiation
-{
-    public $canHaveVLAN = false;
-    public $haveMAC     = false;
+use Glpi\Event;
 
-    public static function getTypeName($nb = 0)
-    {
-        return __('Local loop port');
-    }
+include('../inc/includes.php');
+
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
+
+Session::checkLoginUser();
+
+$nn = new NetworkName();
+if (isset($_POST["unaffect"])) {
+    $nn->check($_POST['id'], UPDATE);
+    $nn::unaffectAddressByID($_POST['id']);
+    Event::log(
+        $_POST["id"],
+        "networkname",
+        4,
+        "inventory",
+        //TRANS: %s is the user login
+        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
+    );
 }
