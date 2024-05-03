@@ -49,6 +49,7 @@ use Document_Item;
 use Domain;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Search;
@@ -154,7 +155,6 @@ final class ManagementController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                 ]
@@ -252,7 +252,10 @@ final class ManagementController extends AbstractController
             }
         }
 
-        $schemas['Document']['properties']['filename'] = ['type' => Doc\Schema::TYPE_STRING];
+        $schemas['Document']['properties']['filename'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'x-readonly' => true,
+        ];
         $schemas['Document']['properties']['filepath'] = [
             'type' => Doc\Schema::TYPE_STRING,
             'x-mapped-from' => 'id',
@@ -260,8 +263,19 @@ final class ManagementController extends AbstractController
                 return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
             }
         ];
+        $schemas['Document']['properties']['file'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+        ];
         $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
-        $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
+        $schemas['Document']['properties']['sha1sum'] = [
+            'type' => Doc\Schema::TYPE_STRING,
+            'x-readonly' => true,
+        ];
+        $schemas['Document']['properties']['link'] = [
+            'description' => 'Web link to the document',
+            'type' => Doc\Schema::TYPE_STRING,
+        ];
         $schemas['Document_Item'] = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-itemtype' => Document_Item::class,
@@ -463,12 +477,30 @@ final class ManagementController extends AbstractController
         [
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
+            'content_type' => 'application/json',
+            'schema' => '{itemtype}',
+        ],
+        [
+            'name' => '_',
+            'location' => Doc\Parameter::LOCATION_BODY,
+            'content_type' => 'multipart/form-data',
             'schema' => '{itemtype}',
         ]
     ])]
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
+        $files = $request->getUploadedFiles();
+        if ($itemtype === 'Document' && isset($files['file'])) {
+            $documents_id = FileManager::uploadAsDocument($files['file'], $request->getParameters());
+            if ($documents_id === null) {
+                return AbstractController::getInvalidParametersErrorResponse();
+            }
+            return AbstractController::getCRUDCreateResponse(
+                $documents_id,
+                self::getAPIPathForRouteFunction(self::class, 'getItem', ['id' => $documents_id])
+            );
+        }
         return Search::createBySchema($this->getKnownSchema($itemtype), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
@@ -482,6 +514,13 @@ final class ManagementController extends AbstractController
             [
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
+                'content_type' => 'application/json',
+                'schema' => '{itemtype}',
+            ],
+            [
+                'name' => '_',
+                'location' => Doc\Parameter::LOCATION_BODY,
+                'content_type' => 'multipart/form-data',
                 'schema' => '{itemtype}',
             ]
         ],
@@ -492,6 +531,15 @@ final class ManagementController extends AbstractController
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
+        //FIXME May need to split the update of the file itself to a new POST endpoint due to PHP not parsing multipart/form-data in non-POST requests
+        //This is something that will be handled in PHP 8.4 (https://wiki.php.net/rfc/rfc1867-non-post), but it will be a while before we can use that
+        $files = $request->getUploadedFiles();
+        if ($itemtype === 'Document' && isset($files['file'])) {
+            if (FileManager::replaceDocument($request->getAttribute('id'), $files['file'], $request->getParameters())) {
+                return Search::getOneBySchema($this->getKnownSchema('Document'), $request->getAttributes(), $request->getParameters());
+            }
+            return AbstractController::getInvalidParametersErrorResponse();
+        }
         return Search::updateBySchema($this->getKnownSchema($itemtype), $request->getAttributes(), $request->getParameters());
     }
 
