@@ -41,12 +41,19 @@ chdir(__DIR__);
 
 $SECURITY_STRATEGY = 'no_check'; // in GLPI mode, cronjob can also be triggered from public pages
 
+// Try detecting if we are running with the root user (Not available on Windows)
+if (function_exists('posix_geteuid') && posix_geteuid() === 0) {
+    echo "\t" . __('ERROR: running as root is not allowed') . "\n";
+    echo "\t" . __('You should run the script as the same user that your web server runs as to avoid file permissions being ruined') . "\n";
+    exit(1);
+}
+
 include('../inc/includes.php');
 
 if (!is_writable(GLPI_LOCK_DIR)) {
    //TRANS: %s is a directory
     echo "\t" . sprintf(__('ERROR: %s is not writable') . "\n", GLPI_LOCK_DIR);
-    echo "\t" . __('run script as apache user') . "\n";
+    echo "\t" . __('Run the script as the same user that your web server runs as') . "\n";
     exit(1);
 }
 

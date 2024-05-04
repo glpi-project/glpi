@@ -4,7 +4,7 @@
 
     "date", "pcre", "reflection", "spl",
 
-    "exif", "ldap", "pcntl"
+    "exif", "ldap", "pcntl", "posix"
   ],
   "symbol-whitelist": [
     "// Missing constant in Alpine Linux",
