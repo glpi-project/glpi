@@ -259,6 +259,9 @@ final class ProxyRouter
      */
     public function proxify(): void
     {
+        if ($this->handleWellKnownURIs()) {
+            return;
+        }
         if ($this->isPathAllowed() === false) {
             http_response_code(403);
             return;
@@ -327,5 +330,29 @@ final class ProxyRouter
 
         header(sprintf('Content-Length: %s', filesize($target_file)));
         readfile($target_file);
+    }
+
+    /**
+     * Handle well-known URIs as defined in RFC 5785.
+     * https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
+     *
+     * @return bool
+     */
+    private function handleWellKnownURIs()
+    {
+        // Handle well-known URIs
+        if (preg_match('/^\/\.well-known\//', $this->path) === 1) {
+            // Get the requested URI (the part after .well-known/)
+            $requested_uri = explode('/', $this->path);
+            $requested_uri = strtolower(end($requested_uri));
+
+            // Some password managers can use this URI to help with changing passwords
+            // Redirect to the change password page
+            if ($requested_uri === 'change-password') {
+                header('Location: /front/updatepassword.php', true, 307);
+                return true;
+            }
+        }
+        return false;
     }
 }
