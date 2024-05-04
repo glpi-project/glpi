@@ -143,6 +143,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkPortInstantiation::showSocketField()`, `NetworkPortInstantiation::showMacField()`, `NetworkPortInstantiation::showNetworkCardField` now outputs HTML for a flex form instead of a table.
 - `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
 - Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
+- `templates/password_form.html.twig` should no longer be used directly. Use `templates/forgotpassword.html.twig`, `templates/updatepassword.html.twig` or a custom template.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
@@ -195,6 +196,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Toolbox\Sanitizer::unsanitize()`
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
+- `Html::createProgressBar()`
 - `Html::displayAjaxMessageAfterRedirect()`
 - `HookManager::enableCSRF()`
 - `Knowbase::getTreeCategoryList()`

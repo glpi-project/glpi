@@ -87,7 +87,7 @@ if (isset($_POST['add'])) {
         }
         if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
             echo "<div class='center spaced'>" .
-                __('Your ticket has been registered, its treatment is in progress.');
+                __s('Your ticket has been registered, its treatment is in progress.');
             Html::displayBackLink();
             echo "</div>";
         } else {

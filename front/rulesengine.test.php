@@ -71,8 +71,7 @@ $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'], $_POS
 
 if (isset($_POST["test_all_rules"])) {
    //Unset values that must not be processed by the rule
-    unset($_POST["sub_type"]);
-    unset($_POST["test_all_rules"]);
+    unset($_POST["sub_type"], $_POST["test_all_rules"]);
 
     echo "<br>";
     $rulecollection->showRulesEnginePreviewResultsForm($_SERVER['PHP_SELF'], $_POST, $condition);

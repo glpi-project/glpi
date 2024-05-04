@@ -105,10 +105,13 @@ if (isset($_POST["action"])) {
 
     echo "<table class='tab_cadrehov'>";
 
-    echo "<tr><th><div class='relative b'>" . $rulecollection->getTitle() . "<br>" .
-         __('Replay the rules dictionary') . "</div></th></tr>\n";
+    echo "<tr><th><div class='relative b'>" . htmlspecialchars($rulecollection->getTitle()) . "<br>" .
+         __s('Replay the rules dictionary') . "</div></th></tr>\n";
     echo "<tr><td class='center'>";
-    Html::createProgressBar(__('Work in progress...'));
+    Html::progressBar('doaction_progress', [
+        'create' => true,
+        'message' => __s('Work in progress...')
+    ]);
     echo "</td></tr>\n";
     echo "</table>";
 

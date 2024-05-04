@@ -5534,82 +5534,10 @@ JAVASCRIPT;
      */
     public function showPasswordUpdateForm(array $error_messages = [])
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        echo '<form method="post" action="' . $CFG_GLPI['root_doc'] . '/front/updatepassword.php">';
-        echo '<table class="tab_cadre">';
-        echo '<tr><th colspan="2">' . __('Password update') . '</th></tr>';
-
-        if (Session::mustChangePassword()) {
-            echo '<tr class="tab_bg_2 center">';
-            echo '<td colspan="2" class="red b">';
-            echo __('Your password has expired. You must change it to be able to login.');
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo __('Login');
-        echo '</td>';
-        echo '<td>';
-        echo '<input type="text" name="name" value="' . $this->fields['name'] . '" readonly="readonly" />';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo '<label for="current_password">' . __('Current password') . '</label>';
-        echo '</td>';
-        echo '<td>';
-        echo '<input type="password" id="current_password" name="current_password" />';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo '<label for="password">' . __('New password') . '</label>';
-        echo '</td>';
-        echo '<td>';
-        echo '<input type="password" id="password" name="password" autocomplete="new-password" onkeyup="return passwordCheck();" class="form-control" />';
-        echo '</td>';
-        echo '</tr>';
-
-        echo '<tr class="tab_bg_1">';
-        echo '<td>';
-        echo '<label for="password2">' . __('New password confirmation') . '</label>';
-        echo '</td>';
-        echo '<td>';
-        echo '<input type="password" id="password2" name="password2" autocomplete="new-password" class="form-control" />';
-        echo '</td>';
-        echo '</tr>';
-
-        if ($CFG_GLPI['use_password_security']) {
-            echo '<tr class="tab_bg_1">';
-            echo '<td>' . __('Password security policy') . '</td>';
-            echo '<td>';
-            Config::displayPasswordSecurityChecks();
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '<tr class="tab_bg_2 center">';
-        echo '<td colspan="2">';
-        echo '<input type="submit" name="update" value="' . __s('Save') . '" class="btn btn-primary" />';
-        echo '</td>';
-        echo '</tr>';
-
-        if (!empty($error_messages)) {
-            echo '<tr class="tab_bg_2 center">';
-            echo '<td colspan="2" class="red b">';
-            echo implode('<br/>', array_map('htmlspecialchars', $error_messages));
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '</table>';
-        Html::closeForm();
+        TemplateRenderer::getInstance()->display('updatepassword.html.twig', [
+            'must_change_password' => Session::mustChangePassword(),
+            'errors'   => $error_messages,
+        ]);
     }
 
 
@@ -5622,8 +5550,7 @@ JAVASCRIPT;
      */
     public static function showPasswordForgetChangeForm($token)
     {
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
-            'title'    => __('Forgotten password?'),
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'token'    => $token,
             'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
         ]);
@@ -5640,7 +5567,7 @@ JAVASCRIPT;
      */
     public static function showPasswordInitChangeForm(string $token): void
     {
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title'    => __('Password Initialization'),
             'token'    => $token,
             'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
@@ -5657,9 +5584,7 @@ JAVASCRIPT;
      */
     public static function showPasswordForgetRequestForm(): void
     {
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
-            'title' => __('Forgotten password?'),
-        ]);
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig');
     }
 
     /**
@@ -5669,7 +5594,7 @@ JAVASCRIPT;
      */
     public static function showPasswordInitRequestForm()
     {
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title' => __('Password initialization'),
         ]);
     }
@@ -5782,8 +5707,7 @@ JAVASCRIPT;
             }
         }
 
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
-            'title'         => __('Forgotten password?'),
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,
         ]);
     }
@@ -5806,8 +5730,7 @@ JAVASCRIPT;
         }
         Session::addMessageAfteRredirect(__s('If the given email address match an exisiting GLPI user, you will receive an email containing the informations required to reset your password. Please contact your administrator if you do not receive any email.'));
 
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
-            'title'         => __('Forgotten password?'),
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,
         ]);
     }
@@ -5829,7 +5752,7 @@ JAVASCRIPT;
         }
         Session::addMessageAfterRedirect(__s('The given email address will receive the informations required to define password.'));
 
-        TemplateRenderer::getInstance()->display('password_form.html.twig', [
+        TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title'         => __('Password initialization'),
             'messages_only' => true,
         ]);
