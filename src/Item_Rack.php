@@ -506,28 +506,28 @@ JAVASCRIPT;
 
         echo "<div id='rack_stats' class='rack_side_block'>";
 
-        echo "<h2>" . __("Rack stats") . "</h2>";
+        echo "<h2>" . __s("Rack stats") . "</h2>";
 
         echo "<div class='rack_side_block_content'>";
-        echo "<h3>" . __("Space") . "</h3>";
+        echo "<h3>" . __s("Space") . "</h3>";
         Html::progressBar('rack_space', [
             'create' => true,
             'percent' => $space_prct,
-            'message' => $space_prct . "%",
+            'message' => htmlspecialchars($space_prct . "%"),
         ]);
 
-        echo "<h3>" . __("Weight") . "</h3>";
+        echo "<h3>" . __s("Weight") . "</h3>";
         Html::progressBar('rack_weight', [
             'create' => true,
             'percent' => $weight_prct,
-            'message' => $weight . " / " . $rack->fields['max_weight']
+            'message' => htmlspecialchars($weight . " / " . $rack->fields['max_weight'])
         ]);
 
-        echo "<h3>" . __("Power") . "</h3>";
+        echo "<h3>" . __s("Power") . "</h3>";
         Html::progressBar('rack_power', [
             'create' => true,
             'percent' => $power_prct,
-            'message' => $power . " / " . $rack->fields['max_power']
+            'message' => htmlspecialchars($power . " / " . $rack->fields['max_power'])
         ]);
         echo "</div>";
         echo "</div>";

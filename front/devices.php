@@ -38,7 +38,7 @@ include('../inc/includes.php');
 Session::checkRight("device", READ);
 
 Html::header(_n('Component', 'Components', Session::getPluralNumber()), $_SERVER['PHP_SELF'], "config", "commondevice");
-echo "<div class='center'>";
+echo "<div class='text-center'>";
 
 $optgroup = Dropdown::getDeviceItemTypes();
 Dropdown::showItemTypeMenu(_n('Component', 'Components', Session::getPluralNumber()), $optgroup);

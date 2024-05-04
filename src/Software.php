@@ -981,7 +981,7 @@ class Software extends CommonDBTM
             $twig_params = [
                 'merge_msg' => __('Merging'),
                 'progress' => Html::progressBar('doaction_progress', [
-                    'message' => __('Work in progress...'),
+                    'message' => __s('Work in progress...'),
                     'create' => true,
                     'display' => false
                 ])

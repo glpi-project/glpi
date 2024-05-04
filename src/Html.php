@@ -811,8 +811,8 @@ class Html
      * @param string $id HTML ID of the progress bar
      * @param array $options progress status options
      *                    - create    do we have to create it ?
-     *                    - message   add or change the message
-     *                    - percent   current level
+     *                    - message   add or change the message (HTML allowed. Text content must be escaped)
+     *                    - percent   current level (Must be cast to a numeric type)
      *
      *
      * @return string|void Generated HTML if `display` param is true, void otherwise.
@@ -909,9 +909,12 @@ HTML;
      * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      *
      * @return string|void
+     * @deprecated 11.0.0
+     * @see Html::progressBar()
      **/
     public static function createProgressBar($msg = null, array $options = [])
     {
+        Toolbox::deprecated('Html::createProgressBar is deprecated. Use Html::progressBar instead.');
         $options = array_replace([
             'create' => true,
             'display' => true

@@ -1067,7 +1067,7 @@ class Item_Devices extends CommonDBRelation
                                 $content = Html::progressBar("percent" . mt_rand(), [
                                     'create'  => true,
                                     'percent' => $percent,
-                                    'message' => $message,
+                                    'message' => htmlspecialchars($message),
                                     'display' => false
                                 ]);
                                 break;
