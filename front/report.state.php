@@ -48,7 +48,5 @@ if (!isset($_GET["id"])) {
 }
 
 Report::title();
-
 State::showSummary();
-
 Html::footer();

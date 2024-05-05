@@ -76,9 +76,9 @@
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
                     {% set super_header_raw = super_header is array ? super_header['is_raw'] : false %}
                     <tr>
-                        <th colspan="{{ total_cols }}">
+                        {% if super_header_raw != 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
-                        </th>
+                        {% if super_header_raw != 'th_elements' %}</th>{% endif %}
                     </tr>
                 {% endif %}
                 {% if no_header is not defined or no_header == false %}

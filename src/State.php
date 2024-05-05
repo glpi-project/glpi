@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\Clonable;
@@ -177,97 +178,98 @@ class State extends CommonTreeDropdown
             }
         }
 
-        if (count($states)) {
-            $total = [];
+        $columns = [
+            'state' => __('Status'),
+        ];
+        $formatters = [
+            'state' => 'raw_html'
+        ];
+        $entries = [];
+        $total = [];
 
-            // Produce headline
-            echo "<div class='center'><table class='tab_cadrehov'><tr>";
-
-            // Type
-            echo "<th>" . __('Status') . "</th>";
-
-            foreach ($state_type as $key => $itemtype) {
-                if ($item = getItemForItemtype($itemtype)) {
-                    echo "<th>" . $item->getTypeName(Session::getPluralNumber()) . "</th>";
-                    $total[$itemtype] = 0;
-                } else {
-                    unset($state_type[$key]);
-                }
+        foreach ($state_type as $key => $itemtype) {
+            if ($item = getItemForItemtype($itemtype)) {
+                $columns[$itemtype] = $item::getTypeName(Session::getPluralNumber());
+                $formatters[$itemtype] = 'integer';
+                $total[$itemtype] = 0;
+            } else {
+                unset($state_type[$key]);
             }
+        }
 
-            echo "<th>" . __('Total') . "</th>";
-            echo "</tr>";
+        $iterator = $DB->request([
+            'FROM'   => 'glpi_states',
+            'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
+            'ORDER'  => 'completename'
+        ]);
 
-            $iterator = $DB->request([
-                'FROM'   => 'glpi_states',
-                'WHERE'  => getEntitiesRestrictCriteria('glpi_states', '', '', true),
-                'ORDER'  => 'completename'
-            ]);
+        // No state
+        $tot = 0;
+        $no_state_entry = [
+            'state' => '---'
+        ];
+        foreach ($state_type as $itemtype) {
+            $count = $states[0][$itemtype] ?? 0;
+            $no_state_entry[$itemtype] = $count;
+            $total[$itemtype] += $count;
+            $tot              += $count;
+        }
+        $no_state_entry['total'] = $tot;
+        $entries[] = $no_state_entry;
 
-           // No state
+        foreach ($iterator as $data) {
             $tot = 0;
-            echo "<tr class='tab_bg_2'><td>---</td>";
-            foreach ($state_type as $itemtype) {
-                echo "<td class='numeric'>";
-
-                if (isset($states[0][$itemtype])) {
-                    echo $states[0][$itemtype];
-                    $total[$itemtype] += $states[0][$itemtype];
-                    $tot              += $states[0][$itemtype];
-                } else {
-                    echo "&nbsp;";
-                }
-
-                echo "</td>";
-            }
-            echo "<td class='numeric b'>$tot</td></tr>";
-
-            foreach ($iterator as $data) {
-                $tot = 0;
-                echo "<tr class='tab_bg_2'><td class='b'>";
-
-                $opt = ['reset'    => 'reset',
-                    'sort'     => 1,
-                    'start'    => 0,
-                    'criteria' => ['0' => ['value' => '$$$$' . $data['id'],
+            $opt = [
+                'reset'    => 'reset',
+                'sort'     => 1,
+                'start'    => 0,
+                'criteria' => [
+                    '0' => [
+                        'value' => '$$$$' . $data['id'],
                         'searchtype' => 'contains',
                         'field' => 31
                     ]
-                    ]
-                ];
+                ]
+            ];
 
-                $url = AllAssets::getSearchURL();
-                echo "<a href='$url?" . Toolbox::append_params($opt, '&amp;') . "'>" . $data["completename"] . "</a></td>";
 
-                foreach ($state_type as $itemtype) {
-                    echo "<td class='numeric'>";
-
-                    if (isset($states[$data["id"]][$itemtype])) {
-                        echo $states[$data["id"]][$itemtype];
-                        $total[$itemtype] += $states[$data["id"]][$itemtype];
-                        $tot              += $states[$data["id"]][$itemtype];
-                    } else {
-                        echo "&nbsp;";
-                    }
-
-                    echo "</td>";
-                }
-                echo "<td class='numeric b'>$tot</td>";
-                echo "</tr>";
-            }
-            echo "<tr class='tab_bg_2'><td class='center b'>" . __('Total') . "</td>";
-            $tot = 0;
-
+            $url = htmlspecialchars(AllAssets::getSearchURL()) . '?' . Toolbox::append_params($opt, '&amp;');
+            $entry = [
+                'state' => '<a href="' . $url . '">' . htmlspecialchars($data["completename"]) . '</a>'
+            ];
             foreach ($state_type as $itemtype) {
-                echo "<td class='numeric b'>" . $total[$itemtype] . "</td>";
-                $tot += $total[$itemtype];
+                $count = $states[$data["id"]][$itemtype] ?? 0;
+                $entry[$itemtype] = $count;
+                $total[$itemtype] += $count;
+                $tot              += $count;
             }
-
-            echo "<td class='numeric b'>$tot</td></tr>";
-            echo "</table></div>";
-        } else {
-            echo "<div class='center b'>" . __('No item found') . "</div>";
+            $entry['total'] = $tot;
+            $entries[] = $entry;
         }
+
+        $columns['total'] = __('Total');
+        $footer = [
+            'state' => __('Total')
+        ];
+        foreach ($total as $itemtype => $value) {
+            $footer[$itemtype] = $value;
+        }
+        $footer['total'] = array_sum($total);
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => $columns,
+            'formatters' => $formatters,
+            'entries' => $entries,
+            'footers' => [$footer],
+            'footer_class' => 'fw-bold',
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => false,
+        ]);
     }
 
     public function getEmpty()

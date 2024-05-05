@@ -1,0 +1,84 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+{% if not embeded %}
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{ __('Network report') }}</div>
+        </div>
+        <div class="card-body">
+{% endif %}
+{% set btn %}
+    {% set btn_el %}
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+        <button type="submit" class="btn btn-primary">{{ __('Display report') }}</button>
+    {% endset %}
+    {{ fields.htmlField('', btn_el, null, {
+        no_label: true,
+        mb: '',
+        add_field_class: 'ms-3',
+        wrapper_class: 'd-block py-1'
+    }) }}
+{% endset %}
+<form method="get" action="report.networking.php" class="mt-n3">
+    <div class="d-flex row">
+        {{ fields.dropdownField('Location', 'locations_id', _get['locations_id']|default(0), __('By location'), {
+            entity: session.glpiactive_entity,
+            mb: '',
+        }) }}
+        {{ btn }}
+    </div>
+</form>
+<form method="get" action="report.networking.php">
+    <div class="d-flex row">
+        {{ fields.dropdownField('NetworkEquipment', 'switch', _get['switch']|default(0), __('By hardware'), {
+            entity: session.glpiactive_entity,
+            mb: '',
+        }) }}
+        {{ btn }}
+    </div>
+</form>
+<form method="get" action="report.networking.php">
+    <div class="d-flex row">
+        {{ fields.dropdownField('Glpi\\Socket', 'prise', _get['prise']|default(0), __('By network socket'), {
+            entity: session.glpiactive_entity,
+            mb: '',
+        }) }}
+        {{ btn }}
+    </div>
+</form>
+{% if not embeded %}
+        </div>
+    </div>
+{% endif %}

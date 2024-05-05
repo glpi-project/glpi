@@ -273,6 +273,156 @@ class Infocom extends CommonDBChild
         return false;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
+     * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
+     * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
+     * @return ?array
+     */
+    public static function getDataForAssetInfocomReport(string $itemtype, string $begin, string $end): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $itemtable = getTableForItemType($itemtype);
+        if (!$DB->fieldExists($itemtable, "ticket_tco", false)) {
+            return null;
+        }
+
+        $criteria = [
+            'SELECT'       => [
+                'glpi_infocoms.*',
+                "$itemtable.name AS itemname",
+                "$itemtable.ticket_tco",
+                'glpi_entities.completename AS entityname',
+                'glpi_entities.id AS entID'
+
+            ],
+            'FROM'         => 'glpi_infocoms',
+            'INNER JOIN'   => [
+                $itemtable  => [
+                    'ON'  => [
+                        'glpi_infocoms'   => 'items_id',
+                        $itemtable        => 'id', [
+                            'AND' => [
+                                'glpi_infocoms.itemtype'   => $itemtype
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'LEFT JOIN'    => [
+                'glpi_entities'   => [
+                    'ON'  => [
+                        'glpi_entities'   => 'id',
+                        $itemtable        => 'entities_id'
+                    ]
+                ]
+            ],
+            'WHERE'        => [
+                "$itemtable.is_template" => 0
+            ] + getEntitiesRestrictCriteria($itemtable) + $itemtype::getSystemSQLCriteria(),
+            'ORDERBY'      => ['entityname ASC', 'buy_date', 'use_date']
+        ];
+
+        if (!empty($begin)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['>=', $begin],
+                    'glpi_infocoms.use_date'   => ['>=', $begin]
+                ]
+            ];
+        }
+
+        if (!empty($end)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['<=', $end],
+                    'glpi_infocoms.use_date'   => ['<=', $end]
+                ]
+            ];
+        }
+
+        return iterator_to_array($DB->request($criteria));
+    }
+
+    /**
+     * @param class-string<CommonDBTM> $itemtype The itemtype to get data for. The itemtype must have a `ticket_tco` field.
+     * @param string $begin Date string for the beginning of the period to retrieve (based on buy or use date)
+     * @param string $end Date string for the end of the period to retrieve (based on buy or use date)
+     * @return ?array
+     */
+    public static function getDataForOtherInfocomReport(string $itemtype, string $begin, string $end): ?array
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        $itemtable = getTableForItemType($itemtype);
+        if ($DB->fieldExists($itemtable, "ticket_tco", false)) {
+            // This is already handled by the asset infocom report
+            return null;
+        }
+
+        $criteria = [
+            'SELECT'       => 'glpi_infocoms.*',
+            'FROM'         => 'glpi_infocoms',
+            'INNER JOIN'   => [
+                $itemtable  => [
+                    'ON'  => [
+                        $itemtable        => 'id',
+                        'glpi_infocoms'   => 'items_id', [
+                            'AND' => [
+                                'glpi_infocoms.itemtype' => $itemtype
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+            'WHERE'        => $itemtype::getSystemSQLCriteria(),
+        ];
+
+        switch ($itemtype) {
+            case 'SoftwareLicense':
+                $criteria['INNER JOIN']['glpi_softwares'] = [
+                    'ON'  => [
+                        'glpi_softwarelicenses' => 'softwares_id',
+                        'glpi_softwares'        => 'id'
+                    ]
+                ];
+                $criteria['WHERE'][] =  getEntitiesRestrictCriteria("glpi_softwarelicenses");
+                break;
+            default:
+                if (is_a($itemtype, CommonDBChild::class, true)) {
+                    $childitemtype = $itemtype::$itemtype; // acces to child via $itemtype static
+                    $criteria['INNER JOIN'][$childitemtype::getTable()] = [
+                        'ON'  => [
+                            $itemtype::getTable() => $itemtype::$items_id,
+                            $childitemtype::getTable() => 'id'
+                        ]
+                    ];
+                    $criteria['WHERE'][] =  getEntitiesRestrictCriteria($itemtable);
+                }
+                break;
+        }
+
+        if (!empty($begin)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['>=', $begin],
+                    'glpi_infocoms.use_date'   => ['>=', $begin]
+                ]
+            ];
+        }
+        if (!empty($end)) {
+            $criteria['WHERE'][] = [
+                'OR'  => [
+                    'glpi_infocoms.buy_date'   => ['<=', $end],
+                    'glpi_infocoms.use_date'   => ['<=', $end]
+                ]
+            ];
+        }
+
+        $criteria['WHERE'] = array_filter($criteria['WHERE']);
+        return iterator_to_array($DB->request($criteria));
+    }
 
     public function prepareInputForAdd($input)
     {
@@ -985,18 +1135,18 @@ JS;
     }
 
     /**
-     * Calculate amortissement for an item
+     * Calculate depreciation for an item
      *
-     * @param integer $type_amort    type d'amortisssment "lineaire=2" ou "degressif=1"
+     * @param integer $type_amort    type of depreciation "linear=2" or "degressive=1"
      * @param number  $va            valeur d'acquisition
-     * @param number  $duree         duree d'amortissement
-     * @param number  $coef          coefficient d'amortissement
-     * @param string|null  $date_achat    Date d'achat
-     * @param string|null  $date_use      Date d'utilisation
-     * @param string|null  $date_tax      date du debut de l'annee fiscale
-     * @param string  $view          "n" pour l'annee en cours ou "all" pour le tableau complet (default 'n')
+     * @param number  $duree         acquisition value
+     * @param number  $coef          amortization coefficient
+     * @param string|null  $date_achat    Date of purchase
+     * @param string|null  $date_use      Startup date
+     * @param string|null  $date_tax      start date of fiscal year
+     * @param string  $view          "n" for the current year or "all" for the complete table (default 'n')
      *
-     * @return float|array
+     * @return float|array|string Depreciation value or array of values. If an error occurs, return '-'.
      **/
     public static function Amort(
         $type_amort,
