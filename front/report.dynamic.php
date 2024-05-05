@@ -45,7 +45,7 @@ if ($itemtype === 'AllAssets') {
 } else {
     Session::checkValidSessionId();
     $item = new $itemtype();
-    if (!$item->canView()) {
+    if (!$item::canView()) {
         Html::displayRightError();
     }
 }
@@ -65,6 +65,7 @@ if (isset($_GET["display_type"])) {
             if (isset($_GET["item_type_param"])) {
                 $params = Toolbox::decodeArrayFromInput($_GET["item_type_param"]);
                 switch ($params["type"]) {
+                    case "device":
                     case "comp_champ":
                         $val = Stat::getItems(
                             $_GET["itemtype"],
@@ -83,26 +84,8 @@ if (isset($_GET["display_type"])) {
                         );
                         break;
 
-                    case "device":
-                        $val = Stat::getItems(
-                            $_GET["itemtype"],
-                            $params["date1"],
-                            $params["date2"],
-                            $params["dropdown"]
-                        );
-                        Stat::showTable(
-                            $_GET["itemtype"],
-                            $params["type"],
-                            $params["date1"],
-                            $params["date2"],
-                            $params["start"],
-                            $val,
-                            $params["dropdown"]
-                        );
-                        break;
-
                     default:
-                          $val2 = (isset($params['value2']) ? $params['value2'] : 0);
+                          $val2 = ($params['value2'] ?? 0);
                           $val  = Stat::getItems(
                               $_GET["itemtype"],
                               $params["date1"],
@@ -120,7 +103,7 @@ if (isset($_GET["display_type"])) {
                              $val2
                          );
                 }
-            } else if (isset($_GET["type"]) && ($_GET["type"] == "hardwares")) {
+            } else if (isset($_GET["type"]) && ($_GET["type"] === "hardwares")) {
                 Stat::showItems("", $_GET["date1"], $_GET["date2"], $_GET['start'], $_GET["itemtype"]);
             }
             break;

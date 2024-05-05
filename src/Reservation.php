@@ -939,19 +939,14 @@ JAVASCRIPT;
     }
 
     /**
-     * Display reservations for a user
-     *
-     * @param integer $ID ID of the user
-     * @return void
-     **/
-    public static function showForUser($ID)
+     * Get reservation data for a user
+     * @param int $users_id ID of the user
+     * @return array
+     */
+    public static function getForUser(int $users_id): array
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        if (!Session::haveRight("reservation", READ)) {
-            return;
-        }
 
         $now = $_SESSION["glpi_currenttime"];
 
@@ -982,7 +977,7 @@ JAVASCRIPT;
                 ]
             ],
             'WHERE'     => [
-                'users_id'  => $ID
+                'users_id'  => $users_id
             ]
         ];
 
@@ -994,49 +989,28 @@ JAVASCRIPT;
 
         $ri = new ReservationItem();
 
-        $fn_get_entry = static function (array $data, bool $is_old) use ($ri) {
-            /** @var array $CFG_GLPI */
-            global $CFG_GLPI;
+        $fn_get_entry = static function (array $data) use ($ri) {
             $entry = [
-                'itemtype' => ReservationItem::class,
                 'id' => $data['reservationitems_id'],
                 'start_date' => $data['begin'],
                 'end_date' => $data['end'],
-                'item' => '',
-                'entity' => '',
-                'by' => getUserName($data["users_id"]),
-                'comments' => nl2br(htmlspecialchars($data["comment"])),
+                'item' => null,
+                'entity' => null,
+                'by' => $data["users_id"],
+                'comments' => $data["comment"],
             ];
 
-            $item = null;
             if ($ri->getFromDB($data["reservationitems_id"])) {
-                if ($item = getItemForItemtype($ri->fields['itemtype'])) {
-                    if ($item->getFromDB($ri->fields['items_id'])) {
-                        $entry['item'] = $item->getLink();
-                    }
-                }
-                $entry['entity'] = $data['completename'];
-            }
-
-            if (!$is_old) {
-                [$annee, $mois] = explode("-", $data["begin"]);
-                $href = htmlspecialchars($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data["reservationitems_id"]}&mois_courant=$mois&annee_courante=$annee";
-                $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
-                $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
-                $entry['planning'] .= "</a>";
-            } else if ($item instanceof CommonDBTM) {
-                $href = htmlspecialchars($item::getFormURLWithID($ri->fields['items_id']) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data["begin"]}");
-                $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
-                $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['item']['itemtype'] = $ri->fields['itemtype'];
+                $entry['item']['id'] = $ri->fields['items_id'];
+                $entry['entity'] = $data['entities_id'];
             }
             return $entry;
         };
 
         $progress_entries = [];
         foreach ($iterator as $data) {
-            $progress_entries[] = $fn_get_entry($data, false);
+            $progress_entries[] = $fn_get_entry($data);
         }
 
         // Print old reservations
@@ -1047,7 +1021,64 @@ JAVASCRIPT;
 
         $old_entries = [];
         foreach ($iterator as $data) {
-            $old_entries[] = $fn_get_entry($data, true);
+            $old_entries[] = $fn_get_entry($data);
+        }
+
+        return [
+            'in_progress' => $progress_entries,
+            'old' => $old_entries
+        ];
+    }
+
+    public static function showReservationsAsList(array $reservations, string $title): void
+    {
+        $entity_cache = [];
+        $fn_format_entry = static function (array $data, bool $is_old) use (&$entity_cache) {
+            /** @var array $CFG_GLPI */
+            global $CFG_GLPI;
+            $entry = [
+                'itemtype' => ReservationItem::class,
+                'id' => $data['id'],
+                'start_date' => $data['start_date'],
+                'end_date' => $data['end_date'],
+                'item' => '',
+                'entity' => '',
+                'by' => getUserName($data["by"]),
+                'comments' => nl2br(htmlspecialchars($data["comments"])),
+            ];
+
+            $item = null;
+            if ($data['item'] !== null) {
+                if (($item = getItemForItemtype($data['item']['itemtype'])) && $item->getFromDB($data['item']['id'])) {
+                    $entry['item'] = $item->getLink();
+                }
+            }
+            if ($data['entity'] !== null) {
+                if (!isset($entity_cache[$data['entity']])) {
+                    $entity_cache[$data['entity']] = Dropdown::getDropdownName('glpi_entities', $data['entity']);
+                }
+                $entry['entity'] = $entity_cache[$data['entity']];
+            }
+
+            if (!$is_old) {
+                [$annee, $mois] = explode("-", $data["start_date"]);
+                $href = htmlspecialchars($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data["id"]}&mois_courant=$mois&annee_courante=$annee";
+                $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
+                $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
+                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "</a>";
+            } else if ($item instanceof CommonDBTM) {
+                $href = htmlspecialchars($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data["start_date"]}");
+                $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
+                $entry['planning'] .= "<i class='" . Planning::getIcon() . "'></i>";
+                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+            }
+            return $entry;
+        };
+
+        $entries = [];
+        foreach ($reservations as $data) {
+            $entries[] = $fn_format_entry($data, false);
         }
 
         $columns = [
@@ -1072,28 +1103,31 @@ JAVASCRIPT;
             'nofilter' => true,
             'nosort' => true,
             'table_class_style' => 'table-hover mb-3',
-            'super_header' => __('Current and future reservations'),
+            'super_header' => $title,
             'columns' => $columns,
             'formatters' => $formatters,
-            'entries' => $progress_entries,
-            'total_number' => count($progress_entries),
-            'filtered_number' => count($progress_entries),
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
             'showmassiveactions' => false
         ]);
+    }
 
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'is_tab' => true,
-            'nopager' => true,
-            'nofilter' => true,
-            'nosort' => true,
-            'super_header' => __('Past reservations'),
-            'columns' => $columns,
-            'formatters' => $formatters,
-            'entries' => $old_entries,
-            'total_number' => count($old_entries),
-            'filtered_number' => count($old_entries),
-            'showmassiveactions' => false
-        ]);
+    /**
+     * Display reservations for a user
+     *
+     * @param integer $ID ID of the user
+     * @return void
+     **/
+    public static function showForUser($ID)
+    {
+        if (!Session::haveRight("reservation", READ)) {
+            return;
+        }
+
+        $reservations = self::getForUser($ID);
+        self::showReservationsAsList($reservations['in_progress'], __('Current and future reservations'));
+        self::showReservationsAsList($reservations['old'], __('Past reservations'));
     }
 
     /**

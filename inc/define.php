@@ -591,6 +591,7 @@ $CFG_GLPI['javascript'] = [
         'knowbaseitemtranslation' => ['tinymce', 'kb'],
         'reminder'                => ['tinymce'],
         'remindertranslation'     => ['tinymce'],
+        'report'                  => ['dashboard'],
         'reservationitem'         => $reservations_libs,
     ],
     'management' => [
