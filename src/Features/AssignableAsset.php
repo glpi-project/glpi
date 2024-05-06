@@ -53,7 +53,8 @@ trait AssignableAsset
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
             in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
-        $is_owned = isset($this->fields['users_id']) && $this->fields['users_id'] === $_SESSION['glpiID'];
+        $is_owned = isset($this->fields['users_id']) && $this->fields['users_id'] === $_SESSION['glpiID'] ||
+            in_array((int) ($this->fields['groups_id'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
 
         if (!Session::haveRight(static::$rightname, READ)) {
             return ($is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED))
@@ -77,7 +78,8 @@ trait AssignableAsset
 
         $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID'] ||
             in_array((int) ($this->fields['groups_id_tech'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
-        $is_owned = isset($this->fields['users_id']) && $this->fields['users_id'] === $_SESSION['glpiID'];
+        $is_owned = isset($this->fields['users_id']) && $this->fields['users_id'] === $_SESSION['glpiID'] ||
+            in_array((int) ($this->fields['groups_id'] ?? 0), $_SESSION['glpigroups'] ?? [], true);
 
         if (!Session::haveRight(static::$rightname, UPDATE)) {
             return ($is_assigned && Session::haveRight(static::$rightname, UPDATE_ASSIGNED))
@@ -90,28 +92,40 @@ trait AssignableAsset
 
     public static function getAssignableVisiblityCriteria()
     {
+        if (!Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
+        return [new QueryExpression('0')];
+        }
         if (Session::haveRight(static::$rightname, READ)) {
             return [new QueryExpression('1')];
         }
+
+        $or = [];
         if (Session::haveRight(static::$rightname, READ_ASSIGNED)) {
-            $criteria = [
-                'OR' => [
-                    'users_id_tech' => $_SESSION['glpiID'],
-                ],
+            $or[] = [
+                'users_id_tech' => $_SESSION['glpiID'],
             ];
             if (count($_SESSION['glpigroups'])) {
-                $criteria['OR']['groups_id_tech'] = $_SESSION['glpigroups'];
+                $or[] = [
+                    'groups_id_tech' => $_SESSION['glpigroups'],
+                ];
             }
-            return [$criteria];
         }
         if (Session::haveRight(static::$rightname, READ_OWNED)) {
-            return [
-                'OR' => [
-                    'users_id' => $_SESSION['glpiID'],
-                ],
+            $or[] = [
+                'users_id' => $_SESSION['glpiID'],
             ];
+            if (count($_SESSION['glpigroups'])) {
+                $or[] = [
+                    'groups_id' => $_SESSION['glpigroups'],
+                ];
+            }
         }
-        return [new QueryExpression('0')];
+
+        // Add another layer to the array to prevent losing duplicates keys if the
+        // result of the function is merged with another array
+        $criteria = [crc32(serialize($or)) => ['OR' => $or]];
+
+        return $criteria;
     }
 
     /**

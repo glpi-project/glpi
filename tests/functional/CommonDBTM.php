@@ -1798,6 +1798,18 @@ class CommonDBTM extends DbTestCase
     {
         $this->login();
 
+        // Add the user to a test group
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        \Session::loadGroups();
+
+        // Create the item
         /** @var \CommonDBTM $item */
         $item = new $itemtype();
         $this->integer($item->add([
@@ -1805,40 +1817,55 @@ class CommonDBTM extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]))->isGreaterThan(0);
 
+        // User cannot access the item without any right
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $this->boolean($item->canViewItem())->isFalse();
+
+        // User can access the item with the global right, even if not own/assigned
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ;
         $this->boolean($item->canViewItem())->isTrue();
+
+        // User can access the item with the assigned right, but only if item is assigned to himself or one of its groups
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_ASSIGNED;
         $this->boolean($item->canViewItem())->isFalse();
+
         $this->boolean($item->update([
             'id' => $item->getID(),
             'users_id_tech' => $_SESSION['glpiID'],
         ]));
         $this->boolean($item->canViewItem())->isTrue();
 
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id_tech' => 0,
+        ]));
+        $this->boolean($item->canViewItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'groups_id_tech' => $groups_id,
+        ]));
         $this->boolean($item->canViewItem())->isTrue();
+
+        // User can access the item with the own right, but only if item is owned by himself or one of its groups
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
         $this->boolean($item->canViewItem())->isFalse();
+
         $this->boolean($item->update([
             'id' => $item->getID(),
             'users_id' => $_SESSION['glpiID'],
         ]));
         $this->boolean($item->canViewItem())->isTrue();
 
-        // Create group for the user
-        $group = new \Group();
-        $this->integer($groups_id = $group->add([
-            'name' => __FUNCTION__,
-            'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1
-        ]))->isGreaterThan(0);
-        // Add user to group
-        $group_user = new \Group_User();
-        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
-        \Session::loadGroups();
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => 0,
+        ]));
+        $this->boolean($item->canViewItem())->isFalse();
 
         $this->boolean($item->update([
             'id' => $item->getID(),
-            'users_id_tech' => 0,
-            'groups_id_tech' => $groups_id,
+            'groups_id' => $groups_id,
         ]));
         $this->boolean($item->canViewItem())->isTrue();
     }
@@ -1853,6 +1880,8 @@ class CommonDBTM extends DbTestCase
         $this->boolean($itemtype::canUpdate())->isTrue();
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
         $this->boolean($itemtype::canUpdate())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $this->boolean($itemtype::canUpdate())->isTrue();
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
         $this->boolean($itemtype::canUpdate())->isFalse();
     }
@@ -1864,6 +1893,18 @@ class CommonDBTM extends DbTestCase
     {
         $this->login();
 
+        // Add the user to a test group
+        $group = new \Group();
+        $this->integer($groups_id = $group->add([
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1
+        ]))->isGreaterThan(0);
+        $group_user = new \Group_User();
+        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
+        \Session::loadGroups();
+
+        // Create the item
         /** @var \CommonDBTM $item */
         $item = new $itemtype();
         $this->integer($item->add([
@@ -1871,31 +1912,55 @@ class CommonDBTM extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]))->isGreaterThan(0);
 
+        // User cannot update the item without any right
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = 0;
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        // User can update the item with the global right, even if not own/assigned
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE;
         $this->boolean($item->canUpdateItem())->isTrue();
+
+        // User can update the item with the assigned right, but only if item is assigned to himself or one of its groups
         $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_ASSIGNED;
         $this->boolean($item->canUpdateItem())->isFalse();
+
         $this->boolean($item->update([
             'id' => $item->getID(),
             'users_id_tech' => $_SESSION['glpiID'],
         ]));
         $this->boolean($item->canUpdateItem())->isTrue();
 
-        // Create group for the user
-        $group = new \Group();
-        $this->integer($groups_id = $group->add([
-            'name' => __FUNCTION__,
-            'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1
-        ]))->isGreaterThan(0);
-        // Add user to group
-        $group_user = new \Group_User();
-        $this->integer($group_user->add(['groups_id' => $groups_id, 'users_id' => $_SESSION['glpiID']]))->isGreaterThan(0);
-        \Session::loadGroups();
-
         $this->boolean($item->update([
             'id' => $item->getID(),
             'users_id_tech' => 0,
+        ]));
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
             'groups_id_tech' => $groups_id,
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        // User can update the item with the own right, but only if item is owned by himself or one of its groups
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = UPDATE_OWNED;
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canUpdateItem())->isTrue();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => 0,
+        ]));
+        $this->boolean($item->canUpdateItem())->isFalse();
+
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'groups_id' => $groups_id,
         ]));
         $this->boolean($item->canUpdateItem())->isTrue();
     }
