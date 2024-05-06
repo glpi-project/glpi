@@ -66,7 +66,6 @@ class Transfer extends DbTestCase
                 '/^DB.*/',
                 '/^SlaLevel.*/',
                 '/^OlaLevel.*/',
-                'Event',
                 'Glpi\\Event',
                 'KnowbaseItem',
                 '/SavedSearch.*/',

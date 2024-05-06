@@ -474,11 +474,6 @@ final class DbUtils
             return null;
         }
 
-        if ($itemtype === 'Event') {
-           //to avoid issues when pecl-event is installed...
-            $itemtype = 'Glpi\\Event';
-        }
-
         $classname = $this->fixItemtypeCase($itemtype);
 
         if (!is_subclass_of($classname, CommonGLPI::class, true)) {
