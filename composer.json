@@ -11,6 +11,7 @@
     },
     "require": {
         "php": ">=8.2",
+        "php-64bit": "*",
         "ext-ctype": "*",
         "ext-curl": "*",
         "ext-dom": "*",
