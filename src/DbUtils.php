@@ -2075,7 +2075,7 @@ final class DbUtils
     /**
      * Export an array to be stored in a simple field in the database
      *
-     * @param array $array Array to export / encode (one level depth)
+     * @param array|'' $array Array to export / encode (one level depth)
      *
      * @return string containing encoded array
      */

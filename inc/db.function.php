@@ -522,7 +522,7 @@ function getDateCriteria($field, $begin, $end)
 /**
  * Export an array to be stored in a simple field in the database
  *
- * @param $TAB Array to export / encode (one level depth)
+ * @param array|'' $TAB Array to export / encode (one level depth)
  *
  * @return string containing encoded array
  **/

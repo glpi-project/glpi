@@ -248,10 +248,8 @@ class Config extends CommonDBTM
             }
         }
 
-        if (isset($input['_update_devices_in_menu'])) {
-            $input['devices_in_menu'] = exportArrayToDB(
-                (isset($input['devices_in_menu']) ? $input['devices_in_menu'] : [])
-            );
+        if (isset($input['devices_in_menu'])) {
+            $input['devices_in_menu'] = exportArrayToDB(empty($input['devices_in_menu']) ? [] : $input['devices_in_menu']);
         }
 
        // lock mechanism update

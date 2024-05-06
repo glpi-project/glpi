@@ -330,11 +330,7 @@ class Profile extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (isset($input["_helpdesk_item_types"])) {
-            if ((!isset($input["helpdesk_item_type"])) || (!is_array($input["helpdesk_item_type"]))) {
-                $input["helpdesk_item_type"] = [];
-            }
-           // Linear_HIT: $input["helpdesk_item_type"] = array_keys($input["helpdesk_item_type"]
+        if (isset($input["helpdesk_item_type"])) {
             $input["helpdesk_item_type"] = exportArrayToDB($input["helpdesk_item_type"]);
         }
 
@@ -1248,7 +1244,7 @@ class Profile extends CommonDBTM
 
         echo "<tr>";
         echo "<td>" . __('Associable items to tickets, changes and problems') . "</td>";
-        echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
+        echo "<td>";
         self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
 
         echo "</td>";
@@ -1629,7 +1625,7 @@ class Profile extends CommonDBTM
 
         echo "<tr>";
         echo "<td>" . __('Associable items to tickets, changes and problems') . "</td>";
-        echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
+        echo "<td>";
         self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
         echo "</td>";
         echo "</tr>";
