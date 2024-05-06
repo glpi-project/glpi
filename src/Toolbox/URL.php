@@ -90,6 +90,8 @@ final class URL
      *                     For the "http://example.com/foo/bar.php" page, that
      *                     would be "/foo/bar.php" (= $_SERVER['PHP_SELF']).
      * @return string|null Null if the itemtype could not be extracted.
+     *
+     * @todo Support custom marketplace and plugins URL.
      */
     public static function extractItemtypeFromUrlPath(string $path): ?string
     {
