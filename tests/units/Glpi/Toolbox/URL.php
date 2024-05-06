@@ -145,37 +145,37 @@ class URL extends \GLPITestCase
 
         // Plugins (/plugins)
         yield 'Plugin class (/plugins)' => [
-            'path' => '/front/plugins/foo/bar.php',
+            'path' => '/plugins/foo/front/bar.php',
             'expected' => \PluginFooBar::class,
         ];
         yield 'Plugin class ".form" page (/plugins)' => [
-            'path' => '/front/plugins/foo/bar.form.php',
+            'path' => '/plugins/foo/front/bar.form.php',
             'expected' => \PluginFooBar::class,
         ];
         yield 'Namespaced plugin class (/plugins)' => [
-            'path' => '/front/plugins/foo/a/b/c/d/e/f/g/bar.php',
+            'path' => '/plugins/foo/front/a/b/c/d/e/f/g/bar.php',
             'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
         ];
         yield 'Namespaced plugin class ".form" page (/plugins)' => [
-            'path' => '/front/plugins/foo/a/b/c/d/e/f/g/bar.form.php',
+            'path' => '/plugins/foo/front/a/b/c/d/e/f/g/bar.form.php',
             'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
         ];
 
         // Plugins (/marketplace)
         yield 'Plugin class (/marketplace)' => [
-            'path' => '/front/marketplace/foo/bar.php',
+            'path' => '/marketplace/foo/front/bar.php',
             'expected' => \PluginFooBar::class,
         ];
         yield 'Plugin class ".form" page (/marketplace)' => [
-            'path' => '/front/marketplace/foo/bar.form.php',
+            'path' => '/marketplace/foo/front/bar.form.php',
             'expected' => \PluginFooBar::class,
         ];
         yield 'Namespaced plugin class (/marketplace)' => [
-            'path' => '/front/marketplace/foo/a/b/c/d/e/f/g/bar.php',
+            'path' => '/marketplace/foo/front/a/b/c/d/e/f/g/bar.php',
             'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
         ];
         yield 'Namespaced plugin class ".form" page (/marketplace)' => [
-            'path' => '/front/marketplace/foo/a/b/c/d/e/f/g/bar.form.php',
+            'path' => '/marketplace/foo/front/a/b/c/d/e/f/g/bar.form.php',
             'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
         ];
     }

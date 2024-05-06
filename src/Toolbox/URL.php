@@ -104,10 +104,10 @@ final class URL
 
     private static function isPluginUrlPath(string $path): bool
     {
-        return
-            str_contains($path, '/front/plugins/')
-            || str_contains($path, '/front/marketplace/')
-        ;
+        return preg_match(
+            '/\/(plugins|marketplace)\/([a-zA-Z]+)\/front\//',
+            $path,
+        ) === 1;
     }
 
     private static function extractCoreItemtypeFromUrlPath(string $path): ?string
@@ -128,7 +128,7 @@ final class URL
 
     private static function extractPluginItemtypeFromUrlPath(string $path): ?string
     {
-        $regex = '/\/front\/(?:plugins|marketplace)\/([a-zA-Z]+)\/(.*?)(?:\.form\.php|\.php)/';
+        $regex = '/\/(?:plugins|marketplace)\/([a-zA-Z]+)\/front\/(.*?)(?:\.form\.php|\.php)/';
         if (!preg_match($regex, $path, $matches)) {
             return null;
         }
