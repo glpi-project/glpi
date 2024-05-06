@@ -167,8 +167,8 @@ class AssetDefinitionManager extends DbTestCase
         $itemtypes = importArrayFromDB($profile->fields["helpdesk_item_type"]);
         $itemtypes[] = $class;
         $this->updateItem(Profile::class, $profile->getID(), [
-            'helpdesk_item_type' => exportArrayToDB($itemtypes),
-        ]);
+            'helpdesk_item_type' => $itemtypes,
+        ], ['helpdesk_item_type']);
 
         yield [
             $definition,

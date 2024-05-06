@@ -51,7 +51,7 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             cy.visit('/');
             cy.title().should('eq', 'Authentication - GLPI');
             cy.findByRole('textbox', {'name': "Login"}).type(username);
-            cy.findByLabelText("Password").type(password);
+            cy.findByLabelText("Password", {exact: false}).type(password);
             cy.findByRole('checkbox', {name: "Remember me"}).check();
             // Select 'local' from the 'auth' dropdown
             cy.findByLabelText("Login source").select('local', { force: true });

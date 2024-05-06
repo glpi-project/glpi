@@ -2195,6 +2195,7 @@ JAVASCRIPT;
             $elements = [ 0 => $param['emptylabel'] ] + $elements;
         }
 
+        $original_field_name = $name;
         if ($param["multiple"]) {
             $field_name = $name . "[]";
         } else {
@@ -2214,6 +2215,10 @@ JAVASCRIPT;
             }
             $output .= '<span class="form-control" readonly style="width: ' . $param["width"] . '">' . implode(', ', $to_display) . '</span>';
         } else {
+            if ($param['multiple']) {
+                // Fix for multiple select not sending any form data when no option is selected
+                $output .= "<input type='hidden' name='$original_field_name' value=''>";
+            }
             $output  .= "<select name='$field_name' id='$field_id'";
 
             if ($param['width'] !== '') {
