@@ -90,11 +90,12 @@ trait AssignableAsset
         return true;
     }
 
-    public static function getAssignableVisiblityCriteria()
+    public static function getAssignableVisiblityCriteria(): array
     {
         if (!Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
-        return [new QueryExpression('0')];
+            return [new QueryExpression('0')];
         }
+
         if (Session::haveRight(static::$rightname, READ)) {
             return [new QueryExpression('1')];
         }
