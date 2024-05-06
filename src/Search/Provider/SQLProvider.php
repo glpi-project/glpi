@@ -38,7 +38,6 @@ namespace Glpi\Search\Provider;
 use Change;
 use CommonDBTM;
 use CommonITILObject;
-use ConsumableItem;
 use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
