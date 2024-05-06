@@ -35,6 +35,9 @@
 
 namespace tests\units\Glpi\Toolbox;
 
+use Glpi\Form\Form;
+use Ticket;
+
 class URL extends \GLPITestCase
 {
     protected function urlProvider(): iterable
@@ -118,5 +121,78 @@ class URL extends \GLPITestCase
     {
         $this->newTestedInstance();
         $this->string($this->testedInstance->sanitizeURL($url))->isEqualTo($expected);
+    }
+
+    public function extractItemtypeFromUrlPathProvider(): iterable
+    {
+        // Core
+        yield 'Core class' => [
+            'path' => '/front/ticket.php',
+            'expected' => Ticket::class,
+        ];
+        yield 'Core class ".form" page' => [
+            'path' => '/front/ticket.form.php',
+            'expected' => Ticket::class,
+        ];
+        yield 'Namespaced core class' => [
+            'path' => '/front/form/form.php',
+            'expected' => Form::class,
+        ];
+        yield 'Namespaced core class ".form" page' => [
+            'path' => '/front/form/form.form.php',
+            'expected' => Form::class,
+        ];
+
+        // Plugins (/plugins)
+        yield 'Plugin class (/plugins)' => [
+            'path' => '/front/plugins/foo/bar.php',
+            'expected' => \PluginFooBar::class,
+        ];
+        yield 'Plugin class ".form" page (/plugins)' => [
+            'path' => '/front/plugins/foo/bar.form.php',
+            'expected' => \PluginFooBar::class,
+        ];
+        yield 'Namespaced plugin class (/plugins)' => [
+            'path' => '/front/plugins/foo/a/b/c/d/e/f/g/bar.php',
+            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+        ];
+        yield 'Namespaced plugin class ".form" page (/plugins)' => [
+            'path' => '/front/plugins/foo/a/b/c/d/e/f/g/bar.form.php',
+            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+        ];
+
+        // Plugins (/marketplace)
+        yield 'Plugin class (/marketplace)' => [
+            'path' => '/front/marketplace/foo/bar.php',
+            'expected' => \PluginFooBar::class,
+        ];
+        yield 'Plugin class ".form" page (/marketplace)' => [
+            'path' => '/front/marketplace/foo/bar.form.php',
+            'expected' => \PluginFooBar::class,
+        ];
+        yield 'Namespaced plugin class (/marketplace)' => [
+            'path' => '/front/marketplace/foo/a/b/c/d/e/f/g/bar.php',
+            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+        ];
+        yield 'Namespaced plugin class ".form" page (/marketplace)' => [
+            'path' => '/front/marketplace/foo/a/b/c/d/e/f/g/bar.form.php',
+            'expected' => \GlpiPlugin\Foo\A\B\C\D\E\F\G\Bar::class,
+        ];
+    }
+
+    /**
+     * @dataProvider extractItemtypeFromUrlPathProvider
+     */
+    public function testExtractItemtypeFromUrlPath(
+        string $path,
+        string $expected
+    ): void {
+        // Functions like Session::setActiveTab() will use the lowercase version
+        // of the itemtype, thus we must expect the lowercase version here.
+        $expected = strtolower($expected);
+
+        $this->newTestedInstance();
+        $itemtype = $this->testedInstance->extractItemtypeFromUrlPath($path);
+        $this->string($itemtype)->isEqualTo($expected);
     }
 }

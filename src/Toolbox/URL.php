@@ -74,4 +74,78 @@ final class URL
 
         return $url;
     }
+
+    /**
+     * Extract (lowercase) itemtype from a given URL path.
+     *
+     * For example:
+     * - '/front/itemtype.php' will yield 'itemtype'
+     * - '/front/namespace/itemtype.form.php' will yield 'glpi\namespace\itemtype'
+     *
+     * Both .php and .form.php page are supported, and plugins from /plugins or
+     * /marketplace.
+     *
+     * @param string $path The filename of the currently executing script,
+     *                     relative to the document root.
+     *                     For the "http://example.com/foo/bar.php" page, that
+     *                     would be "/foo/bar.php" (= $_SERVER['PHP_SELF']).
+     * @return string|null Null if the itemtype could not be extracted.
+     */
+    public static function extractItemtypeFromUrlPath(string $path): ?string
+    {
+        if (self::isPluginUrlPath($path)) {
+            return self::extractPluginItemtypeFromUrlPath($path);
+        } else {
+            return self::extractCoreItemtypeFromUrlPath($path);
+        }
+    }
+
+    private static function isPluginUrlPath(string $path): bool
+    {
+        return
+            str_contains($path, '/front/plugins/')
+            || str_contains($path, '/front/marketplace/')
+        ;
+    }
+
+    private static function extractCoreItemtypeFromUrlPath(?string $path): string
+    {
+        $regex = '/\/front\/(.*?)(?:\.form\.php|\.php)/';
+        if (!preg_match($regex, $path, $matches)) {
+            return null;
+        }
+
+        $extracted_path = $matches[1];
+
+        if (self::extractedPathContainsNamespace($extracted_path)) {
+            return 'glpi\\' . str_replace("/", "\\", $extracted_path);
+        } else {
+            return $extracted_path;
+        }
+    }
+
+    private static function extractPluginItemtypeFromUrlPath(?string $path): string
+    {
+        $regex = '/\/front\/(?:plugins|marketplace)\/([a-zA-Z]+)\/(.*?)(?:\.form\.php|\.php)/';
+        if (!preg_match($regex, $path, $matches)) {
+            return null;
+        }
+
+        $plugin_name = $matches[1];
+        $extracted_path = $matches[2];
+
+        if (self::extractedPathContainsNamespace($extracted_path)) {
+            return 'glpiplugin\\' . $plugin_name . '\\' . str_replace(
+                "/",
+                "\\",
+                $extracted_path
+            );
+        } else {
+            return 'plugin' . $plugin_name . $extracted_path;
+        }
+    }
+
+    private static function extractedPathContainsNamespace(string $path) {
+        return str_contains($path, "/");
+    }
 }
