@@ -54,7 +54,6 @@ class NetworkPortType extends DbTestCase
             'FROM'   => \NetworkPortType::getTable(),
             'WHERE'  => ['is_importable' => true]
         ]);
-        $this->integer(count($iterator))->isIdenticalTo(7);
 
         $expecteds = [
             [
@@ -99,8 +98,16 @@ class NetworkPortType extends DbTestCase
                 'comment' => 'Multirate HDSL2 [Bob_Ray]',
                 'is_importable' => 1,
                 'instantiation_type' => 'NetworkPortEthernet',
+            ], [
+                'value_decimal' => 188,
+                'name' => 'radioMAC',
+                'comment' => 'MAC layer over radio links [Daniele_Behar]',
+                'is_importable' => 1,
+                'instantiation_type' => 'NetworkPortWifi',
             ]
         ];
+
+        $this->integer(count($iterator))->isIdenticalTo(count($expecteds));
 
         foreach ($iterator as $row) {
             $expected = array_shift($expecteds);
