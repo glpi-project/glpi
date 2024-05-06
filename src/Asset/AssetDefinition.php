@@ -650,6 +650,10 @@ final class AssetDefinition extends CommonDBTM
      */
     public function getTranslatedName(int $count = 1): string
     {
+        if ($this->isNewItem()) {
+            return '';
+        }
+
         $translations = $this->getDecodedTranslationsField();
         $language = Session::getLanguage();
         $current_translation = $translations[$language] ?? null;
@@ -991,11 +995,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     private function getDecodedTranslationsField(): array
     {
-        // prevent warning when no translation are available (create step)
-        if (empty($this->fields['translations'])) {
-            $this->fields['translations'] = '[]'; // prevent warning to be triggered on each method call
-            return [];
-        }
 
         $translations = @json_decode($this->fields['translations'], associative: true);
         if (!$this->validateTranslationsArray($translations)) {
