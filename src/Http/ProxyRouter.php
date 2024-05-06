@@ -259,9 +259,6 @@ final class ProxyRouter
      */
     public function proxify(): void
     {
-        if ($this->handleWellKnownURIs()) {
-            return;
-        }
         if ($this->isPathAllowed() === false) {
             http_response_code(403);
             return;
@@ -332,13 +329,18 @@ final class ProxyRouter
         readfile($target_file);
     }
 
+    public function handleRedirects()
+    {
+        $this->handleWellKnownURIs();
+    }
+
     /**
      * Handle well-known URIs as defined in RFC 5785.
      * https://www.iana.org/assignments/well-known-uris/well-known-uris.xhtml
      *
-     * @return bool
+     * @return bool True if the request was handled, false otherwise.
      */
-    private function handleWellKnownURIs()
+    private function handleWellKnownURIs(): bool
     {
         // Handle well-known URIs
         if (preg_match('/^\/\.well-known\//', $this->path) === 1) {
