@@ -112,7 +112,7 @@ final class URL
 
     private static function extractCoreItemtypeFromUrlPath(string $path): ?string
     {
-        $regex = '/\/front\/(.*?)(?:\.form\.php|\.php)/';
+        $regex = '/\/front\/(.*?)(?:\.form)?.php/';
         if (!preg_match($regex, $path, $matches)) {
             return null;
         }
@@ -128,7 +128,7 @@ final class URL
 
     private static function extractPluginItemtypeFromUrlPath(string $path): ?string
     {
-        $regex = '/\/(?:plugins|marketplace)\/([a-zA-Z]+)\/front\/(.*?)(?:\.form\.php|\.php)/';
+        $regex = '/\/(?:plugins|marketplace)\/([a-zA-Z]+)\/front\/(.*?)(?:\.form)?\.php/';
         if (!preg_match($regex, $path, $matches)) {
             return null;
         }
