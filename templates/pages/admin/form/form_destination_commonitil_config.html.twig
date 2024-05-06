@@ -39,14 +39,12 @@
 <div>
     {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
     {% for field in item.getConfigurableFields() %}
-        {% set input_field %}
-            {{ field.renderConfigForm(
-                config[field.getKey()]
-            )|raw }}
-        {% endset %}
-
-        {{ fields.field(field.getKey(), input_field, field.getLabel(), {
-            'is_horizontal': false,
-        }) }}
+        {{ field.renderConfigForm(
+            config[field.getKey()],
+            item.formatConfigInputName(field.getKey()),
+            {
+                'is_horizontal': false,
+            }
+        )|raw }}
     {% endfor %}
 </div>
