@@ -216,7 +216,7 @@ class ConsumableItem extends CommonDBTM
         $tab[] = [
             'id'                 => '17',
             'table'              => 'glpi_consumables',
-            'field'              => 'id',
+            'field'              => 'date_out',
             'name'               => __('Number of used consumables'),
             'datatype'           => 'number',
             'forcegroupby'       => true,
@@ -233,7 +233,7 @@ class ConsumableItem extends CommonDBTM
         $tab[] = [
             'id'                 => '19',
             'table'              => 'glpi_consumables',
-            'field'              => 'id',
+            'field'              => 'date_out',
             'name'               => __('Number of new consumables'),
             'datatype'           => 'number',
             'forcegroupby'       => true,
