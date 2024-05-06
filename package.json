@@ -72,7 +72,7 @@
         "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
     },
     "devDependencies": {
-        "@testing-library/jest-dom": "^6.4.2",
+        "@testing-library/jest-dom": "^6.4.5",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^12.0.2",
         "css-loader": "^7.1.1",
