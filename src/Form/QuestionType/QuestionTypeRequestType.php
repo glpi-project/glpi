@@ -40,9 +40,6 @@ use Glpi\Form\Question;
 use Override;
 use Ticket;
 
-/**
- * Long answers are multiple lines inputs used to answer questions with as much details as needed.
- */
 final class QuestionTypeRequestType extends AbstractQuestionType
 {
     /**
@@ -101,7 +98,7 @@ TWIG;
         {% import 'components/form/fields_macros.html.twig' as fields %}
 
         {{ fields.dropdownArrayField(
-            'answers[' ~ question.fields.id ~ ']',
+            question.getEndUserInputName(),
             value,
             request_types,
             '',
