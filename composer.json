@@ -29,7 +29,7 @@
         "ext-simplexml": "*",
         "ext-zlib": "*",
         "apereo/phpcas": "^1.6",
-        "bacon/bacon-qr-code": "^2.0",
+        "bacon/bacon-qr-code": "^3.0",
         "donatj/phpuseragentparser": "^1.8",
         "egulias/email-validator": "^4.0",
         "elvanto/litemoji": "^5.0",
