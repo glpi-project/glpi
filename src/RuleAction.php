@@ -313,10 +313,10 @@ class RuleAction extends CommonDBChild
     /**
      * Add an action
      *
-     * @param string $action    action type
-     * @param integer $ruleid    rule ID
-     * @param string $field     field name
-     * @param string $value     value
+     * @param string $action Action type
+     * @param integer $ruleid Rule ID
+     * @param string $field Field name
+     * @param mixed $value Value
      **/
     public function addActionByAttributes($action, $ruleid, $field, $value)
     {
