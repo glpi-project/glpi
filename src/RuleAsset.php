@@ -296,9 +296,9 @@ class RuleAsset extends Rule
                                          $regex_result
                                      );
                                     if ($res != null) {
-                                          $user = User::getUsersIdByEmails($res);
+                                          $user = User::getFromDBbyEmail($res);
                                         if ($user) {
-                                            $output['users_id'] = $user[0];
+                                            $output['users_id'] = $user->fields['id'];
                                         }
                                     }
                                 }
