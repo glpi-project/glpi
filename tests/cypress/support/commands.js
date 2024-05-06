@@ -33,6 +33,8 @@
 
 import _ from 'lodash';
 
+let api_token = null;
+
 /**
  * @memberof cy
  * @method login
@@ -277,4 +279,45 @@ Cypress.Commands.add("getMany", (names) => {
         cy.get(arg).then((value) => values.push(value));
     }
     return cy.wrap(values);
+});
+
+Cypress.Commands.add("createWithAPI", (url, values) => {
+    return cy.initApi().doApiRequest("POST", url, values).then(response => {
+        return response.body.id;
+    });
+});
+
+Cypress.Commands.add("updateWithAPI", (url, values) => {
+    cy.initApi().doApiRequest("PUT", url, values);
+});
+
+Cypress.Commands.add("initApi", () => {
+    if (api_token !== null) {
+        return api_token;
+    }
+
+    return cy.request({
+        auth: {
+            'user': 'e2e_tests',
+            'pass': 'glpi',
+        },
+        method: 'POST',
+        url: '/apirest.php/initSession',
+    }).then((response) => {
+        api_token = response.body.session_token;
+        return api_token;
+    });
+});
+
+Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoint, values) => {
+    return cy.request({
+        method: method,
+        url: '/apirest.php/' + encodeURI(endpoint),
+        body: {input: values},
+        headers: {
+            'Session-Token': token,
+        }
+    }).then((response) => {
+        return response;
+    });
 });
