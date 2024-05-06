@@ -31,6 +31,7 @@ The present file will list all changes made to the project; according to the
 - With a clean install, dashboards now show fake/placeholder data by default with a message indicating you are viewing demonstration data and a button to disable it.
 - Assets that can be assigned to users/groups have new "View assigned" and "Update assigned" rights which give read/update access to users and groups assigned to the asset.
 - `ODS` and `XLS` export of search results.
+- Support for the well-known `change-password" URI which can be used by some password managers to automatically (or assist with) changing a user's password.
 
 ### Changed
 - ITIL Objects can now be linked to any other ITIL Objects similar to the previous Ticket/Ticket links.
