@@ -462,32 +462,6 @@ final class SQLProvider implements SearchProviderInterface
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
-            case "glpi_consumables.id":
-                if (
-                    $itemtype == ConsumableItem::class
-                    && ($ID == 17 || $ID = 19)
-                    && $opt_arrays[$ID]["datatype"] == 'count'
-                ) {
-                    // forces the LEFT JOIN filter directly into the SELECT statement to optimise data loading
-                    if ($ID == 19) {
-                        $SELECT = [
-                            new QueryExpression(
-                                QueryFunction::sum(new QueryExpression("CASE WHEN $table$addtable.date_out IS NULL THEN 1 ELSE 0 END")),
-                                alias: $NAME
-                            )
-                        ];
-                        return array_merge($SELECT, $ADDITONALFIELDS);
-                    } else {
-                        $SELECT = [
-                            new QueryExpression(
-                                QueryFunction::sum(new QueryExpression("CASE WHEN $table$addtable.date_out IS NOT NULL THEN 1 ELSE 0 END")),
-                                alias: $NAME
-                            )
-                        ];
-                        return array_merge($SELECT, $ADDITONALFIELDS);
-                    }
-                }
-                break;
             default:
                 break;
         }
