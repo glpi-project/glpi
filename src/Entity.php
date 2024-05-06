@@ -157,7 +157,7 @@ class Entity extends CommonTreeDropdown
         'config' => ['enable_custom_css', 'custom_css_code']
     ];
 
-    public function getForbiddenStandardMassiveAction(): array
+    public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'delete';
@@ -172,7 +172,7 @@ class Entity extends CommonTreeDropdown
         return [];
     }
 
-    public function pre_updateInDB(): void
+    public function pre_updateInDB()
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -201,7 +201,7 @@ class Entity extends CommonTreeDropdown
         }
     }
 
-    public function pre_deleteItem(): bool
+    public function pre_deleteItem()
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
@@ -229,36 +229,36 @@ class Entity extends CommonTreeDropdown
         return true;
     }
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Entity', 'Entities', $nb);
     }
 
-    public static function canCreate(): bool
+    public static function canCreate()
     {
         // Do not show the create button if no recusive access on current entity
         return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
     }
 
-    public function canCreateItem(): bool
+    public function canCreateItem()
     {
         // Check the parent
         return Session::haveRecursiveAccessToEntity($this->getField('entities_id'));
     }
 
-    public static function canUpdate(): bool
+    public static function canUpdate()
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
               || Session::haveRight('notification', UPDATE));
     }
 
-    public function canUpdateItem(): bool
+    public function canUpdateItem()
     {
         // Check the current entity
         return Session::haveAccessToEntity($this->getField('id'));
     }
 
-    public function canViewItem(): bool
+    public function canViewItem()
     {
         // Check the current entity
         return Session::haveAccessToEntity($this->getField('id'));
@@ -269,7 +269,7 @@ class Entity extends CommonTreeDropdown
         return (($ID < 0) || $ID === '');
     }
 
-    public function maybeLocated(): true
+    public function maybeLocated()
     {
         return true;
     }
@@ -323,7 +323,7 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      **/
-    public function prepareInputForAdd($input): false|array
+    public function prepareInputForAdd($input)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -374,7 +374,7 @@ class Entity extends CommonTreeDropdown
     /**
      * @since 0.84 (before in entitydata.class)
      **/
-    public function prepareInputForUpdate($input): false|array
+    public function prepareInputForUpdate($input)
     {
         // Force entities_id = NULL for root entity
         if ((int) $input['id'] === 0) {
@@ -3266,7 +3266,7 @@ class Entity extends CommonTreeDropdown
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getRights($interface = 'central'): array
+    public function getRights($interface = 'central')
     {
         $values = parent::getRights();
         $values[self::READHELPDESK]   = ['short' => __('Read parameters'),
