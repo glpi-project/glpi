@@ -222,7 +222,7 @@ $.fn.shiftSelectable = function() {
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
 **/
-function showHideDiv(id, img_name, img_src_close, img_src_open) {
+function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
 
     if (img_name !== '') {

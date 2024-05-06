@@ -94,6 +94,7 @@
                         {% endif %}
                         {% for colkey, column in columns %}
                             {% set column_label = column is array ? column['label'] : column %}
+                            {% set raw_header = column is array ? column['raw_header']|default(false) : false %}
                             {% set sort_icon = '' %}
                             {% set new_order = "DESC" %}
                             {% if sort == colkey %}
@@ -108,7 +109,7 @@
                                     <a href="{{ sort_href }}">
                                     <i class="{{ sort_icon }}"></i>
                                 {% endif %}
-                                <span>{{ column_label }}</span>
+                                <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
                                     </a>
                                 {% endif %}
