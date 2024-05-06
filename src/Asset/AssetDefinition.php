@@ -995,7 +995,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     private function getDecodedTranslationsField(): array
     {
-
         $translations = @json_decode($this->fields['translations'], associative: true);
         if (!$this->validateTranslationsArray($translations)) {
             trigger_error(
