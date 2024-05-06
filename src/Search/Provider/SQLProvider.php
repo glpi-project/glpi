@@ -461,6 +461,7 @@ final class SQLProvider implements SearchProviderInterface
                     return array_merge($SELECT, $ADDITONALFIELDS);
                 }
                 break;
+
             default:
                 break;
         }
