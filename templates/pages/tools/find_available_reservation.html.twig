@@ -81,7 +81,6 @@
                                 $(() => {
                                     $('select[name="reserve[_duration]"]').on('change', (e) => {
                                         const value = $(e.target).val();
-                                        console.log(value);
 
                                         if (parseInt(value) === 0) {
                                             $('#date_end').load('{{ path('ajax/planningend.php') }}', {

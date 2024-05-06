@@ -608,10 +608,10 @@ TWIG, $twig_params);
                         );
                     }
                 }
-                $item_link = sprintf(__('%1$s - %2$s'), $typename, $row["name"]);
+                $item_link = htmlspecialchars(sprintf(__('%1$s - %2$s'), $typename, $row["name"]));
                 if ($itemtype::canView()) {
                     $item_link = "<a href='" . htmlspecialchars($itemtype::getFormURLWithId($row['items_id'])) . "&forcetab=Reservation$1'>" .
-                        htmlspecialchars($item_link) .
+                        $item_link .
                         "</a>";
                 }
                 $entry['item'] = $item_link;
