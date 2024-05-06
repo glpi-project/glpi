@@ -1814,16 +1814,14 @@ class CommonDBTM extends DbTestCase
         ]));
         $this->boolean($item->canViewItem())->isTrue();
 
-        if ($itemtype !== \CartridgeItem::class && $itemtype !== \ConsumableItem::class) {
-            $this->boolean($item->canViewItem())->isTrue();
-            $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
-            $this->boolean($item->canViewItem())->isFalse();
-            $this->boolean($item->update([
-                'id' => $item->getID(),
-                'users_id' => $_SESSION['glpiID'],
-            ]));
-            $this->boolean($item->canViewItem())->isTrue();
-        }
+        $this->boolean($item->canViewItem())->isTrue();
+        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = READ_OWNED;
+        $this->boolean($item->canViewItem())->isFalse();
+        $this->boolean($item->update([
+            'id' => $item->getID(),
+            'users_id' => $_SESSION['glpiID'],
+        ]));
+        $this->boolean($item->canViewItem())->isTrue();
 
         // Create group for the user
         $group = new \Group();

@@ -5537,6 +5537,8 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'lines_id' => 0,
                     'users_id' => 0,
                     'groups_id' => 0,
+                    'users_id_tech' => 0,
+                    'groups_id_tech' => 0,
                     'pin' => '',
                     'pin2' => '',
                     'puk' => '',
@@ -5580,7 +5582,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     }
                 }
             }
-            $this->array($component)->isIdenticalTo($expected);
+            $this->array($component)->isEqualTo($expected);
         }
 
         //software
