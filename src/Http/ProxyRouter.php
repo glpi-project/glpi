@@ -329,9 +329,11 @@ final class ProxyRouter
         readfile($target_file);
     }
 
-    public function handleRedirects(): void
+    public function handleRedirects(string $uri_prefix): void
     {
-        $this->handleWellKnownURIs();
+        if ($this->handleWellKnownURIs($uri_prefix)) {
+            exit();
+        }
     }
 
     /**
@@ -340,7 +342,7 @@ final class ProxyRouter
      *
      * @return bool True if the request was handled, false otherwise.
      */
-    private function handleWellKnownURIs(): bool
+    private function handleWellKnownURIs(string $uri_prefix): bool
     {
         // Handle well-known URIs
         if (preg_match('/^\/\.well-known\//', $this->path) === 1) {
@@ -351,7 +353,7 @@ final class ProxyRouter
             // Some password managers can use this URI to help with changing passwords
             // Redirect to the change password page
             if ($requested_uri === 'change-password') {
-                header('Location: /front/updatepassword.php', true, 307);
+                header('Location: ' . $uri_prefix . '/front/updatepassword.php', true, 307);
                 return true;
             }
         }
