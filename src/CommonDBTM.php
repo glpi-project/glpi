@@ -3711,7 +3711,11 @@ class CommonDBTM extends CommonGLPI
             if ($p['icon']) {
                 $icon = $this->getIcon();
                 if (!empty($icon)) {
-                    $name = sprintf(__('%1$s %2$s'), "<i class='$icon'></i>", $name);
+                    $name = sprintf(
+                        '<i class="%s"></i> %s',
+                        htmlspecialchars($icon),
+                        htmlspecialchars($name)
+                    );
                 }
             }
             return $name;

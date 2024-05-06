@@ -104,10 +104,14 @@ Html::printPager(
     $params
 );
 
-TemplateRenderer::getInstance()->display('pages/assistance/stats/tracking_form.html.twig', [
+TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig', [
+    'target'    => 'stat.tracking.php',
     'itemtype'  => $params["itemtype"],
-    'types'     => $values,
-    'type'      => $params['type'],
+    'type_params' => [
+        'field' => 'type',
+        'value' => $params["type"],
+        'elements' => $values,
+    ],
     'date1'     => $params["date1"],
     'date2'     => $params["date2"],
     'value2'    => $params["value2"],
