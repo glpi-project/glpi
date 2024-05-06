@@ -2070,11 +2070,16 @@ class Dropdown extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
             'groups_id_tech' => $groups_id
         ]))->isGreaterThan(0);
-        // Create an item with a user as the owner
+        // Create two items. One with the user as the owner, and one with a group as the owner.
         $this->integer($item->add([
             'name' => __FUNCTION__ . '4',
             'entities_id' => $this->getTestRootEntity(true),
             'users_id' => $_SESSION['glpiID']
+        ]))->isGreaterThan(0);
+        $this->integer($item->add([
+            'name' => __FUNCTION__ . '5',
+            'entities_id' => $this->getTestRootEntity(true),
+            'groups_id' => $groups_id
         ]))->isGreaterThan(0);
 
         $results = \Dropdown::getDropdownFindNum([
@@ -2088,7 +2093,9 @@ class Dropdown extends DbTestCase
         $expected = [
             __FUNCTION__ . '1',
             __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
+            __FUNCTION__ . '3',
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
         ];
         $this->array(array_column($results, 'text'))->containsValues($expected);
 
@@ -2103,10 +2110,12 @@ class Dropdown extends DbTestCase
         ], false)['results'];
         $expected = [
             __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
+            __FUNCTION__ . '3',
         ];
         $not_expected = [
-            __FUNCTION__ . '1'
+            __FUNCTION__ . '1',
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
         ];
         $this->array(array_column($results, 'text'))->containsValues($expected);
         $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
@@ -2120,12 +2129,13 @@ class Dropdown extends DbTestCase
             ])
         ], false)['results'];
         $expected = [
-            __FUNCTION__ . '4'
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
         ];
         $not_expected = [
             __FUNCTION__ . '1',
             __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
+            __FUNCTION__ . '3',
         ];
         $this->array(array_column($results, 'text'))->containsValues($expected);
         $this->array(array_column($results, 'text'))->notContainsValues($not_expected);
@@ -2139,11 +2149,16 @@ class Dropdown extends DbTestCase
                 'table' => $itemtype::getTable()
             ])
         ], false)['results'];
+        $expected = [
+        ];
         $not_expected = [
             __FUNCTION__ . '1',
             __FUNCTION__ . '2',
-            __FUNCTION__ . '3'
+            __FUNCTION__ . '3',
+            __FUNCTION__ . '4',
+            __FUNCTION__ . '5',
         ];
+        $this->array(array_column($results, 'text'))->containsValues($expected);
         $this->array($results)->notContainsValues($not_expected);
     }
 
