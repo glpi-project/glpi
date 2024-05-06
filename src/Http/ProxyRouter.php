@@ -329,7 +329,7 @@ final class ProxyRouter
         readfile($target_file);
     }
 
-    public function handleRedirects()
+    public function handleRedirects(): void
     {
         $this->handleWellKnownURIs();
     }
