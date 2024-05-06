@@ -231,7 +231,7 @@ TWIG;
                 <label class="form-check">
                     <input
                         type="{{ input_type }}"
-                        name="answers[{{ question.fields.id }}][]"
+                        name="{{ question.getEndUserInputName() }}"
                         value="{{ value.value|e('html_attr') }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
