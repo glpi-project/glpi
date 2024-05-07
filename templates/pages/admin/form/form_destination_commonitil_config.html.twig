@@ -34,8 +34,6 @@
 {# @var Glpi\Form\Destination\AbstractCommonITILFormDestination item #}
 {# @var array                                                   config #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
-
 <div>
     {# @var Glpi\Form\Destination\ConfigFieldInterface field #}
     {% for field in item.getConfigurableFields() %}
