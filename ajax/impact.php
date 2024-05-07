@@ -34,6 +34,7 @@
  */
 
 use Glpi\Http\Response;
+use Glpi\Plugin\Hooks;
 
 const DELTA_ACTION_ADD    = 1;
 const DELTA_ACTION_UPDATE = 2;
@@ -41,6 +42,11 @@ const DELTA_ACTION_DELETE = 3;
 
 /** @var $this \Glpi\Controller\LegacyFileLoadController */
 $this->setAjax();
+
+/**
+ * @var array $CFG_GLPI
+ */
+global $CFG_GLPI;
 
 // Send UTF8 Headers
 header("Content-Type: application/json; charset=UTF-8");
@@ -64,9 +70,21 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 if (empty($itemtype)) {
                     Response::sendError(400, "Missing itemtype");
                 }
-
+                $icon = $CFG_GLPI["impact_asset_types"][$itemtype];
                 // Execute search
+
                 $assets = Impact::searchAsset($itemtype, json_decode($used), $filter, $page);
+                foreach ($assets['items'] as $index => $item) {
+                    $plugin_icon = Plugin::doHookFunction(Hooks::SET_ITEM_IMPACT_ICON, [
+                        'itemtype' => $itemtype,
+                        'items_id' => $item['id']
+                    ]);
+                    if ($plugin_icon && is_string($plugin_icon)) {
+                        $icon = ltrim($plugin_icon, '/');
+                    }
+                    $item['image'] = $CFG_GLPI['root_doc'] . '/' . $icon;
+                    $assets['items'][$index] = $item;
+                }
                 header('Content-Type: application/json');
                 echo json_encode($assets);
                 break;
@@ -81,7 +99,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     Response::sendError(400, "Missing itemtype or items_id");
                 }
 
-               // Check that the the target asset exist
+               // Check that the target asset exist
                 if (!Impact::assetExist($itemtype, $items_id)) {
                     Response::sendError(400, "Object[class=$itemtype, id=$items_id] doesn't exist");
                 }
