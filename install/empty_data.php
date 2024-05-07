@@ -9056,6 +9056,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => null,
                 'list_limit' => '20',
                 'authtype' => '1',
+                'profiles_id' => 0,
             ], [
                 'id' => self::USER_POST_ONLY,
                 'name' => 'post-only',
@@ -9064,6 +9065,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
+                'profiles_id' => 0,
             ], [
                 'id' => self::USER_TECH,
                 'name' => 'tech',
@@ -9072,6 +9074,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
+                'profiles_id' => 0,
             ], [
                 'id' => self::USER_NORMAL,
                 'name' => 'normal',
@@ -9080,6 +9083,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => 'en_GB',
                 'list_limit' => '20',
                 'authtype' => '1',
+                'profiles_id' => 0,
             ], [
                 'id' => self::USER_SYSTEM,
                 'name' => 'glpi-system',
@@ -9088,6 +9092,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'language' => null,
                 'list_limit' => null,
                 'authtype' => 1,
+                'profiles_id' => 0,
             ],
         ];
 
@@ -9152,6 +9157,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => 7,
                 'name' => 'e2e_tests',
                 'realname' => 'E2E Tests',
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
             ]);
             $tables['glpi_users'][] = $e2e_user;
 
