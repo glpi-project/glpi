@@ -650,6 +650,10 @@ final class AssetDefinition extends CommonDBTM
      */
     public function getTranslatedName(int $count = 1): string
     {
+        if ($this->isNewItem()) {
+            return '';
+        }
+
         $translations = $this->getDecodedTranslationsField();
         $language = Session::getLanguage();
         $current_translation = $translations[$language] ?? null;
