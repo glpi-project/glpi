@@ -48,7 +48,7 @@ if ($classname === null || !class_exists($classname)) {
     Response::sendError(400, 'Bad request', Response::CONTENT_TYPE_TEXT_HTML);
 }
 
-Session::checkRightsOr($classname::$rightname, [READ, READ_ASSIGNED]);
+Session::checkRightsOr($classname::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
 
 Html::header($classname::getTypeName(Session::getPluralNumber()), $_SERVER['PHP_SELF'], 'assets', $classname);
 
