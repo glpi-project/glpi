@@ -222,6 +222,7 @@ class ConsumableItem extends CommonDBTM
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
+            'nometa'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
             ],
@@ -239,6 +240,7 @@ class ConsumableItem extends CommonDBTM
             'forcegroupby'       => true,
             'usehaving'          => true,
             'massiveaction'      => false,
+            'nometa'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
             ],
