@@ -1,0 +1,67 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# @var \Glpi\Form\AccessControl\ControlType\AllowListConfig config #}
+
+{# Multi dropdown (User, Group and Profile) #}
+{{ call(
+    "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
+    ["_allow_list_dropdown", {
+        'users_id'   : config.getUserIds(),
+        'groups_id'  : config.getGroupIds(),
+        'profiles_id': config.getProfileIds(),
+    }]
+)|raw }}
+
+{# Helper link that will be populated using a JS script #}
+<div class="mt-2">
+    <a href="" data-glpi-dropdown-count-preview></a>
+</div>
+
+<script>
+    // Each time the dropdown is modified, populate the helper link
+    $("select[name='_allow_list_dropdown[]']").on('change', async function() {
+        const response = await $.post(
+            CFG_GLPI.root_doc + '/ajax/form/allow_list_dropdown_count_users.php',
+            {
+                values: $(this).val()
+            }
+        );
+
+        $('[data-glpi-dropdown-count-preview]')
+            .attr('href', response.link ?? null)
+            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}".replace("%d", response.count))
+        ;
+    });
+    $("select[name='_allow_list_dropdown[]']").trigger('change');
+</script>

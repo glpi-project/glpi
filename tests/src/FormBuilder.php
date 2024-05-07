@@ -35,6 +35,8 @@
 
 namespace Glpi\Tests;
 
+use JsonConfigInterface;
+
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
  */
@@ -81,6 +83,11 @@ class FormBuilder
     protected array $destinations;
 
     /**
+     * Form access control restrictions
+     */
+    protected array $access_control;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -95,6 +102,7 @@ class FormBuilder
         $this->is_draft = false;
         $this->sections = [];
         $this->destinations = [];
+        $this->access_control = [];
     }
 
     /**
@@ -301,7 +309,7 @@ class FormBuilder
         return $this;
     }
 
-     /**
+    /**
      * Get form destinations
      *
      * @return array Form destinations
@@ -315,7 +323,7 @@ class FormBuilder
      * Add a destination to the form
      *
      * @param string $itemtype Destination itemtype
-     * @param array  $name     Destination name
+     * @param string $name     Destination name
      * @param array  $config   Config values
      *
      * @return self To allow chain calls
@@ -334,6 +342,32 @@ class FormBuilder
             'name'   => $name,
             'config' => $config,
         ];
+        return $this;
+    }
+
+    /**
+     * Get form access controls restrictions.
+     *
+     * @return array
+     */
+    public function getAccessControls(): array
+    {
+        return $this->access_control;
+    }
+
+    /**
+     * Add a destination to the form
+     *
+     * @param string                  $strategy
+     * @param JsonConfigInterface $values
+     *
+     * @return self To allow chain calls
+     */
+    public function addAccessControl(
+        string $strategy,
+        JsonConfigInterface $config
+    ): self {
+        $this->access_control[$strategy] = $config;
         return $this;
     }
 }

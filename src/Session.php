@@ -37,6 +37,7 @@ use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
+use Glpi\Session\SessionInfo;
 
 /**
  * Session Class
@@ -970,7 +971,7 @@ class Session
     public static function redirectIfNotLoggedIn()
     {
 
-        if (!self::getLoginUserID()) {
+        if (!self::isAuthenticated()) {
             Html::redirectToLogin();
         }
     }
@@ -2305,5 +2306,28 @@ class Session
                 $profile->fields
             );
         }
+    }
+
+    public static function isAuthenticated(): bool
+    {
+        return self::getLoginUserID() !== false;
+    }
+
+    /**
+     * Get a SessionInfo object with the current session information.
+     *
+     * @return ?SessionInfo
+     */
+    public static function getCurrentSessionInfo(): ?SessionInfo
+    {
+        if (!self::isAuthenticated()) {
+            return null;
+        }
+
+        return new SessionInfo(
+            user_id   : self::getLoginUserID(),
+            group_ids : $_SESSION['glpigroups'] ?? [],
+            profile_id: $_SESSION['glpiactiveprofile']['id'],
+        );
     }
 }

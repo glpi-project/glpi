@@ -95,6 +95,7 @@ abstract class AbstractRightsDropdown
         $params = array_merge([
             'name'        => $name . "[]",
             'multiple'    => true,
+            'width'       => '100%',
         ], $params);
 
         if ($params['multiple']) {

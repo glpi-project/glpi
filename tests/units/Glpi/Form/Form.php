@@ -36,6 +36,11 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\AccessControl\ControlType\DirectAccess;
+use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Question;
@@ -903,6 +908,8 @@ class Form extends DbTestCase
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->addAccessControl(AllowList::class, new AllowListConfig())
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
         // Control subject that we are going to keep, its data shouldn't be deleted
@@ -911,6 +918,7 @@ class Form extends DbTestCase
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
         // Count items before deletion
@@ -929,6 +937,10 @@ class Form extends DbTestCase
         $this
             ->integer(countElementsInTable(FormDestination::getTable()))
             ->isEqualTo(2) // 1 (to delete) + 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(FormAccessControl::getTable()))
+            ->isEqualTo(3) // 2 (to delete) + 1 (control)
         ;
 
         // Delete item
@@ -953,6 +965,10 @@ class Form extends DbTestCase
         ;
         $this
             ->integer(countElementsInTable(FormDestination::getTable()))
+            ->isEqualTo(1) // 1 (control)
+        ;
+        $this
+            ->integer(countElementsInTable(FormAccessControl::getTable()))
             ->isEqualTo(1) // 1 (control)
         ;
     }

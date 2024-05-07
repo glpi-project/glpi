@@ -33,18 +33,24 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
 use Glpi\Form\Renderer\FormRenderer;
+use Glpi\Http\Firewall;
 use Glpi\Http\Response;
+
+/** @var array $CFG_GLPI */
+
+// Since forms may be available to unauthenticated users, we trust the
+// `canAnswerForm` method to do the required session checks.
+$SECURITY_STRATEGY = 'no_check';
 
 include('../../inc/includes.php');
 
 /**
  * Endpoint used to display or preview a form.
  */
-
-// For now form rendering is only used to preview a form by a technician
-Session::checkRight(Form::$rightname, READ);
 
 // Mandatory parameter: id of the form to render
 $id = $_GET['id'] ?? 0;
@@ -58,8 +64,16 @@ if (!$form) {
     Response::sendError(404, __("Form not found"));
 }
 
-// TODO: if displaying a form, check form access configuration (not yet implemented)
-// TODO: if previewing a form, check view rights on forms
+$manager = FormAccessControlManager::getInstance();
+
+// Validate form access
+$parameters = new FormAccessParameters(
+    session_info: Session::getCurrentSessionInfo(),
+    url_parameters: $_GET
+);
+if (!$manager->canAnswerForm($form, $parameters)) {
+    Response::sendError(403, __("You are not allowed to answer this form."));
+}
 
 // Render the requested form
 Html::header(
