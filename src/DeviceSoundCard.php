@@ -40,12 +40,12 @@ class DeviceSoundCard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceSoundCard', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Soundcard', 'Soundcards', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -69,7 +69,7 @@ class DeviceSoundCard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -119,7 +119,7 @@ class DeviceSoundCard extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -141,7 +141,7 @@ class DeviceSoundCard extends CommonDevice
         return $cell;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 
@@ -164,7 +164,7 @@ class DeviceSoundCard extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-volume-2";
     }

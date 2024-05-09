@@ -38,12 +38,12 @@ class DeviceGraphicCard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceGraphicCard', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Graphics card', 'Graphics cards', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -79,7 +79,7 @@ class DeviceGraphicCard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -122,9 +122,9 @@ class DeviceGraphicCard extends CommonDevice
      * @since 0.85
      * @param array $input
      *
-     * @return array|false
+     * @return array
      **/
-    public function prepareInputForAddOrUpdate($input): array|false
+    public function prepareInputForAddOrUpdate($input)
     {
         foreach (['memory_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
@@ -134,12 +134,12 @@ class DeviceGraphicCard extends CommonDevice
         return $input;
     }
 
-    public function prepareInputForAdd($input): array|false
+    public function prepareInputForAdd($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-    public function prepareInputForUpdate($input): array|false
+    public function prepareInputForUpdate($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
@@ -171,7 +171,7 @@ class DeviceGraphicCard extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -196,7 +196,7 @@ class DeviceGraphicCard extends CommonDevice
         return $cell;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation' => 'equal',
@@ -204,7 +204,7 @@ class DeviceGraphicCard extends CommonDevice
         ];
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 

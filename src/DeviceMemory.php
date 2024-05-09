@@ -40,12 +40,12 @@ class DeviceMemory extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Memory', 'Memory', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -78,7 +78,7 @@ class DeviceMemory extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -121,9 +121,9 @@ class DeviceMemory extends CommonDevice
      * @since 0.85
      * @param array $input
      *
-     * @return array|false
+     * @return array
      **/
-    public function prepareInputForAddOrUpdate($input): array|false
+    public function prepareInputForAddOrUpdate($input)
     {
         foreach (['size_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
@@ -133,12 +133,12 @@ class DeviceMemory extends CommonDevice
         return $input;
     }
 
-    public function prepareInputForAdd($input): array|false
+    public function prepareInputForAdd($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-    public function prepareInputForUpdate($input): array|false
+    public function prepareInputForUpdate($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
@@ -171,7 +171,7 @@ class DeviceMemory extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -204,7 +204,7 @@ class DeviceMemory extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'          => 'equal',
@@ -214,7 +214,7 @@ class DeviceMemory extends CommonDevice
         ];
     }
 
-    public static function rawSearchOptionsToAdd($class, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($class, $main_joinparams)
     {
         $tab = [];
 
@@ -257,7 +257,7 @@ class DeviceMemory extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "fas fa-memory";
     }

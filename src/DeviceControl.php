@@ -40,12 +40,12 @@ class DeviceControl extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceControl', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Controller', 'Controllers', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -74,7 +74,7 @@ class DeviceControl extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -133,7 +133,7 @@ class DeviceControl extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -148,7 +148,7 @@ class DeviceControl extends CommonDevice
         return $column;
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-cpu";
     }

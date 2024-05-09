@@ -37,12 +37,12 @@ class DeviceBattery extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Battery', 'Batteries', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -70,7 +70,7 @@ class DeviceBattery extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -126,7 +126,7 @@ class DeviceBattery extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -164,7 +164,7 @@ class DeviceBattery extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'           => 'equal',
@@ -175,7 +175,7 @@ class DeviceBattery extends CommonDevice
         ];
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-battery-2";
     }

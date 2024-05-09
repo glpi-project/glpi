@@ -40,12 +40,12 @@ class DevicePci extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DevicePci', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('PCI device', 'PCI devices', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -64,7 +64,7 @@ class DevicePci extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab                 = parent::rawSearchOptions();
 
@@ -79,7 +79,7 @@ class DevicePci extends CommonDevice
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 

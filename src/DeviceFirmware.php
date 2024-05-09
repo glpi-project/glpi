@@ -37,12 +37,12 @@ class DeviceFirmware extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceFirmware', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Firmware', 'Firmware', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -71,7 +71,7 @@ class DeviceFirmware extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -109,7 +109,7 @@ class DeviceFirmware extends CommonDevice
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 
@@ -264,7 +264,7 @@ class DeviceFirmware extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
@@ -303,7 +303,7 @@ class DeviceFirmware extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'              => 'equal',
@@ -313,7 +313,7 @@ class DeviceFirmware extends CommonDevice
         ];
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "fas fa-microchip";
     }

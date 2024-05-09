@@ -52,7 +52,7 @@ abstract class CommonDevice extends CommonDropdown
     public $second_level_menu = "commondevice";
     public $third_level_menu  = "";
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Component', 'Components', $nb);
     }
@@ -64,7 +64,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @return array Array of the types of CommonDevice available
      **/
-    public static function getDeviceTypes(): array
+    public static function getDeviceTypes()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -83,7 +83,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @return class-string<Item_Devices>
      **/
-    public static function getItem_DeviceType($devicetype = null): string
+    public static function getItem_DeviceType($devicetype = null)
     {
         if (null === $devicetype) {
             $devicetype = static::class;
@@ -94,7 +94,7 @@ abstract class CommonDevice extends CommonDropdown
         return "Item_$devicetype";
     }
 
-    public static function getMenuContent(): false|array
+    public static function getMenuContent()
     {
         $menu = [];
         if (self::canView()) {
@@ -153,7 +153,7 @@ abstract class CommonDevice extends CommonDropdown
         return false;
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
+    public function displaySpecificTypeField($ID, $field = [], array $options = [])
     {
         switch ($field['type']) {
             case 'registeredIDChooser':
@@ -162,7 +162,7 @@ abstract class CommonDevice extends CommonDropdown
         }
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return [
             [
@@ -173,7 +173,7 @@ abstract class CommonDevice extends CommonDropdown
         ];
     }
 
-    public function canUnrecurs(): bool
+    public function canUnrecurs()
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -235,7 +235,7 @@ abstract class CommonDevice extends CommonDropdown
         return true;
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = [];
 
@@ -307,7 +307,7 @@ abstract class CommonDevice extends CommonDropdown
         return $tab;
     }
 
-    public function title(): void
+    public function title()
     {
         Dropdown::showItemTypeMenu(
             _n('Component', 'Components', Session::getPluralNumber()),
@@ -316,7 +316,7 @@ abstract class CommonDevice extends CommonDropdown
         );
     }
 
-    public static function getNameField(): string
+    public static function getNameField()
     {
         return 'designation';
     }
@@ -382,7 +382,7 @@ abstract class CommonDevice extends CommonDropdown
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
 
         if (isset($options['dont_display'][static::class])) {
             return $father;
@@ -440,7 +440,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @return integer ID of existing or new Device
      **/
-    public function import(array $input): int
+    public function import(array $input)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -504,7 +504,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @since 0.84
      **/
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'      => 'equal',
@@ -512,7 +512,7 @@ abstract class CommonDevice extends CommonDropdown
         ];
     }
 
-    public function defineTabs($options = []): array
+    public function defineTabs($options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -527,7 +527,7 @@ abstract class CommonDevice extends CommonDropdown
     /**
      * @since 0.85
      **/
-    public function post_workOnItem(): void
+    public function post_workOnItem()
     {
         if (
             (isset($this->input['_registeredID']))
@@ -565,19 +565,19 @@ abstract class CommonDevice extends CommonDropdown
         }
     }
 
-    public function post_addItem(): void
+    public function post_addItem()
     {
         $this->post_workOnItem();
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true): void
+    public function post_updateItem($history = true)
     {
         $this->post_workOnItem();
         parent::post_updateItem($history);
     }
 
-    public static function getFormURL($full = true): string
+    public static function getFormURL($full = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -587,7 +587,7 @@ abstract class CommonDevice extends CommonDropdown
         return "$dir/front/device.form.php?itemtype=$itemtype";
     }
 
-    public static function getSearchURL($full = true): string
+    public static function getSearchURL($full = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -597,7 +597,7 @@ abstract class CommonDevice extends CommonDropdown
         return "$dir/front/device.php?itemtype=$itemtype";
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-components";
     }

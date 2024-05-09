@@ -38,12 +38,12 @@ class DeviceSimcard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Simcard', 'Simcards', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -69,7 +69,7 @@ class DeviceSimcard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -100,7 +100,7 @@ class DeviceSimcard extends CommonDevice
         return $tab;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'             => 'equal',
@@ -109,12 +109,12 @@ class DeviceSimcard extends CommonDevice
         ];
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "fas fa-sim-card";
     }
 
-    public function getRights($interface = 'central'): array
+    public function getRights($interface = 'central')
     {
         $rights = parent::getRights($interface);
         // Update labels to match other assets

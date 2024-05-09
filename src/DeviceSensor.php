@@ -40,12 +40,12 @@ class DeviceSensor extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceSensor', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Sensor', 'Sensors', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -59,7 +59,7 @@ class DeviceSensor extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab                 = parent::rawSearchOptions();
 
@@ -100,7 +100,7 @@ class DeviceSensor extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -119,7 +119,7 @@ class DeviceSensor extends CommonDevice
     /**
      * Criteria used for import function
      */
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'          => 'equal',

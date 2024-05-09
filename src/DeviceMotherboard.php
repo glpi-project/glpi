@@ -38,12 +38,12 @@ class DeviceMotherboard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceMotherboard', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('System board', 'System boards', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -59,7 +59,7 @@ class DeviceMotherboard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -108,7 +108,7 @@ class DeviceMotherboard extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
 
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -124,7 +124,7 @@ class DeviceMotherboard extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'      => 'equal',
@@ -133,7 +133,7 @@ class DeviceMotherboard extends CommonDevice
         ];
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 

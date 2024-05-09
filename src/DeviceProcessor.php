@@ -41,12 +41,12 @@ class DeviceProcessor extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceProcessor', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Processor', 'Processors', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -86,7 +86,7 @@ class DeviceProcessor extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -137,9 +137,9 @@ class DeviceProcessor extends CommonDevice
      * @since 0.85
      * @param array $input
      *
-     * @return array|false
+     * @return array
      **/
-    public function prepareInputForAddOrUpdate($input): array|false
+    public function prepareInputForAddOrUpdate($input)
     {
         foreach (
             ['frequence', 'frequency_default', 'nbcores_default',
@@ -153,12 +153,12 @@ class DeviceProcessor extends CommonDevice
         return $input;
     }
 
-    public function prepareInputForAdd($input): array|false
+    public function prepareInputForAdd($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-    public function prepareInputForUpdate($input): array|false
+    public function prepareInputForUpdate($input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
@@ -189,7 +189,7 @@ class DeviceProcessor extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -204,7 +204,7 @@ class DeviceProcessor extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'          => 'equal',
@@ -213,7 +213,7 @@ class DeviceProcessor extends CommonDevice
         ];
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 
@@ -289,7 +289,7 @@ class DeviceProcessor extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-cpu";
     }

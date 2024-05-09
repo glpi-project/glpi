@@ -38,12 +38,12 @@ class DevicePowerSupply extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Power supply', 'Power supplies', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
 
         return array_merge(
@@ -64,7 +64,7 @@ class DevicePowerSupply extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -121,7 +121,7 @@ class DevicePowerSupply extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -138,7 +138,7 @@ class DevicePowerSupply extends CommonDevice
         return null;
     }
 
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
 
@@ -162,7 +162,7 @@ class DevicePowerSupply extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-bolt";
     }

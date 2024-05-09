@@ -37,12 +37,12 @@ class DeviceCamera extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceCamera', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Camera', 'Cameras', $nb);
     }
 
-    public function defineTabs($options = []): array
+    public function defineTabs($options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -55,7 +55,7 @@ class DeviceCamera extends CommonDevice
         return $ong;
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -99,7 +99,7 @@ class DeviceCamera extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -191,7 +191,7 @@ class DeviceCamera extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -226,7 +226,7 @@ class DeviceCamera extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation'           => 'equal',
@@ -235,7 +235,7 @@ class DeviceCamera extends CommonDevice
         ];
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "ti ti-camera";
     }

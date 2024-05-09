@@ -40,7 +40,7 @@ class DeviceNetworkCard extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Network card', 'Network cards', $nb);
     }
@@ -50,7 +50,7 @@ class DeviceNetworkCard extends CommonDevice
      *
      * @since 0.84
      **/
-    public function getImportCriteria(): array
+    public function getImportCriteria()
     {
         return [
             'designation' => 'equal',
@@ -58,7 +58,7 @@ class DeviceNetworkCard extends CommonDevice
         ];
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -87,7 +87,7 @@ class DeviceNetworkCard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
@@ -180,7 +180,7 @@ class DeviceNetworkCard extends CommonDevice
         CommonDBTM $item = null,
         HTMLTableCell $father = null,
         array $options = []
-    ): ?HTMLTableCell {
+    ) {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -238,7 +238,7 @@ class DeviceNetworkCard extends CommonDevice
     }
 
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return "fas fa-network-wired";
     }
