@@ -44,12 +44,12 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
 {
     public string $cache_key = 'glpi_pcivendors';
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('PCI vendor', 'PCI vendors', $nb);
     }
 
-    public function getAdditionalFields(): array
+    public function getAdditionalFields()
     {
         return [
             [
@@ -64,7 +64,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
         ];
     }
 
-    public function rawSearchOptions(): array
+    public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
