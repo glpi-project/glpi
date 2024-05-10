@@ -44,8 +44,7 @@
         {% set user_fields = user.fields %}
         {% set user_fields = user_fields|merge({user_name: user.getFriendlyName()}) %}
         {% set user_fields = user_fields|merge({email: user.getDefaultEmail()}) %}
-        {% set session_has_read_right = call('Session::haveRight', ['user', constant('READ')]) %}
-        {% if session_has_read_right %}
+        {% if has_profile_right('user',  constant('READ')) %}
             {% set user_fields = user_fields|merge({login: user.fields['name']}) %}
         {% endif %}
         {% do call(
