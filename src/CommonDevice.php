@@ -440,7 +440,7 @@ abstract class CommonDevice extends CommonDropdown
         if ($options['canedit']) {
             $field_name  = 'quantity_' . $this->getType() . '_' . $this->getID();
             $content .= "&nbsp;<span class='fa fa-plus pointer' title='" . __s('Add') . "'
-                      onClick=\"" . Html::jsShow($field_name) . "\"
+                      onClick=\"$('#" . $field_name . "').show();\"
                       ><span class='sr-only'>" .  __s('Add') . "</span></span>";
             $content .= "<span id='$field_name' style='display:none'><br>";
             $content .= __('Add') . "&nbsp;";

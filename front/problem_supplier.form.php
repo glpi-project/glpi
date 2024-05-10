@@ -68,8 +68,6 @@ if (isset($_POST["update"])) {
         sprintf(__('%s deletes an actor'), $_SESSION["glpiname"])
     );
     Html::redirect(Problem::getFormURLWithID($link->fields['problems_id']));
-} else if (isset($_GET["id"])) {
-    $link->showSupplierNotificationForm($_GET["id"]);
 } else {
     Html::displayErrorAndDie('Lost');
 }

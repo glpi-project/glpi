@@ -824,7 +824,7 @@
       top: 0px;
       left: 300px;
       position: absolute;
-      z-index: 100;
+      z-index: $zindex-fixed;
 
       a {
          border-top: 1px solid #cecece;
