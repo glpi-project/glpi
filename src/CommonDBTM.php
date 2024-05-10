@@ -284,7 +284,7 @@ class CommonDBTM extends CommonGLPI
         global $DB;
        // Make new database object and fill variables
 
-        if (!is_numeric($ID)) {
+        if ((string) $ID === '') {
             return false;
         }
 

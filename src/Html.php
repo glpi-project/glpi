@@ -255,7 +255,7 @@ class Html
             return "-";
         }
 
-        $number  = doubleval($number);
+        $number  = (float) $number;
         $decimal = $CFG_GLPI["decimal_number"];
         if ($forcedecimal >= 0) {
             $decimal = $forcedecimal;
@@ -267,7 +267,7 @@ class Html
         }
 
         // Display : clean display
-        return match ($_SESSION['glpinumber_format']) {
+        return match ((int) $_SESSION['glpinumber_format']) {
             0 => number_format($number, $decimal, '.', ' '),
             2 => number_format($number, $decimal, ',', ' '),
             3 => number_format($number, $decimal, '.', ''),
