@@ -766,12 +766,14 @@ class Infocom extends CommonDBChild
     /**
      * Show infocom link to display modal
      *
-     * @param $itemtype   integer  item type
-     * @param $device_id  integer  item ID
+     * @param integer $itemtype item type
+     * @param integer $device_id item ID
+     * @param boolean $display  display or not the link (default true)
      *
-     * @return void
+     * @return void|string
+     * @phpstan-return $display ? void : string
      **/
-    public static function showDisplayLink($itemtype, $device_id)
+    public static function showDisplayLink($itemtype, $device_id, bool $display = true)
     {
         /**
          * @var array $CFG_GLPI
@@ -804,8 +806,9 @@ class Infocom extends CommonDBChild
             return;
         }
 
+        $out = '';
         if ($item->canView()) {
-            echo "<span class='infocom_link' style='cursor:pointer' data-itemtype='{$itemtype}' data-items_id='{$device_id}'>
+            $out .= "<span class='infocom_link' style='cursor:pointer' data-itemtype='{$itemtype}' data-items_id='{$device_id}'>
                <img src=\"" . $CFG_GLPI["root_doc"] . "/pics/dollar$add.png\" alt=\"$text\" title=\"$text\">
                </span>";
             $form_url = Infocom::getFormURL();
@@ -842,7 +845,12 @@ HTML;
                     }
                 });
 JS;
-            echo Html::scriptBlock($js);
+            $out .= Html::scriptBlock($js);
+        }
+        if ($display) {
+            echo $out;
+        } else {
+            return $out;
         }
     }
 
