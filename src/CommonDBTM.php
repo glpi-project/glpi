@@ -1008,7 +1008,7 @@ class CommonDBTM extends CommonGLPI
         if (in_array(static::class, $CFG_GLPI['agent_types'], true)) {
            // Agent does not extends CommonDBConnexity
             $agent = new Agent();
-            $agent->deleteByCriteria(['itemtype' =>static::class, 'items_id' => $this->getID()]);
+            $agent->deleteByCriteria(['itemtype' => static::class, 'items_id' => $this->getID()]);
         }
 
         if (in_array(static::class, $CFG_GLPI['itemdevices_types'], true)) {

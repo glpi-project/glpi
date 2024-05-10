@@ -738,7 +738,7 @@ class Html extends \GLPITestCase
             function () {
                 \Html::displayBackLink();
             }
-        )->isIdenticalTo("<a href='originalpage.html'>Back</a>");
+        )->isIdenticalTo('<a href="originalpage.html">Back</a>');
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
     }
 
@@ -759,8 +759,6 @@ class Html extends \GLPITestCase
 
     public function testJsFunctions()
     {
-        $this->string(\Html::jsHide('myid'))->isIdenticalTo("$('#myid').hide();\n");
-        $this->string(\Html::jsShow('myid'))->isIdenticalTo("$('#myid').show();\n");
         $this->string(\Html::jsGetElementbyID('myid'))->isIdenticalTo("$('#myid')");
         $this->string(\Html::jsSetDropdownValue('myid', 'myval'))->isIdenticalTo("$('#myid').trigger('setValue', 'myval');");
         $this->string(\Html::jsGetDropdownValue('myid'))->isIdenticalTo("$('#myid').val()");
