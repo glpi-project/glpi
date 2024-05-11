@@ -153,7 +153,7 @@ final class ValidatorSubstitute extends CommonDBTM
     {
         if (isset($input['users_id']) && $input['users_id'] != $this->fields['users_id']) {
             // Do not change the user.
-            Session::addMessageAfterRedirect(__('Cannot change the validation delegator'));
+            Session::addMessageAfterRedirect(__s('Cannot change the validation delegator'));
             return [];
         }
 
@@ -172,7 +172,7 @@ final class ValidatorSubstitute extends CommonDBTM
 
         // The user to be substituted
         if ($input['users_id'] != Session::getLoginUserID()) {
-            Session::addMessageAfterRedirect(__('You cannot change substitutes for this user.'), true, ERROR);
+            Session::addMessageAfterRedirect(__s('You cannot change substitutes for this user.'), true, ERROR);
             return false;
         }
         $user = User::getById($input['users_id']);

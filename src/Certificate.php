@@ -800,7 +800,7 @@ class Certificate extends CommonDBTM
                         $task->log($msg);
                         $task->addVolume(1);
                     } else {
-                        Session::addMessageAfterRedirect($msg);
+                        Session::addMessageAfterRedirect(htmlspecialchars($msg));
                     }
 
                     // Add alert
@@ -824,7 +824,7 @@ class Certificate extends CommonDBTM
                     if ($task) {
                         $task->log($msg);
                     } else {
-                        Session::addMessageAfterRedirect($msg, false, ERROR);
+                        Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                     }
                 }
             }

@@ -480,11 +480,11 @@ class CartridgeItem extends CommonDBTM
                              $task->log(sprintf(__('%1$s: %2$s') . "\n", $entityname, $message));
                              $task->addVolume(1);
                         } else {
-                             Session::addMessageAfterRedirect(sprintf(
+                             Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                                  __('%1$s: %2$s'),
                                  $entityname,
                                  $message
-                             ));
+                             )));
                         }
 
                         $input = [
@@ -505,7 +505,7 @@ class CartridgeItem extends CommonDBTM
                             $task->log($msg);
                         } else {
                            //TRANS: %s is the entity
-                            Session::addMessageAfterRedirect($msg, false, ERROR);
+                            Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                         }
                     }
                 }

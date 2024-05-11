@@ -682,8 +682,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-            $message = __('Field itemtype is mandatory');
-            Session::addMessageAfterRedirect($message, false, ERROR);
+            Session::addMessageAfterRedirect(__s('Field itemtype is mandatory'), false, ERROR);
             return false;
         }
 
@@ -695,8 +694,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-            $message = __('Field itemtype is mandatory');
-            Session::addMessageAfterRedirect($message, false, ERROR);
+            Session::addMessageAfterRedirect(__s('Field itemtype is mandatory'), false, ERROR);
             return false;
         }
 

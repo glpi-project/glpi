@@ -193,7 +193,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_helpdesk_default"]) {
                 $update['is_helpdesk_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -201,7 +201,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_followup_default"]) {
                 $update['is_followup_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -209,7 +209,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_mail_default"]) {
                 $update['is_mail_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 
@@ -217,7 +217,7 @@ class RequestType extends CommonDropdown
             if ($this->input["is_mailfollowup_default"]) {
                 $update['is_mailfollowup_default'] = 0;
             } else {
-                Session::addMessageAfterRedirect(__('Be careful: there is no default value'), true);
+                Session::addMessageAfterRedirect(__s('Be careful: there is no default value'), true);
             }
         }
 

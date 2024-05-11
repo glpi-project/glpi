@@ -97,7 +97,7 @@ try {
         E_USER_WARNING
     );
 
-    Session::addMessageAfterRedirect(__('Unexpected error'), false, ERROR);
+    Session::addMessageAfterRedirect(__s('Unexpected error'), false, ERROR);
 } finally {
     // Stop script and return to previous page
     // Must always be run to prevent users being stuck on a blank page

@@ -46,7 +46,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Change::getTypeName(1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
         Html::back();
     }
     if (empty($_POST['tickets_id']) && !empty($_POST['changes_id'])) {
@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             Ticket::getTypeName(1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
         Html::back();
     }
     $item->check(-1, CREATE, $_POST);

@@ -120,10 +120,10 @@ abstract class FQDNLabel extends CommonDBChild
 
            // Before adding a name, we must unsure its is valid : it conforms to RFC
             if (!self::checkFQDNLabel($input['name'])) {
-                Session::addMessageAfterRedirect(sprintf(
+                Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                     __('Invalid internet name: %s'),
                     $input['name']
-                ), false, ERROR);
+                )), false, ERROR);
                 return false;
             }
         }

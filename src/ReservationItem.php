@@ -803,14 +803,14 @@ TWIG, $twig_params);
                     ));
                 } else {
                    //TRANS: %1$s is a name, %2$s is text of message
-                    Session::addMessageAfterRedirect(sprintf(
+                    Session::addMessageAfterRedirect(htmlspecialchars(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
                             "glpi_entities",
                             $entity
                         ),
                         $message
-                    ));
+                    )));
                 }
 
                 $alert             = new Alert();
@@ -828,7 +828,7 @@ TWIG, $twig_params);
                 if ($task) {
                     $task->log($msg);
                 } else {
-                    Session::addMessageAfterRedirect($msg, false, ERROR);
+                    Session::addMessageAfterRedirect(htmlspecialchars($msg), false, ERROR);
                 }
             }
         }

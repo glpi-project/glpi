@@ -1507,7 +1507,7 @@ class Ticket extends CommonITILObject
                 }
             }
             if (!$can_delegatee_create_ticket) {
-                Session::addMessageAfterRedirect(__("You cannot create a ticket for this user"));
+                Session::addMessageAfterRedirect(__s("You cannot create a ticket for this user"));
                 return false;
             }
         }
@@ -1599,7 +1599,7 @@ class Ticket extends CommonITILObject
             foreach ($input['_users_id_requester_notif']['alternative_email'] as $email) {
                 if ($email && !NotificationMailing::isUserAddressValid($email)) {
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Invalid email address %s'), $email),
+                        htmlspecialchars(sprintf(__('Invalid email address %s'), $email)),
                         false,
                         ERROR
                     );

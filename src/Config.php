@@ -181,7 +181,7 @@ class Config extends CommonDBTM
             if (Toolbox::isValidWebUrl($input["url_base"])) {
                 $input["url_base"] = rtrim($input["url_base"], '/');
             } else {
-                Session::addMessageAfterRedirect(__('Invalid base URL!'), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid base URL!'), false, ERROR);
                 return false;
             }
         }
@@ -276,10 +276,10 @@ class Config extends CommonDBTM
        // Add skipMaintenance if maintenance mode update
         if (isset($input['maintenance_mode']) && $input['maintenance_mode']) {
             $_SESSION['glpiskipMaintenance'] = 1;
-            $url = $CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1";
+            $url = htmlspecialchars($CFG_GLPI['root_doc'] . "/index.php?skipMaintenance=1");
             Session::addMessageAfterRedirect(
                 sprintf(
-                    __('Maintenance mode activated. Backdoor using: %s'),
+                    __s('Maintenance mode activated. Backdoor using: %s'),
                     "<a href='$url'>$url</a>"
                 ),
                 false,
@@ -712,7 +712,7 @@ class Config extends CommonDBTM
             if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
                 $ok = false;
                 if ($display) {
-                    Session::addMessageAfterRedirect(__('Password too short!'), false, ERROR);
+                    Session::addMessageAfterRedirect(__s('Password too short!'), false, ERROR);
                 } else {
                     $exception->addMessage(__('Password too short!'));
                 }
@@ -724,7 +724,7 @@ class Config extends CommonDBTM
                 $ok = false;
                 if ($display) {
                     Session::addMessageAfterRedirect(
-                        __('Password must include at least a digit!'),
+                        __s('Password must include at least a digit!'),
                         false,
                         ERROR
                     );
@@ -739,7 +739,7 @@ class Config extends CommonDBTM
                 $ok = false;
                 if ($display) {
                     Session::addMessageAfterRedirect(
-                        __('Password must include at least a lowercase letter!'),
+                        __s('Password must include at least a lowercase letter!'),
                         false,
                         ERROR
                     );
@@ -754,7 +754,7 @@ class Config extends CommonDBTM
                 $ok = false;
                 if ($display) {
                     Session::addMessageAfterRedirect(
-                        __('Password must include at least a uppercase letter!'),
+                        __s('Password must include at least a uppercase letter!'),
                         false,
                         ERROR
                     );
@@ -769,7 +769,7 @@ class Config extends CommonDBTM
                 $ok = false;
                 if ($display) {
                     Session::addMessageAfterRedirect(
-                        __('Password must include at least a symbol!'),
+                        __s('Password must include at least a symbol!'),
                         false,
                         ERROR
                     );

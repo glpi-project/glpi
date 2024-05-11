@@ -1073,7 +1073,7 @@ class Conf extends CommonGLPI
             );
             trigger_error($msg, E_USER_WARNING);
             Session::addMessageAfterRedirect(
-                $msg,
+                htmlspecialchars($msg),
                 false,
                 WARNING
             );
@@ -1127,7 +1127,7 @@ class Conf extends CommonGLPI
             );
             trigger_error($msg, E_USER_WARNING);
             Session::addMessageAfterRedirect(
-                $msg,
+                htmlspecialchars($msg),
                 false,
                 WARNING
             );

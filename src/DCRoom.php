@@ -120,7 +120,7 @@ class DCRoom extends CommonDBTM
             if ($dest = Toolbox::savePicture(GLPI_TMP_DIR . '/' . $blueprint)) {
                 $input['blueprint'] = $dest;
             } else {
-                Session::addMessageAfterRedirect(__('Unable to save picture file.'), true, ERROR);
+                Session::addMessageAfterRedirect(__s('Unable to save picture file.'), true, ERROR);
             }
 
             if (array_key_exists('blueprint', $this->fields)) {

@@ -95,7 +95,7 @@ class NotificationAjax implements NotificationInterface
         $queue = new QueuedNotification();
 
         if (!$queue->add($data)) {
-            Session::addMessageAfterRedirect(__('Error inserting browser notification to queue'), true, ERROR);
+            Session::addMessageAfterRedirect(__s('Error inserting browser notification to queue'), true, ERROR);
             return false;
         } else {
            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail

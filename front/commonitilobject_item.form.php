@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
             __('Mandatory fields are not filled. Please correct: %s'),
             _n('Associated element', 'Associated elements', 1)
         );
-        Session::addMessageAfterRedirect($message, false, ERROR);
+        Session::addMessageAfterRedirect(htmlspecialchars($message), false, ERROR);
         Html::back();
     }
 

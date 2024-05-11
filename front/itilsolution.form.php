@@ -53,7 +53,7 @@ if (isset($_POST["add"])) {
     $solution->check(-1, CREATE, $_POST);
     if (!$track->canSolve()) {
         Session::addMessageAfterRedirect(
-            __('You cannot solve this item!'),
+            __s('You cannot solve this item!'),
             false,
             ERROR
         );
@@ -110,7 +110,7 @@ if ($handled) {
         $redirect = $track->getLinkURL() . $toadd;
     } else {
         Session::addMessageAfterRedirect(
-            __('You have been redirected because you no longer have access to this ticket'),
+            __s('You have been redirected because you no longer have access to this ticket'),
             true,
             ERROR
         );

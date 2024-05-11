@@ -214,7 +214,7 @@ class NotificationEvent extends CommonDBTM
                     );
                     $label = Notification_NotificationTemplate::getMode($data['mode'])['label'];
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Unable to send notification using %1$s'), $label),
+                        htmlspecialchars(sprintf(__('Unable to send notification using %1$s'), $label)),
                         true,
                         ERROR
                     );

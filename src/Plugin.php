@@ -858,7 +858,7 @@ class Plugin extends CommonDBTM
                 $function();
             } else {
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin %1$s has no uninstall function!'), $this->fields['name']),
+                    htmlspecialchars(sprintf(__('Plugin %1$s has no uninstall function!'), $this->fields['name'])),
                     true,
                     WARNING
                 );
@@ -893,7 +893,7 @@ class Plugin extends CommonDBTM
         }
 
         Session::addMessageAfterRedirect(
-            $message,
+            htmlspecialchars($message),
             true,
             $type
         );
@@ -936,7 +936,7 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::NOTACTIVATED
                         ]);
-                        $message  = sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']);
+                        $message  = htmlspecialchars(sprintf(__('Plugin %1$s has been installed!'), $this->fields['name']));
                         $message .= '<br/><br/>' . str_replace(
                             '%activate_link',
                             Html::getSimpleForm(
@@ -953,7 +953,7 @@ class Plugin extends CommonDBTM
                         $this->update(['id'    => $ID,
                             'state' => self::TOBECONFIGURED
                         ]);
-                        $message = sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']);
+                        $message = htmlspecialchars(sprintf(__('Plugin %1$s has been installed and must be configured!'), $this->fields['name']));
                     }
 
                     $this->resetHookableCacheEntries($this->fields['directory']);
@@ -974,10 +974,10 @@ class Plugin extends CommonDBTM
                 }
             } else {
                 $type = WARNING;
-                $message = sprintf(__('Plugin %1$s has no install function!'), $this->fields['name']);
+                $message = htmlspecialchars(sprintf(__('Plugin %1$s has no install function!'), $this->fields['name']));
             }
         } else {
-            $message = sprintf(__('Plugin %1$s not found!'), $ID);
+            $message = htmlspecialchars(sprintf(__('Plugin %1$s not found!'), $ID));
         }
 
         Session::addMessageAfterRedirect(
@@ -1018,7 +1018,7 @@ class Plugin extends CommonDBTM
                     $this->unload($this->fields['directory']);
 
                     Session::addMessageAfterRedirect(
-                        sprintf(__('Plugin %1$s prerequisites are not matching, it cannot be activated.'), $this->fields['name']) . ' ' . $msg,
+                        htmlspecialchars(sprintf(__('Plugin %1$s prerequisites are not matching, it cannot be activated.'), $this->fields['name'])) . ' ' . $msg,
                         true,
                         ERROR
                     );
@@ -1062,7 +1062,7 @@ class Plugin extends CommonDBTM
                 self::doHook(Hooks::POST_PLUGIN_ENABLE, $this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin %1$s has been activated!'), $this->fields['name']),
+                    htmlspecialchars(sprintf(__('Plugin %1$s has been activated!'), $this->fields['name'])),
                     true,
                     INFO
                 );
@@ -1084,7 +1084,7 @@ class Plugin extends CommonDBTM
                 $this->unload($this->fields['directory']);
 
                 Session::addMessageAfterRedirect(
-                    sprintf(__('Plugin %1$s configuration must be done, it cannot be activated.'), $this->fields['name']),
+                    htmlspecialchars(sprintf(__('Plugin %1$s configuration must be done, it cannot be activated.'), $this->fields['name'])),
                     true,
                     ERROR
                 );
@@ -1093,7 +1093,7 @@ class Plugin extends CommonDBTM
         }
 
         Session::addMessageAfterRedirect(
-            sprintf(__('Plugin %1$s not found!'), $ID),
+            htmlspecialchars(sprintf(__('Plugin %1$s not found!'), $ID)),
             true,
             ERROR
         );
@@ -1157,7 +1157,7 @@ class Plugin extends CommonDBTM
         }
 
         Session::addMessageAfterRedirect(
-            sprintf(__('Plugin %1$s not found!'), $ID),
+            htmlspecialchars(sprintf(__('Plugin %1$s not found!'), $ID)),
             true,
             ERROR
         );

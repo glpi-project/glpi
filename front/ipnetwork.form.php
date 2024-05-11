@@ -42,7 +42,7 @@ if (isset($_POST['reinit_network'])) {
         && Session::canViewAllEntities()
     ) {
         IPNetwork::recreateTree();
-        Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
+        Session::addMessageAfterRedirect(__s('Successfully recreated network tree'));
         Html::back();
     } else {
         Html::displayRightError();

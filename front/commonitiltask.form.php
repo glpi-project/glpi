@@ -149,7 +149,7 @@ if ($handled) {
         $redirect = $track->getLinkURL() . $toadd;
     } else {
         Session::addMessageAfterRedirect(
-            __('You have been redirected because you no longer have access to this ticket'),
+            __s('You have been redirected because you no longer have access to this ticket'),
             true,
             ERROR
         );

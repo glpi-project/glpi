@@ -79,7 +79,7 @@ if (isset($_POST["update"])) {
         Html::redirect($item->getFormURLWithID($link->fields['problems_id']));
     }
     Session::addMessageAfterRedirect(
-        __('You have been redirected because you no longer have access to this item'),
+        __s('You have been redirected because you no longer have access to this item'),
         true,
         ERROR
     );

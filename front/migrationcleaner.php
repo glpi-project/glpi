@@ -51,7 +51,7 @@ Session::checkSeveralRightsOr(["networking" => UPDATE,
 ]);
 
 if (!$DB->tableExists('glpi_networkportmigrations')) {
-    Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
+    Session::addMessageAfterRedirect(__s('You don\'t need the "migration cleaner" tool anymore...'));
     Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }
 

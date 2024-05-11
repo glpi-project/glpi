@@ -840,7 +840,7 @@ TWIG, $buttons_params);
             || (isset($input['data']) && !TemplateManager::validate($input['data'], $err_msg))
         ) {
             if ($err_msg !== null) {
-                Session::addMessageAfterRedirect($err_msg, false, ERROR);
+                Session::addMessageAfterRedirect(htmlspecialchars($err_msg), false, ERROR);
             }
             return false;
         }

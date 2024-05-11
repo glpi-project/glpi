@@ -315,11 +315,11 @@ abstract class CommonDBConnexity extends CommonDBTM
                 || !$this->can($this->getID(), PURGE)
             ) {
                 Session::addMessageAfterRedirect(
-                    sprintf(
+                    htmlspecialchars(sprintf(
                         __('Cannot update item %s #%s: not enough right on the parent(s) item(s)'),
                         $new_item->getTypeName(),
                         $new_item->getID()
-                    ),
+                    )),
                     INFO,
                     true
                 );
