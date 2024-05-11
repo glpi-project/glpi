@@ -810,7 +810,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
         $rand = mt_rand();
 
         // Display the pager
-        Html::printAjaxPager(Consumable::getTypeName(Session::getPluralNumber()), $start, $total_number);
+        $actions = [];
         if ($canedit && $number) {
             $actions = [
                 'purge' => _x('button', 'Delete permanently'),
@@ -819,12 +819,12 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             if (!$show_old) {
                 $actions['Cartridge' . MassiveAction::CLASS_ACTION_SEPARATOR . 'backtostock'] = __('Back to stock');
             }
-            $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                'specific_actions' => $actions,
-                'container'        => 'mass' . __CLASS__ . $rand,
-                'rand'             => $rand
-            ];
         }
+        $massiveactionparams = ['num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+            'specific_actions' => $actions,
+            'container'        => 'mass' . __CLASS__ . $rand,
+            'rand'             => $rand
+        ];
 
         $pages = [];
 
@@ -954,22 +954,30 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
             return false;
         }
         if ($ID > 0) {
-            echo "<div class='firstbloc'>";
-            echo "<form method='post' action=\"" . static::getFormURL() . "\">";
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><td class='center tab_bg_2' width='20%'>";
-            echo "<input type='hidden' name='cartridgeitems_id' value='$ID'>\n";
-            Dropdown::showNumber('to_add', ['value' => 1,
-                'min'   => 1,
-                'max'   => 100
-            ]);
-            echo "</td><td>";
-            echo " <input type='submit' name='add' value=\"" . __s('Add cartridges') . "\"
-                class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" action="{{ 'Cartridge'|itemtype_form_path }}"/>
+                        <div class="d-flex row">
+                            {{ fields.numberField('to_add', 1, null, {
+                                min: 1,
+                                max: 100,
+                                field_class: 'col-4',
+                            }) }}
+                            {% set btn %}
+                                <button type="submit" name="add" class="btn btn-primary">{{ add_label }}</button>
+                                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {% endset %}
+                            {{ fields.htmlField('', btn, null, {
+                                no_label: true,
+                                field_class: 'col-4',
+                                mb: 'mb-2'
+                            }) }}
+                        </div>
+                    </form>
+                </div>
+TWIG, ['add_label' => __('Add cartridges')]);
         }
     }
 
