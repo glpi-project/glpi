@@ -1628,7 +1628,7 @@ class User extends \DbTestCase
             'is_active' => false
         ]))->isTrue();
         $this->hasSessionMessages(ERROR, [
-            "Can't set user as inactive as it is the only remaining super administrator."
+            "Can&#039;t set user as inactive as it is the only remaining super administrator."
         ]);
         $glpi->getFromDB($glpi->getId());
         $this->boolean((bool) $glpi->fields['is_active'])->isEqualTo(true);

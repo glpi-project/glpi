@@ -4443,7 +4443,7 @@ class CommonDBTM extends CommonGLPI
                             $field_value
                         );
                     }
-                    $new_text = sprintf(__('%1$s: %2$s'), $value, $field_value);
+                    $new_text = htmlspecialchars(sprintf(__('%1$s: %2$s'), $value, $field_value));
                     if (empty($double_text)) {
                         $double_text = $new_text;
                     } else {
@@ -4453,10 +4453,10 @@ class CommonDBTM extends CommonGLPI
             }
            // Add information on item in trashbin
             if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-                $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the trashbin'));
+                $double_text = sprintf(__s('%1$s - %2$s'), $double_text, __s('Item in the trashbin'));
             }
 
-            $message_text .= "<br>[" . htmlspecialchars($double_text) . "]";
+            $message_text .= "<br>[" . $double_text . "]";
         }
         return $message_text;
     }

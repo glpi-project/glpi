@@ -1441,7 +1441,7 @@ class CommonDBTM extends DbTestCase
             'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
         ]))->isNotTrue();
 
-        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity > _test_root_entity]";
+        $err_msg = "Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a  href='/glpi/front/computer.form.php?id=" . $computers_id1 . "'  title=\"testCheckUnicity01\">testCheckUnicity01</a> - ID: {$computers_id1} - Serial number:  - Entity: Root entity &gt; _test_root_entity]";
         $this->hasSessionMessages(1, [$err_msg]);
 
         $this->variable($computer->add([

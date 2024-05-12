@@ -73,7 +73,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Capacities".',
+                    'The following field has an incorrect value: &quot;Capacities&quot;.',
                 ],
             ],
         ];
@@ -85,7 +85,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Capacities".',
+                    'The following field has an incorrect value: &quot;Capacities&quot;.',
                 ],
             ],
         ];
@@ -116,7 +116,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Profiles".',
+                    'The following field has an incorrect value: &quot;Profiles&quot;.',
                 ],
             ],
         ];
@@ -130,7 +130,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Profiles".',
+                    'The following field has an incorrect value: &quot;Profiles&quot;.',
                 ],
             ],
         ];
@@ -168,7 +168,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Translations".',
+                    'The following field has an incorrect value: &quot;Translations&quot;.',
                 ],
             ],
         ];
@@ -184,7 +184,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Translations".',
+                    'The following field has an incorrect value: &quot;Translations&quot;.',
                 ],
             ],
         ];
@@ -200,7 +200,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The following field has an incorrect value: "Translations".',
+                    'The following field has an incorrect value: &quot;Translations&quot;.',
                 ],
             ],
         ];
@@ -265,7 +265,7 @@ class AssetDefinition extends DbTestCase
                     'output'   => false,
                     'messages' => [
                         ERROR => [
-                            'The following field has an incorrect value: "System name".',
+                            'The following field has an incorrect value: &quot;System name&quot;.',
                         ],
                     ],
                 ];
@@ -281,7 +281,7 @@ class AssetDefinition extends DbTestCase
                 'output'   => false,
                 'messages' => [
                     ERROR => [
-                        sprintf('The system name must not be the reserved word "%s".', $system_name),
+                        sprintf('The system name must not be the reserved word &quot;%s&quot;.', $system_name),
                     ],
                 ],
             ];
@@ -321,7 +321,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The system name must not end with the word "Model" or the word "Type".',
+                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
                 ],
             ],
         ];
@@ -347,7 +347,7 @@ class AssetDefinition extends DbTestCase
             'output'   => false,
             'messages' => [
                 ERROR => [
-                    'The system name must not end with the word "Model" or the word "Type".',
+                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
                 ],
             ],
         ];
