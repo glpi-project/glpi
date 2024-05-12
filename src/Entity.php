@@ -2291,7 +2291,7 @@ class Entity extends CommonTreeDropdown
 
         Contract::dropdown([
             'name'      => 'contracts_id_default',
-            'condition' => ['is_template' => 0, 'is_deleted' => 0] + Contract::getExpiredCriteria(),
+            'condition' => ['is_template' => 0, 'is_deleted' => 0] + Contract::getNotExpiredCriteria(),
             'entity'    => $entity->getID(),
             'toadd'     => $toadd,
             'value'     => $current_default_contract_value,
@@ -3337,7 +3337,7 @@ class Entity extends CommonTreeDropdown
                 'is_deleted'  => 0,
                 'is_template' => 0,
             ];
-            $criteria[] = Contract::getExpiredCriteria();
+            $criteria[] = Contract::getNotExpiredCriteria();
             $contracts = $contract->find($criteria);
 
             return count($contracts) ? current($contracts)['id'] : 0;
