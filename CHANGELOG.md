@@ -166,6 +166,7 @@ The present file will list all changes made to the project; according to the
 - `Config::validatePassword()`
 - `Consumable::showAddForm()`
 - `Consumable::showForConsumableItem()`
+- `Contract::getExpiredCriteria()` renamed to `Contract::getNotExpiredCriteria()` to match the actual behavior.
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `Document::getImage()`
@@ -244,6 +245,9 @@ The present file will list all changes made to the project; according to the
 - `ComputerAntivirus::showForComputer()`
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::getCurrentDBVersion()`
+- `Contract::commonListHeader()`
+- `Contract::getContractRenewalIDByName()`
+- `Contract::showShort()`
 - `DbUtils::regenerateTreeCompleteName()`
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`

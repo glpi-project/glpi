@@ -1793,7 +1793,7 @@ JS;
      * @param boolean $color         if show expire date in red color (false by default)
      * @param boolean $auto_renew
      *
-     * @return string expiration date
+     * @return string expiration date automatically converted to the user's preferred date format
      **/
     public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false)
     {
