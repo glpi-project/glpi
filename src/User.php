@@ -841,7 +841,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION['glpi_currenttime'];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            $password_errors,
+                            array_map('htmlspecialchars', $password_errors),
                             false,
                             ERROR
                         );
@@ -1073,7 +1073,7 @@ class User extends CommonDBTM
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
                         Session::addMessagesAfterRedirect(
-                            $password_errors,
+                            array_map('htmlspecialchars', $password_errors),
                             false,
                             ERROR
                         );
@@ -5603,7 +5603,7 @@ JAVASCRIPT;
         if (!empty($error_messages)) {
             echo '<tr class="tab_bg_2 center">';
             echo '<td colspan="2" class="red b">';
-            echo implode('<br/>', $error_messages);
+            echo implode('<br/>', array_map('htmlspecialchars', $error_messages));
             echo '</td>';
             echo '</tr>';
         }
@@ -7221,25 +7221,25 @@ JAVASCRIPT;
         // Validate security policies
         if ($CFG_GLPI["use_password_security"]) {
             if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
-                $errors[] = __s('Password too short!');
+                $errors[] = __('Password too short!');
             }
             if ($CFG_GLPI["password_need_number"] && !preg_match("/[0-9]+/", $password)) {
-                $errors[] = __s('Password must include at least a digit!');
+                $errors[] = __('Password must include at least a digit!');
             }
             if ($CFG_GLPI["password_need_letter"] && !preg_match("/[a-z]+/", $password)) {
-                $errors[] = __s('Password must include at least a lowercase letter!');
+                $errors[] = __('Password must include at least a lowercase letter!');
             }
             if ($CFG_GLPI["password_need_caps"] && !preg_match("/[A-Z]+/", $password)) {
-                $errors[] = __s('Password must include at least a uppercase letter!');
+                $errors[] = __('Password must include at least a uppercase letter!');
             }
             if ($CFG_GLPI["password_need_symbol"] && !preg_match("/\W+/", $password)) {
-                $errors[] = __s('Password must include at least a symbol!');
+                $errors[] = __('Password must include at least a symbol!');
             }
         }
 
         // Validate password history
         if (!PasswordHistory::getInstance()->validatePassword($this, $password)) {
-            $errors[] = __s('Password was used too recently.');
+            $errors[] = __('Password was used too recently.');
         }
 
         // Success if no error found
