@@ -3670,7 +3670,7 @@ final class SQLProvider implements SearchProviderInterface
         $FROM          .= $COMMONLEFTJOIN;
 
         // need to reorder $data['tocompute'] that contains searchoption ID
-        // to be sure that all LEFT JOIN related to count operation (saerchoption datatype = count))
+        // to be sure that all LEFT JOIN related to count operation (searchoption datatype = count))
         // are done after all other LEFT JOIN
         $ordered_data_to_compute = $data['tocompute'];
         foreach ($data['tocompute'] as $key => $val) {
