@@ -152,7 +152,7 @@ class QuestionTypeDateTime extends AbstractQuestionType
     }
 
     #[Override]
-    public static function validateExtraDataInput(array $input): bool
+    public function validateExtraDataInput(array $input): bool
     {
         $allowed_keys = [
             'is_default_value_current_time',

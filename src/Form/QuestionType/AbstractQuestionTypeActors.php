@@ -52,7 +52,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     abstract public function getAllowedActorTypes(): array;
 
     #[Override]
-    public static function formatDefaultValueForDB(mixed $value): ?string
+    public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value)) {
             return implode(',', $value);
@@ -62,7 +62,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     }
 
     #[Override]
-    public static function validateExtraDataInput(array $input): bool
+    public function validateExtraDataInput(array $input): bool
     {
         $allowed_keys = [
             'is_multiple_actors'

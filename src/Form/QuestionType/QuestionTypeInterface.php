@@ -51,7 +51,7 @@ interface QuestionTypeInterface
      * @param mixed $value The default value to format.
      * @return string
      */
-    public static function formatDefaultValueForDB(mixed $value): ?string;
+    public function formatDefaultValueForDB(mixed $value): ?string;
 
     /**
      * Validate the input for extra data of the question.
@@ -61,7 +61,7 @@ interface QuestionTypeInterface
      *
      * @return bool
      */
-    public static function validateExtraDataInput(array $input): bool;
+    public function validateExtraDataInput(array $input): bool;
 
     /**
      * Prepare the answer for the end user.
@@ -71,7 +71,7 @@ interface QuestionTypeInterface
      * @param mixed $answer The raw answer data.
      * @return mixed The prepared answer data.
      */
-    public static function prepareEndUserAnswer(Question $question, mixed $answer): mixed;
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed;
 
     /**
      * Render the administration template for the given question.

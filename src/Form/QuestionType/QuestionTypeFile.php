@@ -43,7 +43,7 @@ use Override;
 final class QuestionTypeFile extends AbstractQuestionType
 {
     #[Override]
-    public static function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
     {
         $form         = $question->getForm();
         $document     = new Document();

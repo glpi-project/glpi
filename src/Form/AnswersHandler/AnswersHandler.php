@@ -233,7 +233,7 @@ final class AnswersHandler
             $question = $questions[$question_id];
             $formatted_answers[] = [
                 'question' => $question_id,
-                'value'    => $question->getQuestionType()::prepareEndUserAnswer($question, $answer),
+                'value'    => $question->getQuestionType()->prepareEndUserAnswer($question, $answer),
                 'label'    => $question->fields['name'],
                 'type'     => $question->fields['type'],
             ];
