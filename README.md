@@ -80,8 +80,8 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
     | GLPI Version | Minimum PHP | Maximum PHP |
     | ------------ | ----------- | ----------- |
     | 9.5.X        | 7.2         | 8.0         |
-    | 10.0.X       | 7.4         | 8.2         |
-    | 11.0.X       | 8.1         | 8.2         |
+    | 10.0.X       | 7.4         | 8.3         |
+    | 10.1.X       | 8.2         | 8.3         |
 * Mandatory PHP extensions:
     - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
     - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)
