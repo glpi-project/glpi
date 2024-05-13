@@ -169,7 +169,7 @@ final class Question extends CommonDBChild
 
             $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
 
-            if ($extra_data === false) {
+            if (!$is_extra_data_valid) {
                 throw new \InvalidArgumentException("Invalid extra data for question");
             }
 

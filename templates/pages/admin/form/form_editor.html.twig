@@ -43,6 +43,10 @@
     'no_label'     : true,
 } %}
 
+{% for js_file in js_files %}
+    <script src="{{ js_path(js_file) }}"></script>
+{% endfor %}
+
 <form
     id="form-form"
     data-glpi-form-editor-container

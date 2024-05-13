@@ -102,16 +102,14 @@ final class Form extends CommonDBTM
         }
         $this->initForm($id, $options);
 
-        // We will be editing forms from this page
-        echo Html::script("js/form_editor_controller.js");
-
         $types_manager = QuestionTypesManager::getInstance();
-        $js_files = [];
+        $js_files = [
+            'js/form_editor_controller.js'
+        ];
         foreach ($types_manager->getQuestionTypes() as $type) {
             foreach ($type::loadJavascriptFiles() as $file) {
                 if (!in_array($file, $js_files)) {
                     $js_files[] = $file;
-                    echo Html::script($file);
                 }
             }
         }
@@ -122,6 +120,7 @@ final class Form extends CommonDBTM
             'item'                   => $this,
             'params'                 => $options,
             'question_types_manager' => $types_manager,
+            'js_files'               => $js_files,
         ]);
         return true;
     }
