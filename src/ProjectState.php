@@ -45,22 +45,22 @@ class ProjectState extends CommonDropdown
         return _n('Project state', 'Project states', $nb);
     }
 
-
     public function post_getEmpty()
     {
         $this->fields['color'] = '#dddddd';
     }
 
-
     public function getAdditionalFields()
     {
-
-        return [['name'     => 'color',
-            'label'    => __('Color'),
-            'type'     => 'color',
-            'list'     => true
-        ],
-            ['name'     => 'is_finished',
+        return [
+            [
+                'name'     => 'color',
+                'label'    => __('Color'),
+                'type'     => 'color',
+                'list'     => true
+            ],
+            [
+                'name'     => 'is_finished',
                 'label'    => __('Finished state'),
                 'type'     => 'bool',
                 'list'     => true
@@ -68,14 +68,13 @@ class ProjectState extends CommonDropdown
         ];
     }
 
-
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'color',
             'name'               => __('Color'),
             'datatype'           => 'color'
@@ -83,7 +82,7 @@ class ProjectState extends CommonDropdown
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'is_finished',
             'name'               => __('Finished state'),
             'datatype'           => 'bool'

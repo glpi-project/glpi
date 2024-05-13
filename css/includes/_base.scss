@@ -417,3 +417,7 @@ body .toast {
 .monaco-editor {
     outline: none !important;
 }
+
+.tooltip {
+    --tblr-tooltip-color: var(--tblr-body-color);
+}

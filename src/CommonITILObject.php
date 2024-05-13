@@ -3937,10 +3937,9 @@ abstract class CommonITILObject extends CommonDBTM
      **/
     public static function getStatus($value)
     {
-
         $tab  = static::getAllStatusArray(true);
        // Return $value if not defined
-        return (isset($tab[$value]) ? $tab[$value] : $value);
+        return ($tab[$value] ?? $value);
     }
 
 
@@ -4998,7 +4997,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getStatusIcon($status)
     {
         $class = static::getStatusClass($status);
-        $label = static::getStatus($status);
+        $label = htmlspecialchars(static::getStatus($status));
         return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
     }
 
@@ -5065,7 +5064,7 @@ abstract class CommonITILObject extends CommonDBTM
                 break;
         }
 
-        return $class == null
+        return $class === null
          ? ''
          : 'itilstatus ' . ($solid ? 'fas fa-' : 'far fa-') . $class .
          " " . static::getStatusKey($status);
@@ -7252,7 +7251,8 @@ abstract class CommonITILObject extends CommonDBTM
                     if (!isset($user_cache[$d['users_id']])) {
                         $user_cache[$d['users_id']] = getUserName($d['users_id'], 2);
                     }
-                    $entry['assigned'] .= htmlspecialchars($user_cache[$d['users_id']]['name']) . '<br>';
+                    $user_name = is_array($user_cache[$d['users_id']]) ? htmlspecialchars($user_cache[$d['users_id']]['name']) : $user_cache[$d['users_id']];
+                    $entry['assigned'] .= $user_name . '<br>';
                 }
             }
             foreach ($item->getGroups(CommonITILActor::ASSIGN) as $d) {
