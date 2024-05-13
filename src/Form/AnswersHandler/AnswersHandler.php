@@ -230,11 +230,12 @@ final class AnswersHandler
             // We need to keep track of some extra data like label and type because
             // the linked question might be deleted one day but the answer must still
             // be readable.
+            $question = $questions[$question_id];
             $formatted_answers[] = [
                 'question' => $question_id,
-                'value'    => $answer,
-                'label'    => $questions[$question_id]->fields['name'],
-                'type'     => $questions[$question_id]->fields['type'],
+                'value'    => $question->getQuestionType()->prepareEndUserAnswer($question, $answer),
+                'label'    => $question->fields['name'],
+                'type'     => $question->fields['type'],
             ];
         }
 

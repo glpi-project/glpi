@@ -116,7 +116,7 @@ final class Question extends CommonDBChild
      *
      * @return Form
      */
-    protected function getForm(): Form
+    public function getForm(): Form
     {
         return $this->getItem()->getItem();
     }
@@ -154,7 +154,7 @@ final class Question extends CommonDBChild
 
         if ($question_type) {
             if (isset($input['default_value'])) {
-                $input['default_value'] = $question_type::formatDefaultValueForDB($input['default_value']);
+                $input['default_value'] = $question_type->formatDefaultValueForDB($input['default_value']);
             }
 
             $extra_data = $input['extra_data'] ?? [];
@@ -167,7 +167,7 @@ final class Question extends CommonDBChild
                 }
             }
 
-            $is_extra_data_valid = $question_type::validateExtraDataInput($extra_data);
+            $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
 
             if (!$is_extra_data_valid) {
                 throw new \InvalidArgumentException("Invalid extra data for question");

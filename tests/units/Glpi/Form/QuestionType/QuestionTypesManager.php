@@ -83,7 +83,8 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::DATE_AND_TIME,
             QuestionTypeCategory::ACTORS,
             QuestionTypeCategory::URGENCY,
-            QuestionTypeCategory::REQUEST_TYPE
+            QuestionTypeCategory::REQUEST_TYPE,
+            QuestionTypeCategory::FILE,
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -144,6 +145,13 @@ class QuestionTypesManager extends DbTestCase
             QuestionTypeCategory::REQUEST_TYPE,
             [
                 new \Glpi\Form\QuestionType\QuestionTypeRequestType(),
+            ]
+        ];
+
+        yield [
+            QuestionTypeCategory::FILE,
+            [
+                new \Glpi\Form\QuestionType\QuestionTypeFile(),
             ]
         ];
     }
