@@ -62,7 +62,6 @@ class DataHelpersExtension extends AbstractExtension
             new TwigFilter('picture_url', [$this, 'getPictureUrl']),
             new TwigFilter('relative_datetime', [$this, 'getRelativeDatetime']),
             new TwigFilter('safe_html', [$this, 'getSafeHtml'], ['is_safe' => ['html']]),
-            new TwigFilter('verbatim_value', [$this, 'getVerbatimValue']),
             new TwigFilter('shortcut', [$this, 'underlineShortcutLetter'], ['is_safe' => ['html']]),
             new TwigFilter('enhanced_html', [$this, 'getEnhancedHtml'], ['is_safe' => ['html']]),
             new TwigFilter('truncate_left', [$this, 'truncateLeft']),
@@ -266,29 +265,6 @@ class DataHelpersExtension extends AbstractExtension
 
         return RichText::getEnhancedHtml($string, $params);
     }
-
-    /**
-     * Return verbatim value for an itemtype field.
-     * Returned value will be unsanitized if it has been transformed by GLPI sanitizing process (value fetched from DB).
-     * Twig autoescaping system will then ensure that value is correctly escaped in rendered HTML.
-     *
-     * @param mixed  $string
-     *
-     * @return mixed
-     *
-     * @deprecated 11.0
-     */
-    public function getVerbatimValue($string)
-    {
-        Toolbox::deprecated();
-
-        if (!is_string($string)) {
-            return $string;
-        }
-
-        return Sanitizer::unsanitize($string);
-    }
-
 
     /**
      * return the provided string truncated on the left and prepend a prefix separator if length is reached

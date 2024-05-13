@@ -160,20 +160,6 @@ class ManualLink extends CommonDBChild
         return $iterator;
     }
 
-    /**
-     * Show manual links for an item.
-     *
-     * @param CommonDBTM $item
-     * @return void
-     * @deprecated 11.0.0
-     * @see Link::showAllLinksForItem()
-     */
-    private static function showForItem(CommonDBTM $item): void
-    {
-        Toolbox::deprecated();
-        Link::showAllLinksForItem($item, self::class);
-    }
-
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];

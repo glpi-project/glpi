@@ -145,6 +145,11 @@ The present file will list all changes made to the project; according to the
 - `CommonGLPI::can*()` and `CommonDBTM::can*()` methods now have strict type hints for their parameters and return types.
 - Multiple methods in `CommonDevice` and sub-classes now have return types defined (classes that extends these must match the new method signatures).
 - `templates/password_form.html.twig` should no longer be used directly. Use `templates/forgotpassword.html.twig`, `templates/updatepassword.html.twig` or a custom template.
+- Usage of `ajax/dropdownMassiveActionAddValidator.php` without `validation_class` parameter is no longer supported.
+- Usage of `ajax/dropdownValidator.php` without `validation_class` parameter is no longer supported.
+- Usage of `ajax/dropdownValidator.php` with the `users_id_validate` parameter is no longer supported. Use `items_id_target` instead.
+- `Glpi\Dashboard\Filters\AbstractFilter::field()` method has been made protected.
+- Usage of `CommonITILValidation::dropdownValidator()` with the `name` and `users_id_validate` options are no longer supported. Use `prefix` and `itemtype_target`/`items_id_target` respectively instead.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
@@ -205,7 +210,6 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::canBeTranslated()`
 - `KnowbaseItemTranslation::isKbTranslationActive()`
 - `Link::showForItem()`
-- `ManualLink::showForItem()`
 - `ReminderTranslation::canBeTranslated()`
 - `ReminderTranslation::isReminderTranslationActive()`
 - `Ticket` `link_to_problem` massive action is deprecated. Use `CommonITILObject_CommonITILObject` `add` massive action instead.
@@ -238,6 +242,8 @@ The present file will list all changes made to the project; according to the
 - `CommonDropdown::displayHeader()`
 - `CommonITILActor::showUserNotificationForm()`
 - `CommonITILActor::showSupplierNotificationForm()`
+- `CommonITILValidation::alreadyExists()`
+- `CommonITILValidation::getTicketStatusNumber()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `Computer_Item::countForAll()`
@@ -257,9 +263,25 @@ The present file will list all changes made to the project; according to the
 - `Document::uploadDocument()`
 - `Document::showUploadedFilesDropdown()`
 - `Document_Item::showSimpleAddForItem()`
+- `DropdownTranslation::canBeTranslated()`. Translations are now always active.
+- `DropdownTranslation::isDropdownTranslationActive()`. Translations are now always active.
 - `Entity::getDefaultContractValues()`
 - `GLPI::getLogLevel()`
 - `Glpi\Api\API::returnSanitizedContent()`
+- `Glpi\Application\View\Extension::getVerbatimValue()`/Twig `verbatim_value` filter.
+- `Glpi\Dashboard\Filter::getAll()`
+- `Glpi\Dashboard\Filter::dates()`
+- `Glpi\Dashboard\Filter::dates_mod()`
+- `Glpi\Dashboard\Filter::itilcategory()`
+- `Glpi\Dashboard\Filter::requesttype()`
+- `Glpi\Dashboard\Filter::location()`
+- `Glpi\Dashboard\Filter::manufacturer()`
+- `Glpi\Dashboard\Filter::group_tech()`
+- `Glpi\Dashboard\Filter::user_tech()`
+- `Glpi\Dashboard\Filter::state()`
+- `Glpi\Dashboard\Filter::tickettype()`
+- `Glpi\Dashboard\Filter::displayList()`
+- `Glpi\Dashboard\Filter::field()`
 - `Glpi\Dashboard\Widget::getCssGradientPalette()`
 - `Glpi\Inventory\Conf::importFile()`
 - `Glpi\Socket::executeAddMulti()`
@@ -270,9 +292,13 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
+- `Html::ajaxFooter()`
 - `Html::autocompletionTextField()`
 - `Html::clean()`
+- `Html::cleanInputText()`
+- `Html::cleanPostForTextArea()`
 - `Html::closeArrowMassives()`
+- `Html::displayAjaxMessageAfterRedirect()`. The JS function is already provided by `js/misc.js`.
 - `Html::jsConfirmCallback()`
 - `Html::jsHide()`
 - `Html::jsShow()`
@@ -289,9 +315,12 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_KnowbaseItemCategory::displayTabContentForItem()`
 - `KnowbaseItem_KnowbaseItemCategory::getTabNameForItem()`
 - `KnowbaseItem_KnowbaseItemCategory::showForItem()`
+- `KnowbaseItemTranslation::isKbTranslationActive()`. Translations are now always active.
+- `KnowbaseItemTranslation::canBeTranslated()`. Translations are now always active.
 - `Link_Itemtype::showForLink()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
+- `ManualLink::showForItem()`
 - `Netpoint` class
 - `NetworkAlias::getInternetNameFromID()`
 - `NetworkName::getInternetNameFromID()`
@@ -302,6 +331,10 @@ The present file will list all changes made to the project; according to the
 - `Plugin::migrateItemType()`
 - `ProfileRight::updateProfileRightAsOtherRight()`
 - `ProfileRight::updateProfileRightsAsOtherRights()`
+- `QueryExpression` class. Replaced by `Glpi\DBAL\QueryExpression`.
+- `QueryParam` class. Replaced by `Glpi\DBAL\QueryParam`.
+- `QuerySubQuery` class. Replaced by `Glpi\DBAL\QuerySubQuery`.
+- `QueryUnion` class. Replaced by `Glpi\DBAL\QueryUnion`.
 - `Reminder::addVisibilityJoins()`
 - `Reservation::displayError()`
 - `RSSFeed::addVisibilityJoins()`
@@ -331,6 +364,10 @@ The present file will list all changes made to the project; according to the
 - `SlaLevel::showForSLA()`. Replaced by `LevelAgreementLevel::showForLA()`.
 - `SLM::setTicketCalendar()`
 - `SoftwareLicense::getSonsOf()`
+- `Ticket_Ticket::checkParentSon()`
+- `Ticket_Ticket::countOpenChildren()`
+- `Ticket_Ticket::manageLinkedTicketsOnSolved()`. Replaced by `CommonITILObject_CommonITILObject::manageLinksOnChange()`.
+- `Ticket_Ticket::getLinkedTicketsTo()`. Replaced by `CommonITILObject_CommonITILObject::getLinkedTo()`.
 - `Toolbox::canUseCas()`
 - `Toolbox::checkValidReferer()`
 - `Toolbox::clean_cross_side_scripting_deep()`
@@ -358,6 +395,7 @@ The present file will list all changes made to the project; according to the
 - `$CFG_GLPI['debug_sql']` and `$CFG_GLPI['debug_vars']` configuration options.
 - `DropdownTranslation::getTranslationByName()`
 - `addgroup` and `deletegroup` actions in `front/user.form.php`.
+- `ajax/ticketassigninformation.php` script. Use `ajax/actorinformation.php` instead.
 
 
 ## [10.0.16] unreleased

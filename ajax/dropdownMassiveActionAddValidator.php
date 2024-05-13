@@ -47,29 +47,15 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["validatortype"])) {
-    if (!array_key_exists('validation_class', $_POST)) {
-        // Legacy behaviour to remove in GLPI 11.0
-        Toolbox::deprecated('Usage of "ajax/dropdownMassiveActionAddValidator.php" without "validation_class" parameter is deprecated.');
-        $validation_class   = TicketValidation::class;
-        $itemtype_name      = 'itemtype_validate';
-        $items_id_name      = 'users_id_validate';
-        $groups_id_name     = 'groups_id';
-        $types_mapping = [
-            'group'      => null,
-            'group_user' => 'group',
-            'list_users' => 'group_user',
-        ];
-    } else {
-        $validation_class   = $_POST['validation_class'];
-        $itemtype_name      = 'itemtype_target';
-        $items_id_name      = 'items_id_target';
-        $groups_id_name     = 'groups_id';
-        $types_mapping = [
-            'group'      => 'group',
-            'group_user' => 'group_user',
-            'list_users' => 'list_users',
-        ];
-    }
+    $validation_class   = $_POST['validation_class'];
+    $itemtype_name      = 'itemtype_target';
+    $items_id_name      = 'items_id_target';
+    $groups_id_name     = 'groups_id';
+    $types_mapping = [
+        'group'      => 'group',
+        'group_user' => 'group_user',
+        'list_users' => 'list_users',
+    ];
 
     switch (strtolower($_POST['validatortype'])) {
         case 'user':

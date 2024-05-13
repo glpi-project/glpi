@@ -109,5 +109,3 @@ if (isset($options['locked'])) {
 \Glpi\Debug\Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
 CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], $_GET["withtemplate"], $options);
 \Glpi\Debug\Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');
-
-Html::ajaxFooter();

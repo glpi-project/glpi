@@ -155,25 +155,6 @@ class Html
     }
 
     /**
-     * Clean string for input text field
-     *
-     * @param string $string
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function cleanInputText($string)
-    {
-        Toolbox::deprecated();
-
-        if (!is_string($string)) {
-            return $string;
-        }
-        return preg_replace('/\'/', '&apos;', preg_replace('/\"/', '&quot;', $string));
-    }
-
-    /**
      * Clean all parameters of an URL. Get a clean URL
      *
      * @param string $url
@@ -201,37 +182,6 @@ class Html
         }
 
         return $string;
-    }
-
-    /**
-     * Clean post value for display in textarea
-     *
-     * @param string $value
-     *
-     * @return string
-     *
-     * @deprecated 11.0.0
-     **/
-    public static function cleanPostForTextArea($value)
-    {
-        Toolbox::deprecated();
-
-        if (is_array($value)) {
-            return array_map(__METHOD__, $value);
-        }
-        $order   = ['\r\n',
-            '\n',
-            "\\'",
-            '\"',
-            '\\\\'
-        ];
-        $replace = ["\n",
-            "\n",
-            "'",
-            '"',
-            "\\"
-        ];
-        return str_replace($order, $replace, $value);
     }
 
     /**
@@ -564,30 +514,6 @@ class Html
             'display_container' => $display_container
         ]);
     }
-
-
-    /**
-     * @deprecated since version 11.0.0
-     */
-    public static function displayAjaxMessageAfterRedirect()
-    {
-        Toolbox::deprecated("The js function is already provided by js/misc.js");
-
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        echo Html::scriptBlock("
-      displayAjaxMessageAfterRedirect = function() {
-         $('.messages_after_redirect').remove();
-         $.ajax({
-            url:  '" . $CFG_GLPI['root_doc'] . "/ajax/displayMessageAfterRedirect.php',
-            success: function(html) {
-               $('body').append(html);
-            }
-         });
-      }");
-    }
-
 
     /**
      * Common Title Function
@@ -1839,17 +1765,6 @@ HTML;
             closeDBConnections();
         }
     }
-
-
-    /**
-     * Display Ajax Footer for debug
-     **/
-    public static function ajaxFooter()
-    {
-        // Not currently used. Old debug stuff is now in the new debug bar.
-        // FIXME: Deprecate this in GLPI 11.0.
-    }
-
 
     /**
      * Print a simple HTML head with links

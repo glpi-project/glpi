@@ -100,13 +100,6 @@ class Html extends \GLPITestCase
         $this->string(\Html::convDateTime($mydate, 2, true))->isIdenticalTo($expected);
     }
 
-    public function testCleanInputText()
-    {
-        $origin = 'This is a \'string\' with some "replacements" needed, but not « others »!';
-        $expected = 'This is a &apos;string&apos; with some &quot;replacements&quot; needed, but not « others »!';
-        $this->string(@\Html::cleanInputText($origin))->isIdenticalTo($expected);
-    }
-
     public function cleanParametersURL()
     {
         $url = 'http://host/glpi/path/to/file.php?var1=2&var2=3';
@@ -127,23 +120,6 @@ class Html extends \GLPITestCase
         $origin = 'A string that is longer than 10 characters.';
         $expected = 'A string t&nbsp;(...)';
         $this->string(\Html::resume_text($origin, 10))->isIdenticalTo($expected);
-    }
-
-    public function testCleanPostForTextArea()
-    {
-        $origin = "A text that \\\"would\\\" be entered in a \\'textarea\\'\\nWith breakline\\r\\nand breaklines.";
-        $expected = "A text that \"would\" be entered in a 'textarea'\nWith breakline\nand breaklines.";
-        $this->string(@\Html::cleanPostForTextArea($origin))->isIdenticalTo($expected);
-
-        $aorigin = [
-            $origin,
-            "Another\\none!"
-        ];
-        $aexpected = [
-            $expected,
-            "Another\none!"
-        ];
-        $this->array(@\Html::cleanPostForTextArea($aorigin))->isIdenticalTo($aexpected);
     }
 
     public function testFormatNumber()

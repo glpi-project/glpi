@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use \Glpi\DBAL\QueryExpression;
+
 /// Class Ticket links
 class Ticket_Ticket extends CommonITILObject_CommonITILObject
 {
@@ -49,12 +51,6 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
         return _n('Linked ticket', 'Linked tickets', $nb);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -72,12 +68,6 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
         return parent::showMassiveActionsSubForm($ma);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -117,135 +107,5 @@ class Ticket_Ticket extends CommonITILObject_CommonITILObject
                 return;
         }
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
-    }
-
-
-    /**
-     * Get linked tickets to a ticket
-     *
-     * @param integer $ID ID of the ticket id
-     * @param boolean $check_view_rights check view rights
-     *
-     * @return array of linked tickets  array(id=>linktype)
-     * @deprecated 11.0.0 Use CommonITILObject_CommonITILObject::getLinkedTo()
-     **/
-    public static function getLinkedTicketsTo($ID, bool $check_view_rights = false)
-    {
-        Toolbox::deprecated('Use "Ticket_Ticket::getLinkedTo()"');
-
-        /** @var \DBmysql $DB */
-        global $DB;
-
-       // Make new database object and fill variables
-        if (empty($ID)) {
-            return [];
-        }
-
-        $table = self::getTable();
-        $criteria = [
-            'SELECT' => ["{$table}.*"],
-            'FROM'   => $table,
-            'WHERE'  => [
-                'OR'  => [
-                    'tickets_id_1' => $ID,
-                    'tickets_id_2' => $ID
-                ]
-            ]
-        ];
-        if ($check_view_rights && !Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
-            $ticket_table = Ticket::getTable();
-            $criteria['LEFT JOIN'] = [
-                $ticket_table => [
-                    'ON' => new QueryExpression("{$ticket_table}.id=(CASE WHEN {$table}.tickets_id_1={$ID} THEN {$table}.tickets_id_2 ELSE {$table}.tickets_id_1 END)")
-                ],
-            ];
-            $unused_ref = [];
-            $joins_str = Search::addDefaultJoin(Ticket::class, Ticket::getTable(), $unused_ref);
-            if (!empty($joins_str)) {
-                $db_it = new DBmysqlIterator($DB);
-                $criteria['LEFT JOIN'] = [new QueryExpression($db_it->analyseJoins(['LEFT JOIN' => $criteria['LEFT JOIN']]) . ' ' . $joins_str)];
-            }
-            $criteria['WHERE'][] = new QueryExpression(Search::addDefaultWhere(Ticket::class));
-        }
-        $iterator = $DB->request($criteria);
-        $tickets = [];
-
-        foreach ($iterator as $data) {
-            if ($data['tickets_id_1'] != $ID) {
-                $tickets[$data['id']] = [
-                    'link'         => $data['link'],
-                    'tickets_id_1' => $data['tickets_id_1'],
-                    'tickets_id'   => $data['tickets_id_1']
-                ];
-            } else {
-                $tickets[$data['id']] = [
-                    'link'       => $data['link'],
-                    'tickets_id' => $data['tickets_id_2']
-                ];
-            }
-        }
-
-        ksort($tickets);
-        return $tickets;
-    }
-
-    /**
-     * Check for parent relation (inverse of son)
-     *
-     * @param array $input Input
-     *
-     * @return void
-     *
-     * @deprecated 11.0
-     */
-    public function checkParentSon(&$input)
-    {
-        Toolbox::deprecated();
-
-        if (isset($input['link']) && $input['link'] == Ticket_Ticket::PARENT_OF) {
-           //a PARENT_OF relation is an inverted SON_OF one :)
-            $id1 = $input['tickets_id_2'];
-            $id2 = $input['tickets_id_1'];
-            $input['tickets_id_1'] = $id1;
-            $input['tickets_id_2'] = $id2;
-            $input['link']         = Ticket_Ticket::SON_OF;
-        }
-    }
-
-
-    /**
-     * Count number of open children for a parent
-     *
-     * @param integer $pid Parent ID
-     *
-     * @return integer
-     * @deprecated 11.0.0 Use CommonITILObject_CommonITILObject::countLinksByStatus()
-     */
-    public static function countOpenChildren($pid)
-    {
-        Toolbox::deprecated('Use "CommonITILObject::countOpenChildrenOfSameType()"');
-        $ticket = new Ticket();
-        $ticket->getFromDB($pid);
-        return $ticket->countOpenChildrenOfSameType();
-    }
-
-
-    /**
-     * Affect the same solution/status for duplicates tickets.
-     *
-     * @param integer           $ID        ID of the ticket id
-     * @param ITILSolution|null $solution  Ticket's solution
-     *
-     * @return void
-     * @deprecated 11.0.0 Use {@link CommonITILObject_CommonITILObject::manageLinksOnChange()} instead using '_solution' and/or '_status' properties in $changes parameter
-     **/
-    public static function manageLinkedTicketsOnSolved($ID, $solution = null)
-    {
-        Toolbox::deprecated('Use "CommonITILObject_CommonITILObject::manageLinksOnChange()"');
-        if ($solution !== null) {
-            self::manageLinksOnChange('Ticket', $ID, ['_solution' => $solution]);
-        } else {
-            self::manageLinksOnChange('Ticket', $ID, ['_status' => CommonITILObject::SOLVED]);
-        }
     }
 }

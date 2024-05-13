@@ -72,5 +72,3 @@ if ($_REQUEST["action"] == "add_reservation_fromselect") {
         'end'   => $_REQUEST['end'],
     ]);
 }
-
-Html::ajaxFooter();

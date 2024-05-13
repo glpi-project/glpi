@@ -41,5 +41,3 @@ Html::header_nocache();
 
 Session::checkRight("ticket", UPDATE);
 CommonItilObject_Item::dropdownMyDevices($_POST["userID"], Session::getMatchingActiveEntities($_POST['entity_restrict']));
-
-Html::ajaxFooter();
