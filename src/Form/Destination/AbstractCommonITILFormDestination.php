@@ -138,4 +138,14 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
             new ContentField(),
         ];
     }
+
+    final public function formatConfigInputName(string $field_key): string
+    {
+        // Handle array fields
+        if (str_ends_with($field_key, '[]')) {
+            return "config[" . rtrim($field_key, '[]') . "][value][]";
+        }
+
+        return "config[$field_key][value]";
+    }
 }
