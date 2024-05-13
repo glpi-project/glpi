@@ -46,7 +46,7 @@ class HTMLTableSubHeader extends HTMLTableHeader
      * @param HTMLTableSuperHeader $header
      * @param string               $name
      * @param string               $content
-     * @param HTMLTableHeader      $father
+     * @param ?HTMLTableHeader     $father
      **/
     public function __construct(
         HTMLTableSuperHeader $header,
@@ -60,41 +60,34 @@ class HTMLTableSubHeader extends HTMLTableHeader
         $this->copyAttributsFrom($this->header);
     }
 
-
     public function isSuperHeader()
     {
         return false;
     }
 
-
     public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name)
     {
-
         $header_name    = $this->header->getName();
         $subheader_name = $this->getName();
     }
-
 
     public function getCompositeName()
     {
         return $this->header->getCompositeName() . $this->getName();
     }
 
-
     protected function getTable()
     {
         return $this->header->getTable();
     }
-
 
     public function getHeader()
     {
         return $this->header;
     }
 
-
     /**
-     * @param $numberOfSubHeaders
+     * @param int $numberOfSubHeaders
      **/
     public function updateColSpan($numberOfSubHeaders)
     {
