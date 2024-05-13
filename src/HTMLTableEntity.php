@@ -48,7 +48,6 @@ abstract class HTMLTableEntity
 
     private $content;
 
-
     /**
      * Constructor of an entity
      *
@@ -64,18 +63,15 @@ abstract class HTMLTableEntity
         $this->content = $content;
     }
 
-
     /**
-     * @param $origin
-     **/
+     * @param HTMLTableEntity $origin
+     */
     public function copyAttributsFrom(HTMLTableEntity $origin)
     {
-
         $this->html_id    = $origin->html_id;
         $this->html_style = $origin->html_style;
         $this->html_class = $origin->html_class;
     }
-
 
     /**
      * @param $html_id
@@ -85,11 +81,10 @@ abstract class HTMLTableEntity
         $this->html_id = $html_id;
     }
 
-
     /**
      * userfull ? function never called
      *
-     * @param $html_style
+     * @param array|string $html_style
      **/
     public function setHTMLStyle($html_style)
     {
@@ -100,9 +95,8 @@ abstract class HTMLTableEntity
         }
     }
 
-
     /**
-     * @param $html_class
+     * @param array|string $html_class
      **/
     public function setHTMLClass($html_class)
     {
@@ -113,19 +107,14 @@ abstract class HTMLTableEntity
         }
     }
 
-
     /**
-     * @param $options   array
+     * @param array $options
      **/
     public function displayEntityAttributs(array $options = [])
     {
-
-        $id = $this->html_id;
-        if (isset($options['id'])) {
-            $id = $options['id'];
-        }
+        $id = $options['id'] ?? $this->html_id;
         if (!empty($id)) {
-            echo " id='$id'";
+            echo ' id="' . htmlspecialchars($id) . '"';
         }
 
         $style = $this->html_style;
@@ -137,7 +126,7 @@ abstract class HTMLTableEntity
             }
         }
         if (count($style) > 0) {
-            echo " style='" . implode(';', $style) . "'";
+            echo " style='" . htmlspecialchars(implode(';', $style)) . "'";
         }
 
         $class = $this->html_class;
@@ -149,10 +138,9 @@ abstract class HTMLTableEntity
             }
         }
         if (count($class) > 0) {
-            echo " class='" . implode(' ', $class) . "'";
+            echo " class='" . htmlspecialchars(implode(' ', $class)) . "'";
         }
     }
-
 
     /**
      * @param $content
@@ -162,10 +150,8 @@ abstract class HTMLTableEntity
         $this->content = $content;
     }
 
-
     public function displayContent()
     {
-
         if (is_array($this->content)) {
             foreach ($this->content as $content) {
                 if (is_string($content)) {
@@ -173,11 +159,7 @@ abstract class HTMLTableEntity
                     $content = str_replace('__RAND__', mt_rand(), $content);
                     echo $content;
                 } else if (isset($content['function'])) {
-                    if (isset($content['parameters'])) {
-                        $parameters = $content['parameters'];
-                    } else {
-                        $parameters = [];
-                    }
+                    $parameters = $content['parameters'] ?? [];
                     call_user_func_array($content['function'], $parameters);
                 }
             }
