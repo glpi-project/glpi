@@ -11228,7 +11228,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!$this->checkEntity()) {
             return false;
@@ -11237,7 +11237,7 @@ abstract class CommonITILObject extends CommonDBTM
         return self::canUpdate();
     }
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (!$this->checkEntity()) {

@@ -53,7 +53,7 @@ class Item_Ticket extends CommonItilObject_Item
         return _n('Ticket item', 'Ticket items', $nb);
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         // Not item linked for closed tickets
         $ticket = new Ticket();

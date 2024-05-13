@@ -92,7 +92,7 @@ class Problem extends CommonITILObject
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]);
     }
@@ -103,7 +103,7 @@ class Problem extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if (!Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive())) {
@@ -133,7 +133,7 @@ class Problem extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (!Session::haveAccessToEntity($this->getEntityID())) {

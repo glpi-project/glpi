@@ -85,17 +85,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return static::getTypeName(Session::getPluralNumber());
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, self::PUBLISHFAQ]);
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -104,7 +104,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
               || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
@@ -121,7 +121,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         return (Session::haveRight(self::$rightname, READ) && $this->haveVisibilityAccess());
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         // Personal knowbase or visibility and write access
         return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)

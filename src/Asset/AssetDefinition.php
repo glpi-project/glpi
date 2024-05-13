@@ -64,13 +64,13 @@ final class AssetDefinition extends CommonDBTM
         return 'ti ti-database-cog';
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // required due to usage of `config` rightname
         return static::canUpdate();
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         // required due to usage of `config` rightname
         return static::canUpdate();

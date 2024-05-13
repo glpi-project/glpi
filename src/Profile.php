@@ -4354,7 +4354,7 @@ class Profile extends CommonDBTM
         ;
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         // We can't delete the last super admin profile
         if ($this->isLastSuperAdminProfile()) {

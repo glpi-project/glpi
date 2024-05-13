@@ -170,21 +170,21 @@ final class AnswersSet extends CommonDBChild
     }
 
     #[Override]
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         // Answers set can't be updated from the UI
         return false;
     }
 
     #[Override]
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         // Answers set can't be created from the UI
         return false;
     }
 
     #[Override]
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         // Any form administrator may delete answers
         return Form::canUpdate();

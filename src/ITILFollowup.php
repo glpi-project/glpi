@@ -105,7 +105,7 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -123,7 +123,7 @@ class ITILFollowup extends CommonDBChild
         return false;
     }
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight('change', UPDATE)
              || Session::haveRight('problem', UPDATE)
@@ -135,7 +135,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if ($this->isParentAlreadyLoaded()) {
@@ -166,7 +166,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         if (
             !isset($this->fields['itemtype'])
@@ -193,7 +193,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         if ($this->isParentAlreadyLoaded()) {
             $itilobject = $this->item;
@@ -212,7 +212,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (

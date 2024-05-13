@@ -2344,13 +2344,13 @@ class CommonDBTM extends CommonGLPI
      * Have I the global right to add an item for the Object
      * May be overloaded if needed (ex Ticket)
      *
-     * @since 0.83
-     *
      * @param string $type itemtype of object to add
      *
      * @return boolean
-     **/
-    public function canAddItem($type)
+     **@since 0.83
+     *
+     */
+    public function canAddItem(string $type): bool
     {
         return $this->can($this->getID(), UPDATE);
     }
@@ -2365,7 +2365,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (!$this->checkEntity()) {
@@ -2384,7 +2384,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         if (!$this->checkEntity(true)) {
@@ -2403,7 +2403,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return boolean
      **/
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (!$this->checkEntity(true)) {
@@ -2418,11 +2418,11 @@ class CommonDBTM extends CommonGLPI
      *
      * Default is true and check entity if the objet is entity assign
      *
-     * @since 0.85
-     *
      * @return boolean
-     **/
-    public function canPurgeItem()
+     **@since 0.85
+     *
+     */
+    public function canPurgeItem(): bool
     {
 
         if (!$this->checkEntity(true)) {
@@ -2447,7 +2447,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
 
         if (!$this->checkEntity(true)) {
@@ -2464,11 +2464,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @param integer $ID ID to check
      *
-     * @since 0.85
-     *
      * @return boolean
-     **/
-    public function canEdit($ID)
+     **@since 0.85
+     *
+     */
+    public function canEdit($ID): bool
     {
 
         if ($this->maybeDeleted()) {
@@ -2858,12 +2858,12 @@ class CommonDBTM extends CommonGLPI
      * Check right on an item
      *
      * @param integer $ID    ID of the item (-1 if new item)
-     * @param mixed   $right Right to check : r / w / recursive / READ / UPDATE / DELETE
+     * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
      * @param array   $input array of input data (used for adding item) (default NULL)
      *
      * @return boolean
      **/
-    public function can($ID, $right, array &$input = null)
+    public function can($ID, int $right, array &$input = null): bool
     {
         if (Session::isInventory()) {
             return true;
@@ -3008,12 +3008,12 @@ class CommonDBTM extends CommonGLPI
      * Check right on an item with block
      *
      * @param integer $ID    ID of the item (-1 if new item)
-     * @param mixed   $right Right to check : r / w / recursive
-     * @param array   $input array of input data (used for adding item) (default NULL)
+     * @param int $right Right to check
+     * @param ?array $input array of input data (used for adding item) (default NULL)
      *
      * @return void
      **/
-    public function check($ID, $right, array &$input = null)
+    public function check($ID, int $right, ?array &$input = null): void
     {
         // Check item exists
         if (!$this->checkIfExistOrNew($ID)) {
@@ -3062,13 +3062,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check global right on an object
      *
-     * @param mixed $right Right to check : c / r / w / d
+     * @param int $right Right to check
      *
-     * @return void
+     * @return bool
      **/
-    public function checkGlobal($right)
+    public function checkGlobal(int $right): bool
     {
-
         if (!$this->canGlobal($right)) {
            // Gestion timeout session
             Session::redirectIfNotLoggedIn();
@@ -3085,31 +3084,20 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get global right on an object
      *
-     * @param mixed $right Right to check : c / r / w / d / READ / UPDATE / CREATE / DELETE
+     * @param int $right Right to check: READ / UPDATE / CREATE / DELETE
      *
      * @return bool
      **/
-    public function canGlobal($right)
+    public function canGlobal(int $right): bool
     {
-
-        switch ($right) {
-            case READ:
-                return static::canView();
-
-            case UPDATE:
-                return static::canUpdate();
-
-            case CREATE:
-                return static::canCreate();
-
-            case DELETE:
-                return static::canDelete();
-
-            case PURGE:
-                return static::canPurge();
-        }
-
-        return false;
+        return match ($right) {
+            READ => static::canView(),
+            UPDATE => static::canUpdate(),
+            CREATE => static::canCreate(),
+            DELETE => static::canDelete(),
+            PURGE => static::canPurge(),
+            default => false,
+        };
     }
 
 

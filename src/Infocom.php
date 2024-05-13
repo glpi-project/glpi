@@ -1889,7 +1889,7 @@ JS;
      * @since 9.1.7
      * @see CommonDBChild::canUpdateItem()
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
@@ -1899,7 +1899,7 @@ JS;
      * @since 9.1.7
      * @see CommonDBChild::canPurgeItem()
      **/
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return Session::haveRight(static::$rightname, PURGE);
     }
@@ -1909,7 +1909,7 @@ JS;
      * @since 9.1.7
      * @see CommonDBChild::canCreateItem()
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         return Session::haveRight(static::$rightname, CREATE);
     }

@@ -58,7 +58,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         return $forbidden;
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         $obj = new static::$itemtype_1();
 

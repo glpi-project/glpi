@@ -109,13 +109,13 @@ class Config extends CommonDBTM
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return false;
     }
 
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (
             isset($this->fields['context'])

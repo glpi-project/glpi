@@ -73,7 +73,7 @@ class View extends CommonGLPI
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return self::canUpdate();
     }

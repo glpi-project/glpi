@@ -59,7 +59,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
         return $matches[1];
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         $rule_class = (new static())->getRuleClassName();
         return Session::haveRightsOr(static::$rightname, [READ, $rule_class::PARENT]);

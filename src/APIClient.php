@@ -55,12 +55,12 @@ class APIClient extends CommonDBTM
         'app_token'
     ];
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return Session::haveRight(static::$rightname, UPDATE);
     }

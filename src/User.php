@@ -147,7 +147,7 @@ class User extends CommonDBTM
         return $links;
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (
             Session::canViewAllEntities()
@@ -159,7 +159,7 @@ class User extends CommonDBTM
     }
 
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
        // Will be created from form, with selected entity/profile
@@ -191,7 +191,7 @@ class User extends CommonDBTM
     }
 
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
 
         $entities = Profile_User::getUserEntities($this->fields['id'], false);
@@ -205,7 +205,7 @@ class User extends CommonDBTM
     }
 
 
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
         if ($this->isLastSuperAdminUser()) {
             return false;
@@ -228,7 +228,7 @@ class User extends CommonDBTM
     }
 
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return $this->canDeleteItem();
     }

@@ -98,7 +98,7 @@ class CronTask extends CommonDBTM
         return $ong;
     }
 
-    public static function canDelete()
+    public static function canDelete(): bool
     {
         return false;
     }

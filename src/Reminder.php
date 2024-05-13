@@ -71,17 +71,17 @@ class Reminder extends CommonDBVisible implements
     }
 
 
-    public static function canCreate()
+    public static function canCreate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [CREATE, self::PERSONAL]));
     }
 
-    public static function canView()
+    public static function canView(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [READ, self::PERSONAL]));
     }
 
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         // Is my reminder or is in visibility
         return ($this->fields['users_id'] == Session::getLoginUserID()
@@ -89,32 +89,32 @@ class Reminder extends CommonDBVisible implements
                   && $this->haveVisibilityAccess()));
     }
 
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
         // Is my reminder
         return ($this->fields['users_id'] == Session::getLoginUserID());
     }
 
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         return ($this->fields['users_id'] == Session::getLoginUserID()
               || (Session::haveRight(self::$rightname, UPDATE)
                   && $this->haveVisibilityAccess()));
     }
 
-    public function canPurgeItem()
+    public function canPurgeItem(): bool
     {
         return ($this->fields['users_id'] === Session::getLoginUserID()
               || (Session::haveRight(self::$rightname, PURGE)
                   && $this->haveVisibilityAccess()));
     }
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
-    public static function canPurge()
+    public static function canPurge(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
     }

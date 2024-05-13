@@ -178,7 +178,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public static function canUpdate()
+    public static function canUpdate(): bool
     {
 
        // To allow update of urgency and category for post-only
@@ -198,7 +198,7 @@ class Ticket extends CommonITILObject
     }
 
 
-    public static function canView()
+    public static function canView(): bool
     {
         return (Session::haveRightsOr(
             self::$rightname,
@@ -217,7 +217,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canViewItem()
+    public function canViewItem(): bool
     {
         if (!Session::haveAccessToEntity($this->getEntityID())) {
             return false;
@@ -535,7 +535,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canCreateItem()
+    public function canCreateItem(): bool
     {
 
         if (!Session::haveAccessToEntity($this->getEntityID())) {
@@ -550,7 +550,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canUpdateItem()
+    public function canUpdateItem(): bool
     {
         if (!$this->checkEntity()) {
             return false;
@@ -612,7 +612,7 @@ class Ticket extends CommonITILObject
     /**
      * @since 0.85
      **/
-    public static function canDelete()
+    public static function canDelete(): bool
     {
 
        // to allow delete for self-service only if no action on the ticket
@@ -641,7 +641,7 @@ class Ticket extends CommonITILObject
      *
      * @return boolean
      **/
-    public function canDeleteItem()
+    public function canDeleteItem(): bool
     {
 
         if (!Session::haveAccessToEntity($this->getEntityID())) {
@@ -2005,13 +2005,13 @@ class Ticket extends CommonITILObject
     /**
      * Overloaded from commonDBTM
      *
-     * @since 0.83
-     *
-     * @param $type itemtype of object to add
+     * @param $type string of object to add
      *
      * @return boolean
-     **/
-    public function canAddItem($type)
+     **@since 0.83
+     *
+     */
+    public function canAddItem(string $type): bool
     {
 
         if ($type == 'Document') {
