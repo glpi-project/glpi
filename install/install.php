@@ -60,6 +60,8 @@ Config::detectRootDoc();
 
 $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
+Session::checkCookieSecureConfig();
+
 //Print a correct  Html header for application
 function header_html($etape)
 {

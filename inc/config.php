@@ -199,6 +199,8 @@ TWIG, $twig_params);
     }
     // Check version
     if (!isset($_GET["donotcheckversion"]) && !Update::isDbUpToDate()) {
+        Session::checkCookieSecureConfig();
+
         // Prevent debug bar to be displayed when an admin user was connected with debug mode when codebase was updated.
         Toolbox::setDebugMode(Session::NORMAL_MODE);
 

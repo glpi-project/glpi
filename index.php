@@ -86,7 +86,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
     /** @var array $CFG_GLPI */
     global $CFG_GLPI;
     include(GLPI_ROOT . "/inc/includes.php");
-    $_SESSION["glpicookietest"] = 'testcookie';
 
     //Try to detect GLPI agent calls
     $rawdata = file_get_contents("php://input");
@@ -94,6 +93,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
         include_once(GLPI_ROOT . '/front/inventory.php');
         die();
     }
+
+    Session::checkCookieSecureConfig();
+
+    $_SESSION["glpicookietest"] = 'testcookie';
 
     // For compatibility reason
     if (isset($_GET["noCAS"])) {
