@@ -46,7 +46,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public static function loadJavascriptFiles(): array
+    public function loadJavascriptFiles(): array
     {
         return []; // No extra JS files by default
     }
@@ -70,7 +70,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
-    public static function prepareExtraData(array $input): array
+    public function prepareExtraData(array $input): array
     {
         return $input; // No need to prepare the extra data
     }

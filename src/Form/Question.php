@@ -174,7 +174,7 @@ final class Question extends CommonDBChild
             }
 
             // Prepare extra data
-            $extra_data = $question_type::prepareExtraData($extra_data);
+            $extra_data = $question_type->prepareExtraData($extra_data);
 
             // Save extra data as JSON
             if (!empty($extra_data)) {

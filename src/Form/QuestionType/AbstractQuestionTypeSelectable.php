@@ -58,13 +58,13 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     abstract public function getInputType(): string;
 
     #[Override]
-    public static function loadJavascriptFiles(): array
+    public function loadJavascriptFiles(): array
     {
         return ['js/form_question_selectable.js'];
     }
 
     #[Override]
-    public static function formatDefaultValueForDB(mixed $value): ?string
+    public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value)) {
             return implode(',', $value);
@@ -74,7 +74,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     }
 
     #[Override]
-    public static function validateExtraDataInput(array $input): bool
+    public function validateExtraDataInput(array $input): bool
     {
         // The input can not be empty, always have at least one option : the last one can be empty
         if (empty($input) || !isset($input['options'])) {
@@ -85,7 +85,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType
     }
 
     #[Override]
-    public static function prepareExtraData(array $input): array
+    public function prepareExtraData(array $input): array
     {
         // The last option can be empty, so we need to remove it
         if (isset($input['options']) && end($input['options']) === '') {

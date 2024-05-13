@@ -50,7 +50,7 @@ interface QuestionTypeInterface
      *
      * @return array List of JS files to load.
      */
-    public static function loadJavascriptFiles(): array;
+    public function loadJavascriptFiles(): array;
 
     /**
      * Format the default value for the database.
@@ -88,7 +88,7 @@ interface QuestionTypeInterface
      * @param array $input The input data to prepare.
      * @return array The prepared extra data.
      */
-    public static function prepareExtraData(array $input): array;
+    public function prepareExtraData(array $input): array;
 
     /**
      * Render the administration template for the given question.

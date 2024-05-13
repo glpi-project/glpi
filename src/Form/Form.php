@@ -107,7 +107,7 @@ final class Form extends CommonDBTM
             'js/form_editor_controller.js'
         ];
         foreach ($types_manager->getQuestionTypes() as $type) {
-            foreach ($type::loadJavascriptFiles() as $file) {
+            foreach ((new $type())->loadJavascriptFiles() as $file) {
                 if (!in_array($file, $js_files)) {
                     $js_files[] = $file;
                 }
