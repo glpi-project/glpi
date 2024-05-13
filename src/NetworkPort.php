@@ -1738,7 +1738,6 @@ class NetworkPort extends CommonDBChild
             }
             $nbAggregates = countElementsInTable(
                 'glpi_networkportaggregates',
-                //FIXME This seems prone to false positives. Assume that networkports_id_list is a JSON array. Searching %1% would match 1, 10, 31, 100, etc.
                 ['networkports_id_list'   => ['LIKE', '%"' . $item->getField('id') . '"%']]
             );
             if ($nbAggregates > 0) {

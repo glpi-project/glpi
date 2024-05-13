@@ -135,7 +135,7 @@ class NetworkPortConnectionLog extends CommonDBChild
                 $citem->getFromDB($cport->fields["items_id"]);
 
                 $cport_link = sprintf(
-                    "<a href='%1\$s'>%2\$s</a>",
+                    '<a href="%1$s">%2$s</a>',
                     htmlspecialchars($cport::getFormURLWithID($cport->fields['id'])),
                     htmlspecialchars(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
                 );
