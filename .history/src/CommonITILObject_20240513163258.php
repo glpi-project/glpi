@@ -8709,10 +8709,10 @@ abstract class CommonITILObject extends CommonDBTM
                     && !$this->isStatusComputationBlocked($this->input)
                 ) {
                     if (!isset($this->input['_status_changed'])) {
-                        $self = new static();
-                        $self->update(
-                            [
-                                'id'                              => $this->getID(),
+                    $self = new static();
+                    $self->update(
+                        [
+                            'id'                              => $this->getID(),
                                 'status'                          => self::ASSIGNED,
                                 '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
                                 '_from_assignment'                => true

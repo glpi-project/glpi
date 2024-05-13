@@ -8708,18 +8708,17 @@ abstract class CommonITILObject extends CommonDBTM
                     && in_array(self::ASSIGNED, array_keys($this->getAllStatusArray()))
                     && !$this->isStatusComputationBlocked($this->input)
                 ) {
-                    if (!isset($this->input['_status_changed'])) {
-                        $self = new static();
-                        $self->update(
-                            [
-                                'id'                              => $this->getID(),
-                                'status'                          => self::ASSIGNED,
-                                '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
-                                '_from_assignment'                => true
-                            ]
-                        );
-                        $this->fields['status'] = $self->fields['status'];
-                    }
+                    $self = new static();
+                    $self->update(
+                        [
+                            'id'                              => $this->getID(),
+                            'status'                          => self::ASSIGNED,
+                            '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
+                            '_from_assignment'                => true
+                        ]
+                    );
+                    if (!isset($this->input['_status_changed'])
+                    $this->fields['status'] = $self->fields['status'];
                 }
             }
             // Update existing actors

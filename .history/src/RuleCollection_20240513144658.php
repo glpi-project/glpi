@@ -1660,10 +1660,10 @@ JAVASCRIPT;
                     $rule->process($input, $output, $params, $p);
 
                     //If the rule has changed the ticket status, add a param to avoid a another status change
-                    if ($rule instanceof RuleTicket) {
-                        foreach ($rule->actions as $action) {
-                            if ($action->fields['field'] === 'status') {
-                                $output['_status_changed'] = true;
+                    if ($rule instanceof TicketRule) {
+                        foreach ($rule->getActions() as $action) {
+                            if ($action['action_type'] == 'status') {
+                                $params['status_changed'] = true;
                             }
                         }
                     }
