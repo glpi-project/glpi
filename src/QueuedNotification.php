@@ -87,7 +87,7 @@ class QueuedNotification extends CommonDBTM
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _x('button', 'Send');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
         }
 
         return $actions;

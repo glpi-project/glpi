@@ -188,13 +188,12 @@ class Contact extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _x('button', 'Add a supplier');
+               = _sx('button', 'Add a supplier');
         }
 
         return $actions;

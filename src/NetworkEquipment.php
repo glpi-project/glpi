@@ -260,7 +260,7 @@ class NetworkEquipment extends CommonDBTM
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
-                  _x('button', 'Add a license')
+                  _sx('button', 'Add a license')
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }

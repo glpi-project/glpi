@@ -442,14 +442,13 @@ class Appliance extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
             $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = _x('button', 'Add an item');
-            $actions[$prefix . 'remove'] = _x('button', 'Remove an item');
+            $actions[$prefix . 'add']    = _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = _sx('button', 'Remove an item');
         }
 
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
@@ -467,8 +466,8 @@ class Appliance extends CommonDBTM
             if (self::canUpdate()) {
                 $action_prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
                 $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-file-contract'></i>" .
-                                                _x('button', 'Add to an appliance');
-                $actions[$action_prefix . 'remove'] = _x('button', 'Remove from an appliance');
+                                                _sx('button', 'Add to an appliance');
+                $actions[$action_prefix . 'remove'] = _sx('button', 'Remove from an appliance');
             }
         }
     }

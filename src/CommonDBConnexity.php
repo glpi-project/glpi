@@ -514,23 +514,19 @@ abstract class CommonDBConnexity extends CommonDBTM
     public static function getConnexityMassiveActionsSpecificities()
     {
 
-        return ['reaffect'      => false,
+        return [
+            'reaffect'      => false,
             'itemtypes'     => [],
             'normalized'    => ['affect'   => ['affect'],
                 'unaffect' => ['unaffect']
             ],
-            'action_name'   => ['affect'   => _x('button', 'Associate'),
-                'unaffect' => _x('button', 'Dissociate')
+            'action_name'   => [
+                'affect'   => _sx('button', 'Associate'),
+                'unaffect' => _sx('button', 'Dissociate')
             ]
         ];
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::getMassiveActionsForItemtype()
-     **/
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,

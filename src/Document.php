@@ -1481,14 +1481,14 @@ class Document extends CommonDBTM
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
                 $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
-                                                _x('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = _x('button', 'Remove a document');
+                                                _sx('button', 'Add a document');
+                $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a document');
             }
         }
 
         if ((is_a($itemtype, __CLASS__, true)) && (static::canUpdate())) {
-            $actions[$action_prefix . 'add_item']    = _x('button', 'Add an item');
-            $actions[$action_prefix . 'remove_item'] = _x('button', 'Remove an item');
+            $actions[$action_prefix . 'add_item']    = _sx('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = _sx('button', 'Remove an item');
         }
     }
 

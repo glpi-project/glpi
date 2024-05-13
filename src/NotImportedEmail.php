@@ -63,10 +63,6 @@ class NotImportedEmail extends CommonDBTM
         return _n('Refused email', 'Refused emails', $nb);
     }
 
-
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -75,18 +71,12 @@ class NotImportedEmail extends CommonDBTM
 
         if ($isadmin) {
             $prefix                          = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'delete_email'] = __('Delete emails');
-            $actions[$prefix . 'import_email'] = _x('button', 'Import');
+            $actions[$prefix . 'delete_email'] = __s('Delete emails');
+            $actions[$prefix . 'import_email'] = _sx('button', 'Import');
         }
         return $actions;
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::showMassiveActionsSubForm()
-     **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
 
@@ -100,12 +90,6 @@ class NotImportedEmail extends CommonDBTM
         return parent::showMassiveActionsSubForm($ma);
     }
 
-
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,

@@ -78,14 +78,13 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
-        $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
-                     = __('Unset as default');
-        $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
-                     = __('Change count method');
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
+                     = __s('Unset as default');
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
+                     = __s('Change count method');
         if (Session::haveRight('transfer', READ)) {
-            $actions[get_called_class() . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = __('Change visibility');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
+                     = __s('Change visibility');
         }
         return $actions;
     }

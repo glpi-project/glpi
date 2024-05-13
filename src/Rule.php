@@ -571,7 +571,6 @@ class Rule extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 

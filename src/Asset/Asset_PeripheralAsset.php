@@ -269,8 +269,8 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $specificities = self::getRelationMassiveActionsSpecificities();
 
         if (in_array($itemtype, $specificities['itemtypes'])) {
-            $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-plug'></i>" . _x('button', 'Connect');
-            $actions[$action_prefix . 'remove'] = _x('button', 'Disconnect');
+            $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-plug'></i>" . _sx('button', 'Connect');
+            $actions[$action_prefix . 'remove'] = _sx('button', 'Disconnect');
         }
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
     }

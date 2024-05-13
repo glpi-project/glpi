@@ -2700,25 +2700,24 @@ class Plugin extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $actions = [];
 
         if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
             = "<i class='fas fa-code-branch'></i>" .
-            __('Install');
+            __s('Install');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
             = "<i class='fas fa-code-branch'></i>" .
-            __('Uninstall');
+            __s('Uninstall');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
             = "<i class='fas fa-code-branch'></i>" .
-            __('Enable');
+            __s('Enable');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
             = "<i class='fas fa-code-branch'></i>" .
-            __('Disable');
+            __s('Disable');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
             = "<i class='fas fa-broom'></i>" .
-            __('Clean');
+            __s('Clean');
         }
 
         $actions += parent::getSpecificMassiveActions($checkitem);

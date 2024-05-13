@@ -414,16 +414,15 @@ class Contract extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
             $prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = _x('button', 'Add an item');
-            $actions[$prefix . 'remove'] = _x('button', 'Remove an item');
+            $actions[$prefix . 'add']    = _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = _sx('button', 'Remove an item');
             $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _x('button', 'Add a supplier');
+               = _sx('button', 'Add a supplier');
         }
 
         return $actions;
@@ -1722,8 +1721,8 @@ class Contract extends CommonDBTM
             if (self::canUpdate()) {
                 $action_prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
                 $actions[$action_prefix . 'add']    = "<i class='fa-fw " . self::getIcon() . "'></i>" .
-                                                _x('button', 'Add a contract');
-                $actions[$action_prefix . 'remove'] = _x('button', 'Remove a contract');
+                                                _sx('button', 'Add a contract');
+                $actions[$action_prefix . 'remove'] = _sx('button', 'Remove a contract');
             }
         }
     }

@@ -677,14 +677,13 @@ TWIG, $twig_params);
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
                   = "<i class='fas fa-sitemap'></i>" .
-                    _x('button', 'Move under');
+                    _sx('button', 'Move under');
         }
 
         return $actions;

@@ -3605,29 +3605,29 @@ JAVASCRIPT;
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                                                          = "<i class='fas fa-users'></i>" .
-                                                           __('Associate to a group');
+                                                           __s('Associate to a group');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = __('Dissociate from a group');
+                                                         = __s('Dissociate from a group');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                                                          = "<i class='fas fa-user-shield'></i>" .
-                                                           __('Associate to a profile');
+                                                           __s('Associate to a profile');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = __('Dissociate from a profile');
+                                                         = __s('Dissociate from a profile');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
                                                          = "<i class='fas fa-users-cog'></i>" .
-                                                           __("Move to group");
-            $actions["{$prefix}delete_emails"] = __("Delete associated emails");
+                                                           __s("Move to group");
+            $actions["{$prefix}delete_emails"] = __s("Delete associated emails");
         }
 
         if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
             $actions[$prefix . 'change_authtype']        = "<i class='fas fa-user-cog'></i>" .
-                                                      _x('button', 'Change the authentication method');
+                                                      _sx('button', 'Change the authentication method');
             $actions[$prefix . 'force_user_ldap_update'] = "<i class='fas fa-sync'></i>" .
-                                                      __('Force synchronization');
+                                                      __s('Force synchronization');
             $actions[$prefix . 'clean_ldap_fields'] = "<i class='fas fa-broom'></i>" .
-                                                    __('Clean LDAP fields and force synchronisation');
+                                                    __s('Clean LDAP fields and force synchronisation');
             $actions[$prefix . 'disable_2fa']           = "<i class='fas fa-user-lock'></i>" .
-                                                      __('Disable 2FA');
+                                                      __s('Disable 2FA');
         }
         return $actions;
     }

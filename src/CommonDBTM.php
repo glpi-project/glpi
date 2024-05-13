@@ -3945,15 +3945,16 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get all the massive actions available for the current class regarding given itemtype
      *
-     * @since 0.85
-     *
-     * @param array      $actions    array of the actions to update
-     * @param string     $itemtype   the type of the item for which we want the actions
+     * @param array      $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
+     *          Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
+     * @param string $itemtype   the type of the item for which we want the actions
      * @param boolean    $is_deleted (default false)
-     * @param CommonDBTM $checkitem  (default NULL)
+     * @param ?CommonDBTM $checkitem  (default NULL)
      *
      * @return void (update is set inside $actions)
-     **/
+     **@since 0.85
+     *
+     */
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
@@ -4068,9 +4069,10 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @param object $checkitem link item to check right (default NULL)
+     * @param CommonGLPI $checkitem link item to check right (default NULL)
      *
-     * @return array an array of massive actions
+     * @return array An array of massive actions where the keys are the internal identifier for the action and the values are the displayed value.
+     *         Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
      **/
     public function getSpecificMassiveActions($checkitem = null)
     {
@@ -4084,7 +4086,7 @@ class CommonDBTM extends CommonGLPI
        // test if current profile has rights to unlock current item type
         if (Session::haveRight(static::$rightname, UNLOCK)) {
             $actions['ObjectLock' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock']
-                        = _x('button', 'Unlock items');
+                        = _sx('button', 'Unlock items');
         }
 
         if (static::canUpdate()) {
@@ -4094,12 +4096,12 @@ class CommonDBTM extends CommonGLPI
 
             if (in_array(static::getType(), Appliance::getTypes(true))) {
                 $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-                "<i class='fa-fw " . Appliance::getIcon() . "'></i>" . _x('button', 'Associate to an appliance');
+                "<i class='fa-fw " . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
             if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
                 $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'] =
-                "<i class='fa-fw ti ti-server-off'></i>" . _x('button', 'Remove from a rack');
+                "<i class='fa-fw ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
         }
 
