@@ -228,9 +228,9 @@ class ProjectTask_Ticket extends CommonDBRelation
         }
 
         $canedit = $ticket->canEdit($ID);
+        $rand = mt_rand();
 
         $iterator = self::getListForItem($ticket);
-        $numrows = count($iterator);
 
         $used    = [];
         foreach ($iterator as $data) {
@@ -244,8 +244,6 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $ticket->getSolvedStatusArray()
             ), true)
         ) {
-            $rand = mt_rand();
-
             $finished_states_it = $DB->request(
                 [
                     'SELECT' => ['id'],
@@ -418,7 +416,6 @@ class ProjectTask_Ticket extends CommonDBRelation
 
         $entries = [];
         foreach ($iterator as $data) {
-            $rand = mt_rand();
             $project_name = htmlspecialchars($data['projectname'] . (empty($data['projectname']) ? "({$data['projects_id']})" : ''));
             $projectlink = "<a href='" . htmlspecialchars(Project::getFormURLWithID($data['projects_id'])) . "'>$project_name</a>";
             $task_name = htmlspecialchars($data['name'] . (empty($data['name']) ? "({$data['id']})" : ''));
