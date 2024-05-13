@@ -76,6 +76,7 @@ class GlpiCommonAjaxController
             this.#handleFriendlyNameUpdate(response);
             this.#handleTrashbinStatus(response, form);
             this.#handleRedirect(response);
+            this.#removeCachedTabsContent();
 
             // Trigger a custom event to allow the client to execute an handler
             // after the form has been successfully submitted
@@ -206,5 +207,17 @@ class GlpiCommonAjaxController
 
         // Redirect to specified page
         window.location = response.redirect;
+    }
+
+    #removeCachedTabsContent() {
+        $('[data-glpi-tab-content]').each((index, element) => {
+            const is_current_tab = $(element).hasClass('active');
+            if (is_current_tab) {
+                return;
+            }
+
+            $(element).html("");
+        });
+
     }
 }
