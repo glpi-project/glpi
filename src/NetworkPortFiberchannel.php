@@ -105,11 +105,12 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
             'standard_speeds' => $standard_speeds,
             'speed' => $speed,
             'speed_label' => __('Fiber channel port speed'),
+            'wwn_label' => __('World Wide Name'),
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            {{ fields.textField('wwn', item.fields['wwn'], __('World Wide Name')) }}
+            {{ fields.textField('wwn', item.fields['wwn'], wwn_label) }}
             {{ fields.dropdownArrayField('speed', item.fields['speed'], standard_speeds, speed_label, {
                 other: speed
             }) }}
