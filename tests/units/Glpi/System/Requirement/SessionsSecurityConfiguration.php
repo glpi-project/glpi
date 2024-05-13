@@ -39,91 +39,124 @@ class SessionsSecurityConfiguration extends \GLPITestCase
 {
     protected function configProvider(): iterable
     {
-        // Totally unsecure config
-        yield [
-            'cookie_secure'   => '0',
-            'cookie_httponly' => '0',
-            'cookie_samesite' => 'none',
-            'server_https'    => 'on',
-            'server_port'     => '443',
-            'is_valid'        => false,
+        // Boolean values are supposed to be converted by PHP internal logic when the PHP ini files are parsed,
+        // but they will not be converted to boolean when they are programatically set by a `ini_set()` call.
+        $boolean_specs = [
+            [
+                'true'  => true,
+                'false' => false,
+            ],
+            [
+                'true'  => '1',
+                'false' => '0',
+            ],
+            [
+                'true'  => 'true',
+                'false' => 'false',
+            ],
+            [
+                'true'  => 'on',
+                'false' => 'off',
+            ],
+            [
+                'true'  => 'yes',
+                'false' => 'no',
+            ],
+            [
+                'true'  => '1',
+                'false' => 'none',
+            ],
         ];
+        foreach ($boolean_specs as $specs) {
+            $true  = $specs['true'];
+            $false = $specs['false'];
 
-        // Strict config
-        yield [
-            'cookie_secure'   => '1',
-            'cookie_httponly' => '1',
-            'cookie_samesite' => 'strict',
-            'server_https'    => 'on',
-            'server_port'     => '443',
-            'is_valid'        => true,
-        ];
-
-        // cookie_secure can be 0 if query is not on HTTPS
-        yield [
-            'cookie_secure'   => '0',
-            'cookie_httponly' => '1',
-            'cookie_samesite' => 'strict',
-            'server_https'    => 'off',
-            'server_port'     => '80',
-            'is_valid'        => true,
-        ];
-
-        // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['HTTPS'])
-        yield [
-            'cookie_secure'   => '0',
-            'cookie_httponly' => '1',
-            'cookie_samesite' => 'strict',
-            'server_https'    => 'on',
-            'server_port'     => null,
-            'is_valid'        => false,
-        ];
-
-        // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['SERVER_PORT'])
-        yield [
-            'cookie_secure'   => '0',
-            'cookie_httponly' => '1',
-            'cookie_samesite' => 'strict',
-            'server_https'    => null,
-            'server_port'     => '443',
-            'is_valid'        => false,
-        ];
-
-        // cookie_httponly should be 1
-        yield [
-            'cookie_secure'   => '0',
-            'cookie_httponly' => '0',
-            'cookie_samesite' => 'strict',
-            'server_https'    => 'off',
-            'server_port'     => '80',
-            'is_valid'        => false,
-        ];
-
-        // cookie_samesite should be 'Lax', 'Strict', or ''
-        $samesite_is_valid = [
-            'None' => false,
-            'Lax' => true,
-            'Strict' => true,
-            ''    => true,
-            'NotAnExpectedValue' => false,
-        ];
-        foreach ($samesite_is_valid as $samesite => $is_valid) {
+            // Totally unsecure config
             yield [
-                'cookie_secure'   => '0',
-                'cookie_httponly' => '1',
-                'cookie_samesite' => $samesite,
+                'cookie_secure'   => $false,
+                'cookie_httponly' => $false,
+                'cookie_samesite' => 'none',
+                'server_https'    => 'on',
+                'server_port'     => '443',
+                'is_valid'        => false,
+            ];
+
+            // Strict config
+            yield [
+                'cookie_secure'   => $true,
+                'cookie_httponly' => $true,
+                'cookie_samesite' => 'strict',
+                'server_https'    => 'on',
+                'server_port'     => '443',
+                'is_valid'        => true,
+            ];
+
+            // cookie_secure can be 0 if query is not on HTTPS
+            yield [
+                'cookie_secure'   => $false,
+                'cookie_httponly' => $true,
+                'cookie_samesite' => 'strict',
                 'server_https'    => 'off',
                 'server_port'     => '80',
-                'is_valid'        => $is_valid,
+                'is_valid'        => true,
             ];
+
+            // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['HTTPS'])
             yield [
-                'cookie_secure'   => '0',
-                'cookie_httponly' => '1',
-                'cookie_samesite' => strtolower($samesite),
+                'cookie_secure'   => $false,
+                'cookie_httponly' => $true,
+                'cookie_samesite' => 'strict',
+                'server_https'    => 'on',
+                'server_port'     => null,
+                'is_valid'        => false,
+            ];
+
+            // cookie_secure should be 1 if query is on HTTPS (detected from $_SERVER['SERVER_PORT'])
+            yield [
+                'cookie_secure'   => $false,
+                'cookie_httponly' => $true,
+                'cookie_samesite' => 'strict',
+                'server_https'    => null,
+                'server_port'     => '443',
+                'is_valid'        => false,
+            ];
+
+            // cookie_httponly should be 1
+            yield [
+                'cookie_secure'   => $false,
+                'cookie_httponly' => $false,
+                'cookie_samesite' => 'strict',
                 'server_https'    => 'off',
                 'server_port'     => '80',
-                'is_valid'        => $is_valid,
+                'is_valid'        => false,
             ];
+
+            // cookie_samesite should be 'Lax', 'Strict', or ''
+            $samesite_is_valid = [
+                'None' => false,
+                'Lax' => true,
+                'Strict' => true,
+                ''    => true,
+                'NotAnExpectedValue' => false,
+            ];
+            foreach ($samesite_is_valid as $samesite => $is_valid) {
+                yield [
+                    'cookie_secure'   => $false,
+                    'cookie_httponly' => $true,
+                    'cookie_samesite' => $samesite,
+                    'server_https'    => 'off',
+                    'server_port'     => '80',
+                    'is_valid'        => $is_valid,
+                ];
+                yield [
+                    'cookie_secure'   => $false,
+                    'cookie_httponly' => $true,
+                    'cookie_samesite' => strtolower($samesite),
+                    'server_https'    => 'off',
+                    'server_port'     => '80',
+                    'is_valid'        => $is_valid,
+                ];
+            }
         }
     }
 

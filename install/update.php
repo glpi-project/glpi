@@ -60,6 +60,8 @@ $GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
 
 Config::detectRootDoc();
 
+Session::checkCookieSecureConfig();
+
 if (!($DB instanceof DBmysql)) { // $DB can have already been init in install.php script
     $DB = new DB();
 }

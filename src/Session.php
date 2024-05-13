@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Event;
@@ -976,6 +977,26 @@ class Session
         }
     }
 
+    /**
+     * Check the `session.cookie_secure` configuration and exit with an error message if the
+     * current request context is not allowed to use session cookies.
+     */
+    public static function checkCookieSecureConfig(): void
+    {
+        // If session cookie is only available on a secure HTTPS context but request is made on an unsecured HTTP context,
+        // display a warning message
+        $cookie_secure = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
+        $is_https_request = ($_SERVER['HTTPS'] ?? 'off') === 'on' || (int)($_SERVER['SERVER_PORT'] ?? null) == 443;
+        if ($is_https_request === false && $cookie_secure === true) {
+            TemplateRenderer::getInstance()->display(
+                'pages/https_only.html.twig',
+                [
+                    'secured_url' => 'https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+                ]
+            );
+            exit();
+        }
+    }
 
     /**
      * Global check of session to prevent PHP vulnerability
