@@ -180,10 +180,7 @@ final class SearchEngine
             'appliance_types'      => ['Appliance'],
             'directconnect_types'  => Asset_PeripheralAsset::getPeripheralHostItemtypes(),
             'infocom_types'        => ['Budget', 'Infocom'],
-            'linkgroup_types'      => ['Group'],
-            // 'linkgroup_tech_types' => ['Group'], // Cannot handle ambiguity with 'Group' from 'linkgroup_types'
-            'linkuser_types'       => ['User'],
-            // 'linkuser_tech_types'  => ['User'], // Cannot handle ambiguity with 'User' from 'linkuser_types'
+            'assignable_types'     => ['Group', 'User'],
             'project_asset_types'  => ['Project'],
             'rackable_types'       => ['Enclosure', 'Rack'],
             'socket_types'         => [\Glpi\Socket::class],

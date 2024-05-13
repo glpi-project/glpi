@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 
 /**
  * Rack Class
@@ -42,6 +43,11 @@ class Rack extends CommonDBTM
 {
     use Glpi\Features\DCBreadcrumb;
     use Glpi\Features\State;
+    use AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        prepareInputForUpdate as prepareInputForUpdateAssignableItem;
+        getEmpty as getEmptyAssignableItem;
+    }
 
     const FRONT    = 0;
     const REAR     = 1;
@@ -265,9 +271,20 @@ class Rack extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -305,6 +322,17 @@ class Rack extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -741,6 +769,10 @@ JAVASCRIPT;
 
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareInputForAddAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         if ($this->prepareInput($input)) {
             if (isset($input["id"]) && ($input["id"] > 0)) {
                 $input["_oldID"] = $input["id"];
@@ -758,6 +790,10 @@ JAVASCRIPT;
 
     public function prepareInputForUpdate($input)
     {
+        $input = $this->prepareInputForUpdateAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         if (array_key_exists('bgcolor', $input) && empty($input['bgcolor'])) {
             $input['bgcolor'] = '#FEC95C';
         }
@@ -909,7 +945,7 @@ JAVASCRIPT;
 
     public function getEmpty()
     {
-        if (!parent::getEmpty()) {
+        if (!$this->getEmptyAssignableItem() || !parent::getEmpty()) {
             return false;
         }
         $this->fields['number_units'] = 42;

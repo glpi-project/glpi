@@ -76,6 +76,8 @@ class Item_Devices extends CommonDBRelation
 
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
+    public static $rightname = 'device';
+
     protected function computeFriendlyName()
     {
         $itemtype = static::$itemtype_2;
@@ -205,11 +207,20 @@ class Item_Devices extends CommonDBRelation
                 'table'              => $table,
                 'field'              => $field,
                 'name'               => $attributs['long name'],
-                'massiveaction'      => true
+                'massiveaction'      => $attributs['massiveaction'] ?? true,
             ];
 
             if (isset($attributs['datatype'])) {
                 $newtab['datatype'] = $attributs['datatype'];
+            }
+            if (isset($attributs['joinparams'])) {
+                $newtab['joinparams'] = $attributs['joinparams'];
+            }
+            if (isset($attributs['joinparams'])) {
+                $newtab['joinparams'] = $attributs['joinparams'];
+            }
+            if (isset($attributs['forcegroupby'])) {
+                $newtab['forcegroupby'] = $attributs['forcegroupby'];
             }
             if (isset($attributs['nosearch'])) {
                 $newtab['nosearch'] = $attributs['nosearch'];

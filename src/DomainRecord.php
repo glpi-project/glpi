@@ -34,9 +34,15 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 
 class DomainRecord extends CommonDBChild
 {
+    use AssignableItem {
+        canUpdate as canUpdateAssignableItem;
+        canUpdateItem as canUpdateItemAssignableItem;
+    }
+
     const DEFAULT_TTL = 3600;
 
     public static $rightname              = 'domain';
@@ -144,8 +150,19 @@ class DomainRecord extends CommonDBChild
             'id'                 => '9',
             'table'              => 'glpi_groups',
             'field'              => 'name',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -179,6 +196,9 @@ class DomainRecord extends CommonDBChild
 
     public static function canUpdate(): bool
     {
+        if (!self::canUpdateAssignableItem()) {
+            return false;
+        }
         if (count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'])) {
             return true;
         }
@@ -208,6 +228,9 @@ class DomainRecord extends CommonDBChild
 
     public function canUpdateItem(): bool
     {
+        if (!$this->canUpdateItemAssignableItem()) {
+            return false;
+        }
         return parent::canUpdateItem()
          && ($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
          || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true)
@@ -304,11 +327,19 @@ class DomainRecord extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareGroupFields($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->prepareInput($input, true);
     }
 
     public function prepareInputForUpdate($input)
     {
+        $input = $this->prepareGroupFields($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->prepareInput($input);
     }
 

@@ -97,6 +97,7 @@ class Group extends CommonTreeDropdown
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Change_Group::class,
+                Group_Item::class,
                 Group_KnowbaseItem::class,
                 Group_Problem::class,
                 Group_Reminder::class,
@@ -526,8 +527,7 @@ class Group extends CommonTreeDropdown
      *
      * @since 0.83
      *
-     * @param array $types   Itemtypes
-     * @param string $field  Field name
+     * @param bool $tech     Whether to fetch items related to technician assignment or not.
      * @param boolean $tree  Include child groups
      * @param boolean $user  Include members (users)
      * @param integer $start First row to retrieve
@@ -536,10 +536,16 @@ class Group extends CommonTreeDropdown
      *
      * @return integer total of items
      **/
-    public function getDataItems(array $types, $field, $tree, $user, $start, array &$res, $extra_criteria = [])
+    public function getDataItems(bool $tech, bool $tree, bool $user, int $start, array &$res, array $extra_criteria = []): int
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
+
+        $types  = $CFG_GLPI['assignable_types'];
+        $ufield = $tech ? 'users_id_tech' : 'users_id';
 
         // include item of child groups ?
         if ($tree) {
@@ -547,33 +553,36 @@ class Group extends CommonTreeDropdown
         } else {
             $groups_ids = [$this->getID()];
         }
-        // include items of members
-        $groups_criteria = [];
+
+        $groups_criteria = [
+            Group_Item::getTable() . '.groups_id' => $groups_ids,
+            Group_Item::getTable() . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL
+        ];
+
         if ($user) {
-            $ufield = str_replace('groups', 'users', $field);
-            $groups_criteria['OR'] = [
-                $field => $groups_ids,
-                [
-                    $field  => 0,
-                    $ufield => new QuerySubQuery(
-                        [
-                            'SELECT' => 'users_id',
-                            'FROM'   => 'glpi_groups_users',
-                            'WHERE'  => [
-                                'groups_id'  => $groups_ids,
+            // Get also items that are assigned to any user of the corresponding groups
+            $groups_criteria = [
+                'OR' => [
+                    $groups_criteria,
+                    [
+                        $ufield => new QuerySubQuery(
+                            [
+                                'SELECT' => 'users_id',
+                                'FROM'   => 'glpi_groups_users',
+                                'WHERE'  => [
+                                    'groups_id'  => $groups_ids,
+                                ]
                             ]
-                        ]
-                    )
+                        )
+                    ]
                 ]
             ];
-        } else {
-            $groups_criteria[$field] = $groups_ids;
         }
 
         // Count the total of item
         $nb  = [];
         $tot = 0;
-        $savfield = $field;
+        $joins = [];
         $restrict = [];
         foreach ($types as $itemtype) {
             $nb[$itemtype] = 0;
@@ -583,31 +592,21 @@ class Group extends CommonTreeDropdown
             if (!$item::canView()) {
                 continue;
             }
-            if ($itemtype === 'Consumable') {
-                $field = 'items_id';
-            } else {
-                $field = $savfield;
-            }
-            if (!$item->isField($field)) {
-                continue;
-            }
+
+            // Multiple groups
+            $joins[$itemtype][Group_Item::getTable()] = [
+                'ON' => [
+                    Group_Item::getTable() => 'items_id',
+                    $item::getTable()      => 'id', [
+                        'AND' => [
+                            Group_Item::getTable() . '.itemtype' => $itemtype,
+                        ]
+                    ]
+                ]
+            ];
             $restrict[$itemtype] = $groups_criteria + $item::getSystemSQLCriteria();
 
-            if ($itemtype === 'Consumable') {
-                $restrict[$itemtype] = [
-                    $field               => $groups_ids,
-                    'itemtype'           => 'Group',
-                    'consumableitems_id' =>  new QuerySubQuery(
-                        [
-                            'SELECT' => 'id',
-                            'FROM'   => 'glpi_consumableitems',
-                            'WHERE'  => getEntitiesRestrictCriteria('glpi_consumableitems', '', '', true)
-                        ]
-                    ),
-                ];
-            }
-
-            if ($item->isEntityAssign() && $itemtype !== 'Consumable') {
+            if ($item->isEntityAssign()) {
                 $restrict[$itemtype] += getEntitiesRestrictCriteria(
                     $item::getTable(),
                     '',
@@ -621,7 +620,10 @@ class Group extends CommonTreeDropdown
             if ($item->maybeDeleted()) {
                 $restrict[$itemtype]['is_deleted'] = 0;
             }
-            $tot += $nb[$itemtype] = countElementsInTable($item::getTable(), $restrict[$itemtype]);
+            $tot += $nb[$itemtype] = countElementsInTable($item::getTable(), [
+                'LEFT JOIN' => $joins[$itemtype] ?? [],
+                'WHERE'     => $restrict[$itemtype]
+            ]);
         }
         $max = $_SESSION['glpilist_limit'];
         if ($start >= $tot) {
@@ -637,14 +639,16 @@ class Group extends CommonTreeDropdown
                 $start -= $nb[$itemtype];
             } else {
                 $request = [
-                    'SELECT' => [
-                        $itemtype === 'Consumable' ? 'glpi_consumableitems.id' : 'id',
+                    'SELECT'    => [
+                        $item::getTable() . '.id',
                         new QueryExpression($DB::quoteValue($itemtype), 'itemtype')
                     ],
-                    'FROM'   => $item::getTable(),
-                    'WHERE'  => $restrict[$itemtype],
-                    'LIMIT'  => $max,
-                    'START'  => $start
+                    'FROM'      => $item::getTable(),
+                    'LEFT JOIN' => $joins[$itemtype] ?? [],
+                    'WHERE'     => $restrict[$itemtype],
+                    'GROUPBY'   => $item::getTable() . '.id',
+                    'LIMIT'     => $max,
+                    'START'     => $start
                 ] + $extra_criteria;
 
                 if ($item->isField('name')) {
@@ -692,16 +696,7 @@ class Group extends CommonTreeDropdown
         $rand = mt_rand();
 
         $ID = $this->fields['id'];
-        if ($tech) {
-            $types = $CFG_GLPI['linkgroup_tech_types'];
-            $field = 'groups_id_tech';
-        } else {
-            $types = $CFG_GLPI['linkgroup_types'];
-            $field = 'groups_id';
-        }
 
-        $tree = true;
-        $user = true;
         $datas = [];
         $start  = (isset($_GET['start']) ? (int)$_GET['start'] : 0);
         $filters     = $_GET['filters'] ?? [];
@@ -715,7 +710,7 @@ class Group extends CommonTreeDropdown
                 }
             }
         }
-        $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas, $extra_criteria);
+        $nb     = $this->getDataItems($tech, true, true, $start, $datas, $extra_criteria);
 
         $show_massive_actions = false;
 
@@ -756,19 +751,23 @@ class Group extends CommonTreeDropdown
                 $entry['skip_ma'] = true;
             }
 
-            if ($tree || $user) {
-                if ($grp = $item->getField($field)) {
+            $assignees = [];
+            if ($grps = $item->getField($tech ? 'groups_id_tech' : 'groups_id')) {
+                foreach ($grps as $grp) {
                     if (!isset($group_links[$grp]) && $group->getFromDB($grp)) {
                         $group_links[$grp] = $group->getLink(['comments' => true]);
                     }
-                    $entry['field'] = $group_links[$grp] ?? '';
-                } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
-                    if (!isset($user_links[$usr]) && $tuser->getFromDB($usr)) {
-                        $user_links[$usr] = $tuser->getLink(['comments' => true]);
-                    }
-                    $entry['field'] = $user_links[$usr] ?? '';
+                    $assignees[] = $group_links[$grp] ?? '';
                 }
             }
+            if ($usr = $item->getField($tech ? 'users_id_tech' : 'users_id')) {
+                if (!isset($user_links[$usr]) && $tuser->getFromDB($usr)) {
+                    $user_links[$usr] = $tuser->getLink(['comments' => true]);
+                }
+                $assignees[] = $user_links[$usr] ?? '';
+            }
+            $entry['assignees'] = implode('<br>', array_filter($assignees));
+
             $entries[] = $entry;
         }
 
@@ -781,11 +780,10 @@ class Group extends CommonTreeDropdown
             'entity' => [
                 'label' => Entity::getTypeName(1),
                 'no_filter' => true,
-            ]
+            ],
+            'assignees' => sprintf(__s('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)),
         ];
-        if ($tree || $user) {
-            $columns['field'] = sprintf(__s('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1));
-        }
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'start' => $start,
@@ -794,7 +792,7 @@ class Group extends CommonTreeDropdown
             'columns' => $columns,
             'formatters' => [
                 'name' => 'raw_html',
-                'field' => 'raw_html'
+                'assignees' => 'raw_html'
             ],
             'entries' => $entries,
             'total_number' => $nb,

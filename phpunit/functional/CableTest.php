@@ -393,6 +393,7 @@ class CableTest extends DbTestCase
             'color'                 => '#f72f04',
             'otherserial'           => 'otherserial',
             'states_id'             => $cableState_id,
+            'users_id'              => 1,
             'users_id_tech'         => 2,
             'cabletypes_id'         => $cableType_id,
             'comment'               => 'comment',
@@ -423,11 +424,12 @@ class CableTest extends DbTestCase
             'color'                 => '#f72f04',
             'otherserial'           => 'otherserial',
             'states_id'              => $cableState_id,
+            'users_id'              => 1,
             'users_id_tech'         => 2,
             'cabletypes_id'         => $cableType_id,
             'comment'               => 'comment',
             'is_deleted' => 0
         ];
-        $this->assertSame($expected, $current_cable);
+        $this->assertEquals($expected, $current_cable);
     }
 }

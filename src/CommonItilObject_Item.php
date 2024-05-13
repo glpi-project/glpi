@@ -763,7 +763,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $devices    = [];
 
             // My items
-            foreach ($CFG_GLPI["linkuser_types"] as $itemtype) {
+            foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
                 if (
                     ($item = getItemForItemtype($itemtype))
                     && CommonITILObject::isPossibleToAssignType($itemtype)
@@ -851,19 +851,34 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         $groups = array_merge($groups, $a_groups);
                     }
 
-                    foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
+                    foreach ($CFG_GLPI["assignable_types"] as $itemtype) {
                         if (
                             ($item = getItemForItemtype($itemtype))
                             && CommonITILObject::isPossibleToAssignType($itemtype)
                         ) {
                             $itemtable  = getTableForItemType($itemtype);
                             $criteria = [
-                                'FROM'   => $itemtable,
-                                'WHERE'  => [
-                                    'groups_id' => $groups
+                                'SELECT'  => [$itemtable . '.*'],
+                                'FROM'    => $itemtable,
+                                'LEFT JOIN' => [
+                                    Group_Item::getTable() => [
+                                        'ON' => [
+                                            $itemtable => 'id',
+                                            Group_Item::getTable() => 'items_id', [
+                                                'AND' => [
+                                                    Group_Item::getTable() . '.itemtype' => $itemtype
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ],
+                                'WHERE'   => [
+                                    Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_NORMAL,
+                                    Group_Item::getTable() . '.groups_id' => $groups
                                 ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
                                   + $itemtype::getSystemSQLCriteria(),
-                                'ORDER'  => $item->getNameField()
+                                'GROUPBY' => $itemtable . '.id',
+                                'ORDER'   => $item->getNameField()
                             ];
 
                             if ($item->maybeDeleted()) {

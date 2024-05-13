@@ -37,6 +37,7 @@ namespace Glpi\Asset;
 
 use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
+use Group_Item;
 use Entity;
 use Group;
 use Location;
@@ -47,7 +48,7 @@ use User;
 
 abstract class Asset extends CommonDBTM
 {
-    use \Glpi\Features\AssignableAsset;
+    use \Glpi\Features\AssignableItem;
     use \Glpi\Features\Clonable;
     use \Glpi\Features\State;
 
@@ -255,6 +256,15 @@ abstract class Asset extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
             'datatype'           => 'dropdown'
         ];
 
@@ -302,6 +312,15 @@ abstract class Asset extends CommonDBTM
             'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge of the hardware'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
             'datatype'           => 'dropdown'
         ];
 
@@ -377,11 +396,15 @@ abstract class Asset extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        $this->prepareGroupFields($input);
+
         return $this->prepareDefinitionInput($input);
     }
 
     public function prepareInputForUpdate($input)
     {
+        $this->prepareGroupFields($input);
+
         return $this->prepareDefinitionInput($input);
     }
 

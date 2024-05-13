@@ -1427,6 +1427,19 @@ class Plugin extends CommonDBTM
             return false;
         }
 
+        // Handle `linkuser_types`/`linkgroup_types`/`linkuser_tech_types`/`linkgroup_tech_types` deprecation
+        $is_assignable = false;
+        foreach (['linkuser_types', 'linkgroup_types', 'linkuser_tech_types', 'linkgroup_tech_types'] as $cfg_key) {
+            if (isset($attrib[$cfg_key]) && $attrib[$cfg_key]) {
+                Toolbox::deprecated(sprintf('`%s` configuration is deprecated, use `%s` instead.', $cfg_key, 'assignable_types'));
+                $is_assignable = true;
+                break;
+            }
+        }
+        if ($is_assignable) {
+            $attrib['assignable_types'] = true;
+        }
+
         $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
         $all_types[] = 'networkport_instantiations';
 

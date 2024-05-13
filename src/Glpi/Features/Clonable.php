@@ -155,16 +155,21 @@ trait Clonable
 
     /**
      * Prepare input datas for cloning the item.
-     * This empty method is meant to be redefined in objects that need a specific prepareInputForClone logic.
-     *
-     * @since 10.0.0
+     * The default implementation handles specific cases when the class uses the following trait(s):
+     * - {@link AssignableItem}
      *
      * @param array $input datas used to add the item
      *
      * @return array the modified $input array
+     * @since 10.0.0
+     *
      */
     public function prepareInputForClone($input)
     {
+        if (method_exists($this, 'prepareGroupFields')) {
+            // Toolbox::hasTrait doesn't work to tell PHPStan this method exists even when using generics and assert-if-true
+            $input = $this->prepareGroupFields($input);
+        }
         return $input;
     }
 
@@ -312,12 +317,17 @@ trait Clonable
 
     /**
      * Post clone logic.
-     * This empty method is meant to be redefined in objects that need a specific post_clone logic.
+     * The default implementation handles specific cases when the class uses the following trait(s):
+     * - {@link AssignableItem}
      *
      * @param $source
      * @param $history
      */
     public function post_clone($source, $history)
     {
+        if (method_exists($this, 'updateGroupFields')) {
+            // Toolbox::hasTrait doesn't work to tell PHPStan this method exists even when using generics and assert-if-true
+            $this->updateGroupFields();
+        }
     }
 }

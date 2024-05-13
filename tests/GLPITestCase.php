@@ -384,4 +384,36 @@ class GLPITestCase extends atoum
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
     }
+
+    /**
+     * Return the minimal fields required for the creation of an item of the given field.
+     *
+     * @param string $class
+     * @return array
+     */
+    protected function getMinimalCreationInput(string $class): array
+    {
+        if (!is_a($class, CommonDBTM::class, true)) {
+            return [];
+        }
+
+        $input = [];
+
+        if ((new $class())->isField('entities_id')) {
+            $input['entities_id'] = $this->getTestRootEntity(true);
+        }
+
+        switch ($class) {
+            case Item_DeviceSimcard::class:
+                $input['itemtype']          = Computer::class;
+                $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);
+                $input['devicesimcards_id'] = getItemByTypeName(DeviceSimcard::class, '_test_simcard_1', true);
+                break;
+            case SoftwareLicense::class:
+                $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
+                break;
+        }
+
+        return $input;
+    }
 }

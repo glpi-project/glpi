@@ -704,8 +704,7 @@ final class AdministrationController extends AbstractController
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         // Create a union schema with all relevant item types
-        $types = $is_managed ? $CFG_GLPI['linkuser_tech_types'] : $CFG_GLPI['linkuser_types'];
-        $schema = Doc\Schema::getUnionSchemaForItemtypes($types);
+        $schema = Doc\Schema::getUnionSchemaForItemtypes($CFG_GLPI['assignable_types']);
         $rsql_filter = $request_params['filter'] ?? '';
         if (!empty($rsql_filter)) {
             $rsql_filter = "($rsql_filter);";

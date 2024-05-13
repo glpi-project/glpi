@@ -33,11 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
-use Glpi\Features\AssignableAsset;
+use Glpi\Features\AssignableItem;
 
 //!  ConsumableItem Class
 /**
@@ -50,7 +50,10 @@ class ConsumableItem extends CommonDBTM
     use Glpi\Features\Clonable;
 
     use AssetImage;
-    use AssignableAsset;
+    use AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        prepareInputForUpdate as prepareInputForUpdateAssignableItem;
+    }
 
    // From CommonDBTM
     protected static $forward_entity_to = ['Consumable', 'Infocom'];
@@ -92,13 +95,19 @@ class ConsumableItem extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        $input = parent::prepareInputForAdd($input);
+        $input = $this->prepareInputForAddAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->managePictures($input);
     }
 
     public function prepareInputForUpdate($input)
     {
-        $input = parent::prepareInputForUpdate($input);
+        $input = $this->prepareInputForUpdateAssignableItem($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->managePictures($input);
     }
 
@@ -254,9 +263,20 @@ class ConsumableItem extends CommonDBTM
             'id'                 => '49',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
+            'linkfield'          => 'groups_id',
             'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 

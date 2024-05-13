@@ -65,7 +65,8 @@ class Link extends DbTestCase
                 'networks_id'       => $network->getID(),
                 'users_id'          => getItemByTypeName(\User::class, 'glpi', true),
                 'computermodels_id' => getItemByTypeName(\ComputerModel::class, '_test_computermodel_1', true),
-            ]
+            ],
+            ['groups_id']
         );
 
         // Attach domains
