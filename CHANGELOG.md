@@ -224,7 +224,11 @@ The present file will list all changes made to the project; according to the
 - `regenerateTreeCompleteName()`
 - `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonDBTM::getCacheKeyForFriendlyName()`
+- `CommonDBTM::getSNMPCredential()`
 - `CommonDropdown::displayHeader()`
+- `CommonITILActor::showUserNotificationForm()`
+- `CommonITILActor::showSupplierNotificationForm()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `Computer_Item::countForAll()`
@@ -252,7 +256,14 @@ The present file will list all changes made to the project; according to the
 - `Glpi\System\Requirement\SafeDocumentRoot` class.
 - `Glpi\System\Status\StatusChecker::getFullStatus()`
 - `Group::title()`
+- `Html::autocompletionTextField()`
 - `Html::clean()`
+- `Html::closeArrowMassives()`
+- `Html::jsConfirmCallback()`
+- `Html::jsHide()`
+- `Html::jsShow()`
+- `Html::openArrowMassives()`
+- `Html::showTimeField()`
 - `Impact::buildNetwork()`
 - `Item_Problem::showForProblem()`
 - `Item_Ticket::showForTicket()`

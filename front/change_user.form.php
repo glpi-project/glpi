@@ -82,8 +82,6 @@ if (isset($_POST["update"])) {
     );
 
     Html::redirect($CFG_GLPI["root_doc"] . "/front/change.php");
-} else if (isset($_GET["id"])) {
-    $link->showUserNotificationForm($_GET["id"]);
 } else {
     Html::displayErrorAndDie('Lost');
 }
