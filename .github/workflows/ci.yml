@@ -106,7 +106,7 @@ jobs:
         include:
           # test higher PHP version with higher MariaDB and MySQL versions
           - {php-version: "8.3", db-image: "mariadb:10.11", always: true}
-          - {php-version: "8.3", db-image: "mysql:8.0", always: true}
+          - {php-version: "8.3", db-image: "mysql:8.4", always: true}
           # test other PHP versions
           - {php-version: "8.2", db-image: "mariadb:10.11", always: false}
           - {php-version: "8.1", db-image: "mariadb:10.11", always: false}
