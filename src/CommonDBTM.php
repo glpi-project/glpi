@@ -5283,10 +5283,7 @@ class CommonDBTM extends CommonGLPI
                 $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
             }
             if (!$add && $item::canCreate()) {
-                $modify_params =
-                (strpos($target, '?') ? '&amp;' : '?')
-                . "id=" . $data['id']
-                . "&amp;withtemplate=1";
+                $modify_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=1";
                 $target_modify = $target . $modify_params;
 
                 $entry['template'] = '<a href="' . htmlspecialchars($target_modify) . '">' . htmlspecialchars($templname) . '</a>';
@@ -5298,10 +5295,7 @@ class CommonDBTM extends CommonGLPI
                     $entry['entity'] = $entity;
                 }
             } else {
-                $add_params =
-                (strpos($target, '?') ? '&amp;' : '?')
-                . "id=" . $data['id']
-                . "&amp;withtemplate=2";
+                $add_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=2";
                 $target_add = $target . $add_params;
                 $entry['template'] = '<a href="' . htmlspecialchars($target_add) . '">' . htmlspecialchars($templname) . '</a>';
             }
