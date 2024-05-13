@@ -55,7 +55,7 @@ use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Group;
+use Group_Item;
 use Line;
 use Location;
 use Manufacturer;
@@ -197,17 +197,70 @@ final class ManagementController extends AbstractController
                 $schemas[$m_name]['properties']['environment'] = self::getDropdownTypeSchema($env_class);
             }
 
-            if (in_array($m_class, $CFG_GLPI['linkuser_tech_types'], true)) {
+            if (in_array($m_class, $CFG_GLPI['assignable_types'], true)) {
                 $schemas[$m_name]['properties']['user_tech'] = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
-            }
-            if (in_array($m_class, $CFG_GLPI['linkgroup_tech_types'], true)) {
-                $schemas[$m_name]['properties']['group_tech'] = self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group');
-            }
-            if (in_array($m_class, $CFG_GLPI['linkuser_types'], true)) {
+
+                $schemas[$m_name]['properties']['group_tech'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => $m_class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ];
+
                 $schemas[$m_name]['properties']['user'] = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
-            }
-            if (in_array($m_class, $CFG_GLPI['linkgroup_types'], true)) {
-                $schemas[$m_name]['properties']['group'] = self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group');
+
+                $schemas[$m_name]['properties']['group'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => $m_class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ];
             }
 
             if ($item->isField('contact')) {

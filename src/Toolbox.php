@@ -3072,7 +3072,7 @@ HTML;
      * This function checks the class itself and all parent classes for the trait.
      * @since 10.0.0
      * @param string|object $class The class or object
-     * @param string $trait The trait
+     * @param class-string $trait The trait
      * @return bool True if the class or its parents have the specified trait
      */
     public static function hasTrait($class, string $trait): bool

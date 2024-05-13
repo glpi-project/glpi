@@ -51,7 +51,6 @@ class MonitorTest extends DbTestCase
             'contact' => null,
             'contact_num' => null,
             'users_id_tech' => 0,
-            'groups_id_tech' => 0,
             'comment' => null,
             'serial' => null,
             'otherserial' => null,
@@ -73,7 +72,6 @@ class MonitorTest extends DbTestCase
             'is_template' => 0,
             'template_name' => null,
             'users_id' => 0,
-            'groups_id' => 0,
             'states_id' => 0,
             'ticket_tco' => '0.0000',
             'is_dynamic' => 0,
@@ -81,6 +79,8 @@ class MonitorTest extends DbTestCase
             'date_creation' => $date,
             'is_recursive' => 0,
             'uuid' => null,
+            'groups_id' => [],
+            'groups_id_tech' => [],
         ];
     }
 

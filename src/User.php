@@ -5154,17 +5154,11 @@ JAVASCRIPT;
         $start       = intval($_GET["start"] ?? 0);
 
         if ($tech) {
-            $itemtypes = array_merge($CFG_GLPI['linkuser_tech_types'], $CFG_GLPI['linkgroup_tech_types']);
             $field_user  = 'users_id_tech';
-            $field_group = 'groups_id_tech';
         } else {
-            $itemtypes = array_merge($CFG_GLPI['linkuser_types'], $CFG_GLPI['linkgroup_types']);
             $field_user  = 'users_id';
-            $field_group = 'groups_id';
         }
-        $itemtypes = array_unique($itemtypes);
 
-        $group_where = "";
         $groups      = [];
 
         $iterator = $DB->request([
@@ -5185,28 +5179,52 @@ JAVASCRIPT;
         ]);
         $number = 0;
 
-        $group_where = [];
-        foreach ($iterator as $data) {
-            $group_where[$field_group][] = $data['id'];
-            $groups[$data["id"]] = $data["name"];
+        $criteria = [
+            $field_user => $ID,
+        ];
+        if ($iterator->count() > 0) {
+            $groups_ids = [];
+            foreach ($iterator as $data) {
+                $groups_ids[] = $data['id'];
+                $groups[$data["id"]] = $data["name"];
+            }
+            $criteria = [
+                'OR' => [
+                    $criteria,
+                    [
+                        Group_Item::getTable() . '.groups_id' => $groups_ids,
+                        Group_Item::getTable() . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
+                    ]
+                ]
+            ];
         }
 
         $entries = [];
 
-        foreach ($itemtypes as $itemtype) {
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
-            if ($item->canView()) {
+            if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
+                $relation_table = Group_Item::getTable();
                 $iterator_params = [
-                    'FROM'   => $itemtable,
-                    'WHERE'  => [
-                        'entities_id' => $this->getEntities(),
-                        'OR' => [
-                            $field_user => $ID
-                        ] + $group_where
-                    ] + $item->getSystemSQLCriteria(),
+                    'SELECT'  => ["$itemtable.*", "$relation_table.groups_id"],
+                    'FROM'    => $itemtable,
+                    'LEFT JOIN' => [
+                        Group_Item::getTable() => [
+                            'FKEY' => [
+                                $itemtable => 'id',
+                                Group_Item::getTable() => 'items_id', [
+                                    'AND' => [
+                                        Group_Item::getTable() . '.itemtype' => $itemtype,
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ],
+                    'WHERE'   => ['entities_id' => $this->getEntities()] + $criteria + $item::getSystemSQLCriteria(),
+                    'GROUPBY' => "$itemtable.id",
                 ];
 
                 if ($item->maybeTemplate()) {
@@ -5234,11 +5252,11 @@ JAVASCRIPT;
                     if ($data[$field_user] == $ID) {
                         $linktypes[] = self::getTypeName(1);
                     }
-                    if (isset($groups[$data[$field_group]])) {
+                    if (isset($groups[$data['groups_id']])) {
                         $linktypes[] = sprintf(
                             __('%1$s = %2$s'),
                             Group::getTypeName(1),
-                            $groups[$data[$field_group]]
+                            $groups[$data['groups_id']]
                         );
                     }
                     if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
@@ -5248,9 +5266,11 @@ JAVASCRIPT;
                             'type'          => $type_name,
                             'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
                             'name'          => $link,
-                            'serial'        => $data["serial"],
+                            'serial'        => $data["serial"] ?? '',
                             'otherserial'   => $data["otherserial"],
-                            'states'        => Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''),
+                            'states'        => !empty($data['states_id'])
+                                ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
+                                : '',
                             'linktype'      => implode(', ', $linktypes),
                         ];
                     }

@@ -123,11 +123,13 @@ class DbTestCase extends \GLPITestCase
 
         if (count($input)) {
             foreach ($input as $k => $v) {
+                $obj_var = var_export($object->fields[$k], true);
+                $input_var = var_export($v, true);
                 $this->variable($object->fields[$k])->isEqualTo(
                     $v,
                     "
-                '$k' key current value '{$object->fields[$k]}' (" . gettype($object->fields[$k]) . ")
-                is not equal to '$v' (" . gettype($v) . ")"
+                '$k' key current value '{$obj_var}' (" . gettype($object->fields[$k]) . ")
+                is not equal to '$input_var' (" . gettype($v) . ")"
                 );
             }
         }

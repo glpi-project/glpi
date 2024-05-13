@@ -116,10 +116,15 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $printer->getField($k), $k);
+            $this->assertEquals($expected, $printer->getField($k), $k);
         }
 
        //reset values
@@ -136,10 +141,15 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = $v === 0 ? [] : [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $printer->getField($k));
+            $this->assertEquals($expected, $printer->getField($k));
         }
 
        // Change the computer again
@@ -165,10 +175,17 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in2['id']);
         foreach ($in2 as $k => $v) {
+            $expected = $v;
+            $old_value = $in[$k];
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = $v === 0 ? [] : [$v];
+                $old_value = $old_value === 0 ? [] : [$old_value];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation DOES NOT occurs
-            $this->assertEquals($in[$k], $printer->getField($k));
+            $this->assertEquals($old_value, $printer->getField($k));
         }
 
        // Restore configuration
@@ -213,10 +230,15 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($link->getFromDB($link->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $link->getField($k));
+            $this->assertEquals($expected, $link->getField($k));
         }
 
        //reset
@@ -250,10 +272,17 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($link->getFromDB($link->getID()));
         unset($in2['id']);
         foreach ($in2 as $k => $v) {
+            $old_value = $in[$k];
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+                $old_value = [$old_value];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation DOES NOT occurs
-            $this->assertEquals($in[$k], $link->getField($k));
+            $this->assertEquals($old_value, $link->getField($k));
         }
     }
 
@@ -314,10 +343,15 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($printer->getFromDB($printer->getID()));
         unset($in['id']);
         foreach ($in as $k => $v) {
+            $expected = $v;
+            if (in_array($k, ['groups_id', 'groups_id_tech'], true)) {
+                // These fields are transformed into arrays
+                $expected = [$v];
+            }
            // Check the computer new values
-            $this->assertEquals($v, $computer->getField($k));
+            $this->assertEquals($expected, $computer->getField($k));
            // Check the printer and test propagation occurs
-            $this->assertEquals($v, $printer->getField($k));
+            $this->assertEquals($expected, $printer->getField($k));
         }
 
        //create devices

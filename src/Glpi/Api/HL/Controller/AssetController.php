@@ -50,6 +50,7 @@ use Glpi\Http\Response;
 use Glpi\Socket;
 use Glpi\SocketModel;
 use Group;
+use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Location;
 use Manufacturer;
@@ -59,6 +60,7 @@ use NetworkEquipment;
 use PassiveDCEquipment;
 use PDU;
 use Peripheral;
+use Software;
 use State;
 use User;
 
@@ -394,33 +396,75 @@ final class AssetController extends AbstractController
                 );
             }
 
-            if (in_array($asset_type, $CFG_GLPI['linkuser_tech_types'], true)) {
-                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
-                    class: User::class,
-                    field: 'users_id_tech',
-                    full_schema: 'User'
-                );
-            }
-            if (in_array($asset_type, $CFG_GLPI['linkgroup_tech_types'], true)) {
-                $schemas[$schema_name]['properties']['group_tech'] = self::getDropdownTypeSchema(
-                    class: Group::class,
-                    field: 'groups_id_tech',
-                    full_schema: 'Group'
-                );
-            }
-            if (in_array($asset_type, $CFG_GLPI['linkuser_types'], true)) {
+            if (in_array($asset_type, $CFG_GLPI['assignable_types'], true)) {
                 $schemas[$schema_name]['properties']['user'] = self::getDropdownTypeSchema(
                     class: User::class,
                     field: 'users_id',
                     full_schema: 'User'
                 );
-            }
-            if (in_array($asset_type, $CFG_GLPI['linkgroup_types'], true)) {
-                $schemas[$schema_name]['properties']['group'] = self::getDropdownTypeSchema(
-                    class: Group::class,
-                    field: 'groups_id',
-                    full_schema: 'Group'
+                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
+                    class: User::class,
+                    field: 'users_id_tech',
+                    full_schema: 'User'
                 );
+                $schemas[$schema_name]['properties']['group'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => $asset_type,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ];
+                $schemas[$schema_name]['properties']['group_tech'] = [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => $asset_type,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ];
             }
 
             if ($asset->isField('contact')) {
@@ -639,7 +683,7 @@ final class AssetController extends AbstractController
         ];
 
         $schemas['Software'] = [
-            'x-itemtype' => \Software::class,
+            'x-itemtype' => Software::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [
@@ -657,9 +701,65 @@ final class AssetController extends AbstractController
                 'parent' => self::getDropdownTypeSchema(class: \Software::class, full_schema: 'Software'),
                 'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => Software::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => Software::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_update' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_valid' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -710,8 +810,66 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: \RackType::class, full_schema: 'RackType'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Rack::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Rack::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'width' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'height' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'depth' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -806,8 +964,66 @@ final class AssetController extends AbstractController
                 'model' => self::getDropdownTypeSchema(\EnclosureModel::class),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Enclosure::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Enclosure::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'orientation' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
                 'power_supplies' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
@@ -836,8 +1052,66 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: \PDUType::class, full_schema: 'PDUType'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PDU::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PDU::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -864,8 +1138,66 @@ final class AssetController extends AbstractController
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'type' => self::getDropdownTypeSchema(class: \PassiveDCEquipmentType::class, full_schema: 'PassiveDCEquipmentType'),
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PassiveDCEquipment::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \PassiveDCEquipment::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -887,7 +1219,66 @@ final class AssetController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                 'state' => self::getDropdownTypeSchema(class: \State::class, full_schema: 'State'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'group' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Cable::class,
+                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'group_tech' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Group',
+                        'x-join' => [
+                            'table' => 'glpi_groups', // The table with the desired data
+                            'fkey' => 'groups_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => 'glpi_groups_items',
+                                'fkey' => 'id',
+                                'field' => 'items_id',
+                                'condition' => [
+                                    'itemtype' => \Cable::class,
+                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                ]
+                            ]
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ]
+                    ]
+                ],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'itemtype_endpoint_a' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id_endpoint_a' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],

@@ -40,7 +40,7 @@ use Computer;
 use DbTestCase;
 use Generator;
 use Glpi\Features\Clonable;
-use Glpi\Features\AssignableAsset;
+use Glpi\Features\AssignableItem;
 use Glpi\Socket;
 use Item_DeviceSimcard;
 use Session;
@@ -1945,11 +1945,11 @@ class Dropdown extends DbTestCase
     /**
      * @dataProvider assignableAssetsProvider
      */
-    public function testGetDropdownValueAssignableAssets($itemtype)
+    public function testGetDropdownValueAssignableItems($itemtype)
     {
         $this->login();
 
-        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableAsset::class))->isTrue();
+        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableItem::class))->isTrue();
 
         // Create group for the user
         $group = new \Group();
@@ -2035,11 +2035,11 @@ class Dropdown extends DbTestCase
     /**
      * @dataProvider assignableAssetsProvider
      */
-    public function testGetDropdownFindNumAssignableAssets($itemtype)
+    public function testGetDropdownFindNumAssignableItems($itemtype)
     {
         $this->login();
 
-        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableAsset::class))->isTrue();
+        $this->boolean(\Toolbox::hasTrait($itemtype, AssignableItem::class))->isTrue();
 
         // Create group for the user
         $group = new \Group();

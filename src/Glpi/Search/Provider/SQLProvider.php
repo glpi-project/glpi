@@ -43,12 +43,13 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Debug\Profiler;
 use Glpi\Form\Form;
-use Glpi\Features\AssignableAsset;
+use Glpi\Features\AssignableItem;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Group;
+use Group_Item;
 use ITILFollowup;
 use Problem;
 use Glpi\DBAL\QueryExpression;
@@ -1020,9 +1021,12 @@ final class SQLProvider implements SearchProviderInterface
                 break;
         }
 
-        if (Toolbox::hasTrait($itemtype, AssignableAsset::class)) {
-            /** @var AssignableAsset $itemtype */
-            $criteria[] = $itemtype::getAssignableVisiblityCriteria();
+        if (Toolbox::hasTrait($itemtype, AssignableItem::class)) {
+            /** @var AssignableItem $itemtype */
+            $visibility_criteria = $itemtype::getAssignableVisiblityCriteria();
+            if (count($visibility_criteria)) {
+                $criteria[] = $visibility_criteria;
+            }
         }
 
         /* Hook to restrict user right on current itemtype */
@@ -2397,6 +2401,32 @@ final class SQLProvider implements SearchProviderInterface
         }
         $already_link_tables[] = $tocheck;
 
+        // Handle mixed group case for AllAssets and ReservationItem
+        if ($tocheck === 'glpi_groups' && ($itemtype === \AllAssets::class || $itemtype === \ReservationItem::class)) {
+            $already_link_tables[] = 'glpi_groups_items';
+            return [
+                'LEFT JOIN' => [
+                    'glpi_groups_items' => [
+                        'ON' => [
+                            'glpi_groups_items' => 'items_id',
+                            $rt => 'id', [
+                                'AND' => [
+                                    'glpi_groups_items.itemtype' => $rt . '_TYPE', // Placeholder to be replaced at the end of the SQL construction during union case handling
+                                    'glpi_groups_items.type' => Group_Item::GROUP_TYPE_NORMAL,
+                                ]
+                            ]
+                        ]
+                    ],
+                    'glpi_groups' => [
+                        'ON' => [
+                            'glpi_groups' => 'id',
+                            'glpi_groups_items' => 'groups_id'
+                        ]
+                    ]
+                ]
+            ];
+        }
+
         $specific_leftjoin_criteria = [];
 
         // Plugin can override core definition for its type
@@ -3030,7 +3060,7 @@ final class SQLProvider implements SearchProviderInterface
                         $from_table => 'id',
                         [
                             'AND' => [
-                                "$relation_table_alias." . 'itemtype_asset'      => $asset_itemtype,
+                                "$relation_table_alias." . 'itemtype_asset' => $asset_itemtype,
                                 "$relation_table_alias." . 'itemtype_peripheral' => $peripheral_itemtype,
                             ] + $deleted_criteria
                         ]
@@ -3047,6 +3077,70 @@ final class SQLProvider implements SearchProviderInterface
                             'AND' => [
                                 "$relation_table_alias." . 'itemtype_peripheral' => $peripheral_itemtype,
                             ] + $to_entity_restrict_criteria + $to_criteria
+                        ]
+                    ]
+                ];
+            }
+            return $joins;
+        }
+
+        if ($to_type === 'Group' && in_array($from_referencetype, $CFG_GLPI['assignable_types'], true)) {
+            $relation_table_alias = 'glpi_groups_items' . $alias_suffix;
+            if (!in_array($relation_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $relation_table_alias;
+                $joins['LEFT JOIN']["`glpi_groups_items` AS `$relation_table_alias`"] = [
+                    'ON' => [
+                        $relation_table_alias => 'items_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                $relation_table_alias . '.itemtype' => $from_referencetype,
+                                $relation_table_alias . '.type' => Group_Item::GROUP_TYPE_NORMAL,
+                            ]
+                        ]
+                    ]
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_alias] = [
+                    'ON' => [
+                        $to_table_alias => 'id',
+                        $relation_table_alias => 'groups_id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
+                        ]
+                    ]
+                ];
+            }
+            return $joins;
+        }
+
+        if ($from_referencetype === 'Group' && in_array($to_type, $CFG_GLPI['assignable_types'], true)) {
+            $relation_table_alias = 'glpi_groups_items' . $alias_suffix;
+            if (!in_array($relation_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $relation_table_alias;
+                $joins['LEFT JOIN']["`glpi_groups_items` AS `$relation_table_alias`"] = [
+                    'ON' => [
+                        $relation_table_alias => 'groups_id',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                $relation_table_alias . '.itemtype' => $to_type,
+                                $relation_table_alias . '.type' => Group_Item::GROUP_TYPE_NORMAL,
+                            ]
+                        ]
+                    ]
+                ];
+            }
+            if (!in_array($to_table_alias, $already_link_tables2, true)) {
+                $already_link_tables2[] = $to_table_alias;
+                $joins['LEFT JOIN'][$to_table_join_id] = [
+                    'ON' => [
+                        $relation_table_alias => 'items_id',
+                        $to_table_alias => 'id',
+                        [
+                            'AND' => $to_entity_restrict_criteria + $to_criteria
                         ]
                     ]
                 ];
@@ -4059,6 +4153,11 @@ final class SQLProvider implements SearchProviderInterface
                             "FROM `" .
                             $CFG_GLPI["union_search_type"][$data['itemtype']] . "`",
                             $replace,
+                            $tmpquery
+                        );
+                        $tmpquery = str_replace(
+                            $CFG_GLPI["union_search_type"][$data['itemtype']] . '_TYPE',
+                            $ctype,
                             $tmpquery
                         );
                         $tmpquery = str_replace(

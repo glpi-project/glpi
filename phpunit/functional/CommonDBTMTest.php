@@ -1771,7 +1771,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals($expected_updates, $item->updates);
     }
 
-    public static function assignableAssetsProvider()
+    public static function assignableItemsProvider(): iterable
     {
         return [
             [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
@@ -1779,8 +1779,8 @@ class CommonDBTMTest extends DbTestCase
         ];
     }
 
-    #[dataProvider('assignableAssetsProvider')]
-    public function testCanViewAssignableAssets($itemtype)
+    #[dataProvider('assignableItemsProvider')]
+    public function testCanViewAssignableItems($itemtype)
     {
         $this->login();
 
@@ -1793,8 +1793,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($itemtype::canView());
     }
 
-    #[dataProvider('assignableAssetsProvider')]
-    public function testCanViewItemAssignableAssets($itemtype)
+    #[dataProvider('assignableItemsProvider')]
+    public function testCanViewItemAssignableItems($itemtype)
     {
         $this->login();
 
@@ -1879,8 +1879,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($item->canViewItem());
     }
 
-    #[dataProvider('assignableAssetsProvider')]
-    public function testCanUpdateAssignableAssets($itemtype)
+    #[dataProvider('assignableItemsProvider')]
+    public function testCanUpdateAssignableItems($itemtype)
     {
         $this->login();
 
@@ -1893,8 +1893,8 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($itemtype::canUpdate());
     }
 
-    #[dataProvider('assignableAssetsProvider')]
-    public function testCanUpdateItemAssignableAssets($itemtype)
+    #[dataProvider('assignableItemsProvider')]
+    public function testCanUpdateItemAssignableItems($itemtype)
     {
         $this->login();
 

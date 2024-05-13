@@ -636,7 +636,7 @@ class RuleAsset extends DbTestCase
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
-        $this->integer($computer->getField('groups_id'))->isEqualTo($user->getField('groups_id'));
+        $this->array($computer->getField('groups_id'))->isEqualTo([$user->getField('groups_id')]);
     }
 
     public function testFirstGroupUserAssignFromUser()
@@ -718,6 +718,6 @@ class RuleAsset extends DbTestCase
         ]);
         $this->integer($computers_id)->isGreaterThan(0);
         $this->boolean($computer->getFromDB($computers_id))->isTrue();
-        $this->integer($computer->getField('groups_id'))->isEqualTo($group_id);
+        $this->array($computer->getField('groups_id'))->isEqualTo([$group_id]);
     }
 }

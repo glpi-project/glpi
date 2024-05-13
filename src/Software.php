@@ -43,7 +43,11 @@ class Software extends CommonDBTM
     use Glpi\Features\Clonable;
     use Glpi\Features\TreeBrowse;
     use AssetImage;
-    use Glpi\Features\AssignableAsset;
+    use Glpi\Features\AssignableItem {
+        prepareInputForAdd as prepareInputForAddAssignableItem;
+        prepareInputForUpdate as prepareInputForUpdateAssignableItem;
+        getEmpty as getEmptyAssignableItem;
+    }
 
    // From CommonDBTM
     public $dohistory                   = true;
@@ -126,7 +130,7 @@ class Software extends CommonDBTM
             $input['softwares_id'] = 0;
         }
         $input = $this->managePictures($input);
-        return $input;
+        return $this->prepareInputForUpdateAssignableItem($input);
     }
 
     public function prepareInputForAdd($input)
@@ -143,7 +147,7 @@ class Software extends CommonDBTM
         $this->handleCategoryRules($input);
 
         $input = $this->managePictures($input);
-        return $input;
+        return $this->prepareInputForAddAssignableItem($input);
     }
 
     public function cleanDBonPurge()
@@ -211,7 +215,7 @@ class Software extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!parent::getEmpty()) {
+        if (!$this->getEmptyAssignableItem()) {
             return false;
         }
 
@@ -403,9 +407,20 @@ class Software extends CommonDBTM
             'id'                 => '49',
             'table'              => Group::getTable(),
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
-            'name'               => __('Group in charge of the software'),
+            'linkfield'          => 'groups_id',
+            'name'               => __('Group in charge'),
             'condition'          => ['is_assign' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
@@ -435,6 +450,17 @@ class Software extends CommonDBTM
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'condition'          => ['is_itemgroup' => 1],
+            'joinparams'         => [
+                'beforejoin'         => [
+                    'table'              => 'glpi_groups_items',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
+                    ]
+                ]
+            ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown'
         ];
 
