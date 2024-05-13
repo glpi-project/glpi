@@ -33,80 +33,101 @@
 
 {# @var \Glpi\Form\Form form #}
 {# @var \Glpi\Form\AccessControl\FormAccessControl[] access_controls #}
+{# @var string[] warnings #}
+{# @var array access_decision_strategies #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 <div class="py-2 px-3">
     <div class="col-12 col-lg-6">
-        {% set is_form_disabled = not form.fields.is_active == true %}
-        {% set are_all_controls_disabled = access_controls|filter(control => control.fields.is_active == true)|length == 0 %}
-
-        {# Display warning/info if the form is disabled or has no active access control policies #}
-        <div class="{{ is_form_disabled or are_all_controls_disabled ? "mb-5" : "" }}">
-            {% if is_form_disabled %}
-                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    {{ __("This form is not visible to anyone because it is not active.") }}
-                </div>
-            {% endif %}
-            {% if are_all_controls_disabled %}
-                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    {{ __("This form will not be visible to any users as they are currently no active access policies.") }}
-                </div>
-            {% endif %}
-        </div>
-
-        {# Display each access control policies #}
-        {% for access_control in access_controls %}
-            {% set strategy = access_control.getStrategy() %}
-            {% set config = access_control.getConfig() %}
-
-            {# One form per policy as it is an individual item in the database #}
-            <form
-                method="POST"
-                action="{{ path('/ajax/form/access_control.form.php') }}"
-                data-glpi-acess-control-form
-                data-track-changes="true"
-                data-glpi-submitted-by="access-controls"
-                data-submit-once="true"
-            >
-                <div
-                    class="mb-5"
-                >
-                    <div
-                        {# Disabled item are showed with a lower opacity #}
-                        style="{{ access_control.fields.is_active == false ? "opacity: 0.5" : "" }}"
-                        data-glpi-toggle-control-target
-                    >
-                        <h3 class="d-flex align-items-center">
-                            <i class="{{ strategy.getIcon() }} me-2"></i>
-                            {{ strategy.getLabel() }}
-                            <label class="form-check mb-0 ms-auto form-switch">
-                                <input type="hidden" value="0" name="is_active">
-                                <input
-                                    data-glpi-toggle-control
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    name="is_active"
-                                    value="1"
-                                    {{ access_control.fields.is_active == true ? "checked" : "" }}
-                                >
-                            </label>
-                        </h3>
-                        <div>
-                            {# Render custom config form #}
-                            {{ strategy.renderConfigForm(config)|raw }}
+        <form
+            method="POST"
+            action="{{ path('/front/form/access_control.form.php') }}"
+            data-track-changes="true"
+            data-submit-once="true"
+        >
+            {# Display warnings at the top of the tab #}
+            {% if warnings|length > 0 %}
+                <div class="mb-5">
+                    {% for warning in warnings %}
+                        <div
+                            class="alert alert-warning d-flex align-items-center"
+                            role="alert"
+                        >
+                            <i class="ti ti-alert-triangle me-2"></i>
+                            {{ warning }}
                         </div>
-                    </div>
-
-                    {# Hidden inputs #}
-                    <input type="hidden" name="id" value="{{ access_control.fields.id }}"/>
+                    {% endfor %}
                 </div>
-            </form>
-        {% endfor %}
+            {% endif %}
 
-        {% if form.canUpdate() and form.canUpdateItem() %}
-            {#  Dummy form wrapper to trigger the `data-submit-once` process #}
-            <form data-submit-once>
+            {# Display the main configuration form which will update the
+               \Glpi\Form\Form form object itself #}
+            <h2 class="d-flex align-items-center mb-2">
+                <i class="ti ti-key me-2"></i>
+                {{ __("Access control configuration") }}
+            </h2>
+
+            {{ fields.dropdownArrayField(
+                'access_decision_strategy',
+                form.fields.access_decision_strategy,
+                access_decision_strategies,
+                __('Access strategy'),
+                {
+                    'is_horizontal': false,
+                    'helper': __("%s\n\n %s")|format(
+                        __("Affirmative: access to the form will be granted if at least one access policy is validated."),
+                        __("Unanimous: access to the form will be granted if all access policies are validated."),
+                    )
+                }
+            ) }}
+
+            <div class="hr-text">
+                <i class="ti ti-user-circle"></i>
+                <span>{{ __("Access policies") }}</span>
+            </div>
+
+            {# Display each access control policies #}
+            {% for access_control in access_controls %}
+                {% set strategy = access_control.getStrategy() %}
+                {% set config = access_control.getConfig() %}
+
+                <section
+                    class="mb-5"
+                    style="{{ access_control.fields.is_active == false ? "opacity: 0.5" : "" }}"
+                    {# Disabled item are showed with a lower opacity #}
+                    data-glpi-toggle-control-target
+                    data-glpi-access-control-form
+                    aria-label="{{ strategy.getLabel() }}"
+                >
+                    <h3 class="d-flex align-items-center">
+                        <i class="{{ strategy.getIcon() }} me-2"></i>
+                        {{ strategy.getLabel() }}
+                        <label class="form-check mb-0 ms-auto form-switch">
+                            <input
+                                type="hidden"
+                                value="0"
+                                name="{{ access_control.encodeInputName("is_active") }}"
+                            >
+                            <input
+                                aria-label="{{ __("Active") }}"
+                                data-glpi-toggle-control
+                                class="form-check-input"
+                                type="checkbox"
+                                name="{{ access_control.encodeInputName("is_active") }}"
+                                value="1"
+                                {{ access_control.fields.is_active == true ? "checked" : "" }}
+                            >
+                        </label>
+                    </h3>
+                    <div>
+                        {# Render custom config form #}
+                        {{ strategy.renderConfigForm(access_control)|raw }}
+                    </div>
+                </section>
+            {% endfor %}
+
+            {% if form.canUpdate() and form.canUpdateItem() %}
                 {# Submit button #}
                 <div class="d-flex flex-row-reverse">
                     {# This button will submit the others forms using a custom script #}
@@ -120,8 +141,11 @@
                         {{ __("Save changes") }}
                     </button>
                 </div>
-            </form>
-        {% endif %}
+            {% endif %}
+
+            <input type="hidden" name="id" value="{{ form.fields.id }}"/>
+            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+        </form>
     </div>
 </div>
 
@@ -134,44 +158,16 @@
     });
 
     // Toggle state if any input is modified
-    $("form[data-glpi-acess-control-form] :input").on("change", function(e) {
+    $("section[data-glpi-access-control-form] :input").on("change", function(e) {
         // Do not trigger on this is_active checkbox itself
-        if ($(this).prop("name") === "is_active") {
+        if ($(this).data("glpi-toggle-control") !== undefined) {
             return;
         }
 
-        $(this).closest("form").find("[data-glpi-toggle-control]").prop("checked", true);
-        $(this).closest("[data-glpi-toggle-control-target]")
-            .css("opacity", 1)
+        $(this).closest("section")
+            .find("[data-glpi-toggle-control]")
+            .prop("checked", true)
+            .trigger("change")
         ;
-    });
-
-    // Submit multiple forms.
-    // This is needed as each strategy is a dedicated item in the database.
-    $("[data-glpi-submit-id]").closest('form').on("submit", async function(e) {
-        e.preventDefault();
-
-        const submitted_forms = [];
-        const submit = $(this).find("[type=submit]");
-        const submit_id = submit.data("glpi-submit-id");
-
-        $(`[data-glpi-submitted-by="${submit_id}"]`).each(function() {
-            const form = $(this);
-
-            // Get form data with the submit button value manually set.
-            const data = form.serializeArray();
-            data.push({'name': submit.prop("name"), 'value': true});
-
-            submitted_forms.push(
-                $.post({
-                    url: form.prop("action"),
-                    data: $.param(data),
-                })
-            );
-        });
-
-        await Promise.all(submitted_forms);
-        window.glpiUnsavedFormChanges = false;
-        location.reload();
     });
 </script>

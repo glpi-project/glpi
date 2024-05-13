@@ -9478,6 +9478,7 @@ CREATE TABLE `glpi_forms_forms` (
     `header` longtext,
     `date_mod` timestamp NULL DEFAULT NULL,
     `date_creation` timestamp NULL DEFAULT NULL,
+    `access_decision_strategy` varchar(255) NOT NULL DEFAULT 'unanimous',
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
     KEY `entities_id` (`entities_id`),

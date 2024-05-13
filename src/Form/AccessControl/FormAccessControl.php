@@ -91,8 +91,10 @@ final class FormAccessControl extends CommonDBChild
 
         $twig = TemplateRenderer::getInstance();
         echo $twig->render('pages/admin/form/access_control.html.twig', [
-            'form'            => $item,
-            'access_controls' => $sorted_access_controls,
+            'form'                       => $item,
+            'access_controls'            => $sorted_access_controls,
+            'warnings'                   => $manager->getWarnings($item),
+            'access_decision_strategies' => AccessDecisionStrategy::getForDropdown(),
         ]);
 
         return true;
@@ -228,7 +230,7 @@ final class FormAccessControl extends CommonDBChild
     {
         $control_type = $this->fields['strategy'];
         if (!$this->isValidStrategy($control_type)) {
-            throw new \RuntimeException();
+            throw new \RuntimeException("Unknown strategy");
         }
 
         return new $control_type();
@@ -262,6 +264,48 @@ final class FormAccessControl extends CommonDBChild
         }
         $strategy = new $strategy_class();
         return $strategy->createConfigFromUserInput($input);
+    }
+
+    /**
+     * Encode the input name to make sure it is unique and multiple items
+     * can be updated using a single form.
+     *
+     * Content must be decoded using `splitEncodedInputs`.
+     *
+     * @param string $name
+     * @return string
+     */
+    public function encodeInputName(string $name): string
+    {
+        return "_access_control_{$this->getID()}_$name";
+    }
+
+    /**
+     * Split an input containing multiple encoded forms into individual inputs.
+     *
+     * @param array $input
+     * @return array
+     */
+    public function splitEncodedInputs(array $input): array
+    {
+        $inputs = [];
+
+        foreach ($input as $key => $value) {
+            $regex = "/_access_control_(\d+)_(.*)/";
+            if (!preg_match($regex, $key, $matches)) {
+                continue;
+            }
+
+            $id = $matches[1];
+            $name = $matches[2];
+
+            if (!isset($inputs[$id])) {
+                $inputs[$id] = ['id' => $id];
+            }
+            $inputs[$id][$name] = $value;
+        }
+
+        return array_values($inputs);
     }
 
     #[Override]

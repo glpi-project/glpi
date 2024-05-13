@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
@@ -62,11 +63,12 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(JsonConfigInterface $config): string
+    public function renderConfigForm(FormAccessControl $access_control): string
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $config = $access_control->getConfig();
         if (!$config instanceof DirectAccessConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
@@ -81,8 +83,9 @@ final class DirectAccess implements ControlTypeInterface
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render("pages/admin/form/access_control/direct_access.html.twig", [
-            'config' => $config,
-            'url'    => $url,
+            'access_control' => $access_control,
+            'config'         => $config,
+            'url'            => $url,
         ]);
     }
 

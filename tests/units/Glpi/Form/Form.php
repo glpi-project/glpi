@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form;
 
 use DbTestCase;
+use Glpi\Form\AccessControl\AccessDecisionStrategy;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -970,6 +971,22 @@ class Form extends DbTestCase
         $this
             ->integer(countElementsInTable(FormAccessControl::getTable()))
             ->isEqualTo(1) // 1 (control)
+        ;
+    }
+
+    public function testGetAccessDecisionStrategy(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->setAccessDecisionStrategy(AccessDecisionStrategy::Affirmative)
+        );
+        $this
+            ->object($form->getAccessDecisionStrategy())
+            ->isInstanceOf(AccessDecisionStrategy::class)
+        ;
+        $this
+            ->string($form->getAccessDecisionStrategy()->value)
+            ->isEqualTo(AccessDecisionStrategy::Affirmative->value)
         ;
     }
 }

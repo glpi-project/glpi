@@ -35,6 +35,7 @@
 
 namespace Glpi\Tests;
 
+use Glpi\Form\AccessControl\AccessDecisionStrategy;
 use JsonConfigInterface;
 
 /**
@@ -88,6 +89,11 @@ class FormBuilder
     protected array $access_control;
 
     /**
+     * Form access decision strategy
+     */
+    protected AccessDecisionStrategy $access_decision_strategy;
+
+    /**
      * Constructor
      *
      * @param string $name Form name
@@ -103,6 +109,7 @@ class FormBuilder
         $this->sections = [];
         $this->destinations = [];
         $this->access_control = [];
+        $this->access_decision_strategy = AccessDecisionStrategy::Unanimous;
     }
 
     /**
@@ -369,5 +376,29 @@ class FormBuilder
     ): self {
         $this->access_control[$strategy] = $config;
         return $this;
+    }
+
+    /**
+     * Set form access decision strategy
+     *
+     * @param AccessDecisionStrategy $access_decision_strategy Form access decision strategy
+     *
+     * @return self To allow chain calls
+     */
+    public function setAccessDecisionStrategy(
+        AccessDecisionStrategy $access_decision_strategy
+    ): self {
+        $this->access_decision_strategy = $access_decision_strategy;
+        return $this;
+    }
+
+    /**
+     * Get form access decision strategy
+     *
+     * @return AccessDecisionStrategy Form access decision strategy
+     */
+    public function getAccessDecisionStrategy(): AccessDecisionStrategy
+    {
+        return $this->access_decision_strategy;
     }
 }

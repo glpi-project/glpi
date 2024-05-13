@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use JsonConfigInterface;
 use Glpi\Application\View\TemplateRenderer;
@@ -65,15 +66,17 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function renderConfigForm(JsonConfigInterface $config): string
+    public function renderConfigForm(FormAccessControl $access_control): string
     {
+        $config = $access_control->getConfig();
         if (!$config instanceof AllowListConfig) {
             throw new \InvalidArgumentException("Invalid config class");
         }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render("pages/admin/form/access_control/allow_list.html.twig", [
-            'config' => $config,
+            'access_control' => $access_control,
+            'config'         => $config,
         ]);
     }
 

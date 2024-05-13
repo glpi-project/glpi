@@ -36,6 +36,7 @@
 namespace tests\units\Glpi\Form\AccessControl;
 
 use DbTestCase;
+use Glpi\Form\AccessControl\AccessDecisionStrategy;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -196,22 +197,53 @@ final class FormAccessControlManager extends DbTestCase
     {
         $form = $this->getFormAccessibleOnlyToTechUserWithMandatoryToken();
 
-        yield 'Both parameters invalid' => [
+        // Cases with an unanimous access decision strategy
+        $this->setFormAccessDecisionStrategy(
+            $form,
+            AccessDecisionStrategy::Unanimous
+        );
+        yield 'Unanimous: both parameters invalid' => [
             'form'       => $form,
             'parameters' => $this->getEmptyParameters(),
             'expected'   => false,
         ];
-        yield 'Valid user and no token supplied' => [
+        yield 'Unanimous: valid user and no token supplied' => [
             'form'       => $form,
             'parameters' => $this->getTechUserParameters(),
             'expected'   => false,
         ];
-        yield 'Invalid user and valid token' => [
+        yield 'Unanimous: invalid user and valid token' => [
             'form'       => $form,
             'parameters' => $this->getValidTokenParameters(),
             'expected'   => false,
         ];
-        yield 'Valid user and valid token' => [
+        yield 'Unanimous: valid user and valid token' => [
+            'form'       => $form,
+            'parameters' => $this->getTechUserAndValidTokenParameters(),
+            'expected'   => true,
+        ];
+
+        // Cases with an affirmative access decision strategy
+        $form = $this->setFormAccessDecisionStrategy(
+            $form,
+            AccessDecisionStrategy::Affirmative
+        );
+        yield 'Affirmative: both parameters invalid' => [
+            'form'       => $form,
+            'parameters' => $this->getEmptyParameters(),
+            'expected'   => false,
+        ];
+        yield 'Affirmative: valid user and no token supplied' => [
+            'form'       => $form,
+            'parameters' => $this->getTechUserParameters(),
+            'expected'   => true,
+        ];
+        yield 'Affirmative: invalid user and valid token' => [
+            'form'       => $form,
+            'parameters' => $this->getValidTokenParameters(),
+            'expected'   => true,
+        ];
+        yield 'Affirmative: valid user and valid token' => [
             'form'       => $form,
             'parameters' => $this->getTechUserAndValidTokenParameters(),
             'expected'   => true,
@@ -228,6 +260,56 @@ final class FormAccessControlManager extends DbTestCase
     ): void {
         $this->boolean(
             $this->getManager()->canAnswerForm($form, $parameters)
+        )->isEqualTo($expected);
+    }
+
+    public function getWarningsProvider(): iterable
+    {
+        yield 'Inactive form without access controls policies' => [
+            'form' => $this->getInactiveFormWithoutAccessControls(),
+            'expected' => [
+                'This form is not visible to anyone because it is not active.',
+                'This form will not be visible to any users as they is currently no active access policies.',
+            ],
+        ];
+        yield 'Active form without access controls policies' => [
+            'form' => $this->getActiveFormWithoutAccessControls(),
+            'expected' => [
+                'This form will not be visible to any users as they is currently no active access policies.',
+            ],
+        ];
+        yield 'Inactive form with active access controls policies' => [
+            'form' => $this->getInactiveFormWithActiveAccessControls(),
+            'expected' => [
+                'This form is not visible to anyone because it is not active.',
+            ],
+        ];
+        yield 'Active form with active access controls policies' => [
+            'form' => $this->getActiveFormWithActiveAccessControls(),
+            'expected' => [],
+        ];
+        yield 'Inactive form with inactive access controls policies' => [
+            'form' => $this->getInactiveFormWithInactiveAccessControls(),
+            'expected' => [
+                'This form is not visible to anyone because it is not active.',
+                'This form will not be visible to any users as they is currently no active access policies.',
+            ],
+        ];
+        yield 'Active form with inactive access controls policies' => [
+            'form' => $this->getActiveFormWithInactiveAccessControls(),
+            'expected' => [
+                'This form will not be visible to any users as they is currently no active access policies.',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider getWarningsProvider
+     */
+    public function testGetWarnings(Form $form, array $expected): void
+    {
+        $this->array(
+            $this->getManager()->getWarnings($form)
         )->isEqualTo($expected);
     }
 
@@ -251,6 +333,72 @@ final class FormAccessControlManager extends DbTestCase
     private function getFormWithoutAccessControls(): Form
     {
         return $this->createForm(new FormBuilder());
+    }
+
+    private function getActiveFormWithoutAccessControls(): Form
+    {
+        return $this->createForm((new FormBuilder())->setIsActive(true));
+    }
+
+    private function getInactiveFormWithoutAccessControls(): Form
+    {
+        return $this->createForm((new FormBuilder())->setIsActive(false));
+    }
+
+    private function getActiveFormWithActiveAccessControls(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(true)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+    }
+
+    private function getInactiveFormWithActiveAccessControls(): Form
+    {
+        return $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(false)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+    }
+
+    private function getActiveFormWithInactiveAccessControls(): Form
+    {
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(true)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+
+        $control = $this->getAccessControl($form, DirectAccess::class);
+        $this->updateItem($control::class, $control->getID(), ['is_active' => 0]);
+        $form->getFromDB($form->getID());
+
+        return $form;
+    }
+
+    private function getInactiveFormWithInactiveAccessControls(): Form
+    {
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->setIsActive(false)
+                ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
+                    token: 'my_token',
+                ))
+        );
+
+        $control = $this->getAccessControl($form, DirectAccess::class);
+        $this->updateItem($control::class, $control->getID(), ['is_active' => 0]);
+        $form->getFromDB($form->getID());
+
+        return $form;
     }
 
     private function getFormWithActiveAccessControls(): Form
@@ -301,6 +449,17 @@ final class FormAccessControlManager extends DbTestCase
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                 ))
+        );
+    }
+
+    private function setFormAccessDecisionStrategy(
+        Form $form,
+        AccessDecisionStrategy $strategy
+    ): Form {
+        return $this->updateItem(
+            Form::class,
+            $form->getID(),
+            ['access_decision_strategy' => $strategy->value]
         );
     }
 

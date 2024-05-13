@@ -31,12 +31,13 @@
  # ---------------------------------------------------------------------
  #}
 
+{# @var \Glpi\Form\AccessControl\ControlType\FormAccessControl access_control #}
 {# @var \Glpi\Form\AccessControl\ControlType\AllowListConfig config #}
 
 {# Multi dropdown (User, Group and Profile) #}
 {{ call(
     "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
-    ["_allow_list_dropdown", {
+    [access_control.encodeInputName("_allow_list_dropdown"), {
         'users_id'   : config.getUserIds(),
         'groups_id'  : config.getGroupIds(),
         'profiles_id': config.getProfileIds(),

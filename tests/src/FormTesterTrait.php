@@ -60,13 +60,14 @@ trait FormTesterTrait
     {
         // Create form
         $form = $this->createItem(Form::class, [
-            'name'                  => $builder->getName(),
-            'entities_id'           => $builder->getEntitiesId(),
-            'is_recursive'          => $builder->getIsRecursive(),
-            'is_active'             => $builder->getIsActive(),
-            'header'                => $builder->getHeader(),
-            'is_draft'              => $builder->getIsDraft(),
-            '_do_not_init_sections' => true, // We will handle sections ourselves
+            'name'                     => $builder->getName(),
+            'entities_id'              => $builder->getEntitiesId(),
+            'is_recursive'             => $builder->getIsRecursive(),
+            'is_active'                => $builder->getIsActive(),
+            'header'                   => $builder->getHeader(),
+            'is_draft'                 => $builder->getIsDraft(),
+            'access_decision_strategy' => $builder->getAccessDecisionStrategy()->value,
+            '_do_not_init_sections'    => true,                         // We will handle sections ourselves
         ]);
 
         foreach ($builder->getSections() as $section_data) {

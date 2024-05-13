@@ -36,6 +36,7 @@
 include('../../inc/includes.php');
 
 use Glpi\Form\AccessControl\FormAccessControl;
+use Glpi\Form\Form;
 
 /**
  * Ajax endpoint to update an access control item.
@@ -45,6 +46,7 @@ use Glpi\Form\AccessControl\FormAccessControl;
  */
 
 try {
+    $form = new Form();
     $access_control = new FormAccessControl();
 
     if (isset($_POST["update"])) {
@@ -55,16 +57,26 @@ try {
             throw new InvalidArgumentException("Missing id");
         }
 
-        // Right check
-        $access_control->check($id, UPDATE, $_POST);
+        // Update main form
+        $form->check($id, UPDATE, $_POST);
+        if (!$form->update($_POST, true)) {
+            throw new RuntimeException(
+                "Failed to update form access controls configuration"
+            );
+        }
 
-        // Format user supplied config
-        $access_control->getFromDB($id);
-        $_POST['_config'] = $access_control->createConfigFromUserInput($_POST);
+        // Update access control policies
+        foreach ($access_control->splitEncodedInputs($_POST) as $input) {
+            $id = $input['id'] ?? 0;
 
-        // Update access control item
-        if (!$access_control->update($_POST, true)) {
-            throw new RuntimeException("Failed to create destination item");
+            $access_control->check($id, UPDATE, $input);
+            $access_control->getFromDB($id);
+            $input['_config'] = $access_control->createConfigFromUserInput($input);
+            if (!$access_control->update($input, true)) {
+                throw new RuntimeException(
+                    "Failed to update access control item"
+                );
+            }
         }
     } else {
         // Unknown request
@@ -78,5 +90,12 @@ try {
         E_USER_WARNING
     );
 
-    Session::addMessageAfterRedirect(__('An unexpected error occured.'), false, ERROR);
+    Session::addMessageAfterRedirect(
+        __('An unexpected error occured.'),
+        false,
+        ERROR
+    );
+} finally {
+    // Redirect to previous page
+    Html::back();
 }

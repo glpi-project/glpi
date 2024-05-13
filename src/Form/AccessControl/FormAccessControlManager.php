@@ -109,14 +109,8 @@ final class FormAccessControlManager
             return true;
         }
 
-        $access_controls_policies = $this->getActiveAccessControlsForForm($form);
-        if (count($access_controls_policies) === 0) {
-            // Refuse access if no access controls are configured.
-            return false;
-        }
-
         return $this->validateAccessControlsPolicies(
-            $access_controls_policies,
+            $form,
             $parameters
         );
     }
@@ -142,27 +136,43 @@ final class FormAccessControlManager
         return $controls;
     }
 
+    /**
+     * Get an array access controls warnings messages (string) for a given
+     * form.
+     *
+     * @param Form $form
+     * @return string[]
+     */
+    public function getWarnings(Form $form): array
+    {
+        $warnings = [];
+        $warnings = $this->addWarningIfFormIsNotActive($form, $warnings);
+        $warnings = $this->addWarningIfFormHasNoActivePolicies($form, $warnings);
+
+        return $warnings;
+    }
+
     private function validateAccessControlsPolicies(
-        array $policies,
+        Form $form,
         FormAccessParameters $parameters
     ): bool {
-        // TODO: for now, we use an unanimous decision system.
-        // Future PR will allow to pick between unanimous and affirmative
-        // strategies.
-
-        /** @var FormAccessControl[] $policies */
-        foreach ($policies as $policiy) {
-            $can_answer = $policiy->getStrategy()->canAnswer(
-                $policiy->getConfig(),
-                $parameters
-            );
-
-            if (!$can_answer) {
-                return false;
-            }
+        // Refuse access if no access controls are configured.
+        $access_controls_policies = $this->getActiveAccessControlsForForm($form);
+        if (count($access_controls_policies) === 0) {
+            return false;
         }
 
-        return true;
+        $votes = [];
+        foreach ($access_controls_policies as $policy) {
+            /** @var FormAccessControl $policy */
+            $votes[] = $policy->getStrategy()->canAnswer(
+                $policy->getConfig(),
+                $parameters
+            );
+        }
+        $access_decision_strategy = $form->getAccessDecisionStrategy();
+
+        return $access_decision_strategy->getDecision($votes);
     }
 
     /**
@@ -233,5 +243,27 @@ final class FormAccessControlManager
                 E_USER_WARNING
             );
         }
+    }
+
+    private function addWarningIfFormIsNotActive(
+        Form $form,
+        array $warnings
+    ): array {
+        if ($form->fields['is_active'] == 0) {
+            $warnings[] = __('This form is not visible to anyone because it is not active.');
+        }
+
+        return $warnings;
+    }
+
+    private function addWarningIfFormHasNoActivePolicies(
+        Form $form,
+        array $warnings
+    ): array {
+        if (count($this->getActiveAccessControlsForForm($form)) == 0) {
+            $warnings[] = __('This form will not be visible to any users as they is currently no active access policies.');
+        }
+
+        return $warnings;
     }
 }

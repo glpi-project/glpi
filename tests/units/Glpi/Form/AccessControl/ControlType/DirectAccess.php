@@ -36,12 +36,16 @@
 namespace tests\units\Glpi\Form\AccessControl\ControlType;
 
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use JsonConfigInterface;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Session\SessionInfo;
 
-class DirectAccess extends \GLPITestCase
+class DirectAccess extends \DBTestCase
 {
+    use FormTesterTrait;
+
     /**
      * Test the `getLabel` method.
      *
@@ -105,11 +109,21 @@ class DirectAccess extends \GLPITestCase
 
         // We only validate that the function run without errors.
         // The rendered content should be validated by an E2E test.
-        $this->string($direct_access->renderConfigForm(new DirectAccessConfig()));
-        $this->string($direct_access->renderConfigForm(new DirectAccessConfig(
-            token: 'my token',
-            allow_unauthenticated: true,
-        )));
+        $form = $this->createForm(
+            (new FormBuilder())
+                ->addAccessControl(
+                    \Glpi\Form\AccessControl\ControlType\DirectAccess::class,
+                    new DirectAccessConfig(
+                        token: 'my token',
+                        allow_unauthenticated: true,
+                    )
+                )
+        );
+        $access_control = $this->getAccessControl(
+            $form,
+            \Glpi\Form\AccessControl\ControlType\DirectAccess::class
+        );
+        $this->string($direct_access->renderConfigForm($access_control));
     }
 
 

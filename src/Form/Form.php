@@ -38,6 +38,7 @@ namespace Glpi\Form;
 use CommonDBTM;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\AccessDecisionStrategy;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Destination\FormDestination;
@@ -306,6 +307,8 @@ final class Form extends CommonDBTM
      */
     public function getAccessControls(): array
     {
+        // TODO: add lazy loading to prevent getting this content multiple times
+
         $controls = [];
         $raw_controls = (new FormAccessControl())->find([
             Form::getForeignKeyField() => $this->getID(),
@@ -325,6 +328,14 @@ final class Form extends CommonDBTM
         }
 
         return $controls;
+    }
+
+    public function getAccessDecisionStrategy(): AccessDecisionStrategy
+    {
+        $strategy = AccessDecisionStrategy::tryFrom(
+            $this->fields['access_decision_strategy']
+        );
+        return $strategy ?? AccessDecisionStrategy::Unanimous;
     }
 
     /**
