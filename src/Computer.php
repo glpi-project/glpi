@@ -364,7 +364,6 @@ class Computer extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -374,19 +373,19 @@ class Computer extends CommonDBTM
                 => OperatingSystem::getTypeName(),
                 Asset_PeripheralAsset::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                 => "<i class='fa-fw ti ti-plug'></i>" .
-                  _x('button', 'Connect'),
+                  _sx('button', 'Connect'),
                 'Item_SoftwareVersion' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                 => "<i class='fa-fw fas fa-laptop-medical'></i>" .
-                  _x('button', 'Install'),
+                  _sx('button', 'Install'),
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                 => "<i class='fa-fw " . SoftwareLicense::getIcon() . "'></i>" .
-                  _x('button', 'Add a license'),
+                  _sx('button', 'Add a license'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'
                 => "<i class='fa-fw " . Domain::getIcon() . "'></i>" .
-                    _x('button', 'Add a domain'),
+                    _sx('button', 'Add a domain'),
                 'Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove_domain'
                 => "<i class='fa-fw " . Domain::getIcon() . "'></i>" .
-                    _x('button', 'Remove a domain'),
+                    _sx('button', 'Remove a domain'),
             ];
 
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);

@@ -598,7 +598,6 @@ abstract class ITILTemplate extends CommonDropdown
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -607,7 +606,7 @@ abstract class ITILTemplate extends CommonDropdown
             &&  $this->maybeRecursive()
             && (count($_SESSION['glpiactiveentities']) > 1)
         ) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __('Merge and assign to current entity');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge'] = __s('Merge and assign to current entity');
         }
 
         return $actions;

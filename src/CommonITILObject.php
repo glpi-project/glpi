@@ -4055,20 +4055,19 @@ abstract class CommonITILObject extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-
         $actions = [];
 
-        if (Session::getCurrentInterface() == 'central') {
+        if (Session::getCurrentInterface() === 'central') {
             $can_update_itilobject = Session::haveRight(Ticket::$rightname, UPDATE)
                 || Session::haveRight(Change::$rightname, UPDATE)
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                     = "<i class='fa-fw fas fa-link'></i>" .
-                    _x('button', 'Link ITIL Object');
+                    _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
                     = "<i class='fa-fw fas fa-link'></i>" .
-                    _x('button', 'Unlink ITIL Object');
+                    _sx('button', 'Unlink ITIL Object');
             }
         }
 

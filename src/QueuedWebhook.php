@@ -77,7 +77,6 @@ class QueuedWebhook extends CommonDBChild
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -85,12 +84,11 @@ class QueuedWebhook extends CommonDBChild
 
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
-
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _x('button', 'Send');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
         }
 
         return $actions;

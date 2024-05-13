@@ -326,7 +326,7 @@ class NetworkPortMigration extends CommonDBChild
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'transform_to'] = __('Transform this network port to');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'transform_to'] = __s('Transform this network port to');
         }
         return $actions;
     }

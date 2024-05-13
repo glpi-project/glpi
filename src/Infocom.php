@@ -1841,7 +1841,7 @@ JS;
             && static::canCreate()
         ) {
             $actions[$action_name] = "<i class='fa-fw " . self::getIcon() . "'></i>" .
-                                  __('Enable the financial and administrative information');
+                                  __s('Enable the financial and administrative information');
         }
     }
 

@@ -2145,69 +2145,62 @@ class Ticket extends CommonITILObject
         return $search;
     }
 
-
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
         $actions = parent::getSpecificMassiveActions($checkitem);
 
-        if (Session::getCurrentInterface() == 'central') {
+        if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
                  = "<i class='fa-fw ti ti-git-merge'></i>" .
-                 __('Merge as Followup');
+                 __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
                 = "<i class='fa-fw fas fa-plus'></i>" .
-                 _x('button', 'Add an item');
+                 _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
                 = "<i class='fa-fw $icon'></i>" .
-                 __('Add a new followup');
+                 __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
                 = "<i class='fa-fw $icon'></i>" .
-                 __('Add a new task');
+                 __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
                 = "<i class='fa-fw $icon'></i>" .
-                 __('Approval request');
+                 __s('Approval request');
             }
 
             if (Item_Ticket::canDelete()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_item']
-                = _x('button', 'Remove an item');
+                = _sx('button', 'Remove an item');
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor']
-                = "<i class='fa-fw ti ti-user'></i>" .
-                 __('Add an actor');
-                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
-                = __('Set notifications for all actors');
+                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='fa-fw ti ti-user'></i>" . __s('Add an actor');
+                $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
                         = "<i class='fa-fw fas fa-link'></i>" .
-                        _x('button', 'Link project task');
+                        _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
                         = "<i class='fa-fw " . Contract::getIcon() . "'></i>" .
-                        _x('button', 'Add contract');
+                        _sx('button', 'Add contract');
                 }
 
                 KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
@@ -2216,7 +2209,7 @@ class Ticket extends CommonITILObject
             if (self::canUpdate()) {
                 $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
                 = "<i class='fa-fw fas fa-check'></i>" .
-                __("Resolve selected tickets");
+                __s("Resolve selected tickets");
             }
         }
 

@@ -1512,13 +1512,13 @@ class NetworkPort extends CommonDBChild
         // add purge action if main item is not dynamic
         // NetworkPort delete / purge are handled a different way on dynamic asset (lock)
         if (!$checkitem->isDynamic()) {
-            $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __('Delete permanently');
+            $actions['NetworkPort' . MassiveAction::CLASS_ACTION_SEPARATOR . 'purge']    = __s('Delete permanently');
         }
 
         if ($isadmin) {
             $vlan_prefix                    = 'NetworkPort_Vlan' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$vlan_prefix . 'add']    = __('Associate a VLAN');
-            $actions[$vlan_prefix . 'remove'] = __('Dissociate a VLAN');
+            $actions[$vlan_prefix . 'add']    = __s('Associate a VLAN');
+            $actions[$vlan_prefix . 'remove'] = __s('Dissociate a VLAN');
         }
         return $actions;
     }
@@ -1855,7 +1855,7 @@ class NetworkPort extends CommonDBChild
         $specificities['itemtypes']              = ['Computer', 'NetworkEquipment'];
 
         $specificities['normalized']['unaffect'] = [];
-        $specificities['action_name']['affect']  = _x('button', 'Move');
+        $specificities['action_name']['affect']  = _sx('button', 'Move');
 
         return $specificities;
     }

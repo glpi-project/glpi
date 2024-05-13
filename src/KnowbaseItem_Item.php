@@ -289,7 +289,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
             $actions[$action_prefix . 'add']
             = "<i class='fa-fw " . self::getIcon() . "'></i>" .
-              _x('button', 'Link knowledgebase article');
+              _sx('button', 'Link knowledgebase article');
         }
 
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);

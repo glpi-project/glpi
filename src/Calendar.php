@@ -94,8 +94,8 @@ class Calendar extends CommonDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate'] = _x('button', 'Duplicate');
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'addholiday'] = __('Add a close time');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate'] = _sx('button', 'Duplicate');
+            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'addholiday'] = __s('Add a close time');
         }
         return $actions;
     }
