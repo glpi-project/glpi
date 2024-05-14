@@ -59,14 +59,14 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-    public function getForbiddenStandardMassiveAction(): array
+    public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-    public static function getIcon(): string
+    public static function getIcon()
     {
         return 'ti ti-sitemap';
     }
@@ -93,7 +93,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return $connections > 0;
     }
 
-    public function prepareInputForAdd($input): false|array
+    public function prepareInputForAdd($input)
     {
         $peripheral = self::getItemFromArray(self::$itemtype_2, self::$items_id_2, $input);
 
@@ -191,7 +191,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-    public function cleanDBonPurge(): void
+    public function cleanDBonPurge()
     {
         if (!isset($this->input['_no_auto_action'])) {
             // Get the item
@@ -258,7 +258,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $itemtype,
         $is_deleted = false,
         CommonDBTM $checkitem = null
-    ): void {
+    ) {
         $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
 
@@ -269,7 +269,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
     }
 
-    public static function getRelationMassiveActionsSpecificities(): array
+    public static function getRelationMassiveActionsSpecificities()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -404,7 +404,7 @@ TWIG, $twig_params);
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $name = "<a href=\"" . htmlspecialchars($link) . "\">" . htmlspecialchars($linkname) . "</a>";
+            $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . '</a>';
             $entry['name'] = $name;
 
             if (!isset($entity_cache[$data['entities_id']])) {
@@ -560,7 +560,7 @@ TWIG, $twig_params);
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $name = "<a href=\"" . htmlspecialchars($link) . "\">" . htmlspecialchars($linkname) . "</a>";
+            $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . '</a>';
             $entry['name'] = $name;
 
             if (!isset($entity_cache[$data['entities_id']])) {
@@ -697,7 +697,7 @@ TWIG, $twig_params);
         return $rand;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -730,7 +730,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -750,7 +750,7 @@ TWIG, $twig_params);
         return false;
     }
 
-    public static function canUnrecursSpecif(CommonDBTM $item, $entities): bool
+    public static function canUnrecursSpecif(CommonDBTM $item, $entities)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -821,7 +821,7 @@ TWIG, $twig_params);
         return true;
     }
 
-    protected static function getListForItemParams(CommonDBTM $item, $noent = false): array
+    protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
         $params = parent::getListForItemParams($item, $noent);
         $params['WHERE'][self::getTable() . '.is_deleted'] = 0;
@@ -838,12 +838,12 @@ TWIG, $twig_params);
         return $select;
     }
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName($nb = 0)
     {
         return _n('Connection', 'Connections', $nb);
     }
 
-    public static function rawSearchOptionsToAdd($itemtype = null): array
+    public static function rawSearchOptionsToAdd($itemtype = null)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -861,7 +861,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma): int
+    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -953,7 +953,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function countForItem(CommonDBTM $item): int
+    public static function countForItem(CommonDBTM $item)
     {
         return self::countLinkedAssets($item);
     }
