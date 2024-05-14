@@ -43,12 +43,14 @@ use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\Destination\FormDestinationTicket;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
@@ -259,6 +261,16 @@ class AnswersSet extends DbTestCase
                 ->addQuestion("Assignee", QuestionTypeAssignee::class)
                 ->addQuestion("Urgency", QuestionTypeUrgency::class)
                 ->addQuestion("Request type", QuestionTypeRequestType::class)
+                ->addQuestion("Radio", QuestionTypeRadio::class, '123', json_encode([
+                    'options' => [
+                        123 => 'Radio 1'
+                    ]
+                ]))
+                ->addQuestion("Checkbox", QuestionTypeCheckbox::class, '123', json_encode([
+                    'options' => [
+                        123 => 'Checkbox 1'
+                    ]
+                ]))
                 ->addQuestion("File", QuestionTypeFile::class)
         );
 
@@ -292,7 +304,9 @@ class AnswersSet extends DbTestCase
             ],
             $this->getQuestionId($form, "Urgency") => 2,
             $this->getQuestionId($form, "Request type") => 1,
-            $this->getQuestionId($form, "File") => [$filename]
+            $this->getQuestionId($form, "File") => [$filename],
+            $this->getQuestionId($form, "Radio") => 'Radio 1',
+            $this->getQuestionId($form, "Checkbox") => 'Checkbox 1'
         ], \Session::getLoginUserID());
 
         // Ensure we used every possible questions types

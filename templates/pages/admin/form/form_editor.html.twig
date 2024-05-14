@@ -43,6 +43,10 @@
     'no_label'     : true,
 } %}
 
+{% for js_file in js_files %}
+    <script src="{{ js_path(js_file) }}"></script>
+{% endfor %}
+
 <form
     id="form-form"
     data-glpi-form-editor-container
@@ -330,7 +334,7 @@
 {% endif %}
 
 <script>
-    new GlpiFormEditorController(
+    window.glpi_form_editor_controller = new GlpiFormEditorController(
         "[data-glpi-form-editor-container]",
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",

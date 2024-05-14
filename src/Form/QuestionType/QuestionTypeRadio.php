@@ -35,61 +35,19 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\Form\Question;
 use Override;
 
-abstract class AbstractQuestionType implements QuestionTypeInterface
+final class QuestionTypeRadio extends AbstractQuestionTypeSelectable
 {
     #[Override]
-    public function __construct()
+    public function getInputType(): string
     {
+        return 'radio';
     }
 
     #[Override]
-    public function loadJavascriptFiles(): array
+    public function getCategory(): QuestionTypeCategory
     {
-        return []; // No extra JS files by default
-    }
-
-    #[Override]
-    public function formatDefaultValueForDB(mixed $value): ?string
-    {
-        return $value; // Default value is already formatted
-    }
-
-    #[Override]
-    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
-    {
-        return $answer;
-    }
-
-    #[Override]
-    public function validateExtraDataInput(array $input): bool
-    {
-        return empty($input); // No extra data by default
-    }
-
-    #[Override]
-    public function prepareExtraData(array $input): array
-    {
-        return $input; // No need to prepare the extra data
-    }
-
-    #[Override]
-    public function renderAdministrationOptionsTemplate(?Question $question): string
-    {
-        return ''; // No options by default
-    }
-
-    #[Override]
-    public function getName(): string
-    {
-        return $this->getCategory()->getLabel();
-    }
-
-    #[Override]
-    public function getWeight(): int
-    {
-        return 10;
+        return QuestionTypeCategory::RADIO;
     }
 }

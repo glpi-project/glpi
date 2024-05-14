@@ -173,6 +173,9 @@ final class Question extends CommonDBChild
                 throw new \InvalidArgumentException("Invalid extra data for question");
             }
 
+            // Prepare extra data
+            $extra_data = $question_type->prepareExtraData($extra_data);
+
             // Save extra data as JSON
             if (!empty($extra_data)) {
                 $input['extra_data'] = json_encode($extra_data);

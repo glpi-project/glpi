@@ -85,10 +85,25 @@ class Form extends DbTestCase
             );
         } while (count($questions) < 50);
 
+        // Extra data for some question types
+        $extra_datas = [
+            \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
+                'options' => [
+                    123 => 'Radio 1',
+                ]
+            ],
+            \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
+                'options' => [
+                    123 => 'Checkbox 1',
+                ]
+            ],
+        ];
+
         foreach ($questions as $type) {
             $form_builder->addQuestion(
                 name: "Question $i",
                 type: $type::class,
+                extra_data: isset($extra_datas[$type::class]) ? json_encode($extra_datas[$type::class]) : "",
                 description: $i % 4 === 0 ? "Description of question $i" : "", // Add a description every 4 questions
                 is_mandatory: $i % 2 === 0, // Half of the questions are mandatory
             );
