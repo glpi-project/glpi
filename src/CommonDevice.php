@@ -157,6 +157,7 @@ abstract class CommonDevice extends CommonDropdown
     {
         switch ($field['type']) {
             case 'registeredIDChooser':
+                RegisteredID::showAddChildButtonForItemForm($this, '_registeredID');
                 RegisteredID::showChildsForItemForm($this, '_registeredID');
                 break;
         }

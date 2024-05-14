@@ -193,12 +193,6 @@
                             {% set fields_params = fields_params|merge({'types': config(field['itemtype_list'])}) %}
                         {% endif %}
                         {{ fields.dropdownItemTypes(field['name'], item.fields[field['name']], field['label'], fields_params) }}
-                    {% elseif type == 'registeredIDChooser' %}
-                        {% set chooser_field %}
-                            {{ call('RegisteredID::showAddChildButtonForItemForm', [item, '_registeredID', null, false])|raw }}
-                            {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
-                        {% endset %}
-                        {{ fields.field('', chooser_field, field['label']) }}
                     {% else %}
                         {% set field_value %}
                             {{ item.displaySpecificTypeField(item.fields['id'], field, fields_params) }}
