@@ -297,8 +297,7 @@ class RuleAsset extends Rule
                                      );
                                     if ($res != null) {
                                         $user = new User();
-                                        $user->getFromDBbyEmail($res);
-                                        if (isset($user->fields['id']) && $user->fields['id'] != 0) {
+                                        if ($user->getFromDBbyEmail($res)) {
                                             $output['users_id'] = $user->fields['id'];
                                         }
                                     }
