@@ -63,6 +63,7 @@ The present file will list all changes made to the project; according to the
 - External Links `Link or filename` and `File content` fields now use Twig templates instead of a custom tag syntax.
 - Itemtypes associated with External links are now in the main form rather than a separate tab.
 - The `Computer_Item` class has been replaced by the `\Glpi\Asset\Asset_PeripheralAsset` class.
+- List of network ports in a VLAN form now shows the NetworkPort link in a breadcrumb manner (MyServer > eth0 where MyServer is a link to the computer and eth0 is a link to the port).
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -137,6 +138,9 @@ The present file will list all changes made to the project; according to the
 - `Lock::getLocksQueryInfosByItemType()` has been made private.
 - `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods signatures changed.
 -  Some values for the `$type` parameters of several `Stat` methods have changed to match English spelling (technicien -> technician).
+- `showInstantiationForm()` method for Network Port classes are now expected to output HTML for a flex form instead of a table.
+- `NetworkName::showFormForNetworkPort()` now outputs HTML for a flex form instead of a table.
+- `NetworkPortInstantiation::showSocketField()`, `NetworkPortInstantiation::showMacField()`, `NetworkPortInstantiation::showNetworkCardField` now outputs HTML for a flex form instead of a table.
 
 #### Deprecated
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.

@@ -1,0 +1,79 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2024 Teclib' and contributors.
+ # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{{ fields.smallTitle('NetworkName'|itemtype_name) }}
+{% set networkname_field %}
+    <div class="btn-group btn-group-sm flex-grow-1" role="group">
+        <input class="form-control" name="NetworkName_name" value="{{ item.fields['name'] }}">
+        {% set info_url = item.isNewItem() ? 'NetworkName'|itemtype_search_path : item.getLinkURL() %}
+        {% set info_label = item.isNewItem() ? __('Show %s')|format('NetworkName'|itemtype_name(get_plural_number())) : item.getName() %}
+        <a role="button" class="btn btn-outline-secondary p-2" title="{{ info_label }}" href="{{ info_url }}">
+            <i class="fas fa-info"></i>
+        </a>
+        {% if not item.isNewItem() %}
+            <button type="button" name="unaffect_networkname" class="btn btn-outline-secondary p-2" title="{{ __('Dissociate') }}">
+                <i class="ti ti-circle-minus text-danger"></i>
+            </button>
+            <script>
+                $('button[name="unaffect_networkname"]').on('click', () => {
+                    $.post(
+                        '{{ path('ajax/networkname.php') }}',
+                        {
+                            id: {{ item.getID() }},
+                            unaffect: 1
+                        },
+                    ).then(() => {
+                        window.location.reload();
+                    });
+                });
+            </script>
+            <input type="hidden" name="NetworkName_id" value="{{ item.getID() }}">
+        {% endif %}
+    </div>
+{% endset %}
+{{ fields.htmlField('', networkname_field, 'NetworkName'|itemtype_name) }}
+
+{{ fields.dropdownField('FQDN', 'NetworkName_fqdns_id', item.fields['fqdns_id'], 'FQDN'|itemtype_name, {
+    entity: item.getEntityID(),
+    displaywith: ['view']
+}) }}
+
+{% if canedit %}
+    {% set ip_field %}
+        {% do call('IPAddress::showAddChildButtonForItemForm', [item, 'NetworkName__ipaddresses', canedit]) %}
+        {% do call('IPAddress::showChildsForItemForm', [item, 'NetworkName__ipaddresses', canedit]) %}
+    {% endset %}
+    {{ fields.htmlField('', ip_field, 'IPAddress'|itemtype_name(get_plural_number())) }}
+{% endif %}

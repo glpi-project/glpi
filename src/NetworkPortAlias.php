@@ -33,9 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
-/// NetworkPortAlias class : alias instantiation of NetworkPort. An alias can be use to define VLAN
-/// tagged ports. It is use in old version of Linux to define several IP addresses to a given port.
-/// @since 0.84
+/**
+ * Alias instantiation of NetworkPort. An alias can be use to define VLAN tagged ports.
+ * It is used in old versiond of Linux to define several IP addresses to a given port.
+ * @since 0.84
+ */
 class NetworkPortAlias extends NetworkPortInstantiation
 {
     public static function getTypeName($nb = 0)
@@ -43,12 +45,9 @@ class NetworkPortAlias extends NetworkPortInstantiation
         return __('Alias port');
     }
 
-
     public function prepareInput($input)
     {
-
-       // Try to get mac address from the instantiation ...
-
+        // Try to get mac address from the instantiation ...
         if (
             !isset($input['mac'])
             && isset($input['networkports_id_alias'])
@@ -62,28 +61,21 @@ class NetworkPortAlias extends NetworkPortInstantiation
         return $input;
     }
 
-
     public function prepareInputForAdd($input)
     {
         return parent::prepareInputForAdd($this->prepareInput($input));
     }
-
 
     public function prepareInputForUpdate($input)
     {
         return parent::prepareInputForUpdate($this->prepareInput($input));
     }
 
-
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
-
-        echo "<tr class='tab_bg_1'>";
         $this->showMacField($netport, $options);
-        $this->showNetworkPortSelector($recursiveItems, $this->getType());
-        echo "</tr>";
+        $this->showNetworkPortSelector($recursiveItems, static::class);
     }
-
 
     public function getInstantiationHTMLTableHeaders(
         HTMLTableGroup $group,
@@ -92,13 +84,11 @@ class NetworkPortAlias extends NetworkPortInstantiation
         HTMLTableHeader $father = null,
         array $options = []
     ) {
-
-        $group->addHeader('Origin', __('Origin port'), $super);
+        $group->addHeader('Origin', __s('Origin port'), $super);
 
         parent::getInstantiationHTMLTableHeaders($group, $super, $internet_super, $father, $options);
         return null;
     }
-
 
     public function getInstantiationHTMLTable(
         NetworkPort $netport,
@@ -106,7 +96,6 @@ class NetworkPortAlias extends NetworkPortInstantiation
         HTMLTableCell $father = null,
         array $options = []
     ) {
-
         $row->addCell(
             $row->getHeaderByName('Instantiation', 'Origin'),
             $this->getInstantiationNetworkPortHTMLTable()

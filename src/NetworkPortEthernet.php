@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Socket;
 
 /**
@@ -82,21 +83,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         if (!$options['several']) {
-            echo "<tr class='tab_bg_1'>";
             $this->showSocketField($netport, $options, $recursiveItems);
             $this->showNetworkCardField($netport, $options, $recursiveItems);
-            echo "</tr>\n";
         }
-
-        echo "<tr class='tab_bg_1'>";
-        echo "<td>" . __('Ethernet port type') . "</td><td>\n";
-        Dropdown::showFromArray(
-            'type',
-            self::getPortTypeName(),
-            ['value' => $this->fields['type']]
-        );
-        echo "</td>";
-        echo "<td>" . __('Ethernet port speed') . "</td><td>\n";
 
         $standard_speeds = self::getPortSpeed();
         if (
@@ -108,23 +97,30 @@ class NetworkPortEthernet extends NetworkPortInstantiation
             $speed = true;
         }
 
-        Dropdown::showFromArray(
-            'speed',
-            $standard_speeds,
-            ['value' => $this->fields['speed'],
-                'other' => $speed
-            ]
-        );
-        echo "</td>";
-        echo "</tr>\n";
-
-        echo "<tr class='tab_bg_1'>\n";
-        $this->showMacField($netport, $options);
-
-        echo "<td>" . __('Connected to') . '</td><td>';
-        self::showConnection($netport, true);
-        echo "</td>";
-        echo "</tr>\n";
+        $twig_params = [
+            'item' => $this,
+            'netport' => $netport,
+            'params' => $options,
+            'standard_speeds' => $standard_speeds,
+            'speed' => $speed,
+            'type_label' => __('Ethernet port type'),
+            'port_types' => self::getPortTypeName(),
+            'speed_label' => __('Ethernet port speed'),
+            'connection_label' => __('Connected to')
+        ];
+        // language=Twig
+        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {{ fields.dropdownArrayField('type', item.fields['type'], port_types, type_label) }}
+            {{ fields.dropdownArrayField('speed', item.fields['speed'], standard_speeds, speed_label, {
+                other: speed
+            }) }}
+            {% do call([item, 'showMacField'], [netport, params]) %}
+            {% set connection_field %}
+                {% do call([item, 'showConnection'], [netport, true]) %}
+            {% endset %}
+            {{ fields.htmlField('', connection_field, connection_label) }}
+TWIG, $twig_params);
     }
 
     public function getInstantiationHTMLTableHeaders(
@@ -134,7 +130,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation
         HTMLTableHeader $father = null,
         array $options = []
     ) {
-
         $header          = $group->addHeader('Connected', __s('Connected to'), $super);
 
         DeviceNetworkCard::getHTMLTableHeader(

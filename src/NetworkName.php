@@ -363,6 +363,7 @@ class NetworkName extends FQDNLabel
 
     /**
      * @param integer $networkPortID
+     * @used-by templates/pages/assets/networkport/form.html.twig
      **/
     public static function showFormForNetworkPort($networkPortID)
     {
@@ -370,15 +371,15 @@ class NetworkName extends FQDNLabel
          * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
-        $name         = new self();
-        $number_names = 0;
+        $name = new self();
+        $name->getEmpty();
 
         if ($networkPortID > 0) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => $name->getTable(),
+                'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype'     => 'NetworkPort',
                     'items_id'     => $networkPortID,
@@ -388,79 +389,30 @@ class NetworkName extends FQDNLabel
             $numrows = count($iterator);
 
             if ($numrows > 1) {
-                 echo "<tr class='tab_bg_1'><th colspan='4'>" .
-                  __("Several network names available! Go to the tab 'Network Name' to manage them.") .
-                  "</th></tr>\n";
-                  return;
+                // language=Twig
+                echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                    {% import 'components/form/fields_macros.html.twig' as fields %}
+                    {% set alert %}
+                        <div class="alert alert-warning">{{ alert }}</div>
+                    {% endset %}
+                    {{ field.htmlField('', alert, 'NetworkName'|itemtype_name) }}
+TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Name' to manage them.")]);
+            } else if ($numrows === 1) {
+                $result = $iterator->current();
+                $name->getFromDB($result['id']);
             }
-
-            switch ($numrows) {
-                case 1:
-                    $result = $iterator->current();
-                    $name->getFromDB($result['id']);
-                    break;
-
-                case 0:
-                    $name->getEmpty();
-                    break;
-            }
-        } else {
-            $name->getEmpty();
         }
-
-        echo "<tr class='tab_bg_1'><th colspan='4'>";
-       // If the networkname is defined, we must be able to edit it. So we make a link
-        if ($name->getID() > 0) {
-            echo "<a href='" . $name->getLinkURL() . "'>" . self::getTypeName(1) . "</a>";
-            echo "<input type='hidden' name='NetworkName_id' value='" . $name->getID() . "'>&nbsp;\n";
-            Html::showSimpleForm(
-                $name->getFormURL(),
-                'unaffect',
-                _sx('button', 'Dissociate'),
-                ['id' => $name->getID()],
-                $CFG_GLPI["root_doc"] . '/pics/sub_dropdown.png'
-            );
-        } else {
-            echo self::getTypeName(1);
-        }
-        echo "</th>\n";
-
-        echo "</tr><tr class='tab_bg_1'>";
-
-        echo "<td>" . self::getTypeName(1) . "</td><td>\n";
-        echo Html::input('NetworkName_name', ['value' => $name->fields['name']]);
-        echo "</td>\n";
-
-        echo "<td>" . FQDN::getTypeName(1) . "</td><td>";
-        Dropdown::show(
-            getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
-            ['value'       => $name->fields["fqdns_id"],
-                'name'        => 'NetworkName_fqdns_id',
-                'entity'      => $name->getEntityID(),
-                'displaywith' => ['view']
-            ]
-        );
-        echo "</td>\n";
-
-        echo "</tr>";
 
         if ($name->isNewItem()) {
-            $canedit = $name->canCreate();
+            $canedit = $name::canCreate();
         } else {
             $canedit = $name->can($name->getID(), UPDATE);
         }
 
-        if ($canedit) {
-            echo "<tr class='tab_bg_1'>\n";
-            echo "<td>" . IPAddress::getTypeName(Session::getPluralNumber());
-            IPAddress::showAddChildButtonForItemForm($name, 'NetworkName__ipaddresses', $canedit);
-            echo "</td>";
-            echo "<td>";
-            IPAddress::showChildsForItemForm($name, 'NetworkName__ipaddresses', $canedit);
-            echo "</td>";
-            echo "<td colspan='2'>&nbsp;</td>";
-            echo "</tr>\n";
-        }
+        TemplateRenderer::getInstance()->display('pages/assets/networkport/networkname_short.html.twig', [
+            'item' => $name,
+            'canedit' => $canedit,
+        ]);
     }
 
     /**
@@ -537,8 +489,8 @@ class NetworkName extends FQDNLabel
 
         $column_name = __CLASS__;
 
-        if (empty($item)) {
-            if (empty($father)) {
+        if ($item === null) {
+            if ($father === null) {
                 return;
             }
             $item = $father->getItem();
@@ -723,38 +675,39 @@ class NetworkName extends FQDNLabel
             && Session::haveRight('internet', UPDATE)
             && $item->canUpdateItem()
         ) {
-            $items_id = $item->getID();
-            $itemtype = $item::class;
-
-            echo "<div class='firstbloc'>\n";
-            echo "<form method='post' action='" . static::getFormURL() . "'>\n";
-            echo "<table class='tab_cadre_fixe'>\n";
-            echo "<tr><th colspan='4'>" . __('Add a network name') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td class='right'>";
-            echo "<input type='hidden' name='items_id' value='$items_id'>\n";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
-            echo __('Not associated');
-            echo "</td><td class='left'>";
-            self::dropdown([
-                'name'      => 'addressID',
-                'condition' => ['items_id' => 0]
-            ]);
-            echo "</td><td class='left'>";
-            echo "<input type='submit' name='assign_address' value='" . _sx('button', 'Associate') .
-                "' class='btn btn-primary'>";
-            echo "</td>";
-            if (static::canCreate()) {
-                echo "<td class='right' width='30%'>";
-                echo "<a href=\"" . static::getFormURL() . "?items_id=$items_id&amp;itemtype=$itemtype\">";
-                echo __s('Create a new network name') . "</a>";
-                echo "</td>";
-            }
-            echo "</tr>\n";
-
-            echo "</table>\n";
-            Html::closeForm();
-            echo "</div>\n";
+            $twig_params = [
+                'item' => $item,
+                'btn_label' => _x('button', 'Associate'),
+                'create_label' => __('Create a new network name'),
+                'can_create' => static::canCreate(),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" action="{{ 'NetworkName'|itemtype_form_path }}">
+                        <div class="d-flex">
+                            <input type="hidden" name="items_id" value="{{ item.getID() }}">
+                            <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {{ fields.dropdownField('NetworkName', 'addressID', 0, null, {
+                                no_label: true,
+                                condition: {
+                                    items_id: 0
+                                }
+                            }) }}
+                        </div>
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" name="assign_address" class="btn btn-primary mx-1">{{ btn_label }}</button>
+                            {% if can_create %}
+                                <a class="btn btn-outline-secondary mx-1" role="button" href="{{ 'NetworkName'|itemtype_form_path }}?items_id={{ item.getID() }}&amp;itemtype={{ get_class(item) }}">
+                                    {{ create_label }}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
 
         $table_options = ['createRow' => true];
