@@ -99,7 +99,6 @@ abstract class Spreadsheet extends ExportSearchOutput
         if (
             !isset($data['data'])
             || !isset($data['data']['totalcount'])
-            || $data['data']['count'] <= 0
             || $data['search']['as_map'] != 0
         ) {
             return false;
