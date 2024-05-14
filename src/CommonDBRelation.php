@@ -1397,7 +1397,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param MassiveAction $ma current massive action
      *
-     * @return number of the peer
+     * @return int number of the peer
      **/
     public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
     {

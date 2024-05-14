@@ -41,6 +41,7 @@ use CommonDBTM;
 use CommonGLPI;
 use Dropdown;
 use Entity;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Html;
 use MassiveAction;
@@ -60,7 +61,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
@@ -77,39 +77,38 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * @param CommonDBTM $main_item
      * @param CommonDBTM $peripheral_item
      *
-     * @return integer
+     * @return boolean
      */
-    private static function isAlreadyConnected(CommonDBTM $main_item, CommonDBTM $peripheral_item)
+    private static function isAlreadyConnected(CommonDBTM $main_item, CommonDBTM $peripheral_item): bool
     {
         $connections = countElementsInTable(
             self::getTable(),
             [
-                'itemtype_asset'      => $main_item->getType(),
+                'itemtype_asset'      => $main_item::class,
                 'items_id_asset'      => $main_item->getID(),
-                'itemtype_peripheral' => $peripheral_item->getType(),
+                'itemtype_peripheral' => $peripheral_item::class,
                 'items_id_peripheral' => $peripheral_item->getID(),
             ]
         );
         return $connections > 0;
     }
 
-
     public function prepareInputForAdd($input)
     {
-        $peripheral = static::getItemFromArray(static::$itemtype_2, static::$items_id_2, $input);
+        $peripheral = self::getItemFromArray(self::$itemtype_2, self::$items_id_2, $input);
 
         if (
             !($peripheral instanceof CommonDBTM)
             || (!$peripheral->isGlobal()
-              && ($this->countLinkedAssets($peripheral) > 0))
+              && (self::countLinkedAssets($peripheral) > 0))
         ) {
             return false;
         }
 
-        $asset = static::getItemFromArray(static::$itemtype_1, static::$items_id_1, $input);
+        $asset = self::getItemFromArray(self::$itemtype_1, self::$items_id_1, $input);
         if (
-            !(in_array($asset->getType(), self::getPeripheralHostItemtypes(), true))
-            || self::isAlreadyConnected($asset, $peripheral)
+            self::isAlreadyConnected($asset, $peripheral)
+            || !(in_array($asset::class, self::getPeripheralHostItemtypes(), true))
         ) {
            // no duplicates
             return false;
@@ -120,8 +119,8 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             $updates = [];
 
             if (
-                Entity::getUsedConfig('is_location_autoupdate', $asset->getEntityID())
-                && ($asset->fields['locations_id'] != $peripheral->getField('locations_id'))
+                $asset->fields['locations_id'] !== $peripheral->getField('locations_id')
+                && Entity::getUsedConfig('is_location_autoupdate', $asset->getEntityID())
             ) {
                 $updates['locations_id'] = $asset->fields['locations_id'];
                 Session::addMessageAfterRedirect(
@@ -131,9 +130,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             }
             if (
                 (Entity::getUsedConfig('is_user_autoupdate', $asset->getEntityID())
-                && ($asset->fields['users_id'] != $peripheral->getField('users_id')))
+                && ($asset->fields['users_id'] !== $peripheral->getField('users_id')))
                 || (Entity::getUsedConfig('is_group_autoupdate', $asset->getEntityID())
-                 && ($asset->fields['groups_id'] != $peripheral->getField('groups_id')))
+                 && ($asset->fields['groups_id'] !== $peripheral->getField('groups_id')))
             ) {
                 if (Entity::getUsedConfig('is_user_autoupdate', $asset->getEntityID())) {
                     $updates['users_id'] = $asset->fields['users_id'];
@@ -148,9 +147,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             }
 
             if (
-                Entity::getUsedConfig('is_contact_autoupdate', $peripheral->getEntityID())
-                && (($asset->fields['contact'] != $peripheral->fields['contact'])
-                 || ($asset->fields['contact_num'] != $peripheral->fields['contact_num']))
+                (($asset->fields['contact'] !== $peripheral->fields['contact'])
+                 || ($asset->fields['contact_num'] !== $peripheral->fields['contact_num']))
+                && Entity::getUsedConfig('is_contact_autoupdate', $peripheral->getEntityID())
             ) {
                 $updates['contact']     = $asset->fields['contact'] ?? '';
                 $updates['contact_num'] = $asset->fields['contact_num'] ?? '';
@@ -164,7 +163,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             $state_autoupdate_mode = Entity::getUsedConfig('state_autoupdate_mode', $peripheral->getEntityID());
             if (
                 ($state_autoupdate_mode < 0)
-                && ($asset->fields['states_id'] != $peripheral->fields['states_id'])
+                && ($asset->fields['states_id'] !== $peripheral->fields['states_id'])
             ) {
                 $updates['states_id'] = $asset->fields['states_id'];
                 Session::addMessageAfterRedirect(
@@ -175,7 +174,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
             if (
                 ($state_autoupdate_mode > 0)
-                && ($peripheral->fields['states_id'] != $state_autoupdate_mode)
+                && ($peripheral->fields['states_id'] !== $state_autoupdate_mode)
             ) {
                 $updates['states_id'] = $state_autoupdate_mode;
             }
@@ -192,12 +191,8 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-
     public function cleanDBonPurge()
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (!isset($this->input['_no_auto_action'])) {
             // Get the item
             $asset = getItemForItemtype($this->fields['itemtype_asset']);
@@ -239,7 +234,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         if (
                             ($state_autoclean_mode > 0)
                             && $peripheral->isField('states_id')
-                            && ($peripheral->fields['states_id'] != $state_autoclean_mode)
+                            && ($peripheral->fields['states_id'] !== $state_autoclean_mode)
                         ) {
                             $updates['states_id'] = $state_autoclean_mode;
                         }
@@ -258,7 +253,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         }
     }
 
-
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
@@ -268,13 +262,12 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
 
-        if (in_array($itemtype, $specificities['itemtypes'])) {
+        if (in_array($itemtype, $specificities['itemtypes'], true)) {
             $actions[$action_prefix . 'add']    = "<i class='fa-fw fas fa-plug'></i>" . _sx('button', 'Connect');
             $actions[$action_prefix . 'remove'] = _sx('button', 'Disconnect');
         }
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
     }
-
 
     public static function getRelationMassiveActionsSpecificities()
     {
@@ -282,15 +275,11 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
-
         $specificities['itemtypes'] = $CFG_GLPI['directconnect_types'];
-
         $specificities['select_items_options_1']['itemtypes']       = self::getPeripheralHostItemtypes();
-
         $specificities['select_items_options_2']['entity_restrict'] = $_SESSION['glpiactive_entity'];
         $specificities['select_items_options_2']['itemtypes']       = $CFG_GLPI['directconnect_types'];
         $specificities['select_items_options_2']['onlyglobal']      = true;
-
         $specificities['only_remove_all_at_once']                   = true;
 
         // Set the labels for add_item and remove_item
@@ -300,7 +289,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return $specificities;
     }
 
-
     /**
      * Print the form for computers or templates connections to printers, screens or peripherals
      *
@@ -309,7 +297,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      *
      * @return void
      **/
-    private static function showForAsset(CommonDBTM $asset, $withtemplate = 0)
+    private static function showForAsset(CommonDBTM $asset, $withtemplate = 0): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -331,35 +319,15 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 }
             }
         }
-        $number = count($datas);
 
         if (
             $canedit
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Connect an item') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
-            if (!empty($withtemplate)) {
-                echo "<input type='hidden' name='_no_history' value='1'>";
-            }
             $entities = $asset->fields["entities_id"];
             if ($asset->isRecursive()) {
                 $entities = getSonsOf("glpi_entities", $asset->getEntityID());
             }
-
-            $rand = Dropdown::showItemType(
-                $CFG_GLPI['directconnect_types'],
-                [
-                    'checkright' => true,
-                    'name'       => 'itemtype_peripheral',
-                ]
-            );
 
             $dropdown_params = [
                 'itemtype'        => '__VALUE__',
@@ -370,116 +338,125 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'entity_restrict' => $entities,
                 'used'            => $used
             ];
-            Ajax::updateItemOnSelectEvent(
-                "dropdown_itemtype_peripheral$rand",
-                "show_items_id_peripheral$rand",
-                $CFG_GLPI["root_doc"] . "/ajax/dropdownConnect.php",
-                $dropdown_params
-            );
 
-            echo "<br><div id='show_items_id_peripheral$rand'>&nbsp;</div>";
-
-            echo "</td><td class='center' width='20%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Connect') . "\" class='btn btn-primary'>";
-            echo "<input type='hidden' name='itemtype_asset' value='" . $asset->getType() . "'>";
-            echo "<input type='hidden' name='items_id_asset' value='" . $asset->fields['id'] . "'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            $twig_params = [
+                'rand' => mt_rand(),
+                'dropdown_params' => $dropdown_params,
+                'asset' => $asset,
+                'label' => __('Connect an item'),
+                'btn_label' => _sx('button', 'Connect'),
+                'withtemplate' => $withtemplate,
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
+                        <input type="hidden" name="items_id_asset" value="{{ asset.getID() }}">
+                        <input type="hidden" name="itemtype_asset" value="{{ asset.getType() }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        {% if withtemplate %}
+                            <input type="hidden" name="_no_history" value="1">
+                        {% endif %}
+                        {{ fields.dropdownItemTypes('itemtype_peripheral', 0, label, {
+                            types: config('directconnect_types'),
+                            checkright: true,
+                        }) }}
+                        <div id="show_items_id_peripheral{{ rand }}"></div>
+                        <script>
+                            $(() => {
+                                $('select[name="itemtype_peripheral"]').on('change', (e) => {
+                                    const params = Object.assign({{ dropdown_params|json_encode|raw }}, { itemtype: e.target.value });
+                                    $('#show_items_id_peripheral{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownConnect.php', params);
+                                });
+                            });
+                        </script>
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
 
-        if ($number) {
-            $ma_container_id = 'massAsset_PeripheralAsset' . $rand;
+        $entries = [];
+        $entity_cache = [];
+        $type_cache = [];
+        foreach ($datas as $data) {
+            $linkname = $data["name"];
+            $itemtype = $data['assoc_itemtype'];
 
-            echo "<div class='spaced table-responsive'>";
-            if ($canedit) {
-                Html::openMassiveActionsForm($ma_container_id);
-                $massiveactionparams = [
-                    'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                    'specific_actions' => ['purge' => _x('button', 'Disconnect')],
-                    'container'        => $ma_container_id
-                ];
-                Html::showMassiveActions($massiveactionparams);
+            $entry = [
+                'itemtype' => self::class,
+                'id' => $data['linkid'],
+                '_itemtype' => $itemtype::getTypeName(1),
+                'row_class' => (isset($data['is_deleted']) && $data['is_deleted']) ? 'table-danger' : '',
+                'is_dynamic' => $data[self::getTable() . '_is_dynamic'] ? __('Yes') : __('No'),
+                'serial' => $data["serial"] ?? "-",
+                'otherserial' => $data['otherserial'] ?? '-',
+            ];
+
+            $type_class = $itemtype . "Type";
+            $type_table = getTableForItemType($type_class);
+            $type_field = getForeignKeyFieldForTable($type_table);
+
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
+            $link = $itemtype::getFormURLWithID($data["id"]);
+            $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . '</a>';
+            $entry['name'] = $name;
 
-            if ($canedit) {
-                $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox($ma_container_id);
-                $header_top    .= "</th>";
-                $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox($ma_container_id);
-                $header_bottom .=  "</th>";
-            }
-
-            $header_end .= "<th>" . __('Item type') . "</th>";
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "<th>" . __('Automatic inventory') . "</th>";
-            $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
-            $header_end .= "<th>" . __('Serial number') . "</th>";
-            $header_end .= "<th>" . __('Inventory number') . "</th>";
-            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-            $header_end .= "</tr>";
-            echo $header_begin . $header_top . $header_end;
-
-            foreach ($datas as $data) {
-                $linkname = $data["name"];
-                $itemtype = $data['assoc_itemtype'];
-
-                $type_class = $itemtype . "Type";
-                $type_table = getTableForItemType($type_class);
-                $type_field = getForeignKeyFieldForTable($type_table);
-
-                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                    $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
-                }
-                $link = $itemtype::getFormURLWithID($data["id"]);
-                $name = "<a href=\"" . $link . "\">" . $linkname . "</a>";
-
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $data['assoc_itemtype']::getTypeName(1) . "</td>";
-                echo "<td " .
-                    ((isset($data['is_deleted']) && $data['is_deleted']) ? "class='tab_bg_2_2'" : "") .
-                    ">" . $name . "</td>";
-                $dynamic_field = static::getTable() . '_is_dynamic';
-                echo "<td>" . Dropdown::getYesNo($data[$dynamic_field]) . "</td>";
-                echo "<td>" . Dropdown::getDropdownName(
+            if (!isset($entity_cache[$data['entities_id']])) {
+                $entity_cache[$data['entities_id']] = Dropdown::getDropdownName(
                     "glpi_entities",
                     $data['entities_id']
                 );
-                echo "</td>";
-                echo "<td>" .
-                    (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
-                echo "<td>" .
-                    (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
-                    echo "<td>" .
-                        (isset($data[$type_field]) ? "" . Dropdown::getDropdownName(
-                            $type_table,
-                            $data[$type_field]
-                        ) . "" : "-") . "</td>";
-                echo "</tr>";
             }
-            echo $header_begin . $header_bottom . $header_end;
+            $entry['entity'] = $entity_cache[$data['entities_id']];
 
-            echo "</table>";
-            if ($canedit && $number) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
+            if (isset($data[$type_field])) {
+                if (!isset($type_cache[$data[$type_field]])) {
+                    $type_cache[$data[$type_field]] = Dropdown::getDropdownName(
+                        $type_table,
+                        $data[$type_field]
+                    );
+                }
+                $entry['type'] = $type_cache[$data[$type_field]];
+            } else {
+                $entry['type'] = '-';
             }
-            echo "</div>";
+            $entries[] = $entry;
         }
-    }
 
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                '_itemtype' => __('Item type'),
+                'name' => __('Name'),
+                'is_dynamic' => __('Automatic inventory'),
+                'entity' => Entity::getTypeName(1),
+                'serial' => __('Serial number'),
+                'otherserial' => __('Inventory number'),
+                'type' => _n('Type', 'Types', 1)
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container' => 'massAsset_PeripheralAsset' . $rand,
+                'specific_actions' => ['purge' => _x('button', 'Disconnect')],
+            ]
+        ]);
+    }
 
     /**
      *
@@ -490,7 +467,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      *
      * @return void
      **/
-    private static function showForPeripheral(CommonDBTM $peripheral, $withtemplate = 0)
+    private static function showForPeripheral(CommonDBTM $peripheral, $withtemplate = 0): void
     {
         $ID      = $peripheral->fields['id'];
 
@@ -525,24 +502,11 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             && ($global || $number === 0)
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
-            echo "<div class='firstbloc'>";
-            echo "<form name='computeritem_form$rand' id='computeritem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __('Connect to an item') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
-            echo "<input type='hidden' name='items_id_peripheral' value='" . $ID . "'>";
-            echo "<input type='hidden' name='itemtype_peripheral' value='" . $peripheral->getType() . "'>";
-            if (!empty($withtemplate)) {
-                echo "<input type='hidden' name='_no_history' value='1'>";
-            }
             $entities = $peripheral->fields["entities_id"];
             if ($peripheral->isRecursive()) {
                 $entities = getSonsOf("glpi_entities", $peripheral->getEntityID());
             }
-            Dropdown::showSelectItemFromItemtypes([
+            $dropdown_params = [
                 'items_id_name'   => 'items_id_asset',
                 'itemtype_name'   => 'itemtype_asset',
                 'itemtypes'       => $itemtypes,
@@ -550,107 +514,100 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'checkright'      => true,
                 'entity_restrict' => $entities,
                 'used'            => $used,
-            ]);
-            echo "</td><td class='center' width='20%'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Connect') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-            echo "</div>";
+            ];
+
+            $twig_params = [
+                'label' => __('Connect to an item'),
+                'peripheral' => $peripheral,
+                'dropdown_params' => $dropdown_params,
+                'btn_label' => _sx('button', 'Connect'),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="mb-3">
+                    <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
+                        {{ fields.dropdownItemsFromItemtypes('', label, dropdown_params) }}
+                        <input type="hidden" name="items_id_peripheral" value="{{ peripheral.getID() }}">
+                        <input type="hidden" name="itemtype_peripheral" value="{{ peripheral.getType() }}">
+                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        {% if withtemplate %}
+                            {{ fields.hidden('', '_no_history', 1) }}
+                        {% endif %}
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                        </div>
+                    </form>
+                </div>
+TWIG, $twig_params);
         }
 
-        echo "<div class='spaced table-responsive'>";
-        if ($number > 0) {
-            $ma_container_id = 'massAsset_PeripheralAsset' . $rand;
-
-            if ($canedit) {
-                Html::openMassiveActionsForm($ma_container_id);
-                $massiveactionparams = [
-                    'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                    'specific_actions' => ['purge' => _x('button', 'Disconnect')],
-                    'container'        => $ma_container_id,
-                ];
-                Html::showMassiveActions($massiveactionparams);
+        $entries = [];
+        $entity_cache = [];
+        foreach ($linked_assets as $data) {
+            $entry = [
+                'itemtype' => self::class,
+                'id'       => $data['linkid'],
+                '_itemtype'     => $data['assoc_itemtype']::getTypeName(1),
+                'row_class' => (isset($data['is_deleted']) && $data['is_deleted']) ? 'table-danger' : '',
+                'is_dynamic' => $data[self::getTable() . '_is_dynamic'] ? __('Yes') : __('No'),
+                'serial' => $data["serial"] ?? "-",
+                'otherserial' => $data['otherserial'] ?? '-',
+            ];
+            $linkname = $data["name"];
+            $itemtype = $data['assoc_itemtype'];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+                $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
+            $link = $itemtype::getFormURLWithID($data["id"]);
+            $name = '<a href="' . htmlspecialchars($link) . '">' . htmlspecialchars($linkname) . '</a>';
+            $entry['name'] = $name;
 
-            echo "<table class='tab_cadre_fixehov'>";
-            $header_begin  = "<tr>";
-            $header_top    = '';
-            $header_bottom = '';
-            $header_end    = '';
-
-            if ($canedit) {
-                $header_top    .= "<th width='10'>" . Html::getCheckAllAsCheckbox($ma_container_id);
-                $header_top    .= "</th>";
-                $header_bottom .= "<th width='10'>" . Html::getCheckAllAsCheckbox($ma_container_id);
-                $header_bottom .=  "</th>";
-            }
-
-            $header_end .= "<th>" . _n('Type', 'Types', 1) . "</th>";
-            $header_end .= "<th>" . __('Name') . "</th>";
-            $header_end .= "<th>" . __('Automatic inventory') . "</th>";
-            $header_end .= "<th>" . Entity::getTypeName(1) . "</th>";
-            $header_end .= "<th>" . __('Serial number') . "</th>";
-            $header_end .= "<th>" . __('Inventory number') . "</th>";
-            $header_end .= "</tr>";
-            echo $header_begin . $header_top . $header_end;
-
-            foreach ($linked_assets as $data) {
-                $linkname = $data["name"];
-                $itemtype = $data['assoc_itemtype'];
-                if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                    $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
-                }
-                $link = $itemtype::getFormURLWithID($data["id"]);
-                $name = "<a href=\"" . $link . "\">" . $linkname . "</a>";
-
-                echo "<tr class='tab_bg_1'>";
-
-                if ($canedit) {
-                    echo "<td width='10'>";
-                    Html::showMassiveActionCheckBox(__CLASS__, $data["linkid"]);
-                    echo "</td>";
-                }
-                echo "<td>" . $data['assoc_itemtype']::getTypeName(1) . "</td>";
-                echo "<td " .
-                    ((isset($data['is_deleted']) && $data['is_deleted']) ? "class='tab_bg_2_2'" : "") .
-                    ">" . $name . "</td>";
-                $dynamic_field = static::getTable() . '_is_dynamic';
-                echo "<td>" . Dropdown::getYesNo($data[$dynamic_field]) . "</td>";
-                echo "<td>" . Dropdown::getDropdownName(
+            if (!isset($entity_cache[$data['entities_id']])) {
+                $entity_cache[$data['entities_id']] = Dropdown::getDropdownName(
                     "glpi_entities",
                     $data['entities_id']
                 );
-                echo "</td>";
-                echo "<td>" . (isset($data["serial"]) ? "" . $data["serial"] . "" : "-") . "</td>";
-                echo "<td>" . (isset($data["otherserial"]) ? "" . $data["otherserial"] . "" : "-") . "</td>";
-                echo "</tr>";
             }
-            echo $header_begin . $header_bottom . $header_end;
+            $entry['entity'] = $entity_cache[$data['entities_id']];
 
-            echo "</table>";
-            if ($canedit && $number) {
-                $massiveactionparams['ontop'] = false;
-                Html::showMassiveActions($massiveactionparams);
-                Html::closeForm();
-            }
-        } else {
-            echo "<table class='tab_cadre_fixehov'>";
-            echo "<tr><td class='tab_bg_1 b'><i>" . __('Not connected') . "</i>";
-            echo "</td></tr>";
-            echo "</table>";
+            $entries[] = $entry;
         }
 
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nopager' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                '_itemtype' => __('Item type'),
+                'name' => __('Name'),
+                'is_dynamic' => __('Automatic inventory'),
+                'entity' => Entity::getTypeName(1),
+                'serial' => __('Serial number'),
+                'otherserial' => __('Inventory number')
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+            'showmassiveactions' => $canedit,
+            'massiveactionparams' => [
+                'num_displayed' => count($entries),
+                'container' => 'massAsset_PeripheralAsset' . $rand,
+                'specific_actions' => ['purge' => _x('button', 'Disconnect')],
+            ]
+        ]);
     }
-
 
     /**
      * Unglobalize an item : duplicate item and connections
      *
-     * @param $item   CommonDBTM object to unglobalize
+     * @param CommonDBTM $item object to unglobalize
      **/
-    public static function unglobalizeItem(CommonDBTM $item)
+    public static function unglobalizeItem(CommonDBTM $item): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -693,7 +650,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         }
     }
 
-
     /**
      * Make a select box for connections
      *
@@ -713,7 +669,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $entity_restrict = -1,
         $onlyglobal = false,
         $used = []
-    ) {
+    ): int {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
@@ -741,7 +697,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return $rand;
     }
 
-
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
@@ -758,7 +713,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                     $nb = self::countLinkedAssets($item);
                 }
             } else {
-                $canview = $this->canViewPeripherals($item);
+                $canview = self::canViewPeripherals($item);
                 if ($canview && $_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countPeripherals($item);
                 }
@@ -768,27 +723,26 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 return self::createTabEntry(
                     _n('Connection', 'Connections', Session::getPluralNumber()),
                     $nb,
-                    $item::getType()
+                    $item::class
                 );
             }
         }
         return '';
     }
 
-
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (!$item->can($item->getID(), READ)) {
+        if (!$item instanceof CommonDBTM || !$item->can($item->getID(), READ)) {
             return false;
         }
 
         if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
             self::showForPeripheral($item, $withtemplate);
             return true;
-        } elseif (self::canViewPeripherals($item)) {
+        } else if (self::canViewPeripherals($item)) {
             self::showForAsset($item, $withtemplate);
             return true;
         }
@@ -796,13 +750,12 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return false;
     }
 
-
     public static function canUnrecursSpecif(CommonDBTM $item, $entities)
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (in_array($item->getType(), self::getPeripheralHostItemtypes(), true)) {
+        if (in_array($item::class, self::getPeripheralHostItemtypes(), true)) {
             // RELATION : peripherals -> items
             $iterator = $DB->request([
                 'SELECT' => [
@@ -859,7 +812,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             ]);
 
             foreach ($iterator as $data) {
-                if (countElementsInTable('itemtype_asset'::getTable(), ['id' => $data['items_id_asset'], 'NOT' => ['entities_id' => $entities]]) > 0) {
+                if (countElementsInTable($data['itemtype_asset']::getTable(), ['id' => $data['items_id_asset'], 'NOT' => ['entities_id' => $entities]]) > 0) {
                     return false;
                 }
             }
@@ -867,7 +820,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
         return true;
     }
-
 
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
@@ -879,13 +831,12 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     #[Override]
     public static function getTypeItemsQueryParams_Select(CommonDBTM $item): array
     {
-        $table = static::getTable();
+        $table = self::getTable();
         $select = parent::getTypeItemsQueryParams_Select($item);
         $select[] = "$table.is_dynamic AS {$table}_is_dynamic";
 
         return $select;
     }
-
 
     public static function getTypeName($nb = 0)
     {
@@ -902,10 +853,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
         foreach ($peripherals as $peripheral) {
             if (class_exists($peripheral) && method_exists($peripheral, 'rawSearchOptionsToAdd')) {
-                $tab = array_merge(
-                    $tab,
-                    $peripheral::rawSearchOptionsToAdd($itemtype)
-                );
+                $tab = [...$tab, ...$peripheral::rawSearchOptionsToAdd($itemtype)];
             }
         }
 
@@ -1041,27 +989,27 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $peripheral = getItemForItemtype($itemtype);
 
         return $DB->request([
-            'SELECT' => static::getTypeItemsQueryParams_Select($peripheral),
+            'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
             'FROM'   => $peripheral::getTable(),
             'LEFT JOIN' => [
-                static::getTable() => [
+                self::getTable() => [
                     'FKEY' => [
-                        static::getTable()      => 'items_id_peripheral',
+                        self::getTable()      => 'items_id_peripheral',
                         $peripheral::getTable() => 'id',
                         [
                             'AND' => [
-                                static::getTable() . '.itemtype_peripheral' => $itemtype
+                                self::getTable() . '.itemtype_peripheral' => $itemtype
                             ]
                         ]
                     ]
                 ]
             ],
             'WHERE' => [
-                static::getTable() . '.is_deleted'     => 0,
-                static::getTable() . '.itemtype_asset' => $asset->getType(),
-                static::getTable() . '.items_id_asset' => $asset->getID(),
+                self::getTable() . '.is_deleted'     => 0,
+                self::getTable() . '.itemtype_asset' => $asset::class,
+                self::getTable() . '.items_id_asset' => $asset->getID(),
             ] + getEntitiesRestrictCriteria($peripheral::getTable()),
-            'ORDER' => $peripheral::getTable() . '.' . $peripheral->getNameField()
+            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField()
         ]);
     }
 
@@ -1080,27 +1028,27 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $item = getItemForItemtype($itemtype);
 
         return $DB->request([
-            'SELECT' => static::getTypeItemsQueryParams_Select($item),
+            'SELECT' => self::getTypeItemsQueryParams_Select($item),
             'FROM'   => $item::getTable(),
             'LEFT JOIN' => [
-                static::getTable() => [
+                self::getTable() => [
                     'FKEY' => [
-                        static::getTable() => 'items_id_asset',
+                        self::getTable() => 'items_id_asset',
                         $item::getTable()  => 'id',
                         [
                             'AND' => [
-                                static::getTable() . '.itemtype_asset' => $itemtype
+                                self::getTable() . '.itemtype_asset' => $itemtype
                             ]
                         ]
                     ]
                 ]
             ],
             'WHERE' => [
-                static::getTable() . '.is_deleted'          => 0,
-                static::getTable() . '.itemtype_peripheral' => $peripheral->getType(),
-                static::getTable() . '.items_id_peripheral' => $peripheral->getID(),
+                self::getTable() . '.is_deleted'          => 0,
+                self::getTable() . '.itemtype_peripheral' => $peripheral::class,
+                self::getTable() . '.items_id_peripheral' => $peripheral->getID(),
             ] + getEntitiesRestrictCriteria($item::getTable()),
-            'ORDER' => $item::getTable() . '.' . $item->getNameField()
+            'ORDER' => $item::getTable() . '.' . $item::getNameField()
         ]);
     }
 }
