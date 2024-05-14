@@ -583,6 +583,19 @@ JAVASCRIPT;
             $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
         }
 
+        // Keep attributes specific to rich text auto completion
+        $rich_text_completion_attributes = [
+            // required for proper display of autocompleted tags
+            'contenteditable',
+
+            // required for user mentions
+            'data-user-mention',
+            'data-user-id',
+        ];
+        foreach ($rich_text_completion_attributes as $attribute) {
+            $config = $config->allowAttribute($attribute, 'span');
+        }
+
         return new HtmlSanitizer($config);
     }
 }

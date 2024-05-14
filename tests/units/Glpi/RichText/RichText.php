@@ -370,6 +370,22 @@ HTML,
                 ];
             }
         }
+
+        yield 'User mention tag must be preserved' => [
+            'content' => <<<HTML
+<p>
+  Hi <span contenteditable="false" data-user-mention="true" data-user-id="2">@glpi</span>&nbsp;
+  ...
+</p>
+HTML,
+            'encode_output_entities' => false,
+            'expected_result' => <<<HTML
+<p>
+  Hi <span contenteditable="false" data-user-mention="true" data-user-id="2">&#64;glpi</span> 
+  ...
+</p>
+HTML,
+        ];
     }
 
     /**
