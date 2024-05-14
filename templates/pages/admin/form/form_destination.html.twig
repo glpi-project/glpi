@@ -65,7 +65,18 @@
                             aria-expanded="{{ active_destination == destination.getID() ? 'true' : 'false' }}"
                         >
                             <i class="{{ concrete_destination.getTargetItemtype()|itemtype_icon }} me-2"></i>
-                            {{ destination.getName() }}
+                            <input
+                                aria-label="{{ __("Form destination name") }}"
+                                type="text"
+                                name="name"
+                                form="form-destination-{{ destination.getID() }}"
+                                value="{{ destination.getName() }}"
+                                class="form-control form-control-flush"
+                                style="font-weight: inherit;"
+                                data-bs-toggle="collapse"
+                                data-bs-target=""
+                                data-glpi-form-destination-dynamic-input
+                            />
                         </button>
                     </h3>
                     <div
@@ -74,7 +85,7 @@
                         data-bs-parent="#glpi-destinations-accordion"
                     >
                         <div class="accordion-body pt-0">
-                            <form method="POST" action="{{ controller_url }}">
+                            <form id="form-destination-{{ destination.getID() }}" method="POST" action="{{ controller_url }}">
                                 <div>
                                     {{ concrete_destination.renderConfigForm(destination.getConfig())|raw }}
                                 </div>
@@ -100,6 +111,15 @@
                 </div>
             {% endfor %}
         </div>
+
+        <script>
+            $(document).ready(function() {
+                // Handle the dynamic input for the destination name
+                $('[data-glpi-form-destination-dynamic-input]').on('input', function() {
+                    $(this).css("width", getRealInputWidth(this, "1.2rem"));
+                }).trigger('input');
+            });
+        </script>
     {% endif %}
 
     <div class="d-flex mt-4">
