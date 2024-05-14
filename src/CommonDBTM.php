@@ -3064,9 +3064,9 @@ class CommonDBTM extends CommonGLPI
      *
      * @param int $right Right to check
      *
-     * @return bool
+     * @return void
      **/
-    public function checkGlobal(int $right): bool
+    public function checkGlobal(int $right): void
     {
         if (!$this->canGlobal($right)) {
            // Gestion timeout session
