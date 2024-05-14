@@ -105,7 +105,8 @@
                             <option v-for="itemtype in all_itemtypes" :value="itemtype" v-text="itemtype"></option>
                         </select>
                         <input v-else class="form-control" :id="`itemtype${rand}`" v-model.lazy="current_itemtype">
-                        <button class="btn btn-sm btn-outline-secondary" @click="itemtype_input_mode = itemtype_input_mode === 'select' ? 'input' : 'select'">
+                        <button class="btn btn-sm btn-outline-secondary" @click="itemtype_input_mode = itemtype_input_mode === 'select' ? 'input' : 'select'"
+                                title="Toggle manual input">
                             <i class="ti ti-switch-horizontal"></i>
                         </button>
                     </div>

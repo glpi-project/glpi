@@ -51,7 +51,7 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             cy.visit('/');
             cy.title().should('eq', 'Authentication - GLPI');
             cy.findByRole('textbox', {'name': "Login"}).type(username);
-            cy.findByLabelText("Password").type(password);
+            cy.findByLabelText("Password", {exact: false}).type(password);
             cy.findByRole('checkbox', {name: "Remember me"}).check();
             // Select 'local' from the 'auth' dropdown
             cy.findByLabelText("Login source").select('local', { force: true });
@@ -94,8 +94,8 @@ Cypress.Commands.add('changeProfile', (profile, verify = false) => {
     // Pattern for the profile link text to match exactly except ignoring surrounding whitespace
     const profile_pattern = new RegExp(`^\\s*${_.escapeRegExp(profile)}\\s*$`);
     // Check if we are already on the desired profile
-    cy.get('a.user-menu-dropdown-toggle').then(() => {
-        if (!Cypress.$('a.user-menu-dropdown-toggle').text().includes(profile)) {
+    cy.get('header a.user-menu-dropdown-toggle').then(() => {
+        if (!Cypress.$('a.user-menu-dropdown-toggle').text().match(profile_pattern)) {
             // Look for all <a> with href containing 'newprofile=' and find the one with the text matching the desired profile
             cy.get('div.user-menu a[href*="newprofile="]').contains(profile_pattern).first().invoke('attr', 'href').then((href) => {
                 cy.blockGLPIDashboards();
@@ -319,5 +319,46 @@ Cypress.Commands.add("doApiRequest", {prevSubject: true}, (token, method, endpoi
         }
     }).then((response) => {
         return response;
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method enableDebugMode
+ * @description Enable debug mode in GLPI
+ */
+Cypress.Commands.add('enableDebugMode', () => {
+    if (Cypress.$('#debug-toolbar-applet').length > 0) {
+        return;
+    }
+
+    cy.request({
+        method: 'POST',
+        url: '/ajax/switchdebug.php',
+        body: {
+            'debug': 'on',
+        },
+    }).then(() => {
+        cy.reload();
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method disableDebugMode
+ * @description Disable debug mode in GLPI
+ */
+Cypress.Commands.add('disableDebugMode', () => {
+    if (Cypress.$('#debug-toolbar-applet').length === 0) {
+        return;
+    }
+    cy.request({
+        method: 'POST',
+        url: '/ajax/switchdebug.php',
+        body: {
+            'debug': 'off',
+        },
+    }).then(() => {
+        cy.reload();
     });
 });

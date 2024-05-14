@@ -233,7 +233,7 @@
                     <ul class="nav nav-tabs" data-bs-toggle="tabs">
                         <li class="nav-item">
                             <button @click="switchSubwidget('request_summary')"
-                                    class="nav-link" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
+                                    class="nav-link active" data-bs-toggle="tab" data-glpi-debug-widget-id="request_summary">Summary</button>
                         </li>
                         <li class="nav-item">
                             <button @click="switchSubwidget('sql')"

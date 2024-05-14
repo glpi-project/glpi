@@ -101,7 +101,7 @@
             main_widget: true, // This widget shows directly in the toolbar
             component_registered_name: 'widget-client-performance',
             refreshButton: (button) => {
-                if (initial_load.value) {
+                if (button.find('.debug-text').text().trim() === '') {
                     setTimeout(() => {
                         const dom_timing = +window.performance.getEntriesByType('navigation')[0].domComplete.toFixed(2);
                         const client_performance_button_label = `${dom_timing} <span class="text-muted"> ms </span>`;
@@ -366,19 +366,21 @@
         <div class="resize-handle mt-n2" @mousedown.prevent="$event.buttons === 1 && (is_dragging = true)"></div>
         <div class="d-flex flex-row align-items-center">
             <div class="debug-toolbar-badge d-flex">
-                <button type="button" class="btn btn-icon border-0 px-3 opacity-100 debug-logo" @click="show_toolbar = true" :disabled="show_toolbar">
+                <button type="button" class="btn btn-icon border-0 px-3 opacity-100 debug-logo" @click="show_toolbar = true" :disabled="show_toolbar"
+                        title="Toggle debug bar">
                     <i class="ti ti-bug"></i>
                 </button>
             </div>
             <div :class="'debug-toolbar-content w-100 justify-content-between align-items-center ' + (show_toolbar ? 'd-flex' : '')" v-show="show_toolbar">
                 <ul class="debug-toolbar-widgets nav nav-tabs align-items-center border-0" data-bs-toggle="tabs">
                     <widget-button v-for="(widget) in getMainWidgets()" :id="widget.id" :title="widget.title" :icon="widget.icon"
-                        v-on:click="switchWidget(widget.id)" :active="widget.id === active_widget" @vue:mounted="refreshWidgetButtons"
+                                   v-on:click="switchWidget(widget.id)" :active="widget.id === active_widget" @vue:mounted="refreshWidgetButtons"
                     ></widget-button>
                 </ul>
                 <div class="debug-toolbar-controls">
                     <div class="debug-toolbar-control">
-                        <button type="button" class="btn btn-icon border-0 p-1" name="toggle_content_area" @click="show_content_area = !show_content_area">
+                        <button type="button" class="btn btn-icon border-0 p-1" name="toggle_content_area" @click="show_content_area = !show_content_area"
+                                title="Toggle debug content area">
                             <i :class="show_content_area ? 'ti ti-square-arrow-up' : 'ti ti-square-arrow-down'"></i>
                         </button>
                         <button type="button" class="btn btn-icon border-0 p-1" title="Close" @click="show_toolbar = false">

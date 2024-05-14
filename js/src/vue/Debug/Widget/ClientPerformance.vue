@@ -11,7 +11,6 @@
     if (paint_timing.length === 0) {
         // Firefox doesn't have first-paint for whatever reason
         paint_timing = paint_timings.filter((timing) => timing.name === 'first-contentful-paint');
-        paint_timing_label = 'Time to first contentful paint';
     }
     const time_to_first_paint = paint_timing.length > 0 ? paint_timing[0].startTime : -1;
     const time_to_dom_interactive = nav_timings.domInteractive;
@@ -67,7 +66,7 @@
         <div v-if="has_memory_perf_support" class="datagrid">
             <div class="datagrid-item">
                 <div class="datagrid-title">Used JS Heap</div>
-                <div class="datagrid-content">{{ +used_heap.toFixed(2) }}</div>
+                <div class="datagrid-content">{{ +used_heap.toFixed(2) }} MiB</div>
             </div>
             <div class="datagrid-item">
                 <div class="datagrid-title">Total JS Heap</div>
