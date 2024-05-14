@@ -158,8 +158,8 @@ class RuleAsset extends Rule
             Rule::PATTERN_DATE_IS_NOT_EQUAL,
         ];
 
-        $criterias['_user_inventory']['name']             = __('User from inventory');
-        $criterias['_user_inventory']['allow_condition']  = [
+        $criterias['_inventory_users']['name']            = __('User from inventory');
+        $criterias['_inventory_users']['allow_condition'] = [
             Rule::REGEX_MATCH,
             Rule::REGEX_NOT_MATCH,
             Rule::PATTERN_EXISTS,
@@ -277,57 +277,46 @@ class RuleAsset extends Rule
                             case "_affect_user_by_regex":
                             case "_affect_user_by_name_and_regex":
                                 foreach ($this->regex_results as $regex_result) {
-                                     $res = RuleAction::getRegexResultById(
-                                         $action->fields["value"],
-                                         $regex_result
-                                     );
-                                    if ($res != null) {
-                                          $user = User::getIdByName($res);
-                                        if ($user) {
-                                            $output['users_id'] = $user;
-                                        }
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    if ($res != null && $user = User::getIdByName($res)) {
+                                        $output['users_id'] = $user;
                                     }
                                 }
                                 break;
                             case "_affect_user_by_email_and_regex":
                                 foreach ($this->regex_results as $regex_result) {
-                                     $res = RuleAction::getRegexResultById(
-                                         $action->fields["value"],
-                                         $regex_result
-                                     );
-                                    if ($res != null) {
-                                        $user = new User();
-                                        if ($user->getFromDBbyEmail($res)) {
-                                            $output['users_id'] = $user->fields['id'];
-                                        }
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    $user = new User();
+                                    if ($res != null && $user->getFromDBbyEmail($res)) {
+                                        $output['users_id'] = $user->fields['id'];
                                     }
                                 }
                                 break;
                             case "_affect_user_by_registration_number_and_regex":
                                 foreach ($this->regex_results as $regex_result) {
-                                     $res = RuleAction::getRegexResultById(
-                                         $action->fields["value"],
-                                         $regex_result
-                                     );
-                                    if ($res != null) {
-                                          $user = User::getIdByField('registration_number', $res);
-                                        if ($user) {
-                                            $output['users_id'] = $user;
-                                        }
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    if ($res != null && $user = User::getIdByField('registration_number', $res)) {
+                                        $output['users_id'] = $user;
                                     }
                                 }
                                 break;
                             case "_affect_user_by_sync_field_and_regex":
                                 foreach ($this->regex_results as $regex_result) {
-                                        $res = RuleAction::getRegexResultById(
-                                            $action->fields["value"],
-                                            $regex_result
-                                        );
-                                    if ($res != null) {
-                                            $user = User::getIdByField('sync_field', $res);
-                                        if ($user) {
-                                            $output['users_id'] = $user;
-                                        }
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    if ($res != null && $user = User::getIdByField('sync_field', $res)) {
+                                        $output['users_id'] = $user;
                                     }
                                 }
                                 break;

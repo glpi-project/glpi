@@ -8027,7 +8027,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         if (isset($rules_fields['condition']) && isset($rules_fields['pattern'])) {
             $input_criteria2 = [
                 'rules_id'  => $rules_id,
-                'criteria'      => '_user_inventory',
+                'criteria'      => '_inventory_users',
                 'condition' => $rules_fields['condition'],
                 'pattern' => $rules_fields['pattern'],
             ];
@@ -8038,7 +8038,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         //create criteria
         $input_criteria = [
             'rules_id'  => $rules_id,
-            'criteria'      => '_user_inventory',
+            'criteria'      => '_inventory_users',
             'condition' => \Rule::REGEX_MATCH,
             'pattern' => '/^log([^@]+)/'
         ];
